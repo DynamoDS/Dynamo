@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoFFI
 {
@@ -58,12 +59,9 @@ namespace ProtoFFI
 
             if (modulePathFileName == null || !File.Exists(modulePathFileName))
             {
-                if (!FFIExecutionManager.Instance.IsInternalGacAssembly(moduleName))
-                {
-                    System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
-                    _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(ProtoCore.BuildData.WarningMessage.kFileNotFound, modulePathFileName));
-                    return null;
-                }
+                System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
+                _coreObj.LogWarning(ProtoCore.BuildData.WarningID.kFileNotFound, string.Format(Resources.kFileNotFound, modulePathFileName));
+                return null;
             }
 
             node.ModulePathFileName = modulePathFileName;
@@ -238,7 +236,7 @@ namespace ProtoFFI
                 }
                 catch
                 {
-                    _coreObj.LogSemanticError(string.Format("Failed to import {0}", importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
+                    _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }
             }
             
@@ -249,7 +247,9 @@ namespace ProtoFFI
                 codeBlockNode = dllModule.ImportCodeBlock(typeName, alias, refNode);
                 Type type = dllModule.GetExtensionAppType();
                 if (type != null)
-                    FFIExecutionManager.Instance.RegisterExtensionApplicationType(_coreObj, type);
+                {
+                    _coreObj.AddDLLExtensionAppType(type);
+                }
             }
             else if (extension == ".ds")
             {

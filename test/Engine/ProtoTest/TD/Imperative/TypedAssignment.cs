@@ -4,15 +4,8 @@ using ProtoTestFx;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Imperative
 {
-    class TypedAssignment
+    class TypedAssignment : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Imperative\\TypedAssignment\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_TestVariousTypes()

@@ -7,14 +7,9 @@ using System.Text;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class Old_Language_Manual_Examples
+    class Old_Language_Manual_Examples : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void SetUp()
-        {
-        }
 
         [Test]
         [Category("SmokeTest")]

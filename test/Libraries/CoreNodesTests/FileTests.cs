@@ -1,15 +1,9 @@
-﻿using System;
-using System.CodeDom;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DSCore.IO;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;
@@ -247,7 +241,7 @@ namespace Dynamo.Tests
         #region Images
         private IEnumerable<string> GetTestImageFiles()
         {
-            string imagePath = Path.Combine(GetTestDirectory(), @"core\files\images\testImage");
+            string imagePath = Path.Combine(TestDirectory, @"core\files\images\testImage");
             return new[] { "png", "jpg", "bmp", "tif" }.Select(
                 ext => Path.ChangeExtension(imagePath, ext));
         }
@@ -326,7 +320,7 @@ namespace Dynamo.Tests
         public void Image_Write()
         {
             var tmp = GetNewFileNameOnTempPath("png");
-            using (var bmp = new Bitmap(Path.Combine(GetTestDirectory(), @"core\files\images\testImage.png")))
+            using (var bmp = new Bitmap(Path.Combine(TestDirectory, @"core\files\images\testImage.png")))
             {
                 Image.WriteToFile(tmp, bmp);
                 using (var newBmp = new Bitmap(tmp))
@@ -371,22 +365,28 @@ namespace Dynamo.Tests
     [TestFixture]
     class FileWritingTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void FileWriter()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\files\FileWriter.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\files\FileWriter.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
 
             var path = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
             path.Value = GetNewFileNameOnTempPath(".txt");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
         }
 
         [Test]
@@ -394,36 +394,42 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\files\ImageFileWriter.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\files\ImageFileWriter.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
             var filename = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("0aaae6d6-f84b-4e61-888b-14936343d80a");
             filename.Value = GetNewFileNameOnTempPath(".png");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
         }
     }
 
     [TestFixture]
     public class ZeroTouchMigrationFileTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestZeroTouchMigrationFile()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\files\MigrationHintGetClosestPoint.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\files\MigrationHintGetClosestPoint.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("8527c4f5-f8e1-491e-b446-64c495fa1848", 4.54606056566195);
         }

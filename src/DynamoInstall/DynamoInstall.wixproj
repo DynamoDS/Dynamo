@@ -18,7 +18,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug</DefineConstants>
+    <DefineConstants>Debug;definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
@@ -34,6 +34,10 @@
     <Compile Include="Samples.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
     <WixExtension Include="WixUIExtension">
       <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>
@@ -42,18 +46,43 @@
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
     <PreBuildEvent>rd /s /q $(DYNAMO_HARVEST_PATH)
-robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\Release $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int
+robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD samples
+copy $(DYNAMO_BASE_PATH)\tools\install\Extra\DynamoAddinGenerator.exe $(DYNAMO_HARVEST_PATH)\DynamoAddinGenerator.exe
+copy $(DYNAMO_BASE_PATH)\tools\install\Extra\RevitAddinUtility.dll $(DYNAMO_HARVEST_PATH)\RevitAddinUtility.dll
 
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA_07 -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA_07 -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
+"%25WIX%25bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
+"%25WIX%25bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
+"%25WIX%25bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
   </PropertyGroup>
-  <!--
-	To modify your build process, add your task inside one of the targets below and uncomment it.
-	Other similar extension points exist, see Wix.targets.
-	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
-	</Target>
-	-->
+  <Target Name="BeforeBuild">
+    <GetAssemblyIdentity AssemblyFiles="$(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\DynamoCore.dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyVersions" />
+    </GetAssemblyIdentity>
+    <CreateProperty Value="%(AssemblyVersions.Version)">
+      <Output TaskParameter="Value" PropertyName="FullVersion" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[0])">
+      <Output TaskParameter="Value" PropertyName="Major" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[1])">
+      <Output TaskParameter="Value" PropertyName="Minor" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[2])">
+      <Output TaskParameter="Value" PropertyName="Rev" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[3])">
+      <Output TaskParameter="Value" PropertyName="Build" />
+    </CreateProperty>
+    <CreateProperty Value="Dynamo">
+      <Output TaskParameter="Value" PropertyName="ProductName" />
+    </CreateProperty>
+    <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
+      <Output TaskParameter="Value" PropertyName="DefineConstants" />
+    </CreateProperty>
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(OutputPath)$(OutputName).msi  $(DYNAMO_BASE_PATH)\tools\install\Installers\ /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

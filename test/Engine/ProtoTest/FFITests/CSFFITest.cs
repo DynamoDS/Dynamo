@@ -14,8 +14,8 @@ namespace ProtoFFITests
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
             return core;
@@ -44,12 +44,14 @@ namespace ProtoFFITests
         {
             ProtoCore.Core core = Setup();
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, context);
-            int nWarnings = core.RuntimeStatus.WarningCount;
+            ProtoCore.CompileTime.Context compileContext = new ProtoCore.CompileTime.Context(code, context);
+            ProtoCore.RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = fsr.Execute(compileContext, core, out runtimeCore);
+            int nWarnings = runtimeCore.RuntimeStatus.WarningCount;
             nErrors = core.BuildStatus.ErrorCount;
             if (data == null)
             {
-                core.Cleanup();
+                runtimeCore.Cleanup();
                 return nWarnings + nErrors;
             }
             TestFrameWork thisTest = new TestFrameWork();
@@ -65,36 +67,21 @@ namespace ProtoFFITests
                     TestFrameWork.Verify(mirror, item.ValueName, item.ExpectedValue, item.BlockIndex);
                 }
             }
-            core.Cleanup();
+            runtimeCore.Cleanup();
             return nWarnings + nErrors;
         }
     }
     public class CSFFITest : FFITestSetup
     {
         /*
-[Test]
-        public void TestMethodResolution()
-        {
-            String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               line1 = Line.ByStartPointEndPoint(Point.ByCoordinates(0,0,0), Point.ByCoordinates(2,2,0));
-                line2 = Line.ByStartPointEndPoint(Point.ByCoordinates(2,0,0), Point.ByCoordinates(0,2,0));
-               geom = line1.Intersect(line2);
-            ";
-            ValidationData[] data = { new ValidationData() { ValueName = "geom", ExpectedValue = (Int64)1, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
-        }*/
+[Test]        public void TestMethodResolution()        {            String code =            @"               import(""ProtoGeometry.dll"");               line1 = Line.ByStartPointEndPoint(Point.ByCoordinates(0,0,0), Point.ByCoordinates(2,2,0));                line2 = Line.ByStartPointEndPoint(Point.ByCoordinates(2,0,0), Point.ByCoordinates(0,2,0));               geom = line1.Intersect(line2);            ";            ValidationData[] data = { new ValidationData() { ValueName = "geom", ExpectedValue = (Int64)1, BlockIndex = 0 } };            ExecuteAndVerify(code, data);        }*/
         TestFrameWork thisTest = new TestFrameWork();
 
         [Test]
         public void TestImportDummyClass()
         {
             String code =
-            @"              
-               dummy = Dummy.Dummy();
-               success = dummy.CallMethod();
-            ";
+            @"                             dummy = Dummy.Dummy();               success = dummy.CallMethod();            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
@@ -105,18 +92,8 @@ namespace ProtoFFITests
         public void TestImportAllClasses()
         {
             String code =
-            @"import(""FFITarget.dll"");
-success;
-x;
-             [Associative] 
-             {
-               vec = DummyVector.ByCoordinates(1,0,0);
-               point = DummyPoint.ByCoordinates(0,0,0);
-               x = point.X;
-             }
-            ";
-            ValidationData[] data = { new ValidationData { ValueName="x",         ExpectedValue = 0.0, BlockIndex = 0}
-                                    };
+            @"import(""FFITarget.dll"");success;x;             [Associative]              {               vec = DummyVector.ByCoordinates(1,0,0);               point = DummyPoint.ByCoordinates(0,0,0);               x = point.X;             }            ";
+            ValidationData[] data = { new ValidationData { ValueName="x",         ExpectedValue = 0.0, BlockIndex = 0}                                    };
             ExecuteAndVerify(code, data);
         }
 
@@ -125,22 +102,8 @@ x;
         public void TestImportPointClass()
         {
             String code =
-            @"import(Point from ""ProtoGeometry.dll"");
-x;
-y;
-z;
-             [Associative] 
-             {
-               point = Point.ByCoordinates(1,2,3);
-               x = point.X;
-               y = point.Y;
-               z = point.Z;
-             }
-            ";
-            ValidationData[] data = { new ValidationData { ValueName="x", ExpectedValue = 1.0, BlockIndex = 0},
-                                      new ValidationData { ValueName="y", ExpectedValue = 2.0, BlockIndex = 0},
-                                      new ValidationData { ValueName="z", ExpectedValue = 3.0, BlockIndex = 0}
-                                    };
+            @"import(Point from ""ProtoGeometry.dll"");x;y;z;             [Associative]              {               point = Point.ByCoordinates(1,2,3);               x = point.X;               y = point.Y;               z = point.Z;             }            ";
+            ValidationData[] data = { new ValidationData { ValueName="x", ExpectedValue = 1.0, BlockIndex = 0},                                      new ValidationData { ValueName="y", ExpectedValue = 2.0, BlockIndex = 0},                                      new ValidationData { ValueName="z", ExpectedValue = 3.0, BlockIndex = 0}                                    };
             ExecuteAndVerify(code, data);
         }
 
@@ -148,16 +111,7 @@ z;
         public void TestImportPointClassWithoutImportingVectorClass()
         {
             String code =
-            @"
-               import(DummyPoint from ""FFITarget.dll"");
-               p1 = DummyPoint.ByCoordinates(1,2,3);
-               p2 = DummyPoint.ByCoordinates(3,4,5);
-               v = p1.DirectionTo(p2);
-               p3 = p1.Translate(v);
-               px = p3.X;
-               py = p3.Y;
-               pz = p3.Z;
-            ";
+            @"               import(DummyPoint from ""FFITarget.dll"");               p1 = DummyPoint.ByCoordinates(1,2,3);               p2 = DummyPoint.ByCoordinates(3,4,5);               v = p1.DirectionTo(p2);               p3 = p1.Translate(v);               px = p3.X;               py = p3.Y;               pz = p3.Z;            ";
             ValidationData[] data =
                 {
                     new ValidationData { ValueName = "px", ExpectedValue = 3.0, BlockIndex = 0 },
@@ -172,16 +126,7 @@ z;
         public void TestImportPointClassWithImportingVectorClass()
         {
             String code =
-            @"
-               import(""FFITarget.dll"");
-               p1 = DummyPoint.ByCoordinates(1,2,3);
-               p2 = DummyPoint.ByCoordinates(3,4,5);
-               v = p1.DirectionTo(p2);
-               vx = v.X;
-               vy = v.Y;
-               vz = v.Z;
-
-            ";
+            @"               import(""FFITarget.dll"");               p1 = DummyPoint.ByCoordinates(1,2,3);               p2 = DummyPoint.ByCoordinates(3,4,5);               v = p1.DirectionTo(p2);               vx = v.X;               vy = v.Y;               vz = v.Z;            ";
             ValidationData[] data =
                 {
                     new ValidationData { ValueName = "vx", ExpectedValue = 2.0, BlockIndex = 0 },
@@ -198,13 +143,7 @@ z;
         public void TestInstanceMethodResolution()
         {
             String code =
-            @"
-            import(""FFITarget.dll"");
-            cf1 = ClassFunctionality.ClassFunctionality(1);
-            vc2 = ValueContainer.ValueContainer(2);
-            o = cf1.AddWithValueContainer(vc2);
-            o2 = vc2.Square().SomeValue;
-            ";
+            @"            import(""FFITarget.dll"");            cf1 = ClassFunctionality.ClassFunctionality(1);            vc2 = ValueContainer.ValueContainer(2);            o = cf1.AddWithValueContainer(vc2);            o2 = vc2.Square().SomeValue;            ";
             ValidationData[] data =
                 {
                     new ValidationData { ValueName = "o", ExpectedValue = 3, BlockIndex = 0 },
@@ -219,13 +158,7 @@ z;
         public void TestProperty()
         {
             String code =
-           @"
-              import(""FFITarget.dll"");
-              cf1 = ClassFunctionality.ClassFunctionality(1);
-              cf2 = ClassFunctionality.ClassFunctionality(2);
-              v = cf1.IntVal;
-              t = cf1.IsEqualTo(cf2);
-           ";
+           @"              import(""FFITarget.dll"");              cf1 = ClassFunctionality.ClassFunctionality(1);              cf2 = ClassFunctionality.ClassFunctionality(2);              v = cf1.IntVal;              t = cf1.IsEqualTo(cf2);           ";
            ValidationData[] data =
                {
                    new ValidationData { ValueName = "v", ExpectedValue = 1, BlockIndex = 0 },
@@ -240,15 +173,7 @@ z;
         public void TestStaticProperty()
         {
             String code =
-           @"
-              import(""FFITarget.dll"");
-              cf1 = ClassFunctionality.ClassFunctionality(1);
-              cf2 = ClassFunctionality.ClassFunctionality(2);
-              ClassFunctionality.StaticProp = 42;
-              v = cf1.StaticProp;
-              t = cf2.StaticProp;
-              s = ClassFunctionality.StaticProp;
-           ";
+           @"              import(""FFITarget.dll"");              cf1 = ClassFunctionality.ClassFunctionality(1);              cf2 = ClassFunctionality.ClassFunctionality(2);              ClassFunctionality.StaticProp = 42;              v = cf1.StaticProp;              t = cf2.StaticProp;              s = ClassFunctionality.StaticProp;           ";
 
             ValidationData[] data =
                {
@@ -266,11 +191,7 @@ z;
         public void TestArrayMarshling_MixedTypes()
         {
             String code =
-            @"
-               dummy = Dummy.Dummy();
-               arr = dummy.GetMixedObjects();
-               value = arr[0].random123() - arr[1].GetNumber() + arr[2].Value + arr[3].Value;
-            ";
+            @"               dummy = Dummy.Dummy();               arr = dummy.GetMixedObjects();               value = arr[0].random123() - arr[1].GetNumber() + arr[2].Value + arr[3].Value;            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             Type derived1 = typeof (FFITarget.Derived1);
             Type testdispose = typeof (FFITarget.TestDispose);
@@ -287,20 +208,7 @@ z;
         public void TestArrayElementReturnedFromFunction()
         {
             String code =
-            @"
-               def GetAt(index : int)
-               {
-                    dummy = Dummy.Dummy();
-                    arr = dummy.GetMixedObjects(); //GC of this array should not dispose the returned element.
-                    return = arr[index];
-               }
-               a = GetAt(0);
-               b = GetAt(1);
-               c = GetAt(2);
-               d = GetAt(3);
-               x = {a.random123(), b.GetNumber(), c.Value, d.Value};
-               value = a.random123() - b.GetNumber() + c.Value + d.Value;
-            ";
+            @"               def GetAt(index : int)               {                    dummy = Dummy.Dummy();                    arr = dummy.GetMixedObjects(); //GC of this array should not dispose the returned element.                    return = arr[index];               }               a = GetAt(0);               b = GetAt(1);               c = GetAt(2);               d = GetAt(3);               x = {a.random123(), b.GetNumber(), c.Value, d.Value};               value = a.random123() - b.GetNumber() + c.Value + d.Value;            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             Type derived1 = typeof (FFITarget.Derived1);
             Type testdispose = typeof (FFITarget.TestDispose);
@@ -315,15 +223,7 @@ z;
         public void TestArrayMarshalling_DStoCS()
         {
             String code =
-            @"
-sum;
-             [Associative] 
-             {
-                dummy = Dummy.Dummy();
-                arr = 1..10.0;
-                sum = dummy.SumAll(arr);
-             }
-            ";
+            @"sum;             [Associative]              {                dummy = Dummy.Dummy();                arr = 1..10.0;                sum = dummy.SumAll(arr);             }            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 55.0, BlockIndex = 0 } };
@@ -334,16 +234,7 @@ sum;
         public void TestArrayMarshalling_DStoCS_CStoDS()
         {
             String code =
-            @"
-sum;
-             [Associative] 
-             {
-                dummy = Dummy.Dummy();
-                arr = 1..10.0;
-                arr_2 = dummy.Twice(arr);
-                sum = dummy.SumAll(arr_2);
-             }
-            ";
+            @"sum;             [Associative]              {                dummy = Dummy.Dummy();                arr = 1..10.0;                arr_2 = dummy.Twice(arr);                sum = dummy.SumAll(arr_2);             }            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 110.0, BlockIndex = 0 } };
@@ -354,15 +245,7 @@ sum;
         public void TestListMarshalling_DStoCS()
         {
             String code =
-            @"
-sum;
-             [Associative] 
-             {
-                dummy = Dummy.Dummy();
-                arr = 1..10.0;
-                sum = dummy.AddAll(arr);
-             }
-            ";
+            @"sum;             [Associative]              {                dummy = Dummy.Dummy();                arr = 1..10.0;                sum = dummy.AddAll(arr);             }            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 55.0, BlockIndex = 0 } };
@@ -373,15 +256,7 @@ sum;
         public void TestStackMarshalling_DStoCS_CStoDS()
         {
             String code =
-            @"
-size;
-             [Associative] 
-             {
-                dummy = Dummy.Dummy();
-                stack = dummy.DummyStack();
-                size = dummy.StackSize(stack);
-             }
-            ";
+            @"size;             [Associative]              {                dummy = Dummy.Dummy();                stack = dummy.DummyStack();                size = dummy.StackSize(stack);             }            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             Type derived1 = typeof(FFITarget.Derived1);
             Type testdispose = typeof(FFITarget.TestDispose);
@@ -398,20 +273,7 @@ size;
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4035
             String code =
-            @"
-             [Associative] 
-             {
-                dummy = Dummy.Dummy();
-                dictionary = 
-                { 
-                    dummy.CreateDictionary() => dict;
-                    dummy.AddData(dict, ""ABCD"", 22);
-                    dummy.AddData(dict, ""xyz"", 11);
-                    dummy.AddData(dict, ""teas"", 12);
-                }
-                sum = dummy.SumAges(dictionary);
-             }
-            ";
+            @"             [Associative]              {                dummy = Dummy.Dummy();                dictionary =                 {                     dummy.CreateDictionary() => dict;                    dummy.AddData(dict, ""ABCD"", 22);                    dummy.AddData(dict, ""xyz"", 11);                    dummy.AddData(dict, ""teas"", 12);                }                sum = dummy.SumAges(dictionary);             }            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 45, BlockIndex = 1 } };
@@ -422,15 +284,7 @@ size;
         public void TestListMarshalling_DStoCS_CStoDS()
         {
             String code =
-            @"
-sum;
-             [Associative] 
-             {
-                dummy = Dummy.Dummy();
-                arr = dummy.Range(1,10,1);
-                sum = dummy.AddAll(arr);
-             }
-            ";
+            @"sum;             [Associative]              {                dummy = Dummy.Dummy();                arr = dummy.Range(1,10,1);                sum = dummy.AddAll(arr);             }            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 55.0, BlockIndex = 0 } };
@@ -441,10 +295,7 @@ sum;
         public void TestInheritanceImport()
         {
             String code =
-            @"
-               dummy = DerivedDummy.DerivedDummy();
-               num123 = dummy.random123();
-            ";
+            @"               dummy = DerivedDummy.DerivedDummy();               num123 = dummy.random123();            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "num123", ExpectedValue = (Int64)123, BlockIndex = 0 } };
@@ -455,10 +306,7 @@ sum;
         public void TestMethodCallOnNullFFIObject()
         {
             String code =
-            @"
-               dummy = Dummy.ReturnNullDummy();
-               value = dummy.CallMethod();
-            ";
+            @"               dummy = Dummy.ReturnNullDummy();               value = dummy.CallMethod();            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = null, BlockIndex = 0 } };
@@ -469,9 +317,7 @@ sum;
         public void TestStaticMethod()
         {
             String code =
-            @"
-               value = Dummy.Return100();
-            ";
+            @"               value = Dummy.Return100();            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = (Int64)100, BlockIndex = 0 } };
@@ -482,9 +328,7 @@ sum;
         public void TestCtor()
         {
             String code =
-            @"
-               value = Dummy.Return100();
-            ";
+            @"               value = Dummy.Return100();            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = (Int64)100, BlockIndex = 0 } };
@@ -495,11 +339,7 @@ sum;
         public void TestInheritanceBaseClassMethodCall()
         {
             String code =
-            @"
-               dummy = DerivedDummy.DerivedDummy();
-               arr = 1..10.0;
-               sum = dummy.SumAll(arr);
-            ";
+            @"               dummy = DerivedDummy.DerivedDummy();               arr = 1..10.0;               sum = dummy.SumAll(arr);            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 55.0, BlockIndex = 0 } };
@@ -510,11 +350,7 @@ sum;
         public void TestInheritanceVirtualMethodCallDerived()
         {
             String code =
-            @"
-               tempDerived = DerivedDummy.DerivedDummy();
-               dummy = tempDerived.CreateDummy(true); //for now static methods are not supported.
-               isBase = dummy.CallMethod();
-            ";
+            @"               tempDerived = DerivedDummy.DerivedDummy();               dummy = tempDerived.CreateDummy(true); //for now static methods are not supported.               isBase = dummy.CallMethod();            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "isBase", ExpectedValue = false, BlockIndex = 0 } };
@@ -525,11 +361,7 @@ sum;
         public void TestInheritanceVirtualMethodCallBase()
         {
             String code =
-            @"
-               tempDerived = DerivedDummy.DerivedDummy();
-               dummy = tempDerived.CreateDummy(false); //for now static methods are not supported.
-               isBase = dummy.CallMethod();
-            ";
+            @"               tempDerived = DerivedDummy.DerivedDummy();               dummy = tempDerived.CreateDummy(false); //for now static methods are not supported.               isBase = dummy.CallMethod();            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "isBase", ExpectedValue = true, BlockIndex = 0 } };
@@ -539,10 +371,7 @@ sum;
         [Test]
         public void TestInheritanceCtorsVirtualMethods()
         {
-            string code = @"
-                            b = Base.Create();
-                            num = b.GetNumber();
-                            ";
+            string code = @"                            b = Base.Create();                            num = b.GetNumber();                            ";
             Type dummy = typeof (FFITarget.Derived1);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             Console.WriteLine(code);
@@ -553,10 +382,7 @@ sum;
         [Test]
         public void TestInheritanceCtorsVirtualMethods2()
         {
-            string code = @"
-                            derived = Derived1.Create();
-                            num = derived.GetNumber();
-                            ";
+            string code = @"                            derived = Derived1.Create();                            num = derived.GetNumber();                            ";
             Type dummy = typeof (FFITarget.Derived1);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "num", ExpectedValue = 20.0, BlockIndex = 0 } };
@@ -566,10 +392,7 @@ sum;
         [Test]
         public void TestInheritanceCtorsVirtualMethods3()
         {
-            string code = @"
-                            b = Base.CreateDerived();
-                            num = b.GetNumber();
-                            ";
+            string code = @"                            b = Base.CreateDerived();                            num = b.GetNumber();                            ";
             Type dummy = typeof (FFITarget.Derived1);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "num", ExpectedValue = 20.0, BlockIndex = 0 } };
@@ -580,17 +403,7 @@ sum;
         [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestInheritanceAcrossLangauges_CS_DS()
         {
-            string code = @"
-                import (Vector from ""ProtoGeometry.dll"");
-                class Vector2 extends Vector
-                {
-                    public constructor Vector2(x : double, y : double, z : double) : base ByCoordinates(x, y, z)
-                    {}
-                }
-                
-                vec2 = Vector2.Vector2(1,1,1);
-                x = vec2.GetLength();
-                ";
+            string code = @"                import (Vector from ""ProtoGeometry.dll"");                class Vector2 extends Vector                {                    public constructor Vector2(x : double, y : double, z : double) : base ByCoordinates(x, y, z)                    {}                }                                vec2 = Vector2.Vector2(1,1,1);                x = vec2.GetLength();                ";
             ValidationData[] data = { new ValidationData { ValueName = "x", ExpectedValue = Math.Sqrt(3.0), BlockIndex = 0 } };
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () => ExecuteAndVerify(code, data));
         }
@@ -603,11 +416,7 @@ sum;
         [Test]
         public void TestDisposeNotAvailable()
         {
-            string code = @"
-                            a = TestDispose.Create();
-                            neglect = a.Dispose();
-                            val = a.Value;
-                            ";
+            string code = @"                            a = TestDispose.Create();                            neglect = a.Dispose();                            val = a.Value;                            ";
             Type dummy = typeof (FFITarget.TestDispose);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = (Int64)15, BlockIndex = 0 } };
@@ -622,11 +431,7 @@ sum;
         [Test]
         public void TestDisposable_Dispose()
         {
-            string code = @"
-                            a = TestDispose.Create();
-                            neglect = a._Dispose();
-                            val = a.Value;
-                            ";
+            string code = @"                            a = TestDispose.Create();                            neglect = a._Dispose();                            val = a.Value;                            ";
             Type dummy = typeof (FFITarget.TestDispose);
             
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
@@ -641,11 +446,7 @@ sum;
         [Test]
         public void TestDummyBase_Dispose()
         {
-            string code = @"
-                            a = DummyBase.Create();
-                            neglect = a._Dispose();
-                            val = a.Value;
-                            ";
+            string code = @"                            a = DummyBase.Create();                            neglect = a._Dispose();                            val = a.Value;                            ";
             Type dummy = typeof (FFITarget.DummyBase);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = null, BlockIndex = 0 } };
@@ -660,11 +461,7 @@ sum;
         [Test]
         public void TestDummyDisposeDispose()
         {
-            string code = @"
-                            a = DummyDispose.DummyDispose();
-                            neglect = a.Dispose();
-                            val = a.Value;
-                            ";
+            string code = @"                            a = DummyDispose.DummyDispose();                            neglect = a.Dispose();                            val = a.Value;                            ";
             Type dummy = typeof (FFITarget.DummyDispose);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = (Int64)(-2), BlockIndex = 0 } };
@@ -681,12 +478,7 @@ sum;
         [Test]
         public void TestDisposeForUpdate()
         {
-            string code = @"
-                            a = DummyDispose.DummyDispose(); //instance1
-                            a = DummyDispose.DummyDispose(); //instance2, instance1 will be freed
-                            a = DummyDispose.DummyDispose(); //instance3, instance1 will be re-used.
-                            val = a.Value;
-                            ";
+            string code = @"                            a = DummyDispose.DummyDispose(); //instance1                            a = DummyDispose.DummyDispose(); //instance2, instance1 will be freed                            a = DummyDispose.DummyDispose(); //instance3, instance1 will be re-used.                            val = a.Value;                            ";
 
             Type dummy = typeof (FFITarget.DummyDispose);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
@@ -704,13 +496,7 @@ sum;
         [Test]
         public void TestDisposeForUpdate2()
         {
-            string code = @"
-                            import(""FFITarget.dll"");
-                            a = DummyDispose.DummyDispose(); //instance1
-                            a = DummyVector.ByCoordinates(1,1,1); //instance2, instance1 will be freed
-                            a = DummyDispose.DummyDispose(); //instance3, instance1 will be re-used.
-                            val = a.Value;
-                            ";
+            string code = @"                            import(""FFITarget.dll"");                            a = DummyDispose.DummyDispose(); //instance1                            a = DummyVector.ByCoordinates(1,1,1); //instance2, instance1 will be freed                            a = DummyDispose.DummyDispose(); //instance3, instance1 will be re-used.                            val = a.Value;                            ";
             Type dummy = typeof (FFITarget.DummyDispose);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = (Int64)(20), BlockIndex = 0 } };
@@ -725,11 +511,7 @@ sum;
         [Test]
         public void TestDisposeDerived_Dispose()
         {
-            string code = @"
-                            a = TestDisposeDerived.CreateDerived();
-                            neglect = AClass._Dispose();
-                            val = AClass.Value;
-                            ";
+            string code = @"                            a = TestDisposeDerived.CreateDerived();                            neglect = AClass._Dispose();                            val = AClass.Value;                            ";
             Type dummy = typeof (FFITarget.TestDisposeDerived);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = null, BlockIndex = 0 } };
@@ -743,12 +525,7 @@ sum;
         public void TestMultipleImport()
         {
             String code =
-            @"
-               import(""DSCoreNodes.dll"");
-               dummy = DerivedDummy.DerivedDummy();
-               arr = 1..Math.Factorial(5);
-               sum = dummy.SumAll(arr);
-            ";
+            @"               import(""DSCoreNodes.dll"");               dummy = DerivedDummy.DerivedDummy();               arr = 1..Math.Factorial(5);               sum = dummy.SumAll(arr);            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 7260.0, BlockIndex = 0 } };
@@ -763,13 +540,7 @@ sum;
         public void TestImportSameModuleMoreThanOnce()
         {
             String code =
-            @"
-               import(""DSCoreNodes.dll"");
-               import(""DSCoreNodes.dll"");
-               dummy = DerivedDummy.DerivedDummy();
-               arr = 1..Math.Factorial(5);
-               sum = dummy.SumAll(arr);
-            ";
+            @"               import(""DSCoreNodes.dll"");               import(""DSCoreNodes.dll"");               dummy = DerivedDummy.DerivedDummy();               arr = 1..Math.Factorial(5);               sum = dummy.SumAll(arr);            ";
             Type dummy = typeof (FFITarget.DerivedDummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             Type dummy2 =  typeof (FFITarget.DerivedDummy);
@@ -787,11 +558,7 @@ sum;
         public void TestPropertyAccessor()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
-               a = pt.X;
-            ";
+            @"               import(""ProtoGeometry.dll"");               pt = Point.ByCoordinates(1,2,3);               a = pt.X;            ";
             double aa = 1;
             ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -802,11 +569,7 @@ sum;
         public void TestAssignmentSingleton()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
-               a = { pt.X};
-            ";
+            @"               import(""ProtoGeometry.dll"");               pt = Point.ByCoordinates(1,2,3);               a = { pt.X};            ";
             object[] aa = new object[] { 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -817,16 +580,7 @@ sum;
         public void TestAssignmentAsArray()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt = Point.ByCoordinates(1,2,3);
-               a = { pt.X, pt.X};
-               def test (pt : Point)
-               {
-                  return = { pt.X, pt.X};
-               }
-               c = test(pt);
-            ";
+            @"               import(""ProtoGeometry.dll"");               pt = Point.ByCoordinates(1,2,3);               a = { pt.X, pt.X};               def test (pt : Point)               {                  return = { pt.X, pt.X};               }               c = test(pt);            ";
             object[] aa = new object[] { 1.0, 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = aa, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -837,16 +591,7 @@ sum;
         public void TestReturnFromFunctionSingle()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1,2,3);
-            a = { pt.X, pt.X};
-            def test (pt : Point)
-            {
-            return = {  pt.X};
-            }
-            b = test(pt);
-            ";
+            @"               import(""ProtoGeometry.dll"");            pt = Point.ByCoordinates(1,2,3);            a = { pt.X, pt.X};            def test (pt : Point)            {            return = {  pt.X};            }            b = test(pt);            ";
             var b = new object[] { 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "b", ExpectedValue = b, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -857,15 +602,7 @@ sum;
         public void Defect_1462300()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-            pt = Point.ByCoordinates(1,2,3);
-            def test (pt : Point)
-            {
-            return = {  pt.X,pt.Y};
-            }
-            b = test(pt);
-            ";
+            @"               import(""ProtoGeometry.dll"");            pt = Point.ByCoordinates(1,2,3);            def test (pt : Point)            {            return = {  pt.X,pt.Y};            }            b = test(pt);            ";
             object[] b = new object[] { 1.0, 2.0 };
             ValidationData[] data = { new ValidationData { ValueName = "b", ExpectedValue = b, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -876,24 +613,7 @@ sum;
         public void geometryinClass()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               pt1=Point.ByCoordinates(1.0,1.0,1.0);
-               class baseClass
-               { 
-                    val1 : Point  ;
-                    a:int;
-                    constructor baseClass()
-                    {
-                        a=1;
-                        val1=Point.ByCoordinates(1,1,1);
-                    }           
-                }
-                instance1= baseClass.baseClass();
-                a2=instance1.a;
-                b2=instance1.val1;
-                c2={b2.X,b2.Y,b2.Z};
-            ";
+            @"               import(""ProtoGeometry.dll"");               pt1=Point.ByCoordinates(1.0,1.0,1.0);               class baseClass               {                     val1 : Point  ;                    a:int;                    constructor baseClass()                    {                        a=1;                        val1=Point.ByCoordinates(1,1,1);                    }                           }                instance1= baseClass.baseClass();                a2=instance1.a;                b2=instance1.val1;                c2={b2.X,b2.Y,b2.Z};            ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a2", ExpectedValue = 1, BlockIndex = 0 }, new ValidationData { ValueName = "c2", ExpectedValue = c, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -904,43 +624,12 @@ sum;
         public void geometryArrayAssignment()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-              
-               pt1=Point.ByCoordinates(1,1,1);
-               pt2=Point.ByCoordinates(2,2,2);
-               pt3=Point.ByCoordinates(3,3,3);
-               pt4=Point.ByCoordinates(4,4,4);
-               pt5=Point.ByCoordinates(5,5,5);
-               pt6=Point.ByCoordinates(6,6,6);
-a11;
-a12;
-b11;
-b12;
-               [Imperative]
-               {
-                    a    = { {pt1,pt2}, {pt3,pt4} };
-                    a11  = {a[0][0].X,a[0][0].Y,a[0][0].Z};
-                    a[1] = {pt5,pt6};
-                    a12  = {a[1][1].X,a[1][1].Y,a[1][1].Z};
-                    d    = a[0];
-                    b    = { pt1, pt2 };
-                    b11  = {b[0].X,b[0].Y,b[0].Z};
-                    b[0] = {pt3,pt4,pt5};
-                    b12  = {b[0][0].X,b[0][0].Y,b[0][0].Z};
-                    e    = b[0];
-                    e12  = {e[0].X,e[0].Y,e[0].Z};
-               }
-            ";
+            @"               import(""ProtoGeometry.dll"");                             pt1=Point.ByCoordinates(1,1,1);               pt2=Point.ByCoordinates(2,2,2);               pt3=Point.ByCoordinates(3,3,3);               pt4=Point.ByCoordinates(4,4,4);               pt5=Point.ByCoordinates(5,5,5);               pt6=Point.ByCoordinates(6,6,6);a11;a12;b11;b12;               [Imperative]               {                    a    = { {pt1,pt2}, {pt3,pt4} };                    a11  = {a[0][0].X,a[0][0].Y,a[0][0].Z};                    a[1] = {pt5,pt6};                    a12  = {a[1][1].X,a[1][1].Y,a[1][1].Z};                    d    = a[0];                    b    = { pt1, pt2 };                    b11  = {b[0].X,b[0].Y,b[0].Z};                    b[0] = {pt3,pt4,pt5};                    b12  = {b[0][0].X,b[0][0].Y,b[0][0].Z};                    e    = b[0];                    e12  = {e[0].X,e[0].Y,e[0].Z};               }            ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             object[] d = new object[] { 4.0, 4.0, 4.0 };
             object[] e = new object[] { 3.0, 3.0, 3.0 };
             object[] f = new object[] { 6.0, 6.0, 6.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "a12", ExpectedValue = f, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "b11", ExpectedValue = c, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 }};
+            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },                                      new ValidationData { ValueName = "a12", ExpectedValue = f, BlockIndex = 0 },                                      new ValidationData { ValueName = "b11", ExpectedValue = c, BlockIndex = 0 },                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 },                                      new ValidationData { ValueName = "b12", ExpectedValue = e, BlockIndex = 0 }};
             ExecuteAndVerify(code, data);
         }
 
@@ -949,35 +638,10 @@ b12;
         public void geometryForLoop()
         {
             String code =
-            @"
-                import(""ProtoGeometry.dll"");
-                
-                pt1=Point.ByCoordinates(1,1,1);
-                pt2=Point.ByCoordinates(2,2,2);
-                pt3=Point.ByCoordinates(3,3,3);
-a11;
-a12;
-                [Imperative]
-                {
-                    a = { pt1, pt2, pt3 };
-                    a11={a[0].X,a[0].Y,a[0].Z};
-                    x = 0;
- 
-                    for (y in a )
-                    {
-                    
-                    a[x]=pt3;
-                    a12={a[0].X,a[0].Y,a[0].Z};
-                    x=x+1;
-                    }
-                    
-                 } 
-            ";
+            @"                import(""ProtoGeometry.dll"");                                pt1=Point.ByCoordinates(1,1,1);                pt2=Point.ByCoordinates(2,2,2);                pt3=Point.ByCoordinates(3,3,3);a11;a12;                [Imperative]                {                    a = { pt1, pt2, pt3 };                    a11={a[0].X,a[0].Y,a[0].Z};                    x = 0;                     for (y in a )                    {                                        a[x]=pt3;                    a12={a[0].X,a[0].Y,a[0].Z};                    x=x+1;                    }                                     }             ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             object[] e = new object[] { 3.0, 3.0, 3.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "a12", ExpectedValue = e, BlockIndex = 0 }
-                                    };
+            ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 },                                      new ValidationData { ValueName = "a12", ExpectedValue = e, BlockIndex = 0 }                                    };
             ExecuteAndVerify(code, data);
         }
 
@@ -985,21 +649,7 @@ a12;
         public void geometryFunction()
         {
             String code =
-            @"
-                import(""FFITarget.dll"");
-              
-                pt1=DummyPoint.ByCoordinates(1,1,1);
-a11;
-                [Associative]
-                {
-                    def foo : DummyPoint( a:DummyPoint)
-                    {
-                        return = a;
-                    }
-                    a = foo( pt1);
-                    a11={a.X,a.Y,a.Z};
-}
-            ";
+            @"                import(""FFITarget.dll"");                              pt1=DummyPoint.ByCoordinates(1,1,1);a11;                [Associative]                {                    def foo : DummyPoint( a:DummyPoint)                    {                        return = a;                    }                    a = foo( pt1);                    a11={a.X,a.Y,a.Z};}            ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             ValidationData[] data = { new ValidationData { ValueName = "a11", ExpectedValue = c, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
@@ -1009,38 +659,9 @@ a11;
         public void geometryIfElse()
         {
             String code =
-            @"
-               import(""FFITarget.dll"");
-         
-a1;
-ptcoords;
-                [Imperative]
-                {
-                pt1=DummyPoint.ByCoordinates(1,1,1);
- 
-                 a1 = 10;
- 
-                 if( a1>=10 )
-                 {
-                pt1=DummyPoint.ByCoordinates(2,2,2);
-                ptcoords={pt1.X,pt1.Y,pt1.Z};
-                a1=1;
-                 }
- 
-                 elseif( a1<2 )
-                 {
-                 pt1=DummyPoint.ByCoordinates(3,3,3);
-                 }
-                 else 
-                 {
-                pt1=DummyPoint.ByCoordinates(4,4,4);
-                 }
-                }
-        
-            ";
+            @"               import(""FFITarget.dll"");         a1;ptcoords;                [Imperative]                {                pt1=DummyPoint.ByCoordinates(1,1,1);                  a1 = 10;                  if( a1>=10 )                 {                pt1=DummyPoint.ByCoordinates(2,2,2);                ptcoords={pt1.X,pt1.Y,pt1.Z};                a1=1;                 }                  elseif( a1<2 )                 {                 pt1=DummyPoint.ByCoordinates(3,3,3);                 }                 else                  {                pt1=DummyPoint.ByCoordinates(4,4,4);                 }                }                    ";
             object[] d = new object[] { 2.0, 2.0, 2.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a1", ExpectedValue = 1, BlockIndex = 0 } ,
-                                      new ValidationData { ValueName = "ptcoords", ExpectedValue = d, BlockIndex = 0 } };
+            ValidationData[] data = { new ValidationData { ValueName = "a1", ExpectedValue = 1, BlockIndex = 0 } ,                                      new ValidationData { ValueName = "ptcoords", ExpectedValue = d, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
@@ -1049,33 +670,10 @@ ptcoords;
         public void geometryInlineConditional()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-               WCS = CoordinateSystem.Identity();
-                pt1=Point.ByCoordinates(1,1,1);
-                pt2=Point.ByCoordinates(2,2,2);
-s11;
-l11;
-                [Imperative]
-                {
-                    def fo1 : int(a1 : int)
-                    {
-                        return = a1 * a1;
-                    }
-                    a	=	10;				
-                    b	=	20;
-                
-                    smallest   =   a	<   b   ?   pt1	:	pt2;
-                    largest	=   a	>   b   ?   pt1	:	pt2;
-                    s11={smallest.X,smallest.Y,smallest.Z};
-                    l11={largest.X,largest.Y,largest.Z};
-                 }
-        
-            ";
+            @"               import(""ProtoGeometry.dll"");               WCS = CoordinateSystem.Identity();                pt1=Point.ByCoordinates(1,1,1);                pt2=Point.ByCoordinates(2,2,2);s11;l11;                [Imperative]                {                    def fo1 : int(a1 : int)                    {                        return = a1 * a1;                    }                    a	=	10;				                    b	=	20;                                    smallest   =   a	<   b   ?   pt1	:	pt2;                    largest	=   a	>   b   ?   pt1	:	pt2;                    s11={smallest.X,smallest.Y,smallest.Z};                    l11={largest.X,largest.Y,largest.Z};                 }                    ";
             object[] c = new object[] { 1.0, 1.0, 1.0 };
             object[] d = new object[] { 2.0, 2.0, 2.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "s11", ExpectedValue = c, BlockIndex = 0 } ,
-                                      new ValidationData { ValueName = "l11", ExpectedValue = d, BlockIndex = 0 } };
+            ValidationData[] data = { new ValidationData { ValueName = "s11", ExpectedValue = c, BlockIndex = 0 } ,                                      new ValidationData { ValueName = "l11", ExpectedValue = d, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
 
@@ -1084,38 +682,16 @@ l11;
         public void geometryRangeExpression()
         {
             String code =
-            @"
-               import(""ProtoGeometry.dll"");
-                 
-                    a=1;
-a12;
-                    [Imperative]
-                    {
-                        a = 1/2..1/4..-1/4;
-                    }
-                    [Associative]
-                    {
-                    pt=Point.ByCoordinates(a[0],0,0);
-                    a12={pt.X,pt.Y,pt.Z};
-                    }
-        
-            ";
+            @"               import(""ProtoGeometry.dll"");                                     a=1;a12;                    [Imperative]                    {                        a = 1/2..1/4..-1/4;                    }                    [Associative]                    {                    pt=Point.ByCoordinates(a[0],0,0);                    a12={pt.X,pt.Y,pt.Z};                    }                    ";
             object[] c = new object[] { 0.5, 0.0, 0.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "a12", ExpectedValue = c, BlockIndex = 0 } 
-                                      };
+            ValidationData[] data = { new ValidationData { ValueName = "a12", ExpectedValue = c, BlockIndex = 0 }                                       };
             ExecuteAndVerify(code, data);
         }
 
         [Test]
         public void TestExplicitGetterAndSetters()
         {
-            string code = @"
-                            i = 10;
-                            a = DummyBase.DummyBase(i);
-                            neglect = a.set_MyValue(15);
-                            val = a.get_MyValue();
-                            i = 5;
-                            ";
+            string code = @"                            i = 10;                            a = DummyBase.DummyBase(i);                            neglect = a.set_MyValue(15);                            val = a.get_MyValue();                            i = 5;                            ";
 
             Type dummy = typeof(FFITarget.DummyBase);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
@@ -1126,22 +702,14 @@ a12;
         [Test]
         public void TestNullableTypes()
         {
-            string code = @"
-                            a = DummyBase.DummyBase(10);
-                            v111 = a.TestNullable(null, null);
-                            v123 = a.TestNullable(5, null);
-                            v321 = a.TestNullable(null, 2);
-                            ";
+            string code = @"                            a = DummyBase.DummyBase(10);                            v111 = a.TestNullable(null, null);                            v123 = a.TestNullable(5, null);                            v321 = a.TestNullable(null, 2);                            ";
             Type dummy = typeof(FFITarget.DummyBase);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
-            ValidationData[] data = { new ValidationData { ValueName = "v111", ExpectedValue = (Int64)111, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "v123", ExpectedValue = (Int64)123, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "v321", ExpectedValue = (Int64)321, BlockIndex = 0 }
-                                    };
+            ValidationData[] data = { new ValidationData { ValueName = "v111", ExpectedValue = (Int64)111, BlockIndex = 0 },                                      new ValidationData { ValueName = "v123", ExpectedValue = (Int64)123, BlockIndex = 0 },                                      new ValidationData { ValueName = "v321", ExpectedValue = (Int64)321, BlockIndex = 0 }                                    };
             Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
         }
         /*  
-[Test]
+          [Test]
           public void geometryUpdateAcrossMultipleLanguageBlocks()
           {
               String code =
@@ -1184,7 +752,7 @@ a12;
         {
             String code =
             @"
-               import(""ProtoGeometry.dll"");
+               import(""FFITarget.dll"");
                pt={0,0,0,0,0,0};
 p11;
                [Imperative]
@@ -1194,53 +762,53 @@ p11;
                     while( i <= 5 )
                     { 
                         i = i + 1;
-                        pt[i]=Point.ByCoordinates(i,1,1);
+                        pt[i]=DummyPoint.ByCoordinates(i,1,1);
                         p11={pt[i].X,pt[i].Y,pt[i].Z};
                     }
                     
                 }
             ";
             object[] a = new object[] { 6.0, 1.0, 1.0 };
-            ValidationData[] data = { new ValidationData { ValueName = "p11", ExpectedValue = a, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("p11", a);
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void properties()
         {
             String code =
             @"
-              import(""ProtoGeometry.dll"");
-              pt1 = Point.ByCoordinates(10, 10, 10);
+              import(""FFITarget.dll"");
+              pt1 = DummyPoint.ByCoordinates(10, 10, 10);
               a=pt1.X;
             ";
             double a = 10.000000;
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = a, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", a);
         }
 
         [Test]
+        [Ignore]
         [Category("Replication")]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void coercion_notimplmented()
         {
             String code =
             @"
-               import (""ProtoGeometry.dll"");
-           vec =  Vector.ByCoordinates(1,0,0);
+               import (""FFITarget.dll"");
+           vec =  DummyVector.ByCoordinates(1,0,0);
            newVec=vec.Scale({1,null});//array
-           prop = VecGuarantedProperties(newVec);
-           def VecGuarantedProperties(vec :Vector)
+           prop = VecGuarantedProperties(vec);
+           def VecGuarantedProperties(vec :DummyVector)
            {
-              return = {vec.Length };
+              return = {vec.GetLengthSquare() };
             }
         
             ";
-            object[] c = new object[] { new object[] { 1.0 }, new object[] { null } };
-            ValidationData[] data = { new ValidationData { ValueName = "prop", ExpectedValue = c, BlockIndex = 0 } 
-                                      };
-            
+            object[] c = new object[] { new object[] { 1.0 }, null };
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("prop", c);
         }
 
         [Test]
@@ -1248,6 +816,7 @@ p11;
         public void SimplePropertyUpdate()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             i = 10;
                             a = DummyBase.DummyBase(i);
                             a.Value = 15;
@@ -1255,26 +824,23 @@ p11;
                             i = 5;
                             ";
 
-            Type dummy = typeof (FFITarget.DummyBase);
-            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
-            ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = (Int64)15, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 15);
         }
 
         [Test]
         public void SimplePropertyUpdateUsingSetMethod()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             i = 10;
                             a = DummyBase.DummyBase(i);
                             neglect = a.SetValue(15);
                             val = a.Value;
                             i = 5;
                             ";
-            Type dummy = typeof(FFITarget.DummyBase);
-            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
-            ValidationData[] data = { new ValidationData { ValueName = "val", ExpectedValue = (Int64)15, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", 15);
         }
 
         [Test]
@@ -1286,8 +852,9 @@ p11;
                 cls = ClassFunctionality.ClassFunctionality();
                 cls.IntVal = 3;
                 readback = cls.IntVal;";
-            ValidationData[] data = { new ValidationData { ValueName = "readback", ExpectedValue = (Int64)3, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("readback", (Int64)3);
         }
 
         [Test]
@@ -1300,14 +867,15 @@ p11;
                 cls.IntVal = 3;
                 readback = cls.IntVal;
                 cls.IntVal = 4;";
-            ValidationData[] data = { new ValidationData { ValueName = "readback", ExpectedValue = (Int64)4, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("readback", (Int64)4);
         }
 
         [Test]
         public void DisposeOnFFITest001()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             def foo : int()
                             {
                                 a = AClass.CreateObject(2);
@@ -1318,18 +886,17 @@ p11;
                             a = foo();
                             b = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "m", ExpectedValue = 1, BlockIndex = 0 }, 
-                                        new ValidationData { ValueName = "a", ExpectedValue = 3, BlockIndex = 0 },
-                                        new ValidationData { ValueName = "b", ExpectedValue = 2, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("m", 1); 
+            thisTest.Verify("a", 3); 
+            thisTest.Verify("b", 2); 
         }
 
         [Test]
         public void DisposeOnFFITest004()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             def foo : BClass(b : BClass)
                             {
                                 a1 = AClass.CreateObject(9);
@@ -1345,17 +912,16 @@ p11;
                             b = foo(a);
                             c = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "m", ExpectedValue = 1, BlockIndex = 0 },  
-                                        new ValidationData { ValueName = "c", ExpectedValue = 19, BlockIndex = 0 }};
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("m", 1);
+            thisTest.Verify("c", 19);
         }
 
         [Test]
         public void DisposeOnFFITest005()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             class Foo
                             {
                                 a : A;
@@ -1379,17 +945,16 @@ p11;
                             a = foo();
                             b = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "a", ExpectedValue = 3, BlockIndex = 0 },  
-                                        new ValidationData { ValueName = "b", ExpectedValue = 17, BlockIndex = 0 }};
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 3);
+            thisTest.Verify("b", 17);
         }
 
         [Test]
         public void DisposeOnFFITest002()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             def foo : AClass()
                             {
                                 a = AClass.CreateObject(10);
@@ -1400,16 +965,15 @@ p11;
                             a = foo();
                             b = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "b", ExpectedValue = 1, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 1);
         }
 
         [Test]
         public void DisposeOnFFITest003()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             def foo : int(a : AClass)
                             {
                                 b = a;
@@ -1421,16 +985,15 @@ p11;
                             b = foo(a);
                             c = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-            ValidationData[] data = { new ValidationData { ValueName = "c", ExpectedValue = 2, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", 2);
         }
 
         [Test]
         public void DisposeOnFFITest006()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             dv = DisposeVerify.CreateObject();
                             m = dv.SetValue(2);
                             a1 = AClass.CreateObject(3);
@@ -1440,15 +1003,7 @@ p11;
                             b = a1;    
                             v = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-
-            var gcStrategy =  thisTest.SetupTestCore().Heap.GCStrategy;
-            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                ValidationData[] data = { new ValidationData { ValueName = "v", ExpectedValue = 10, BlockIndex = 0 } };
-                ExecuteAndVerify(code, data);
-            }
+            thisTest.RunScriptSource(code);
             // For mark and sweep, the order of object dispose is not defined,
             // so we are not sure if AClass objects or BClass objects will be
             // disposed firstly, hence we can't verify the expected value.
@@ -1458,6 +1013,7 @@ p11;
         public void DisposeOnFFITest007()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             class Foo
                             {
                                 b : BClass;
@@ -1490,29 +1046,17 @@ p11;
                             }
                             v3 = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
-
-            var gcStrategy =  thisTest.SetupTestCore().Heap.GCStrategy;
-            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
+            thisTest.RunScriptSource(code);
                 // For mark and sweep, it is straight, we only need to focus 
                 // on created objects. So the value = 3 + 10 + 20 + 30 = 63.
-                ValidationData[] data = { new ValidationData { ValueName = "v3", ExpectedValue = 63, BlockIndex = 0 } };
-                ExecuteAndVerify(code, data);
-            }
-            else
-            {
-                ValidationData[] data = { new ValidationData { ValueName = "v1", ExpectedValue = 3, BlockIndex = 0 }, 
-                                     new ValidationData { ValueName = "v2", ExpectedValue = 23, BlockIndex = 0 }};
-                ExecuteAndVerify(code, data);
-            }
+                thisTest.Verify("v3", 63);
         }
 
         [Test]
         public void DisposeOnFFITest008()
         {
             string code = @"
+                            import (""FFITarget.dll"");
                             class Foo
                             {
                                 a : AClass;
@@ -1552,24 +1096,13 @@ p11;
                             }
                             v4 = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", "import(BClass from \"FFITarget.dll\");", code);
 
-            var gcStrategy = thisTest.SetupTestCore().Heap.GCStrategy;
-            if (gcStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
+            thisTest.RunScriptSource(code);
             {
                 // For mark and sweep, the last object is a2, se the expected
                 // value = 4. But it is very fragile because the order of
                 // disposing is not defined. 
-                ValidationData[] data = { new ValidationData { ValueName = "v4", ExpectedValue = 4, BlockIndex = 0 } };
-                ExecuteAndVerify(code, data);
-            }
-            else
-            {
-                ValidationData[] data = { new ValidationData { ValueName = "v1", ExpectedValue = 3, BlockIndex = 0 }, 
-                                    new ValidationData { ValueName = "v2", ExpectedValue = 3, BlockIndex = 0 }, 
-                                    new ValidationData { ValueName = "v3", ExpectedValue = 16, BlockIndex = 0 } };
-                ExecuteAndVerify(code, data);
+                thisTest.Verify("v4", 4);
             }
         }
 
@@ -1578,6 +1111,7 @@ p11;
         {
             //Defect: DG-1464910 Sprint 22: Rev:2385-324564: Planes get disposed after querying properties on returned planes.
             string code = @"
+                            import (""FFITarget.dll"");
                             def foo : int(a : AClass)
                             {
                                 return = a.Value;
@@ -1588,12 +1122,10 @@ p11;
                             b = foo(a);
                             c = dv.GetValue();
                             ";
-            code = string.Format("{0}\r\n{1}\r\n{2}", "import(DisposeVerify from \"FFITarget.dll\");",
-                "import(AClass from \"FFITarget.dll\");", code);
+            thisTest.RunScriptSource(code);
             object[] b = new object[] { 1, 2, 3 };
-            ValidationData[] data = { new ValidationData { ValueName = "c", ExpectedValue = 2, BlockIndex = 0 },
-                                      new ValidationData { ValueName = "b", ExpectedValue = b, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.Verify("c", 2);
+            thisTest.Verify("b", b);
         }
 
         [Test]
@@ -1603,12 +1135,11 @@ p11;
             string code = @"
                 import(""ProtoGeometry.dll"");
                 ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Point") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue(thisTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Point") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
         }
 
         [Test]
@@ -1618,12 +1149,11 @@ p11;
             string code = @"
                 import(DesignScriptEntity from ""ProtoGeometry.dll"");
                 ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Point") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue(thisTest.GetClassIndex("Geometry") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Point") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
         }
 
         [Test]
@@ -1633,24 +1163,23 @@ p11;
             string code = @"
                 import(NurbsCurve from ""ProtoGeometry.dll"");
                 ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //This import must import NurbsCurve and related classes.
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Point") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Vector") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Solid") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Surface") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Plane") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("CoordinateSystem") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("CoordinateSystem") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Curve") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("NurbsCurve") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Point") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Vector") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Solid") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Surface") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Plane") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("CoordinateSystem") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("CoordinateSystem") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Curve") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("NurbsCurve") != ProtoCore.DSASM.Constants.kInvalidIndex);
             //Non-browsable as well as unrelated class should not be imported.
-            Assert.IsTrue(theTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("Circle") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("SubDivisionMesh") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("DesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("Circle") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("SubDivisionMesh") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("GeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
         }
 
         [Test]
@@ -1660,44 +1189,43 @@ p11;
             string code = @"
                 import(""ProtoGeometry.dll"");
                 ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
-            Assert.IsTrue(theTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IColor") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IDesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IDisplayable") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPersistentObject") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPersistencyManager") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICoordinateSystemEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IGeometryEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPointEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICurveEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ILineEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICircleEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IArcEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBSplineCurveEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBRepEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISurfaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBSplineSurfaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPlaneEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISolidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPrimitiveSolidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IConeEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICuboidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISphereEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IPolygonEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ISubDMeshEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBlockEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IBlockHelper") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ITopologyEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IShellEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICellEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IFaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ICellFaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IVertexEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IEdgeEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("ITextEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
-            Assert.IsTrue(theTest.GetClassIndex("IGeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            Assert.IsTrue(thisTest.GetClassIndex("Geometry") != ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IColor") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IDesignScriptEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IDisplayable") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IPersistentObject") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IPersistencyManager") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ICoordinateSystemEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IGeometryEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IPointEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ICurveEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ILineEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ICircleEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IArcEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IBSplineCurveEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IBRepEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ISurfaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IBSplineSurfaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IPlaneEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ISolidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IPrimitiveSolidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IConeEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ICuboidEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ISphereEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IPolygonEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ISubDMeshEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IBlockEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IBlockHelper") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ITopologyEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IShellEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ICellEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IFaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ICellFaceEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IVertexEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IEdgeEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("ITextEntity") == ProtoCore.DSASM.Constants.kInvalidIndex);
+            Assert.IsTrue(thisTest.GetClassIndex("IGeometryFactory") == ProtoCore.DSASM.Constants.kInvalidIndex);
         }
 
         [Test]
@@ -1707,14 +1235,13 @@ p11;
             string code = @"
                 import(""ProtoGeometry.dll"");
                 ";
-            TestFrameWork theTest = new TestFrameWork();
-            ExecutionMirror mirror = theTest.RunScriptSource(code);
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Verify that Geometry.Geometry constructor deson't exists
-            theTest.VerifyMethodExists("Geometry", "Geometry", false);
+            thisTest.VerifyMethodExists("Geometry", "Geometry", false);
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestNestedClass()
         {
             string code =
@@ -1723,8 +1250,8 @@ p11;
                 t = NestedClass.GetType(5);
                 success = NestedClass.CheckType(t, 5);
                 ";
-            ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("success", true);
         }
 
         [Test]
@@ -1736,8 +1263,8 @@ p11;
                 t5 = NestedClass_Type.Type(123);
                 success = t5.Equals(t);
                 ";
-            ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("success", true);
         }
 
  
@@ -1745,18 +1272,17 @@ p11;
         public void TestNamespaceImport()
         {
             string code =
-                @"import(MicroFeatureTests from ""ProtoTest.dll"");";
-            TestFrameWork theTest = new TestFrameWork();
-            var mirror = theTest.RunScriptSource(code);
+                @"import(Point from ""FFITarget.dll"");";
+            thisTest.RunScriptSource(code);
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kMultipleSymbolFound);
-            string[] classes = theTest.GetAllMatchingClasses("MicroFeatureTests");
-            Assert.True(classes.Length > 1, "More than one implementation of MicroFeatureTests class expected");
+            string[] classes = thisTest.GetAllMatchingClasses("Point");
+            Assert.True(classes.Length > 1, "More than one implementation of Point class expected");
         }
 
         [Test]
         public void TestNamespaceFullResolution01()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest();
@@ -1764,13 +1290,13 @@ p11;
             "
             );
 
-            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 0);
+            thisTest.Verify("x", 0);
         }
 
         [Test]
         public void TestNamespaceFullResolution02()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.NamespaceResolutionTargetTest(1);
@@ -1778,13 +1304,13 @@ p11;
             "
             );
 
-            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespaceFullResolution03()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);
@@ -1792,13 +1318,13 @@ p11;
             "
             );
 
-            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespacePartialResolution01()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest.Foo(1);
@@ -1806,13 +1332,13 @@ p11;
             "
             );
 
-            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespacePartialResolution02()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = A.NamespaceResolutionTargetTest(1);
@@ -1820,13 +1346,13 @@ p11;
             "
             );
 
-            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
         public void TestNamespacePartialResolution03()
         {
-            var mirror = thisTest.RunScriptSource(
+            thisTest.RunScriptSource(
             @"
                 import(""FFITarget.dll"");
                 p = B.NamespaceResolutionTargetTest();
@@ -1834,7 +1360,7 @@ p11;
             "
             );
 
-            Assert.IsTrue((Int64)mirror.GetFirstValue("x").Payload == 1);
+            thisTest.Verify("x", 1);
         }
 
         [Test]
@@ -1856,7 +1382,7 @@ p11;
 
                     check = Equals(aDup.Prop,bDup.Prop);";
 
-            var mirror = thisTest.RunScriptSource(code);
+            thisTest.RunScriptSource(code);
             thisTest.Verify("check", true);
             thisTest.Verify("Xo", 1);
 
@@ -1888,7 +1414,7 @@ p11;
                     check = Equals(bDup.Prop,cDup.Prop);
 ";
             string err = "MAGN-1947 IntegrationTests.NamespaceConflictTest.DupImportTest";
-            var mirror = thisTest.RunScriptSource(code, err);
+            thisTest.RunScriptSource(code, err);
             thisTest.Verify("check", true);
             thisTest.Verify("aReadback", 0);
             thisTest.Verify("bReadback", 1);
@@ -1898,8 +1424,6 @@ p11;
             string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
-
-
 
         [Test]
         public void FFI_Target_Inheritence()
@@ -1945,10 +1469,5 @@ value = {u.X, u.Y, u.Z};
             thisTest.Verify("value", new double[] { 1, 2, 3 });
             thisTest.Verify("newPoint", FFITarget.DummyPoint.ByCoordinates(2, 4, 6));
         }
-
     }
-
-
-
-   
 }

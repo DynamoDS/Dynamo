@@ -7,15 +7,8 @@ using ProtoTestFx.TD;
 using ProtoTestFx;
 namespace ProtoTest.TD.Associative
 {
-    public class Replication
+    class Replication : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        public string ReplicationRoot = "..\\..\\..\\Scripts\\TD\\Associative\\Replication\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_Arithmatic_List_And_List_Different_Length()

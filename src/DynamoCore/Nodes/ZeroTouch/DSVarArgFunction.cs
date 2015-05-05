@@ -1,16 +1,15 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
 using Autodesk.DesignScript.Runtime;
 
-using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Library;
 using Dynamo.Models;
-using Dynamo.UI;
-
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -18,28 +17,14 @@ namespace Dynamo.Nodes
     ///     DesignScript var-arg function node. All functions from DesignScript share the
     ///     same function node but internally have different procedure.
     /// </summary>
-    [NodeName("Function Node w/ VarArgs"), NodeDescription("DesignScript Builtin Functions"),
+    [NodeName("Function Node w/ VarArgs"), NodeDescription("FunctionNodeDescription", typeof(Properties.Resources)),
      IsInteractive(false), IsVisibleInDynamoLibrary(false), NodeSearchable(false), IsMetaNode]
-    public class DSVarArgFunction : DSFunctionBase, IWpfNode
+    public class DSVarArgFunction : DSFunctionBase
     {
-        public DSVarArgFunction(WorkspaceModel workspaceModel) : this(workspaceModel, null) { }
-
-        public DSVarArgFunction(WorkspaceModel workspaceModel, FunctionDescriptor descriptor)
-            : base(workspaceModel, new ZeroTouchVarArgNodeController(workspaceModel.DynamoModel.EngineController, descriptor))
+        public DSVarArgFunction(FunctionDescriptor descriptor)
+            : base(new ZeroTouchVarArgNodeController<FunctionDescriptor>(descriptor))
         {
             VarInputController = new ZeroTouchVarInputController(this);
-        }
-
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            base.SaveNode(xmlDoc, nodeElement, context);
-            VarInputController.SaveNode(xmlDoc, nodeElement, context);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            base.LoadNode(nodeElement);
-            VarInputController.LoadNode(nodeElement);
         }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -48,16 +33,16 @@ namespace Dynamo.Nodes
             VarInputController.SerializeCore(element, context);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
-            VarInputController.DeserializeCore(element, context);
+            base.DeserializeCore(nodeElement, context);
+            VarInputController.DeserializeCore(nodeElement, context);
         }
 
-        protected override bool HandleModelEventCore(string eventName)
+        protected override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
-            return VarInputController.HandleModelEventCore(eventName)
-                || base.HandleModelEventCore(eventName);
+            return VarInputController.HandleModelEventCore(eventName, recorder)
+                || base.HandleModelEventCore(eventName, recorder);
         }
 
         /// <summary>
@@ -68,7 +53,7 @@ namespace Dynamo.Nodes
         #region VarInput Controller
         private sealed class ZeroTouchVarInputController : VariableInputNodeController
         {
-            private readonly ZeroTouchNodeController nodeController;
+            private readonly ZeroTouchNodeController<FunctionDescriptor> nodeController;
 
             public ZeroTouchVarInputController(DSFunctionBase model)
                 : base(model)
@@ -97,32 +82,32 @@ namespace Dynamo.Nodes
             protected override string GetInputTooltip(int index)
             {
                 var type = nodeController.Definition.Parameters.Last().Type;
-                return (string.IsNullOrEmpty(type) ? "var" : type);
+                return type.ToShortString(); 
             }
         }
         #endregion
-        
-        public void SetupCustomUIElements(dynNodeView view)
-        {
-            VarInputController.SetupNodeUI(view);
-        }
+
     }
 
     /// <summary>
     ///     Controller that extends Zero Touch synchronization with VarArg function compilation.
     /// </summary>
-    public class ZeroTouchVarArgNodeController : ZeroTouchNodeController
+    public class ZeroTouchVarArgNodeController<T> : ZeroTouchNodeController<T> 
+        where T : FunctionDescriptor
     {
-        public ZeroTouchVarArgNodeController(EngineController engineController, 
-            FunctionDescriptor zeroTouchDef) : base(engineController, zeroTouchDef) { }
+        public ZeroTouchVarArgNodeController(T zeroTouchDef)
+            : base(zeroTouchDef) { }
 
         protected override void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {
             var typedParameters = parameters as IList<TypedParameter> ?? parameters.ToList();
             base.InitializeFunctionParameters(model, typedParameters.Take(typedParameters.Count() - 1));
-            var arg = parameters.LastOrDefault();
-            var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
-            model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
+            if (parameters.Any())
+            {
+                var arg = parameters.Last();
+                var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
+                model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
+            }
         }
 
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)

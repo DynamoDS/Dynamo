@@ -9,13 +9,13 @@ namespace Dynamo.Tests
 {
     class PackageLoaderTests : DynamoViewModelUnitTest
     {
-        public string PackagesDirectory { get { return Path.Combine(this.GetTestDirectory(), "pkgs"); } }
+        public string PackagesDirectory { get { return Path.Combine(this.TestDirectory, "pkgs"); } }
 
         [Test]
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "Custom Rounding");
-            var loader = ViewModel.Model.Loader.PackageLoader;
+            var loader = ViewModel.Model.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             Assert.IsNotNull(pkg);
@@ -26,7 +26,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - " 
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
-            pkg.LoadIntoDynamo(ViewModel.Model.Loader, ViewModel.Model.Logger, ViewModel.Model.EngineController.LibraryServices);
+
+            loader.Load(pkg);
 
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
         }
@@ -35,64 +36,80 @@ namespace Dynamo.Tests
         public void ScanPackageDirectoryReturnsNullForInvalidDirectory()
         {
             var pkgDir = "";
-            var loader = ViewModel.Model.Loader.PackageLoader;
-            var pkg = loader.ScanPackageDirectory(pkgDir);
+            var loader = ViewModel.Model.PackageLoader;
+            Assert.IsNull(loader.ScanPackageDirectory(pkgDir));
         }
 
         [Test]
-        [Category("Failure")]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger);
-            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings, ViewModel.Model.EngineController.LibraryServices);
+            var loader = new PackageLoader(PackagesDirectory);
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings
+            });
 
-            Assert.AreEqual(1, loader.LocalPackages.Count);
+            // There are four packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(4, loader.LocalPackages.Count());
         }
 
         [Test]
         public void LoadPackagesReturnsNoPackagesForInvalidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, pkgDir);
-            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings, ViewModel.Model.EngineController.LibraryServices);
-            Assert.AreEqual(0, loader.LocalPackages.Count);
+            var loader = new PackageLoader(pkgDir);
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings           
+            });
+
+            Assert.AreEqual(0, loader.LocalPackages.Count());
         }
 
         [Test]
         public void GetOwnerPackageReturnsPackageForValidFunctionDefinition()
         {
-            //Assert.Inconclusive("Porting : Formula");
+            var loader = new PackageLoader(PackagesDirectory);
+            loader.RequestLoadCustomNodeDirectory +=
+                (dir) => ViewModel.Model.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, true);
 
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, PackagesDirectory);
-            loader.LoadPackagesIntoDynamo(ViewModel.Model.PreferenceSettings, ViewModel.Model.EngineController.LibraryServices);
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings
+            });
+
             var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
 
             foreach (var nodeInfo in pkg.LoadedCustomNodes)
             {
-                var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                CustomNodeDefinition funcDef;
+                Assert.IsTrue(ViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, true, out funcDef));
                 Assert.IsNotNull(funcDef);
 
-                var foundPkg = loader.GetOwnerPackage(funcDef);
+                var foundPkg = loader.GetOwnerPackage(nodeInfo);
 
                 Assert.IsNotNull(foundPkg);
                 Assert.AreEqual(pkg.Name, foundPkg.Name);
                 Assert.IsTrue(pkg.Name == foundPkg.Name);
             }
-        
         }
 
         [Test]
         public void GetOwnerPackageReturnsNullForInvalidFunction()
         {
-            var loader = new PackageLoader(ViewModel.Model.Loader, ViewModel.Model.Logger, PackagesDirectory);
+            var loader = new PackageLoader(PackagesDirectory);
 
-            var info = ViewModel.Model.CustomNodeManager.AddFileToPath(
-                Path.Combine(new string[] {GetTestDirectory(), "core", "combine", "combine2.dyf"}));
+            CustomNodeInfo info;
+            Assert.IsTrue(
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(new string[] { TestDirectory, "core", "combine", "combine2.dyf" }),
+                    true,
+                    out info));
 
-            var funcDef = ViewModel.Model.CustomNodeManager.GetFunctionDefinition(info.Guid);
-            Assert.IsNotNull(funcDef);
-            var foundPkg = loader.GetOwnerPackage(funcDef);
+            CustomNodeDefinition funcDef;
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(info.FunctionId, true, out funcDef));
+            var foundPkg = loader.GetOwnerPackage(info);
             Assert.IsNull(foundPkg);
         }
 

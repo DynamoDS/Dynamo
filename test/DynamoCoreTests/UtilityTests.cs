@@ -6,6 +6,8 @@ using NUnit.Framework;
 using DynNodes = Dynamo.Nodes;
 using System.Xml;
 using System.IO;
+using ProtoCore.AST.AssociativeAST;
+using DynamoUtilities;
 
 namespace Dynamo.Tests
 {
@@ -113,7 +115,8 @@ namespace Dynamo.Tests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 string fqn = null;
-                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
+                Type type;
+                ViewModel.Model.NodeFactory.ResolveType(fqn, out type);
             });
         }
 
@@ -121,12 +124,9 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void ResolveType01()
         {
-            // Empty fullyQualifiedName throws an exception.
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                string fqn = string.Empty;
-                DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            });
+            string fqn = string.Empty;
+            Type type;
+            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
         }
 
         [Test]
@@ -135,20 +135,22 @@ namespace Dynamo.Tests
         {
             // Unknown type returns a 'null'.
             string fqn = "Dynamo.Connectors.ConnectorModel";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
+            Type type;
+            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
             Assert.AreEqual(null, type);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void ResolveType03()
-        {
-            // Known internal type.
-            string fqn = "Dynamo.Nodes.Addition";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
-            Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
-        }
+        //[Test]
+        //[Category("UnitTests")]
+        //public void ResolveType03()
+        //{
+        //    // Known internal type.
+        //    string fqn = "Dynamo.Nodes.Addition";
+        //    Type type;
+        //    Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+        //    Assert.IsNotNull(type);
+        //    Assert.AreEqual("Dynamo.Nodes.Addition", type.FullName);
+        //}
 
         [Test]
         [Category("UnitTests")]
@@ -156,21 +158,23 @@ namespace Dynamo.Tests
         {
             // System type names should be discoverable.
             string fqn = "System.Environment";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
+            Type type;
+            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsNotNull(type);
             Assert.AreEqual("System.Environment", type.FullName);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void ResolveType05()
-        {
-            // 'NumberRange' class makes use of this attribute.
-            string fqn = "Dynamo.Nodes.dynBuildSeq";
-            System.Type type = DynNodes.Utilities.ResolveType(ViewModel.Model, fqn);
-            Assert.AreNotEqual(null, type);
-            Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
-        }
+        //[Test]
+        //[Category("UnitTests")]
+        //public void ResolveType05()
+        //{
+        //    // 'NumberRange' class makes use of this attribute.
+        //    string fqn = "Dynamo.Nodes.dynBuildSeq";
+        //    Type type;
+        //    Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+        //    Assert.IsNotNull(type);
+        //    Assert.AreEqual("Dynamo.Nodes.NumberRange", type.FullName);
+        //}
 
         [Test]
         [Category("UnitTests")]
@@ -581,6 +585,228 @@ namespace Dynamo.Tests
             });
 
             Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WrapTextTest()
+        {
+            string testingSTR = string.Empty;
+            IEnumerable<string> result;
+            //1. When original is empty string
+            //2. When original is null
+            //3. When original is whitespace
+            //4. When original is AaaBbbbCDE
+            //5. When original is SurfaceAnalysisData
+            //6. When original is BoundingBox
+            //7. When original is ImportFromCSV
+            //8. When original is ImportFromCSV
+            //9. When original is ImportFromCSV
+
+            // case 1
+            result = Dynamo.Nodes.Utilities.WrapText("", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { }, result);
+
+            // case 2
+            result = Dynamo.Nodes.Utilities.WrapText(null, Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { }, result);
+
+            // case 3
+            result = Dynamo.Nodes.Utilities.WrapText("    ", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { }, result);
+
+            // case 4
+            result = Dynamo.Nodes.Utilities.WrapText("AaaBbbbCDE", 3);
+            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb", "CDE" }, result);
+
+            // case 5
+            result = Dynamo.Nodes.Utilities.WrapText("SurfaceAnalysisData", 9);
+            Assert.AreEqual(new List<string>() { "Surface", "Analysis", "Data" }, result);
+
+            // case 6
+            result = Dynamo.Nodes.Utilities.WrapText("BoundingBox", 9);
+            Assert.AreEqual(new List<string>() { "Bounding", "Box" }, result);
+
+            // case 7
+            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", 4);
+            Assert.AreEqual(new List<string>() { "Import", "From", "CSV" }, result);
+
+            // case 8
+            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", 6);
+            Assert.AreEqual(new List<string>() { "Import", "From", "CSV" }, result);
+
+            // case 9
+            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", 11);
+            Assert.AreEqual(new List<string>() { "Import From", "CSV" }, result);
+        }
+
+        [Test]
+        public void ReduceRowCountTest()
+        {
+            IEnumerable<string> result;
+            List<string> original;
+            //1. When original is null, 0, 0
+            //2. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 1
+            //3. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2
+            //4. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 3
+            //5. When original is ("Day", "Of", "Week"), maxRows = 2
+            //6. When original is ("Import", "From", "CSV"), maxRows = 2
+
+            // case 1
+            Assert.Throws<ArgumentException>(() =>
+            {
+                Dynamo.Nodes.Utilities.ReduceRowCount(null, 0);
+            });
+
+            // case 2
+            original = new List<string>() { "Aaa", "Bbbb", "CDE" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 1);
+            Assert.AreEqual(new List<string>() { "Aaa Bbbb CDE" }, result);
+
+            // case 3
+            original = new List<string>() { "Aaa", "Bbbb", "CDE" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2);
+            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb CDE" }, result);
+
+            // case 4
+            original = new List<string>() { "Aaa", "Bbbb", "CDE" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 3);
+            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb", "CDE" }, result);
+
+            // case 5
+            original = new List<string>() { "Day", "Of", "Week" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2);
+            Assert.AreEqual(new List<string>() { "Day", "Of Week" }, result);
+
+            // case 6
+            original = new List<string>() { "Import", "From", "CSV" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2);
+            Assert.AreEqual(new List<string>() { "Import", "From CSV" }, result);
+        }
+
+        [Test]
+        public void TruncateRowsTest()
+        {
+            IEnumerable<string> result;
+            IEnumerable<string> original;
+            //1. When original is null, 0
+            //2. When original is ("Aaa", "Bbbb"), maxCharacters = 3
+            //3. When original is ("Day", "Of", "Week"), maxCharacters = 9
+            //4. When original is ("Surface", "Analysis Data"), maxCharacters = 9
+            //5. When original is ("Coordinate", "System"), maxCharacters = 9
+            //6. When original is ("Rectangle"), maxCharacters = 9
+            //7. When original is ("By", "Geometry", "Coordinate", "System"), maxCharacters = 9
+            //8. When original is ("By Geometry", "Coordinate System"), maxCharacters = 9
+
+            // case 1
+            Assert.Throws<ArgumentException>(() =>
+            {
+                Dynamo.Nodes.Utilities.TruncateRows(null, 0);
+            });
+
+            // case 2
+            original = new List<string>() { "Aaa", "Bbbb" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 3);
+            Assert.AreEqual(new List<string>() { "Aaa", "..b" }, result);
+
+            // case 3
+            original = new List<string>() { "Day", "Of", "Week" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
+            Assert.AreEqual(new List<string>() { "Day", "Of", "Week" }, result);
+
+            // case 4
+            original = new List<string>() { "Surface", "Analysis Data" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 8);
+            Assert.AreEqual(new List<string>() { "Surface", "..s Data" }, result);
+
+            // case 5
+            original = new List<string>() { "Coordinate", "System" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
+            Assert.AreEqual(new List<string>() { "Coordin..", "System" }, result);
+
+            // case 6
+            original = new List<string>() { "Rectangle" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
+            Assert.AreEqual(new List<string>() { "Rectangle" }, result);
+
+            // case 7
+            original = new List<string>() { "By", "Geometry", "Coordinate", "System" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
+            Assert.AreEqual(new List<string>() { "By", "Geometry", "Coordin..", "System" }, result);
+
+            // case 8
+            original = new List<string>() { "By Geometry", "Coordinate System" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
+            Assert.AreEqual(new List<string>() { "By Geom..", ".. System" }, result);
+        }
+
+        [Test]
+        public void NormalizeAsResourceNameTest()
+        {
+            string testingSTR = string.Empty;
+            //1. When resource is empty string
+            //2. When resource is null
+            //3. When resource is whitespaces (\n, \t or space)
+            //4. When resource is %Aaa2Bb**CDE
+            //5. When resource is Ab/b.double-int
+
+            // case 1
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("");
+            Assert.AreEqual("", testingSTR);
+
+            // case 2
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName(null);
+            Assert.AreEqual("", testingSTR);
+
+            // case 3
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("   ");
+            Assert.AreEqual("", testingSTR);
+
+            //case 4
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("%Aaa2Bb**CDE");
+            Assert.AreEqual("Aaa2BbCDE", testingSTR);
+
+            // case 5
+            testingSTR = Dynamo.Nodes.Utilities.NormalizeAsResourceName("Ab/b.double-int");
+            Assert.AreEqual("Abb.double-int", testingSTR);
+        }
+		
+        [Category("UnitTests")]
+        public void TestTypeSwitch()
+        {
+            object v = null;
+            object node = null;
+
+            DoubleNode doubleNode = new DoubleNode(1.2);
+            node = doubleNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Default(() => v = null));
+            Assert.AreEqual(v, 1.2);
+
+            IntNode intNode = new IntNode(42);
+            node = intNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Case<StringNode>(n => v = n.value),
+                TypeSwitch.Default(() => v = null));
+            Assert.AreEqual(v, 42);
+
+            StringNode sNode = new StringNode(); 
+            node = sNode;
+            TypeSwitch.Do(
+                node,
+                TypeSwitch.Case<IntNode>(n => v = n.Value),
+                TypeSwitch.Case<DoubleNode>(n => v = n.Value),
+                TypeSwitch.Case<BooleanNode>(n => v = n.Value),
+                TypeSwitch.Default(() => v = 24));
+            Assert.AreEqual(v, 24);
         }
     }
 }

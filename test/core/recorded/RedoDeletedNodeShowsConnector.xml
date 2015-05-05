@@ -1,0 +1,22 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand X="155" Y="137" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="4adddce7-84ee-4629-9cfd-1fa5a462f8e3" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="63" y="106" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand X="447" Y="282" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="bbbdfe05-79a1-44a1-948f-5499173af591" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="355" y="251" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="b;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="bbbdfe05-79a1-44a1-948f-5499173af591" Modifiers="0" />
+  <MakeConnectionCommand NodeId="4adddce7-84ee-4629-9cfd-1fa5a462f8e3" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="bbbdfe05-79a1-44a1-948f-5499173af591" PortIndex="0" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="EnsureTwoNodesOneConnector" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="EnsureOnlyTwoNodes" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="EnsureOnlyOneNode" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="1" />
+  <PausePlaybackCommand Tag="EnsureTwoNodesRestored" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="1" />
+  <PausePlaybackCommand Tag="EnsureAllRestored" PauseDurationInMs="20" />
+</Commands>

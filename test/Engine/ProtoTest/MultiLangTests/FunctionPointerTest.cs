@@ -4,19 +4,8 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.MultiLangTests
 {
-    class FunctionPointerTest
+    class FunctionPointerTest : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testCasePath = "..\\..\\..\\Scripts\\MultiLangTests\\FunctionPointerTest\\";
-        [SetUp]
-        public void Setup()
-        {
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
-
         [Test]
         public void T01_BasicGlobalFunction()
         {

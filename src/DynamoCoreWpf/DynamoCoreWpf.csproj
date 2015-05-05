@@ -1,0 +1,1150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)/Config/CS.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dynamo.Wpf</RootNamespace>
+    <AssemblyName>DynamoCoreWpf</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(OutputPath)</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(OutputPath)</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Greg">
+      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2014.2.1.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoInterface">
+      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\extern\Helix3D\NET40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\..\extern\System.Windows.Interactivity\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HeaderStrip.xaml.cs">
+      <DependentUpon>HeaderStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NotificationsControl.xaml.cs">
+      <DependentUpon>NotificationsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RunSettingsControl.xaml.cs">
+      <DependentUpon>RunSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StandardPanel.xaml.cs">
+      <DependentUpon>StandardPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
+    </Compile>
+    <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
+    <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
+    <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
+    <Compile Include="Services\IconServices.cs" />
+    <Compile Include="UI\ClassObjectTemplateSelector.cs" />
+    <Compile Include="UI\HeaderTemplateSelector.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\LoginService.cs" />
+    <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
+    <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
+    <Compile Include="UI\LibraryWrapPanel.cs" />
+    <Compile Include="UI\VisualConfigurations.cs" />
+    <Compile Include="Utilities\OnceDisposable.cs" />
+    <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
+    <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
+    <Compile Include="Utilities\DelegateCommand.cs" />
+    <Compile Include="Interfaces\IViewModelView.cs" />
+    <Compile Include="Interfaces\IVisualizationManager.cs" />
+    <Compile Include="Interfaces\IWatchHandler.cs" />
+    <Compile Include="NodeViewCustomization\INodeViewCustomizations.cs" />
+    <Compile Include="NodeViewCustomization\INodeViewCustomization.cs" />
+    <Compile Include="NodeViewCustomization\InternalNodeViewCustomization.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations\DSVarArgFunctionNodeViewCustomization.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizationLibrary.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\UsageReportingManager.cs" />
+    <Compile Include="TestInfrastructure\AbstractMutator.cs" />
+    <Compile Include="TestInfrastructure\CodeBlockNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CopyNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeCompatibilityMutator.cs" />
+    <Compile Include="TestInfrastructure\CustomNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\DeleteNodeMutator.cs" />
+    <Compile Include="TestInfrastructure\DirectoryPathMutator.cs" />
+    <Compile Include="TestInfrastructure\DoubleSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\FilePathMutator.cs" />
+    <Compile Include="TestInfrastructure\IntegerSliderMutator.cs" />
+    <Compile Include="TestInfrastructure\ListMutator.cs" />
+    <Compile Include="TestInfrastructure\MutatorDriver.cs" />
+    <Compile Include="TestInfrastructure\NumberInputMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberRangeMutator.cs" />
+    <Compile Include="TestInfrastructure\NumberSequenceMutator.cs" />
+    <Compile Include="TestInfrastructure\StringInputMutator.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations\CodeBlockNodeViewCustomization.cs" />
+    <Compile Include="Commands\AutomationSettings.cs" />
+    <Compile Include="Commands\ConnectorCommands.cs" />
+    <Compile Include="Commands\DynamoCommands.cs" />
+    <Compile Include="Commands\InfoBubbleCommand.cs" />
+    <Compile Include="Commands\NodeCommands.cs" />
+    <Compile Include="Commands\NoteCommands.cs" />
+    <Compile Include="Commands\PortCommands.cs" />
+    <Compile Include="Commands\SearchCommands.cs" />
+    <Compile Include="Commands\WorkspaceCommands.cs" />
+    <Compile Include="Controls\GraphUpdateNotificationControl.xaml.cs">
+      <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ImageBasedControls.cs" />
+    <Compile Include="Controls\ShortcutToolbar.xaml.cs">
+      <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StartPage.xaml.cs">
+      <DependentUpon>StartPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Converters.cs" />
+    <Compile Include="Controls\DragCanvas.cs" />
+    <Compile Include="Controls\DynamoNodeButton.cs" />
+    <Compile Include="Controls\DynamoTextBox.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations\FunctionNodeViewCustomization.cs" />
+    <Compile Include="UI\HandlingEventTrigger.cs" />
+    <Compile Include="Utilities\MouseClickManager.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations\OutputNodeViewCustomization.cs" />
+    <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
+      <DependentUpon>CrashPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\EditWindow.xaml.cs">
+      <DependentUpon>EditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\FunctionNamePrompt.xaml.cs">
+      <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
+      <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\NodeHelpPrompt.xaml.cs">
+      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
+      <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SharedResourceDictionary.cs" />
+    <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
+    <Compile Include="Utilities\ResourceUtilities.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
+    <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\RunSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
+    <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
+    <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\Core\StateMachine.cs" />
+    <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations\SymbolViewCustomization.cs" />
+    <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
+    <Compile Include="ViewModels\Search\SearchCategory.cs" />
+    <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
+    <Compile Include="Views\About\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
+      <DependentUpon>TermsOfUseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
+      <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\BrowserWindow.xaml.cs">
+      <DependentUpon>BrowserWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CodeBlocks\CodeBlockCompletionData.cs" />
+    <Compile Include="Views\CodeBlocks\CodeBlockEditor.xaml.cs">
+      <DependentUpon>CodeBlockEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CodeBlocks\CodeBlockMethodInsightWindow.cs" />
+    <Compile Include="Views\CodeBlocks\CodeBlockEditorUtils.cs" />
+    <Compile Include="Views\Core\AnnotationView.xaml.cs">
+      <DependentUpon>AnnotationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\DynamoView.xaml.cs">
+      <DependentUpon>DynamoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Input\ParameterEditor.xaml.cs">
+      <DependentUpon>ParameterEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
+      <DependentUpon>InfoBubbleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\InstalledPackagesView.xaml.cs">
+      <DependentUpon>InstalledPackagesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Search\LibraryContainerView.xaml.cs">
+      <DependentUpon>LibraryContainerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Search\LibrarySearchView.xaml.cs">
+      <DependentUpon>LibrarySearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Search\LibraryView.xaml.cs">
+      <DependentUpon>LibraryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\NodeView.xaml.cs">
+      <DependentUpon>NodeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\NoteView.xaml.cs">
+      <DependentUpon>NoteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\PackageManagerSearchView.xaml.cs">
+      <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Preview\PreviewControl.xaml.cs">
+      <DependentUpon>PreviewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\PublishPackageView.xaml.cs">
+      <DependentUpon>PublishPackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TooltipWindow.xaml.cs">
+      <DependentUpon>TooltipWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Preview\Watch3DView.xaml.cs">
+      <DependentUpon>Watch3DView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Preview\WatchTree.xaml.cs">
+      <DependentUpon>WatchTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\WorkspaceView.xaml.cs">
+      <DependentUpon>WorkspaceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\WpfUtilities.cs" />
+    <Compile Include="Controls\ZoomBorder.cs" />
+    <Compile Include="Utilities\CursorLibrary.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="ViewModels\Core\ConnectorViewModel.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModel.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelDelegateCommands.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelDelegates.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelEventArgs.cs" />
+    <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
+    <Compile Include="ViewModels\Core\EndlessGridViewModel.cs" />
+    <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
+    <Compile Include="ViewModels\Preview\IWatchViewModel.cs" />
+    <Compile Include="ViewModels\Core\NodeViewModel.cs" />
+    <Compile Include="ViewModels\Core\NoteViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemInternalViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemLeafViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemRootViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerClientViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerSearchViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageViewModel.cs" />
+    <Compile Include="ViewModels\Core\PortViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
+    <Compile Include="ViewModels\Search\SearchViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
+    <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
+    <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
+    <Compile Include="VisualizationManager\STLExport.cs" />
+    <Compile Include="VisualizationManager\VisualizationManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\GraphUpdateNotificationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\HeaderStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NotificationsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RunSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ShortcutToolbar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\StandardPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StartPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
+    <None Include="UI\Fonts\OpenSans-Bold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-BoldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-ExtraBold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-ExtraBoldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Italic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Light.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-LightItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-Semibold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Resource Include="UI\Images\cursors.psd" />
+    <Resource Include="UI\Images\cursors1.psd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\aboutback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\autodeskLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\background_texture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\close_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\close_inactive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\dynamo_logo_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\logo_about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\add_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\add_32_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Anonymous_Pencil_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Anonymous_Pencil_icon_white_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arc_add.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arc_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arc_remove.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arc_remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arc_select.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arc_select.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arrow-left-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arrow-left-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arrow-right-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arrow-right-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-fit-view-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-geom-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-node-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-node-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-orbit-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-pan-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-in-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Canvas\canvas-button-zoom-out-states.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\click_background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\closetab_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\closetab_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\closewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\closewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloud_download_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloud_download_arrow_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloud_download_arrow_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\collapse_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\collapse_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\collapsestate_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\collapsestate_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\condense.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\condense.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\consent_form_image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\DocumentHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\expand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\expand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\expand_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\expand_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\expandstate_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\expandstate_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_drag.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_drag.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_pan.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_pan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_pan_active.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\hand_pan_active.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\HomeHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\librarycollapse_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\librarycollapse_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\maximizewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\maximizewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\minimizewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\minimizewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\move.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\new_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\new_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\new_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\open_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\open_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\open_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\openHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\OpenSelectedItemHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\padlock-closed-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\padlock-closed-black24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pause_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pause_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pause_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pointer.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pointer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pointer_add.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\pointer_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\rectangular_selection.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\rectangular_selection.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\redo_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\redo_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\redo_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\resize_diagonal.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\resize_diagonal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\resize_horizontal.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\resize_horizontal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\resize_vertical.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\resize_vertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\restorewindow_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\restorewindow_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\run_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\run_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\run_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\save_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\save_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\save_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\saveHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\screenshot_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\screenshot_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\screenshot_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\search_24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\search_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\search_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\searchcancel_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\searchcancel_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\sendfeedback_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\sendfeedback_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\sendfeedback_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\dynamo-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-discussion.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-dynamobim.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-email.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-github.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-issues.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-reference.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-video.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icons-more-samples.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\tabs_button_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\tabs_button_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\task_dialog_crash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\task_dialog_future_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\task_dialog_obsolete_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\tick_selected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\undo_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\undo_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\undo_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Update\clickbox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Update\download_ani.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Update\DownloadAnimation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Update\DownloadIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Update\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Update\update_static.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\Prompts\CrashPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\Prompts\EditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\Prompts\FunctionNamePrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\Prompts\GenericTaskDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\Connectors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DataTemplates.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoConverters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoModern.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\DynamoText.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\MenuStyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\Ports.xaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\ToolbarStyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UI\Themes\Modern\SidebarGridStyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Page Include="Views\About\AboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\PackageManager\TermsOfUseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Preview\Watch3DSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\BrowserWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CodeBlocks\CodeBlockEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\AnnotationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Core\DynamoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Preview\InfoBubbleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\PackageManager\InstalledPackagesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Search\LibraryContainerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Search\LibrarySearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Search\LibraryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Core\NodeView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Core\NoteView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\PackageManager\PackageManagerSearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Input\ParameterEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Preview\PreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\PackageManager\PublishPackageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TooltipWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Preview\Watch3DView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Preview\WatchTree.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Core\WorkspaceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
+      <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
+      <Name>GraphLayout</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+      <Name>ProtoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
+      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+      <Name>VMDataBridge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\StartPage\icon-customnode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\Images\CodeBlock\class.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\constructor.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\keyword.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\method.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\property.png" />
+    <EmbeddedResource Include="UI\Images\CodeBlock\variable.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\CustomNode\customNode.png" />
+    <Resource Include="UI\Images\Tooltip\code.png" />
+    <Resource Include="UI\Images\Tooltip\copy.png" />
+    <Resource Include="UI\Images\Tooltip\copy_hover.png" />
+    <Resource Include="UI\Images\assemblies.png" />
+    <Resource Include="UI\Images\files.png" />
+    <Resource Include="UI\Images\nodes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sharpdx_direct3d11_1_effects_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sharpdx_direct3d11_1_effects_x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sharpdx_direct3d11_effects_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sharpdx_direct3d11_effects_x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="UI\Images\profile_normal.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

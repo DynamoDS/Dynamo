@@ -5,46 +5,18 @@ using Dynamo.Utilities;
 namespace Dynamo.Models
 {
     public enum ConnectorType { BEZIER, POLYLINE };
-
-    public delegate void ConnectorConnectedHandler(object sender, EventArgs e);
-
-    public class ConnectorModel: ModelBase
+    
+    public class ConnectorModel : ModelBase
     {
-
         #region properties
 
-        private readonly WorkspaceModel workspaceModel;
+        public PortModel Start { get; private set; }
+        public PortModel End { get; private set; }
 
-        public event ConnectorConnectedHandler Connected;
-
-        protected virtual void OnConnected(EventArgs e)
-        {
-            if (Connected != null)
-                Connected(this, e);
-        }
-
-        PortModel pStart;
-        PortModel pEnd;
-
-        public PortModel Start
-        {
-            get { return pStart; }
-            set { pStart = value; }
-        }
-
-        public PortModel End
-        {
-            get { return pEnd; }
-            set
-            {
-                pEnd = value;
-            }
-        }
-        
         #endregion 
 
         #region constructors
-        
+
         /// <summary>
         /// Factory method to create a connector.  Checks to make sure that the start and end ports are valid, 
         /// otherwise returns null.
@@ -53,152 +25,164 @@ namespace Dynamo.Models
         /// <param name="end">The port where the connector ends</param>
         /// <param name="startIndex"></param>
         /// <param name="endIndex"></param>
-        /// <param name="portType"></param>
+        /// <param name="guid"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
-        internal static ConnectorModel Make(WorkspaceModel workspaceModel, NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        internal static ConnectorModel Make(
+            NodeModel start, NodeModel end, int startIndex, int endIndex, Guid? guid = null)
         {
-            if (workspaceModel != null && start != null && end != null && start != end && startIndex >= 0
-                && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
+            if (start != null && end != null && start != end && startIndex >= 0
+                && endIndex >= 0 && start.OutPorts.Count > startIndex
+                && end.InPorts.Count > endIndex)
             {
-                return new ConnectorModel(workspaceModel, start, end, startIndex, endIndex, portType);
+                return new ConnectorModel(start, end, startIndex, endIndex, guid ?? Guid.NewGuid());
             }
-            
+
             return null;
         }
 
-        private ConnectorModel(WorkspaceModel workspaceModel, NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
+        private ConnectorModel(
+            NodeModel start, NodeModel end, int startIndex, int endIndex, Guid guid)
         {
-            this.workspaceModel = workspaceModel;
+            GUID = guid;
+            Start = start.OutPorts[startIndex];
 
-            pStart = start.OutPorts[startIndex];
+            PortModel endPort = end.InPorts[endIndex];
 
-            PortModel endPort = null;
-
-            if (portType == PortType.INPUT)
-                endPort = end.InPorts[endIndex];
-
-            pStart.Connect(this);
-            this.Connect(endPort);
-        }
-
-        public static ConnectorModel Make(WorkspaceModel workspace)
-        {
-            return new ConnectorModel(workspace);
-        }
-
-        private ConnectorModel(WorkspaceModel workspace)
-        {
-            this.workspaceModel = workspace;
+            Start.Connect(this);
+            Connect(endPort);
         }
 
         #endregion
-        
-        public bool Connect(PortModel p)
+
+        #region operators
+
+        public static bool operator ==(ConnectorModel lhs, ConnectorModel rhs)
+        {
+            if (ReferenceEquals(lhs, rhs))
+                return true;
+
+            if ((object)lhs == null || (object)rhs == null)
+                return false;
+
+            return ((lhs.Start.Owner.GUID == rhs.Start.Owner.GUID)
+                && (lhs.End.Owner.GUID == rhs.End.Owner.GUID)
+                && (lhs.Start.Index == rhs.Start.Index)
+                && (lhs.End.Index == rhs.End.Index));
+        }
+
+        public static bool operator !=(ConnectorModel lhs, ConnectorModel rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        #endregion
+
+        private void Connect(PortModel p)
         {
             //test if the port that you are connecting too is not the start port or the end port
             //of the current connector
-            if (p.Equals(pStart) || p.Equals(pEnd))
+            if (p.Equals(Start) || p.Equals(End))
             {
-                return false;
+                return;
             }
 
             //if the selected connector is also an output connector, return false
             //output ports can't be connected to eachother
-            if (p.PortType == PortType.OUTPUT)
+            if (p.PortType == PortType.Output)
             {
-                return false;
+                return;
             }
 
             //test if the port that you are connecting to is an input and 
             //already has other connectors
-            if (p.PortType == PortType.INPUT && p.Connectors.Count > 0)
+            if (p.PortType == PortType.Input && p.Connectors.Count > 0)
             {
                 p.Disconnect(p.Connectors[0]);
             }
 
             //turn the line solid
-            pEnd = p;
+            End = p;
 
-            if (pEnd != null)
+            if (End != null)
             {
                 p.Connect(this);
             }
 
-            return true;
+            return;
         }
-
-        public void Disconnect(PortModel p)
+        
+        /// <summary>
+        /// Delete the connector.
+        /// </summary>
+        /// <param name="silent">If silent is true, the start and end ports will be disconnected
+        /// without raising port disconnection events.</param>
+        public void Delete(bool silent = false)
         {
-            if (p.Equals(pStart))
+            if (Start != null && Start.Connectors.Contains(this))
             {
-                pStart = null;
+                Start.Disconnect(this, silent);
             }
-
-            if (p.Equals(pEnd))
+            if (End != null && End.Connectors.Contains(this))
             {
-                pEnd = null;
+                End.Disconnect(this, silent);
             }
-
-            p.Disconnect(this);
-
-        }
-
-        public void NotifyConnectedPortsOfDeletion()
-        {
-            if (pStart != null && pStart.Connectors.Contains(this))
-            {
-                pStart.Disconnect(this);
-            }
-            if (pEnd != null && pEnd.Connectors.Contains(this))
-            {
-                pEnd.Disconnect(this);
-            }
+            OnDeleted();
         }
 
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("start", this.Start.Owner.GUID);
-            helper.SetAttribute("start_index", this.Start.Index);
-            helper.SetAttribute("end", this.End.Owner.GUID);
-            helper.SetAttribute("end_index", this.End.Index);
-            helper.SetAttribute("portType", ((int) this.End.PortType));
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("guid", GUID);
+            helper.SetAttribute("start", Start.Owner.GUID);
+            helper.SetAttribute("start_index", Start.Index);
+            helper.SetAttribute("end", End.Owner.GUID);
+            helper.SetAttribute("end_index", End.Index);
+            //helper.SetAttribute("portType", ((int) End.PortType));
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlElementHelper helper = new XmlElementHelper(element);
+            //This is now handled via NodeGraph.LoadConnectorFromXml
+
+            /*
+            var helper = new XmlElementHelper(element);
 
             // Restore some information from the node attributes.
-            this.GUID = helper.ReadGuid("guid", this.GUID);
+            GUID = helper.ReadGuid("guid", GUID);
             Guid startNodeId = helper.ReadGuid("start");
             int startIndex = helper.ReadInteger("start_index");
             Guid endNodeId = helper.ReadGuid("end");
             int endIndex = helper.ReadInteger("end_index");
-            PortType portType = ((PortType)helper.ReadInteger("portType"));
+            var portType = ((PortType)helper.ReadInteger("portType"));
 
             // Get to the start and end nodes that this connector connects to.
-            NodeModel startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
-            NodeModel endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
+            var startNode = workspaceModel.GetModelInternal(startNodeId) as NodeModel;
+            var endNode = workspaceModel.GetModelInternal(endNodeId) as NodeModel;
 
             pStart = startNode.OutPorts[startIndex];
             PortModel endPort = null;
-            if (portType == PortType.INPUT)
+            if (portType == PortType.Input)
                 endPort = endNode.InPorts[endIndex];
 
             pStart.Connect(this);
-            this.Connect(endPort);
+            Connect(endPort);*/
         }
 
         #endregion
+
+        public event Action Deleted;
+        protected virtual void OnDeleted()
+        {
+            var handler = Deleted;
+            if (handler != null) handler();
+        }
     }
 
     public class InvalidPortException : ApplicationException
     {
-        private string message;
+        private readonly string message;
         public override string Message
         {
             get { return message; }

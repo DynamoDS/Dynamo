@@ -5,29 +5,34 @@ using System.Linq;
 using System.Threading;
 
 using DSCore.File;
-
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using String = System.String;
-using System;
 
 
 namespace Dynamo.Tests
 {
     internal class CoreDynTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void AddSubtractMapReduceFilterBasic()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\map_reduce_filter\map_reduce_filter.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\map_reduce_filter\map_reduce_filter.dyn");
             RunModel(openPath);
 
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(28, model.CurrentWorkspace.Nodes.Count);
 
             // check an input value
@@ -38,7 +43,7 @@ namespace Dynamo.Tests
             
             // run the expression
             //DynamoCommands.RunCommand(DynamoCommands.RunExpressionCommand);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -68,7 +73,7 @@ namespace Dynamo.Tests
         public void MultipleOutputs()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            var examplePath = Path.Combine(TestDirectory, @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "multi.dyn");
             RunModel(openPath);
@@ -87,7 +92,7 @@ namespace Dynamo.Tests
         public void PartialApplicationWithMultipleOutputs()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            var examplePath = Path.Combine(TestDirectory, @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "partial-multi.dyn");
             RunModel(openPath);
@@ -102,15 +107,15 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\sequence\sequence.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\sequence\sequence.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -126,17 +131,17 @@ namespace Dynamo.Tests
         public void Sorting()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\sorting\");
+            var examplePath = Path.Combine(TestDirectory, @"core\sorting\");
 
             string openPath = Path.Combine(examplePath, "sorting.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -155,7 +160,7 @@ namespace Dynamo.Tests
         public void Add()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Add.dyn");
             RunModel(openPath);
@@ -168,7 +173,7 @@ namespace Dynamo.Tests
         public void Subtract()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Subtract.dyn");
             RunModel(openPath);
@@ -181,7 +186,7 @@ namespace Dynamo.Tests
         public void Multiply()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Multiply.dyn");
             RunModel(openPath);
@@ -194,7 +199,7 @@ namespace Dynamo.Tests
         public void Divide()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Divide.dyn");
             RunModel(openPath);
@@ -207,7 +212,7 @@ namespace Dynamo.Tests
         public void Modulo()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Modulo.dyn");
             RunModel(openPath);
@@ -217,10 +222,23 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ModuloDivisionByZero()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
+
+            string openPath = Path.Combine(examplePath, "ModuloZero.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("75647d42-ff81-4ae0-9f44-2e68c9942633", new object[] {null, 0, 1, 0, 3});
+        }
+
+
+        [Test]
         public void Ceiling()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Ceiling.dyn");
             RunModel(openPath);
@@ -233,7 +251,7 @@ namespace Dynamo.Tests
         public void Floor()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Floor.dyn");
             RunModel(openPath);
@@ -246,7 +264,7 @@ namespace Dynamo.Tests
         public void Power()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Power.dyn");
             RunModel(openPath);
@@ -259,7 +277,7 @@ namespace Dynamo.Tests
         public void Round()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Round.dyn");
             RunModel(openPath);
@@ -272,7 +290,7 @@ namespace Dynamo.Tests
         public void Sine()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Sine.dyn");
             RunModel(openPath);
@@ -285,7 +303,7 @@ namespace Dynamo.Tests
         public void Cosine()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Cosine.dyn");
             RunModel(openPath);
@@ -297,7 +315,7 @@ namespace Dynamo.Tests
         [Test]
         public void OpeningDynWithDyfMissingIsOkayAndRunsOkay()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CASE");
+            var examplePath = Path.Combine(TestDirectory, @"core\CASE");
             string openPath = Path.Combine(examplePath, "case_flip_matrix.dyn");
 
             RunModel(openPath);
@@ -309,7 +327,7 @@ namespace Dynamo.Tests
         public void Tangent()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "Tangent.dyn");
             RunModel(openPath);
@@ -322,7 +340,7 @@ namespace Dynamo.Tests
         public void StringInputNodeWorksWithSpecialCharacters()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core");
+            var examplePath = Path.Combine(TestDirectory, @"core");
             string openPath = Path.Combine(examplePath, "StringInputTest.dyn");
             RunModel(openPath);
 
@@ -335,12 +353,12 @@ namespace Dynamo.Tests
         [Test]
         public void Repeat()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core");
+            var examplePath = Path.Combine(TestDirectory, @"core");
             string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
             //open and run the expression
             ViewModel.OpenCommand.Execute(openPath);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var watch = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             AssertPreviewValue(watch.GUID.ToString(), new[] { 5, 5, 5, 5, 5 });
@@ -348,7 +366,7 @@ namespace Dynamo.Tests
             //change the value of the list
             var numNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<DoubleInput>().Last();
             numNode.Value = "3";
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue(watch.GUID.ToString(), new[] { 5, 5, 5 });
         }
@@ -356,7 +374,7 @@ namespace Dynamo.Tests
         [Test]
         public void RepeatFail()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core");
+            var examplePath = Path.Combine(TestDirectory, @"core");
             string openPath = Path.Combine(examplePath, "RepeatTest.dyn");
 
             //open and run the expression
@@ -367,7 +385,7 @@ namespace Dynamo.Tests
 
             //test the negative case
             numNode.Value = "-1";
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             AssertPreviewValue(watch.GUID.ToString(), null);
         }
 
@@ -375,7 +393,7 @@ namespace Dynamo.Tests
         public void ReadImageFile()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
+            var examplePath = Path.Combine(TestDirectory, @"core\files");
 
             string openPath = Path.Combine(examplePath, "readImageFileTest.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -393,7 +411,7 @@ namespace Dynamo.Tests
         public void TestExportToCSVFile()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
+            var examplePath = Path.Combine(TestDirectory, @"core\files");
 
             string openPath = Path.Combine(examplePath, "TestExportToCSVFile.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -418,7 +436,7 @@ namespace Dynamo.Tests
         public void TestExportToCSVFile_Negativ()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\files");
+            var examplePath = Path.Combine(TestDirectory, @"core\files");
 
             string openPath = Path.Combine(examplePath, "TestExportToCSVFile_Negative.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -430,26 +448,26 @@ namespace Dynamo.Tests
         public void UsingDefaultValue()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\default_values");
+            var examplePath = Path.Combine(TestDirectory, @"core\default_values");
 
             string openPath = Path.Combine(examplePath, "take-every-default.dyn");
             RunModel(openPath);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("360f3b50-5f27-460a-a57a-bb6338064d98");
-            var expectedValue = new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
+            var expectedValue = new[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
             var oldVal = watch.CachedValue;
             Assert.IsTrue(oldVal is ICollection);
             Assert.AreEqual(oldVal, expectedValue);
 
             // Pretend we never ran
-            model.Nodes.ForEach(
-                x =>
-                {
-                    x.RequiresRecalc = true;
-                });
+            foreach (var node in model.CurrentWorkspace.Nodes)
+            {
+                node.MarkNodeAsModified(forceExecute:true);
+            }
+              
 
             // Make sure results are still consistent
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             var newVal = watch.CachedValue;
             Assert.IsTrue(newVal is ICollection);
@@ -460,7 +478,7 @@ namespace Dynamo.Tests
         public void Formula()
         {
             var model = ViewModel.Model;
-            var exPath = Path.Combine(GetTestDirectory(), @"core\formula");
+            var exPath = Path.Combine(TestDirectory, @"core\formula");
 
             ViewModel.OpenCommand.Execute(Path.Combine(exPath, "formula-test.dyn"));
 
@@ -471,7 +489,7 @@ namespace Dynamo.Tests
                 //"af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8"
             }.Select(guid => model.CurrentWorkspace.NodeFromWorkspace<Watch>(guid));
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             foreach (var watch in watches)
             {
@@ -482,7 +500,7 @@ namespace Dynamo.Tests
         [Test]
         public void AndNode()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+            var exPath = Path.Combine(TestDirectory, @"core\customast");
 
             RunModel(Path.Combine(exPath, @"and-test.dyn"));
 
@@ -493,7 +511,7 @@ namespace Dynamo.Tests
         public void OrNode()
         {
             var model = ViewModel.Model;
-            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+            var exPath = Path.Combine(TestDirectory, @"core\customast");
 
             RunModel(Path.Combine(exPath, @"or-test.dyn"));
 
@@ -503,7 +521,7 @@ namespace Dynamo.Tests
         [Test]
         public void IfNode()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+            var exPath = Path.Combine(TestDirectory, @"core\customast");
 
             RunModel(Path.Combine(exPath, @"if-test.dyn"));
 
@@ -514,7 +532,7 @@ namespace Dynamo.Tests
         public void PerformAllNode()
         {
             var model = ViewModel.Model;
-            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+            var exPath = Path.Combine(TestDirectory, @"core\customast");
 
             ViewModel.OpenCommand.Execute(Path.Combine(exPath, @"begin-test.dyn"));
 
@@ -524,7 +542,7 @@ namespace Dynamo.Tests
             const string textAndFileName = @"test.txt";
             model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             File.Delete(textAndFileName);
 
@@ -537,7 +555,7 @@ namespace Dynamo.Tests
         [Test]
         public void Constants()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+            var exPath = Path.Combine(TestDirectory, @"core\customast");
 
             RunModel(Path.Combine(exPath, @"constants-test.dyn"));
 
@@ -547,7 +565,7 @@ namespace Dynamo.Tests
         [Test]
         public void Thunks()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+            var exPath = Path.Combine(TestDirectory, @"core\customast");
 
             RunModel(Path.Combine(exPath, @"thunk-test.dyn"));
 
@@ -557,7 +575,7 @@ namespace Dynamo.Tests
         [Test]
         public void MultithreadingWithFutureAndNow()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\multithreading");
+            var exPath = Path.Combine(TestDirectory, @"core\multithreading");
 
             RunModel(Path.Combine(exPath, @"multithread-test.dyn"));
 
@@ -567,7 +585,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestNumber_RangeExpr01()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\number");
+            var exPath = Path.Combine(TestDirectory, @"core\number");
 
             RunModel(Path.Combine(exPath, @"TestNumber_RangeExpr01.dyn"));
 
@@ -579,7 +597,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestNumber_RangeExpr02()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\number");
+            var exPath = Path.Combine(TestDirectory, @"core\number");
 
             RunModel(Path.Combine(exPath, @"TestNumber_RangeExpr02.dyn"));
 
@@ -601,7 +619,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestNumber_RangeExpr03()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\number");
+            var exPath = Path.Combine(TestDirectory, @"core\number");
 
             RunModel(Path.Combine(exPath, @"TestNumber_RangeExpr03.dyn"));
 
@@ -613,9 +631,10 @@ namespace Dynamo.Tests
         [Test]
         public void TestNumber_RangeExpr04()
         {
-            var exPath = Path.Combine(GetTestDirectory(), @"core\number");
+            var exPath = Path.Combine(TestDirectory, @"core\number");
 
             RunModel(Path.Combine(exPath, @"TestNumber_RangeExpr04.dyn"));
+
 
             AssertPreviewValue("e9ad17aa-e30f-4fcb-9d43-71ec2ab027f4", new[] { 5, 4, 3, 2, 1 });
         }

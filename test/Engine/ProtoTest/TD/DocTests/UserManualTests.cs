@@ -5,14 +5,8 @@ using System.Collections.Generic;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.DocTests
 {
-    public class UserManualTests
+    class UserManualTests : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
         [Test]
         public void UM01_Print()
         {

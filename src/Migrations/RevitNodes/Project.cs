@@ -21,16 +21,16 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            var oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            var oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
             var connector0 = data.FindFirstConnector(oldInPort0);
-            var oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            var oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
             var connector1 = data.FindFirstConnector(oldInPort1);
 
             data.ReconnectToPort(connector0, oldInPort0);
             data.ReconnectToPort(connector1, oldInPort1);
 
-            var oldDOut = new PortId(newNodeId, 2, PortType.OUTPUT);
-            var oldTOut = new PortId(newNodeId, 1, PortType.OUTPUT);
+            var oldDOut = new PortId(newNodeId, 2, PortType.Output);
+            var oldTOut = new PortId(newNodeId, 1, PortType.Output);
 
             if ((connector0 != null) && (data.FindConnectors(oldDOut) != null))
             {
@@ -49,7 +49,7 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, distTo, 0);
                 data.CreateConnectorFromId(ptInputNodeId, ptInputIndex, distToId, 1);
 
-                var newDOut = new PortId(distToId, 0, PortType.OUTPUT);
+                var newDOut = new PortId(distToId, 0, PortType.Output);
                 var oldDConnectors = data.FindConnectors(oldDOut);
 
                 if (oldDConnectors != null)
@@ -74,7 +74,7 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, parmAtPt, 1);
 
                 // reconnect remaining output ports to new nodes
-                var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
+                var newTOut = new PortId(parmAtPtId, 0, PortType.Output);
                 var oldTConnectors = data.FindConnectors(oldTOut);
 
                 if (oldTConnectors != null)
@@ -92,18 +92,18 @@ namespace Dynamo.Nodes
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
 
-            #region Create new DSFunction node - Geometry.GetClosestPoint@Geometry
+            #region Create new DSFunction node - Geometry.ClosestPointTo@Geometry
 
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             MigrationManager.SetFunctionSignature(newNode, "ProtoGeometry.dll",
-                "Geometry.GetClosestPoint", "Geometry.GetClosestPoint@Geometry");
+                "Geometry.ClosestPointTo", "Geometry.ClosestPointTo@Geometry");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
-            var oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            var oldInPort0 = new PortId(newNodeId, 0, PortType.Input);
             var ptInConnector = data.FindFirstConnector(oldInPort0);
-            var oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            var oldInPort1 = new PortId(newNodeId, 1, PortType.Input);
             var faceInConnector = data.FindFirstConnector(oldInPort1);
 
             data.ReconnectToPort(ptInConnector, oldInPort1);
@@ -114,7 +114,7 @@ namespace Dynamo.Nodes
             #region Reconnect the old UV out port
 
             // if necessary, get the face UV
-            var oldUVOut = new PortId(newNodeId, 1, PortType.OUTPUT);
+            var oldUVOut = new PortId(newNodeId, 1, PortType.Output);
             var oldUVConnectors = data.FindConnectors(oldUVOut);
 
             if (oldUVConnectors != null && oldUVConnectors.Any())
@@ -135,14 +135,14 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, parmAtPt, 1);
 
                 // reconnect remaining output ports to new nodes
-                var newTOut = new PortId(parmAtPtId, 0, PortType.OUTPUT);
+                var newTOut = new PortId(parmAtPtId, 0, PortType.Output);
                 oldUVConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newTOut));
             }
             #endregion
 
             #region Reconnect the old distance out port
 
-            var oldDOut = new PortId(newNodeId, 2, PortType.OUTPUT);
+            var oldDOut = new PortId(newNodeId, 2, PortType.Output);
             var oldDConnectors = data.FindConnectors(oldDOut);
 
             // If necessary, get the distance to the projected point
@@ -163,7 +163,7 @@ namespace Dynamo.Nodes
                 data.CreateConnector(newNode, 0, distTo, 0);
                 data.CreateConnectorFromId(ptInputNodeId, ptInputIndex, distToId, 1);
 
-                var newDOut = new PortId(distToId, 0, PortType.OUTPUT);
+                var newDOut = new PortId(distToId, 0, PortType.Output);
                 oldDConnectors.ToList().ForEach(x => data.ReconnectToPort(x, newDOut));
             }
 

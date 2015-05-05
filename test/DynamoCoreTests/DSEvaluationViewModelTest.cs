@@ -2,59 +2,36 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Dynamo.DSEngine;
-using Dynamo.Utilities;
 using NUnit.Framework;
-using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using System.Collections;
-using Dynamo.Models;
 using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
     public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
-        protected LibraryServices libraryServices = null;
-        protected ProtoCore.Core libraryServicesCore = null;
-
-        public override void Init()
-        {
-            base.Init();
-
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            libraryServicesCore = new ProtoCore.Core(options);
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kAssociative,
-                new ProtoAssociative.Executive(libraryServicesCore));
-            libraryServicesCore.Executives.Add(ProtoCore.Language.kImperative,
-                new ProtoImperative.Executive(libraryServicesCore));
-
-            libraryServices = new LibraryServices(libraryServicesCore);
-        }
-
         public void OpenModel(string relativeFilePath)
         {
-            string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
+            string openPath = Path.Combine(TestDirectory, relativeFilePath);
             ViewModel.OpenCommand.Execute(openPath);
         }
 
         public void OpenSampleModel(string relativeFilePath)
         {
-            string openPath = Path.Combine(GetSampleDirectory(), relativeFilePath);
+            string openPath = Path.Combine(SampleDirectory, relativeFilePath);
             ViewModel.OpenCommand.Execute(openPath);
         }
 
         public void RunModel(string relativeDynFilePath)
         {
             OpenModel(relativeDynFilePath);
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         public void RunCurrentModel() // Run currently loaded model.
         {
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         /// <summary>
@@ -130,11 +107,10 @@ namespace Dynamo.Tests
 
         public void AssertClassName(string guid, string className)
         {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-            var classInfo = mirror.GetData().Class;
-            Assert.AreEqual(classInfo.ClassName, className);
+            var classMirror = GetClassMirror(className);
+            Assert.IsNotNull(classMirror);
+
+            Assert.AreEqual(classMirror.Name, className);
         }
 
         public void AssertPreviewCount(string guid, int count)
@@ -183,13 +159,41 @@ namespace Dynamo.Tests
         public void AssertValue(MirrorData data, object value)
         {
             if (data.IsCollection)
+            {
+                if (!(value is IEnumerable))
+                {
+                    Assert.Fail("Data is collection but expected vlaue is not.");
+                }
                 AssertCollection(data, value as IEnumerable);
+            }
             else if (value == null)
+            {
                 Assert.IsTrue(data.IsNull);
+            }
             else if (value is int)
-                Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            {
+                try
+                {
+                    int mirrorData = Convert.ToInt32(data.Data);
+                    Assert.AreEqual((int)value, mirrorData);
+                }
+                catch (Exception e)
+                {
+                    Assert.Fail(e.Message);
+                }
+            }
             else if (value is double)
-                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+            {
+                try
+                {
+                    double mirrorData = Convert.ToDouble(data.Data);
+                    Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+                }
+                catch (Exception e)
+                {
+                    Assert.Fail(e.Message);
+                }
+            }
             else
                 Assert.AreEqual(value, data.Data);
         }
@@ -225,23 +229,55 @@ namespace Dynamo.Tests
             }
         }
 
-        public override void Cleanup()
+        public List<object> GetFlattenedPreviewValues(string guid)
         {
-            if (libraryServicesCore != null)
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null) return null;
+            if (!data.IsCollection)
             {
-                libraryServicesCore.Cleanup();
-                libraryServicesCore = null;
+                return data.Data == null ? new List<object>() : new List<object>() { data.Data };
             }
-            libraryServices = null;
+            var elements = data.GetElements();
 
-            base.Cleanup();
-            DynamoUtilities.DynamoPathManager.DestroyInstance();
+            var objects = GetSublistItems(elements);
+
+            return objects;
         }
+
+        private static List<object> GetSublistItems(IEnumerable<MirrorData> datas)
+        {
+            var objects = new List<object>();
+            foreach (var data in datas)
+            {
+                if (!data.IsCollection)
+                {
+                    objects.Add(data.Data);
+                }
+                else
+                {
+                    objects.AddRange(GetSublistItems(data.GetElements()));
+                }
+            }
+            return objects;
+        }
+
     }
 
     [Category("DSExecution")]
     class DSEvaluationViewModelTest : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestCodeBlockNode01()
         {
@@ -656,7 +692,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
 
         }
@@ -672,7 +708,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -687,7 +723,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -702,7 +738,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -718,7 +754,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
 
@@ -762,8 +798,8 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
             var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
-            var node = ViewModel.Model.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
-            Assert.IsTrue(node.State == Models.ElementState.Warning);
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
         }
 
         [Test]
@@ -795,7 +831,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
             AssertPreviewValue("0ffe94bd-f926-4e81-83f7-7975e67a3713",
                 new int[] { 2, 4, 6, 8 });
         }
@@ -813,22 +849,21 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count());
 
             model.AddToSelection(ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                 ("5a7f7549-fbef-4c3f-8578-c67471eaa87f"));
 
-            model.Copy(null);
-
-            model.Paste(null);
+            model.Copy();
+            model.Paste();
 
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             //run the graph after copy paste
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
-            var nodes = ViewModel.Model.Nodes.OfType<DSVarArgFunction>();
+            var nodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<DSVarArgFunction>();
             foreach (var item in nodes)
             {
                 AssertPreviewValue(item.GUID.ToString(), new string[] { "Dynamo", "DS" });   
@@ -903,12 +938,6 @@ namespace Dynamo.Tests
             AssertPreviewValue(id.ToString(), 3);
         }
 
-        [Test]
-        public void Test_Formula_InputWithUnit()
-        {
-            RunModel(@"core\formula\formula-inputWithUnit-test.dyn");
-            AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
-        }
         [Test]
         [Category("RegressionTests")]
         public void Test_IFnode_3483_1()
@@ -1039,22 +1068,194 @@ namespace Dynamo.Tests
             AssertPreviewValue("e6a9eec4-a18d-437d-8779-adfd6141bf19", 9);
 
         }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_warning_5236()
+        {
+            // Functions does not work in the code block node but works if expanded as a graph
+            // This test regression - issue is described in detail in the bug
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5236
+
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\createCube_codeBlockNode.dyn");
+            AssertPreviewValue("3669d05c-c741-44f9-87ab-8961e7f5f112", 150);
+            var guid = System.Guid.Parse("3669d05c-c741-44f9-87ab-8961e7f5f112");
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
+
+
+        }
+        [Test]
+        [Category("RegressionTests")]
+        public void DoubleToInt_NoWarning_5109()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5109
+            //verify  Warning converting double to int is removed
+            RunModel(@"core\dsevaluation\DoubleToInt_5109.dyn");
+            var guid = System.Guid.Parse("d66d3d3e-e13b-460e-a8a7-056c434ee620");
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
+        }
        
+
+     
+        [Test]
+        [Category("RegressionTests")]
+        public void CBN_Variable_Type_5480()
+        {
+            // MAGN-5480 - Defect in parsing typed identifiers in CBN
+
+            var model = ViewModel.Model;
+
+            RunModel(@"core\dsevaluation\CBN_Variable_Type_5480.dyn");
+            AssertPreviewValue("fabaccff-5b8a-4505-b752-7939cba90dc4", 1);
+        }
+
+        [Test]
+        public void TestDefaultValueInFunctionObject()
+        {
+            // Regression test case for
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            var dynFilePath = Path.Combine(TestDirectory, @"core\default_values\defaultValueInFunctionObject.dyn");
+
+            RunModel(dynFilePath);
+
+            AssertPreviewValue("4218d135-a2c4-4dee-8415-8f0bf1de671c", new[] { 1, 1 });
+
+
+        }
+        [Test]
+        public void TestRunTimeWarning_3132()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3132
+            // test for run time warning is thrown or not 
+
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsfunction\RunTimeWarning_3132.dyn");
+
+            RunModel(dynFilePath);
+            var guid = System.Guid.Parse("88f376fa-634b-422e-b853-6afa8af8d286");
+            var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
+           
+            Assert.IsTrue(node.State == Models.ElementState.Warning);
+        }
         
+        [Test]
+        public void List_Map_Default_5233()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
+            //List.map with default arguments 
+
+            var dynFilePath = Path.Combine(TestDirectory, @"core\list\List_Map_DefaultArg5233.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        }
+
+        [Test]
+        public void TestListCombineRegress5561()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress5561.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("4fb0a4ef-8151-4e5f-a2e6-9c3fcd2c1e8f", new object[] { "1foo", null });
+        }
+
+        [Test]
+        public void TestMod()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsfunction\modDoesntWork.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("77c95ace-e4f1-4119-87fc-7163f9b3b8b0", true);
+            AssertPreviewValue("21f58def-725d-41c9-abc7-063cc3642420", true);
+            AssertPreviewValue("dbd73c1b-0b40-4138-af69-4dd3da2de62d", true);
+        }
+
+        [Test]
+        public void TestDefaultValueAttribute()
+        {
+            var dynFilePath = Path.Combine(TestDirectory,
+                @"core\default_values\defaultValueAttributeTest.dyn");
+
+            RunModel(dynFilePath);
+            AssertPreviewValue("4f0c05a7-4e52-4d60-807a-08824baa23bb", true);
+        }
+
+        [Test]
+        public void TestDefaulArgumentAttributeNegative()
+        {
+            // This is to test FFITarget.TestData.MultiplyBy3NonParsableDefaultArgument() whose
+            // DefaultArgumentAttribute is invalid. In this case, we should make sure that
+            // no default argument is used, even null. So this function should be compiled to
+            // a function object and Apply() should work on it. 
+            var dynFilePath = Path.Combine(TestDirectory, @"core\default_values\invalidDefaultArgument.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("1b2fa812-960d-424c-b679-8b850abe2e26", 12);
+        }
+
+        [Test]
+        public void TestDefaultValueAttributeForDummyLine()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, 
+                @"core\default_values\defaultValueAttributeForDummyLine.dyn");
+
+            RunModel(dynFilePath);
+            AssertPreviewValue("e95a634b-aab9-4b6e-bb33-2f9669381ad6", 5);
+        }
+
+        [Test]
+        public void ModuloDividendLargerThanDivisor()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
+
+            string openPath = Path.Combine(examplePath, "ModuloDividendLargerThanDivisor.dyn");
+            RunModel(openPath);
+            double[] Dlist = new double[4];
+            Dlist[0] = 0.129000;
+            Dlist[1] = 0.026000;
+            Dlist[2] = 1.899000;
+            Dlist[3] = 1.830000;
+
+            AssertPreviewValue("9433d723-3708-4773-9b9c-c6def0f17b18", Dlist);
+            AssertPreviewValue("55f03be2-8720-4648-b989-996b261e1502", new[] { false, false, false, false });
+            AssertPreviewValue("0b9eca5b-835b-493e-af4b-84a3366d75d3", Dlist);
+            AssertPreviewValue("7e1f9810-2f4f-4911-975b-d392afc3a674", Dlist);
+        }
+
+        [Test, Category("UnitTests")]
+        public void TestDefaultArgumentTooltip()
+        {
+            var vm = ViewModel;
+            var node =
+                new DSFunction(vm.Model.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double"));
+            vm.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0"));
+            node.InPorts[0].UsingDefaultValue = false;
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0 (disabled)"));
+        }
     }
 
     [Category("DSCustomNode")]
     class CustomNodeEvaluationViewModel : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void CustomNodeNoInput01()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "NoInput.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "NoInput.dyf"),
+                    true,
+                    out info));
 
             string openPath = Path.Combine(examplePath, "TestNoInput.dyn");
             //model.Open(openPath);
@@ -1062,7 +1263,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
 
             AssertPreviewValue("f9c6aa7f-3fb4-40df-b4c5-6694e8c437cd", 
@@ -1072,11 +1273,14 @@ namespace Dynamo.Tests
         public void CustomNodeWithInput02()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "CNWithInput.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "CNWithInput.dyf"),
+                    true,
+                    out info));
 
             string openPath = Path.Combine(examplePath, "TestCNWithInput.dyn");
             //model.Open(openPath);
@@ -1091,11 +1295,14 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWithCBNAndGeometry()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Centroid.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    Path.Combine(examplePath, "Centroid.dyf"),
+                    true,
+                    out info));
             string openPath = Path.Combine(examplePath, "TestCentroid.dyn");
 
             RunModel(openPath);
@@ -1108,10 +1315,11 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeMultipleInGraph()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             var dyfPath = Path.Combine(examplePath, "Poly.dyf");
-            Assert.IsNotNull(ViewModel.Model.CustomNodeManager.AddFileToPath(dyfPath));
+            CustomNodeInfo info;
+            Assert.IsTrue(ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(dyfPath, true, out info));
 
             RunModel(Path.Combine(examplePath, "TestPoly.dyn"));
             
@@ -1123,11 +1331,11 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeConditional()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "Conditional.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "Conditional.dyf"), true, out info));
 
             string openPath = Path.Combine(examplePath, "TestConditional.dyn");
             //model.Open(openPath);
@@ -1148,11 +1356,11 @@ namespace Dynamo.Tests
             // which cannot be found, so foo.dyf would be a proxy custom node,
             // as opening a dyn file will compile all custom nodes, the 
             // compilation of that proxy custom node should have any problem.
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
+            CustomNodeInfo info;
             Assert.IsTrue(
-                ViewModel.Model.CustomNodeManager.AddFileToPath(Path.Combine(examplePath, "bar.dyf"))
-                != null);
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "bar.dyf"), true, out info));
 
             string openPath = Path.Combine(examplePath, "foobar.dyn");
 
@@ -1165,15 +1373,14 @@ namespace Dynamo.Tests
             // Test nested custom node: run and reset engine and re-run.
             // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4837
 
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\Regress_Magn_4837.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\Regress_Magn_4837.dyn");
 
             RunModel(dynFilePath);
  
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
 
             // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
-            ViewModel.Model.ResetEngine(true);
-            ViewModel.Model.RunExpression();
+            ViewModel.Model.ForceRun();
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }

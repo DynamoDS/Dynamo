@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    public class Class
+    class Class : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testCasePath = "..\\..\\..\\Scripts\\TD\\Associative\\Class\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T001_Associative_Class_Property_Int()
@@ -1341,10 +1334,6 @@ x9 = a1.w4;//{null,null}";
             thisTest.Verify("x8", arr2);
             thisTest.Verify("x9", new object[] { null, null });
         }
-        /*   
-[Test]           public void T054_Inherit_nested()           {               ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T054_Inherit_nested.ds");           }           
-[Test]           public void T055_Inherit_donotchangevalue()           {               ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T055_Inherit_donotchangevalue.ds");           }          
-[Test]            public void T056_Inherit_private_negative()           {               ExecutionMirror mirror = thisTest.RunScript(testCasePath, "T056_Inherit_private_negative.ds");           }         */
 
         [Test]
         [Category("SmokeTest")]

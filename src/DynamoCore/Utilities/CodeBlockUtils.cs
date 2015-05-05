@@ -1,20 +1,18 @@
-﻿using Dynamo.Models;
-using Dynamo.Nodes;
+﻿using System.Diagnostics;
+using System.Xml;
 using Dynamo.UI;
-using Dynamo.UI.Controls;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
+
+using Dynamo.Models;
+using Dynamo.Nodes;
+
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows;
-using System.Windows.Media;
 
 namespace Dynamo.Utilities
 {
-    public class CodeBlockUtils
+    public static class CodeBlockUtils
     {
         /// <summary>
         /// Call this method to turn all "\r\n" and "\r" 
@@ -122,7 +120,7 @@ namespace Dynamo.Utilities
 
             if (!statementVariables.ElementAt(index).Any())
                 return false;
-
+           
             var currentVariables = statementVariables.ElementAt(index);
             for (int stmt = index + 1; stmt < statementCount; stmt++)
             {
@@ -135,85 +133,6 @@ namespace Dynamo.Utilities
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Call this method to map logical lines in the given text input to their
-        /// corresponding visual line index. Due to wrapping behavior, a long line
-        /// may be wrapped into more than one line due to width constraint. For an
-        /// example:
-        /// 
-        ///     0 This is a longer line that will be wrapped around to next line
-        ///     1 This is a shorter line
-        /// 
-        /// The wrapped results will be as follow:
-        /// 
-        ///     0 This is a longer line that will 
-        ///       be wrapped around to next line
-        ///     1 This is a shorter line
-        /// 
-        /// The resulting array will be:
-        /// 
-        ///     result = { 0, 2 }
-        /// 
-        /// It means that the first logical line (with index 0) will be mapped to 
-        /// line 0 visually; the second logical line (with index 1) will be mapped 
-        /// to line 2 visually.
-        /// 
-        /// </summary>
-        /// <param name="text">The input text for the mapping.</param>
-        /// <returns>Returns a list of visual line indices. For an example, if the 
-        /// result is { 0, 6, 27 }, then the first logical line (index 0) is mapped 
-        /// to visual line with index 0; second logical line (index 1) is mapped to 
-        /// visual line with index 6; third logical line (index 2) is mapped to 
-        /// visual line with index 27.</returns>
-        /// 
-        public static IEnumerable<int> MapLogicalToVisualLineIndices(string text)
-        {
-            var logicalToVisualLines = new List<int>();
-            if (string.IsNullOrEmpty(text))
-                return logicalToVisualLines;
-
-            text = NormalizeLineBreaks(text);
-            var lines = text.Split(new char[] { '\n' }, StringSplitOptions.None);
-
-            // We could have hard-coded "pack" instead of "UriSchemePack" here, 
-            // but in NUnit scenario there is no "Application" created. When there 
-            // is no Application instance, the Uri format "pack://" will fail Uri 
-            // object creation. Adding a reference to "UriSchemePack" resolves 
-            // this issue to avoid a "UriFormatException".
-            // 
-            string pack = System.IO.Packaging.PackUriHelper.UriSchemePack;
-            var uri = new Uri(pack + "://application:,,,/DynamoCore;component/");
-            var textFontFamily = new FontFamily(uri, ResourceNames.FontResourceUri);
-
-            var typeface = new Typeface(textFontFamily, FontStyles.Normal,
-                FontWeights.Normal, FontStretches.Normal);
-
-            int totalVisualLinesSoFar = 0;
-            foreach (var line in lines)
-            {
-                FormattedText ft = new FormattedText(
-                    line, CultureInfo.CurrentCulture,
-                    System.Windows.FlowDirection.LeftToRight, typeface,
-                    Configurations.CBNFontSize, Brushes.Black)
-                {
-                    MaxTextWidth = Configurations.CBNMaxTextBoxWidth,
-                    Trimming = TextTrimming.None
-                };
-
-                logicalToVisualLines.Add(totalVisualLinesSoFar);
-
-                // Empty lines (i.e. those with just a "\n" character) will result 
-                // in "ft.Extent" to be 0.0, but the line still occupies one line
-                // visually. This is why we need to make sure "lineCount" cannot be 
-                // zero.
-                // 
-                var lineCount = Math.Floor(ft.Extent / Configurations.CBNFontSize);
-                totalVisualLinesSoFar += (lineCount < 1.0 ? 1 : ((int)lineCount));
-            }
-
-            return logicalToVisualLines;
         }
 
         /// <summary>
@@ -298,10 +217,11 @@ namespace Dynamo.Utilities
 
             // If after all the processing we do not end up with an empty code,
             // then we may need a semi-colon at the end. This is provided if the 
-            // code does not end with a closing curly bracket (in which case a 
+            // code does not end with a comment or string (in which case a 
             // trailing semi-colon is not required).
             // 
-            if (!string.IsNullOrEmpty(inputCode) && (!inputCode.EndsWith("}")))
+            if (!string.IsNullOrEmpty(inputCode) && 
+                !CodeCompletionParser.IsInsideCommentOrString(inputCode, inputCode.Length))
             {
                 if (inputCode.EndsWith(";") == false)
                     inputCode = inputCode + ";";
@@ -310,33 +230,58 @@ namespace Dynamo.Utilities
             return inputCode;
         }
 
-        public static HighlightingRule CreateDigitRule()
+        /// <summary>
+        /// Returns a list of defined variables, along with the line number on which 
+        /// they are defined last. A variable can be defined multiple times in a single 
+        /// code block node, but the output port is only shown on the last definition.
+        /// </summary>
+        /// <returns>Returns a map between defined variables and the line index on 
+        /// which they are defined last.</returns>
+        public static IOrderedEnumerable<KeyValuePair<string, int>> GetDefinitionLineIndexMap(IEnumerable<Statement> codeStatements)
         {
-            var digitRule = new HighlightingRule();
+            // Get all defined variables and their locations
+            var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
+                                            .Where(pair => pair.Key != null)
+                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.Name, pair.Value))
+                                            .OrderBy(pair => pair.Key)
+                                            .GroupBy(pair => pair.Key);
 
-            Color color = (Color)ColorConverter.ConvertFromString("#2585E5");
-            digitRule.Color = new HighlightingColor()
+            // Calc each variable's last location of definition
+            var locationMap = new Dictionary<string, int>();
+            foreach (var defs in definedVars)
             {
-                Foreground = new CustomizedBrush(color)
-            };
+                var name = defs.FirstOrDefault().Key;
+                var loc = defs.Select(p => p.Value).Max<int>();
+                locationMap[name] = loc;
+            }
 
-            // These Regex's must match with the grammars in the DS ATG for digits
-            // Refer to the 'number' and 'float' tokens in Start.atg
-            //*******************************************************************************
-            // number = digit {digit} .
-            // float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
-            //*******************************************************************************
+            return locationMap.OrderBy(p => p.Value);
+        }
 
-            string digit = @"(-?\b\d+)";
-            string floatingPoint = @"(\.[0-9]+)";
-            string numberWithOptionalDecimal = digit + floatingPoint + "?";
+        public static IDictionary<string, KeyValuePair<string, string>> DeserializeElementResolver(
+            XmlElement nodeElement)
+        {
+            var xmlDoc = nodeElement.OwnerDocument;
+            Debug.Assert(xmlDoc != null);
 
-            string exponent = @"([eE][+-]?[0-9]+)";
-            string numberWithExponent = digit + floatingPoint + exponent;
+            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
 
-            digitRule.Regex = new Regex(numberWithExponent + "|" + numberWithOptionalDecimal);
-
-            return digitRule;
+            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+            if (nodes.Count > 0)
+            {
+                foreach (XmlNode child in nodes[0].ChildNodes)
+                {
+                    if (child.Attributes != null)
+                    {
+                        XmlAttribute pName = child.Attributes["partialName"];
+                        XmlAttribute rName = child.Attributes["resolvedName"];
+                        XmlAttribute aName = child.Attributes["assemblyName"];
+                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
+                        resolutionMap.Add(pName.Value, kvp);
+                    }
+                }
+            }
+            return resolutionMap;
         }
     }
 
@@ -400,7 +345,7 @@ namespace Dynamo.Utilities
 
         #endregion
 
-        public CodeCompletionParser(string text)
+        private CodeCompletionParser(string text)
         {
             this.text = text;
         }
@@ -680,33 +625,4 @@ namespace Dynamo.Utilities
         #endregion
 
     }
-
-    // Refer to link: 
-    // http://stackoverflow.com/questions/11806764/adding-syntax-highlighting-rules-to-avalonedit-programmatically
-    internal sealed class CustomizedBrush : HighlightingBrush
-    {
-        private readonly SolidColorBrush brush;
-        public CustomizedBrush(Color color)
-        {
-            brush = CreateFrozenBrush(color);
-        }
-
-        public override Brush GetBrush(ITextRunConstructionContext context)
-        {
-            return brush;
-        }
-
-        public override string ToString()
-        {
-            return brush.ToString();
-        }
-
-        private static SolidColorBrush CreateFrozenBrush(Color color)
-        {
-            SolidColorBrush brush = new SolidColorBrush(color);
-            brush.Freeze();
-            return brush;
-        }
-    }
-
 }

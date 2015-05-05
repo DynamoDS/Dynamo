@@ -1,3 +1,4 @@
+using Dynamo.DSEngine;
 using Dynamo.Models;
 
 namespace Dynamo.Nodes
@@ -5,18 +6,30 @@ namespace Dynamo.Nodes
     /// <summary>
     ///     Node base class for all nodes that produce a DS function call.
     /// </summary>
-    public abstract class FunctionCallBase : NodeModel
+    public abstract class FunctionCallBase<TController, TDescriptor> : NodeModel
+        where TController : FunctionCallNodeController<TDescriptor>
+        where TDescriptor : IFunctionDescriptor
     {
         /// <summary>
         ///     Controller used to sync node with a function definition.
         /// </summary>
-        public FunctionCallNodeController Controller { get; private set; }
+        public TController Controller { get; private set; }
 
-        protected FunctionCallBase(WorkspaceModel workspace, FunctionCallNodeController controller) 
-            : base(workspace)
+        protected FunctionCallBase(TController controller)
         {
             Controller = controller;
             Controller.SyncNodeWithDefinition(this);
+        }
+
+        /// <summary>
+        /// The unique name that the node was created by
+        /// </summary>
+        public override string CreationName
+        {
+            get
+            {
+                return this.Controller != null ? this.Controller.Definition.MangledName : this.Name;
+            }
         }
     }
 }

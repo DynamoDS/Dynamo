@@ -1,5 +1,4 @@
-﻿
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
@@ -16,25 +15,23 @@ using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
-    public class MicroFeatureTests
+    class MicroFeatureTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\GraphCompiler\\";
-        double tolerance = 0.000001;
-
-        private ILiveRunner astLiveRunner = null;
+        private ProtoScript.Runners.LiveRunner liveRunner = null;
         private Random randomGen = new Random();
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            astLiveRunner = new ProtoScript.Runners.LiveRunner();
-            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
+            base.Setup();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll" });
+            runtimeCore = liveRunner.RuntimeCore;
         }
 
-        [TearDown]
-        public void CleanUp()
+        public override void TearDown()
         {
+            base.TearDown();
+            liveRunner.Dispose();
         }
 
         [Test]
@@ -54,7 +51,7 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -73,7 +70,7 @@ namespace ProtoTest.LiveRunner
             astList.Add(assign);
 
             // Update graph using AST node input
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(assign);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -106,7 +103,7 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -150,7 +147,7 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -175,7 +172,7 @@ namespace ProtoTest.LiveRunner
                 ProtoCore.DSASM.Operator.assign);
 
             // emit the DS code from the AST tree
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(assign);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -220,7 +217,7 @@ namespace ProtoTest.LiveRunner
             // update graph with ast input
             CodeBlockNode cNode = new CodeBlockNode();
             cNode.Body = astList;
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(cNode);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("b");
@@ -239,7 +236,7 @@ namespace ProtoTest.LiveRunner
             // executes it
             ////////////////////////////////////////////////////////////////////
 
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
 
             // Build the AST trees
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign1 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -299,7 +296,7 @@ namespace ProtoTest.LiveRunner
             // executes updated graph
             ////////////////////////////////////////////////////////////////////
 
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
 
             // Build the AST trees
@@ -402,7 +399,7 @@ namespace ProtoTest.LiveRunner
             // execute updated graph (cylcic dependency should not occur)
             ////////////////////////////////////////////////////////////////////
 
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
 
             ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign0 = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
@@ -496,7 +493,7 @@ namespace ProtoTest.LiveRunner
         [Test]
         public void TestDeltaExpression_01()
         {
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
 
             // emit the DS code from the AST tree
             liveRunner.UpdateCmdLineInterpreter("a=10;");
@@ -544,7 +541,7 @@ namespace ProtoTest.LiveRunner
         [Test]
         public void TestDeltaExpression_02()
         {
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
 
             // emit the DS code from the AST tree
             liveRunner.UpdateCmdLineInterpreter("x=99;");
@@ -574,15 +571,13 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_01()
         {
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
 
-            liveRunner.UpdateCmdLineInterpreter(@"import (""ProtoGeometry.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = Point.ByCoordinates(10,10,10);");
+            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
+            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -614,18 +609,16 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void TestDeltaExpressionFFI_02()
         {
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
 
             //string code = @"class Point{ X : double; constructor ByCoordinates(x : double, y : double, z : double){X = x;} def Translate(x : double, y : double, z : double){return = Point.ByCoordinates(11,12,13);} }";
 
             //liveRunner.UpdateCmdLineInterpreter(code);
-            liveRunner.UpdateCmdLineInterpreter(@"import (""ProtoGeometry.dll"");");
-            liveRunner.UpdateCmdLineInterpreter("p = Point.ByCoordinates(10,10,10);");
+            liveRunner.UpdateCmdLineInterpreter(@"import (""FFITarget.dll"");");
+            liveRunner.UpdateCmdLineInterpreter("p = DummyPoint.ByCoordinates(10,10,10);");
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("p");
 
@@ -691,7 +684,7 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -728,7 +721,7 @@ namespace ProtoTest.LiveRunner
             GraphSyncData syncData = new GraphSyncData(null, addedList, null);
 
             // emit the DS code from the AST tree
-            ProtoScript.Runners.ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.UpdateGraph(syncData);
 
             ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
@@ -769,16 +762,9 @@ namespace ProtoTest.LiveRunner
 
         }
 
-        private Subtree CreateSubTreeFromCode(Guid guid, string code)
-        {
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
-            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-            return subtree;
-        }
-
         private void AssertValue(string varname, object value)
         {
-            var mirror = astLiveRunner.InspectNodeValue(varname);
+            var mirror = liveRunner.InspectNodeValue(varname);
             MirrorData data = mirror.GetData();
             object svValue = data.Data;
             if (value is double)
@@ -808,13 +794,13 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
-        [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
+        [Category("PortToCodeBlocks")]
         public void TestAdd01()
         {
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "x = a; y = a; z = a; p = Point.ByCoordinates(x, y, z); px = p.X;",
+                "x = a; y = a; z = a; p = DummyPoint.ByCoordinates(x, y, z); px = p.X;",
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
@@ -825,10 +811,10 @@ namespace ProtoTest.LiveRunner
             for (int i = 0; i < shuffleCount; ++i)
             {
                 ILiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
-                liveRunner.ResetVMAndResyncGraph(new List<string> { "ProtoGeometry.dll" });
+                liveRunner.ResetVMAndResyncGraph(new List<string> { "FFITarget.dll" });
 
                 index = index.OrderBy(_ => randomGen.Next());
-                var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+                var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
                 var syncData = new GraphSyncData(null, added, null);
                 liveRunner.UpdateGraph(syncData);
@@ -841,38 +827,36 @@ namespace ProtoTest.LiveRunner
 
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void TestModify01()
         {
             List<string> codes = new List<string>() 
             {
                 "a = 1;",
-                "x = a; y = a; z = a; p = Point.ByCoordinates(x, y, z); px = p.X;",
+                "x = a; y = a; z = a; p = DummyPoint.ByCoordinates(x, y, z); px = p.X;",
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("px");
+            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("px");
             var value = (double)mirror.GetData().Data;
             Assert.AreEqual(value, 1);
 
             for (int i = 0; i < 10; ++i)
             {
                 codes[0] = "a = " + i.ToString() + ";";
-                var modified = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+                var modified = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
                 syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
-                mirror = astLiveRunner.InspectNodeValue("px");
+                mirror = liveRunner.InspectNodeValue("px");
                 value = (double)mirror.GetData().Data;
                 Assert.AreEqual(value, i);
             }
@@ -889,27 +873,27 @@ namespace ProtoTest.LiveRunner
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guid, codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("a");
+            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("a");
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 1);
 
             // Simulate delete a = 1 and add CBN a = 2
             int newval = 2;
             codes[0] = "a = " + newval.ToString() + ";";
-            var modified = index.Select(idx => CreateSubTreeFromCode(guid, codes[idx])).ToList();
+            var modified = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[idx])).ToList();
 
             List<Subtree> deletedList = new List<Subtree>();
             deletedList.Add(new Subtree(null, guid));
 
             syncData = new GraphSyncData(deletedList, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            Console.WriteLine("a = " + astLiveRunner.InspectNodeValue("a").GetStringData());
+            Console.WriteLine("a = " + liveRunner.InspectNodeValue("a").GetStringData());
             AssertValue("a", newval);
 
         }
@@ -926,24 +910,24 @@ namespace ProtoTest.LiveRunner
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("c");
+            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("c");
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 2);
 
             for (int i = 0; i < 10; ++i)
             {
                 codes[0] = "a = " + i.ToString() + ";";
-                var modified = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+                var modified = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
                 syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
-                Console.WriteLine("c = " + astLiveRunner.InspectNodeValue("c").GetStringData());
+                Console.WriteLine("c = " + liveRunner.InspectNodeValue("c").GetStringData());
                 AssertValue("c", i + 1);
             }
         }
@@ -962,30 +946,28 @@ namespace ProtoTest.LiveRunner
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("c");
+            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("c");
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 2);
 
             int newval = 2;
             codes[0] = "a = " + newval.ToString() + ";";
-            var modified = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+            var modified = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            Console.WriteLine("c = " + astLiveRunner.InspectNodeValue("c").GetStringData());
+            Console.WriteLine("c = " + liveRunner.InspectNodeValue("c").GetStringData());
             AssertValue("c", newval + 1);
 
         }
 
         [Test]
-        [Ignore]
-        [Category("ProtoGeometry")]
         [Category("PortToCodeBlocks")]
         public void RegressMAGN753()
         {
@@ -993,33 +975,33 @@ namespace ProtoTest.LiveRunner
             {
                 "t = 1..2;",
                 "x = t; a = x;",
-                "z = a; pts = Point.ByCoordinates(z, 10, 2); ptsx = pts.X;"
+                "z = a; pts = DummyPoint.ByCoordinates(z, 10, 2); ptsx = pts.X;"
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             for (int i = 1; i <= 10; ++i)
             {
                 codes[0] = "t = 0.." + i.ToString() + ";";
-                var modified = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+                var modified = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
                 syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
-                Console.WriteLine("a = " + astLiveRunner.InspectNodeValue("a").GetStringData());
+                Console.WriteLine("a = " + liveRunner.InspectNodeValue("a").GetStringData());
                 AssertValue("a", Enumerable.Range(0, i + 1));
 
-                Console.WriteLine("ptsx = " + astLiveRunner.InspectNodeValue("ptsx").GetStringData());
+                Console.WriteLine("ptsx = " + liveRunner.InspectNodeValue("ptsx").GetStringData());
                 AssertValue("ptsx", Enumerable.Range(0, i + 1));
 
-                Console.WriteLine("pts = " + astLiveRunner.InspectNodeValue("pts").GetStringData());
-                Assert.IsTrue(!string.IsNullOrEmpty(astLiveRunner.InspectNodeValue("pts").GetStringData()));
+                Console.WriteLine("pts = " + liveRunner.InspectNodeValue("pts").GetStringData());
+                Assert.IsTrue(!string.IsNullOrEmpty(liveRunner.InspectNodeValue("pts").GetStringData()));
             }
         }
 
@@ -1029,31 +1011,31 @@ namespace ProtoTest.LiveRunner
             List<string> codes = new List<string>() 
             {
                 "a=10;b=20;c=30;",
-                "var1=Point.ByCoordinates(a,b,c);",
-                "var2=Point.ByCoordinates(a,a,c);"
+                "var1=DummyPoint.ByCoordinates(a,b,c);",
+                "var2=DummyPoint.ByCoordinates(a,a,c);"
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             for (int i = 1; i <= 10; ++i)
             {
                 codes[0] = "a=10;b=20;c=" + i.ToString() + ";";
-                var modified = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+                var modified = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
                 syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
-                var var1_value = astLiveRunner.InspectNodeValue("var1").GetStringData();
+                var var1_value = liveRunner.InspectNodeValue("var1").GetStringData();
                 Console.WriteLine("var1 = " + var1_value);
                 Assert.IsTrue(!string.IsNullOrEmpty(var1_value));
 
-                var var2_value = astLiveRunner.InspectNodeValue("var2").GetStringData();
+                var var2_value = liveRunner.InspectNodeValue("var2").GetStringData();
                 Console.WriteLine("var2 = " + var2_value);
                 Assert.IsTrue(!string.IsNullOrEmpty(var2_value));
             }
@@ -1067,32 +1049,32 @@ namespace ProtoTest.LiveRunner
                 "h=1;",
                 "k=h;ll=k+2;",
                 "v=ll;hf=v+2;",
-                "a45=hf;vv=Point.ByCoordinates(a45, 3, 1);"
+                "a45=hf;vv=DummyPoint.ByCoordinates(a45, 3, 1);"
             };
             List<Guid> guids = Enumerable.Range(0, codes.Count).Select(_ => System.Guid.NewGuid()).ToList();
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             for (int i = 1; i <= 10; ++i)
             {
                 codes[0] = "h=1.." + i.ToString() + ";";
 
                 index = Enumerable.Range(0, 2);
-                var modified = index.Select(idx => CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
+                var modified = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guids[idx], codes[idx])).ToList();
 
                 syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
-                var strValue = astLiveRunner.InspectNodeValue("vv").GetStringData();
+                var strValue = liveRunner.InspectNodeValue("vv").GetStringData();
                 Console.WriteLine("vv = " + strValue);
                 Assert.IsTrue(!string.IsNullOrEmpty(strValue));
 
-                strValue = astLiveRunner.InspectNodeValue("hf").GetStringData();
+                strValue = liveRunner.InspectNodeValue("hf").GetStringData();
                 Console.WriteLine("hf = " + strValue);
                 Assert.IsTrue(!string.IsNullOrEmpty(strValue));
             }
@@ -1109,10 +1091,10 @@ namespace ProtoTest.LiveRunner
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
         }
@@ -1136,10 +1118,10 @@ namespace ProtoTest.LiveRunner
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("y", 2);
         }
@@ -1159,10 +1141,10 @@ namespace ProtoTest.LiveRunner
 
             {
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("x", 41);
             }
@@ -1170,10 +1152,10 @@ namespace ProtoTest.LiveRunner
             {
                 // Modify the function and verify
                 List<Subtree> modified = new List<Subtree>();
-                modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("x", new int[] { 41, 42 });
             }
@@ -1181,10 +1163,10 @@ namespace ProtoTest.LiveRunner
             {
                 // Modify the function and verify
                 List<Subtree> modified = new List<Subtree>();
-                modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("x", new int[] { 41, 42, 43 });
             }
@@ -1211,10 +1193,10 @@ namespace ProtoTest.LiveRunner
 
             {
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("r", true);
             }
@@ -1229,10 +1211,10 @@ namespace ProtoTest.LiveRunner
                 foreach (var index in indexes)
                 {
                     List<Subtree> modified = new List<Subtree>();
-                    modified.Add(CreateSubTreeFromCode(guid, codes[index]));
+                    modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[index]));
 
                     var syncData = new GraphSyncData(null, null, modified);
-                    astLiveRunner.UpdateGraph(syncData);
+                    liveRunner.UpdateGraph(syncData);
 
                     AssertValue("r", true);
                 }
@@ -1270,16 +1252,16 @@ r = Equals(x, {41, 42});
 
             // Create CBN
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", true);
 
             // Modify CBN
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", true);
         }
 
@@ -1301,10 +1283,10 @@ r = Equals(x, {41, 42});
 
             {
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("r", true);
             }
@@ -1320,10 +1302,10 @@ r = Equals(x, {41, 42});
                 foreach (var index in indexes)
                 {
                     List<Subtree> modified = new List<Subtree>();
-                    modified.Add(CreateSubTreeFromCode(guid, codes[index]));
+                    modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[index]));
 
                     var syncData = new GraphSyncData(null, null, modified);
-                    astLiveRunner.UpdateGraph(syncData);
+                    liveRunner.UpdateGraph(syncData);
 
                     AssertValue("r", true);
                 }
@@ -1343,10 +1325,10 @@ r = Equals(x, {41, 42});
 
             {
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("x", 5);
             }
@@ -1354,10 +1336,10 @@ r = Equals(x, {41, 42});
             {
                 // Modify the function and verify
                 List<Subtree> modified = new List<Subtree>();
-                modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("x", 10);
             }
@@ -1378,29 +1360,29 @@ r = Equals(x, {41, 42});
 
             {
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
             }
 
             {
                 // Modify the function 
                 List<Subtree> modified = new List<Subtree>();
-                modified.Add(CreateSubTreeFromCode(guid1, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
             }
 
 
             {
                 // Call the function
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
                 AssertValue("x", 10);
             }
         }
@@ -1421,39 +1403,39 @@ r = Equals(x, {41, 42});
 
             {
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
             }
 
             {
                 // Modify the function 
                 List<Subtree> modified = new List<Subtree>();
-                modified.Add(CreateSubTreeFromCode(guid1, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
             }
 
 
             {
                 // Call the function
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
                 AssertValue("x", 10);
             }
 
             {
                 // Modify the function 
                 List<Subtree> modified = new List<Subtree>();
-                modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[3]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
                 AssertValue("x", 5);
             }
         }
@@ -1471,17 +1453,17 @@ r = Equals(x, {41, 42});
             List<Subtree> added = new List<Subtree>();
 
             // Create CBNs
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 2);
 
             // Modify CBN2 - remove the last line
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
         }
@@ -1499,17 +1481,17 @@ r = Equals(x, {41, 42});
             List<Subtree> added = new List<Subtree>();
 
             // Create CBN
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("p", 12);
 
             // Modify function in CBN
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("p", 8);
         }
@@ -1527,10 +1509,10 @@ r = Equals(x, {41, 42});
             List<Subtree> added = new List<Subtree>();
 
             {
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("x", 5);
             }
@@ -1541,10 +1523,10 @@ r = Equals(x, {41, 42});
             guid = System.Guid.NewGuid();
             {
                 added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[1]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("y", 5);
             }
@@ -1568,14 +1550,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that uses function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 5);
 
@@ -1584,12 +1566,12 @@ r = Equals(x, {41, 42});
             List<Subtree> modified = new List<Subtree>();
 
             // Mark the CBN that uses f as modified
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed
             AssertValue("x", 10);
@@ -1613,14 +1595,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that uses function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 5);
 
@@ -1628,10 +1610,10 @@ r = Equals(x, {41, 42});
             // Redefine the CBN
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed
             AssertValue("x", 10);
@@ -1655,18 +1637,18 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that calls function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             // Create another CBN that calls function d
             guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 5);
 
@@ -1674,10 +1656,10 @@ r = Equals(x, {41, 42});
             // Redefine the CBN
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[3]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed
             AssertValue("x", 10);
@@ -1716,14 +1698,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that calls function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify
             AssertValue("y", 2);
@@ -1731,10 +1713,10 @@ r = Equals(x, {41, 42});
             // Redefine the function
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed
             AssertValue("y", 11);
@@ -1769,14 +1751,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that calls function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify
             AssertValue("y", 2);
@@ -1784,10 +1766,10 @@ r = Equals(x, {41, 42});
             // Redefine the function
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed
             AssertValue("y", 11);
@@ -1812,29 +1794,29 @@ r = Equals(x, {41, 42});
 
             // A new CBN for a global
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             // A CBN with function def f
             Guid guid_func1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func1, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[1]));
 
 
             // A CBN with function overload def f(i)
             Guid guid_func2 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func2, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[2]));
 
             // CBN for calling function f
             guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
 
 
             // CBN for calling overload function f(i)
             guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[4]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[4]));
 
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
             AssertValue("y", 12);
@@ -1843,10 +1825,10 @@ r = Equals(x, {41, 42});
             // Redefine the CBN
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(CreateSubTreeFromCode(guid_func2, codes[5]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[5]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that the call to the function f has not re-executed
             AssertValue("x", 1);
@@ -1857,7 +1839,6 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
-        [Category("Failing")]
         public void TestFunctionOverloadRedefinitionOnUnmodifiedNode02()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4229
@@ -1877,29 +1858,29 @@ r = Equals(x, {41, 42});
 
             // A new CBN for a global
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             // A CBN with function def f
             Guid guid_func1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func1, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[1]));
 
 
             // A CBN with function overload def f(i)
             Guid guid_func2 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func2, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[2]));
 
             // CBN for calling function f
             guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
 
 
             // CBN for calling overload function f(i)
             guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[4]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[4]));
 
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
             AssertValue("y", 12);
@@ -1908,11 +1889,11 @@ r = Equals(x, {41, 42});
             // Redefine both functions
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(CreateSubTreeFromCode(guid_func1, codes[5]));
-            modified.Add(CreateSubTreeFromCode(guid_func2, codes[6]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func1, codes[5]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func2, codes[6]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that the call to the function f has not re-executed
             AssertValue("x", 12);
@@ -1942,20 +1923,20 @@ r = Equals(x, {41, 42});
 
             // Create function foo, bar and a statement that uses them
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 2);
 
 
             // Add overload foo
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 2.0);
 
         }
@@ -1973,10 +1954,10 @@ r = Equals(x, {41, 42});
             List<Subtree> added = new List<Subtree>();
 
             {
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("x", 5);
             }
@@ -1987,10 +1968,10 @@ r = Equals(x, {41, 42});
             guid = System.Guid.NewGuid();
             {
                 added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid, codes[1]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("y", 6);
             }
@@ -2012,14 +1993,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that uses function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
 
@@ -2028,15 +2009,15 @@ r = Equals(x, {41, 42});
             List<Subtree> modified = new List<Subtree>();
 
             // Mark the CBN that uses f as modified
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed and that it can no loger find the function
-            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            RuntimeMirror mirror = liveRunner.InspectNodeValue("x");
             Assert.IsTrue(mirror.GetData().IsNull);
 
         }
@@ -2057,14 +2038,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that uses function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
 
@@ -2073,15 +2054,15 @@ r = Equals(x, {41, 42});
             List<Subtree> modified = new List<Subtree>();
 
             // Mark the CBN that uses f as modified
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
-            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            RuntimeMirror mirror = liveRunner.InspectNodeValue("x");
             Assert.IsTrue(mirror.GetData().IsNull);
 
         }
@@ -2102,14 +2083,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that uses function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
 
@@ -2118,15 +2099,15 @@ r = Equals(x, {41, 42});
             List<Subtree> modified = new List<Subtree>();
 
             // Mark the CBN that uses f as modified
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
-            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            RuntimeMirror mirror = liveRunner.InspectNodeValue("x");
             Assert.IsTrue(mirror.GetData().IsNull);
 
         }
@@ -2147,14 +2128,14 @@ r = Equals(x, {41, 42});
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[0]));
 
             // A new CBN that uses function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
             AssertValue("y", 2);
@@ -2163,15 +2144,15 @@ r = Equals(x, {41, 42});
             List<Subtree> modified = new List<Subtree>();
 
             // Mark the CBN that uses f as modified
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
-            modified.Add(CreateSubTreeFromCode(guid_func, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed and that it can no longer find the function 'f'
-            RuntimeMirror mirror = astLiveRunner.InspectNodeValue("x");
+            RuntimeMirror mirror = liveRunner.InspectNodeValue("x");
             Assert.IsTrue(mirror.GetData().IsNull);
 
             // Verify that 'y' was not affected and retains its old value
@@ -2182,8 +2163,8 @@ r = Equals(x, {41, 42});
         [Test]
         public void TestFunctionObjectInApply()
         {
-            astLiveRunner = new ProtoScript.Runners.LiveRunner();
-            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
+            liveRunner = new ProtoScript.Runners.LiveRunner();
+            liveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
             string code = @"
  def foo(x,y ) { return = x + y; }
  f = _SingleFunctionObject(foo, 2, {1}, {null, 42}, true); r = __Apply(f, 3);
@@ -2192,9 +2173,9 @@ r = Equals(x, {41, 42});
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
             {
-                added.Add(CreateSubTreeFromCode(guid, code));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code));
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
                 AssertValue("r", 45);
             }
         }
@@ -2214,18 +2195,18 @@ r = Equals(x, {41, 42});
 
             // CBN for global
             Guid guid_global = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_global, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_global, codes[0]));
 
             // A CBN with function def f
             Guid guid_func = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid_func, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid_func, codes[1]));
 
             // A new CBN that uses function f
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("g", 1);
             AssertValue("a", 10);
@@ -2235,10 +2216,10 @@ r = Equals(x, {41, 42});
             List<Subtree> modified = new List<Subtree>();
 
             // Mark the CBN that uses f as modified
-            modified.Add(CreateSubTreeFromCode(guid, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Verify that x must have automatically re-executed
             AssertValue("g", 1);    // This should not increment
@@ -2266,30 +2247,30 @@ r = Equals(x, {41, 42});
             List<Subtree> added = new List<Subtree>();
 
             // Create a, b, c CBNs
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
 
             // Connect a and b to  d = a + b
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("d", 3);
 
             // Delete b
             List<Subtree> deleted = new List<Subtree>();
-            deleted.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            deleted.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             syncData = new GraphSyncData(deleted, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Connect a and c to d = a + c
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid4, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[4]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("d", 4);
         }
@@ -2315,37 +2296,37 @@ r = Equals(x, {41, 42});
             Guid guid4 = System.Guid.NewGuid();
 
             // Create a and b
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
             // Connect a to c 
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("c", 1);
 
 
             // Connect b to c 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[3]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("c", 2);
 
             // Delete first node
             List<Subtree> deleted = new List<Subtree>();
-            deleted.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            deleted.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             syncData = new GraphSyncData(deleted, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             // Add new node d = c + 10;
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, codes[4]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[4]));
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("d", 12);
 
@@ -2373,24 +2354,24 @@ r = Equals(x, {41, 42});
             Guid guid3 = System.Guid.NewGuid();
 
             // Create 2 CBNs 
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("x", 1);
 
 
             // Create new CBN
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
 
             // Reconnect g2 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[3]));
 
             syncData = new GraphSyncData(null, added, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("b", 1);
 
@@ -2411,24 +2392,24 @@ r = Equals(x, {41, 42});
 
             // Create CBN
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("x", 0.0);
 
 
             // Modify the 2nd statement to a = p.X 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 0.0);
 
             // Modify the 1st statement to p = Point.ByCoordinates(1,0,0)
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1.0);
         }
 
@@ -2449,22 +2430,22 @@ r = Equals(x, {41, 42});
 
             // Create CBN's
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]));
             Guid guid2 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("p", 30);
 
 
             // Modify the 4th line to a = 15; b = 25;
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[3]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Expected value of Sum is 70 (30 + 15 +25)
             AssertValue("p", 70);
@@ -2482,17 +2463,17 @@ r = Equals(x, {41, 42});
 
             List<Subtree> added = new List<Subtree>();
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
 
             // Modify the CBN
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
         }
@@ -2508,17 +2489,17 @@ r = Equals(x, {41, 42});
 
             List<Subtree> added = new List<Subtree>();
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
 
             // Modify the CBN
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
 
         }
@@ -2540,18 +2521,18 @@ r = Equals(x, {41, 42});
             Guid guid2 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("x", 2);
 
 
             // Modify the CBN
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("x", 3);
         }
 
@@ -2569,21 +2550,21 @@ r = Equals(x, {41, 42});
 
             // Create CBN and run import stmt
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("b", 5.0);
         }
@@ -2603,27 +2584,27 @@ r = Equals(x, {41, 42});
 
             // Create CBN and run import stmt
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("b", 5.0);
         }
 
@@ -2642,21 +2623,21 @@ r = Equals(x, {41, 42});
 
             // Create CBN and run import stmt
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("b", 5.0);
         }
@@ -2676,27 +2657,27 @@ r = Equals(x, {41, 42});
 
             // Create CBN and run import stmt
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new line
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[3]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("b", 5.0);
         }
 
@@ -2719,28 +2700,28 @@ r = Equals(x, {41, 42});
             Guid guid3 = System.Guid.NewGuid();
 
             // Create CBN and run import stmt
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new lines
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[3]));
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Connect Point to 'a'
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid3, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[4]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Modify x
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("i", 10.0);
         }
@@ -2765,28 +2746,28 @@ r = Equals(x, {41, 42});
             Guid guid3 = System.Guid.NewGuid();
 
             // Create CBN and run import stmt
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Add new lines
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[3]));
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Connect Point to 'a'
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid3, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[4]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Modify x
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("i", 10.0);
         }
@@ -2805,18 +2786,18 @@ r = Equals(x, {41, 42});
             Guid guid2 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("x", 1);
 
 
             // Modify the CBN
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid1, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("x", 2);
         }
 
@@ -2840,50 +2821,50 @@ r = Equals(x, {41, 42});
             List<Subtree> added = new List<Subtree>();
 
             // Create CBN and run import stmt
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             // Create a CBN with a point
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
             // Create a CBN that checks the value of p.Y
-            added.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[3]));
 
             // Execute
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("i", 0.0);
 
 
             // Create a CBN defining 'y'
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[1]));
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("y", 10.0);
 
             // Connect CBN to point
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[4]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("i", 10.0);
 
             // Disconnect point
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("i", 0.0);
 
             // Delete CBN
             List<Subtree> deleted = new List<Subtree>();
-            deleted.Add(CreateSubTreeFromCode(guid4, codes[1]));
+            deleted.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[1]));
             syncData = new GraphSyncData(deleted, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("i", 0.0);
         }
 
@@ -2904,20 +2885,20 @@ r = Equals(x, {41, 42});
             List<Subtree> added = new List<Subtree>();
 
             // Create CBNs
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("p", 2);
 
             // Modify CBN2 - Remove the line that calls the function
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            var mirror = astLiveRunner.InspectNodeValue("p");
+            var mirror = liveRunner.InspectNodeValue("p");
 
             Assert.IsTrue(mirror.GetData().IsNull);
         }
@@ -2934,23 +2915,23 @@ r = Equals(x, {41, 42});
             // Simulate an empty codeblock
             List<Subtree> added = new List<Subtree>();
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, ""));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, ""));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Modify the CBN
             List<Subtree> modified = new List<Subtree>();
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[0]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
             // Modify the CBN
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
         }
@@ -2967,23 +2948,23 @@ r = Equals(x, {41, 42});
             // Simulate an empty codeblock
             List<Subtree> added = new List<Subtree>();
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, ""));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, ""));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Modify the CBN
             List<Subtree> modified = new List<Subtree>();
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[0]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
             // Modify the CBN
             modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
 
         }
@@ -3006,23 +2987,23 @@ r = Equals(x, {41, 42});
             Guid guid3 = System.Guid.NewGuid();
 
             // Create a and b
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
             // Connect a to c 
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("c", 1);
 
             // Connect b to c 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid3, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[3]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("c", 2);
 
@@ -3030,10 +3011,10 @@ r = Equals(x, {41, 42});
             List<Subtree> deleted = new List<Subtree>();
 
             // Mark the CBN that uses f as modified
-            deleted.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            deleted.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
 
             syncData = new GraphSyncData(deleted, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // c should not have changed
             AssertValue("c", 2);
@@ -3045,26 +3026,26 @@ r = Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                "p = Point.ByCoordinates(0,0,0);"
+                "p = DummyPoint.ByCoordinates(0,0,0);"
             };
 
             List<Subtree> added = new List<Subtree>();
 
             // Create a node
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             // Delete the node
             List<Subtree> deleted = new List<Subtree>();
-            deleted.Add(CreateSubTreeFromCode(guid, codes[0]));
+            deleted.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             syncData = new GraphSyncData(deleted, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            var mirror = astLiveRunner.InspectNodeValue("p");
+            var mirror = liveRunner.InspectNodeValue("p");
             Assert.IsTrue(mirror.GetData().IsNull);
 
         }
@@ -3082,11 +3063,11 @@ r = Equals(x, {41, 42});
             Guid guid2 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("a", 2);
 
@@ -3116,13 +3097,13 @@ r = Equals(x, {41, 42});
             Guid guid5 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("a", 3);
             AssertValue("global", 1);
@@ -3130,10 +3111,10 @@ r = Equals(x, {41, 42});
 
             // Modify the function call CBN so it connects to the input 'z'
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid5, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, codes[4]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("a", 12);
 
@@ -3158,13 +3139,13 @@ r = Equals(x, {41, 42});
             Guid guid4 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 10);
         }
@@ -3183,10 +3164,10 @@ r = Equals(x, {41, 42});
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
             {
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a", 42);
                 AssertValue("b", 42);
@@ -3194,10 +3175,10 @@ r = Equals(x, {41, 42});
 
             List<Subtree> modified = new List<Subtree>();
             {
-                modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a", 24);
                 AssertValue("b", 24);
@@ -3205,10 +3186,10 @@ r = Equals(x, {41, 42});
 
             modified = new List<Subtree>();
             {
-                modified.Add(CreateSubTreeFromCode(guid, codes[0]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a", 42);
                 AssertValue("b", 42);
@@ -3216,10 +3197,10 @@ r = Equals(x, {41, 42});
 
             modified = new List<Subtree>();
             {
-                modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a", 24);
                 AssertValue("b", 24);
@@ -3240,10 +3221,10 @@ r = Equals(x, {41, 42});
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
             {
-                added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a1", 42);
                 AssertValue("b1", 42);
@@ -3254,10 +3235,10 @@ r = Equals(x, {41, 42});
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
             {
-                added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a2", 24);
                 AssertValue("b2", 24);
@@ -3266,10 +3247,10 @@ r = Equals(x, {41, 42});
             // Modify CBN2 to a2 = b2 = 42;
             List<Subtree> modified = new List<Subtree>();
             {
-                modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a2", 42);
                 AssertValue("b2", 42);
@@ -3278,10 +3259,10 @@ r = Equals(x, {41, 42});
             // Modify CBN2 a2 = b2 = 24;
             modified = new List<Subtree>();
             {
-                modified.Add(CreateSubTreeFromCode(guid2, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a2", 24);
                 AssertValue("b2", 24);
@@ -3301,10 +3282,10 @@ r = Equals(x, {41, 42});
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
             {
-                added.Add(CreateSubTreeFromCode(guid, codes[0]));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
                 var syncData = new GraphSyncData(null, added, null);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a", 1);
                 AssertValue("b", 1);
@@ -3315,10 +3296,10 @@ r = Equals(x, {41, 42});
             // Modify CBN2 to a2 = b2 = 42;
             List<Subtree> modified = new List<Subtree>();
             {
-                modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
                 var syncData = new GraphSyncData(null, null, modified);
-                astLiveRunner.UpdateGraph(syncData);
+                liveRunner.UpdateGraph(syncData);
 
                 AssertValue("a", 2);
                 AssertValue("b", 2);
@@ -3351,20 +3332,20 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid2 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 1);
 
 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("x", 100);
         }
@@ -3383,19 +3364,19 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid2 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
         }
 
         [Test]
@@ -3411,14 +3392,14 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid2 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Graph UI node -> ASTs
-            var astNodes = astLiveRunner.Core.CachedSSANodes;
+            var astNodes = liveRunner.Core.DSExecutable.CachedSSANodes;
             bool foundCallsite = false;
             Guid callsiteId = Guid.Empty;
 
@@ -3426,7 +3407,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             foreach (var ast in astNodes)
             {
                 ProtoCore.CallSite callsite;
-                if (astLiveRunner.Core.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
+                if (liveRunner.Core.DSExecutable.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
                 {
                     callsiteId = callsite.CallSiteID;
                     foundCallsite = true;
@@ -3437,7 +3418,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // CallSite -> Graph UI node
             Assert.IsTrue(foundCallsite);
-            Assert.AreEqual(guid2, astLiveRunner.Core.CallSiteToNodeMap[callsiteId]);
+            Assert.AreEqual(guid2, liveRunner.Core.DSExecutable.CallSiteToNodeMap[callsiteId]);
         }
 
         [Test]
@@ -3454,31 +3435,31 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN1 for import
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Create CBN2 to use TestCount
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
 
             // Create CBN3 to check value of TestCount
             Guid guid3 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
 
             // Modify CBN2 with same contents with ForceExecution flag set
             List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid2, codes[1]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]);
             subtree.ForceExecution = true;
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
 
@@ -3494,17 +3475,17 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             List<Subtree> added = new List<Subtree>();
 
             Guid guid = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
             // Modify
             List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid, codes[1]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]);
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
 
@@ -3523,311 +3504,33 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN1 for import
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Create CBN2 to use TestCount
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
 
             // Create CBN3 to check value of TestCount
             Guid guid3 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 31);
 
 
             // Modify CBN2 with new contents with ForceExecution flag set
             // This incremenets the count from the FFI lib. 
             List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid2, codes[3]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[3]);
             subtree.ForceExecution = true;
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 42);
-        }
-
-        [Test]
-        public void TestForceReExecuteFFI01()
-        {
-            // This test simulates a node being run as force execution 
-            // Simulates the defect found in http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4642
-            // 1. The node is initially force executed with the form "p_out = null; p = p_out"
-            // 2. The node is is force executed with the form "p_out = DummyPoint.ByCoordinates(1, 2, 3); p = p_out;"
-            // 3. Force re-execute the node another 4 times
-
-            List<string> codes = new List<string>() 
-            {
-                @"import(""FFITarget.dll"");", 
-                "p_out = null; p = p_out;",     // Initial state of CBN
-                "p_out = DummyPoint.ByCoordinates(1, 2, 3); p = p_out;",    // Next state of CBN 
-                "y = 1;",    // Simple CBN
-                "y = 2;",    // Modify the Simple CBN
-                "a = p.X;"
-            };
-
-            List<Subtree> added = new List<Subtree>();
-
-            // Create CBN1 for import
-            Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
-
-            // Create CBN2 
-            Guid guid2 = System.Guid.NewGuid();
-            added = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid2, codes[1]);
-            subtree.ForceExecution = true;
-            added.Add(subtree);
-
-            // Create CBN4 - output check
-            Guid guid4 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid4, codes[5]));
-
-            //========================================
-            // Execute 1st run
-            //========================================
-            syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
-
-
-            // Set CBN2 as force execution
-            List<Subtree> modified = new List<Subtree>();
-            subtree = CreateSubTreeFromCode(guid2, codes[2]);
-            subtree.ForceExecution = true;
-            modified.Add(subtree);
-
-            // Add CBN3: y = 1
-            Guid guid3 = System.Guid.NewGuid();
-            subtree = CreateSubTreeFromCode(guid3, codes[3]);
-            modified.Add(subtree);
-
-            //========================================
-            // Execute 2nd run
-            //========================================
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-
-
-            // Set CBN2 as force execution
-            modified = new List<Subtree>();
-            subtree = CreateSubTreeFromCode(guid2, codes[2]);
-            subtree.ForceExecution = true;
-            modified.Add(subtree);
-
-            // Modify CBN3: y = 2
-            guid3 = System.Guid.NewGuid();
-            subtree = CreateSubTreeFromCode(guid3, codes[4]);
-            modified.Add(subtree);
-
-            //========================================
-            // Execute 3rd run
-            //========================================
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("a", 1.0);
-
-
-            // Set CBN2 as force execution
-            modified = new List<Subtree>();
-            subtree = CreateSubTreeFromCode(guid2, codes[2]);
-            subtree.ForceExecution = true;
-            modified.Add(subtree);
-
-            // Modify CBN3: y = 1
-            guid3 = System.Guid.NewGuid();
-            subtree = CreateSubTreeFromCode(guid3, codes[3]);
-            modified.Add(subtree);
-
-            //========================================
-            // Execute 4th run
-            //========================================
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("a", 1.0);
-
-
-            // Set CBN2 as force execution
-            modified = new List<Subtree>();
-            subtree = CreateSubTreeFromCode(guid2, codes[2]);
-            subtree.ForceExecution = true;
-            modified.Add(subtree);
-
-            // Modify CBN3: y = 2
-            guid3 = System.Guid.NewGuid();
-            subtree = CreateSubTreeFromCode(guid3, codes[4]);
-            modified.Add(subtree);
-
-            //========================================
-            // Execute 5th run
-            //========================================
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("a", 1.0);
-
-
-            // Set CBN2 as force execution
-            modified = new List<Subtree>();
-            subtree = CreateSubTreeFromCode(guid2, codes[2]);
-            subtree.ForceExecution = true;
-            modified.Add(subtree);
-
-            // Modify CBN3: y = 1
-            guid3 = System.Guid.NewGuid();
-            subtree = CreateSubTreeFromCode(guid3, codes[3]);
-            modified.Add(subtree);
-
-            //========================================
-            // Execute 6th run
-            //========================================
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("a", 1.0);
-
-        }
-
-        [Test]
-        public void TestReExecuteRecursiveFunction01()
-        {
-            List<string> codes = new List<string>() 
-            {
-@"
-    a = 1;
-", 
-
-@"
-    def f(x)
-    {
-        i = [Imperative]
-        {
-            if(x == 1)
-            {
-                return = [Associative]
-                {
-                   return = 10;
-                }
-            }
-            else
-            {
-                return = [Associative]
-                {
-                    return = 20;
-                }
-            }
-        }
-        return = i;
-    }	
-    b = f(a);
-",
-
-@"
-    a = 2;
-"
-
-            };
-
-            List<Subtree> added = new List<Subtree>();
-
-            Guid guid1 = System.Guid.NewGuid();
-            Guid guid2 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("b", 10);
-
-            // Modify
-            List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid1, codes[2]);
-            modified.Add(subtree);
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("b", 20);
-        }
-
-        [Test]
-        public void TestReExecuteRecursiveFunction02()
-        {
-            List<string> codes = new List<string>() 
-            {
-@"
-    a = 1;
-", 
-
-@"
-    def f(x)
-    {
-        i = [Imperative]
-        {
-            if(x == 1)
-            {
-                return = [Associative]
-                {
-                   return = 10;
-                }
-            }
-            else if (x == 2)
-            {
-                return = [Associative]
-                {
-                    return = 20;
-                }
-            }
-            else 
-            {
-                return = [Associative]
-                {
-                    return = 30;
-                }
-            }
-        }
-        return = i;
-    }	
-    b = f(a);
-",
-
-@"
-    a = 2;
-",
-
-@"
-    a = 3;
-"
-
-            };
-
-            List<Subtree> added = new List<Subtree>();
-
-            Guid guid1 = System.Guid.NewGuid();
-            Guid guid2 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("b", 10);
-
-            // Modify
-            List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid1, codes[2]);
-            modified.Add(subtree);
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("b", 20);
-
-
-            // Modify
-            modified = new List<Subtree>();
-            subtree = CreateSubTreeFromCode(guid1, codes[3]);
-            modified.Add(subtree);
-            syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            AssertValue("b", 30);
         }
 
         [Test]
@@ -3845,31 +3548,31 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN1 for import
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Create CBN2 to create a = 
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
 
-            Subtree cbn2 = CreateSubTreeFromCode(guid2, codes[1]);
+            Subtree cbn2 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]);
             added.Add(cbn2);
 
             // Create CBN3 to create b = 
             Guid guid3 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
 
             // Create CBN4 to create c = 
             Guid guid4 = System.Guid.NewGuid();
-            Subtree cbn4 = CreateSubTreeFromCode(guid4, codes[3]);
+            Subtree cbn4 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]);
             added.Add(cbn4);
 
             //Run
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            var mirror = astLiveRunner.InspectNodeValue("a");
+            var mirror = liveRunner.InspectNodeValue("a");
             MirrorData data = mirror.GetData();
 
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
@@ -3877,23 +3580,23 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             //Delete a =
             syncData = new GraphSyncData(new List<Subtree>() { cbn2 }, null, null);
             //Run            
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Create a = 
             syncData = new GraphSyncData(null, new List<Subtree>() { cbn2 }, null);
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             //Delete a_in = ...
             syncData = new GraphSyncData(new List<Subtree>() { cbn4 }, null, null);
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             //The output of A should still be a point, but it isn't it's now the stack pointer
-            mirror = astLiveRunner.InspectNodeValue("a");
+            mirror = liveRunner.InspectNodeValue("a");
             data = mirror.GetData();
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
 
@@ -3915,32 +3618,32 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN1 for import
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Create CBN2 to create a = 
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
 
-            Subtree cbn2 = CreateSubTreeFromCode(guid2, codes[1]);
+            Subtree cbn2 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]);
             added.Add(cbn2);
 
             // Create CBN3 to create b = 
             Guid guid3 = System.Guid.NewGuid();
-            Subtree cbn3 = CreateSubTreeFromCode(guid3, codes[2]);
+            Subtree cbn3 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]);
             added.Add(cbn3);
 
             // Create CBN4 to create c = 
             Guid guid4 = System.Guid.NewGuid();
-            Subtree cbn4 = CreateSubTreeFromCode(guid4, codes[3]);
+            Subtree cbn4 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]);
             added.Add(cbn4);
 
             //Run
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            var mirror = astLiveRunner.InspectNodeValue("t_0_a");
+            var mirror = liveRunner.InspectNodeValue("t_0_a");
             MirrorData data = mirror.GetData();
 
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
@@ -3949,44 +3652,44 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             //Delete CBN4
             syncData = new GraphSyncData(new List<Subtree>() { cbn4 }, null, null);
             //Run            
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Create a = 
             syncData = new GraphSyncData(null, new List<Subtree>() { cbn4 }, null);
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
             //Delete CBN3
             //Modify CBN4 to set in arg from CBN 3 to be null
-            Subtree newCBN4 = CreateSubTreeFromCode(guid4, "a_6 = null; b_6 = t_0_a; t_0_7 = DummyLine.ByStartPointEndPoint(a_6,b_6);");
+            Subtree newCBN4 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "a_6 = null; b_6 = t_0_a; t_0_7 = DummyLine.ByStartPointEndPoint(a_6,b_6);");
             syncData = new GraphSyncData(new List<Subtree>() { cbn3 }, null, new List<Subtree> { newCBN4 });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
             //Recreate CBN3
             //Set CBN4 back to what it was
             syncData = new GraphSyncData(null, new List<Subtree> { cbn3 }, new List<Subtree> { cbn4 });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //The output of A should still be a point, but it isn't it's now the stack pointer
-            mirror = astLiveRunner.InspectNodeValue("t_0_a");
+            mirror = liveRunner.InspectNodeValue("t_0_a");
             data = mirror.GetData();
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
 
-            mirror = astLiveRunner.InspectNodeValue("t_0_b");
+            mirror = liveRunner.InspectNodeValue("t_0_b");
             data = mirror.GetData();
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
 
 
-            mirror = astLiveRunner.InspectNodeValue("t_0_7");
+            mirror = liveRunner.InspectNodeValue("t_0_7");
             data = mirror.GetData();
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyLine));
         }
@@ -4006,32 +3709,32 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN1 for import
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Create CBN2 to create a = 
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
 
-            Subtree cbn2 = CreateSubTreeFromCode(guid2, codes[1]);
+            Subtree cbn2 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]);
             added.Add(cbn2);
 
             // Create CBN3 to create b = 
             Guid guid3 = System.Guid.NewGuid();
-            Subtree cbn3 = CreateSubTreeFromCode(guid3, codes[2]);
+            Subtree cbn3 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]);
             added.Add(cbn3);
 
             // Create CBN4 to create c = 
             Guid guid4 = System.Guid.NewGuid();
-            Subtree cbn4 = CreateSubTreeFromCode(guid4, codes[3]);
+            Subtree cbn4 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]);
             added.Add(cbn4);
 
             //Run
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            var mirror = astLiveRunner.InspectNodeValue("t_0_a");
+            var mirror = liveRunner.InspectNodeValue("t_0_a");
             MirrorData data = mirror.GetData();
 
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
@@ -4040,24 +3743,24 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             //Delete CBN4
             syncData = new GraphSyncData(new List<Subtree>() { cbn4 }, null, null);
             //Run            
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Create a = 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbn4 });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
             //Delete CBN3
             //Modify CBN4 to set in arg from CBN 3 to be null
-            Subtree newCBN4 = CreateSubTreeFromCode(guid4, "a_6 = null; b_6 = t_0_a; t_0_6 = DummyLine.ByStartPointEndPoint(a_6,b_6);");
+            Subtree newCBN4 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "a_6 = null; b_6 = t_0_a; t_0_6 = DummyLine.ByStartPointEndPoint(a_6,b_6);");
             syncData = new GraphSyncData(new List<Subtree>() { cbn3 }, null, new List<Subtree> { newCBN4 });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
@@ -4065,37 +3768,37 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             //Recreate CBN3
             //Set CBN4 back to what it was
             syncData = new GraphSyncData(null, null, new List<Subtree> { cbn3, cbn4 });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Delete CBN4
             syncData = new GraphSyncData(new List<Subtree>() { cbn4 }, null, null);
             //Run            
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Create a = 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbn4 });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
             //The output of A should still be a point, but it isn't it's now the stack pointer
-            mirror = astLiveRunner.InspectNodeValue("t_0_a");
+            mirror = liveRunner.InspectNodeValue("t_0_a");
             data = mirror.GetData();
             Console.WriteLine(data);
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
 
-            mirror = astLiveRunner.InspectNodeValue("t_0_e");
+            mirror = liveRunner.InspectNodeValue("t_0_e");
             data = mirror.GetData();
             Console.WriteLine(data);
 
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
 
 
-            mirror = astLiveRunner.InspectNodeValue("t_0_6");
+            mirror = liveRunner.InspectNodeValue("t_0_6");
             data = mirror.GetData();
             Console.WriteLine(data);
 
@@ -4117,37 +3820,37 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN1 for import
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Create CBN2 to create a = 
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
 
-            Subtree cbn2 = CreateSubTreeFromCode(guid2, codes[1]);
+            Subtree cbn2 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]);
             added.Add(cbn2);
 
             // Create CBN3 to create b = 
             Guid guid3 = System.Guid.NewGuid();
-            Subtree cbn3 = CreateSubTreeFromCode(guid3, codes[2]);
+            Subtree cbn3 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]);
             added.Add(cbn3);
 
             // Create CBN4 to create c = 
             Guid guid4 = System.Guid.NewGuid();
-            Subtree cbn4 = CreateSubTreeFromCode(guid4, codes[3]);
+            Subtree cbn4 = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]);
             added.Add(cbn4);
 
             //Run
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            var mirror = astLiveRunner.InspectNodeValue("a");
+            var mirror = liveRunner.InspectNodeValue("a");
             MirrorData data = mirror.GetData();
 
-            astLiveRunner.InspectNodeValue("a").GetData();
-            astLiveRunner.InspectNodeValue("b").GetData();
-            astLiveRunner.InspectNodeValue("c").GetData();
+            liveRunner.InspectNodeValue("a").GetData();
+            liveRunner.InspectNodeValue("b").GetData();
+            liveRunner.InspectNodeValue("c").GetData();
 
 
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
@@ -4155,67 +3858,67 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             //Delete c =
             syncData = new GraphSyncData(new List<Subtree>() { cbn4 }, null, null);
             //Run            
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            astLiveRunner.InspectNodeValue("a").GetData();
-            astLiveRunner.InspectNodeValue("b").GetData();
+            liveRunner.InspectNodeValue("a").GetData();
+            liveRunner.InspectNodeValue("b").GetData();
 
 
             //Create c = 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbn4 });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            astLiveRunner.InspectNodeValue("a").GetData();
-            astLiveRunner.InspectNodeValue("b").GetData();
-            astLiveRunner.InspectNodeValue("c").GetData();
+            liveRunner.InspectNodeValue("a").GetData();
+            liveRunner.InspectNodeValue("b").GetData();
+            liveRunner.InspectNodeValue("c").GetData();
 
             //Delete b_in = ...
-            Subtree cbn4New = CreateSubTreeFromCode(guid4,
+            Subtree cbn4New = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4,
                                                     "a_in = a; b_in = null; c = DummyLine.ByStartPointEndPoint(a,b);");
             syncData = new GraphSyncData(new List<Subtree>() { cbn3 }, null, new List<Subtree>() { cbn4New });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            astLiveRunner.InspectNodeValue("a").GetData();
-            astLiveRunner.InspectNodeValue("c").GetData();
+            liveRunner.InspectNodeValue("a").GetData();
+            liveRunner.InspectNodeValue("c").GetData();
 
             //Reset CBN 3 and 4
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbn3, cbn4 });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            astLiveRunner.InspectNodeValue("a").GetData();
-            astLiveRunner.InspectNodeValue("b").GetData();
-            astLiveRunner.InspectNodeValue("c").GetData();
+            liveRunner.InspectNodeValue("a").GetData();
+            liveRunner.InspectNodeValue("b").GetData();
+            liveRunner.InspectNodeValue("c").GetData();
 
             //Delete c =
             syncData = new GraphSyncData(new List<Subtree>() { cbn4 }, null, null);
             //Run            
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            astLiveRunner.InspectNodeValue("a").GetData();
-            astLiveRunner.InspectNodeValue("b").GetData();
+            liveRunner.InspectNodeValue("a").GetData();
+            liveRunner.InspectNodeValue("b").GetData();
 
             //Create c = 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbn4 });
 
             //Run
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            astLiveRunner.InspectNodeValue("a").GetData();
-            astLiveRunner.InspectNodeValue("b").GetData();
-            astLiveRunner.InspectNodeValue("c").GetData();
+            liveRunner.InspectNodeValue("a").GetData();
+            liveRunner.InspectNodeValue("b").GetData();
+            liveRunner.InspectNodeValue("c").GetData();
 
             //The output of A should still be a point, but it isn't it's now the stack pointer
-            mirror = astLiveRunner.InspectNodeValue("a");
+            mirror = liveRunner.InspectNodeValue("a");
             data = mirror.GetData();
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyPoint));
 
-            mirror = astLiveRunner.InspectNodeValue("c");
+            mirror = liveRunner.InspectNodeValue("c");
             data = mirror.GetData();
             Assert.IsTrue(data.Data.GetType() == typeof(FFITarget.DummyLine));
 
@@ -4237,7 +3940,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN0 for import
             Guid guid0 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid0, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid0, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
             //astLiveRunner.UpdateGraph(syncData);
 
@@ -4245,97 +3948,97 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid1 = System.Guid.NewGuid();
             //added = new List<Subtree>();
 
-            Subtree cbnNum = CreateSubTreeFromCode(guid1, codes[1]);
+            Subtree cbnNum = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             added.Add(cbnNum);
 
             // Create CBN2 to create v0 = 
             Guid guid2 = System.Guid.NewGuid();
-            Subtree cbnPt = CreateSubTreeFromCode(guid2, codes[2]);
-            Subtree cbnDel = CreateSubTreeFromCode(guid2,
+            Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
+            Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
                 "v0 = _SingleFunctionObject(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
 
             added.Add(cbnPt);
 
             //Run
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            Assert.IsTrue((long)astLiveRunner.InspectNodeValue("t0").GetData().Data == 0);
-            Assert.IsTrue(astLiveRunner.InspectNodeValue("v0").GetData().Data.GetType() == typeof(FFITarget.DummyPoint));
+            Assert.IsTrue((long)liveRunner.InspectNodeValue("t0").GetData().Data == 0);
+            Assert.IsTrue(liveRunner.InspectNodeValue("v0").GetData().Data.GetType() == typeof(FFITarget.DummyPoint));
 
 
             //Del and reset the cbnPt
             syncData = new GraphSyncData(new List<Subtree>() { cbnPt }, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Del and reset the cbnNum
             syncData = new GraphSyncData(new List<Subtree>() { cbnNum }, null, new List<Subtree>() { cbnDel });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnNum, cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Del and reset the cbnPt
             syncData = new GraphSyncData(new List<Subtree>() { cbnPt }, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
             //Del and reset the cbnPt
             syncData = new GraphSyncData(new List<Subtree>() { cbnPt }, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
             //Del and reset the cbnPt
             syncData = new GraphSyncData(new List<Subtree>() { cbnPt }, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
 
             //Del and reset the cbnNum
             syncData = new GraphSyncData(new List<Subtree>() { cbnNum }, null, new List<Subtree>() { cbnDel });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnNum, cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
 
             //Del and reset the cbnPt
             syncData = new GraphSyncData(new List<Subtree>() { cbnPt }, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
 
 
 
             //Del and reset the cbnPt
             syncData = new GraphSyncData(new List<Subtree>() { cbnPt }, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnPt });
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            Assert.IsTrue((long)astLiveRunner.InspectNodeValue("t0").GetData().Data == 0);
-            Assert.IsTrue(astLiveRunner.InspectNodeValue("v0").GetData().Data.GetType() == typeof(FFITarget.DummyPoint));
+            Assert.IsTrue((long)liveRunner.InspectNodeValue("t0").GetData().Data == 0);
+            Assert.IsTrue(liveRunner.InspectNodeValue("v0").GetData().Data.GetType() == typeof(FFITarget.DummyPoint));
 
 
         }
@@ -4355,7 +4058,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // Create CBN0 for import
             Guid guid0 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid0, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid0, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
             //astLiveRunner.UpdateGraph(syncData);
 
@@ -4363,28 +4066,28 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             Guid guid1 = System.Guid.NewGuid();
             //added = new List<Subtree>();
 
-            Subtree cbnNum = CreateSubTreeFromCode(guid1, codes[1]);
+            Subtree cbnNum = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             added.Add(cbnNum);
 
             // Create CBN2 to create v0 = 
             Guid guid2 = System.Guid.NewGuid();
-            Subtree cbnPt = CreateSubTreeFromCode(guid2, codes[2]);
-            Subtree cbnDel = CreateSubTreeFromCode(guid2,
+            Subtree cbnPt = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]);
+            Subtree cbnDel = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2,
                 "v0 = _SingleFunctionObject(FFITarget.DummyPoint.ByCoordinates, 3, {}, {null, null, null}, true);");
 
             added.Add(cbnPt);
 
             //Run
             syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            Assert.IsTrue((long)astLiveRunner.InspectNodeValue("t0").GetData().Data == 0);
-            Assert.IsTrue(astLiveRunner.InspectNodeValue("v0").GetData().Data.GetType() == typeof(FFITarget.DummyPoint));
+            Assert.IsTrue((long)liveRunner.InspectNodeValue("t0").GetData().Data == 0);
+            Assert.IsTrue(liveRunner.InspectNodeValue("v0").GetData().Data.GetType() == typeof(FFITarget.DummyPoint));
 
 
             Random rand = new Random(876);
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 Console.WriteLine(i);
 
@@ -4394,10 +4097,10 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
                     //Del and reset the cbnPt
                     syncData = new GraphSyncData(new List<Subtree>() { cbnPt }, null, null);
-                    astLiveRunner.UpdateGraph(syncData);
+                    liveRunner.UpdateGraph(syncData);
 
                     syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnPt });
-                    astLiveRunner.UpdateGraph(syncData);
+                    liveRunner.UpdateGraph(syncData);
                 }
                 else
                 {
@@ -4406,18 +4109,18 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
                     //Del and reset the cbnNum
                     syncData = new GraphSyncData(new List<Subtree>() { cbnNum }, null, new List<Subtree>() { cbnDel });
-                    astLiveRunner.UpdateGraph(syncData);
+                    liveRunner.UpdateGraph(syncData);
 
                     syncData = new GraphSyncData(null, null, new List<Subtree>() { cbnNum, cbnPt });
-                    astLiveRunner.UpdateGraph(syncData);
+                    liveRunner.UpdateGraph(syncData);
 
                 }
 
 
 
-                Assert.IsTrue(astLiveRunner.InspectNodeValue("t0").GetData().Data != null);
-                Assert.IsTrue((long)astLiveRunner.InspectNodeValue("t0").GetData().Data == 0);
-                Assert.IsTrue(astLiveRunner.InspectNodeValue("v0").GetData().Data.GetType() ==
+                Assert.IsTrue(liveRunner.InspectNodeValue("t0").GetData().Data != null);
+                Assert.IsTrue((long)liveRunner.InspectNodeValue("t0").GetData().Data == 0);
+                Assert.IsTrue(liveRunner.InspectNodeValue("v0").GetData().Data.GetType() ==
                               typeof(FFITarget.DummyPoint));
 
             }
@@ -4435,12 +4138,12 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // add two nodes
             IEnumerable<int> index = Enumerable.Range(0, codes.Count);
-            var added = index.Select(idx => CreateSubTreeFromCode(guid, codes[idx])).ToList();
+            var added = index.Select(idx => ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[idx])).ToList();
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            ProtoCore.Mirror.RuntimeMirror mirror = astLiveRunner.InspectNodeValue("i");
+            ProtoCore.Mirror.RuntimeMirror mirror = liveRunner.InspectNodeValue("i");
             StackValue value = mirror.GetData().GetStackValue();
             Assert.AreEqual(value.opdata, 1);
         }
@@ -4462,9 +4165,9 @@ a = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
 
@@ -4489,9 +4192,9 @@ a = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
 
@@ -4520,9 +4223,9 @@ a = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 11);
         }
 
@@ -4547,9 +4250,9 @@ a = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 10);
         }
 
@@ -4575,9 +4278,9 @@ a = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 15);
         }
 
@@ -4604,9 +4307,9 @@ a = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
         }
 
@@ -4627,9 +4330,9 @@ a = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 11);
         }
 
@@ -4658,17 +4361,17 @@ a = [Imperative]
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
             // Modify the language block and verify
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("a", 2);
         }
@@ -4707,17 +4410,17 @@ a = [Imperative]
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
             // Modify the language block and verify
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("a", 10);
         }
@@ -4760,17 +4463,17 @@ a = [Imperative]
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
             // Modify the language block and verify
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("a", 100);
         }
@@ -4809,17 +4512,17 @@ a = [Imperative]
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 10);
 
             // Modify the language block and verify
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("a", 100);
         }
@@ -4844,9 +4547,9 @@ r = [Imperative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 42);
         }
 
@@ -4878,9 +4581,9 @@ a = foo();
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
         }
 
@@ -4915,9 +4618,9 @@ a = func();
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
         }
 
@@ -4950,16 +4653,16 @@ r = [Associative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 1);
 
             List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 2);
         }
 
@@ -4990,16 +4693,16 @@ r = [Associative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 42);
 
             List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             AssertValue("r", 45);
         }
@@ -5037,16 +4740,16 @@ a = [Associative]
             Guid guid1 = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 13);
 
             List<Subtree> modified = new List<Subtree>();
-            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 14);
         }
         [Test]
@@ -5096,9 +4799,9 @@ r = func_1(x);
 
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 1024);
         }
 
@@ -5145,9 +4848,9 @@ x = foo();
 
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("x", 20);
         }
 
@@ -5186,9 +4889,9 @@ r = foo();
 
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 16);
         }
 
@@ -5263,9 +4966,9 @@ r = func_11546f565974453bae527393c546bbff(x);
 
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("r", 1024);
         }
 
@@ -5302,9 +5005,9 @@ t = f(3);
 
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("t", 6);
         }
 
@@ -5350,9 +5053,9 @@ t = func_f417d5607cc14ef8bde1b821bada91da(r);
 
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("t", 24);
         }
 
@@ -5397,10 +5100,92 @@ v = foo(t);
 
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("v", 120);
+        }
+
+
+        [Test]
+        public void TestNestedLanguageBlockReExecution11()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+    a = [Imperative]
+    {
+        return = 10;
+    }
+
+    b = [Imperative]
+    {
+    
+        return = 20;
+    }
+
+    c = [Imperative]
+    {
+        d = 30;
+        if (d == 0)
+        {
+            e = 40;
+        }
+        return = 50;
+    }
+
+    f = 60;
+"
+,
+@"
+    a = [Imperative]
+    {
+        return = 10;
+    }
+
+    b = [Imperative]
+    {
+    
+        return = 20;
+    }
+
+
+    c = [Imperative]
+    {
+        d = 30;
+        if (d == 0)
+        {
+            e = 40;
+        }
+        return = 50;
+    }
+",
+
+@"
+    f = 60;
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("f", 60);
+
+            // Modify the CBN to remove the last line
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+
+            // Create a new CBN to add the removed line
+            Guid guid2 = System.Guid.NewGuid();
+            added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
+            syncData = new GraphSyncData(null, added, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("f", 60);
+
         }
 
         [Test]
@@ -5419,21 +5204,21 @@ v = foo(t);
             Guid guid2 = System.Guid.NewGuid();
             Guid guid3 = System.Guid.NewGuid();
 
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            liveRunner.UpdateGraph(syncData);
+            Assert.AreEqual(0, liveRunner.RuntimeCore.RuntimeStatus.WarningCount);
 
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[3]));
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(1, astLiveRunner.Core.RuntimeStatus.WarningCount);
-            Assert.AreEqual(guid2, astLiveRunner.Core.RuntimeStatus.Warnings.First().GraphNodeGuid);
+            liveRunner.UpdateGraph(syncData);
+            Assert.AreEqual(1, liveRunner.RuntimeCore.RuntimeStatus.WarningCount);
+            Assert.AreEqual(guid2, liveRunner.RuntimeCore.RuntimeStatus.Warnings.First().GraphNodeGuid);
         }
 
 
@@ -5452,9 +5237,9 @@ a = p.UpdateCount;
 ";
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Update should only have happened twice
             AssertValue("a", 2);
@@ -5477,9 +5262,9 @@ a = p.UpdateCount;
 ";
             Guid guid1 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code));
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
             // Update should only have happened twice
             AssertValue("a", 2);
@@ -5506,26 +5291,26 @@ a = p.UpdateCount;
             Guid guid4 = System.Guid.NewGuid();
 
             // Create CBN1 for import
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             // Create CBN2 for x and y
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             // Create CBN3 for TestCount constructor
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
             // Create CBN4 for UpdateCount
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
 
             // Verify that UpateCount is only called once
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
 
             // Modify CBN2 with same contents with ForceExecution flag set
-            Subtree subtree = CreateSubTreeFromCode(guid2, codes[4]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[4]);
             List<Subtree> modified = new List<Subtree>();
             modified.Add(subtree);
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
 
@@ -5550,32 +5335,32 @@ a = p.UpdateCount;
             Guid guid4 = System.Guid.NewGuid();
 
             // Create CBN1 for import
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             // Create CBN2 for x and y
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
             // Create CBN3 for TestCount constructor
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
             // Create CBN4 for UpdateCount
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));
 
             // Verify that UpateCount is only called once
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 1);
 
 
             // Modify CBN2 
-            Subtree subtree = CreateSubTreeFromCode(guid2, codes[4]);
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[4]);
             List<Subtree> modified = new List<Subtree>();
             modified.Add(subtree);
 
             // Modify CBN3 with same contents with ForceExecution flag set
-            subtree = CreateSubTreeFromCode(guid3, codes[2]);
+            subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]);
             subtree.ForceExecution = true;
             modified.Add(subtree);
 
             syncData = new GraphSyncData(null, null, modified);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("a", 2);
         }
 
@@ -5592,12 +5377,12 @@ a = p.UpdateCount;
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, liveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
 
         [Test]
@@ -5614,12 +5399,12 @@ a = p.UpdateCount;
             Guid guid = System.Guid.NewGuid();
 
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, code));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code));
 
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
 
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, liveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
 
         [Test]
@@ -5633,15 +5418,15 @@ a = p.UpdateCount;
 
             var guid1 = Guid.NewGuid();
             var code1 = @"import(""FFITarget.dll""); x = DisposeTracer(); DisposeTracer.DisposeCount = 0;";
-            added.Add(CreateSubTreeFromCode(guid1, code1));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, code1));
 
             var guid2 = Guid.NewGuid();
             var code2 = "y = DisposeTracer.DisposeCount;";
-            added.Add(CreateSubTreeFromCode(guid2, code2));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, code2));
 
             // Verify that UpateCount is only called once
             var syncData = new GraphSyncData(null, added, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("y", 0);
 
             // Modify CBN2 
@@ -5650,9 +5435,292 @@ a = p.UpdateCount;
             deleted.Add(subtree);
 
             syncData = new GraphSyncData(deleted, null, null);
-            astLiveRunner.UpdateGraph(syncData);
+            liveRunner.UpdateGraph(syncData);
             AssertValue("y", 1);
         }
+
+        [Test]
+        public void TestAssociativeupdateWithinFunction01()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code =
+            @"
+def f()
+{
+	a = 1;
+	b = a;
+	a = 10;
+	return = b;
+}
+x = f();
+            ";
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 10);
+        }
+
+        [Test]
+        public void TestReExecuteScopeIf01()
+        {
+            List<string> codes = new List<string>() 
+            {
+
+@"
+a = false;
+",
+
+ @"
+a = true;
+",
+
+@"
+
+d = [Imperative]
+{
+    if(a)
+    {
+        return = [Associative]
+        {
+            e = true;
+            return = e;
+
+        }
+    }
+    else
+    {
+        return = [Associative]
+        {
+            f = false;
+            return = f;
+
+        }
+    }
+}
+"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
+
+            // Execute All
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+
+            // Modify 'a 'to true
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+
+            // Modify 'a 'to false
+            modified = new List<Subtree>();
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+
+        }
+
+        [Test]
+        public void TestFalseCyclicExecution01()
+        {
+            List<string> codes = new List<string>() 
+            { 
+@"
+i = {1}; 
+j = i[0];
+"
+,
+
+@"
+j = 999;
+i = {};
+i[0] = j;
+"
+,
+@"
+i = {100}; 
+j = i[0];
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+
+            // Modify guid3
+            // Disconnect input
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 999);
+
+            // Modify guid3
+            // Reconnect input
+            modified = new List<Subtree>();
+            subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 100);
+        }
+
+        [Test]
+        public void TestFalseCyclicExecution02()
+        {
+            List<string> codes = new List<string>() 
+            { 
+@"
+i = {1,2}; 
+j = i[0];
+k = i[1];
+"
+,
+
+@"
+j = 999;
+k = 999;
+i = {};
+i[0] = j;
+i[1] = k;
+"
+,
+@"
+i = {10,20}; 
+j = i[0];
+k = i[1];
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+            AssertValue("k", 2);
+
+            // Modify guid3
+            // Disconnect input
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 999);
+            AssertValue("k", 999);
+
+            // Modify guid3
+            // Reconnect input
+            modified = new List<Subtree>();
+            subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 10);
+            AssertValue("k", 20);
+        }
+
+        [Test]
+        public void TestMAGN5477()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+
+import(""FunctionObject.ds"");
+def foosa: var[]..[](a1 : var[]..[], a2 : var[]..[])
+{
+    p = a2;
+    q = a1;
+    r = {};
+    r[""b""] = q;
+    r[""a""] = p;
+    return = r;
+}
+"
+,
+
+@"
+x = 1;
+y = 2;
+z = 3;
+"
+
+, 
+
+@"
+i = foosa(x, y);
+j = __TryGetValueFromNestedDictionaries(i, ""b"");
+k = __TryGetValueFromNestedDictionaries(i, ""a"");
+"
+,
+
+@"
+partialVar = _SingleFunctionObject(foosa, 2, {0}, {x, null}, true);
+j = _SingleFunctionObject(__ComposeBuffered, 3, {0, 1}, {{_SingleFunctionObject(__GetOutput, 2, {1}, {null, ""b""}, true), partialVar}, 1, null}, true);
+i_out1 = _SingleFunctionObject(__ComposeBuffered, 3, {0, 1}, {{_SingleFunctionObject(__GetOutput, 2, {1}, {null, ""a""}, true), partialVar}, 1, null}, true);
+i = {};
+i[""b""] = j;
+i[""a""] = k;
+"
+,
+@"
+i = foosa(x, z);
+j = __TryGetValueFromNestedDictionaries(i, ""b"");
+k = __TryGetValueFromNestedDictionaries(i, ""a"");
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+            AssertValue("k", 2);
+
+            // Modify guid3
+            // Disconnect input
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[3]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+
+            // Modify guid3
+            // Reconnect input
+            modified = new List<Subtree>();
+            subtree = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[4]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+            AssertValue("k", 3);
+        }
+     
     }
 
 }

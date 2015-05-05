@@ -11,7 +11,7 @@
     <ProjectGuid>{472084ED-1067-4B2C-8737-3839A6143EB2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo</RootNamespace>
+    <RootNamespace>Dynamo.Tests</RootNamespace>
     <AssemblyName>DynamoCoreTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -41,6 +41,7 @@
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -57,10 +58,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -69,7 +66,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
+    <Compile Include="ConverterTests.cs" />
+    <Compile Include="CrashProtectionTests.cs" />
+    <Compile Include="DynamoModelTestBase.cs" />
+    <Compile Include="MessageLogTests.cs" />
+    <Compile Include="IconsTests.cs" />
+    <Compile Include="NodeConstructionTests.cs" />
+    <Compile Include="NodeToCodeTest.cs" />
+    <Compile Include="PackageManager\PackageTests.cs" />
+    <Compile Include="SearchMemberGroupTests.cs" />
+    <Compile Include="TestZeroTouchClass.cs" />
+    <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
     <Compile Include="DSEvaluationViewModelTest.cs" />
@@ -94,11 +103,14 @@
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
     <Compile Include="Setup.cs" />
+    <Compile Include="UnicodeTest.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
+    <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
+    <Compile Include="WorkspaceOpeningTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
@@ -113,7 +125,6 @@
     <Compile Include="SearchModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="TestExtensions.cs" />
     <Compile Include="UndoRedoRecorderTests.cs" />
     <Compile Include="UnitsOfMeasureTests.cs" />
     <Compile Include="UtilityTests.cs" />
@@ -121,43 +132,67 @@
     <Compile Include="XmlHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Name>DynamoCoreWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
       <Name>ProtoAssociative</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoImperative\ProtoImperative.csproj">
       <Project>{0d3d43dc-bd7e-46f0-93f7-1c6a6cc79948}</Project>
       <Name>ProtoImperative</Name>
+      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodesUI</Name>
+      <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DynamoWatch3D\Watch3D.csproj">
+      <Project>{b9e338ca-6677-4772-b01d-1fceabcdaaab}</Project>
+      <Name>Watch3D</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
       <Name>IronPythonUI</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\FFITarget\FFITarget.csproj">
-      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
-      <Name>FFITarget</Name>
+    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
+      <Name>DynamoShapeManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
+      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
+      <Name>TestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

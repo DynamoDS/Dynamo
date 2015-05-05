@@ -1,0 +1,29 @@
+<Workspace Version="0.7.4.3191" X="-377.19579401533" Y="276.195968014308" zoom="1.06509399095322" Description="" Category="Ian" Name="Fibonacci" ID="bfa8a25a-065a-47ba-9a6b-f3acddbd7bf6">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="cd9667f3-aac3-403c-801b-8c6ba7b009fa" nickname="List.Count" x="166" y="26" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d109e15a-e096-4826-a687-1d0cc529ec49" nickname="List.LastItem" x="613" y="134" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.LastItem@var[]..[]" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6da26954-0bd3-4631-9793-159723c3c11e" nickname="Input" x="0" y="53" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="54231aad-7731-4d0f-b412-ee0d9d2e63d5" nickname="Code Block" x="363" y="30.2183333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="count-2;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="82ce8731-285f-4336-a26a-8a6c54a95454" nickname="List.GetItemAtIndex" x="613" y="0" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="69b6e466-4bde-4dea-b88d-4d4c6f20426a" nickname="+" x="846.122231449067" y="42.7333886944001" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="eb6b2a41-97b6-481f-8f97-5191926d1c4b" nickname="List.AddItemToEnd" x="1069" y="54" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.AddItemToEnd@var,var[]..[]" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2567d979-d50f-4749-be72-03d25c849a2c" nickname="Output" x="1292.16923245468" y="42.1559362091425" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="fibonacci_series" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cd9667f3-aac3-403c-801b-8c6ba7b009fa" start_index="0" end="54231aad-7731-4d0f-b412-ee0d9d2e63d5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d109e15a-e096-4826-a687-1d0cc529ec49" start_index="0" end="69b6e466-4bde-4dea-b88d-4d4c6f20426a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6da26954-0bd3-4631-9793-159723c3c11e" start_index="0" end="cd9667f3-aac3-403c-801b-8c6ba7b009fa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6da26954-0bd3-4631-9793-159723c3c11e" start_index="0" end="d109e15a-e096-4826-a687-1d0cc529ec49" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6da26954-0bd3-4631-9793-159723c3c11e" start_index="0" end="82ce8731-285f-4336-a26a-8a6c54a95454" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6da26954-0bd3-4631-9793-159723c3c11e" start_index="0" end="eb6b2a41-97b6-481f-8f97-5191926d1c4b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="54231aad-7731-4d0f-b412-ee0d9d2e63d5" start_index="0" end="82ce8731-285f-4336-a26a-8a6c54a95454" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="82ce8731-285f-4336-a26a-8a6c54a95454" start_index="0" end="69b6e466-4bde-4dea-b88d-4d4c6f20426a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69b6e466-4bde-4dea-b88d-4d4c6f20426a" start_index="0" end="eb6b2a41-97b6-481f-8f97-5191926d1c4b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eb6b2a41-97b6-481f-8f97-5191926d1c4b" start_index="0" end="2567d979-d50f-4749-be72-03d25c849a2c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

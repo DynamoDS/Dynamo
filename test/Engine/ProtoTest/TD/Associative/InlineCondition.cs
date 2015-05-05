@@ -5,16 +5,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class InlineCondition
+    class InlineCondition : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\Associative\\InlineCondition\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         [Category("SmokeTest")]
         public void T001_Inline_Using_Function_Call()
@@ -336,7 +328,6 @@ thisTest.Verification(mirror, ""c4"", 1, 1);*/
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T010_Defect_1456751_execution_on_both_true_and_false_path_issue()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4026
@@ -939,7 +930,6 @@ d;
 
 
         [Test]
-        [Category("Failure")]
         public void T019_conditionequalto_1467469()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1692

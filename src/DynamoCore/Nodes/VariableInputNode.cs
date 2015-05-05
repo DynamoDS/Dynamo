@@ -1,27 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
 using System.Xml;
-using Dynamo.Controls;
+
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {
-    public abstract class VariableInputNode : NodeModel, IWpfNode
+    public abstract class VariableInputNode : NodeModel
     {
-
-        protected VariableInputNode(WorkspaceModel workspace) : base(workspace)
+        protected VariableInputNode()
         {
             VariableInputController = new BasicVariableInputNodeController(this);
-        }
-
-        public virtual void SetupCustomUIElements(dynNodeView view)
-        {
-            VariableInputController.SetupNodeUI(view);
         }
 
         private BasicVariableInputNodeController VariableInputController { get; set; }
@@ -99,35 +90,22 @@ namespace Dynamo.Nodes
             VariableInputController.OnBuilt();
         }
 
-        protected override void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
-        {
-            base.SaveNode(xmlDoc, nodeElement, context);
-            VariableInputController.SaveNode(xmlDoc, nodeElement, context);
-        }
-
-        protected override void LoadNode(XmlNode nodeElement)
-        {
-            base.LoadNode(nodeElement);
-            VariableInputController.LoadNode(nodeElement);
-        }
-
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
             VariableInputController.SerializeCore(element, context);
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(element, context);
-            VariableInputController.DeserializeCore(element, context);
+            base.DeserializeCore(nodeElement, context);
+            VariableInputController.DeserializeCore(nodeElement, context);
         }
 
-        protected override bool HandleModelEventCore(string eventName)
+        protected override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
-            return VariableInputController.HandleModelEventCore(eventName)
-                || base.HandleModelEventCore(eventName);
+            return VariableInputController.HandleModelEventCore(eventName, recorder)
+                || base.HandleModelEventCore(eventName, recorder);
         }
     }
 
@@ -135,32 +113,12 @@ namespace Dynamo.Nodes
     {
         private readonly NodeModel model;
 
-
         private int inputAmtLastBuild;
         private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>();
 
         protected VariableInputNodeController(NodeModel model)
         {
             this.model = model;
-        }
-
-        public void SetupNodeUI(dynNodeView view)
-        {
-            var addButton = new DynamoNodeButton(model, "AddInPort") { Content = "+", Width = 20 };
-            //addButton.Height = 20;
-
-            var subButton = new DynamoNodeButton(model, "RemoveInPort") { Content = "-", Width = 20 };
-            //subButton.Height = 20;
-
-            var wp = new WrapPanel
-            {
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            wp.Children.Add(addButton);
-            wp.Children.Add(subButton);
-
-            view.inputGrid.Children.Add(wp);
         }
 
         protected abstract string GetInputName(int index);
@@ -174,6 +132,18 @@ namespace Dynamo.Nodes
             return model.InPortData.Count;
         }
 
+        private void MarkNodeDirty()
+        {
+            var dirty = model.InPortData.Count != inputAmtLastBuild
+                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
+
+            if (dirty)
+            {
+                model.OnNodeModified();
+            }
+              
+        }
+
         /// <summary>
         /// Removes an input from this node. Called when the '-' button is clicked.
         /// </summary>
@@ -182,7 +152,8 @@ namespace Dynamo.Nodes
             var count = model.InPortData.Count;
             if (count > 0)
                 model.InPortData.RemoveAt(count - 1);
-            UpdateRecalcState();
+
+            MarkNodeDirty();
         }
 
         /// <summary>
@@ -192,16 +163,8 @@ namespace Dynamo.Nodes
         {
             var idx = GetInputIndexFromModel();
             model.InPortData.Add(new PortData(GetInputName(idx), GetInputTooltip(idx)));
-            UpdateRecalcState();
-        }
 
-        private void UpdateRecalcState()
-        {
-            var dirty = model.InPortData.Count != inputAmtLastBuild
-                || Enumerable.Range(0, model.InPortData.Count).Any(idx => connectedLastBuild[idx] == model.HasInput(idx));
-
-            if (dirty)
-                model.RequiresRecalc = true;
+            MarkNodeDirty();
         }
 
         /// <summary>
@@ -225,61 +188,37 @@ namespace Dynamo.Nodes
                 connectedLastBuild[idx] = model.HasInput(idx);
         }
 
-        #region Load/Save
-
-        public void SaveNode(
-            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        /// <summary>
+        ///     Serializes the input count of a VariableInputNode to Xml.
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        /// <param name="amount"></param>
+        public static void SerializeInputCount(XmlElement nodeElement, int amount)
         {
-            nodeElement.SetAttribute("inputcount", model.InPortData.Count.ToString());
+            nodeElement.SetAttribute("inputcount", amount.ToString());
         }
-
-        public void LoadNode(XmlNode nodeElement)
-        {
-            if (nodeElement.Attributes != null) 
-            {
-                int amt = Convert.ToInt32(nodeElement.Attributes["inputcount"].Value);
-                SetNumInputs(amt);
-                model.RegisterAllPorts();
-            }
-        }
-
-        #endregion
-
+        
         #region Serialization/Deserialization Methods
 
         public void SerializeCore(XmlElement element, SaveContext context)
         {
             //base.SerializeCore(element, context); //Base implementation must be called
-            XmlDocument xmlDoc = element.OwnerDocument;
-            foreach (var inport in model.InPortData)
-            {
-                XmlElement input = xmlDoc.CreateElement("Input");
-                input.SetAttribute("name", inport.NickName);
-                element.AppendChild(input);
-            }
+            SerializeInputCount(element, model.InPortData.Count);
         }
 
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
             //base.DeserializeCore(element, context); //Base implementation must be called
-
-            if (context == SaveContext.Undo)
-            {
-                //Reads in the new number of ports required from the data stored in the Xml Element
-                //during Serialize (nextLength). Changes the current In Port Data to match the
-                //required size by adding or removing port data.
-                XmlNodeList inNodes = element.SelectNodes("Input");
-                int nextLength = inNodes.Count;
-                SetNumInputs(nextLength);
-                model.RegisterAllPorts();
-            }
+            int amt = Convert.ToInt32(element.Attributes["inputcount"].Value);
+            SetNumInputs(amt);
+            model.RegisterAllPorts();
         }
 
         #endregion
 
         #region Undo/Redo
 
-        private void RecordModels()
+        private void RecordModels(UndoRedoRecorder recorder)
         {
             if (model.InPorts.Count == 0)
                 return;
@@ -297,13 +236,13 @@ namespace Dynamo.Nodes
                     { connectors[0], UndoRedoRecorder.UserAction.Deletion },
                     { model, UndoRedoRecorder.UserAction.Modification }
                 };
-                model.Workspace.RecordModelsForUndo(models);
+                WorkspaceModel.RecordModelsForUndo(models, recorder);
             }
             else
-                model.Workspace.RecordModelForModification(model);
+                WorkspaceModel.RecordModelForModification(model, recorder);
         }
 
-        public bool HandleModelEventCore(string eventName)
+        public bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             if (eventName == "AddInPort")
             {
@@ -314,17 +253,6 @@ namespace Dynamo.Nodes
 
             if (eventName == "RemoveInPort")
             {
-                // When an in-port is removed, it is possible that a connector 
-                // is almost removed along with it. Both node modification and 
-                // connector deletion have to be recorded as one action group.
-                // But before HandleModelEventCore is called, node modification 
-                // has already been recorded (in WorkspaceModel.SendModelEvent).
-                // For that reason, that entry on the undo-stack needs to be 
-                // popped (the node modification will be recorded here instead).
-                // 
-                model.Workspace.UndoRecorder.PopFromUndoGroup();
-
-                RecordModels();
                 RemoveInputFromModel();
                 model.RegisterAllPorts();
                 return true; // Handled here.

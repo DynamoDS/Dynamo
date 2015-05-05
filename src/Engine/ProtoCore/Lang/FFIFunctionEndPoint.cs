@@ -6,6 +6,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
 using ProtoFFI;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Lang
 {
@@ -44,7 +45,7 @@ namespace ProtoCore.Lang
             return true;
         }
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {   //  ensure there is no data race, function resolution and execution happens in parallel
             //  but for FFI we want it to be serial cause the code we are calling into may not cope
             //  with parallelism.
@@ -54,7 +55,7 @@ namespace ProtoCore.Lang
             //  
             lock (FFIHandlers)
             {
-                Interpreter interpreter = new Interpreter(core, true);
+                Interpreter interpreter = new Interpreter(runtimeCore, true);
 
                 // Setup the stack frame data
                 StackValue svThisPtr = stackFrame.ThisPtr;
@@ -63,7 +64,7 @@ namespace ProtoCore.Lang
                 int returnAddr = stackFrame.ReturnPC;
                 int blockDecl = stackFrame.FunctionBlock;
                 int blockCaller = stackFrame.FunctionCallerBlock;
-                int framePointer = core.Rmem.FramePointer;
+                int framePointer = runtimeCore.RuntimeMemory.FramePointer;
                 int locals = activation.JILRecord.locals;
 
                 
@@ -72,7 +73,7 @@ namespace ProtoCore.Lang
                 string className = "";
                 if (activation.JILRecord.classIndex > 0)
                 {
-                    className = core.DSExecutable.classTable.ClassNodes[activation.JILRecord.classIndex].name;
+                    className = runtimeCore.DSExecutable.classTable.ClassNodes[activation.JILRecord.classIndex].name;
                 }
 
                 bool gcThisPtr = false;
@@ -99,7 +100,7 @@ namespace ProtoCore.Lang
                     // But since we dont even need to to reach there if we dont have a valid this pointer, then just return null
                     if (formalParameters[thisPtrIndex].IsNull)
                     {
-                        core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kDereferencingNonPointer, ProtoCore.RuntimeData.WarningMessage.kDeferencingNonPointer);
+                        runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
                         return StackValue.Null;
                     }
 
@@ -125,8 +126,8 @@ namespace ProtoCore.Lang
 
                 {
 
-                    interpreter.runtime.executingBlock = core.RunningBlock;
-                    activation.JILRecord.globs = core.DSExecutable.runtimeSymbols[core.RunningBlock].GetGlobalSize();
+                    interpreter.runtime.executingBlock = runtimeCore.RunningBlock;
+                    activation.JILRecord.globs = runtimeCore.DSExecutable.runtimeSymbols[runtimeCore.RunningBlock].GetGlobalSize();
 
                     // Params
                     formalParameters.Reverse();
@@ -144,7 +145,7 @@ namespace ProtoCore.Lang
                     StackFrameType callerType = stackFrame.CallerStackFrameType;
 
                     // FFI calls do not have execution states
-                    core.Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, ProtoCore.DSASM.StackFrameType.kTypeFunction, depth, framePointer, registers, locals, 0);
+                    runtimeCore.RuntimeMemory.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, ProtoCore.DSASM.StackFrameType.kTypeFunction, depth, framePointer, registers, locals, 0);
 
                     //is there a way the current stack be passed across and back into the managed runtime by FFI calling back into the language?
                     //e.g. DCEnv* carrying all the stack information? look at how vmkit does this.
@@ -175,21 +176,6 @@ namespace ProtoCore.Lang
                                                     activation.ModuleName, activation.FunctionName));
                     }
 
-                    // gc the parameters 
-                    if (gcThisPtr)// && core.Options.EnableThisPointerFunctionOverload)
-                    {
-                        // thisptr is sent as parameter, so need to gc it. 
-                        // but when running in expression interpreter mode, do not GC because in DSASM.Executive.DecRefCounter() related GC functions,
-                        // the reference count will not be changed in expression interpreter mode.
-                        if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
-                        {
-                            interpreter.runtime.Core.Rmem.Heap.GCRelease(new StackValue[] { svThisPtr }, interpreter.runtime);
-                        }
-                    }
-                    interpreter.runtime.Core.Rmem.Heap.GCRelease(formalParameters.ToArray(), interpreter.runtime);
-
-                    // increment the reference counter of the return value
-                    interpreter.runtime.GCRetain(op);
                     // Clear the FFI stack frame 
                     // FFI stack frames have no local variables
                     interpreter.runtime.rmem.FramePointer = (int)interpreter.runtime.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexFramePointer).opdata;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,46 +14,140 @@ using DSCoreNodesUI;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
+using UnitsUI.Properties;
+using ProtoCore.Namespace;
 
 namespace UnitsUI
 {
-    public abstract class MeasurementInputBase : NodeModel, IWpfNode
+    public abstract class MeasurementInputBaseNodeViewCustomization : INodeViewCustomization<MeasurementInputBase>
     {
-        protected SIUnit _measure;
+        private MeasurementInputBase mesBaseModel;
+        private DynamoViewModel dynamoViewModel;
+        private DynamoTextBox tb;
 
-        protected MeasurementInputBase(WorkspaceModel workspaceModel) : base(workspaceModel) { }
+        public void CustomizeView(MeasurementInputBase model, NodeView nodeView)
+        {
+            this.mesBaseModel = model;
+            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
+            //add an edit window option to the 
+            //main context window
+            var editWindowItem = new MenuItem()
+            {
+                Header = "Edit...",
+                IsCheckable = false,
+                Tag = nodeView.ViewModel.DynamoViewModel
+            };
+
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
+
+            editWindowItem.Click += editWindowItem_Click;
+
+            //add a text box to the input grid of the control
+            this.tb = new DynamoTextBox();
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Center;
+            nodeView.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            tb.DataContext = model;
+            tb.BindToProperty(new Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new MeasureConverter(),
+                ConverterParameter = model.Measure,
+                NotifyOnValidationError = false,
+                Source = model,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            tb.OnChangeCommitted += () => model.OnNodeModified();
+
+            (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit" ||
+                e.PropertyName == "LengthUnit" ||
+                e.PropertyName == "NumberFormat")
+            {
+                this.mesBaseModel.ForceValueRaisePropertyChanged();
+
+                this.mesBaseModel.OnNodeModified();
+            }
+        }
+
+        private void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.dynamoViewModel;
+            var editWindow = new EditWindow(viewModel) { DataContext = this.mesBaseModel };
+            editWindow.BindToProperty(null, new Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new MeasureConverter(),
+                ConverterParameter = this.mesBaseModel.Measure,
+                NotifyOnValidationError = false,
+                Source = this.mesBaseModel,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            editWindow.ShowDialog();
+        }
+
+        public void Dispose()
+        {
+            tb.OnChangeCommitted += () => mesBaseModel.OnNodeModified();
+        }
+    }
+
+    public abstract class MeasurementInputBase : NodeModel
+    {
+        public SIUnit Measure { get; protected set; }
+        
         public double Value
         {
             get
             {
-                return _measure.Value;
+                return Measure.Value;
             }
             set
             {
-                _measure.Value = value;
+                Measure.Value = value;
                 RaisePropertyChanged("Value");
             }
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        internal void ForceValueRaisePropertyChanged()
         {
-            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            RaisePropertyChanged("Value");
+        }
+
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.SerializeCore(nodeElement, context);
+            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
-        protected override void LoadNode(XmlNode nodeElement)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
+            base.DeserializeCore(nodeElement, context);
             foreach (XmlNode subNode in nodeElement.ChildNodes)
             {
                 // this node now stores a double, having previously stored a measure type
@@ -81,98 +176,44 @@ namespace UnitsUI
             }
         }
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
-            //add an edit window option to the 
-            //main context window
-            var editWindowItem = new System.Windows.Controls.MenuItem()
-            {
-                Header = "Edit...",
-                IsCheckable = false,
-                Tag = nodeUI.ViewModel.DynamoViewModel
-            };
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
 
-            nodeUI.MainContextMenu.Items.Add(editWindowItem);
-
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
-            //add a text box to the input grid of the control
-            var tb = new DynamoTextBox();
-            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            nodeUI.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
-            tb.DataContext = this;
-            tb.BindToProperty(new System.Windows.Data.Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = _measure,
-                NotifyOnValidationError = false,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
-
-            (nodeUI.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
-        }
-
-        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "AreaUnit" ||
-                e.PropertyName == "VolumeUnit" ||
-                e.PropertyName == "LengthUnit" ||
-                e.PropertyName == "NumberFormat")
-            {
-                RaisePropertyChanged("Value");
-                RequiresRecalc = true;
-            }
-        }
-
-        protected override bool UpdateValueCore(string name, string value)
-        {
             if (name == "Value")
             {
                 var converter = new MeasureConverter();
-                this.Value = ((double)converter.ConvertBack(value, typeof(double), _measure, null));
+                this.Value = ((double)converter.ConvertBack(value, typeof(double), Measure, null));
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value);
+            return base.UpdateValueCore(updateValueParams);
         }
 
-        private void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = GetDynamoViewModelFromMenuItem(sender as MenuItem);
-            var editWindow = new EditWindow(viewModel) { DataContext = this };
-            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = _measure,
-                NotifyOnValidationError = false,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
+    }
 
-            editWindow.ShowDialog();
+    public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                         INodeViewCustomization<LengthFromString>
+    {
+        public void CustomizeView(LengthFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
         }
     }
 
-    [NodeName("Length From String")]
-    [NodeCategory("Units.Length.Create")]
-    [NodeDescription("Enter a length.")]
-    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
+    [NodeName("Number From Feet and Inches")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class LengthFromString : MeasurementInputBase
     {
-        public LengthFromString(WorkspaceModel ws) : base(ws)
+        public LengthFromString()
         {
-            _measure = Length.FromDouble(0.0);
-            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters."));
+            Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+
+            OutPortData.Add(new PortData("number", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 
@@ -194,67 +235,97 @@ namespace UnitsUI
             }
         }
 
+        [NodeMigration(@from: "0.7.5.0")]
+        public static NodeMigrationData Migrate_0750(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(oldNode, "UnitsUI.LengthFromString", "Number From Feet and Inches", true);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Length>(Length.FromDouble), new List<AssociativeNode> { doubleNode });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            var doubleNode = AstFactory.BuildDoubleNode(Measure.UnitValue);
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), doubleNode) };
+        }
+    }
+
+    public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                     INodeViewCustomization<AreaFromString>
+    {
+        public void CustomizeView(AreaFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
         }
     }
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("Enter an area.")]
-    [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
+    [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [NodeDeprecatedAttribute]
     public class AreaFromString : MeasurementInputBase
     {
-        public AreaFromString(WorkspaceModel workspaceModel) : base(workspaceModel) 
+        public AreaFromString()
         {
-            _measure = Area.FromDouble(0.0);
-            OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared."));
+            Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
+            OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
+
+            Warning("AreaFromString is obsolete.", true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Area>(Area.FromDouble), new List<AssociativeNode> { doubleNode });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), doubleNode) };
+        }
+    }
+
+    public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                 INodeViewCustomization<VolumeFromString>
+    {
+        public void CustomizeView(VolumeFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
         }
     }
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("Enter a volume.")]
-    [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
+    [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [NodeDeprecatedAttribute]
     public class VolumeFromString : MeasurementInputBase
     {
-        public VolumeFromString(WorkspaceModel workspaceModel) : base(workspaceModel)
+        public VolumeFromString()
         {
-            _measure = Volume.FromDouble(0.0);
-            OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed."));
+            Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
+            OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
+
+            Warning("AreaFromString is obsolete.", true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double, Volume>(Volume.FromDouble), new List<AssociativeNode> { doubleNode });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), doubleNode) };
         }
     }
 
     [NodeName("Unit Types")]
-    [NodeCategory("Units")]
-    [NodeDescription("Select a unit of measurement.")]
-    [NodeSearchTags("units")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("UnitTypesDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitTypes : AllChildrenOfType<SIUnit>
     {
-        public UnitTypes(WorkspaceModel workspace) : base(workspace) { }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var typeName = AstFactory.BuildStringNode(Items[SelectedIndex].Name);

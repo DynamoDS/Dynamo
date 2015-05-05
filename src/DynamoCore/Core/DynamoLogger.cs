@@ -2,11 +2,10 @@
 using System.IO;
 using System.Text;
 
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
-
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
@@ -44,7 +43,7 @@ namespace Dynamo
     {
         private readonly Object guardMutex = new Object();
 
-        private readonly DynamoModel dynamoModel;
+        private readonly DebugSettings debugSettings;
         private string _logPath;
         private string _warning;
         private WarningLevel _warningLevel;
@@ -101,25 +100,18 @@ namespace Dynamo
         /// <summary>
         /// The default constructor.
         /// </summary>
-        public DynamoLogger(DynamoModel dynamoModel, string logDirectory)
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory)
         {
             lock (guardMutex)
             {
-                this.dynamoModel = dynamoModel;
+                this.debugSettings = debugSettings;
                 _isDisposed = false;
 
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
-                UpdateManager.UpdateManager.Instance.Log += UpdateManager_Log;
-                
                 StartLogging(logDirectory);
             }
-        }
-
-        private void UpdateManager_Log(LogEventArgs args)
-        {
-            Log(args.Message, args.Level);
         }
 
         public void Log(string message, LogLevel level)
@@ -136,7 +128,7 @@ namespace Dynamo
             lock (this.guardMutex)
             {
                 //Don't overwhelm the logging system
-                if (dynamoModel.DebugSettings.VerboseLogging)
+                if (debugSettings.VerboseLogging)
                     InstrumentationLogger.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
                 switch (level)
@@ -293,7 +285,7 @@ namespace Dynamo
                 try
                 {
                     FileWriter.Flush();
-                    Log("Goodbye", LogLevel.Console, false);
+                    Log(Properties.Resources.GoodByeLog, LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch
@@ -303,8 +295,6 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
-
-            UpdateManager.UpdateManager.Instance.Log -= UpdateManager_Log;
         }
 
         public void Dispose()

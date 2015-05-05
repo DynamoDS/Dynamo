@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 
-using Dynamo.ViewModels;
+using Dynamo.Core;
+using Dynamo.Models;
 
 using DynamoUtilities;
 
 using Greg.Responses;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {
@@ -41,19 +41,11 @@ namespace Dynamo.PackageManager
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        private readonly DynamoViewModel dynamoViewModel;
-
-        public PackageDownloadHandle(DynamoViewModel dynamoViewModel, Greg.Responses.PackageHeader header, PackageVersion version)
+        public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
         {
-            this.dynamoViewModel = dynamoViewModel;
             this.Header = header;
             this.DownloadPath = "";
             this.VersionName = version.version;
-        }
-
-        public void Start()
-        {
-            dynamoViewModel.PackageManagerClientViewModel.DownloadAndInstall(this);
         }
 
         public void Error(string errorString)
@@ -61,20 +53,20 @@ namespace Dynamo.PackageManager
             this.DownloadState = State.Error;
             this.ErrorString = errorString;
         }
-        
-        public void Done( string filePath )
+
+        public void Done(string filePath)
         {
             this.DownloadState = State.Downloaded;
             this.DownloadPath = filePath;
         }
 
-        private string BuildInstallDirectoryString()
+        private string BuildInstallDirectoryString(string packagesDirectory)
         {
             // <user>/appdata/roaming/packages/package_name
-            return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
+            return packagesDirectory + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
         }
 
-        public bool Extract( out Package pkg )
+        public bool Extract(DynamoModel dynamoModel, out Package pkg)
         {
             this.DownloadState = State.Installing;
 
@@ -82,10 +74,11 @@ namespace Dynamo.PackageManager
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
             if (!Directory.Exists(unzipPath))
             {
-                throw new Exception("The package was found to be empty and was not installed.");
+                throw new Exception(Properties.Resources.PackageEmpty);
             }
-            
-            var installedPath = BuildInstallDirectoryString();
+
+            var packagesDirectory = dynamoModel.PathManager.PackagesDirectory;
+            var installedPath = BuildInstallDirectoryString(packagesDirectory);
             Directory.CreateDirectory(installedPath);
 
             // Now create all of the directories

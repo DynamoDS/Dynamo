@@ -590,11 +590,25 @@ namespace ProtoFFI
             object[] atts = member.GetCustomAttributes(false);
 
             var method = member as MethodInfo;
-            if (method != null && getterAttributes != null)
+            if (method != null)
             {
-                Attribute[] propAtts = null;
-                if(getterAttributes.TryGetValue(method, out propAtts))
-                    atts = propAtts;
+                // Skip importing methods that have out and ref parameters
+                // as these are not supported currently: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5460
+                ParameterInfo[] parameters = method.GetParameters();
+                foreach (var parameter in parameters)
+                {
+                    if (parameter.ParameterType.IsByRef == true)
+                        return true;
+                }
+
+                // If method is a getter accessor belonging to a property
+                // retrieve its attributes from its corresponding property
+                if(getterAttributes != null)
+                {
+                    Attribute[] propAtts = null;
+                    if(getterAttributes.TryGetValue(method, out propAtts))
+                        atts = propAtts;
+                }
             }
 
             foreach (var item in atts)
@@ -644,7 +658,7 @@ namespace ProtoFFI
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
-            func.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            func.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -697,7 +711,7 @@ namespace ProtoFFI
             }
             func.ReturnType = retype;
             func.FunctionBody = null;
-            func.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            func.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -779,7 +793,7 @@ namespace ProtoFFI
             constr.Signature = ParseArgumentSignature(method);
             constr.ReturnType = returnType;
             constr.FunctionBody = null;
-            constr.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            constr.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
             constr.IsExternLib = true;
             constr.ExternLibName = Module.Name;
 
@@ -793,7 +807,10 @@ namespace ProtoFFI
             foreach (var parameter in parameters)
             {
                 var paramNode = ParseArgumentDeclaration(parameter.Name, parameter.ParameterType);
-                if (parameter.IsDefined(typeof(Autodesk.DesignScript.Runtime.ArbitraryDimensionArrayImportAttribute), false))
+
+                var ffiAttribute = new FFIParamAttributes(parameter);
+                paramNode.ExternalAttributes = ffiAttribute;
+                if (ffiAttribute.IsArbitraryDimensionArray)
                 {
                     var argType = paramNode.ArgumentType;
                     argType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
@@ -824,7 +841,7 @@ namespace ProtoFFI
         {
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-            varDeclNode.access = ProtoCore.Compiler.AccessSpecifier.kPublic;
+            varDeclNode.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
 
             ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = 
                 new ProtoCore.AST.AssociativeAST.IdentifierNode
@@ -1121,9 +1138,9 @@ namespace ProtoFFI
             return types;
         }
 
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.Core core)
+        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
         {
-            return CLRObjectMarshler.GetInstance(core);
+            return CLRObjectMarshler.GetInstance(runtimeCore);
         }
     }
 
@@ -1182,9 +1199,9 @@ namespace ProtoFFI
             return module;
         }
 
-        public override FFIObjectMarshler GetMarshaller(ProtoCore.Core core)
+        public override FFIObjectMarshler GetMarshaller(ProtoCore.RuntimeCore runtimeCore)
         {
-            return CLRObjectMarshler.GetInstance(core);
+            return CLRObjectMarshler.GetInstance(runtimeCore);
         }
     }
 
@@ -1297,8 +1314,76 @@ namespace ProtoFFI
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
                 }
+                else if (attr is CanUpdatePeriodicallyAttribute)
+                {
+                    CanUpdatePeriodically = (attr as CanUpdatePeriodicallyAttribute).CanUpdatePeriodically;
+                }
             }
         }
 
+    }
+
+    /// <summary>
+    /// A parameter's attributes.
+    /// </summary>
+    public class FFIParamAttributes: ProtoCore.AST.AssociativeAST.ExternalAttributes
+    {
+        public bool IsArbitraryDimensionArray
+        {
+            get
+            {
+                object isArbitraryRank;
+                if (TryGetAttribute("ArbitraryDimensionArrayImportAttribute", out isArbitraryRank))
+                    return (bool)isArbitraryRank;
+                else
+                    return false;
+            }
+        }
+
+        public string DefaultArgumentExpression 
+        { 
+            get
+            {
+                object defaultExpression = null;
+                if (TryGetAttribute("DefaultArgumentAttribute", out defaultExpression))
+                    return defaultExpression as string;
+                else
+                    return null;
+            }
+        }
+
+        public string PreferredShortName
+        {
+            get
+            {
+                object shortName  = null;
+                if (TryGetAttribute("PreferredShortNameAttribute", out shortName))
+                    return shortName as string;
+                else
+                    return null;
+            }
+        }
+
+        public FFIParamAttributes(ParameterInfo parameter)
+        {
+            var attributes = parameter.GetCustomAttributes(false);
+            foreach (var attr in attributes)
+            {
+                if (attr is DefaultArgumentAttribute)
+                {
+                    string defaultExpression = (attr as DefaultArgumentAttribute).ArgumentExpression;
+                    AddAttribute("DefaultArgumentAttribute", defaultExpression);
+                }
+                else if (attr is ArbitraryDimensionArrayImportAttribute)
+                {
+                    AddAttribute("ArbitraryDimensionArrayImportAttribute", true);
+                }
+                else if (attr is PreferredShortNameAttribute)
+                {
+                    string shortName = (attr as PreferredShortNameAttribute).PreferredShortName;
+                    AddAttribute("PreferredShortNameAttribute", shortName);
+                }
+            }
+        }
     }
 }

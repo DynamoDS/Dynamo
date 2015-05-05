@@ -1,11 +1,14 @@
 ﻿using System.IO;
 using System.Reflection;
 
+using DSCoreNodesUI;
+
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Tests;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -16,6 +19,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ProtoCore.AST;
+using ProtoCore.DSASM;
+using TestServices;
 
 namespace Dynamo
 {
@@ -45,12 +50,12 @@ namespace Dynamo
 
     class SampleSchedulerThread : ISchedulerThread
     {
-        private DynamoScheduler scheduler;
+        private IScheduler scheduler;
 
         internal bool Initialized { get; private set; }
         internal bool Destroyed { get; private set; }
 
-        public void Initialize(DynamoScheduler owningScheduler)
+        public void Initialize(IScheduler owningScheduler)
         {
             scheduler = owningScheduler;
             Initialized = true;
@@ -396,7 +401,7 @@ namespace Dynamo
         private readonly FakeAsyncTaskData data;
 
         internal FakeUpdateGraphAsyncTask(FakeAsyncTaskData data)
-            : base(data.Scheduler)
+            : base(data.Scheduler, false)
         {
             this.data = data;
         }
@@ -448,7 +453,7 @@ namespace Dynamo
         [Category("UnitTests")]
         public void TimeStampGenerator00()
         {
-            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
             Assert.AreEqual(1024, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1025, scheduler.NextTimeStamp.Identifier);
             Assert.AreEqual(1026, scheduler.NextTimeStamp.Identifier);
@@ -478,7 +483,7 @@ namespace Dynamo
             }
 
             // Start all time-stamp grabbers "at one go".
-            var scheduler = new DynamoScheduler(new SampleSchedulerThread());
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
             Parallel.For(0, EventCount, ((index) =>
             {
                 grabbers[index].GrabTimeStamp(scheduler);
@@ -562,7 +567,7 @@ namespace Dynamo
             Assert.IsFalse(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
             Assert.IsTrue(schedulerThread.Initialized);
             Assert.IsFalse(schedulerThread.Destroyed);
 
@@ -579,7 +584,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing00()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -625,7 +630,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing01()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -671,7 +676,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing02()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -717,7 +722,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing03()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -749,7 +754,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing04()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -783,7 +788,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing05()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             // Start scheduling a bunch of tasks.
             var asyncTasks = new AsyncTask[]
@@ -817,7 +822,7 @@ namespace Dynamo
         public void TestTaskQueuePreProcessing06()
         {
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
 
             schedulerThread.GetSchedulerToProcessTasks();
             Assert.Pass("Scheduler thread successfully exits");
@@ -832,7 +837,7 @@ namespace Dynamo
         {
             var observer = new TaskEventObserver();
             var schedulerThread = new SampleSchedulerThread();
-            var scheduler = new DynamoScheduler(schedulerThread);
+            var scheduler = new DynamoScheduler(schedulerThread, false);
             scheduler.TaskStateChanged += observer.OnTaskStateChanged;
 
             // Start scheduling a bunch of tasks.
@@ -931,6 +936,7 @@ namespace Dynamo
     public class SchedulerIntegrationTests : UnitTestBase
     {
         private DynamoModel dynamoModel;
+        private Preloader preloader;
         private SampleSchedulerThread schedulerThread;
         private List<string> results;
 
@@ -1187,9 +1193,10 @@ namespace Dynamo
 
         #region Test Setup, TearDown, Helper Methods
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             StartDynamo();
 
             FakeAsyncTaskData.ResetSerialNumber();
@@ -1204,23 +1211,28 @@ namespace Dynamo
                 dynamoModel = null;
             }
 
+            preloader = null;
             base.Cleanup();
         }
 
         protected void StartDynamo()
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            preloader.Preload();
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+            var pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
 
             schedulerThread = new SampleSchedulerThread();
             dynamoModel = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
-                    SchedulerThread = schedulerThread
+                    SchedulerThread = schedulerThread,
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             // Disable task parallelism for this set of test cases.
@@ -1229,12 +1241,19 @@ namespace Dynamo
 
         private IEnumerable<NodeModel> CreateBaseNodes()
         {
-            var nodes = new List<NodeModel>();
+            var nodes = new List<NodeModel>
+            {
+                new DoubleInput(),
+                new DoubleInput(),
+                new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"))
+            };
 
             var workspace = dynamoModel.CurrentWorkspace;
-            nodes.Add(workspace.AddNode(0, 0, "Number"));
-            nodes.Add(workspace.AddNode(0, 0, "Number"));
-            nodes.Add(workspace.AddNode(0, 0, "Add"));
+            foreach (var node in nodes)
+            {
+                workspace.AddNode(node, false);
+            }
+
             Assert.AreEqual(3, workspace.Nodes.Count);
             return nodes;
         }
@@ -1271,7 +1290,7 @@ namespace Dynamo
             var task = new FakeQueryMirrorDataAsyncTask(
                 new QueryMirrorDataParams()
                 {
-                    DynamoScheduler = dynamoModel.Scheduler,
+                    Scheduler = dynamoModel.Scheduler,
                     EngineController = dynamoModel.EngineController,
                     VariableName = variableName
                 });

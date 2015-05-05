@@ -111,6 +111,8 @@
     <Compile Include="Associative\ReplicatorTest.cs" />
     <Compile Include="Associative\SSATransformTest.cs" />
     <Compile Include="Associative\TypeSystemTests.cs" />
+    <Compile Include="ComponentTest\CompileAndExecute.cs" />
+    <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />
     <Compile Include="DebugTests\NamespaceConflictTest.cs" />
     <Compile Include="DebugTests\RunEqualityTests.cs" />
@@ -128,13 +130,13 @@
     <Compile Include="FFITests\CSFFIDataMarshalingTest.cs" />
     <Compile Include="FFITests\CSFFIDispose.cs" />
     <Compile Include="FFITests\CSFFITest.cs" />
-    <Compile Include="FFITests\Dummy.cs" />
+    <Compile Include="FFITests\ElementRewriterTests.cs" />
     <Compile Include="FFITests\RegressionAnalysisTests.cs" />
-    <Compile Include="FuzzTests.cs" />
     <Compile Include="GraphCompiler\NewFrontEndTests.cs" />
     <Compile Include="Imperative\FromOldTestSuite.cs" />
     <Compile Include="Imperative\MicroFeatureTests.cs" />
     <Compile Include="LiveRunnerTests\ChangeSetComputerTests.cs" />
+    <Compile Include="LiveRunnerTests\MemoryConsumptionTests.cs" />
     <Compile Include="LiveRunnerTests\MicroFeatureTests.cs" />
     <Compile Include="LiveRunnerTests\PreviewChangeSetTests.cs" />
     <Compile Include="MinimalClassTests.cs" />
@@ -144,10 +146,13 @@
     <Compile Include="MultiLangTests\GCTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
     <Compile Include="ProtoAST\ASTCompilerUtilsTests.cs" />
+    <Compile Include="ProtoAST\AstFactoryTest.cs" />
     <Compile Include="ProtoAST\ProtoASTExecutionTests.cs" />
     <Compile Include="ProtoAST\RoundTripTests.cs" />
+    <Compile Include="ProtoTestBase.cs" />
     <Compile Include="TD\Associative\ReplicationGuide.cs" />
     <Compile Include="TD\DocTests\UserManualTests.cs" />
     <Compile Include="TD\Imperative\Imperative.cs" />
@@ -158,7 +163,6 @@
     <Compile Include="TD\MultiLangTests\StringTest.cs" />
     <Compile Include="TD\MultiLangTests\TypeSystemTests.cs" />
     <Compile Include="MultiLanugageBasic.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtoScriptTest.cs" />
     <Compile Include="RegressionTests\ProtoCoreLexerTests.cs" />
@@ -175,7 +179,6 @@
     <Compile Include="TD\Imperative\BlockSyntax.cs" />
     <Compile Include="TD\Imperative\BreakContinue.cs" />
     <Compile Include="TD\Imperative\InlineCondition.cs" />
-    <Compile Include="TD\MultiLangTests\AssignmentSlicing.cs" />
     <Compile Include="TD\MultiLangTests\Builtin_Functions.cs" />
     <Compile Include="TD\MultiLangTests\CollectionAssgnmt.cs" />
     <Compile Include="TD\Imperative\ForLoop.cs" />
@@ -197,6 +200,7 @@
     <Compile Include="TD\TraceUtilsTests.cs" />
     <Compile Include="FFITests\TestCSharpAttribute.cs" />
     <Compile Include="UtilsTests\AstFactoryTest.cs" />
+    <Compile Include="UtilsTests\AstVisitorTest.cs" />
     <Compile Include="UtilsTests\ClassUtilsTest.cs" />
     <Compile Include="UtilsTests\CoreDump.cs" />
     <Compile Include="UtilsTests\CoreUtilsTest.cs" />
@@ -228,9 +232,7 @@
       <Name>ProtoTestFx</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TraceTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--
   <PropertyGroup>

@@ -1,13 +1,13 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
+﻿using Autodesk.DesignScript.Geometry;
 
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 
-using GraphLayout;
-
 using ProtoCore.Mirror;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Runtime.Serialization;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -61,8 +61,8 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal UpdateRenderPackageAsyncTask(DynamoScheduler scheduler)
-            : base(scheduler, true)
+        internal UpdateRenderPackageAsyncTask(IScheduler scheduler)
+            : base(scheduler)
         {
             nodeGuid = Guid.Empty;
             renderPackages = new List<IRenderPackage>();
@@ -80,7 +80,7 @@ namespace Dynamo.Core.Threading
                 throw new ArgumentNullException("initParams.DrawableIds");
 
             var nodeModel = initParams.Node;
-            if (!nodeModel.IsUpdated && (!nodeModel.RequiresRecalc))
+            if (!nodeModel.IsUpdated)
                 return false; // Not has not been updated at all.
 
             // If a node is in either of the following states, then it will not 
@@ -120,45 +120,165 @@ namespace Dynamo.Core.Threading
 
             var data = from varName in drawableIds
                        select engineController.GetMirror(varName)
-                       into mirror
-                       where mirror != null
-                       select mirror.GetData();
+                           into mirror
+                           where mirror != null
+                           select mirror.GetData();
 
             var labelMap = new List<string>();
+            var count = 0;
+            
             foreach (var mirrorData in data)
             {
                 AddToLabelMap(mirrorData, labelMap, previewIdentifierName);
+                GetRenderPackagesFromMirrorData(mirrorData, ref labelMap,  ref count);
+            }
+        }
+
+        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, ref List<string> labelMap, ref int count)
+        {
+            if (mirrorData.IsNull)
+            {
+                return;
             }
 
-            int count = 0;
-            foreach (var drawableId in drawableIds)
+            byte defR = 101;
+            byte defG = 86;
+            byte defB = 130;
+
+            if (mirrorData.IsCollection)
             {
-                var graphItems = engineController.GetGraphicItems(drawableId);
-                if (graphItems == null)
-                    continue;
-
-                foreach (var graphicItem in graphItems)
+                foreach (var el in mirrorData.GetElements())
                 {
-                    var package = new RenderPackage(isNodeSelected, displayLabels)
-                    {
-                        Tag = labelMap.Count > count ? labelMap[count] : "?",
-                    };
-
-                    try
-                    {
-                        graphicItem.Tessellate(package, tol: -1.0,
-                            maxGridLines: maxTesselationDivisions);
-                    }
-                    catch (Exception e)
-                    {
-                        System.Diagnostics.Debug.WriteLine(
-                            "PushGraphicItemIntoPackage: " + e);
-                    }
-
-                    package.ItemsCount++;
-                    renderPackages.Add(package);
-                    count++;
+                    GetRenderPackagesFromMirrorData(el, ref labelMap, ref count);
                 }
+            }
+            else
+            {
+                var graphicItem = mirrorData.Data as IGraphicItem;
+                if (graphicItem == null)
+                {
+                    return;
+                }
+
+
+                var package = new RenderPackage(isNodeSelected, displayLabels)
+                {
+                    Tag = labelMap.Count > count ? labelMap[count] : "?",
+                };
+
+                try
+                {
+                    graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
+
+                    var surf = graphicItem as Surface;
+                    if (surf != null)
+                    {
+                        foreach (var curve in surf.PerimeterCurves())
+                        {
+                            curve.Tessellate(package, -1.0, maxTesselationDivisions);
+                            curve.Dispose();
+                        }
+                    }
+
+                    var solid = graphicItem as Solid;
+                    if (solid != null)
+                    {
+                        foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
+                            geom.Tessellate(package, -1.0, maxTesselationDivisions);
+                            geom.Dispose();
+                        }
+                    }
+
+                    var plane = graphicItem as Plane;
+                    if (plane != null)
+                    {
+                        var s = 2.5;
+
+                        var cs = CoordinateSystem.ByPlane(plane);
+                        var a = Point.ByCartesianCoordinates(cs, s, s, 0);
+                        var b = Point.ByCartesianCoordinates(cs, -s, s, 0);
+                        var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
+                        var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
+
+                        // Get rid of the original plane geometry.
+                        package.LineStripVertices.Clear();
+                        package.LineStripVertexColors.Clear();
+                        package.LineStripVertexCounts.Clear();
+
+                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+                        package.PushTriangleVertex(b.X, b.Y, b.Z);
+                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+
+                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+                        package.PushTriangleVertex(d.X, d.Y, d.Z);
+                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+
+                        // Draw plane edges
+                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+                        package.PushLineStripVertex(b.X, b.Y, b.Z);
+                        package.PushLineStripVertex(b.X, b.Y, b.Z);
+                        package.PushLineStripVertex(c.X, c.Y, c.Z);
+                        package.PushLineStripVertex(c.X, c.Y, c.Z);
+                        package.PushLineStripVertex(d.X, d.Y, d.Z);
+                        package.PushLineStripVertex(d.X, d.Y, d.Z);
+                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+
+                        // Draw normal
+                        package.PushLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
+                        var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
+                        package.PushLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
+
+                        for (var i = 0; i < package.LineStripVertices.Count/3/2; i++)
+                        {
+                            package.PushLineStripVertexCount(2);
+                        }
+
+                        for (var i = 0; i < (package.LineStripVertices.Count/3)*4; i += 4)
+                        {
+                            package.PushLineStripVertexColor(180,180,180,255);
+                        }
+
+                        for (var i = 0; i < 6; i++)
+                        {
+                            package.PushTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                        }
+
+                        for (var i = 0; i < 6; i++)
+                        {
+                            package.PushTriangleVertexColor(0, 0, 0, 10);
+                        }
+
+                    }
+
+                    // The default color coming from the geometry library for
+                    // curves is 255,255,255,255 (White). Because we want a default
+                    // color of 0,0,0,255 (Black), we adjust the color components here.
+                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
+                    {
+                        for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
+                        {
+                            package.LineStripVertexColors[i] = defR;
+                            package.LineStripVertexColors[i + 1] = defG;
+                            package.LineStripVertexColors[i + 2] = defB;
+                        }
+
+                        for (var i = 0; i < package.PointVertexColors.Count; i += 4)
+                        {
+                            package.LineStripVertexColors[i] = defR;
+                            package.LineStripVertexColors[i + 1] = defG;
+                            package.LineStripVertexColors[i + 2] = defB;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "PushGraphicItemIntoPackage: " + e);
+                }
+                    
+                package.ItemsCount++;
+                renderPackages.Add(package);
+                count++;
             }
         }
 
@@ -237,5 +357,3 @@ namespace Dynamo.Core.Threading
         #endregion
     }
 }
-
-#endif

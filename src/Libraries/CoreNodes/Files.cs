@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-using Autodesk.DesignScript.Runtime;
-
+﻿using Autodesk.DesignScript.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -100,7 +97,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///  Moves a specified file to a new location
         /// </summary>
         /// <param name="path"></param>
         /// <param name="newPath"></param>
@@ -113,7 +110,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///   Deletes the specified file.
         /// </summary>
         /// <param name="path"></param>
         public static void Delete(string path)
@@ -151,44 +148,6 @@ namespace DSCore.IO
         {
             System.IO.File.WriteAllText(filePath, text);
         }
-
-        #region Obsolete Methods
-
-        [Obsolete("Use Image.Pixels node instead.")]
-        public static Color[] ReadImage(string path, int xSamples, int ySamples)
-        {
-            var info = FromPath(path);
-            var image = Image.ReadFromFile(info);
-            return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
-        }
-
-        [Obsolete("Use Image.ReadFromFile node instead.")]
-        public static Bitmap LoadImageFromPath(string path)
-        {
-            return Image.ReadFromFile(FromPath(path));
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public static string ReadText(string path)
-        {
-            return ReadText(FromPath(path));
-        }
-
-        [Obsolete("Use Image.WriteToFile node instead.")]
-        public static bool WriteImage(string filePath, string fileName, Bitmap image)
-        {
-            fileName = Path.ChangeExtension(fileName, "png");
-            Image.WriteToFile(Path.Combine(filePath, fileName), image);
-            return true;
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public static void ExportToCSV(string filePath, object[][] data)
-        {
-            CSV.WriteToFile(filePath, data);
-        }
-
-        #endregion
     }
 
     /// <summary>
@@ -390,7 +349,11 @@ namespace DSCore.IO
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return new Dictionary<string, int> { { "width", image.Width }, { "height", image.Height } };
+            return new Dictionary<string, int> 
+            { 
+                { "width", image.Width }, 
+                { "height", image.Height } 
+            };
         }
 
         /// <summary>
@@ -457,7 +420,7 @@ namespace DSCore.IO
                 csvDataList.Select(
                     row =>
                         row.data
-                            .Concat(Enumerable.Repeat(null as object, numCols - row.count))
+                            .Concat(Enumerable.Repeat("", numCols - row.count))
                             .ToArray())
                     .ToArray();
             return resultArray;
@@ -483,5 +446,50 @@ namespace DSCore.IO
 
             return elementSt;
         }
+    }
+}
+
+namespace DSCore
+{
+    [Obsolete]
+    public static class File
+    {
+        #region Obsolete Methods
+
+        [Obsolete("Use File.FromPath -> Image.ReadFromFile -> Image.Pixels nodes instead.")]
+        public static Color[] ReadImage(string path, int xSamples, int ySamples)
+        {
+            var info = IO.File.FromPath(path);
+            var image = IO.Image.ReadFromFile(info);
+            return IO.Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
+        }
+
+        [Obsolete("Use File.FromPath -> Image.ReadFromFile nodes instead.")]
+        public static Bitmap LoadImageFromPath(string path)
+        {
+            return IO.Image.ReadFromFile(IO.File.FromPath(path));
+        }
+
+        [Obsolete("Use File.FromPath -> File.ReadText nodes instead.")]
+        public static string ReadText(string path)
+        {
+            return IO.File.ReadText(IO.File.FromPath(path));
+        }
+
+        [Obsolete("Use Image.WriteToFile node instead.")]
+        public static bool WriteImage(string filePath, string fileName, Bitmap image)
+        {
+            fileName = Path.ChangeExtension(fileName, "png");
+            IO.Image.WriteToFile(Path.Combine(filePath, fileName), image);
+            return true;
+        }
+
+        [Obsolete("Use CSV.WriteToFile node instead.")]
+        public static void ExportToCSV(string filePath, object[][] data)
+        {
+            IO.CSV.WriteToFile(filePath, data);
+        }
+
+        #endregion
     }
 }

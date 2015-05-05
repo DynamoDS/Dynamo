@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class Function
+    class Function : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string filePath = "..\\..\\..\\Scripts\\TD\\Associative\\Function\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T001_Associative_Function_Simple()
@@ -504,6 +497,153 @@ a = function1({null,null});
             thisTest.Verify("a", v1);
         }
 
+        [Test]
+        public void TestCallFunctionReturningObjectMultipleTimes()
+        {
+            string code = @"
 
+class Obj
+{
+    constructor Obj(){}
+    def func()
+    {
+        return = 1;
+    }
+}
+
+def f()
+{
+    p = Obj.Obj();
+    p = p.func();
+    return = p;
+}
+
+x = f();
+y = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+            thisTest.Verify("y", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentPrimitive01()
+        {
+            string code = @"    
+def f(a : int = 1)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentPrimitive02()
+        {
+            string code = @"    
+def f(a : int = null)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", null);
+        }
+
+        [Test]
+        public void TestDefaultArgumentPrimitive03()
+        {
+            string code = @"    
+def f(a : bool = true)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", true);
+        }
+
+
+        [Test]
+        public void TestDefaultArgumentPointer01()
+        {
+            string code = @"    
+class Point{    x : int = 1;}def f(p : Point = Point.Point()){    return = p.x;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+
+        [Test]
+        public void TestDefaultArgumentPointer02()
+        {
+            string code = @"    import(""FFITarget.dll"");def f (a : DummyPoint = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumenFFI01()
+        {
+            string code = @"    import(""DSCoreNodes.dll"");a = Math.Random();
+x = (a != null) ? 1 : 0;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentUntyped01()
+        {
+            string code = @"    
+def f(a = 1)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentUntyped02()
+        {
+            string code = @"    
+def f(a = true)
+{
+    return = a;
+}
+x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", true);
+        }
+
+        [Test]
+        public void TestDefaultArgumentUntyped03()
+        {
+            string code = @"    
+class Point{    x : int = 1;}def f(p = Point.Point()){    return = p.x;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
+
+        [Test]
+        public void TestDefaultArgumentUntyped04()
+        {
+            string code = @"    import(""FFITarget.dll"");def f (a = DummyPoint.ByCoordinates(1,2,3)){    return = a.X;}x = f();
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 1);
+        }
     }
 }

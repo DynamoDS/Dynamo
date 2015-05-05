@@ -1,23 +1,33 @@
 ﻿using System.IO;
 using NUnit.Framework;
-using Dynamo.Utilities;
+
 using Dynamo.Models;
 using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Nodes;
 using DSCoreNodesUI;
 using ProtoCore.Mirror;
+using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
     class DynamoDefects : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         // Note: Pelase only add test cases those are related to defects.
 
         [Test, Category("RegressionTests")]
         public void T01_Defect_MAGN_110()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_110.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_110.dyn");
             RunModel(openPath);
             Dictionary<int, object> validationData = new Dictionary<int, object>()
             {
@@ -30,7 +40,7 @@ namespace Dynamo.Tests
         [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_Equal()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_Equal.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_942_Equal.dyn");
             RunModel(openPath);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -47,7 +57,7 @@ namespace Dynamo.Tests
         public void Defect_MAGN_942_GreaterThan()
         {
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_GreaterThan.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_942_GreaterThan.dyn");
             RunModel(openPath);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -65,7 +75,7 @@ namespace Dynamo.Tests
         [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_GreaterThanOrEqual()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_GreaterThanOrEqual.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_942_GreaterThanOrEqual.dyn");
             RunModel(openPath);
 
             Dictionary<int, object> validationData = new Dictionary<int, object>()
@@ -84,7 +94,7 @@ namespace Dynamo.Tests
         public void Defect_MAGN_942_LessThan()
         {
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_LessThan.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_942_LessThan.dyn");
             RunModel(openPath);
 
             AssertPreviewValue("7ec8271d-be03-4d53-ae78-b94c4db484e1", new int[] { 1, 1, 1, 1, 1 });
@@ -93,7 +103,7 @@ namespace Dynamo.Tests
         [Test, Category("RegressionTests")]
         public void Defect_MAGN_942_LessThanOrEqual()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_942_LessThanOrEqual.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_942_LessThanOrEqual.dyn");
             RunModel(openPath);
 
             AssertPreviewValue("6adba162-ef10-4664-9c9c-d0280a56a52a", new int[] { 0, 1, 1, 1, 0, 1 });
@@ -105,12 +115,12 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1206
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1206.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_1206.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            ViewModel.Model.RunExpression();
-            var add = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            Assert.AreEqual(20, add.CachedValue.Data);
+            ViewModel.HomeSpace.Run();
+            var add = model.CurrentWorkspace.NodeFromWorkspace<DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
+            Assert.AreEqual(20, add.GetCachedValueFromEngine(model.EngineController).Data);
         }
 
         [Test, Category("RegressionTests")]
@@ -119,14 +129,14 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2566
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2566.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_2566.dyn");
             RunModel(openPath);
 
              // check all the nodes and connectors are loaded
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
 
-            //ViewModel.Model.RunExpression();
+            //ViewModel.HomeSpace.Run();
 
             // Checking Point.X
             AssertPreviewValue("eea90465-db68-4494-a85e-4d7c687b68e6", 0);
@@ -147,14 +157,14 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3256
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3256.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3256.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count());
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("21780859-f85e-44ff-bedb-bd016ca7398d", 5.706339);
 
@@ -165,14 +175,14 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3646
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3646.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3646.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count());
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.00001);
             AssertPreviewValue("d12c17f4-2f73-42fa-9990-7fe9a723e6a1", 0.0000000000000001);
@@ -184,12 +194,12 @@ namespace Dynamo.Tests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3648
 
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3648.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3648.dyn");
 
             OpenModel(openPath);
 
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
 
             //Check the CBN for input and output ports count and for error as well.
             string nodeID = "e378c03e-4aae-4bde-b4c5-f16a6bed358f";
@@ -198,7 +208,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             AssertPreviewValue(nodeID, 1);
 
@@ -209,7 +219,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2169
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2169.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_2169.dyn");
             RunModel(openPath);
             var cbn = model.CurrentWorkspace.NodeFromWorkspace
                 ("ff354c76-cbcc-4903-a88a-89184905dba0");
@@ -223,10 +233,10 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3468
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3468.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3468.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         [Test, Category("RegressionTests")]
@@ -234,10 +244,10 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2264
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2264.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_2264.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
         [Test, Category("RegressionTests")]
@@ -245,7 +255,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1292
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1292.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_1292.dyn");
             RunModel(openPath);
             var listContainsItemNode = model.CurrentWorkspace.NodeFromWorkspace
                 ("3011fcbe-00d5-42e6-84c8-55bdf38b6a3b");
@@ -259,7 +269,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1905
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1905.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_1905.dyn");
             RunModel(openPath);
             AssertPreviewValue("c4b9077d-3e6c-40b9-a715-078083e29655", 11);
             BoolSelector b = model.CurrentWorkspace.NodeFromWorkspace
@@ -274,14 +284,14 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3726
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3726.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3726.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             AssertPreviewValue("02985f61-2ece-4fe2-b78a-dfb21aa589ff",
                 new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
@@ -292,7 +302,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_847.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_847.dyn");
             RunModel(openPath);
             AssertPreviewCount("2ea813c4-7729-45b5-b23b-d7a3377f0b31", 4);
             DoubleInput doubleInput = model.CurrentWorkspace.NodeFromWorkspace
@@ -308,7 +318,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3548
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3548.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3548.dyn");
             RunModel(openPath);
             var point = model.CurrentWorkspace.NodeFromWorkspace
                 ("a3da7834-f56f-4e73-b8f1-56796b6c37b3");
@@ -322,7 +332,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4105
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_4105.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_4105.dyn");
             RunModel(openPath);
             AssertPreviewCount("1499d976-e7d5-486f-89bf-bc050eac4489", 4);
         }
@@ -332,7 +342,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2555
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2555.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_2555.dyn");
             RunModel(openPath);
             var geometryTranslateNode = model.CurrentWorkspace.NodeFromWorkspace
                 ("f49e3857-2a08-4a1f-83ac-89f64b24a592");
@@ -346,7 +356,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1971
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1971.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_1971.dyn");
             RunModel(openPath);
             var pythonNode = model.CurrentWorkspace.NodeFromWorkspace
                 ("768780b5-0902-4756-93dc-2d6a8690df53");
@@ -360,7 +370,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4046
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_4046.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_4046.dyn");
             RunModel(openPath);
             AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
             IntegerSlider integerInput = model.CurrentWorkspace.NodeFromWorkspace
@@ -378,7 +388,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3998
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_3998.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3998.dyn");
             RunModel(openPath);
             AssertPreviewCount("7e825844-c428-4067-a916-11ff14bc0715", 100);
         }
@@ -387,7 +397,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2607
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_2607.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_2607.dyn");
             RunModel(openPath);
             AssertPreviewValue("99975a42-f887-4b99-9b0a-e36513d2bd6d", 12);
             IntegerSlider input = model.CurrentWorkspace.NodeFromWorkspace
@@ -402,7 +412,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1968
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_1968.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_1968.dyn");
             RunModel(openPath);
             int[] listResult = new int[] { 0, 1, 2 };
             AssertPreviewValue("522e092c-4493-4959-9b89-a02d045070cc", listResult);
@@ -413,7 +423,7 @@ namespace Dynamo.Tests
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4364
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Defect_MAGN_4364.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_4364.dyn");
 
             RunModel(openPath);
 
@@ -447,7 +457,7 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3420
             
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\Bool_Case_3420.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Bool_Case_3420.dyn");
             RunModel(openPath);
             
             
@@ -466,12 +476,49 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5173
             
             DynamoModel model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\DynamoDefects\VMFailOnCBN_5173.dyn");
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\VMFailOnCBN_5173.dyn");
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             
         }
-        
-        
+
+        [Test, Category("RegressionTests")]
+        public void Defect5561_ListCombineCrash_AddingArrayToSingleItem()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5561
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, 
+                        @"core\DynamoDefects\5561_ListCombineCrash_AddingArrayToSingleItem.dyn");
+            RunModel(openPath);
+
+            AssertPreviewCount("d24b1f14-c31e-4ee9-9a1b-e3ebfbb936ba", 101);
+            var combinedValue = GetPreviewValueAtIndex("d24b1f14-c31e-4ee9-9a1b-e3ebfbb936ba", 0);
+            Assert.IsNotNull(combinedValue);
+
+        }
+
+        [Test, Category("RegressionTests")]
+        public void EqualEqualTest_ForStrings_Defect6694()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6694
+            DynamoModel model = ViewModel.Model;
+
+
+            string openPath = Path.Combine(TestDirectory, 
+                                        @"core\DynamoDefects\EqualEqualTestForSting_6694.dyn");
+            RunModel(openPath);
+
+            // check for number of Nodes and Connectors
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
+
+
+            // Different Stinrg input
+            AssertPreviewValue("68e9538f-278d-44a7-8b35-a594cea07dca", false);
+
+            // Same Stinrg input
+            AssertPreviewValue("56f3c0fd-d39c-46cb-a4ea-4f266f7a9fce", true);
+
+        }
     }
 }

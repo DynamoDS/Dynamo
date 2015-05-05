@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 using DSOffice;
-
-using Dynamo.Nodes;
-using Dynamo.ViewModels;
-
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
@@ -17,10 +13,16 @@ namespace Dynamo.Tests
     [TestFixture]
     public class ExcelTests : DynamoViewModelUnitTest
     {
-        [SetUp]
-        public override void Init()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            base.Init();
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSOffice.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
 
             // In unit-test scenario we are redirecting 'PreferenceSettings' to 
             // load from a non-existing preference XML file. That way each test 
@@ -29,10 +31,9 @@ namespace Dynamo.Tests
             // ensures the preference value change in one test case (if any) does 
             // not get persisted across to the subsequent test case.
             // 
-            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             try
@@ -46,8 +47,6 @@ namespace Dynamo.Tests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-
-            GC.Collect();
         }
 
         #region COM
@@ -75,7 +74,7 @@ namespace Dynamo.Tests
         public void CanGetLargeWorkbookWithinThresholdTime()
         {
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\HammersmithExcelFile_Open.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\HammersmithExcelFile_Open.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
@@ -83,11 +82,11 @@ namespace Dynamo.Tests
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
                         
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var timer = new Stopwatch();
             timer.Start();
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             timer.Stop();
             Assert.Less(timer.Elapsed.Milliseconds, 1000); // open in less than 1s
 
@@ -98,17 +97,17 @@ namespace Dynamo.Tests
         public void CanGetWorksheets()
         {
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetsFromFile.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WorksheetsFromFile.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetWorksheetsFromExcelWorkbook");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             MirrorData mirror = watch.CachedValue;
             Assert.IsTrue(mirror.IsCollection);
@@ -120,7 +119,7 @@ namespace Dynamo.Tests
         public void CanGetWorksheetByNameWithValidInput()
         {
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_ValidInput.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WorksheetByName_ValidInput.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
@@ -128,11 +127,11 @@ namespace Dynamo.Tests
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetExcelWorksheetByName");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsNotNull(watch.CachedValue);
         }
@@ -140,18 +139,18 @@ namespace Dynamo.Tests
         [Test]
         public void ThrowExceptionOnGetWorksheetByNameWithInvalidInput()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_InvalidInput.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WorksheetByName_InvalidInput.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var getWorksheet = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetExcelWorksheetByName");
             var readFile = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadExcelFile");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readFile.CachedValue.Class.ClassName == "DSOffice.WorkBook");
             Assert.IsNull(getWorksheet.CachedValue.Data);
@@ -161,17 +160,17 @@ namespace Dynamo.Tests
         public void CanReadWorksheetWithSingleColumnOfNumbers()
         {
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_ascending.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\DataFromFile_ascending.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -195,17 +194,17 @@ namespace Dynamo.Tests
         public void CanReadMultiDimensionalWorksheet()
         {
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_2Dimensional.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\DataFromFile_2Dimensional.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -230,17 +229,17 @@ namespace Dynamo.Tests
         [Test]
         public void CanReadWorksheetWithEmptyCellInUsedRange()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_missingCell.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\DataFromFile_missingCell.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -269,17 +268,17 @@ namespace Dynamo.Tests
         public void CanReadWorksheetWithMixedNumbersAndStrings()
         {
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_mixedNumbersAndStrings.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\DataFromFile_mixedNumbersAndStrings.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -313,13 +312,13 @@ namespace Dynamo.Tests
         public void CanReadAndWriteExcel()
         {
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\ReadAndWriteExcel.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ReadAndWriteExcel.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
             var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
@@ -331,7 +330,7 @@ namespace Dynamo.Tests
             // writeNode should have the same data contained in watch
             var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
 
@@ -394,11 +393,11 @@ namespace Dynamo.Tests
         [Test]
         public void CanWrite1DDataOfMixedTypesToExcelWorksheet()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddMixed1DData.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_AddMixed1DData.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(13, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -431,23 +430,23 @@ namespace Dynamo.Tests
         [Test]
         public void CanCreateNewWorksheetInNewWorkbook()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddWorksheet.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_AddWorksheet.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
             var getWorksheet = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetExcelWorksheetByName");
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             Assert.IsNull(getWorksheet.CachedValue.Data);
         }
 
         [Test]
         public void CanAddSingleItemToExcelWorksheet()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddSingleItemData.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_AddSingleItemData.dyn");
 
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
 
@@ -463,12 +462,12 @@ namespace Dynamo.Tests
         [Test]
         public void CanAdd1DListToExcelWorksheet()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add1DListData.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_Add1DListData.dyn");
 
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
-            var previewNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");                
-            ViewModel.Model.RunExpression();
+            var previewNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(previewNode.CachedValue.IsCollection);
             var list = previewNode.CachedValue.GetElements();
@@ -491,12 +490,12 @@ namespace Dynamo.Tests
         [Test]
         public void CanAdd2DListToExcelWorksheet()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add2DListData.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_Add2DListData.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(11, ViewModel.CurrentSpace.Nodes.Count);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -521,7 +520,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanWriteToExcelAndUpdateData()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WriteNodeAndUpdateData.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNodeAndUpdateData.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
@@ -530,7 +529,7 @@ namespace Dynamo.Tests
 
             var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
 
@@ -549,7 +548,7 @@ namespace Dynamo.Tests
             var inputStringNode = stringNodes.Where(x => x.Value == "BBB").FirstOrDefault();
             inputStringNode.Value = "AAA";
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
             list = writeNode.CachedValue.GetElements();
@@ -572,7 +571,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanSaveAsWorksheet()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_SaveAs.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_SaveAs.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
@@ -580,7 +579,7 @@ namespace Dynamo.Tests
 
             stringNode.Value = filePath;
 
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(File.Exists(filePath));
         }
@@ -601,7 +600,7 @@ namespace Dynamo.Tests
         [Test]
         public void Defect_MAGN_883()
         {
-            string testDir = GetTestDirectory();
+            string testDir = TestDirectory;
             string openPath = Path.Combine(testDir, @"core\excel\Defect_MAGN_883.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
@@ -612,7 +611,7 @@ namespace Dynamo.Tests
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
-            ViewModel.Model.RunExpression();
+            ViewModel.HomeSpace.Run();
             Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
         }
 

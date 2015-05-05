@@ -8,14 +8,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.DSASM
 {
     [TestFixture]
-    class StackOverflowTests
+    class StackOverflowTests : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
         [Test]
         [Category("StackOverflow")]
         public void StackOverflow_DNL_1467365()

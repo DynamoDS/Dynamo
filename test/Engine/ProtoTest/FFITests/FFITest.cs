@@ -1,23 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
+using ProtoCore.Mirror;
 namespace ProtoTest.TD.FFI
 {
-    class FFITest
+    class FFITest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string FFIPath = "..\\..\\..\\Scripts\\TD\\FFI\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
-
-
-
         [Test]
         [Category("SmokeTest")]
         public void T003_ClassTest()
@@ -2540,5 +2531,49 @@ o2 = OverloadTarget.IEnumerableOfDifferentObjectType(a);
 
         }
 
+        [Test]
+        public void MethodWithRefOutParams_NoLoad()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            string ffiTargetClass = "ClassWithRefParams";
+
+            // Assert that the class name is indeed a class
+            ClassMirror type = null;
+            Assert.DoesNotThrow(() => type = new ClassMirror(ffiTargetClass, thisTest.GetTestCore()));
+
+            var members = type.GetMembers();
+
+            var expected = new string[] { "ClassWithRefParams" };
+
+            var actual = members.OrderBy(n => n.Name).Select(x => x.Name).ToArray();
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void TestDefaultArgumentAttribute()
+        {
+            string code = @"
+import (TestData from ""FFITarget.dll"");
+";
+            thisTest.RunScriptSource(code);
+            var core = thisTest.GetTestCore();
+            var testDataClassIndex = core.ClassTable.IndexOf("TestData");
+            var testDataClass = core.ClassTable.ClassNodes[testDataClassIndex];
+            var funcNode = testDataClass.vtable.GetFirstStatic("GetCircleArea");
+            var argument = funcNode.argInfoList.First();
+
+            Assert.IsNotNull(argument);
+            Assert.IsNotNull(argument.Attributes);
+
+            object o;
+            Assert.IsTrue(argument.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o));
+
+            string expression = o as string;
+            Assert.IsTrue(expression.Equals("TestData.GetFloat()"));
+        }
     }
 }

@@ -4,15 +4,8 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    class TestClass
+    class TestClass : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testPath = "..\\..\\..\\Scripts\\TD\\MultiLanguage\\Class\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("SmokeTest")]
         public void T01_Class_In_Various_Scopes()
@@ -2170,7 +2163,7 @@ class A
 	
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
 
         [Test]
@@ -2821,17 +2814,6 @@ x2 = derivedpoint.B;
             thisTest.Verify("x2", 9);
 
         }
-        /*
-         going in infinite loop due to defect 1467097
-        
-[Test]
-        [Category("SmokeTest")]
-        public void T53_Undefined_Class_As_Parameter_1463738_5()
-        {
-            ExecutionMirror mirror = thisTest.RunScript(testPath, "T53_Undefined_Class_As_Parameter_1463738_5.ds");
-            thisTest.Verify("x1", 2);
-            thisTest.Verify("x2", 9);
-        }*/
 
         [Test]
         [Category("SmokeTest")]
@@ -3691,7 +3673,7 @@ p8 = y[2][1];
 p8 = y[2][2];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
             Object a = null;
             thisTest.Verify("p1", a);
             thisTest.Verify("p2", a);
@@ -3755,7 +3737,7 @@ p3 = y[0][1][0];
 p4 = y[0][1][1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
             Object a = null;
             thisTest.Verify("p1", a);
             thisTest.Verify("p2", a);
@@ -3779,7 +3761,7 @@ x = A.A( );
 y = x.foo ();
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
             Object a = null;
             thisTest.Verify("y", a);
 
@@ -5240,7 +5222,7 @@ r = x.foo();
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
 
         }
 
@@ -5277,7 +5259,7 @@ r;
             string error = "";
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("r", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5365,7 +5347,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5387,7 +5369,7 @@ a = test.test();
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5402,7 +5384,7 @@ a.b = 1;
 ";
             string error = "Class 'test' does not have a property 'b'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5421,7 +5403,7 @@ a.b = 1;
 ";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5444,7 +5426,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5471,7 +5453,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5494,7 +5476,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5521,7 +5503,7 @@ a.foo = 1;
 ";
             string error = "Property 'foo' is inaccessible";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5548,7 +5530,7 @@ a.foo = 1;
 ";
             string error = "Class 'test' does not have a property 'foo'";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5579,7 +5561,7 @@ a.foo = 1;
 ";
             string error = "1467443 Error on incorrect set property is not helpful ";
             thisTest.VerifyRunScriptSource(code, error);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -5977,7 +5959,6 @@ r = a.x;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T99_1467469
             ()
         {

@@ -7,92 +7,41 @@ using Dynamo.Utilities;
 
 using DynamoUtilities;
 
-namespace RevitNodesTests
+namespace TestServices
 {
-    public static class AssemblyResolver
+    public class AssemblyResolver
     {
-        private static bool resolverSetup;
+        private AssemblyHelper assemblyHelper;
 
         /// <summary>
         /// Setup the assembly resolver using the base path 
         /// specified in the config file.
         /// </summary>
-        public static void Setup()
+        public void Setup()
         {
-            if (resolverSetup) return;
-
-            var basePath = OpenAndReadDynamoBasePath();
-
-            DynamoPathManager.Instance.InitializeCore(basePath);
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            resolverSetup = true;
+            Setup((new TestSessionConfiguration()).DynamoCorePath);
         }
 
         /// <summary>
         /// Setup the assembly resolver, specifying a core path.
         /// </summary>
         /// <param name="corePath"></param>
-        public static void Setup(string corePath)
+        public void Setup(string corePath)
         {
-            if (resolverSetup) return;
+            if (assemblyHelper != null) return;
 
-            DynamoPathManager.Instance.InitializeCore(corePath);
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            resolverSetup = true;
+            assemblyHelper = new AssemblyHelper(corePath, null);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
-        public static string GetDynamoRootDirectory()
+        public void TearDown()
         {
-            var assemPath = Assembly.GetExecutingAssembly().Location;
-            var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));
-            return assemDir.Parent.FullName;
+            if (assemblyHelper == null)
+                return;
+
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
+            assemblyHelper = null;
         }
-
-        #region private helper methods
-
-        /// <summary>
-        /// Read the Dynamo base directory from a config file. If the 
-        /// path is empty in the config file, then use the directory
-        /// of the executing assembly.
-        /// </summary>
-        /// <returns></returns>
-        private static string OpenAndReadDynamoBasePath()
-        {
-            var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configPath = Path.Combine(assDir, "TestServices.dll");
-            if (!File.Exists(configPath))
-            {
-                return assDir;
-            }
-
-            var config = ConfigurationManager.OpenExeConfiguration(configPath);
-            var dir = GetAppSetting(config, "DynamoBasePath");
-
-            if (string.IsNullOrEmpty(dir))
-            {
-                return assDir;
-            }
-
-            if (!Directory.Exists(dir))
-            {
-                throw new Exception("The DynamoBasePath key specified in the config file does not exist.");
-            }
-
-            return dir;
-        }
-
-        private static string GetAppSetting(Configuration config, string key)
-        {
-            KeyValueConfigurationElement element = config.AppSettings.Settings[key];
-            if (element == null) return string.Empty;
-
-            string value = element.Value;
-            return !string.IsNullOrEmpty(value) ? value : string.Empty;
-        }
-
-        #endregion
 
     }
     

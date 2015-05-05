@@ -7,26 +7,6 @@ namespace DSCoreNodesTests
     [TestFixture]
     internal static class StringTests
     {
-        #region String.FromObject
-        
-        private class Foo
-        {
-            public const string String = "FOO!";
-
-            public override string ToString()
-            {
-                return String;
-            }
-        }
-
-        [Test]
-        public static void FromObject()
-        {
-            Assert.AreEqual(Foo.String, String.FromObject(new Foo()));
-        }
-
-        #endregion
-
         [Test]
         [Category("UnitTests")]
         public static void ToNumber()

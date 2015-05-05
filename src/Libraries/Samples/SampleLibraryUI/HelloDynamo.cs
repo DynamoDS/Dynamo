@@ -5,10 +5,10 @@ using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.UI.Commands;
-
+using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
+using SamplesLibraryUI.Properties;
 
 namespace SamplesLibraryUI
 {
@@ -44,10 +44,10 @@ namespace SamplesLibraryUI
 
     // The description will display in the tooltip
     // and in the help window for the node.
-    [NodeDescription("A sample UI node which displays custom UI.")]
+    [NodeDescription("HelloDynamoDescription",typeof(SamplesLibraryUI.Properties.Resources))]
 
     [IsDesignScriptCompatible]
-    public class HelloDynamo : NodeModel, IWpfNode
+    public class HelloDynamo : NodeModel
     {
         #region private members
 
@@ -70,7 +70,7 @@ namespace SamplesLibraryUI
                 awesome = value;
                 RaisePropertyChanged("Awesome");
 
-                RequiresRecalc = true;
+                OnNodeModified();
             }
         }
 
@@ -108,19 +108,18 @@ namespace SamplesLibraryUI
         /// the input and output ports and specify the argument
         /// lacing.
         /// </summary>
-        /// <param name="workspace"></param>
-        public HelloDynamo(WorkspaceModel workspace) : base(workspace)
+        public HelloDynamo()
         {
             // When you create a UI node, you need to do the
             // work of setting up the ports yourself. To do this,
             // you can populate the InPortData and the OutPortData
             // collections with PortData objects describing your ports.
-            InPortData.Add(new PortData("something", "Input a string."));
+            InPortData.Add(new PortData("something", Resources.HelloDynamoPortDataInputToolTip));
 
             // Nodes can have an arbitrary number of inputs and outputs.
             // If you want more ports, just create more PortData objects.
-            OutPortData.Add(new PortData("something", "A result."));
-            OutPortData.Add(new PortData("some awesome", "A result."));
+            OutPortData.Add(new PortData("something", Resources.HelloDynamoPortDataOutputToolTip));
+            OutPortData.Add(new PortData("some awesome", Resources.HelloDynamoPortDataOutputToolTip));
 
             // This call is required to ensure that your ports are
             // properly created.
@@ -190,17 +189,40 @@ namespace SamplesLibraryUI
             };
         }
 
+        #endregion
+
+        #region command methods
+
+        private static bool CanShowMessage(object obj)
+        {
+            // I can't think of any reason you wouldn't want to say Hello Dynamo!
+            // so I'll just return true.
+            return true;
+        }
+
+        private static void ShowMessage(object obj)
+        {
+            MessageBox.Show("Hello Dynamo!");
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    ///     View customizer for HelloDynamo Node Model.
+    /// </summary>
+    public class HelloDynamoNodeViewCustomization : INodeViewCustomization<HelloDynamo>
+    {
         /// <summary>
-        /// SetupCustomUIElements is part of the IWpfNode interface.
         /// At run-time, this method is called during the node 
         /// creation. Here you can create custom UI elements and
         /// add them to the node view, but we recommend designing
         /// your UI declaratively using xaml, and binding it to
         /// properties on this node as the DataContext.
         /// </summary>
-        /// <param name="view">The view representing the node in the graph.</param>
-        [IsVisibleInDynamoLibrary(false)]
-        public void SetupCustomUIElements(dynNodeView view)
+        /// <param name="model">The NodeModel representing the node's core logic.</param>
+        /// <param name="nodeView">The NodeView representing the node in the graph.</param>
+        public void CustomizeView(HelloDynamo model, NodeView nodeView)
         {
             // The view variable is a reference to the node's view.
             // In the middle of the node is a grid called the InputGrid.
@@ -210,30 +232,19 @@ namespace SamplesLibraryUI
             // Create an instance of our custom UI class (defined in xaml),
             // and put it into the input grid.
             var helloDynamoControl = new HelloDynamoControl();
-            view.inputGrid.Children.Add(helloDynamoControl);
+            nodeView.inputGrid.Children.Add(helloDynamoControl);
 
             // Set the data context for our control to be this class.
             // Properties in this class which are data bound will raise 
             // property change notifications which will update the UI.
-            helloDynamoControl.DataContext = this;
+            helloDynamoControl.DataContext = model;
         }
 
-        #endregion
-
-        #region command methods
-
-        private bool CanShowMessage(object obj)
-        {
-            // I can't think of any reason you wouldn't want to say Hello Dynamo!
-            // so I'll just return true.
-            return true;
-        }
-
-        private void ShowMessage(object obj)
-        {
-            MessageBox.Show("Hello Dynamo!");
-        }
-
-        #endregion
+        /// <summary>
+        /// Here you can do any cleanup you require if you've assigned callbacks for particular 
+        /// UI events on your node.
+        /// </summary>
+        public void Dispose() { }
     }
+
 }

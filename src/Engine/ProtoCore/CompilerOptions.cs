@@ -1,9 +1,9 @@
 
 namespace ProtoCore
 {
-    namespace Compiler
+    namespace CompilerDefinitions
     {
-        public enum AccessSpecifier
+        public enum AccessModifier
         {
             kPublic,
             kProtected,

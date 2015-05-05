@@ -5,14 +5,8 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class FunctionObjectTest
+    class FunctionObjectTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void LoopWhile01()
         {
@@ -406,6 +400,28 @@ r1 = __Filter(1..10, pred);
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", new object[] { new object[] { 1, 3, 5, 7, 9 }, new object[] { 2, 4, 6, 8, 10 } });
+        }
+
+        [Test]
+        public void TestFilter2()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def odd(x)
+{
+    return = x % 2 == 1;
+}
+
+pred = _SingleFunctionObject(odd, 1, { }, { }, true);
+r1 = __Filter({}, pred);
+
+r2 = r1[0];
+r3 = r1[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r2", new object[] { });
+            thisTest.Verify("r3", new object[] { });
         }
 
         [Test]

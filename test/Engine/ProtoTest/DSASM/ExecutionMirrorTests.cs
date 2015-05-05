@@ -4,24 +4,15 @@ using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
 namespace ProtoTest.Associative
 {
-    class ExecutionMirrorTests
+    class ExecutionMirrorTests : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        [SetUp]
-        public void Setup()
-        {
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
-
         [Test]
         public void LiteralRetrival()
         {
             String code =
 @"foo;[Associative]{	foo = 5;}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Obj o = mirror.GetValue("foo");
             Assert.IsTrue((Int64)o.Payload == 5);
         }
@@ -32,7 +23,7 @@ namespace ProtoTest.Associative
             String code =
 @"foo;[Associative]{	foo = {5};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 1);
@@ -45,7 +36,7 @@ namespace ProtoTest.Associative
             String code =
 @"foo;[Associative]{	foo = {{5}};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 1);
@@ -61,7 +52,7 @@ namespace ProtoTest.Associative
             String code =
 @"foo;[Associative]{	foo = {{5}, 6};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 2);
@@ -77,7 +68,7 @@ namespace ProtoTest.Associative
             String code =
 @"foo;[Associative]{	foo = {{5}, {6}};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 2);
@@ -95,7 +86,7 @@ namespace ProtoTest.Associative
             String code =
 @"foo;[Associative]{	foo = {};}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             ProtoCore.Lang.Obj o = mirror.GetValue("foo");
             ProtoCore.DSASM.Mirror.DsasmArray a = (ProtoCore.DSASM.Mirror.DsasmArray)o.Payload;
             Assert.IsTrue(a.members.Length == 0);

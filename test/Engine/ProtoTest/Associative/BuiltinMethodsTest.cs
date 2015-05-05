@@ -322,6 +322,17 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        //Test "LoadCSV"
+        public void BIM24_LoadCSV()
+        {
+            // ensure that white space is trimmed from the path
+            String code =
+@"a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";b = ImportFromCSV(a);x = b[0][2];";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 3.0);
+        }
+
+        [Test]
         //Test "Count"
         public void BIM24_Count()
         {
@@ -819,6 +830,16 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", null);
         }
+
+        [Test]
+        public void TestGetKeysFromNonArray()
+        {
+            string code = @"
+x = 1;
+k = GetKeys(x);";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("k", null);
+        }
     }
 
     class MathematicalFunctionMethodsTest
@@ -850,10 +871,8 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
         }
 
     }
-    class TrigonometricFunctionMethodsTest
+    class TrigonometricFunctionMethodsTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-
         [Test]
         public void TestTrigonometricFunction()
         {
@@ -876,16 +895,15 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
             thisTest.Verify("z4", -1.0);
             thisTest.Verify("r4", -1.0);
         }
+    }
 
-        class StringFunctionMethodsTest
+    class StringFunctionMethodsTest : ProtoTestBase
+    {
+        [Test]
+        public void TestStringFunction()
         {
-            public TestFrameWork thisTest = new TestFrameWork();
-
-            [Test]
-            public void TestStringFunction()
-            {
-                String code =
-                @"import(""DSCoreNodes.dll"");
+            String code =
+            @"import(""DSCoreNodes.dll"");
                 a = String.Length(""designScripT"");
                 b = String.ToUpper(""DynaMo"");
                 c = String.ToLower(""DYNamO"");
@@ -894,16 +912,15 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
                 f = String.Join(""_"", e);
                 g = String.Concat(e);
                 h = String.Substring(""DesignScript"",2,5);";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-                thisTest.Verify("a", 12);
-                thisTest.Verify("b", "DYNAMO");
-                thisTest.Verify("c", "dynamo");
-                thisTest.Verify("d", 157.589);
-                thisTest.Verify("e", new object[] { "Star", "Wars", "1", "The", "Phantom", "Menace" });
-                thisTest.Verify("f", "Star_Wars_1_The_Phantom_Menace");
-                thisTest.Verify("g", "StarWars1ThePhantomMenace");
-                thisTest.Verify("h", "signS");
-            }
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 12);
+            thisTest.Verify("b", "DYNAMO");
+            thisTest.Verify("c", "dynamo");
+            thisTest.Verify("d", 157.589);
+            thisTest.Verify("e", new object[] { "Star", "Wars", "1", "The", "Phantom", "Menace" });
+            thisTest.Verify("f", "Star_Wars_1_The_Phantom_Menace");
+            thisTest.Verify("g", "StarWars1ThePhantomMenace");
+            thisTest.Verify("h", "signS");
         }
     }
 }

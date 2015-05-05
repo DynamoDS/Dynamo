@@ -1,6 +1,5 @@
-﻿#if ENABLE_DYNAMO_SCHEDULER
-
-using System;
+using System.Linq;
+﻿using System;
 using System.Collections.Generic;
 
 using Dynamo.DSEngine;
@@ -9,7 +8,7 @@ using Dynamo.Models;
 using ProtoScript.Runners;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
-using RuntimeWarning = ProtoCore.RuntimeData.WarningEntry;
+using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 
 namespace Dynamo.Core.Threading
 {
@@ -19,25 +18,22 @@ namespace Dynamo.Core.Threading
 
         private GraphSyncData graphSyncData;
         private EngineController engineController;
-        private IEnumerable<NodeModel> modifiedNodes;
+        private readonly bool verboseLogging;
 
         internal override TaskPriority Priority
         {
             get { return TaskPriority.AboveNormal; }
         }
 
-        internal IEnumerable<NodeModel> ModifiedNodes
-        {
-            get { return modifiedNodes; }
-        }
+        internal IEnumerable<NodeModel> ModifiedNodes { get; private set; }
 
         #endregion
 
         #region Public Class Operational Methods
 
-        internal UpdateGraphAsyncTask(DynamoScheduler scheduler)
-            : base(scheduler)
+        internal UpdateGraphAsyncTask(IScheduler scheduler, bool verboseLogging) : base(scheduler)
         {
+            this.verboseLogging = verboseLogging;
         }
 
         /// <summary>
@@ -62,8 +58,8 @@ namespace Dynamo.Core.Threading
                 engineController = controller;
                 TargetedWorkspace = workspace;
 
-                modifiedNodes = ComputeModifiedNodes(workspace);
-                graphSyncData = engineController.ComputeSyncData(modifiedNodes);
+                ModifiedNodes = ComputeModifiedNodes(workspace);
+                graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
                 return graphSyncData != null;
             }
             catch (Exception)
@@ -98,7 +94,7 @@ namespace Dynamo.Core.Threading
             // restored to warning state when task completion handler sets the 
             // corresponding build/runtime warning on it.
             // 
-            foreach (var modifiedNode in modifiedNodes)
+            foreach (var modifiedNode in ModifiedNodes)
             {
                 modifiedNode.IsUpdated = true;
                 if (modifiedNode.State == ElementState.Warning)
@@ -118,13 +114,50 @@ namespace Dynamo.Core.Threading
 
         #region Private Class Helper Methods
 
+        /// <summary>
+        /// This method is called to gather all the nodes whose cached values 
+        /// should be updated after graph update is done. This set of nodes 
+        /// includes nodes that are explicitly marked as requiring update, as 
+        /// well as all its downstream nodes.
+        /// </summary>
+        /// <param name="workspace">The WorkspaceModel from which nodes are to
+        /// be retrieved.</param>
+        /// <returns>Returns a list of NodeModel whose cached values are to be 
+        /// updated after the evaluation.</returns>
+        /// 
         private static IEnumerable<NodeModel> ComputeModifiedNodes(WorkspaceModel workspace)
         {
-            return workspace.Nodes; // TODO(Ben): Implement dirty node subsetting.
+            var nodesToUpdate = new List<NodeModel>();
+            foreach (var node in workspace.Nodes.Where(n => n.IsModified))
+            {
+                GetDownstreamNodes(node, nodesToUpdate);
+            }
+
+            return nodesToUpdate;
+        }
+
+        /// <summary>
+        /// Call this method to recursively gather downstream nodes of a given node.
+        /// </summary>
+        /// <param name="node">A NodeModel whose downstream nodes are to be gathered.</param>
+        /// <param name="gathered">A list of all downstream nodes.</param>
+        /// 
+        private static void GetDownstreamNodes(NodeModel node, ICollection<NodeModel> gathered)
+        {
+            if (gathered.Contains(node)) // Considered this node before, bail.
+                return;
+
+            gathered.Add(node);
+
+            var sets = node.OutputNodes.Values;
+            var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+            foreach (var outputNode in outputNodes)
+            {
+                // Recursively get all downstream nodes.
+                GetDownstreamNodes(outputNode, gathered);
+            }
         }
 
         #endregion
     }
 }
-
-#endif

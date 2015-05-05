@@ -3,7 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Dynamo.Interfaces;
+using Dynamo.Library;
 using Dynamo.Models;
 
 using ProtoCore;
@@ -28,14 +29,22 @@ namespace Dynamo.DSEngine
     /// <summary>
     ///     AstBuilder is a factory class to create different kinds of AST nodes.
     /// </summary>
-    public class AstBuilder
+    public class AstBuilder : LogSourceBase
     {
-        private readonly DynamoModel dynamoModel;
+        /// <summary>
+        /// The context of AST compilation
+        /// </summary>
+        public enum CompilationContext
+        {
+            None,
+            DeltaExecution,
+            NodeToCode,
+        }
+
         private readonly IAstNodeContainer nodeContainer;
 
-        public AstBuilder(DynamoModel dynamoModel, IAstNodeContainer nodeContainer)
+        public AstBuilder(IAstNodeContainer nodeContainer)
         {
-            this.dynamoModel = dynamoModel;
             this.nodeContainer = nodeContainer;
         }
 
@@ -57,7 +66,7 @@ namespace Dynamo.DSEngine
                 nodeFlags[node] = MarkFlag.TempMark;
 
                 IEnumerable<NodeModel> outputs =
-                    node.Outputs.Values.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+                    node.OutputNodes.Values.SelectMany(set => set.Select(t => t.Item2)).Distinct();
                 foreach (NodeModel output in outputs)
                     MarkNode(output, nodeFlags, sortedList);
 
@@ -73,18 +82,101 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
+
             var sortedNodes = new Stack<NodeModel>();
             IList<NodeModel> nodeModels = nodes as IList<NodeModel> ?? nodes.ToList();
 
             Dictionary<NodeModel, MarkFlag> nodeFlags = nodeModels.ToDictionary(node => node, _ => MarkFlag.NoMark);
 
-            foreach (NodeModel candidate in SortCandidates(nodeFlags))
+            foreach (NodeModel candidate in GetUnvisitedNodes(nodeFlags))
                 MarkNode(candidate, nodeFlags, sortedNodes);
 
             return sortedNodes.Where(nodeModels.Contains);
         }
 
-        private static IEnumerable<NodeModel> SortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
+        /// <summary>
+        /// Starts from the input node as root, do breadth-first and post-order
+        /// traversal of the graph (inputs nodes as children nodes). Breadth-first
+        /// traversal ensures all inputs nodes are visited in their input order 
+        /// and post-order traversal ensures all upstream nodes are visited 
+        /// firstly. 
+        /// </summary>
+        /// <param name="node">Root node</param>
+        /// <param name="nodeFlags">Dictionary to record if a node has been visited or not</param>
+        /// <param name="sortedNodes">Record all visited nodes</param>
+        private static void BfsTraverse(
+            NodeModel node, 
+            Dictionary<NodeModel, MarkFlag> nodeFlags, 
+            Queue<NodeModel> sortedNodes)
+        {
+            MarkFlag flag;
+            if (!nodeFlags.TryGetValue(node, out flag))
+            {
+                flag = MarkFlag.NoMark;
+                nodeFlags[node] = flag;
+            }
+
+            if (flag != MarkFlag.NoMark)
+                return;
+
+            nodeFlags[node] = MarkFlag.TempMark;
+
+            for (int i = 0; i < node.InPortData.Count; ++i)
+            {
+                Tuple<int, NodeModel> t;
+                if (!node.TryGetInput(i, out t))
+                    continue;
+
+                BfsTraverse(t.Item2, nodeFlags, sortedNodes);
+            }
+
+            sortedNodes.Enqueue(node);
+            nodeFlags[node] = MarkFlag.Marked;
+        }
+
+        /// <summary>
+        /// Topological sort *the whole graph*. If the input nodes are part of a
+        /// graph, it does not promise to generate a good topological order. For 
+        /// example, for the following graph:
+        /// 
+        ///         +---+
+        ///         | A | -----+
+        ///         +---+      +----> +---+
+        ///                           | C |
+        ///                    +----> +---+
+        ///         +---+      |
+        ///         | B | -----+
+        ///         +---+
+        /// 
+        /// Their ideal topological order is A -> B -> C. If the input is only {A, B}, 
+        /// it may return {B, A} which is not OK in node to code.
+        ///
+        /// Note it is much slower thanopologiclSort().
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public static IEnumerable<NodeModel> TopologicalSortForGraph(IEnumerable<NodeModel> nodes)
+        {
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
+
+            var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
+            var sortedNodes = new Queue<NodeModel>();
+
+            // Get roots of these nodes
+            var roots = nodes.Where(n => !n.OutputNodes.Any());
+            foreach (NodeModel candidate in roots)
+                BfsTraverse(candidate, nodeFlags, sortedNodes);
+
+            foreach (NodeModel candidate in GetUnvisitedNodes(nodeFlags))
+                BfsTraverse(candidate, nodeFlags, sortedNodes);
+
+            return sortedNodes;
+        }
+
+        private static IEnumerable<NodeModel> GetUnvisitedNodes(Dictionary<NodeModel, MarkFlag> nodeFlags)
         {
             while (true)
             {
@@ -96,7 +188,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution)
+        private void CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, CompilationContext context, bool verboseLogging)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -119,18 +211,15 @@ namespace Dynamo.DSEngine
                 else
                 {
                     PortData port = node.InPortData[index];
-                    inputAstNodes.Add(
-                        port.HasDefaultValue
-                            ? AstFactory.BuildPrimitiveNodeFromObject(port.DefaultValue)
-                            : new NullNode());
+                    inputAstNodes.Add(port.DefaultValue ?? new NullNode());
                 }
             }
 
             //TODO: This should do something more than just log a generic message. --SJE
             if (node.State == ElementState.Error)
-                dynamoModel.Logger.Log("Error in Node. Not sent for building and compiling");
+                Log("Error in Node. Not sent for building and compiling");
 
-            if (isDeltaExecution)
+            if (context == CompilationContext.DeltaExecution)
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
@@ -141,22 +230,26 @@ namespace Dynamo.DSEngine
             var scopedNode = node as ScopedNodeModel;
             IEnumerable<AssociativeNode> astNodes = 
                 scopedNode != null
-                    ? scopedNode.BuildAstInScope(inputAstNodes)
-                    : node.BuildAst(inputAstNodes);
-            
-            if (dynamoModel.DebugSettings.VerboseLogging)
+                    ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
+                    : node.BuildAst(inputAstNodes, context);
+
+            if (verboseLogging)
             {
                 foreach (var n in astNodes)
                 {
-                    dynamoModel.Logger.Log(n.ToString());
+                    Log(n.ToString());
                 }
             }
 
             if(null == astNodes)
                 resultList.AddRange(new AssociativeNode[0]);
-            else if (isDeltaExecution)
+            else if (context == CompilationContext.DeltaExecution)
             {
                 OnAstNodeBuilt(node.GUID, astNodes);
+                resultList.AddRange(astNodes);
+            }
+            else if (context == CompilationContext.NodeToCode)
+            {
                 resultList.AddRange(astNodes);
             }
             else //Inside custom node compilation.
@@ -172,7 +265,7 @@ namespace Dynamo.DSEngine
                         //Register the function node in global scope with Graph Sync data,
                         //so that we don't have a function definition inside the function def
                         //of custom node.
-                        OnAstNodeBuilt(node.GUID, new AssociativeNode[] { item });
+                        OnAstNodeBuilt(node.GUID, new[] { item });
                     }
                     else
                         resultList.Add(item);
@@ -181,69 +274,70 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        ///     Compiling a collection of Dynamo nodes to AST nodes, no matter
-        ///     whether Dynamo node has been compiled or not.
+        /// Compile a collection of NodeModel to AST nodes in different contexts.
+        /// If the context is ForNodeToCode, nodes should already be sorted in 
+        /// topological order.
         /// </summary>
         /// <param name="nodes"></param>
-        /// <param name="isDeltaExecution"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
+        /// <param name="context"></param>
+        /// <param name="verboseLogging"></param>
+        /// <returns></returns>
+        public IEnumerable<Tuple<NodeModel, IEnumerable<AssociativeNode>>> CompileToAstNodes(
+            IEnumerable<NodeModel> nodes, 
+            CompilationContext context, 
+            bool verboseLogging)
         {
-            // TODO: compile to AST nodes should be triggered after a node is 
-            // modified.
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
 
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = TopologicalSort(topScopedNodes);
 
-            if (isDeltaExecution)
+            IEnumerable<NodeModel> sortedNodes = null;
+            // Node should already be sorted!
+            if (context == CompilationContext.NodeToCode)
+                sortedNodes = topScopedNodes;
+            else
+                sortedNodes = TopologicalSort(topScopedNodes);
+
+            if (context == CompilationContext.DeltaExecution)
             {
-                foreach (var node in sortedNodes)
-                {
-                    var scopedNode = node as ScopedNodeModel;
-                    if (scopedNode != null)
-                    {
-                        var dirtyInScopeNodes = scopedNode.GetInScopeNodes(false).Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
-                        scopedNode.RequiresRecalc = dirtyInScopeNodes.Any();
-                        foreach (var dirtyNode in dirtyInScopeNodes)
-                        {
-                            dirtyNode.RequiresRecalc = false;
-                        }
-                    }
-                }
-
-                sortedNodes = sortedNodes.Where(n => n.RequiresRecalc || n.ForceReExecuteOfNode);
+                sortedNodes = sortedNodes.Where(n => n.IsModified);
             }
 
-            var result = new List<AssociativeNode>();
+            var result = new List<List<AssociativeNode>>();
 
             foreach (NodeModel node in sortedNodes)
             {
-                _CompileToAstNodes(node, result, isDeltaExecution);
-
-                if (isDeltaExecution)
-                    node.RequiresRecalc = false;
+                var astNodes = new List<AssociativeNode>();
+                CompileToAstNodes(node, astNodes, context, verboseLogging);
+                result.Add(astNodes);
             }
 
-            return result;
+            return result.Zip(
+                sortedNodes, 
+                (astNodes, node) => Tuple.Create(node, astNodes as IEnumerable<AssociativeNode>));
         }
-
 
         /// <summary>
         ///     Compiles a collection of Dynamo nodes into a function definition for a custom node.
         /// </summary>
-        /// <param name="def"></param>
+        /// <param name="functionId"></param>
+        /// <param name="returnKeys"></param>
+        /// <param name="functionName"></param>
         /// <param name="funcBody"></param>
         /// <param name="outputNodes"></param>
         /// <param name="parameters"></param>
+        /// <param name="verboseLogging"></param>
         public void CompileCustomNodeDefinition(
-            CustomNodeDefinition def,
-            IEnumerable<NodeModel> funcBody,
-            IEnumerable<AssociativeNode> outputNodes,
-            IEnumerable<string> parameters)
+            Guid functionId, IEnumerable<string> returnKeys, string functionName,
+            IEnumerable<NodeModel> funcBody, IEnumerable<AssociativeNode> outputNodes,
+            IEnumerable<TypedParameter> parameters, bool verboseLogging)
         {
-            OnAstNodeBuilding(def.FunctionId);
+            OnAstNodeBuilding(functionId);
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
+            var asts = CompileToAstNodes(funcBody, CompilationContext.None, verboseLogging);
+            functionBody.Body.AddRange(asts.SelectMany(t => t.Item2));
 
             var outputs = outputNodes.ToList();
             if (outputs.Count > 1)
@@ -256,15 +350,15 @@ namespace Dynamo.DSEngine
                  */
 
                 // return array, holds all outputs
-                string rtnName = "__temp_rtn_" + def.FunctionId.ToString().Replace("-", String.Empty); 
+                string rtnName = "__temp_rtn_" + functionId.ToString().Replace("-", String.Empty);
                 functionBody.Body.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(rtnName),
                         AstFactory.BuildExprList(new List<string>())));
 
                 // indexers for each output
-                IEnumerable<AssociativeNode> indexers = def.ReturnKeys != null
-                    ? def.ReturnKeys.Select(AstFactory.BuildStringNode) as IEnumerable<AssociativeNode>
+                IEnumerable<AssociativeNode> indexers = returnKeys != null
+                    ? returnKeys.Select(AstFactory.BuildStringNode) as IEnumerable<AssociativeNode>
                     : Enumerable.Range(0, outputs.Count).Select(AstFactory.BuildIntNode);
 
                 functionBody.Body.AddRange(
@@ -289,18 +383,18 @@ namespace Dynamo.DSEngine
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
             {
-                Name = def.FunctionName.Replace("-", string.Empty),
+                Name = functionName.Replace("-", string.Empty),
                 Signature =
                     new ArgumentSignatureNode
                     {
                         Arguments =
-                            parameters.Select(param => AstFactory.BuildParamNode(param, allTypes)).ToList()
+                            parameters.Select(param => AstFactory.BuildParamNode(param.Name, param.Type)).ToList()
                     },
                 FunctionBody = functionBody,
                 ReturnType = allTypes
             };
 
-            OnAstNodeBuilt(def.FunctionId, new[] { functionDef });
+            OnAstNodeBuilt(functionId, new[] { functionDef });
         }
 
         /// <summary>
@@ -336,14 +430,14 @@ namespace Dynamo.DSEngine
 
         public class ASTBuiltEventArgs : EventArgs
         {
-            public ASTBuiltEventArgs(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+            public ASTBuiltEventArgs(Guid node, ICollection<AssociativeNode> astNodes)
             {
                 Node = node;
                 AstNodes = astNodes;
             }
 
-            public NodeModel Node { get; private set; }
-            public IEnumerable<AssociativeNode> AstNodes { get; private set; }
+            public Guid Node { get; private set; }
+            public ICollection<AssociativeNode> AstNodes { get; private set; }
         }
 
         private enum MarkFlag
@@ -358,9 +452,8 @@ namespace Dynamo.DSEngine
             public const string ParamPrefix = @"p_";
             public const string FunctionPrefix = @"__func_";
             public const string VarPrefix = @"var_";
-            public const string ShortVarPrefix = @"t_";
+            public const string ShortVarPrefix = @"t";
             public const string CustomNodeReturnVariable = @"%arr";
-            public const string AstBuildBrokenMessage = "Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}";
         }
     }
 }

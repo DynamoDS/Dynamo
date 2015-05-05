@@ -4,14 +4,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
     [TestFixture]
-    class TypeSystemTests
+    class TypeSystemTests : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
         [Test]
         [Category("Type System")]
         public void TS001_IntToDoubleTypeConversion()
@@ -70,7 +64,7 @@ namespace ProtoTest.TD.MultiLangTests
                 y = foo (1);";
             thisTest.RunScriptSource(code);
             thisTest.Verify("y", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]
@@ -6568,4 +6562,3 @@ d = { 1.0+ { { c + 5 }, { c + 5.5 }, { c + 6 } } };// received {46.0,47.00,47.00
         }
     }
 }
-

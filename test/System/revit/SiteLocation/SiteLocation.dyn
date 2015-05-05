@@ -1,7 +1,0 @@
-<Workspace Version="0.7.2.26344" X="-106.60396254351" Y="29.5707867919009" zoom="0.988548899604769" Description="" Category="" Name="Home">
-  <Elements>
-    <DSRevitNodesUI.SiteLocation type="DSRevitNodesUI.SiteLocation" guid="4c982fc8-8b9f-418d-878d-4adbbfcb3a0c" nickname="Analyze.SiteLocation" x="203" y="396" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </Elements>
-  <Connectors />
-  <Notes />
-</Workspace>

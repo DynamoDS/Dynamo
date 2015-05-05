@@ -6,18 +6,8 @@ using ProtoTestFx.TD;
 namespace ProtoTest.Imperative
 {
     [TestFixture]
-    class FromOldTestSuite
+    class FromOldTestSuite : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
-
         [Test]
         public void TestConds01()
         {
@@ -84,7 +74,7 @@ namespace ProtoTest.Imperative
             String code =
 @"y;[Imperative]{        def sum:int( x:int, y:int )        {	        s = x + y;	        return = s;        }        	    y = 57;}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 57);
         }
 

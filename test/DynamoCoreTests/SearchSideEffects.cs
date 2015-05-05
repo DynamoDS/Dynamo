@@ -18,10 +18,10 @@ namespace Dynamo.Tests
 
             // search and results are correct
             ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Model.Name == "Input"));
 
             ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Model.Name == "Output"));
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace Dynamo.Tests
         {
             // goto custom node workspace
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
@@ -42,10 +42,10 @@ namespace Dynamo.Tests
 
             // search and results are correct
             ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Model.Name == "Input"));
 
             ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
+            Assert.AreEqual(0, ViewModel.SearchViewModel.SearchResults.Count(x => x.Model.Name == "Output"));
         }
 
         [Test]
@@ -54,19 +54,19 @@ namespace Dynamo.Tests
         {
             // goto custom node workspace
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
 
             // search and results are correct
             ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Input"));
-            Assert.AreEqual("Input", ViewModel.SearchViewModel.SearchResults[0].Name);
+            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Model.Name == "Input"));
+            Assert.AreEqual("Input", ViewModel.SearchViewModel.SearchResults[0].Model.Name);
 
             ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Name == "Output"));
-            Assert.AreEqual("Output", ViewModel.SearchViewModel.SearchResults[0].Name);
+            Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count(x => x.Model.Name == "Output"));
+            Assert.AreEqual("Output", ViewModel.SearchViewModel.SearchResults[0].Model.Name);
 
         }
     }

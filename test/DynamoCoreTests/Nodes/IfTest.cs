@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Dynamo.Models;
-using Dynamo.Tests;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -12,7 +8,14 @@ namespace Dynamo.Tests
     [TestFixture]
     class IfTest : DSEvaluationViewModelUnitTest
     {
-        string testFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        string testFolder { get { return Path.Combine(TestDirectory, "core", "logic", "conditional"); } }
 
         [Test]
         public void TestIFBasic()
@@ -71,6 +74,17 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             AssertPreviewValue("d70fab7e-7a2c-495e-a301-0b0797d86118", 720);
+        }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void TestScopeIfForPreview()
+        {
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(testFolder, "testScopeIf.dyn");
+            RunModel(testFilePath);
+            AssertPreviewValue("9fe8e82f-760d-43a6-90b2-5f9c252139d7", 42);
+            AssertPreviewValue("23a03082-5807-4e44-9a3d-2d1eec4a914c", 42);
         }
     }
 }

@@ -1,6 +1,8 @@
+
+﻿using Dynamo.Core;
+
 ﻿using Greg.Requests;
 using Greg.Responses;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager
 {

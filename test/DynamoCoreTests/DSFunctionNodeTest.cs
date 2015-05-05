@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Dynamo.DSEngine;
-using Dynamo.Utilities;
 using NUnit.Framework;
-using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Tests
@@ -14,16 +10,23 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSFunctionNodeTest : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestLoadingFunctions()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\dsfunctions.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\dsfunction\dsfunctions.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
         }
 
@@ -32,10 +35,10 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\add.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\dsfunction\add.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             // get add node
             var addNode = model.CurrentWorkspace.NodeFromWorkspace("c969ebda-d77e-4cd3-985e-187dd1dccb03");
@@ -52,10 +55,10 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\abs.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\dsfunction\abs.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             // get abs node
             var absNode = model.CurrentWorkspace.NodeFromWorkspace("2c26388d-3d14-443a-ac41-c2bb0987a58e");
@@ -80,10 +83,10 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\dsfunction\count.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\dsfunction\count.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            Assert.DoesNotThrow(() => ViewModel.Model.RunExpression());
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
             // get count node
             var count = model.CurrentWorkspace.NodeFromWorkspace("007b5942-12b0-4cea-aa05-b43531b6ccb8");
@@ -94,6 +97,18 @@ namespace Dynamo.Tests
 
             var value = (Int64)mirror.GetData().Data;
             Assert.AreEqual(value, 10);
+        }
+
+        [Test, Category("RegressionTests")]
+        public void TestGetKeys()
+        {
+            var model = ViewModel.Model;
+
+            string openPath = Path.Combine(TestDirectory, @"core\dsfunction\GetKeys.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            // no crash
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
     }
 }

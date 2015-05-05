@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 using ProtoCore.Utils;
 using ProtoTestFx.TD;
 
 namespace ProtoTest.GraphCompiler
 {
     [TestFixture]
-    public class NewFrontEndTests
+    class NewFrontEndTests : ProtoTestBase
     {
-        private TestFrameWork thisTest = new TestFrameWork();
-
         [Test]
         public void ReproMAGN3603()
         {
@@ -22,7 +21,9 @@ namespace ProtoTest.GraphCompiler
                             b = (1 + 2) * 3;
                             c = 1 + 2 * 3;";
 
-            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code);
+            ElementResolver elementResolver = new ElementResolver();
+            ParseParam parseParam = new ParseParam(Guid.NewGuid(), code, elementResolver);
+            
             Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
             Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Count() > 0);
 

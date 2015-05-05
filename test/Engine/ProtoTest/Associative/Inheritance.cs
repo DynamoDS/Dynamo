@@ -5,15 +5,8 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    class InheritaceTest
+    class InheritaceTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         public void InheritanceTest01()
         {

@@ -59,24 +59,26 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Gets the number of dirty VM graphnodes at the global scope
+        /// Determines if at least one graphnode in the glboal scope is dirty
         /// </summary>
         /// <param name="exe"></param>
         /// <returns></returns>
-        public static int GetDirtyNodeCountAtGlobalScope(Executable exe)
+        public static bool IsGlobalScopeDirty(Executable exe)
         {
             Validity.Assert(exe != null);
-            int dirtyNodes = 0;
             var graph = exe.instrStreamList[0].dependencyGraph;
             var graphNodes = graph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-            foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
+            if (graphNodes != null)
             {
-                if (graphNode.isDirty)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
-                    ++dirtyNodes;
+                    if (graphNode.isDirty)
+                    {
+                        return true;
+                    }
                 }
             }
-            return dirtyNodes;
+            return false;
         }
 
         /// <summary>
@@ -102,8 +104,6 @@ namespace ProtoCore.AssociativeEngine
             bool recursiveSearch,
             bool propertyChanged = false)
         {
-            InterpreterProperties Properties = executive.Properties;
-            List<AssociativeGraph.GraphNode> deferedGraphNodes = executive.deferedGraphNodes;
             AssociativeGraph.DependencyGraph dependencyGraph = executive.exe.instrStreamList[languageBlockID].dependencyGraph;
             List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>();
 
@@ -144,7 +144,7 @@ namespace ProtoCore.AssociativeEngine
                     isSSAAssign = false; // Remove references to this when ssa flag is removed
 
                     // Do not update if its a property change and the current graphnode is the same expression
-                    if (propertyChanged && graphNode.exprUID == Properties.executingGraphNode.exprUID)
+                    if (propertyChanged && graphNode.exprUID == executingGraphNode.exprUID)
                     {
                         continue;
                     }
@@ -156,7 +156,7 @@ namespace ProtoCore.AssociativeEngine
                     allowUpdateWithinSSA = !withinSSAStatement;
                 }
 
-                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == Properties.executingGraphNode))
+                if (!allowUpdateWithinSSA || (propertyChanged && graphNode == executingGraphNode))
                 {
                     continue;
                 }
@@ -179,22 +179,6 @@ namespace ProtoCore.AssociativeEngine
                     if (!graphNode.DependsOn(noderef, ref matchingNode))
                     {
                         continue;
-                    }
-
-                    // Jun: only allow update to other expr id's (other statements) if this is the final SSA assignment
-                    if (executeSSA && !propertyChanged)
-                    {
-                        if (null != Properties.executingGraphNode && Properties.executingGraphNode.IsSSANode())
-                        {
-                            // This is still an SSA statement, if a node of another statement depends on it, ignore it
-                            if (graphNode.exprUID != Properties.executingGraphNode.exprUID)
-                            {
-                                // Defer this update until the final non-ssa node
-                                Validity.Assert(deferedGraphNodes != null);
-                                deferedGraphNodes.Add(graphNode);
-                                continue;
-                            }
-                        }
                     }
 
                     // @keyu: if we are modifying an object's property, e.g.,
@@ -281,10 +265,6 @@ namespace ProtoCore.AssociativeEngine
                         }
                         else if (!graphNode.isDirty)
                         {
-                            //if (core.Options.ElementBasedArrayUpdate)
-                            //{
-                            //    UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
-                            //}
                             graphNode.forPropertyChanged = propertyChanged;
                             reachableGraphNodes.Add(graphNode);
 
@@ -357,69 +337,34 @@ namespace ProtoCore.AssociativeEngine
         //
 
         /// <summary>
-        /// Clears the dependencies and marks a graphnode inactive if the executing node overwrites the graphnode
+        /// Determines if a graphnode was redefined by executingNode
         /// Given:
         ///     a = b;
-        ///     a = 1; // a = b is no longer live, it is no longer active
+        ///     a = 1; 
+        ///  Where: 'a = b' has been redefined by 'a = 1'
+        ///  
         /// </summary>
         /// <param name="gnode"></param>
         /// <param name="executingNode"></param>
         /// <returns></returns>
-        public static bool UpdateGraphNodeDependency(AssociativeGraph.GraphNode gnode, AssociativeGraph.GraphNode executingNode)
+        public static bool IsGraphNodeRedefined(AssociativeGraph.GraphNode gnode, AssociativeGraph.GraphNode executingNode)
         {
-            bool wasGraphNodeDependencyUpdated = false;
             if (gnode.UID >= executingNode.UID // for previous graphnodes
                 || gnode.updateNodeRefList.Count == 0
                 || gnode.updateNodeRefList.Count != executingNode.updateNodeRefList.Count
                 || gnode.isAutoGenerated)
             {
-                return wasGraphNodeDependencyUpdated;
+                return false;
             }
 
-            for (int n = 0; n < executingNode.updateNodeRefList.Count; ++n)
+            // Check if the updateNodeRefList is equal for both graphnodes
+            // In code form, it checks if the LHS symbols of an assignment stmt are equal
+            if (!gnode.updateNodeRefList.SequenceEqual(executingNode.updateNodeRefList))
             {
-                if (!gnode.updateNodeRefList[n].Equals(executingNode.updateNodeRefList[n]))
-                {
-                    return wasGraphNodeDependencyUpdated;
-                }
+                return false;
             }
 
-            //if (executingNode.dependentList.Count > 0)
-            {
-                // if execnode.Dependents() is not equal to node.Dependents()
-                // TODO Jun: Extend this check
-                bool areDependentsEqual = false;
-                if (!areDependentsEqual)
-                {
-                    gnode.dependentList.Clear();
-
-                    // GC all the temporaries associated with the redefined variable
-                    // Given:
-                    //      a = A.A()
-                    //      a = 10
-                    //
-                    // Transforms to:
-                    //        
-                    //      t0 = A.A()
-                    //      a = t0
-                    //      a = 10      // Redefinition of 'a' will GC 't0'
-                    //
-                    // Another example 
-                    // Given:
-                    //      a = {A.A()}
-                    //      a = 10
-                    //
-                    // Transforms to:
-                    //        
-                    //      t0 = A.A()
-                    //      t1 = {t0}
-                    //      a = t1
-                    //      a = 10      // Redefinition of 'a' will GC t0 and t1
-                    //
-                    wasGraphNodeDependencyUpdated = true;
-                }
-            }
-            return wasGraphNodeDependencyUpdated;
+            return true;
         }
 
         public static void UpdateModifierBlockDependencyGraph(AssociativeGraph.GraphNode graphNode, List<AssociativeGraph.GraphNode> graphNodeList)
@@ -471,7 +416,7 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="executingGraphNode"></param>
         /// <param name="classScope"></param>
         /// <param name="functionScope"></param>
-        public static List<AssociativeGraph.GraphNode> GetRedefinedGraphNodes(Core core, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
+        public static List<AssociativeGraph.GraphNode> GetRedefinedGraphNodes(RuntimeCore runtimeCore, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
         {
             List<AssociativeGraph.GraphNode> redefinedNodes = new List<AssociativeGraph.GraphNode>();
             if (executingGraphNode != null)
@@ -479,7 +424,7 @@ namespace ProtoCore.AssociativeEngine
                 // Remove this condition when full SSA is enabled
                 bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
 
-                if (core.Options.ExecuteSSA)
+                if (runtimeCore.Options.ExecuteSSA)
                 {
                     isssa = executingGraphNode.IsSSANode();
                 }
@@ -505,7 +450,7 @@ namespace ProtoCore.AssociativeEngine
                         if (allowRedefine)
                         {
                             // Check if graphnode was redefined by executingGraphNode
-                            if (AssociativeEngine.Utils.UpdateGraphNodeDependency(graphNode, executingGraphNode))
+                            if (AssociativeEngine.Utils.IsGraphNodeRedefined(graphNode, executingGraphNode))
                             {
                                 redefinedNodes.Add(graphNode);
                             }
@@ -539,13 +484,17 @@ namespace ProtoCore.AssociativeEngine
             return nodesInScope[indexOfDirtyNode + 1];
         }
 
+       
+
+
         /// <summary>
         ///  Finds all graphnodes associated with each AST and marks them dirty. Returns the first dirty node
         /// </summary>
         /// <param name="core"></param>
         /// <param name="nodeList"></param>
         /// <returns></returns>
-        public static AssociativeGraph.GraphNode MarkGraphNodesDirty(Core core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
+        public static AssociativeGraph.GraphNode MarkGraphNodesDirtyAtGlobalScope
+(RuntimeCore core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
         {
             if (nodeList == null)
             {
@@ -561,23 +510,28 @@ namespace ProtoCore.AssociativeEngine
                     continue;
                 }
 
-                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope))
                 {
                     if (gnode.isActive && gnode.OriginalAstID == bNode.OriginalAstID)
                     {
+                        
+                        gnode.isDirty = true;
+                        gnode.isActive = true;
+                        if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
+                        {
+                            gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
+                        }
                         if (firstDirtyNode == null)
                         {
                             firstDirtyNode = gnode;
                         }
-                        gnode.isDirty = true;
-                        gnode.isActive = true;
                     }
                 }
             }
             return firstDirtyNode;
         }
 
-        public static void MarkGraphNodesDirtyFromFunctionRedef(Core core, List<AST.AssociativeAST.AssociativeNode> fnodeList)
+        public static void MarkGraphNodesDirtyFromFunctionRedef(RuntimeCore runtimeCore, List<AST.AssociativeAST.AssociativeNode> fnodeList)
         {
             bool entrypointSet = false;
             foreach (var node in fnodeList)
@@ -589,7 +543,7 @@ namespace ProtoCore.AssociativeEngine
                 }
 
                 int exprId = Constants.kInvalidIndex;
-                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                foreach (var gnode in runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
                     if (gnode.isActive)
                     {
@@ -602,7 +556,7 @@ namespace ProtoCore.AssociativeEngine
                                     exprId = gnode.exprUID;
                                     if (!entrypointSet)
                                     {
-                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                        runtimeCore.SetStartPC(gnode.updateBlock.startpc);
                                         entrypointSet = true;
                                     }
                                 }
@@ -633,11 +587,13 @@ namespace ProtoCore.AssociativeGraph
     {
         public int startpc { get; set; }
         public int endpc { get; set; }
+        public int updateRegisterStartPC { get; set; }
 
         public UpdateBlock()
         {
             startpc = Constants.kInvalidIndex;
             endpc = Constants.kInvalidIndex;
+            updateRegisterStartPC = Constants.kInvalidIndex;
         }
     }
 
@@ -710,12 +666,6 @@ namespace ProtoCore.AssociativeGraph
         public int SSASubscript { get; set; }
         public bool IsLastNodeInSSA { get; set; }
 
-
-        
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-        public StackValue ArrayPointer { get; set; }
-#endif
-
         public GraphNode()
         {
             UID = Constants.kInvalidIndex;
@@ -748,10 +698,6 @@ namespace ProtoCore.AssociativeGraph
             forPropertyChanged = false;
             lastGraphNode = null;
             isActive = true;
-
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-            ArrayPointer = StackValue.Null;
-#endif
             symbolListWithinExpression = new List<SymbolNode>();
             reExecuteExpression = false;
             SSASubscript = Constants.kInvalidIndex;
@@ -1310,6 +1256,28 @@ namespace ProtoCore.AssociativeGraph
                 return graphList;
             }
         }
+
+        /// <summary>
+        /// Marks all graphnodes in scope as dirty
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        public void MarkAllGraphNodesDirty(int block, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets the graphnode of the given pc and scope

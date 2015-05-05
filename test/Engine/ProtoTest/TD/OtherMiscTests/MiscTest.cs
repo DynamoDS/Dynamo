@@ -5,14 +5,8 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.OtherMiscTests
 {
-    public class MiscTest
+    class MiscTest : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        string testCasePath = "..\\..\\..\\Scripts\\TD\\OtherMiscTest\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
         [Test]
         [Category("SmokeTest")]
         public void Fibunacci()

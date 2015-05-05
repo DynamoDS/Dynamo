@@ -3,21 +3,25 @@ using ProtoCore.DSASM;
 
 namespace ProtoCore
 {
-	public abstract class Executive
+	public class Executive
 	{
-        protected Core core; 
+        protected RuntimeCore runtimeCore; 
 
-		public Executive (Core core)
+		public Executive (RuntimeCore runtimeCore)
 		{
-            System.Diagnostics.Debug.Assert(core != null);
-            this.core = core;
+            System.Diagnostics.Debug.Assert(runtimeCore != null);
+            this.runtimeCore = runtimeCore;
            
 		}
 
         public ProtoCore.DSASM.Executive CurrentDSASMExec { get; set; }
-        public abstract bool Compile(out int blockId, ProtoCore.DSASM.CodeBlock parentBlock, ProtoCore.LanguageCodeBlock codeblock, ProtoCore.CompileTime.Context callContext, ProtoCore.DebugServices.EventSink sink = null, ProtoCore.AST.Node codeBlockNode = null, ProtoCore.AssociativeGraph.GraphNode graphNode = null);
-        public abstract StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, ProtoCore.DebugServices.EventSink sink = null);
-        public abstract StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, List<Instruction> breakpoints, ProtoCore.DebugServices.EventSink sink = null, bool fepRun = false);
+
+        public StackValue Execute(int codeblock, int entry, bool fepRun = false, System.Collections.Generic.List<Instruction> breakpoints = null)
+        {
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, fepRun);
+            CurrentDSASMExec = interpreter.runtime;
+            return interpreter.Run(codeblock, entry, CurrentDSASMExec.executingLanguage, breakpoints);
+        }
 
 	}
 }

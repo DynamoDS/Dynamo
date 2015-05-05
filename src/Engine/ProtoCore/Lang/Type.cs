@@ -4,6 +4,9 @@ using System.Diagnostics;
 using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
+using System.Linq;
+using System.Text;
 
 namespace ProtoCore
 {
@@ -31,6 +34,22 @@ namespace ProtoCore
             rank = DSASM.Constants.kArbitraryRank;
         }
 
+        private string RankString
+        {
+            get
+            {
+                if (IsIndexable)
+                {
+                    return rank == Constants.kArbitraryRank ?
+                        "[]..[]" : new StringBuilder().Insert(0, "[]", rank).ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+        }
+
         public override string ToString()
         {
             string typename = Name;
@@ -41,19 +60,23 @@ namespace ProtoCore
                     typename = DSDefinitions.Keyword.Var;
             }
 
-            string rankText = string.Empty;
-            if (IsIndexable)
-            {
-                if (rank == DSASM.Constants.kArbitraryRank)
-                    rankText = "[]..[]";
-                else
-                {
-                    for (int i = 0; i < rank; i++)
-                        rankText += "[]";
-                }
-            }
+            return typename + RankString;
+        }
 
-            return typename + rankText;
+        /// <summary>
+        /// To its string representation, but using unqualified class class name.
+        /// </summary>
+        /// <returns></returns>
+        public string ToShortString()
+        {
+            if (!string.IsNullOrEmpty(Name) && Name.Contains("."))
+            {
+                return Name.Split('.').Last() + RankString; 
+            }
+            else
+            {
+                return ToString();
+            }
         }
 
         public bool Equals(Type type)
@@ -116,7 +139,7 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.kTypeVoid] = DSDefinitions.Keyword.Void;
                 primitiveTypeNames[PrimitiveType.kTypeArray] = DSDefinitions.Keyword.Array;
                 primitiveTypeNames[PrimitiveType.kTypeHostEntityID] = "hostentityid";
-                primitiveTypeNames[PrimitiveType.kTypePointer] = "pointer_reserved";
+                primitiveTypeNames[PrimitiveType.kTypePointer] = DSDefinitions.Keyword.PointerReserved;
                 primitiveTypeNames[PrimitiveType.kTypeFunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
                 primitiveTypeNames[PrimitiveType.kTypeReturn] = "return_reserved";
             }
@@ -256,7 +279,7 @@ namespace ProtoCore
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeHostEntityID);
             //
             //
-            cnode = new ClassNode { name = "pointer_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.PointerReserved, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
             // if convert operator to method call, without the following statement, 
             // a = b.c + d.e will fail, b.c and d.e are resolved as pointer and _add method requires two integer
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
@@ -362,7 +385,7 @@ namespace ProtoCore
 
         //@TODO: Factor this into the type system
 
-        public static StackValue ClassCoerece(StackValue sv, Type targetType, Core core)
+        public static StackValue ClassCoerece(StackValue sv, Type targetType, RuntimeCore runtimeCore)
         {
             //@TODO: Add proper coersion testing here.
 
@@ -372,27 +395,29 @@ namespace ProtoCore
             return sv;
         }
 
-        public static StackValue Coerce(StackValue sv, int UID, int rank, Core core)
+        public static StackValue Coerce(StackValue sv, int UID, int rank, RuntimeCore runtimeCore)
         {
             Type t = new Type();
             t.UID = UID;
             t.rank = rank;
 
-            return Coerce(sv, t, core);
+            return Coerce(sv, t, runtimeCore);
         }
 
-        public static StackValue Coerce(StackValue sv, Type targetType, Core core)
+        public static StackValue Coerce(StackValue sv, Type targetType, RuntimeCore runtimeCore)
         {
+            ProtoCore.Runtime.RuntimeMemory rmem = runtimeCore.RuntimeMemory;
+            
             //@TODO(Jun): FIX ME - abort coersion for default args
             if (sv.IsDefaultArgument)
                 return sv;
 
             if (!(
                 sv.metaData.type == targetType.UID ||
-                (core.ClassTable.ClassNodes[sv.metaData.type].ConvertibleTo(targetType.UID))
+                (runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type].ConvertibleTo(targetType.UID))
                 || sv.IsArray))
             {
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, ProtoCore.RuntimeData.WarningMessage.kConvertNonConvertibleTypes);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
             }
 
@@ -401,8 +426,8 @@ namespace ProtoCore
             {
                 //This is an array rank reduction
                 //this may only be performed in recursion and is illegal here
-                string errorMessage = String.Format(ProtoCore.RuntimeData.WarningMessage.kConvertArrayToNonArray, core.TypeSystem.GetType(targetType.UID));
-                core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kConversionNotPossible, errorMessage);
+                string errorMessage = String.Format(Resources.kConvertArrayToNonArray, runtimeCore.DSExecutable.TypeSystem.GetType(targetType.UID));
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible, errorMessage);
                 return StackValue.Null;
             }
 
@@ -415,18 +440,7 @@ namespace ProtoCore
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 
-                var hpe = core.Heap.GetHeapElement(sv);
-#if GC_REFERENCE_COUNTING
-                var isTemporary = hpe.Active && hpe.Refcount == 0;
-#else
-                var isTemporary = false;
-#endif
-
-                if (targetType.UID == (int)PrimitiveType.kTypeVar && targetType.rank == DSASM.Constants.kArbitraryRank && isTemporary)
-                {
-                    return sv;
-                }
-
+                var hpe = rmem.Heap.GetHeapElement(sv);
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one
@@ -438,7 +452,7 @@ namespace ProtoCore
                 }
                 else
                 {
-                    if (ArrayUtils.GetMaxRankForArray(sv, core) == 1)
+                    if (ArrayUtils.GetMaxRankForArray(sv, runtimeCore) == 1)
                     {
                         //Last unpacking
                         newTargetType.rank = 0;
@@ -449,7 +463,7 @@ namespace ProtoCore
                     }
                 }
 
-                return ArrayUtils.CopyArray(sv, newTargetType, core);
+                return ArrayUtils.CopyArray(sv, newTargetType, runtimeCore);
             }
 
             if (!sv.IsArray && !sv.IsNull &&
@@ -465,9 +479,8 @@ namespace ProtoCore
                     newTargetType.rank = 0;
 
                     //Upcast once
-                    StackValue coercedValue = Coerce(sv, newTargetType, core);
-                    GCUtils.GCRetain(coercedValue, core);
-                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
                 else
@@ -480,16 +493,15 @@ namespace ProtoCore
                     newTargetType.rank = targetType.rank - 1;
 
                     //Upcast once
-                    StackValue coercedValue = Coerce(sv, newTargetType, core);
-                    GCUtils.GCRetain(coercedValue, core);
-                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
             }
 
             if (sv.IsPointer)
             {
-                StackValue ret = ClassCoerece(sv, targetType, core);
+                StackValue ret = ClassCoerece(sv, targetType, runtimeCore);
                 return ret;
             }
 
@@ -497,11 +509,11 @@ namespace ProtoCore
             switch (targetType.UID)
             {
                 case (int)PrimitiveType.kInvalidType:
-                    Validity.Assert(false, "Can't convert invalid type");
-                    break;
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidType, Resources.kInvalidType);
+                    return StackValue.Null;
 
                 case (int)PrimitiveType.kTypeBool:
-                    return sv.ToBoolean(core);
+                    return sv.ToBoolean(runtimeCore);
 
                 case (int)PrimitiveType.kTypeChar:
                     {
@@ -516,7 +528,7 @@ namespace ProtoCore
                 case (int)PrimitiveType.kTypeFunctionPointer:
                     if (sv.metaData.type != (int)PrimitiveType.kTypeFunctionPointer)
                     {
-                        core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.RuntimeData.WarningMessage.kFailToConverToFunction);
+                        runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToFunction);
                         return StackValue.Null;
                     }
                     return sv;
@@ -534,7 +546,7 @@ namespace ProtoCore
                         {
                             //TODO(lukechurch): Once the API is improved (MAGN-5174)
                             //Replace this with a log entry notification
-                            //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, ProtoCore.RuntimeData.WarningMessage.kConvertDoubleToInt);
+                            //core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeConvertionCauseInfoLoss, Resources.kConvertDoubleToInt);
                         }
                         return sv.ToInteger();
                     }
@@ -543,7 +555,7 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.RuntimeData.WarningMessage.kFailToConverToNull);
+                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToNull);
                             return StackValue.Null;
                         }
                         return sv;
@@ -553,7 +565,7 @@ namespace ProtoCore
                     {
                         if (sv.metaData.type != (int)PrimitiveType.kTypeNull)
                         {
-                            core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kTypeMismatch, ProtoCore.RuntimeData.WarningMessage.kFailToConverToPointer);
+                            runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kFailToConverToPointer);
                             return StackValue.Null;
                         }
                         return sv;
@@ -566,7 +578,7 @@ namespace ProtoCore
                         if (sv.metaData.type == (int)PrimitiveType.kTypeChar)
                         {
                             char ch = EncodingUtils.ConvertInt64ToCharacter(newSV.opdata);
-                            newSV = StackValue.BuildString(ch.ToString(), core.Heap);
+                            newSV = StackValue.BuildString(ch.ToString(), rmem.Heap);
                         }
                         return newSV;
                     }
@@ -578,7 +590,7 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.kTypeArray:
                     {
-                        return ArrayUtils.CopyArray(sv, targetType, core);
+                        return ArrayUtils.CopyArray(sv, targetType, runtimeCore);
                     }
 
                 default:

@@ -9,14 +9,8 @@ using ProtoCore.Lang.Replication;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class MethodsFocusTeam
+    class MethodsFocusTeam : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void SimpleCtorResolution01()
         {
@@ -1285,7 +1279,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failure")]
         public void TV1467167()
         {
             String code =
@@ -1517,7 +1510,7 @@ namespace ProtoTest.Associative
             @"                class A                {                    fa = 1;                }                a:M = A.A();//            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
         }
 
         [Test]
@@ -1527,7 +1520,7 @@ namespace ProtoTest.Associative
             @"                class A                {                    fa = 1;                }                class M {};                a:M = A.A();            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
         }
 
         [Test]
@@ -1537,7 +1530,7 @@ namespace ProtoTest.Associative
             @"                class A                {                    fa = 1;                }                class M extends A{};                a:M = A.A();            ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kConversionNotPossible);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kConversionNotPossible);
         }
 
         [Test]

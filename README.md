@@ -19,6 +19,99 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 0.8.0 ###
+
+#### New Features
+User interface:  
+- More visually understandable and scannable node functionality with icons in the node library
+- Expanded tooltip information in the node browser
+- Improved keyword search capabilities
+
+Custom Nodes: 
+- Lacing for Custom Nodes
+- Default Values for Custom Nodes
+- Type input tooltips for Custom Nodes
+
+Localization:
+- Unicode (Special Character) handling in Code Block Nodes and Data exchanged with other applications (like getting and setting Revit parameters)
+
+Geometry
+- Fillet and Chamfer for Solids and Polysurfaces
+- New Mesh tools available on the Package Manager from MeshToolkit
+
+Units
+- Overhaul of the existing 0.7 Units handling for more legible interactions.  Details here:  http://dynamobim.com/units-in-dynamo-0-8-2/
+
+Run Auto
+- default state for new documents
+- Run state is now saved per file (rather that set per session)
+
+Development
+- Revit libraries have been seperated out and now live in their own repository: https://github.com/DynamoDS/DynamoRevit
+- Refactoring to provide a strong separation between what a Dynamo graph is and how it is displayed. This makes it easier for users to write powerful nodes, and for us to move the Dynamo platform forwards. https://github.com/DynamoDS/Dynamo/pull/3449 
+
+#### Fixes:
+Namespace Collisions:
+- Existing Code Block Nodes no longer affected by name collisions with functions that come from installed packages. For instance, Point.ByCoordinates in a Code Block Node was affected by a collision with a Point. operation in the popular Rhynamo package and would throw an error saying “Warning: Dereferencing a non-pointer. Dereferencing a non-pointer.” 
+
+Hardware Acceleration in Revit 2015
+- Hardware Acceleration was turned off when running in Revit 2015.  Graphic speed and clarity is greatly improved
+
+#### Notes:
+- 0.8 is in a new folder structure to enable side by side installs with 0.7.  There is a one time only copy/paste of existing Packages from the 0.7 folder to 0.8 for your convenience
+
+#### Known Issues
+- Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
+
+
+###0.7.5 ###
+
+#### New Features
+- SAT files read from disk can be automatically updated in Dynamo graph using Geometry.ImportFromSAT
+- Floor creation for structural types is now supported
+
+#### Fixes
+- Element.Geometry and Element.Face no longer crashes when used in Revit 2015 when executed on large groups of Revit geometry.
+- Upgraded Excel.Write nodes no longer show as “Unresolved”.
+- View.ExportAsImage will now export views other than default {3d}
+- Dynamo does not conflict with other addins.  Previously, Dynamo would fail to launch in Revit when Unifi, Maxwell, Enum, or Kiwi Bonus Tools or a few other add-in were installed on Revit 2015.
+- Users can now run Dynamo as an external program for debugging libraries in Visual Studio 
+- Better error messaging in Code Block Nodes
+- modelcurve.bycurve no longer creates duplicate elements when adding to an array
+- Copy/Paste of nodes now maintains lacing setting
+- Many more bug fixes
+
+#### Known Issues
+- Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
+
+###0.7.4 ###
+
+#### New features
+- Automatic update of Dynamo from changes to files on disk.  Use File.FromPath nodes to drive changes from external files like Excel, images, and text files.  Files being read from disk are not locked, so you can edit them on the fly.
+- Added hooks to allow for Dynamo for Structural Analysis (additional Package) workflows with Autodesk Robot.
+- LoopWhile node for iterative workflows
+- Package Manager sync and display improvements 
+- Easier to use Structural Framing nodes
+- List.UniqueItems now works on Revit elements, strings, numbers, and geometry and also handles null values.
+- Migration tools for 3rd party Library loading 
+- View selection via a dropdown
+
+#### Bug fixes
+- Improvements to Autocomplete (Autocomplete is off for comment areas, better handling of conflicts with 3rd party library class names, commit for autocomplete only with tab, enter, dot and single left clicking)
+- Crash fixes for Package Manager
+- Libraries loaded from disk or packages now only exposed needed nodes
+- Changing Lacing triggers re-execcution of the graph
+- Consistent notation for booleans (true/false)
+- Import instance does not create multiple instances when regenerated 
+- Code Block Node output port positioning improvements
+- GroupByKeys, List.Map, List.Scan fixes
+- Surface.byLoft and Solid.byLoft fixes
+- Error message improvements
+- Changing location in revit is not picked up as a document change in Dynamo
+- Custom node creation fixes (crash and bad input ports on creation)
+- Curve extraction from surfaces now works on all surfaces
+- Revit element creation and modification improvements, particularly around Views and Levels
+
 ###0.7.3 ###
 
 #### New features
@@ -136,6 +229,10 @@ http://opensource.org/licenses/lgpl-3.0.html
 https://github.com/AttackPattern/CSharpAnalytics  
 http://www.apache.org/licenses/LICENSE-2.0
 
+###GNU gettext (libintl)###
+https://www.gnu.org/software/gettext/
+https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
+
 ###Helix3D###
 https://helixtoolkit.codeplex.com/  
 https://helixtoolkit.codeplex.com/license  
@@ -147,6 +244,16 @@ http://opensource.org/licenses/apache2.0.php
 ###Kinect for Windows###
 http://www.microsoft.com/en-us/kinectforwindows/  
 http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx 
+
+###libiconv###
+https://www.gnu.org/software/libiconv/
+https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
+
+###libgcc, libstdc++, libgomp###
+https://gcc.gnu.org/onlinedocs/libgomp/
+https://gcc.gnu.org/onlinedocs/gccint/Libgcc.html
+https://gcc.gnu.org/libstdc++/
+http://www.gnu.org/licenses/gcc-exception.html
 
 ###Microsoft 2012 C Runtime DLLS, msvcp110.dll and msvcr110.dll###
 http://msdn.microsoft.com/en-us/vstudio/dn501987
@@ -185,3 +292,11 @@ http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
 ###Revit Test Framework###
 https://github.com/DynamoDS/RevitTestFramework  
 http://opensource.org/licenses/MIT
+
+###Lucene.Net###
+http://lucenenet.apache.org/
+http://www.apache.org/licenses/LICENSE-2.0
+
+###Winpthreads###
+http://mingw-w64.sourceforge.net/
+http://www.mingw.org/license

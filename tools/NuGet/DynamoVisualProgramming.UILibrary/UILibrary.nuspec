@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.UILibrary</id>
-    <version>0.7.4.02</version>
+    <version>0.7.5.2</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -11,9 +11,6 @@
     <description>Build node libraries for Dynamo with custom UI.</description>
     <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI.</summary>
     <copyright>Copyright Autodesk 2014</copyright>
-    <dependencies>
-      <dependency id="NUnit" version="2.6.3" />
-    </dependencies>
     <frameworkAssemblies>
         <frameworkAssembly assemblyName="System.Xaml"/>
         <frameworkAssembly assemblyName="WindowsBase"/>

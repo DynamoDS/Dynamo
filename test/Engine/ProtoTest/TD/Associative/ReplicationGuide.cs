@@ -6,15 +6,8 @@ using ProtoCore.Lang;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.Associative
 {
-    class ReplicationGuide
+    class ReplicationGuide : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        public string ReplicationRoot = "..\\..\\..\\Scripts\\TD\\Associative\\ReplicationGuide\\";
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         [Category("Replication")]
         public void T0001_Replication_Guide_Function_With_2_Arg()
@@ -1915,7 +1908,7 @@ namespace ProtoTest.TD.Associative
             thisTest.VerifyRunScriptSource(code, errmsg);
 
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1927,7 +1920,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1939,7 +1932,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1951,7 +1944,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1963,7 +1956,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1975,7 +1968,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
     }
 }

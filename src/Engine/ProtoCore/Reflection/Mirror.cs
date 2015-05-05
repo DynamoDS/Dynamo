@@ -18,7 +18,7 @@ namespace ProtoCore
         /// </summary>
         public abstract class MirrorObject
         {
-            protected ProtoCore.Core core = null;
+            protected ProtoCore.RuntimeCore runtimeCore = null;
             protected static ProtoCore.Core staticCore = null;
 
             protected MirrorObject() { }
@@ -28,9 +28,9 @@ namespace ProtoCore
             //    this.core = core;
             //}
 
-            protected MirrorObject(ProtoCore.Core core, ProtoCore.Core staticCore = null)
+            protected MirrorObject(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
             {
-                this.core = core;
+                this.runtimeCore = runtimeCore;
                 MirrorObject.staticCore = staticCore;
             }
         }
@@ -73,28 +73,28 @@ namespace ProtoCore
             /// </summary>
             /// <param name="mirrorData"></param>
             /// <param name="core"></param>
-            public RuntimeMirror(MirrorData mirrorData, ProtoCore.Core core, ProtoCore.Core staticCore = null)
-                : base(core, staticCore)
+            public RuntimeMirror(MirrorData mirrorData, ProtoCore.RuntimeCore runtimeCoreReflect, ProtoCore.Core staticCore = null)
+                : base(runtimeCoreReflect, staticCore)
             {
-                Validity.Assert(this.core != null);
-                TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
+                Validity.Assert(this.runtimeCore != null);
+                TargetExecutive = runtimeCoreReflect.CurrentExecutive.CurrentDSASMExec;
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCoreReflect);
                 this.mirrorData = mirrorData;
             }
 
-            public RuntimeMirror(string varname, int blockDecl, ProtoCore.Core core)
-                : base(core)
+            public RuntimeMirror(string varname, int blockDecl, ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
+                : base(runtimeCore, staticCore)
             {
-                TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
+                TargetExecutive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCore);
 
-                Validity.Assert(this.core != null);
+                Validity.Assert(this.runtimeCore != null);
 
                 variableName = varname;
                 blockDeclaration = blockDecl;
                 StackValue svData = deprecateThisMirror.GetValue(variableName, blockDeclaration).DsasmValue;
 
-                mirrorData = new MirrorData(this.core, svData);
+                mirrorData = new MirrorData(staticCore, this.runtimeCore, svData);
             }
 
             /// <summary>
@@ -124,7 +124,7 @@ namespace ProtoCore
             /// </summary>
             public string GetStringData()
             {
-                Validity.Assert(this.core != null);
+                Validity.Assert(this.runtimeCore != null);
                 Validity.Assert(TargetExecutive != null);
                 return deprecateThisMirror.GetStringValue(mirrorData.GetStackValue(), TargetExecutive.rmem.Heap, blockDeclaration);
             }
@@ -167,7 +167,7 @@ namespace ProtoCore
 
                 Validity.Assert(svData.IsArray);
 
-                HeapElement hs = core.Heap.GetHeapElement(svData);
+                HeapElement hs = runtimeCore.RuntimeMemory.Heap.GetHeapElement(svData);
                 foreach (var sv in hs.VisibleItems)
                 {
                     if (sv.IsArray)
@@ -220,7 +220,7 @@ namespace ProtoCore
                 Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
                 if (sv.IsPointer)
                 {
-                    ClassNode classNode = core.ClassTable.ClassNodes[sv.metaData.type];
+                    ClassNode classNode = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
                     List<string> types = new List<string>();
                     types.Add(classNode.name);
                     asmType.Add(classNode.ExternLib, types);
@@ -414,6 +414,16 @@ namespace ProtoCore
                     Select(x => new ClassMirror(core, x));
             }
 
+            public static IEnumerable<ClassMirror> GetAllTypes(Core core)
+            {
+                // TODO: Get rid of keyword "PointerReserved" and PrimitiveType.kTypePointer
+                // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
+                return core.ClassTable.ClassNodes.
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)
+                    && x.name != DSDefinitions.Keyword.PointerReserved).
+                    Select(x => new ClassMirror(core, x));
+            }
+
             public static IEnumerable<StaticMirror> GetGlobals(Core core)
             {
                 List<StaticMirror> members = new List<StaticMirror>();
@@ -517,12 +527,9 @@ namespace ProtoCore
             {
                 get
                 {
-                    if (alias == null)
-                    {
-                        alias = ClassName.Split('.').Last();
-                    }
-                    return alias;
+                    return alias ?? (alias = ClassName.Split('.').Last());
                 }
+                set { alias = value; }
             }
 
             private LibraryMirror libraryMirror = null;
@@ -949,16 +956,16 @@ namespace ProtoCore
                 StringBuilder sb = new StringBuilder();
                 // TODO: Dropping access specifier and static from function signature
                 // until it is required to be displayed to users later
-                //Func<Compiler.AccessSpecifier, string> func =
+                //Func<Compiler.AccessModifier, string> func =
                 //    (x) =>
                 //    {
                 //        switch (x)
                 //        {
-                //            case Compiler.AccessSpecifier.kPrivate:
+                //            case Compiler.AccessModifier.kPrivate:
                 //                return "private ";
-                //            case Compiler.AccessSpecifier.kProtected:
+                //            case Compiler.AccessModifier.kProtected:
                 //                return "protected ";
-                //            case Compiler.AccessSpecifier.kPublic:
+                //            case Compiler.AccessModifier.kPublic:
                 //                return "public ";
                 //            default:
                 //                return string.Empty;

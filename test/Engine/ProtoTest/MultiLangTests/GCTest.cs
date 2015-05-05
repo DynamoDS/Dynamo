@@ -4,19 +4,9 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.MultiLangTests
 {
-    class GCTest
+    class GCTest : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
         string testCasePath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
-        [SetUp]
-        public void Setup()
-        {
-            ProtoCore.Options options = new ProtoCore.Options();
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
 
         [Test]
         public void T01_TestGCArray()
@@ -48,16 +38,7 @@ v3 = DisposeVerify.x; // 6
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
-                thisTest.Verify("v4", 8);
-            }
-            else
-            {
-                thisTest.Verify("v1", 4);
-                thisTest.Verify("v2", 5);
-                thisTest.Verify("v3", 6);
-            }
+            thisTest.Verify("v4", 8);
         }
 
         [Test]
@@ -103,10 +84,6 @@ v1;
 v2 = DisposeVerify.x; // 3";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
 
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                thisTest.Verify("v1", 2);
-            }
             thisTest.Verify("v2", 3);
         }
 
@@ -159,15 +136,7 @@ v2 = DisposeVerify.x; // 4
 }
 v3 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
-                thisTest.Verify("v3", 4);
-            }
-            else
-            {
-                thisTest.Verify("v1", 3);
-                thisTest.Verify("v2", 4);
-            }
+            thisTest.Verify("v3", 4);
         }
 
         [Test]
@@ -203,17 +172,7 @@ v3 = DisposeVerify.x; // 7
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
                 thisTest.Verify("v4", 7);
-            }
-            else
-            {
-                thisTest.Verify("v1", 4);
-                thisTest.Verify("v2", 4);
-                thisTest.Verify("v3", 7);
-            }
         }
 
         [Test]
@@ -248,16 +207,7 @@ v3 = DisposeVerify.x; // 7
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
                 thisTest.Verify("v4", 7);
-            }
-            else
-            {
-                thisTest.Verify("v1", 4);
-                thisTest.Verify("v2", 4);
-                thisTest.Verify("v3", 7);
-            }
         }
 
         [Test]
@@ -301,24 +251,10 @@ v7 = DisposeVerify.x; // 7
 
 v8 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
                 thisTest.Verify("v8", 7);
-            }
-            else
-            {
-                thisTest.Verify("v1", 1);
-                thisTest.Verify("v2", 4);
-                thisTest.Verify("v3", 4);
-                thisTest.Verify("v4", 4);
-                thisTest.Verify("v5", 5);
-                thisTest.Verify("v6", 6);
-                thisTest.Verify("v7", 7);
-            }
         }
 
         [Test]
-        [Category("Failure")]
         public void T09_TestGCPassingArguments()
         {
             string code = @"
@@ -332,6 +268,15 @@ def foo2 : int(p : A)
 {
 	return = 10;
 }
+
+v1;
+v2;
+v3;
+v4;
+v5;
+v6;
+[Imperative]
+{
 a1 = A.A();
 a2 = { A.A(), A.A(), A.A() };
 x = foo2(a1);
@@ -345,6 +290,7 @@ v4 = DisposeVerify.x; // 5
 b = foo2(A.A());
 v5 = DisposeVerify.x; // 6
 c = foo( { A.A(), A.A(), A.A() } );
+}
 v6 = DisposeVerify.x; // 9";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
 
@@ -353,12 +299,7 @@ v6 = DisposeVerify.x; // 9";
 
             // SSA'd transforms will not GC the temps until end of block
             // However, they must be GC's after every line when in debug setp over
-            thisTest.Verify("v1", 1);
-            thisTest.Verify("v2", 1);
-            thisTest.Verify("v3", 2);
-            thisTest.Verify("v4", 5);
-            thisTest.Verify("v5", 6);
-            thisTest.Verify("v6", 9);
+                thisTest.Verify("v6", 9);
         }
 
         [Test]
@@ -383,15 +324,7 @@ v2 = DisposeVerify.x; // 4
 }
 v3 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kMarkAndSweep)
-            {
                 thisTest.Verify("v3", 4);
-            }
-            else
-            {
-                thisTest.Verify("v1", 3);
-                thisTest.Verify("v2", 4);
-            }
         }
 
         [Test]
@@ -450,10 +383,6 @@ v1;
 }
 v2 = DisposeVerify.x; // 4";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
-            if (thisTest.GetTestCore().Heap.GCStrategy == ProtoCore.DSASM.Heap.GCStrategies.kReferenceCounting)
-            {
-                thisTest.Verify("v1", 5);
-            }
             thisTest.Verify("v2", 7);
         }
 

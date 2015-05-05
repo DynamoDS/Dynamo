@@ -1,30 +1,54 @@
-﻿using Dynamo.DSEngine;
-using Dynamo.Tests;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Xml;
+using Dynamo.DSEngine;
+using Dynamo.Nodes;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
+using NUnit.Framework;
+using TestServices;
+using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.ViewModels;
+using ProtoCore;
+using Dynamo.Core;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class LibraryTests : DSEvaluationViewModelUnitTest
+    class LibraryTests : UnitTestBase
     {
+        private LibraryServices libraryServices;
+        private ProtoCore.Core libraryCore;
+
         protected static bool LibraryLoaded { get; set; }
 
-        [SetUp]
-        public override void Init()
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
+
+            libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
+
+            var pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
+
+            var pathManager = new PathManager(new PathManagerParams
+            {
+                PathResolver = pathResolver
+            });
+
+            libraryServices = new LibraryServices(libraryCore, pathManager);
+
             RegisterEvents();
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             UnRegisterEvents();
+            libraryServices.Dispose();
             base.Cleanup();
         }
 
@@ -40,6 +64,21 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoadFailed -= OnLibraryLoadFailed;
         }
 
+        public static void OnLibraryLoaded(object sender, EventArgs e)
+        {
+            LibraryLoaded = true;
+        }
+
+        public static void OnLibraryLoadFailed(object sender, EventArgs e)
+        {
+            LibraryServices.LibraryLoadFailedEventArgs a = e as LibraryServices.LibraryLoadFailedEventArgs;
+            if (null != a)
+                Assert.Fail("Failed to load library: " + a.LibraryPath);
+            else
+                Assert.Fail("Failed to load library");
+        }
+
+        #region Test cases
         [Test]
         [Category("UnitTests")]
         public void TestLoadNoNamespaceClass()
@@ -52,7 +91,7 @@ namespace Dynamo.Tests
             // at some point, so if it's already thre, don't try and reload it
             if (!libraryServices.IsLibraryLoaded(libraryPath))
             {
-                libraryServices.ImportLibrary(libraryPath, ViewModel.Model.Logger);
+                libraryServices.ImportLibrary(libraryPath);
                 Assert.IsTrue(LibraryLoaded);
             }
 
@@ -74,36 +113,18 @@ namespace Dynamo.Tests
             }
         }
 
-        public static void OnLibraryLoaded(object sender, EventArgs e)
-        {
-            LibraryLoaded = true;
-        }
-
-        public static void OnLibraryLoadFailed(object sender, EventArgs e)
-        {
-            LibraryServices.LibraryLoadFailedEventArgs a = e as LibraryServices.LibraryLoadFailedEventArgs;
-            if (null != a)
-                Assert.Fail("Failed to load library: " + a.LibraryPath);
-            else
-                Assert.Fail("Failed to load library");
-        }
-
         [Test]
         [Category("UnitTests")]
-        public void TestZeroTouchMigrationNoFileFound() 
+        public void TestZeroTouchMigrationNoFileFound()
         {
             LibraryLoaded = false;
 
-            string libraryPath = "FFITarget.dll";
-
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
+            const string libraryPath = "FFITarget.dll";
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath);
 
             Assert.IsTrue(LibraryLoaded);
         }
@@ -124,11 +145,8 @@ namespace Dynamo.Tests
                 "</priorNameHint>" + System.Environment.NewLine +
                 "</migrations>" + System.Environment.NewLine;
 
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
-            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+            string tempBadXMLPath = Path.Combine(TempFolder, badXMLPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -136,7 +154,7 @@ namespace Dynamo.Tests
 
             // The proper behavior is for ImportLibrary to ignore the migrations file if it's badly formatted
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath);
 
             Assert.IsTrue(LibraryLoaded);
         }
@@ -158,11 +176,8 @@ namespace Dynamo.Tests
                 "</priorNameHint>" + System.Environment.NewLine +
                 "</migrations>" + System.Environment.NewLine;
 
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
-            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+            string tempBadXMLPath = Path.Combine(TempFolder, badXMLPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -170,10 +185,136 @@ namespace Dynamo.Tests
 
             // The proper behavior is for ImportLibrary to ignore the migrations file if it has errors
 
-            libraryServices.ImportLibrary(tempLibraryPath, ViewModel.Model.Logger);
+            libraryServices.ImportLibrary(tempLibraryPath);
 
             Assert.IsTrue(LibraryLoaded);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void MethodWithRefOutParams_NoLoad()
+        {
+            LibraryLoaded = false;
+
+            const string libraryPath = "FFITarget.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already thre, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+                Assert.IsTrue(LibraryLoaded);
+            }
+
+            // Get function groups for ClassFunctionality Class
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.ClassName.Contains("FFITarget.ClassWithRefParams"));
+
+            Assert.IsTrue(functions.Select(x => x.FunctionName).Contains("ClassWithRefParams"));
+
+            foreach (var function in functions)
+            {
+                string functionName = function.FunctionName;
+                Assert.IsTrue(functionName != "MethodWithRefParameter" && functionName != "MethodWithOutParameter" && functionName != "MethodWithRefOutParameters");
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DumpLibraryToXmlZeroTouchTest()
+        {
+            var searchViewModel = new SearchViewModel(null, new NodeSearchModel());
+
+            LibraryLoaded = false;
+
+            string libraryPath = "DSOffice.dll";
+
+            // All we need to do here is to ensure that the target has been loaded
+            // at some point, so if it's already here, don't try and reload it
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+                Assert.IsTrue(LibraryLoaded);
+            }
+
+            var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
+            foreach (var funcGroup in fgToCompare)
+            {
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+                    {
+                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
+                    }
+                }
+            }
+
+            var document = searchViewModel.Model.ComposeXmlForLibrary();
+
+            Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
+
+            XmlNode node, subNode;
+            foreach (var functionGroup in fgToCompare)
+            {
+                foreach (var function in functionGroup.Functions)
+                {
+                    // Obsolete, not visible and "GetType" functions are not presented in UI tree.
+                    // So they are should not be presented in dump.
+                    if (function.IsObsolete || !function.IsVisibleInLibrary || function.FunctionName.Contains("GetType"))
+                        continue;
+
+                    var category = function.Category;
+                    var group = SearchElementGroup.Action;
+                    category = searchViewModel.Model.ProcessNodeCategory(category, ref group);
+
+                    node = document.SelectSingleNode(string.Format(
+                        "//{0}[FullCategoryName='{1}' and Name='{2}']",
+                        typeof(ZeroTouchSearchElement).FullName, category, function.FunctionName));
+                    Assert.IsNotNull(node);
+
+                    subNode = node.SelectSingleNode("Group");
+                    Assert.IsNotNull(subNode.FirstChild);
+                    Assert.AreEqual(group.ToString(), subNode.FirstChild.Value);
+
+                    // 'FullCategoryName' is already checked.
+                    // 'Name' is already checked.
+
+                    subNode = node.SelectSingleNode("Description");
+                    Assert.IsNotNull(subNode.FirstChild);
+
+                    // No check Description on text equality because for some reason 
+                    // function.Descriptions are different in real executing Dynamo and
+                    // Dynamo started from tests.
+                    //
+                    // For example: 
+                    // tests  function.Description: Excel.ReadFromFile (file: FileInfo, sheetName: string): var[][]
+                    // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
+                }
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestDefaultArgumentAttribute()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+            }
+
+            // Get function groups for ClassFunctionality Class
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.ClassName.Contains("FFITarget.TestData") && y.FunctionName.Equals("GetCircleArea"));
+
+            Assert.IsTrue(functions.Any());
+            var func = functions.First();
+
+            Assert.IsTrue(func.Parameters.First().DefaultValue.ToString().Equals("TestData.GetFloat()"));
+        }
+
+        #endregion
     }
 }

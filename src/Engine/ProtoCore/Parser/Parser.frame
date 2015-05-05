@@ -33,6 +33,7 @@ using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 -->namespace
 

@@ -1,8 +1,0 @@
-<Workspace Version="0.6.3.7993" X="128.169736115557" Y="-415.44847590464" zoom="0.954042924882813" Description="" Category="" Name="Home">
-  <Elements>
-    <Dynamo.Nodes.ComputeSolarRadiationValue type="Dynamo.Nodes.ComputeSolarRadiationValue" guid="1f1b65bf-6f9c-4aab-bd32-50f01ec57498" nickname="Solar Radiation Values from CSV" x="498.327652767363" y="733.241833434576" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.SunPathDirection type="Dynamo.Nodes.SunPathDirection" guid="6c0022ce-dde9-4e63-b8cf-45b073d99ed8" nickname="SunPath Direction" x="495.183140165513" y="868.455875314133" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </Elements>
-  <Connectors />
-  <Notes />
-</Workspace>

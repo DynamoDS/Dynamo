@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Xml;
 
 using Dynamo.UI;
-using Dynamo.Nodes;
+using Dynamo.Utilities;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
     /// <summary>
     /// Interaction logic for dynPort.xaml
     /// </summary>
-    public delegate void PortConnectedHandler(object sender, EventArgs e);
-    public delegate void PortDisconnectedHandler(object sender, EventArgs e);
-    public enum PortType { INPUT, OUTPUT };
+    public enum PortType { Input, Output };
 
     public class PortModel : ModelBase
     {
@@ -23,25 +21,19 @@ namespace Dynamo.Models
         /// <summary>
         /// Event triggered when a port is connected.
         /// </summary>
-        public event PortConnectedHandler PortConnected;
+        public event Action<PortModel, ConnectorModel> PortConnected;
 
         /// <summary>
         /// Event triggered when a port is disconnected.
         /// </summary>
-        public event PortConnectedHandler PortDisconnected;
+        public event Action<PortModel> PortDisconnected;
 
         #endregion
 
         #region private fields
-        bool isConnected;
-        NodeModel owner;
-        PortType portType;
-        string name;
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
-        private bool _usingDefaultValue;
-        private bool _defaultValueEnabled;
-        private Thickness marginThickness;
-
+        private bool usingDefaultValue;
+        private PortData portData;
         #endregion
 
         #region public members
@@ -54,78 +46,38 @@ namespace Dynamo.Models
 
         public string PortName
         {
-            get { return name; }
-            set
-            {
-                name = value;
-                RaisePropertyChanged("PortName");
-            }
+            get { return portData.NickName; }
+        }
 
+        public string ToolTipContent 
+        {
+            get 
+            {
+                string useDefaultArgument = string.Empty;
+                if (!UsingDefaultValue && DefaultValueEnabled)
+                    useDefaultArgument = " " + Properties.Resources.DefaultValueDisabled;
+                return portData.ToolTipString + useDefaultArgument; 
+            }
         }
 
         public PortType PortType
         {
-            get { return portType; }
-            set { portType = value; }
+            get; private set;
         }
 
         public NodeModel Owner
         {
-            get { return owner; }
-            set
-            {
-                owner = value;
-                RaisePropertyChanged("Owner");
-            }
+            get; private set;
         }
 
         public int Index
         {
-            get { return owner.GetPortIndexAndType(this, out portType); }
+            get { return Owner.GetPortModelIndex(this); }
         }
 
         public bool IsConnected
         {
-            get
-            { return isConnected; }
-            set
-            {
-                isConnected = value;
-                RaisePropertyChanged("IsConnected");
-            }
-        }
-
-        public string ToolTipContent
-        {
-            get
-            {
-                if (Owner != null)
-                {
-                    if (PortType == PortType.INPUT)
-                    {
-                        return Owner.InPortData[Index].ToolTipString;
-                    }
-                    else
-                    {
-                        return Owner.OutPortData[Index].ToolTipString;
-                    }
-                }
-                return "";
-            }
-        }
-
-        public string DefaultValueTip
-        {
-            get
-            {
-                if (PortType == PortType.INPUT && Owner != null)
-                {
-                    var port = Owner.InPortData[Index];
-                    if (port.HasDefaultValue)
-                        return port.DefaultValue.ToString();
-                }
-                return "";
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -134,22 +86,25 @@ namespace Dynamo.Models
         /// offsets from the node origin based on the port's index in the 
         /// ports collection.
         /// </summary>
-        public Point Center
+        public Point2D Center
         {
             get
             {
-                double halfHeight = this.Height * 0.5;
-                double headerHeight = 25;
+                double halfHeight = Height * 0.5;
+                const double headerHeight = 25;
 
-                double offset = owner.GetPortVerticalOffset(this);
-                double y = owner.Y + headerHeight + 5 + halfHeight + offset;
+                double offset = Owner.GetPortVerticalOffset(this);
+                double y = Owner.Y + headerHeight + 5 + halfHeight + offset;
 
-                if (portType == PortType.INPUT)
-                    return new Point(owner.X, y);
-                else if (portType == PortType.OUTPUT)
-                    return new Point(owner.X + owner.Width, y);
+                switch (PortType)
+                {
+                    case PortType.Input:
+                        return new Point2D(Owner.X, y);
+                    case PortType.Output:
+                        return new Point2D(Owner.X + Owner.Width, y);
+                }
 
-                return new Point();
+                return new Point2D();
             }
         }
 
@@ -158,11 +113,12 @@ namespace Dynamo.Models
         /// </summary>
         public bool UsingDefaultValue
         {
-            get { return _usingDefaultValue; }
+            get { return usingDefaultValue; }
             set
             {
-                _usingDefaultValue = value;
+                usingDefaultValue = value; 
                 RaisePropertyChanged("UsingDefaultValue");
+                RaisePropertyChanged("ToolTipContent");
             }
         }
 
@@ -171,12 +127,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool DefaultValueEnabled
         {
-            get { return _defaultValueEnabled; }
-            set
-            {
-                _defaultValueEnabled = value;
-                RaisePropertyChanged("DefaultValueEnabled");
-            }
+            get { return portData.DefaultValue != null; }
         }
 
         /// <summary>
@@ -184,14 +135,11 @@ namespace Dynamo.Models
         /// </summary>
         public Thickness MarginThickness
         {
-            get { return marginThickness; }
-            set
-            {
-                marginThickness = value;
-                RaisePropertyChanged("MarginThickness");
-            }
+            get; private set;
         }
 
+        public SnapExtensionEdges extensionEdges { get; set; }        
+    
         #endregion
 
         public PortModel(PortType portType, NodeModel owner, PortData data)
@@ -199,15 +147,25 @@ namespace Dynamo.Models
             IsConnected = false;
             PortType = portType;
             Owner = owner;
-            PortName = data.NickName;
-            UsingDefaultValue = false;
-            DefaultValueEnabled = false;
-            MarginThickness = new Thickness(0);
 
-            if (data.Height == 0)
-                this.Height = Configurations.PortHeightInPixels;
+            SetPortData(data);
+
+            if (PortType == Models.PortType.Input)
+                MarginThickness = new Thickness(0);
             else
-                this.Height = data.Height;
+                MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
+
+            Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
+        }
+
+        public void SetPortData(PortData data)
+        {
+            portData = data;
+
+            UsingDefaultValue = portData.DefaultValue != null;
+            RaisePropertyChanged("DefaultValueEnabled");
+            RaisePropertyChanged("PortName");
+            RaisePropertyChanged("TooltipContent");
         }
 
         /// <summary>
@@ -221,8 +179,7 @@ namespace Dynamo.Models
             while (Connectors.Any())
             {
                 ConnectorModel connector = Connectors[0];
-                Owner.Workspace.Connectors.Remove(connector);
-                connector.NotifyConnectedPortsOfDeletion();
+                connector.Delete();
             }
         }
 
@@ -231,24 +188,24 @@ namespace Dynamo.Models
             connectors.Add(connector);
 
             //throw the event for a connection
-            OnPortConnected(EventArgs.Empty);
+            OnPortConnected(connector);
 
             IsConnected = true;
         }
 
-        public void Disconnect(ConnectorModel connector)
+        public void Disconnect(ConnectorModel connector, bool silent = false)
         {
             if (!connectors.Contains(connector))
                 return;
-
-            //throw the event for a connection
-            OnPortDisconnected(EventArgs.Empty);
-
-            //also trigger the model's connector deletion
-            owner.Workspace.DynamoModel.OnConnectorDeleted(connector);
+            
+            //throw the event for a disconnection
+            if (!silent)
+            {
+                OnPortDisconnected();  
+            }
 
             connectors.Remove(connector);
-
+            
             //don't set back to white if
             //there are still connectors on this port
             if (connectors.Count == 0)
@@ -262,21 +219,21 @@ namespace Dynamo.Models
         /// <summary>
         /// Called when a port is connected.
         /// </summary>
-        /// <param name="e"></param>
-        protected virtual void OnPortConnected(EventArgs e)
+        /// <param name="connector"></param>
+        protected virtual void OnPortConnected(ConnectorModel connector)
         {
             if (PortConnected != null)
-                PortConnected(this, e);
+                PortConnected(this, connector);
         }
 
         /// <summary>
         /// Called when a port is disconnected.
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnPortDisconnected(EventArgs e)
+        protected virtual void OnPortDisconnected()
         {
             if (PortDisconnected != null)
-                PortDisconnected(this, e);
+                PortDisconnected(this);
         }
 
         #region Serialization/Deserialization Methods
@@ -287,7 +244,7 @@ namespace Dynamo.Models
             throw new NotImplementedException();
         }
 
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             // We are not deserializing the ports.
             throw new NotImplementedException();
@@ -300,28 +257,20 @@ namespace Dynamo.Models
     {
         public string NickName { get; set; }
         public string ToolTipString { get; set; }
-        public object DefaultValue { get; set; }
+        public AssociativeNode DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
         public double Height { get; set; }
 
         public PortData(string nickName, string tip) : this(nickName, tip, null) { }
 
-        public PortData(string nickName, string toolTipString, object defaultValue)
+        public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
         {
             NickName = nickName;
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
             VerticalMargin = 0;
             Height = 0;
-        }
-
-        public bool HasDefaultValue
-        {
-            get
-            {
-                return DefaultValue != null;
-            }
         }
     }
 }

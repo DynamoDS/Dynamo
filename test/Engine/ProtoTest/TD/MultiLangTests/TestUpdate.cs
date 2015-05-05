@@ -5,26 +5,24 @@ using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
 namespace ProtoTest.TD.MultiLangTests
 {
-    public class TestUpdate
+    class TestUpdate : ProtoTestBase
     {
-        readonly TestFrameWork thisTest = new TestFrameWork();
-        ProtoCore.Core core;
         ProtoScript.Config.RunConfiguration runnerConfig;
         string testPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
         ProtoScript.Runners.DebugRunner fsr;
-        [SetUp]
-        public void SetUp()
+
+        public override void Setup()
         {
-            // Specify some of the requirements of IDE.
-            ProtoCore.Options options = new ProtoCore.Options();
-            options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            options.SuppressBuildOutput = false;
-            core = new ProtoCore.Core(options);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
             fsr = new ProtoScript.Runners.DebugRunner(core);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            fsr = null;
         }
 
         [Test]
@@ -225,7 +223,7 @@ d = [ Imperative ]
 e = b;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
             /*
             Object[] v2 = new Object[] { 3, 4, 5 };
             Object[] v1 = new Object[] { 2, 3, 4 };
@@ -257,7 +255,7 @@ e = c;
 f = d;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
 
             /*
             thisTest.Verify("d", 3, 0);
@@ -3770,7 +3768,7 @@ c = 10;
 ";
             string errmsg = "MAGN-4094 Runtime Cyclic Dependency not detected";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
             
         }
 
@@ -6773,7 +6771,7 @@ test = b1.y;
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
 
         [Test]

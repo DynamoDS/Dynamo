@@ -10,15 +10,8 @@ using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {
-    public class ProtoASTExecutionTests
+    class ProtoASTExecutionTests : ProtoTestBase
     {
-        public TestFrameWork thisTest = new TestFrameWork();
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-
         [Test]
         public void TestProtoASTExecute_Assign01()
         {
@@ -1396,8 +1389,9 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
                 new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.add);
-            ProtoCore.AST.AssociativeAST.ReturnNode returnNode = new ProtoCore.AST.AssociativeAST.ReturnNode();
-            returnNode.ReturnExpr = returnExpr;
+
+            var returnIdent = new ProtoCore.AST.AssociativeAST.IdentifierNode("return");
+            ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(returnIdent, returnExpr);
             cbn.Body.Add(assignment1);
             cbn.Body.Add(returnNode);
             ///
@@ -2046,6 +2040,21 @@ namespace ProtoTest.ProtoAST
             Obj o = mirror.GetValue("a");
             Assert.IsTrue((Int64)o.Payload == 12);
         }
-    }
 
+        [Test]
+        public void TestLocalizedStringInAST()
+        {
+            // Build the AST tree
+            ProtoCore.AST.AssociativeAST.BinaryExpressionNode assign = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(
+                new ProtoCore.AST.AssociativeAST.IdentifierNode("x"),
+                new ProtoCore.AST.AssociativeAST.StringNode() { value = "中文字符" });
+            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
+            astList.Add(assign);
+
+            // Verify the results
+            ExecutionMirror mirror = thisTest.RunASTSource(astList);
+            Obj o = mirror.GetValue("x");
+            Assert.IsTrue((string)o.Payload == "中文字符");
+        }
+    }
 }

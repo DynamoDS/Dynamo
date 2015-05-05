@@ -5,19 +5,8 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Assembler
 {
-    public class MicroFeatureTests
+    class MicroFeatureTests : ProtoTestBase
     {
-        public ProtoCore.Core core;
-        public TestFrameWork thisTest = new TestFrameWork();
-        // private string AsmFilePath = @"..\..\..\Scripts\ASMScript\";
-        [SetUp]
-        public void Setup()
-        {
-            Console.WriteLine("Setup");
-            core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-        }
         /*        
 [Test]        public void Simple_Push_Pop()        {            ExecutionMirror mirror =                 ProtoAssembler.Runner.TestLoadAndExecute(AsmFilePath + "Simple_Push_Pop.dsASM");            thisTest.Verify(mirror, "x", 10);            thisTest.Verify(mirror, "y", 10);            thisTest.Verify(mirror, "z", 30);        }        
 [Test]        public void Simple_Jmp()        {            ExecutionMirror mirror =                ProtoAssembler.Runner.TestLoadAndExecute(AsmFilePath + "Simple_Jmp.dsASM");            thisTest.Verify(mirror, "x", 5);        }        
