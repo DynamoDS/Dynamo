@@ -914,7 +914,7 @@ namespace Dynamo.ViewModels
                 var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
                 foreach (var model in modelSelected)
                 {
-                    if (groups.CheckIfModelExistsInAGroup(model.GUID))
+                    if (groups.ContainsModel(model.GUID))
                     {
                         return false;
                     }
@@ -934,7 +934,7 @@ namespace Dynamo.ViewModels
             var groups = WorkspaceViewModel.Model.Annotations;
             if (!groups.Any(x => x.IsSelected))
             {
-                return (groups.CheckIfModelExistsInAGroup(NodeLogic.GUID));
+                return (groups.ContainsModel(NodeLogic.GUID));
             }
             return false;
         }
@@ -949,7 +949,7 @@ namespace Dynamo.ViewModels
             var groups = WorkspaceViewModel.Model.Annotations;
             if (groups.Any(x => x.IsSelected))
             {
-                return !(groups.CheckIfModelExistsInAGroup(NodeLogic.GUID));
+                return !(groups.ContainsModel(NodeLogic.GUID));
             }
             return false;
         }

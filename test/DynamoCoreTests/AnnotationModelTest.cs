@@ -300,7 +300,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void AddModelToAnExisitingGroup()
+        public void AddModelToAnExistingGroup()
         {
             //Add a Node
             var model = CurrentDynamoModel;

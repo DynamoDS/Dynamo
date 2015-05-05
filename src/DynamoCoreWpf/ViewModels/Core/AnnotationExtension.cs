@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.ViewModels.Core
     /// </summary>
     internal static class AnnotationExtensions
     {
-        public static bool CheckIfModelExistsInAGroup(this IEnumerable<AnnotationModel> groups, Guid nodeGuid)
+        public static bool ContainsModel(this IEnumerable<AnnotationModel> groups, Guid nodeGuid)
         {
             return (groups.SelectMany(m => m.SelectedModels).Any(m => m.GUID == nodeGuid));
         }
