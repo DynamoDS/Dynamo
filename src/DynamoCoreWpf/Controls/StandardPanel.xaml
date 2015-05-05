@@ -69,8 +69,6 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <EventSetter Event="PreviewMouseMove"
-                             Handler="OnMouseMove" />
                 <EventSetter Event="PreviewMouseLeftButtonUp"
                              Handler="OnMouseLeftButtonUp" />
                 <EventSetter Event="KeyDown"

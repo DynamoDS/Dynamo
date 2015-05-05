@@ -47,22 +47,6 @@ namespace Dynamo.UI.Controls
             e.Handled = true;
         }
 
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton != MouseButtonState.Pressed)
-                return;
-
-            var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null)
-                return;
-
-            var searchElementVM = listBoxItem.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-                return;
-
-            DragDrop.DoDragDrop(listBoxItem, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
-        }
-
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
