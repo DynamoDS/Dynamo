@@ -145,7 +145,7 @@ namespace Dynamo.PackageManager
             Dependencies = new ObservableCollection<PackageDependency>();
             LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             AdditionalFiles = new ObservableCollection<PackageFileInfo>();
-            Header = PackageUploadBuilder.NewPackageHeader(this);
+            Header = PackageUploadBuilder.NewRequestBody(this);
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
@@ -253,7 +253,7 @@ namespace Dynamo.PackageManager
             // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
             
-            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            foreach (var assemFile in (new System.IO.DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
 

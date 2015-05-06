@@ -67,6 +67,7 @@ namespace Dynamo.DSEngine
         public IEnumerable<string> ReturnKeys { get; set; }
         public IPathManager PathManager { get; set; }
         public bool IsVarArg { get; set; }
+        public bool IsBuiltIn { get; set; }
     }
 
     /// <summary>
@@ -121,6 +122,7 @@ namespace Dynamo.DSEngine
             IsVisibleInLibrary = funcDescParams.IsVisibleInLibrary;
             ObsoleteMessage = funcDescParams.ObsoleteMsg;
             CanUpdatePeriodically = funcDescParams.CanUpdatePeriodically;
+            IsBuiltIn = funcDescParams.IsBuiltIn;
         }
 
         public bool IsOverloaded { get; set; }
@@ -161,6 +163,8 @@ namespace Dynamo.DSEngine
         ///     Does the function accept a variable number of arguments?
         /// </summary>
         public bool IsVarArg { get; private set; }
+
+        public bool IsBuiltIn { get; private set; }
 
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }

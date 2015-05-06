@@ -265,6 +265,11 @@ namespace Dynamo.Models
                 if (this.InitialHeight <= 0.0)
                     this.InitialHeight = region.Height;
             }
+            else
+            {
+                this.Width = 0;
+                this.height = 0;               
+            }
         }
 
         /// <summary>
@@ -362,7 +367,7 @@ namespace Dynamo.Models
                         listOfModels.Add(model);
                     }                  
                 }
-                selectedModels = listOfModels;        
+                SelectedModels = listOfModels;        
             }
 
             //On any Undo Operation, current values are restored to previous values.
