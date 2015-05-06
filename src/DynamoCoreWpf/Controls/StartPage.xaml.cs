@@ -149,7 +149,9 @@ namespace Dynamo.UI.Controls
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            communityLinks.Add(new StartPageListItem(Resources.StartPageVisitDynamoBim, "icon-dynamobim.png")
+            communityLinks.Add(new StartPageListItem(
+                string.Format(Resources.StartPageVisitWebsite, dynamoViewModel.BrandingResourceProvider.ProductName),
+                "icon-dynamobim.png")
             {
                 ContextData = Configurations.DynamoSiteLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl

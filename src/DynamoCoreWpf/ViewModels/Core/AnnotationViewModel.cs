@@ -1,6 +1,12 @@
-﻿using System.Windows.Media;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Media;
 using Dynamo.Models;
 using System;
+using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Views;
@@ -12,8 +18,7 @@ namespace Dynamo.ViewModels
     {
         private AnnotationModel annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
-        private double zIndex = 2;
-        
+      
         public AnnotationModel AnnotationModel
         {
             get { return annotationModel; }
@@ -55,12 +60,8 @@ namespace Dynamo.ViewModels
 
         public double ZIndex
         {
-            get { return zIndex; }
-            set
-            {
-                zIndex = value;
-                RaisePropertyChanged("ZIndex");
-            }
+            get { return 1; }
+            
         }
 
         public String AnnotationText
@@ -114,6 +115,39 @@ namespace Dynamo.ViewModels
                 return _changeFontSize;
             }
         }
+
+        private DelegateCommand _addToGroupCommand;
+        public DelegateCommand AddToGroupCommand
+        {
+             get
+            {
+                if (_addToGroupCommand == null)
+                    _addToGroupCommand =
+                        new DelegateCommand(AddToGroup, CanAddToGroup);
+
+                return _addToGroupCommand;
+            }
+        }
+
+        private bool CanAddToGroup(object obj)
+        {
+            return DynamoSelection.Instance.Selection.Count >= 0;
+        }
+
+        private void AddToGroup(object obj)
+        {
+            if (annotationModel.IsSelected)
+            {
+                var selectedModels = DynamoSelection.Instance.Selection.OfType<ModelBase>();
+                foreach (var model in selectedModels)
+                {
+                    if (!(model is AnnotationModel))
+                    {
+                        this.AnnotationModel.AddToSelectedModels(model, true);
+                    }
+                }
+            }
+        }
       
         public Double FontSize
         {
@@ -126,9 +160,14 @@ namespace Dynamo.ViewModels
                 annotationModel.FontSize = value;                
             }
         }
+
+        public IEnumerable<ModelBase> SelectedModels
+        {
+            get { return annotationModel.SelectedModels; }
+        }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
-        {            
+        {             
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
             model.PropertyChanged += model_PropertyChanged;
@@ -146,7 +185,12 @@ namespace Dynamo.ViewModels
         {
             if (parameter != null)
             {
-                FontSize = Convert.ToDouble(parameter);
+                this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                    System.Guid.Empty, this.AnnotationModel.GUID, "FontSize", parameter.ToString()));
+
+                this.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                this.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();                              
             }
         }
 
@@ -177,6 +221,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "FontSize":
                     RaisePropertyChanged("FontSize");
+                    break;
+                case "SelectedModels":
+                    this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
             }
         }      

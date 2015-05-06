@@ -562,20 +562,6 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class ReturnNode : ImperativeNode
-    {
-        public ImperativeNode ReturnExpr { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ReturnNode;
-            if (null == otherNode)
-                return false;
-
-            return null != ReturnExpr && ReturnExpr.Equals(otherNode.ReturnExpr);
-        }
-    }
-
     public class ArgumentSignatureNode : ImperativeNode
     {
         public ArgumentSignatureNode()

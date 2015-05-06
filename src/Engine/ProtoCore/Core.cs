@@ -99,7 +99,6 @@ namespace ProtoCore
             DisableDisposeFunctionDebug = true;
             GenerateExprID = true;
             IsDeltaExecution = false;
-            ElementBasedArrayUpdate = false;
 
             IsDeltaCompile = false;
 
@@ -138,7 +137,6 @@ namespace ProtoCore
         public bool DisableDisposeFunctionDebug { get; set; }
         public bool GenerateExprID { get; set; }
         public bool IsDeltaExecution { get; set; }
-        public bool ElementBasedArrayUpdate { get; set; }
         public InterpreterMode RunMode { get; set; }
 
         /// <summary>
@@ -381,6 +379,9 @@ namespace ProtoCore
 
         // A list of graphnodes that contain a function call
         public List<GraphNode> GraphNodeCallList { get; set; }
+
+        // A stack of graphnodes that are generated on the body of an inline conditional
+        public Stack<List<GraphNode>> InlineConditionalBodyGraphNodes { get; set; }
 
         public int newEntryPoint { get; private set; }
 
@@ -665,6 +666,7 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
+            InlineConditionalBodyGraphNodes = new Stack<List<GraphNode>>();
 
             newEntryPoint = Constants.kInvalidIndex;
         }

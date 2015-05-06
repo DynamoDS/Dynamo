@@ -581,6 +581,16 @@ b = c[w][x][y][z];";
             Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
         }
 
+        [Test]
+        public void Defect_MAGN_6723()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = @"x + ""anyString"";";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
+        }
+
         #region CodeBlockUtils Specific Tests
 
         [Test]

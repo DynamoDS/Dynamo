@@ -954,7 +954,7 @@ namespace Dynamo.PackageManager
                 Package.AddAssemblies(Assemblies);
 
                 // begin submission
-                var handle = dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion, DynamoModel.IsTestMode);
+                var handle = dynamoViewModel.Model.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
 
                 // start upload
                 Uploading = true;

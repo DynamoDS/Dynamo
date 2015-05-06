@@ -14,10 +14,10 @@ namespace DSCoreNodesUI.Input
 {
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("DoubleSliderNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("DoubleSliderNodeDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("DoubleSliderSearchTags", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
-    [NodeSearchTags(new[] {"double", "number", "float", "integer", "slider"})]
     public class DoubleSlider : SliderBase<double>
     {
         public DoubleSlider()
