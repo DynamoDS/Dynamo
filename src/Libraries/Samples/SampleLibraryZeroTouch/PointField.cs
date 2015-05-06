@@ -103,85 +103,10 @@ namespace SampleLibraryZeroTouch
 
         private void PushTriangleVertex(IRenderPackage package, Point p, Vector n)
         {
-            package.PushTriangleVertex(p.X, p.Y, p.Z);
-            package.PushTriangleVertexColor(255, 255, 255, 255);
-            package.PushTriangleVertexNormal(n.X,n.Y,n.Z);
-        }
-    }
-
-    /// <summary>
-    /// The TraceableObjectManager class maintains a static 
-    /// dictionary of objects keyed by their trace id. This
-    /// dictionary is where your objects are stored between
-    /// runs. At run-time, they are retrieved using the id
-    /// stored in trace.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public class TraceableObjectManager
-    {
-        private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
-
-        private static int solverId = 0;
-
-        public static int GetNextUnusedID()
-        {
-            var next = solverId;
-            solverId++;
-            return next;
-        }
-
-        private static Dictionary<int, object> traceableObjectManager = new Dictionary<int, object>();
-
-        public static TraceableId GetObjectIdFromTrace()
-        {
-            return TraceUtils.GetTraceData(REVIT_TRACE_ID) as TraceableId;
-        }
-
-        public static object GetTracedObjectById(int id)
-        {
-            object ret;
-            traceableObjectManager.TryGetValue(id, out ret);
-            return ret;
-        }
-
-        public static void RegisterTraceableObjectForId(int id, object objectToTrace)
-        {
-            if (traceableObjectManager.ContainsKey(id))
-            {
-                traceableObjectManager[id] = objectToTrace;
-            }
-            else
-            {
-                traceableObjectManager.Add(id, objectToTrace);
-                TraceUtils.SetTraceData(REVIT_TRACE_ID, new TraceableId(id));
-            }
-        }
-    }
-
-    [IsVisibleInDynamoLibrary(false)]
-    [Serializable]
-    public class  TraceableId : ISerializable
-    {
-        public int IntID { get; set; }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("intID", IntID, typeof(int));
-        }
-
-        public TraceableId(int id)
-        {
-            IntID = id;
-        }
-
-        /// <summary>
-        /// Ctor used by the serialisation engine
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public TraceableId(SerializationInfo info, StreamingContext context)
-        {
-            IntID = (int)info.GetValue("intID", typeof(int));
+            package.AddTriangleVertex(p.X, p.Y, p.Z);
+            package.AddTriangleVertexColor(255, 255, 255, 255);
+            package.AddTriangleVertexNormal(n.X,n.Y,n.Z);
+            package.AddTriangleVertexUV(0,0);
         }
     }
 }

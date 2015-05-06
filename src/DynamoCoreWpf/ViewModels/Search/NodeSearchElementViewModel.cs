@@ -11,6 +11,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using System;
 using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.Search;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -26,6 +27,11 @@ namespace Dynamo.Wpf.ViewModels
             {
                 RequestBitmapSource(e);
             }
+        }
+
+        public ElementTypes ElementType
+        {
+            get { return Model.ElementType; }
         }
 
         public NodeSearchElementViewModel(NodeSearchElement element, SearchViewModel svm)
@@ -187,7 +193,7 @@ namespace Dynamo.Wpf.ViewModels
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected ImageSource GetIcon(string fullNameOfIcon)
+        protected virtual ImageSource GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(Model.Assembly))
                 return null;
@@ -251,6 +257,26 @@ namespace Dynamo.Wpf.ViewModels
                 Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;
 
             return GetIcon(Configurations.DefaultCustomNodeIcon + postfix);
+        }
+
+        protected override ImageSource GetIcon(string fullNameOfIcon)
+        {
+            string customizationPath = System.IO.Path.GetDirectoryName(Path);
+            customizationPath = System.IO.Directory.GetParent(customizationPath).FullName;
+            customizationPath = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");
+
+            var iconRequest = new IconRequestEventArgs(customizationPath, fullNameOfIcon, false);
+            OnRequestBitmapSource(iconRequest);
+
+            if (iconRequest.Icon != null)
+                return iconRequest.Icon;
+
+            // If there is no icon inside of customization assembly,
+            // try to find it in dynamo assembly.
+            iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly, fullNameOfIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
         }
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
+using System.Reflection;
 
 using Autodesk.DesignScript.Interfaces;
 
@@ -12,13 +14,13 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Wpf;
 using Dynamo.Wpf.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    /// <summary>
     /*
     * The VisualizationManager is reponsible for handling events from the DynamoModel
     * that result in the updating of RenderPackages on NodeModels. After these updates,
@@ -42,7 +44,6 @@ namespace Dynamo
     *        |                             |                               ResultsReadyToVisualizeHandler
     *        |                             |                               Render
     */ 
-    /// </summary>
     public class VisualizationManager : NotificationObject, IVisualizationManager
     {
         #region private members
@@ -51,9 +52,10 @@ namespace Dynamo
         private bool drawToAlternateContext = true;
         private bool updatingPaused;
         protected readonly DynamoModel dynamoModel;
-        private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
+        private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
         private bool alternateDrawingContextAvailable;
         private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
+        private IRenderPackageFactory renderPackageFactory;
  
         #endregion
 
@@ -115,6 +117,11 @@ namespace Dynamo
         {
             get { return alternateContextName; }
             set { alternateContextName = value; }
+        }
+
+        public IRenderPackageFactory RenderPackageFactory
+        {
+            get { return renderPackageFactory; }
         }
 
         #endregion
@@ -181,6 +188,8 @@ namespace Dynamo
             // events from the pre-existing workspace.
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
+            renderPackageFactory = new HelixRenderPackageFactory();
+
             Start();
         }
 
@@ -223,10 +232,9 @@ namespace Dynamo
         /// Display a label for one or several render packages 
         /// based on the paths of those render packages.
         /// </summary>
-        /// <param name="path"></param>
         public void TagRenderPackageForPath(string path)
         {
-            var packages = new List<RenderPackage>();
+            var packages = new List<IRenderPackage>();
 
             //This also isn't thread safe
             foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
@@ -237,8 +245,7 @@ namespace Dynamo
                     //This is also a target for memory optimisation
 
                     packages.AddRange(
-                        node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
-                            .Cast<RenderPackage>());
+                        node.RenderPackages.Where(x => x.Description == path || x.Description.Contains(path + ":")));
                 }
             }
 
@@ -255,20 +262,22 @@ namespace Dynamo
                 packages.ToList().ForEach(x => x.DisplayLabels = true);
                 currentTaggedPackages.AddRange(packages);
 
-                var allPackages = new List<RenderPackage>();
+                var allPackages = new List<IRenderPackage>();
+                var selPackages = new List<IRenderPackage>();
 
                 foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
                 {
                     lock (node.RenderPackagesMutex)
                     {
                         allPackages.AddRange(
-                            node.RenderPackages.Where(x => ((RenderPackage)x).IsNotEmpty())
-                                .Cast<RenderPackage>());
+                            node.RenderPackages.Where(x => x.HasRenderingData && !x.IsSelected));
+                        selPackages.AddRange(
+                            node.RenderPackages.Where(x => x.HasRenderingData && x.IsSelected));
                     }
                 }
 
                 OnResultsReadyToVisualize(
-                    new VisualizationEventArgs(allPackages, Guid.Empty));
+                    new VisualizationEventArgs(allPackages, selPackages, Guid.Empty));
             }
         }
 
@@ -290,19 +299,6 @@ namespace Dynamo
             task.Initialize(dynamoModel.CurrentWorkspace, node);
             task.Completed += OnRenderPackageAggregationCompleted;
             scheduler.ScheduleForExecution(task);
-        }
-
-        /// <summary>
-        /// Create an IRenderPackage object provided an IGraphicItem
-        /// </summary>
-        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
-        /// <returns>An IRenderPackage object.</returns>
-        public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
-        {
-            var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, dynamoModel.MaxTesselationDivisions);
-            renderPackage.ItemsCount++;
-            return renderPackage;
         }
 
         /// <summary>
@@ -356,7 +352,7 @@ namespace Dynamo
             foreach (var node in workspace.Nodes)
                 NodeRemovedFromHomeWorkspace(node);
 
-            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage> { }, Guid.Empty));
+            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>(), new List<IRenderPackage>(),  Guid.Empty));
         }
 
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
@@ -380,7 +376,7 @@ namespace Dynamo
                 case "IsVisible":
                 case "IsUpstreamVisible":
                 case "DisplayLabels":
-                    RequestNodeVisualUpdateAsync(sender as NodeModel);
+                    RequestNodeVisualUpdateAsync(sender as NodeModel, renderPackageFactory);
                     break;
             }
         }
@@ -448,10 +444,10 @@ namespace Dynamo
             if (args != null && !args.EvaluationTookPlace)
                 return;
 
-            RequestNodeVisualUpdateAsync(null);
+            RequestNodeVisualUpdateAsync(null, renderPackageFactory);
         }
 
-        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel)
+        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel, IRenderPackageFactory factory)
         {
             if (nodeModel != null)
             {
@@ -459,7 +455,7 @@ namespace Dynamo
                 nodeModel.RequestVisualUpdateAsync(
                     dynamoModel.Scheduler,
                     dynamoModel.EngineController,
-                    dynamoModel.MaxTesselationDivisions);
+                    factory);
             }
             else
             {
@@ -469,7 +465,7 @@ namespace Dynamo
                     node.RequestVisualUpdateAsync(
                         dynamoModel.Scheduler,
                         dynamoModel.EngineController,
-                        dynamoModel.MaxTesselationDivisions);
+                        factory);
                 }
             }
 
@@ -504,18 +500,15 @@ namespace Dynamo
         private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as AggregateRenderPackageAsyncTask;
-            var rps = new List<RenderPackage>();
-            rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
-            rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
 
-            var e = new VisualizationEventArgs(rps, task.NodeId);
+            var e = new VisualizationEventArgs(task.NormalRenderPackages, task.SelectedRenderPackages, task.NodeId);
             OnResultsReadyToVisualize(e);
         }
 
         private void Clear()
         {
             // Send along an empty render set to clear all visualizations.
-            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage>{}, Guid.Empty));
+            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, new List<IRenderPackage>{}, Guid.Empty));
         }
 
         private void ClearVisualizationsAndRestart(object sender, EventArgs e)
@@ -534,6 +527,18 @@ namespace Dynamo
         }
 
         #endregion
+
+        /// <summary>
+        /// Create an IRenderPackage object provided an IGraphicItem
+        /// </summary>
+        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
+        /// <returns>An IRenderPackage object.</returns>
+        public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
+        {
+            var renderPackage = renderPackageFactory.CreateRenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, renderPackageFactory.MaxTessellationDivisions);
+            return renderPackage;
+        }
     }
 
     /// <summary>
@@ -547,15 +552,17 @@ namespace Dynamo
         /// A list of render packages corresponding to a branch or a whole graph.
         /// </summary>
         public IEnumerable<IRenderPackage> Packages { get; private set; }
+        public IEnumerable<IRenderPackage> SelectedPackages { get; private set; }
 
         /// <summary>
         /// The id of the view for which the description belongs.
         /// </summary>
         public Guid Id { get; protected set; }
 
-        public VisualizationEventArgs(IEnumerable<IRenderPackage> description, Guid viewId)
+        public VisualizationEventArgs(IEnumerable<IRenderPackage> packages, IEnumerable<IRenderPackage> selectedPackages, Guid viewId)
         {
-            Packages = description;
+            Packages = packages;
+            SelectedPackages = selectedPackages;
             Id = viewId; 
         }
     }

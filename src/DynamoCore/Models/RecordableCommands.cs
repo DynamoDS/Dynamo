@@ -1315,21 +1315,17 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        [Obsolete("Node to Code not enabled, API subject to change.")]
-        public class ConvertNodesToCodeCommand : NodeSpecificRecordableCommand
+        public class ConvertNodesToCodeCommand : RecordableCommand
         {
             #region Public Class Methods
 
             [JsonConstructor]
-            internal ConvertNodesToCodeCommand(string nodeId) : base(nodeId) { }
-
-            internal ConvertNodesToCodeCommand(Guid nodeId) : base(nodeId) { }
+            internal ConvertNodesToCodeCommand() { }
 
             internal static ConvertNodesToCodeCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                Guid nodeId = helper.ReadGuid("NodeId");
-                return new ConvertNodesToCodeCommand(nodeId);
+                return new ConvertNodesToCodeCommand();
             }
 
             #endregion
@@ -1343,8 +1339,6 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("NodeId", NodeId);
             }
 
             #endregion
@@ -1527,6 +1521,77 @@ namespace Dynamo.Models
                 helper.SetAttribute("X", X);
                 helper.SetAttribute("Y", Y);
                 helper.SetAttribute("DefaultPosition", DefaultPosition);
+            }
+
+            #endregion
+        }
+
+        [DataContract]
+        public class UngroupModelCommand : ModelSpecificRecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public UngroupModelCommand(string modelGuid) : base(modelGuid) { }
+
+            public UngroupModelCommand(Guid modelGuid) : base(modelGuid) { }
+
+            internal static UngroupModelCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new UngroupModelCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.UngroupModelImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", ModelGuid);
+            }
+
+            #endregion
+        }
+
+
+        [DataContract]
+        public class AddModelToGroupCommand : ModelSpecificRecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public AddModelToGroupCommand(string modelGuid) : base(modelGuid) { }
+
+            public AddModelToGroupCommand(Guid modelGuid) : base(modelGuid) { }
+
+            internal static AddModelToGroupCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new AddModelToGroupCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.AddToGroupImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", ModelGuid);
             }
 
             #endregion

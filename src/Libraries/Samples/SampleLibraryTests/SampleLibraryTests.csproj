@@ -89,11 +89,16 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+    <ItemGroup>
+      <Dlls Include="$(OutputPath)*.dll"/>
+      <Pdbs Include="$(OutputPath)*.pdb"/>
+      <Dyns Include="$(OutputPath)*.dyn"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\"/>
+    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\"/>
+    <Copy SourceFiles="@(Dyns)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\extra\"/>
   </Target>
-  -->
 </Project>

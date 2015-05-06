@@ -78,7 +78,6 @@ namespace ProtoCore.DSASM
     // We can then easily have a *.dsasm file containing only assembly code that the VM/Interpreter can execute
     public struct kw
     {
-        public const string mov = "mov";
         public const string call = "call";
         public const string callr = "callr";
         public const string add = "add";
@@ -92,19 +91,9 @@ namespace ProtoCore.DSASM
         public const string lt = "lt";
         public const string ge = "ge";
         public const string le = "le";
-        public const string jg = "jg";
-        public const string jl = "jl";
-        public const string jge = "jge";
-        public const string jle = "jle";
-        public const string jleq = "jleq";
-        public const string jgeq = "jgeq";
         public const string jmp = "jmp";
         public const string cjmp = "cjmp";
-        public const string jlz = "jlz";
-        public const string jgz = "jgz";
-        public const string jz = "jz";
         public const string jdep = "jdep";
-        public const string label = "label";
         public const string bounce = "bounce";
         public const string alloca = "alloca";
         public const string allocc = "allocc";
@@ -129,7 +118,6 @@ namespace ProtoCore.DSASM
         public const string dep = "dep";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
-        public const string popb = "popb";
 
         // TODO Jun: these are temporary instruction 
         public const string pushvarsize = "pushvarsize";
@@ -144,10 +132,6 @@ namespace ProtoCore.DSASM
         public const string regSX = "_sx";
         public const string regLX = "_lx";
         public const string regTX = "_tx";
-
-        // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
-        public const string cast = "cast";
-        public const string throwexception = "throw";
 
         // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
@@ -448,7 +432,7 @@ namespace ProtoCore.DSASM
         public const string kTempProcConstant = "temp_proc_var_";
         public const string kTempProcLeftVar = "%" + kTempProcConstant;
         public const string kImportData = "ImportData";
-        public const string kTempVarForNonAssignment = "temp_";
+        public const string kTempVarForNonAssignment = "temp6BBA4B28C5E54CF89F300D510499A00E_";
         public const char kLongestPostfix = 'L';
         public const string kDoubleUnderscores = "__";
         public const string kSingleUnderscore = "_";

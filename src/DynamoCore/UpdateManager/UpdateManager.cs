@@ -1086,11 +1086,17 @@ namespace Dynamo.UpdateManager
         }
 
         /// <summary>
-        /// Gets all dynamo install path on the system by looking into registery
+        /// Gets all dynamo install path on the system by looking into the Windows registry. 
         /// </summary>
         /// <returns>List of Dynamo install path</returns>
         public virtual IEnumerable<string> GetDynamoInstalls()
         {
+            // TODO: We need a cleaner solution for this that makes the choice of os explicit (MAGN-7241)
+            if (Context.IsUnix)
+            {
+                return Enumerable.Empty<String>();
+            }
+
             const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
             //Open HKLM for 64bit registry
             var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);

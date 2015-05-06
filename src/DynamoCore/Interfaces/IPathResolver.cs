@@ -98,6 +98,11 @@ namespace Dynamo.Interfaces
         string SamplesDirectory { get; }
 
         /// <summary>
+        /// The directory where the automatically saved files will be stored.
+        /// </summary>
+        string BackupDirectory { get; }
+
+        /// <summary>
         /// Full path to the preference xml file. This setting file is specific 
         /// to the current user.
         /// </summary>
@@ -143,5 +148,15 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the requested file can be located, or false
         /// otherwise.</returns>
         bool ResolveLibraryPath(ref string library);
+
+        /// <summary>
+        /// Given an initial RTF document file name, this method returns the 
+        /// absolute path of the file, if one exists.
+        /// </summary>
+        /// <param name="document">The name of the RTF file. This argument cannot 
+        /// be null or empty.</param>
+        /// <returns>Returns true if the requested document can be located, or 
+        /// false otherwise.</returns>
+        bool ResolveDocumentPath(ref string document);
     }
 }
