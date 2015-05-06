@@ -68,6 +68,9 @@ namespace Dynamo.Core.Threading
         /// 
         void ScheduleForExecution(AsyncTask asyncTask);
 
+        /// <summary>
+        /// The complete collection of all of the currently scheduled tasks
+        /// </summary>
         IEnumerable<AsyncTask> Tasks { get; }
     }
 

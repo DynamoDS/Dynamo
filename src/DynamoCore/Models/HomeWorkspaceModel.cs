@@ -416,12 +416,12 @@ namespace Dynamo.Models
                 node.Warning(message.Value); // Update node warning message.
             }
 
-            var refreshTasks = updateTask.ModifiedNodes
-                .Select(modifiedNode => modifiedNode.RequestValueUpdateAsync(scheduler, EngineController))
-                .Where(t => t != null).ToList();
-
             // Refresh values of nodes that took part in update.
-
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+            }
+            
             foreach (var node in Nodes)
             {
                 node.ClearDirtyFlag();
@@ -445,17 +445,9 @@ namespace Dynamo.Models
 
             OnEvaluationCompleted(e);
 
-            //if (!refreshTasks.Any())
-            //{
-            //    OnRefreshCompleted(e);
-            //}
-            //else
-            //{
-                
-            //}
-            scheduler.Tasks.AllComplete(_ => OnRefreshCompleted(e));
-
             EngineController.ReconcileTraceDataAndNotify();
+
+            scheduler.Tasks.AllComplete(_ => OnRefreshCompleted(e));
         }
 
         /// <summary>

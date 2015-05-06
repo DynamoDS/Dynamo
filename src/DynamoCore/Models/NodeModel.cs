@@ -1578,7 +1578,7 @@ namespace Dynamo.Models
         /// called from the main/UI thread.
         /// </summary>
         /// 
-        internal QueryMirrorDataAsyncTask RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
+        internal void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
         {
             // A NodeModel should have its cachedMirrorData reset when it is 
             // requested to update its value. When the QueryMirrorDataAsyncTask 
@@ -1593,7 +1593,7 @@ namespace Dynamo.Models
             // this can be happening at the beginning of a code block node creation.
             var variableName = AstIdentifierForPreview.Value;
             if (string.IsNullOrEmpty(variableName))
-                return null;
+                return;
 
             var task = new QueryMirrorDataAsyncTask(new QueryMirrorDataParams
             {
@@ -1604,8 +1604,6 @@ namespace Dynamo.Models
 
             task.Completed += OnNodeValueQueried;
             scheduler.ScheduleForExecution(task);
-
-            return task;
         }
 
         private void OnNodeValueQueried(AsyncTask asyncTask)
