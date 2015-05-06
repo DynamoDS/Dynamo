@@ -23,7 +23,7 @@ namespace Dynamo.Core.Threading
 
         internal override TaskPriority Priority
         {
-            get { return TaskPriority.Normal; }
+            get { return TaskPriority.BelowNormal; }
         }
 
         internal MirrorData MirrorData
