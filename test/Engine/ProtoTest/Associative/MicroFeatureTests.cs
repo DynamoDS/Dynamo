@@ -1544,6 +1544,20 @@ c = f(a<1L>,b<2>);";
         }
 
         [Test]
+        public void TestEq()
+        {
+            string code= @"
+class A {}
+a = A();
+b = 42;
+c = a == b;
+            ";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", false);
+        }
+
+        [Test]
         public void RangeExpr001()
         {
             String code =
@@ -2326,7 +2340,7 @@ r3 = 'h' + 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
-            thisTest.Verify("r3", "h1");
+            thisTest.Verify("r3", null);
         }
 
         [Test]

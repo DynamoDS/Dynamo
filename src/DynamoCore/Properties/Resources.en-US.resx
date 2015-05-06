@@ -598,4 +598,8 @@ value: bool = false</value>
     <value>(disabled)</value>
     <comment>Default value is disabled</comment>
   </data>
+  <data name="SymbolSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+    <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
+  </data>
 </root>

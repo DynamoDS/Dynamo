@@ -171,79 +171,21 @@ namespace ProtoCore.Utils
     {
         if (!builtinMethodsLoaded)
         {
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeString, PrimitiveType.kTypeChar, PrimitiveType.kTypeChar);
-
-
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeString, PrimitiveType.kTypeString, PrimitiveType.kTypeString);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeVar, PrimitiveType.kTypeString, PrimitiveType.kTypeChar);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeVar, PrimitiveType.kTypeChar, PrimitiveType.kTypeString);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeString, PrimitiveType.kTypeString, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeString, PrimitiveType.kTypeVar, PrimitiveType.kTypeString);
-
-            InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            //InsertBinaryOperationMethod(core, root, Operator.div, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            //InsertBinaryOperationMethod(core, root, Operator.div, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt);
-            //InsertBinaryOperationMethod(core, root, Operator.div, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.div, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-
-            InsertBinaryOperationMethod(core, root, Operator.bitwiseand, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.bitwiseand, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-            InsertBinaryOperationMethod(core, root, Operator.bitwiseor, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.bitwiseor, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-            InsertBinaryOperationMethod(core, root, Operator.bitwisexor, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.bitwisexor, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-
-            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeString, PrimitiveType.kTypeString);
-            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeBool);
-
-            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeString, PrimitiveType.kTypeString);
-            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar);
-            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeBool);
-
-            InsertBinaryOperationMethod(core, root, Operator.ge, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.ge, PrimitiveType.kTypeBool, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.gt, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.gt, PrimitiveType.kTypeBool, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.le, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.le, PrimitiveType.kTypeBool, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.lt, PrimitiveType.kTypeBool, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertBinaryOperationMethod(core, root, Operator.lt, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.and, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertBinaryOperationMethod(core, root, Operator.or, PrimitiveType.kTypeBool, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Neg, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Neg, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Negate, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Negate, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Not, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-
+            InsertBinaryOperationMethod(core, root, Operator.add, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.sub, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.div, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.eq, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.nq, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.ge, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.gt, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.le, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
+            InsertBinaryOperationMethod(core, root, Operator.lt, PrimitiveType.kTypeBool, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
             InsertBinaryOperationMethod(core, root, Operator.and, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
             InsertBinaryOperationMethod(core, root, Operator.or, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
-
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Decrement, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
-            InsertUnaryOperationMethod(core, root, UnaryOperator.Increment, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
+            InsertUnaryOperationMethod(core, root, UnaryOperator.Not, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
+            InsertUnaryOperationMethod(core, root, UnaryOperator.Neg, PrimitiveType.kTypeVar, PrimitiveType.kTypeVar);
         }
     }
 	

@@ -1215,6 +1215,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to variable;argument;parameter.
+        /// </summary>
+        public static string SymbolSearchTags {
+            get {
+                return ResourceManager.GetString("SymbolSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Statement Output.
         /// </summary>
         public static string ToolTipForTempVar {
