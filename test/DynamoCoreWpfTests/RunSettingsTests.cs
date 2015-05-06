@@ -83,6 +83,15 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void RunPeriodAcceptsTextWithProperSuffix()
+        {
+            var tb = View.RunSettingsControl.RunPeriodTextBox;
+            View.RunSettingsControl.RunPeriodTextBox.Text = "5000" + RunPeriodConverter.ExpectedSuffix;
+            tb.RaiseEvent(GetKeyboardEnterEventArgs(tb));
+            Assert.AreEqual(GetHomeSpace().RunSettings.RunPeriod, 5000);
+        }
+
+        [Test]
         public void RunPeriodDoesNotAllowNegativeInput()
         {
             var tb = View.RunSettingsControl.RunPeriodTextBox;
