@@ -229,7 +229,32 @@
                                HorizontalAlignment="Right"
                                TextBlock.FontSize="10"
                                TextBlock.Foreground="{StaticResource NestedMemberTextColor}"
-                               Margin="0,0,10,0" />
+                               Margin="0,0,10,0">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Visibility"
+                                        Value="Hidden" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsMouseOver, 
+                                                               RelativeSource={RelativeSource FindAncestor, 
+                                                                                              AncestorType={x:Type Grid}}}"
+                                                       Value="True" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                       Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility"
+                                                    Value="Visible" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </Grid>
             </HierarchicalDataTemplate>
 
