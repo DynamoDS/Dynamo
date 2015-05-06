@@ -1580,19 +1580,6 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-         protected void EmitJz(StackValue op1, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.JZ;
-            instr.op1 = op1;
-            instr.op2 = StackValue.BuildLabelIndex(L1);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
-            AppendInstruction(instr, line, col);
-        }
-
         protected void EmitCJmp(int L1, int L2, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {

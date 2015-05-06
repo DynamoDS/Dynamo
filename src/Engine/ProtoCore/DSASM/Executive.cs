@@ -6160,21 +6160,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void JZ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-
-            var opvalue = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-            if (MathUtils.Equals(opvalue, 0))
-            {
-                pc = (int)instruction.op2.opdata;
-            }
-            else
-            {
-                ++pc;
-            }
-        }
-
         //instruction dep(block, symbol)
         //    def sv = stack.get(block,symbol)
         //    if sv is not equal to _dx (i.e. is dirty)
@@ -6740,12 +6725,6 @@ namespace ProtoCore.DSASM
                 case OpCode.CJMP:
                     {
                         CJMP_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JZ:
-                    {
-                        JZ_Handler(instruction);
                         return;
                     }
 
