@@ -2169,13 +2169,13 @@ namespace Dynamo.Controls
             switch (type)
             {
                 case ElementTypes.Packaged:
-                    return "PKG";
+                    return Resources.PackageTypeShortString;
 
                 case ElementTypes.ZeroTouch:
-                    return "DLL";
+                    return Resources.ZeroTouchTypeShortString;
 
                 case ElementTypes.CustomNode:
-                    return "DS";
+                    return Resources.CustomNodeTypeShortString;
 
                 case ElementTypes.BuiltIn:
                 case ElementTypes.None:
