@@ -79,7 +79,7 @@ namespace DynamoCoreWpfTests
             var tb = View.RunSettingsControl.RunPeriodTextBox;
             View.RunSettingsControl.RunPeriodTextBox.Text = "dingbat";
             tb.RaiseEvent(GetKeyboardEnterEventArgs(tb));
-            Assert.AreEqual(GetHomeSpace().RunSettings.RunPeriod, 100);
+            Assert.AreEqual(GetHomeSpace().RunSettings.RunPeriod, RunSettings.DefaultRunPeriod);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace DynamoCoreWpfTests
             homeSpace.RunSettings.RunPeriod = 10;
             homeSpace.Clear();
             Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Automatic);
-            Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 100);
+            Assert.AreEqual(homeSpace.RunSettings.RunPeriod, RunSettings.DefaultRunPeriod);
         }
 
         [Test]
