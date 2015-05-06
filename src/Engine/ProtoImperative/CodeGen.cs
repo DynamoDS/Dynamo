@@ -1589,8 +1589,11 @@ namespace ProtoImperative
                 L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
 
                 BackpatchTable backpatchTable = new BackpatchTable();
-                backpatchTable.Append(pc, L1);
-                EmitJmp(L1);
+                if (ifnode.ElseIfList.Count > 0 || ifnode.ElseBody.Count > 0)
+                {
+                    backpatchTable.Append(pc, L1);
+                    EmitJmp(L1);
+                }
                 EmitPopBlockID();
 
                 // Backpatch the L2 destination of the if block
@@ -1735,11 +1738,6 @@ namespace ProtoImperative
 
                     // Restore - Set the local codeblock parent to be the current codeblock
                     codeBlock = localCodeBlock.parent;
-
-                    L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
-                    backpatchTable.Append(pc, L1);
-                    EmitJmp(L1);
-                    EmitPopBlockID();
                 }
 
                 /*
