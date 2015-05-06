@@ -73,7 +73,7 @@
   </PropertyGroup>
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <ItemGroup>
       <Dlls Include="$(OutDir)*.dll"/>
       <Pdbs Include="$(OutDir)*.pdb"/>
