@@ -445,14 +445,15 @@ namespace Dynamo.Models
 
             OnEvaluationCompleted(e);
 
-            if (!refreshTasks.Any())
-            {
-                OnRefreshCompleted(e);
-            }
-            else
-            {
-                refreshTasks.AllComplete(_ => OnRefreshCompleted(e));
-            }
+            //if (!refreshTasks.Any())
+            //{
+            //    OnRefreshCompleted(e);
+            //}
+            //else
+            //{
+                
+            //}
+            scheduler.Tasks.AllComplete(_ => OnRefreshCompleted(e));
 
             EngineController.ReconcileTraceDataAndNotify();
         }

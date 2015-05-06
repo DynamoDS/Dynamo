@@ -30,6 +30,14 @@ namespace Dynamo.Core.Threading
         private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
         private readonly TimeStampGenerator generator = new TimeStampGenerator();
 
+        public IEnumerable<AsyncTask> Tasks
+        {
+            get
+            {
+                return taskQueue;
+            }
+        }
+
         #endregion
 
         #region Private Class Helper Methods

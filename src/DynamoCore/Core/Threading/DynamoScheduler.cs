@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-
+using Dynamo.Annotations;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
@@ -67,6 +67,8 @@ namespace Dynamo.Core.Threading
         /// <param name="asyncTask">The task to execute asynchronously.</param>
         /// 
         void ScheduleForExecution(AsyncTask asyncTask);
+
+        IEnumerable<AsyncTask> Tasks { get; }
     }
 
     public partial class DynamoScheduler : IScheduler
