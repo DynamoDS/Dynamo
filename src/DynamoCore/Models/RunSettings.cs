@@ -16,20 +16,13 @@ namespace Dynamo.Models
     /// </summary>
     public class RunSettings : NotificationObject
     {
-        #region private members
-
-        /// <summary>
-        /// The default run period is intended to produce "real-time" rates.
-        /// </summary>
-        public const int DefaultRunPeriod = 1000;
+        #region Class Data Members and Properties
 
         private int runPeriod;
         private RunType runType;
         private bool runEnabled;
 
-        #endregion
-
-        #region properties
+        public const int DefaultRunPeriod = 1000;
 
         /// <summary>
         /// The length, in milliseconds, of the period
@@ -81,7 +74,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region constructors
+        #region Constructors
 
         public RunSettings()
         {
@@ -99,16 +92,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region private methods
-
-        private void RaisePropertyChangeWithDebug(string propertyName)
-        {
-            RaisePropertyChanged(propertyName);
-        }
-
-        #endregion
-
-        #region public methods
+        #region Public Operational Methods
 
         public void Reset()
         {
@@ -118,5 +102,15 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        #region Private Class Methods
+
+        private void RaisePropertyChangeWithDebug(string propertyName)
+        {
+            RaisePropertyChanged(propertyName);
+        }
+
+        #endregion
+
     }
 }
