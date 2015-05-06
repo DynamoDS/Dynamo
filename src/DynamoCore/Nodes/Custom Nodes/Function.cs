@@ -250,8 +250,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("SymbolNodeDescription",typeof(Dynamo.Properties.Resources))]
-    [NodeSearchTags("variable", "argument", "parameter")]
+    [NodeDescription("SymbolNodeDescription",typeof(Properties.Resources))]
+    [NodeSearchTags("SymbolSearchTags", typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]

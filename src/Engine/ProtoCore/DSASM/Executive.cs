@@ -4348,15 +4348,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void POPB_Handler()
-        {
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                runtimeCore.RuntimeMemory.PopConstructBlockId();
-            }
-            ++pc;
-        }
-
         private void PUSHM_Handler(Instruction instruction)
         {
             int blockId = (int)instruction.op3.opdata;
@@ -6199,42 +6190,27 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.RawDoubleValue.Equals(0))
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1; 
                 }
             }
             else
             {
                 if (opdata1.IsPointer)
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1;
                 }
                 else if (0 == opdata1.opdata)
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1;
                 }
-            }
-        }
-
-        private void JZ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-
-            var opvalue = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-            if (MathUtils.Equals(opvalue, 0))
-            {
-                pc = (int)instruction.op2.opdata;
-            }
-            else
-            {
-                ++pc;
             }
         }
 
@@ -6611,12 +6587,6 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.POPB:
-                    {
-                        POPB_Handler();
-                        return;
-                    }
-
                 case OpCode.PUSHM:
                     {
                         PUSHM_Handler(instruction);
@@ -6837,12 +6807,6 @@ namespace ProtoCore.DSASM
                 case OpCode.CJMP:
                     {
                         CJMP_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JZ:
-                    {
-                        JZ_Handler(instruction);
                         return;
                     }
 

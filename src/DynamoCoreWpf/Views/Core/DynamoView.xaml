@@ -741,7 +741,7 @@
                                 <Slider Width="100"
                                         Minimum="12"
                                         Maximum="512"
-                                        Value="{Binding MaxTesselationDivisions, Mode=TwoWay}"></Slider>
+                                        Value="{Binding MaxTessellationDivisions, Mode=TwoWay}"></Slider>
                                 <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                            Margin="10,0,0,0"></TextBlock>
                             </StackPanel>

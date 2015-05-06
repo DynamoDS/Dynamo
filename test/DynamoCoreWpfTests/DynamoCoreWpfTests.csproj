@@ -80,11 +80,13 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
     <Compile Include="DropDownTests.cs" />
     <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
+    <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />

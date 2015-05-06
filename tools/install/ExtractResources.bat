@@ -52,3 +52,6 @@ robocopy "%binroot%\Revit_2016\en-US"         "%wwlroot%\Revit_2016\en-US"      
 robocopy "%binroot%\Revit_2016\nodes"         "%wwlroot%\Revit_2016\nodes"          *.dll
 robocopy "%binroot%\Revit_2016\nodes\en-US"   "%wwlroot%\Revit_2016\nodes\en-US"    *.resources.dll *.xml
 )
+
+rem Reset error codes of "1" returned from "robocopy" for downstream scripts.
+if %ERRORLEVEL% equ 1 ( set errorlevel=0 ) else if %ERRORLEVEL% equ 3 ( set errorlevel=0 )

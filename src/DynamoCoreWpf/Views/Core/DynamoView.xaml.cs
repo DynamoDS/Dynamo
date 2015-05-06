@@ -30,6 +30,8 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.Wpf.Utilities;
+
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 
 namespace Dynamo.Controls
@@ -321,6 +323,8 @@ namespace Dynamo.Controls
 
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
+            // Do an initial load of the cursor collection
+            CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
