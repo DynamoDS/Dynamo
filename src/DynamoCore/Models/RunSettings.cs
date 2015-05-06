@@ -18,6 +18,11 @@ namespace Dynamo.Models
     {
         #region private members
 
+        /// <summary>
+        /// The default run period is intended to produce "real-time" rates.
+        /// </summary>
+        public const int DefaultRunPeriod = 1000;
+
         private int runPeriod;
         private RunType runType;
         private bool runEnabled;
@@ -80,7 +85,7 @@ namespace Dynamo.Models
 
         public RunSettings()
         {
-            RunPeriod = 500;
+            RunPeriod = DefaultRunPeriod;
             RunType = RunType.Manual;
             RunEnabled = true;
         }
@@ -109,7 +114,7 @@ namespace Dynamo.Models
         {
             RunEnabled = true;
             RunType = RunType.Automatic;
-            RunPeriod = 100;
+            RunPeriod = DefaultRunPeriod;
         }
 
         #endregion
