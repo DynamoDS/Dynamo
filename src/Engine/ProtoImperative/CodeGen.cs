@@ -1594,7 +1594,6 @@ namespace ProtoImperative
                     backpatchTable.Append(pc, L1);
                     EmitJmp(L1);
                 }
-                EmitPopBlockID();
 
                 // Backpatch the L2 destination of the if block
                 Backpatch(bp, pc);
@@ -1674,7 +1673,6 @@ namespace ProtoImperative
                     L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
                     backpatchTable.Append(pc, L1);
                     EmitJmp(L1);
-                    EmitPopBlockID();
 
                     // Backpatch the L2 destination of the elseif block
                     Backpatch(bp, pc);
@@ -1856,7 +1854,6 @@ namespace ProtoImperative
                     codeBlock = localCodeBlock.parent;
 
                     EmitJmp(entry);
-                    EmitPopBlockID();
                     Backpatch(backpatchMap.BreakTable[localCodeBlock.codeBlockId].backpatchList, pc);
                 }
                 Backpatch(bp, pc);

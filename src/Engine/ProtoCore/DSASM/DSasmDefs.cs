@@ -129,7 +129,6 @@ namespace ProtoCore.DSASM
         public const string dep = "dep";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
-        public const string popb = "popb";
 
         // TODO Jun: these are temporary instruction 
         public const string pushvarsize = "pushvarsize";

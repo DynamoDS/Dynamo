@@ -1786,16 +1786,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPopBlockID()
-        {
-            EmitInstrConsole(ProtoCore.DSASM.kw.popb);
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.POPB;
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         protected void EmitPushList(int depth, int startscope, int block, bool fromDotCall = false)
         {
             Instruction instr = new Instruction();

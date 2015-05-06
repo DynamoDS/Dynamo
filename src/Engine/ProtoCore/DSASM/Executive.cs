@@ -4294,15 +4294,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void POPB_Handler()
-        {
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                runtimeCore.RuntimeMemory.PopConstructBlockId();
-            }
-            ++pc;
-        }
-
         private void PUSHM_Handler(Instruction instruction)
         {
             int blockId = (int)instruction.op3.opdata;
@@ -6526,12 +6517,6 @@ namespace ProtoCore.DSASM
                 case OpCode.PUSHB:
                     {
                         PUSHB_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.POPB:
-                    {
-                        POPB_Handler();
                         return;
                     }
 
