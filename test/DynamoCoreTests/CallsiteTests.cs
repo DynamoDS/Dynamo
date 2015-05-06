@@ -46,6 +46,17 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
+        /// <summary>
+        /// These tests depend on nodes in the Dynamo Samples package, which are copied
+        /// at build time into a packages folder in the build directory. We
+        /// override the UserDataRootFolder on the IPathResolver to have the tests look in 
+        /// the packages folder built into the build directory.
+        /// </summary>
+        protected override string GetUserUserDataRootFolder()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
         /* Multi-dimension tests
          * This graph contains:
          * One list: {"Tywin","Cersei","Hodor"}
