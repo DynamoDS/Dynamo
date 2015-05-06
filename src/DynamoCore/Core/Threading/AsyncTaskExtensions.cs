@@ -45,7 +45,8 @@ namespace Dynamo.Core.Threading
         }
 
         /// <summary>
-        ///     Await the completion of all collection of scheduled tasks.  The tasks must already
+        ///     Await the completion of a collection of scheduled tasks.  The given action
+        ///     will only be executed after all events are complete.  The tasks must already
         ///     be scheduled or this action will never be executed.
         /// </summary>
         /// <returns>An IDisposable representing all of the event subscription</returns>
