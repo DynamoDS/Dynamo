@@ -52,7 +52,8 @@
     </Compile>
     <Compile Include="HelloDynamoZeroTouch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PointField.cs" />
+    <Compile Include="PeriodicUpdateExample.cs" />
+    <Compile Include="SampleUtilities.cs" />
     <Compile Include="TraceExample.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,14 +76,14 @@
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <ItemGroup>
-      <Dlls Include="$(OutDir)*.dll"/>
-      <Pdbs Include="$(OutDir)*.pdb"/>
-      <Xmls Include="$(OutDir)*.xml"/>
+      <Dlls Include="$(OutDir)*.dll" />
+      <Pdbs Include="$(OutDir)*.pdb" />
+      <Xmls Include="$(OutDir)*.xml" />
     </ItemGroup>
-    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="$(ProjectDir)..\pkg.json" DestinationFiles="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\pkg.json"/>
-    <MakeDir Directories="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\dyf"/>
+    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="$(ProjectDir)..\pkg.json" DestinationFiles="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\pkg.json" />
+    <MakeDir Directories="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\dyf" />
   </Target>
 </Project>

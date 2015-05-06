@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿
+using System;
+using System.Collections.Generic;
 using System.Windows;
 
 using Autodesk.DesignScript.Runtime;
@@ -8,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
+using SampleLibraryZeroTouch;
 using SamplesLibraryUI.Properties;
 
 namespace SamplesLibraryUI
@@ -167,7 +170,13 @@ namespace SamplesLibraryUI
             // Do not throw an exception during AST creation. If you
             // need to convey a failure of this node, then use
             // AstFactory.BuildNullNode to pass out null.
-            
+
+            var doubleNode = AstFactory.BuildDoubleNode(awesome);
+
+            var funcNode = AstFactory.BuildFunctionCall(
+                new Func<double,double>(SampleUtilities.MultiplyInputByNumber), 
+                new List<AssociativeNode>(){doubleNode});
+
             // Using the AstFactory class, we can build AstNode objects
             // that assign doubles, assign function calls, build expression lists, etc.
             return new[]
@@ -179,7 +188,7 @@ namespace SamplesLibraryUI
                 // For the first node, we'll just pass through the 
                 // input provided to this node.
                 AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0), AstFactory.BuildExprList(inputAstNodes)),
+                    GetAstIdentifierForOutputIndex(0), funcNode),
 
                 // For the second node, we'll build a double node that 
                 // passes along our value for awesome.
