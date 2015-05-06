@@ -195,25 +195,42 @@
             <!-- Used for nested categories. E.g. nodes stucture for Revit root. -->
             <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
                                       ItemsSource="{Binding Path=Items}">
-                <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
-                           FontSize="13"
-                           Text="{Binding Path=Name}"
-                           VerticalAlignment="Center"
-                           Name="CategoryName">
-                    <TextBlock.Style>
-                        <Style>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsExpanded, 
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
+                               FontSize="13"
+                               Text="{Binding Path=Name}"
+                               VerticalAlignment="Center"
+                               Name="CategoryName"
+                               Grid.Column="0">
+                        <TextBlock.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsExpanded, 
                                                                RelativeSource={RelativeSource FindAncestor, 
                                                                                               AncestorType={x:Type TreeViewItem}}}"
-                                             Value="True">
-                                    <Setter Property="TextBlock.FontWeight"
-                                            Value="SemiBold" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                                                 Value="True">
+                                        <Setter Property="TextBlock.FontWeight"
+                                                Value="SemiBold" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="ElementTypeText"
+                               Grid.Column="1"
+                               Text="{Binding Path=ElementType,Converter={StaticResource ElementTypeToShortConverter}}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Right"
+                               TextBlock.FontSize="10"
+                               TextBlock.Foreground="{StaticResource NestedMemberTextColor}"
+                               Margin="0,0,10,0" />
+                </Grid>
             </HierarchicalDataTemplate>
 
             <!--EndRegion-->
@@ -263,7 +280,7 @@
                                             <Grid Background="Transparent">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
 
                                                 <Grid.RowDefinitions>

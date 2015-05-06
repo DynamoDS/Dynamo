@@ -21,6 +21,7 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
+using Dynamo.Search;
 
 namespace Dynamo.Controls
 {
@@ -2151,5 +2152,43 @@ namespace Dynamo.Controls
         }
     }
 
-    
+    /// <summary>
+    /// Converts element type of node search element in short string.
+    /// E.g. ElementTypes.Packaged => PKG.
+    /// </summary>
+    public class ElementTypeToShortConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var stringValue = value.ToString();
+            if (String.IsNullOrEmpty(stringValue))
+                throw new ArgumentException("Unknown element type.");
+
+            var type = (ElementTypes)Enum.Parse(typeof(ElementTypes), stringValue);
+
+            switch (type)
+            {
+                case ElementTypes.Packaged:
+                    return "PKG";
+
+                case ElementTypes.ZeroTouch:
+                    return "DLL";
+
+                case ElementTypes.CustomNode:
+                    return "DS";
+
+                case ElementTypes.BuiltIn:
+                case ElementTypes.None:
+                    return "";
+
+                default:
+                    throw new ArgumentException("Unknown element type.");
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
