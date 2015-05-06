@@ -115,6 +115,7 @@ namespace Dynamo.Nodes
 
             //When Textbox is visible,clear the selection. That way, models will not be added to
             //dragged nodes one more time. Ref: MAGN-7321
+            if (GroupTextBlock.IsVisible && e.ClickCount >= 2)
             {
                 DynamoSelection.Instance.ClearSelection();
             }
