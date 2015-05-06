@@ -66,7 +66,14 @@ namespace Dynamo
                 // created, otherwise DynamoModel gets created without preloading 
                 // any library.
                 // 
-                pathResolver = new TestPathResolver();
+
+                var pathResolverParams = new TestPathResolverParams()
+                {
+                    UserDataRootFolder = GetUserUserDataRootFolder(),
+                    CommonDataRootFolder = GetCommonDataRootFolder()
+                };
+
+                pathResolver = new TestPathResolver(pathResolverParams);
                 foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
                     pathResolver.AddPreloadLibraryPath(preloadedLibrary);
@@ -89,6 +96,20 @@ namespace Dynamo
             // is designed to contain no test cases, so it does not need any 
             // preloaded library, all of which should only be specified in the
             // derived class.
+        }
+
+        protected virtual string GetUserUserDataRootFolder()
+        {
+            // Override in derived classed to provide a custom
+            // UserAppDataRootFolder
+            return string.Empty;
+        }
+
+        protected virtual string GetCommonDataRootFolder()
+        {
+            // Override in derived classed to provide a custom
+            // CommonAppDataRootFolder
+            return string.Empty;
         }
 
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel
