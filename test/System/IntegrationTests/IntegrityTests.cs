@@ -19,6 +19,14 @@ namespace IntegrationTests
         {
         }
 
+        /// <summary>
+        /// This test scans "Dynamo/src" and sub-folders for "Resources.resx"
+        /// files, and tries to compare them with their "Resources.en-US.resx" 
+        /// counterparts to make sure they are exactly the same. The guideline 
+        /// is, everytime "Resources.resx" is updated, it should be copied to 
+        /// overwrite "Resources.en-US.resx" so that they are always in-sync.
+        /// </summary>
+        /// 
         [Test]
         public void AllResxFilesShouldMatchEnUsCounterparts()
         {
