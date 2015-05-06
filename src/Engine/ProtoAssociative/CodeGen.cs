@@ -6491,16 +6491,13 @@ namespace ProtoAssociative
         {
             int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
             int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-            int L2 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
 
             // If-expr
             IfStatementNode ifnode = node as IfStatementNode;
             DfsTraverse(ifnode.ifExprNode, ref inferedType, false, graphNode);
-
-            L1 = pc + 1;
-            L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
+            L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
             bp = pc;
-            EmitCJmp(L1, L2);
+            EmitCJmp(L1);
 
 
             // Create a new codeblock for this block
