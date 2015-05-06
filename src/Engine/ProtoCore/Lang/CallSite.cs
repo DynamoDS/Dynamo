@@ -87,7 +87,6 @@ namespace ProtoCore
                 {
                     Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
 
-
                     IFormatter formatter = new SoapFormatter();
                     MemoryStream s = new MemoryStream(data);
                     formatter.Binder = new TraceBinder();
@@ -264,9 +263,16 @@ namespace ProtoCore
                 int noElements = info.GetInt32("NumberOfElements");
                 for (int i = 0; i < noElements; i++)
                 {
-                    SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
-                        info, context, i, "Base-");
-                    TraceData.Add(srtd);
+                    try
+                    {
+                        SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
+                            info, context, i, "Base-");
+                        TraceData.Add(srtd);
+                    }
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
                 }
 
             }
