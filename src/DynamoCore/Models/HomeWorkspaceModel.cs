@@ -440,10 +440,7 @@ namespace Dynamo.Models
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
-            if(e.EvaluationSucceeded)
-            {
-                this.HasRunWithoutCrash = true;
-            }
+            this.HasRunWithoutCrash = e.EvaluationSucceeded;
 
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
