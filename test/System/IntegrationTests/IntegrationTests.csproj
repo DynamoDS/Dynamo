@@ -114,6 +114,7 @@
     <Compile Include="CallsiteRegen.cs" />
     <Compile Include="ExecutionEventsObserver.cs" />
     <Compile Include="IncrementingTraceTests.cs" />
+    <Compile Include="IntegrityTests.cs" />
     <Compile Include="MinimalTraceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestWrapperCleanup.cs" />
