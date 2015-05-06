@@ -15,26 +15,25 @@ using SamplesLibraryUI.Properties;
 
 namespace SamplesLibraryUI
 {
-    /// <summary>
-    /// This exmple shows how to create a UI node for Dynamo
-    /// which loads custom data-bound UI into the node's view
-    /// at run time. 
-    /// 
-    /// Nodes with custom UI follow a different loading path
-    /// than zero touch nodes. The assembly which contains
-    /// this node needs to be located in the 'nodes' folder in
-    /// Dynamo in order to be loaded at startup.
-    /// 
-    /// Dynamo uses the MVVM model of programming, 
-    /// in which the UI is data-bound to the view model, which
-    /// exposes data from the underlying model. Custom UI nodes 
-    /// are a hybrid because NodeModel objects already have an
-    /// associated NodeViewModel which you should never need to
-    /// edit. So here we will create a data binding between 
-    /// properties on our class and our custom UI.
-    /// 
-    /// </summary>
-    /// 
+     /*
+      * This exmple shows how to create a UI node for Dynamo
+      * which loads custom data-bound UI into the node's view
+      * at run time. 
+     
+      * Nodes with custom UI follow a different loading path
+      * than zero touch nodes. The assembly which contains
+      * this node needs to be located in the 'nodes' folder in
+      * Dynamo in order to be loaded at startup.
+     
+      * Dynamo uses the MVVM model of programming, 
+      * in which the UI is data-bound to the view model, which
+      * exposes data from the underlying model. Custom UI nodes 
+      * are a hybrid because NodeModel objects already have an
+      * associated NodeViewModel which you should never need to
+      * edit. So here we will create a data binding between 
+      * properties on our class and our custom UI.
+     */
+
     // The NodeName attribute is what will display on 
     // top of the node in Dynamo
     [NodeName("Hello Dynamo")]
@@ -49,6 +48,8 @@ namespace SamplesLibraryUI
     // and in the help window for the node.
     [NodeDescription("HelloDynamoDescription",typeof(SamplesLibraryUI.Properties.Resources))]
 
+    // Add the IsDesignScriptCompatible attribute to ensure
+    // that it gets loaded in Dynamo.
     [IsDesignScriptCompatible]
     public class HelloDynamo : NodeModel
     {
@@ -171,7 +172,16 @@ namespace SamplesLibraryUI
             // need to convey a failure of this node, then use
             // AstFactory.BuildNullNode to pass out null.
 
+            // We create a DoubleNode to wrap the value 'awesome' that
+            // we've stored in a private member.
+
             var doubleNode = AstFactory.BuildDoubleNode(awesome);
+
+            // A FunctionCallNode can be used to represent the calling of a 
+            // function in the AST. The method specified here must live in 
+            // a separate assembly and have been loaded by Dynamo at the time 
+            // that this AST is built. If the method can't be found, you'll get 
+            // a "De-referencing a non-pointer warning."
 
             var funcNode = AstFactory.BuildFunctionCall(
                 new Func<double,double>(SampleUtilities.MultiplyInputByNumber), 

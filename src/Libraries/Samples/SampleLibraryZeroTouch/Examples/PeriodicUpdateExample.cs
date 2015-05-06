@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-using Autodesk.DesignScript.Geometry;
 
-using DynamoServices;
-
-namespace SampleLibraryZeroTouch
+namespace SampleLibraryZeroTouch.Examples
 {
     // This sample demonstrates the use of the CanUpdatePeriodically
     // attribute. Placing an instance of the PeriodicUpdateExample.PointField 
