@@ -72,6 +72,8 @@ namespace Dynamo.Tests
         public void Test_CodeBlocksReference()
         {
             // Create automation for Dynamo file : Code Blocks Reference.dyn
+            // This is a training file for demonstrating capabilities of Codeblock
+            // To test various types supported in codeblock.  
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
             DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\04 Code blocks\Code Blocks Reference.dyn");
