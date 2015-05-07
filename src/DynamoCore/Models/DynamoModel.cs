@@ -1079,9 +1079,14 @@ namespace Dynamo.Models
                         var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
                         if (currentHomeSpaces.Any())
                         {
-                            foreach (var s in currentHomeSpaces)
+                            // If the workspace we're opening is a home workspace,
+                            // then remove all the other home workspaces. Otherwise,
+                            // Remove all but the first home workspace.
+                            var end = ws is HomeWorkspaceModel ? 0 : 1;
+
+                            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
                             {
-                                RemoveWorkspace(s);
+                                RemoveWorkspace(currentHomeSpaces[i]);
                             }
                         }
 
@@ -1788,7 +1793,7 @@ namespace Dynamo.Models
 
             string description = (exception is HeapCorruptionException)
                 ? exception.Message
-                : Resources.ExceptionIsNotHeapCorruptionDescription;
+                : Resources.DisplayEngineFailureMessageDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(

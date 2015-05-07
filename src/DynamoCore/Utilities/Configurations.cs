@@ -234,10 +234,4 @@ namespace Dynamo.UI
 
         #endregion
     }
-
-    public class ResourceNames
-    {
-        public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
-        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
-    }
 }
