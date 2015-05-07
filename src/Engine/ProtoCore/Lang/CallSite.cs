@@ -217,6 +217,11 @@ namespace ProtoCore
             }
         }
 
+        /// <summary>
+        /// TraceBinder is used to find assemblies to be used for
+        /// deserialization in cases where the exact assemlby that was
+        /// used in the serialization is not available. 
+        /// </summary>
         private class TraceBinder : SerializationBinder
         {
             // Use a custom serialization binder to make the serializer more permissive
@@ -269,8 +274,13 @@ namespace ProtoCore
                             info, context, i, "Base-");
                         TraceData.Add(srtd);
                     }
-                    catch (Exception e)
+                    catch (ReflectionTypeLoadException e)
                     {
+                        // If deserialization fails, continue to the next 
+                        // element. Deserialization will throw an exception in
+                        // contexts where the assembly used do do the serialization,
+                        // or any of its referenced assemblies cannot be resolved.
+
                         continue;
                     }
                 }
