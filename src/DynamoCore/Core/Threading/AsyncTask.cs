@@ -91,7 +91,7 @@ namespace Dynamo.Core.Threading
         internal event AsyncTaskCompletedHandler Completed;
 
         /// <summary>
-        /// Raised if the event is discarded by the scheduler and will not be completed
+        /// Raised if the AsyncTask is discarded by an IScheduler and will not be executed
         /// </summary>
         internal event AsyncTaskCompletedHandler Discarded;
 
