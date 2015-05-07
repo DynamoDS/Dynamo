@@ -81,7 +81,7 @@ namespace Dynamo.Models
         private string background;
         public string Background
         {
-            get { return background ?? "#ff7bac"; }
+            get { return background ?? "#FFC1D676"; }
             set
             {
                 background = value;
