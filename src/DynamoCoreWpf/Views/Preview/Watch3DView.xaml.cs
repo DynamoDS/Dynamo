@@ -1085,12 +1085,4 @@ namespace Dynamo.Controls
             return null;
         }
     }
-
-    internal static class ColorExtensions
-    {
-        public static Color4 ToColor4(this System.Windows.Media.Color color)
-        {
-            return new Color4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f);
-        }
-    }
 }
