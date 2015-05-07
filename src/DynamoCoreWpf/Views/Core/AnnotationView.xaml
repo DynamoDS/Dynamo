@@ -223,7 +223,9 @@
                     FontSize="{Binding FontSize}"                                 
                     IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
                     GotFocus="GroupTextBox_OnGotFocus"                   
-                    TextChanged="GroupTextBox_OnTextChanged"                            
+                    TextChanged="GroupTextBox_OnTextChanged"   
+                    AcceptsReturn="True"
+                    AcceptsTab="True"
                     Style="{StaticResource SZoomFadeTextBox}">                  
             </TextBox>
             
