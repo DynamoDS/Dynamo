@@ -295,10 +295,10 @@ namespace Dynamo.Models
         [DataContract]
         public abstract class NodeSpecificRecordableCommand : RecordableCommand
         {
-            public Guid NodeId { get; private set; }
+            internal Guid NodeId { get; private set; }
 
             [DataMember]
-            public string NodeIdAsString
+            internal string NodeIdAsString
             {
                 get { return NodeId.ToString(); }
                 private set
@@ -639,8 +639,7 @@ namespace Dynamo.Models
 
             [DataMember]
             internal bool TransformCoordinates { get; private set; }
-            
-            [DataMember]
+
             //Legacy properties
             internal string Name { get; private set; }
 
@@ -1028,13 +1027,13 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             [DataMember]
-            public int PortIndex { get; private set; }
+            internal int PortIndex { get; private set; }
 
             [DataMember]
             internal PortType Type { get; private set; }
 
             [DataMember]
-            public Mode ConnectionMode { get; private set; }
+            internal Mode ConnectionMode { get; private set; }
 
             #endregion
 
@@ -1167,7 +1166,7 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             [DataMember]
-            public string EventName { get; private set; }
+            internal string EventName { get; private set; }
 
             #endregion
 
@@ -1272,13 +1271,13 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            public IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
+            internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
 
             [DataMember]
             public string Name { get; private set; }
 
             [DataMember]
-            public string Value { get; private set; }
+            internal string Value { get; private set; }
             internal Guid WorkspaceGuid { get; private set; } 
 
             #endregion
