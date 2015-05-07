@@ -262,14 +262,13 @@ namespace Dynamo.Core
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
             backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
 
-            var galleryDirectory = GetGalleryDirectory(userDataDir);
-            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
-
             // Common directories.
             commonDataDir = GetCommonDataFolder(pathResolver);
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
+            var galleryDirectory = GetGalleryDirectory(commonDataDir);
+            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
             nodeDirectories = new HashSet<string>
             {
@@ -386,10 +385,10 @@ namespace Dynamo.Core
             return sampleDirectory;
         }
 
-        private static string GetGalleryDirectory(string userDataDir)
+        private static string GetGalleryDirectory(string commonDataDir)
         {
             var uiCulture = CultureInfo.CurrentUICulture.ToString();
-            var galleryDirectory = Path.Combine(userDataDir, "gallery", uiCulture);
+            var galleryDirectory = Path.Combine(commonDataDir, "gallery", uiCulture);
 
             // If the localized samples directory does not exist then fall back 
             // to using the en-US samples folder. Do an additional check to see 
@@ -400,7 +399,7 @@ namespace Dynamo.Core
                 !di.GetDirectories().Any() ||
                 !di.GetFiles().Any())
             {
-                var neturalCommonSamples = Path.Combine(userDataDir, "gallery", "en-US");
+                var neturalCommonSamples = Path.Combine(commonDataDir, "gallery", "en-US");
                 if (Directory.Exists(neturalCommonSamples))
                     galleryDirectory = neturalCommonSamples;
             }
