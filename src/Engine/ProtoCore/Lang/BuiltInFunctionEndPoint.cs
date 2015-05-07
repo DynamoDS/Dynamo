@@ -496,7 +496,7 @@ namespace ProtoCore.Lang
         {
             var runtimeCore = runtime.RuntimeCore;
             var rmem = runtime.rmem;
-            var runtimeData = runtime.exe.RuntimeData;
+            var runtimeData = runtimeCore.RuntimeData;
 
             bool isValidThisPointer = true;
             StackValue thisObject = lhs;
