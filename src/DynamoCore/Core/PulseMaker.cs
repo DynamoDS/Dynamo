@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 using Dynamo.Models;
@@ -48,6 +49,7 @@ namespace Dynamo.Core
             if (milliseconds <= 0)
                 throw new ArgumentOutOfRangeException("milliseconds");
 
+            Debug.WriteLine("PULSEMAKER ::: START");
             TimerPeriod = milliseconds;
             internalTimer.Change(0, milliseconds);
         }
@@ -62,6 +64,7 @@ namespace Dynamo.Core
         {
             lock (stateMutex)
             {
+                Debug.WriteLine("PULSEMAKER ::: STOP");
                 TimerPeriod = 0;
                 evaluationRequestPending = false;
                 evaluationInProgress = false;
@@ -89,15 +92,17 @@ namespace Dynamo.Core
                 }
 
                 // When it gets here, an evaluation is guaranteed.
-                BeginRunExpression();
+                BeginRun();
             }
         }
 
-        internal void OnRunExpressionCompleted(object sender,
+        internal void OnRefreshCompleted(object sender,
             EvaluationCompletedEventArgs evaluationCompletedEventArgs)
         {
             lock (stateMutex)
             {
+                Debug.WriteLine("PULSEMAKER ::: REFRESH COMPLETE");
+
                 // Mark evaluation as being done.
                 evaluationInProgress = false;
 
@@ -110,11 +115,11 @@ namespace Dynamo.Core
 
                 // Further evaluation was requested.
                 evaluationRequestPending = false;
-                BeginRunExpression();
+                BeginRun();
             }
         }
 
-        private void BeginRunExpression()
+        private void BeginRun()
         {
             // Here we know for a fact that the evaluation will begin at one 
             // point in the near future. Mark it as in progress because from 
@@ -124,6 +129,8 @@ namespace Dynamo.Core
             evaluationInProgress = true;
 
             OnRunStarted();
+
+            Debug.WriteLine("PULSEMAKER ::: BEGIN RUN");
         }
 
         #endregion

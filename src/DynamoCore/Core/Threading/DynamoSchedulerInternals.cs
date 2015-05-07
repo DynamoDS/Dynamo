@@ -32,9 +32,11 @@ namespace Dynamo.Core.Threading
 
         public IEnumerable<AsyncTask> Tasks
         {
-            get
-            {
-                return taskQueue;
+            get {
+                lock (taskQueue)
+                {
+                    return taskQueue.ToList();
+                } 
             }
         }
 
@@ -50,6 +52,11 @@ namespace Dynamo.Core.Threading
 
             var e = new TaskStateChangedEventArgs(task, state);
             stateChangedHandler(this, e);
+
+            if (state == TaskState.Discarded)
+            {
+                task.HandleTaskDiscarded();
+            }
         }
 
         /// <summary>

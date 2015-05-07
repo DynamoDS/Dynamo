@@ -90,6 +90,7 @@ namespace Dynamo.Core.Threading
 
                 // Subscribe!
                 task.Completed += innerAction;
+                task.Discarded += innerAction;
             }
 
             // This disposable will unsubscribe from all of the Completed events
@@ -98,6 +99,7 @@ namespace Dynamo.Core.Threading
                 foreach (var cbt in cbs)
                 {
                     cbt.Item1.Completed -= cbt.Item2;
+                    cbt.Item1.Discarded -= cbt.Item2;
                 }
             });
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -18,12 +19,13 @@ namespace Dynamo.Models
     {
         #region Class Data Members and Properties
 
-        public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
+
+        public EngineController EngineController { get; private set; }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
@@ -271,8 +273,7 @@ namespace Dynamo.Models
             }
 
             pulseMaker.RunStarted += PulseMakerRunStarted;
-            //EvaluationCompleted += pulseMaker.OnRunExpressionCompleted;
-            RefreshCompleted += pulseMaker.OnRunExpressionCompleted;
+            RefreshCompleted += pulseMaker.OnRefreshCompleted;
 
             if (pulseMaker.TimerPeriod != 0)
             {
@@ -292,8 +293,7 @@ namespace Dynamo.Models
             if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
 
             pulseMaker.RunStarted -= PulseMakerRunStarted;
-            //EvaluationCompleted -= pulseMaker.OnRunExpressionCompleted;
-            RefreshCompleted -= pulseMaker.OnRunExpressionCompleted;
+            RefreshCompleted -= pulseMaker.OnRefreshCompleted;
             pulseMaker.Stop();
         }
 
@@ -416,12 +416,6 @@ namespace Dynamo.Models
                 node.Warning(message.Value); // Update node warning message.
             }
 
-            // Refresh values of nodes that took part in update.
-            foreach (var modifiedNode in updateTask.ModifiedNodes)
-            {
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
-            }
-            
             foreach (var node in Nodes)
             {
                 node.ClearDirtyFlag();
@@ -445,9 +439,20 @@ namespace Dynamo.Models
 
             OnEvaluationCompleted(e);
 
+            if (EngineController.IsDisposed) return;
+
             EngineController.ReconcileTraceDataAndNotify();
 
-            scheduler.Tasks.AllComplete(_ => OnRefreshCompleted(e));
+            // Refresh values of nodes that took part in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+            }
+
+            scheduler.Tasks.AllComplete(_ =>
+            {
+                OnRefreshCompleted(e);
+            });
         }
 
         /// <summary>

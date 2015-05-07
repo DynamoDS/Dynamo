@@ -202,6 +202,7 @@ namespace Dynamo.Core.Threading
                     // The task queue has been updated since the last time 
                     // a task was processed, it might need compacting.
                     droppedTasks = CompactTaskQueue();
+
                     ReprioritizeTasksInQueue();
                     taskQueueUpdated = false;
                 }
@@ -225,7 +226,9 @@ namespace Dynamo.Core.Threading
                 // queue will not be held up for a prolonged period of time.
                 // 
                 foreach (var droppedTask in droppedTasks)
+                {
                     NotifyTaskStateChanged(droppedTask, TaskState.Discarded);
+                } 
             }
 
             if (nextTask != null)
