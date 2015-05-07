@@ -219,6 +219,19 @@ namespace Dynamo.Tests
             //check remainder
             string remainder = "5ae3c356-3e83-43a9-a126-95b82cdcacc1";
             AssertPreviewValue(remainder, 1);
+
+            //check Surface.Byloft
+            var surface = "019f2710-869d-4f26-ac77-3e8332b78bb6";
+            var value = GetPreviewValue(surface) as Surface;
+            Assert.IsNotNull(value);
+
+            //check NurbsCurve value inside CodeBlockNode
+            var nurb = "288d67b1-9d89-48bd-9dcc-15f7f443b09c";
+            Assert.IsNotNull(GetPreviewValue(nurb) as NurbsCurve);
+
+            //check Line.ByStartPointEndPoint
+            var line = "ccf76cd8-73c3-486a-a4e2-9493c9bc1f3f";
+            Assert.IsNotNull(GetPreviewValue(line) as Line);
         }
 
 
