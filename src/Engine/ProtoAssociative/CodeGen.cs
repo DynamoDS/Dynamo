@@ -4125,9 +4125,8 @@ namespace ProtoAssociative
 
             ResolveFinalNodeRefs();
             ResolveSSADependencies();
-            
-            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
-                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope));
+
+            BuildGraphDependencyForCurrentScope();
             
             if (codeBlock.parent == null)  // top-most langauge block
             {
@@ -4147,6 +4146,28 @@ namespace ProtoAssociative
             core.DSExecutable.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
+        }
+
+        private void BuildGraphDependencyForCurrentScope()
+        {
+            List<GraphNode> globalAndNestedLanguageBlockGraphNodes = new List<GraphNode>();
+
+            // If this is the outer block, then build nested dependencies
+            if (codeBlock.codeBlockId == 0)
+            {
+                foreach (CodeBlock cb in core.CodeBlockList)
+                {
+                    globalAndNestedLanguageBlockGraphNodes.AddRange(
+                        codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope));
+                }
+            }
+            else
+            {
+                globalAndNestedLanguageBlockGraphNodes.AddRange(
+                    codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope));
+            }
+
+            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(globalAndNestedLanguageBlockGraphNodes);
         }
 
         private void EmitFunctionCallToInitStaticProperty(List<AssociativeNode> codeblock)
