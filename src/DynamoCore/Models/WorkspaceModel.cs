@@ -579,9 +579,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="centered"></param>
-        public void AddNode(NodeModel node, bool centered)
+        public void AddNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;

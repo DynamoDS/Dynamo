@@ -260,12 +260,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Start periodic evaluation by the given amount of time. If there
-        /// is an on-going periodic evaluation, an exception will be thrown.
+        /// Start periodic evaluation using the currently set RunPeriod
         /// </summary>
-        /// <param name="milliseconds">The desired amount of time between two 
-        /// evaluations in milliseconds.</param>
-        public void StartPeriodicEvaluation(int milliseconds)
+        public void StartPeriodicEvaluation()
         {
             if (pulseMaker == null)
             {
@@ -281,7 +278,7 @@ namespace Dynamo.Models
                     "Periodic evaluation cannot be started without stopping");
             }
 
-            pulseMaker.Start(milliseconds);
+            pulseMaker.Start(RunSettings.RunPeriod);
         }
 
         /// <summary>
