@@ -16,15 +16,13 @@ namespace Dynamo.Models
     /// </summary>
     public class RunSettings : NotificationObject
     {
-        #region private members
+        #region Class Data Members and Properties
 
         private int runPeriod;
         private RunType runType;
         private bool runEnabled;
 
-        #endregion
-
-        #region properties
+        public const int DefaultRunPeriod = 1000;
 
         /// <summary>
         /// The length, in milliseconds, of the period
@@ -76,11 +74,11 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region constructors
+        #region Constructors
 
         public RunSettings()
         {
-            RunPeriod = 500;
+            RunPeriod = DefaultRunPeriod;
             RunType = RunType.Manual;
             RunEnabled = true;
         }
@@ -94,7 +92,18 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region private methods
+        #region Public Operational Methods
+
+        public void Reset()
+        {
+            RunEnabled = true;
+            RunType = RunType.Automatic;
+            RunPeriod = DefaultRunPeriod;
+        }
+
+        #endregion
+
+        #region Private Class Methods
 
         private void RaisePropertyChangeWithDebug(string propertyName)
         {
@@ -103,15 +112,5 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region public methods
-
-        public void Reset()
-        {
-            RunEnabled = true;
-            RunType = RunType.Automatic;
-            RunPeriod = 100;
-        }
-
-        #endregion
     }
 }
