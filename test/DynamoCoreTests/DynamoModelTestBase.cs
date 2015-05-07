@@ -36,11 +36,11 @@ namespace Dynamo
                 preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
-                if (this.CurrentDynamoModel == null)
-                    return;
-
-                this.CurrentDynamoModel.ShutDown(false);
-                this.CurrentDynamoModel = null;
+                if (this.CurrentDynamoModel != null)
+                {
+                    this.CurrentDynamoModel.ShutDown(false);
+                    this.CurrentDynamoModel = null;
+                }
             }
             catch (Exception ex)
             {
