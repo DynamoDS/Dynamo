@@ -280,7 +280,9 @@ namespace ProtoCore
                         // element. Deserialization will throw an exception in
                         // contexts where the assembly used do do the serialization,
                         // or any of its referenced assemblies cannot be resolved.
-
+#if DEBUG
+                        Debug.WriteLine("Deserialization of trace data failed.");
+#endif
                         continue;
                     }
                 }
