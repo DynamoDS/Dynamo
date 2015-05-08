@@ -391,7 +391,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(0, annotation.Width);
 
             //Check the default color - it should be green
-            Assert.AreEqual("#FFC1D676", annotation.Background);
+            Assert.AreEqual(annotation.GroupBackground, annotation.Background);
         }
 
         [Test]
@@ -420,7 +420,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(0, annotation.Width);
 
             //Check the default color - it should be green
-            Assert.AreEqual("#FFC1D676", annotation.Background);
+            Assert.AreEqual(annotation.GroupBackground, annotation.Background);
 
             //change the color
             annotation.Background = "#ff7bac";
