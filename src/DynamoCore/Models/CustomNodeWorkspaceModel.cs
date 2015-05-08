@@ -198,9 +198,6 @@ namespace Dynamo.Models
         {
             var originalPath = FileName;
 
-            if (!base.SaveAs(newPath, runtimeCore))
-                return false;
-
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
             if (originalPath != newPath)
@@ -214,7 +211,7 @@ namespace Dynamo.Models
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return true;
+            return base.SaveAs(newPath, runtimeCore);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)

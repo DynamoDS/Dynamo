@@ -659,7 +659,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void CustomNodeSaveAsAddsNewCustomNodeToSearch()
         {
             // open custom node
@@ -682,6 +681,7 @@ namespace Dynamo.Tests
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
+            ViewModel.SearchViewModel.Visible = true;
             ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
@@ -751,7 +751,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void CustomNodeSaveAsAddsNewCustomNodeToSearchAndItCanBeRefactoredWhilePreservingOriginalFromExistingDyf()
         {
             // open custom node
@@ -762,7 +761,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var oldId = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.FunctionId;
+            var oldId = (model.CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeDefinition.FunctionId;
 
             CustomNodeWorkspaceModel nodeWorkspace;
             Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(oldId, true, out nodeWorkspace));
@@ -775,16 +774,17 @@ namespace Dynamo.Tests
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
-            CustomNodeWorkspaceModel oldWs;
-            Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(oldId, true, out oldWs));
+            CustomNodeWorkspaceModel newWs;
+            Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(newId, true, out newWs));
 
             // refactor oldId with new name
-            oldWs.SetInfo("TheNoodle", "TheCat", "TheCat");
+            newWs.SetInfo("TheNoodle", "TheCat", "TheCat");
 
             // num elements is unchanged by refactor
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
             // search for refactored node
+            ViewModel.SearchViewModel.Visible = true;
             ViewModel.SearchViewModel.SearchAndUpdateResults("TheNoodle");
 
             // results are correct
@@ -803,7 +803,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void CustomNodeSaveAsAddsNewCustomNodeToSearchAndItCanBeRefactoredWhilePreservingOriginalFromExistingDyf2()
         {
             // open custom node
@@ -814,7 +813,8 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var oldId = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.FunctionId;
+            var oldId = (model.CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeDefinition.FunctionId;
+
 
             CustomNodeWorkspaceModel nodeWorkspace;
             Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(oldId, true, out nodeWorkspace));
@@ -829,16 +829,17 @@ namespace Dynamo.Tests
 
             // refactor oldId with new name
 
-            CustomNodeWorkspaceModel oldWs;
-            Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(oldId, true, out oldWs));
+            CustomNodeWorkspaceModel newWs;
+            Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(newId, true, out newWs));
 
             // refactor oldId with new name
-            oldWs.SetInfo("Constant2 Alt", "TheCat", "TheCat");
+            newWs.SetInfo("Constant2 Alt", "TheCat", "TheCat");
 
             // num elements is unchanged by refactor
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
             // search common base name
+            ViewModel.SearchViewModel.Visible = true;
             ViewModel.SearchViewModel.SearchAndUpdateResults("Constant2");
 
             // results are correct
@@ -887,6 +888,63 @@ namespace Dynamo.Tests
             }
         }
 
+        [Test]
+        public void CustomNodeSaveAsKeepItsConnectors()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
+            ViewModel.OpenCommand.Execute(examplePath);
+            var workspace = model.CurrentWorkspace as CustomNodeWorkspaceModel;
+            var connectorCount = workspace.Connectors.Count();
+            var nodeCount = workspace.Nodes.Count();
+
+            for (var i = 0; i < 10; i++)
+            {
+                var newName = Guid.NewGuid().ToString();
+                var newPath = Path.Combine(TempFolder, Path.ChangeExtension(newName, "dyf"));
+                workspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+
+                Assert.AreEqual(connectorCount, workspace.Connectors.Count());
+                Assert.AreEqual(nodeCount, workspace.Nodes.Count());
+            } 
+        }
+
+        [Test]
+        public void CusotmNodeSaveAsUpdateItsName()
+        {
+            //
+            var dynamoModel = ViewModel.Model;
+            var nodeName = "Foo";
+            var catName = "Custom Nodes";
+
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+            var workspace = (CustomNodeWorkspaceModel)def;
+            ViewModel.SearchViewModel.Visible = true;
+
+            for (var i = 0; i < 10; i++)
+            {
+                var newName = Guid.NewGuid().ToString();
+                var newPath = Path.Combine(TempFolder, Path.ChangeExtension(newName, "dyf"));
+                workspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+
+                // Verify the name of this workspace is the same as the file name we specify
+                Assert.AreEqual(newName, workspace.Name);
+
+                // Verify new name is searchable
+                ViewModel.SearchViewModel.SearchAndUpdateResults(newName);
+                Assert.AreEqual(1, ViewModel.SearchViewModel.SearchResults.Count);
+
+                // Verify search element's name is new name
+                var res = ViewModel.SearchViewModel.SearchResults.First();
+                Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res);
+                Assert.AreEqual(res.Name, newName);
+
+                // Verify the search instance use new guid
+                var node = res.Model as CustomNodeSearchElement;
+                var newId = workspace.CustomNodeDefinition.FunctionId;
+                Assert.AreEqual(node.ID, newId);
+            }
+        }
         #endregion
     }
 }
