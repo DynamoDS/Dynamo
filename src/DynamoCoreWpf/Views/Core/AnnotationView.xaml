@@ -131,9 +131,12 @@
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                               Name="UngroupAnnotation"
+                           Click="OnUngroupAnnotation"/>               
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
                                Name="ChangeSize">                   
                     <MenuItem Header ="14" Name="FontSize0" Command="{Binding ChangeFontSize}" CommandParameter="14"
