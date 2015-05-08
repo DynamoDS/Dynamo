@@ -117,11 +117,13 @@ namespace Dynamo.DSEngine
 
         public void Dispose()
         {
+            // This flag must be set immediately
+            IsDisposed = true;
+
             libraryServices.LibraryLoaded -= LibraryLoaded;
 
             liveRunnerServices.Dispose();
             codeCompletionServices = null;
-            IsDisposed = true;
         }
 
         #region Function Groups
