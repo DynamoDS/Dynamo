@@ -35,33 +35,39 @@ namespace FFITarget
     {
         private HiddenDisposeTracer tracer = null;
 
-        public HiddenDisposer(HiddenDisposeTracer t)
+        public HiddenDisposer()
         {
-            tracer = t;
         }
 
         public void Dispose()
         {
-            tracer.DisposeCount *= 2;
+            HiddenDisposeTracer.DisposeCount += 1;
         }
     }
 
     public class HiddenDisposeTracer
     {
-        public int DisposeCount
+        private static int disposeCount = 0;
+        public static int DisposeCount
         {
-            get;
-            set;
+            get
+            {
+                return disposeCount;
+            }
+            set
+            {
+                disposeCount = value;
+            }
         }
 
         public HiddenDisposeTracer()
         {
-            DisposeCount = 1;
+            DisposeCount = 0;
         }
 
         public HiddenDisposer GetHiddenDisposer()
         {
-            return new HiddenDisposer(this);
+            return new HiddenDisposer();
         }
     }
 }
