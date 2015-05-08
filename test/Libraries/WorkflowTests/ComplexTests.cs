@@ -128,6 +128,21 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(nurbCBNVal);
             }
             
+            //check function call in CBN
+            var func = "cba93904-d0da-4452-9864-0d1c02706e95";
+            AssertPreviewValue(func, 3);
+            var funcStr = "9256e209-fd59-492c-81c8-65cb84552ef5";
+            AssertPreviewValue(funcStr, "catdog");
+
+            //check point.Add
+            var pAdd = "9aa85384-3767-46da-b524-e0b969d9420a";
+            var pValue = GetPreviewValue(pAdd) as Point;
+            Assert.IsNotNull(GetPreviewValue(pAdd) as Point);
+            Assert.AreEqual(pValue.X, 0);
+            Assert.AreEqual(pValue.Y, 0);
+            Assert.AreEqual(pValue.Z, 1);
+
+            
         }
         #endregion
 
