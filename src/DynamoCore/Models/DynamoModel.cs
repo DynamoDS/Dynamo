@@ -576,7 +576,7 @@ namespace Dynamo.Models
             {
                 if (!kvp.Value.Any()) continue;
 
-                var nodeGuid = EngineController.LiveRunnerCore.DSExecutable.CallSiteToNodeMap[kvp.Key];
+                var nodeGuid = EngineController.LiveRunnerRuntimeCore.RuntimeData.CallSiteToNodeMap[kvp.Key];
 
                 // TODO: MAGN-7314
                 // Find the owning workspace for a node.
@@ -741,7 +741,10 @@ namespace Dynamo.Models
                 CustomNodeManager.InfoUpdated += newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
+                    {
                         searchElement.SyncWithCustomNodeInfo(newInfo);
+                        SearchModel.Update(searchElement);
+                    }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
                 {
