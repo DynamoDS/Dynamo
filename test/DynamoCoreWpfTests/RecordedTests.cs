@@ -28,7 +28,7 @@ namespace DynamoCoreWpfTests
 {
     public delegate void CommandCallback(string commandTag);
 
-    public class RecordedUnitTestBase : DSEvaluationViewModelUnitTest
+    public class RecordedUnitTestBase : DynamoViewModelUnitTest
     {
         #region Generic Set-up Routines and Data Members
 

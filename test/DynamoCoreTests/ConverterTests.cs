@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+
 using Dynamo.Controls;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -18,7 +18,7 @@ namespace Dynamo.Tests
         [Test]
         public void SearchResultsToVisibilityConverterTest()
         {
-            SearchResultsToVisibilityConverter converter = new SearchResultsToVisibilityConverter();
+            var converter = new SearchResultsToVisibilityConverter();
             int numberOfFoundSearchCategories = 0;
             string searchText = "";
             object result;
@@ -56,10 +56,10 @@ namespace Dynamo.Tests
         [Test]
         public void FullyQualifiedNameToDisplayConverterTest()
         {
-            string name = "";
-            string parameter = "";
-            FullyQualifiedNameToDisplayConverter converter = new FullyQualifiedNameToDisplayConverter();
+            string name;
+            string parameter;
             object result;
+            var converter = new FullyQualifiedNameToDisplayConverter();
 
             //1. Class name is "ClassA.ForTooltip". Parameter is "ToolTip".
             //2. Class name is "ClassWithReallyLoooooongName.ForTooltip". Parameter is "ToolTip".
@@ -122,7 +122,7 @@ namespace Dynamo.Tests
             // 9 case
             name = "";
             parameter = "";
-            Assert.Throws<NotImplementedException>(delegate { converter.Convert(name, null, parameter, null); });
+            Assert.Throws<NotImplementedException>(() => converter.Convert(name, null, parameter, null));
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace Dynamo.Tests
         {
             string input = "";
             string parameter = "";
-            InOutParamTypeConverter converter = new InOutParamTypeConverter();
+            var converter = new InOutParamTypeConverter();
             object result;
 
             //1. Input is empty. Parameter is empty.
@@ -176,9 +176,9 @@ namespace Dynamo.Tests
         [Test]
         public void ViewModeToVisibilityConverterTest()
         {
-            ViewModeToVisibilityConverter converter = new ViewModeToVisibilityConverter();
+            var converter = new ViewModeToVisibilityConverter();
             string parameter = "";
-            SearchViewModel.ViewMode viewMode = SearchViewModel.ViewMode.LibraryView;
+            var viewMode = SearchViewModel.ViewMode.LibraryView;
             object result;
 
             //1. Parameter is null.
@@ -192,7 +192,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(Visibility.Collapsed, result);
 
             // 2 case
-            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, parameter, null); });
+            Assert.Throws<NullReferenceException>(() => converter.Convert(null, null, parameter, null));
 
             // 3 case
             result = converter.Convert(viewMode, null, parameter, null);
@@ -212,9 +212,9 @@ namespace Dynamo.Tests
         [Test]
         public void ElementTypeToBoolConverterTest()
         {
-            ElementTypeToBoolConverter converter = new ElementTypeToBoolConverter();
+            var converter = new ElementTypeToBoolConverter();
             var NseVM = new NodeSearchElementViewModel(
-                new NodeModelSearchElement(new TypeLoadData(typeof(Dynamo.Nodes.Symbol))), null);
+                new NodeModelSearchElement(new TypeLoadData(typeof(Nodes.Symbol))), null);
             var NcVM = new NodeCategoryViewModel("");
             var RncVM = new RootNodeCategoryViewModel("");
             var CncVM = new ClassesNodeCategoryViewModel(RncVM);
@@ -252,9 +252,9 @@ namespace Dynamo.Tests
         [Test]
         public void NodeTypeToColorConverterTest()
         {
-            NodeTypeToColorConverter converter = new NodeTypeToColorConverter();
-            SolidColorBrush trueBrush = new SolidColorBrush(Colors.Green);
-            SolidColorBrush falseBrush = new SolidColorBrush(Colors.Red);
+            var converter = new NodeTypeToColorConverter();
+            var trueBrush = new SolidColorBrush(Colors.Green);
+            var falseBrush = new SolidColorBrush(Colors.Red);
             converter.FalseBrush = falseBrush;
             converter.TrueBrush = trueBrush;
 
@@ -328,7 +328,7 @@ namespace Dynamo.Tests
         [Test]
         public void NullValueToCollapsedConverterTest()
         {
-            NullValueToCollapsedConverter converter = new NullValueToCollapsedConverter();
+            var converter = new NullValueToCollapsedConverter();
             object result;
 
             //1. Value is null.
@@ -346,9 +346,9 @@ namespace Dynamo.Tests
         [Test]
         public void FullCategoryNameToMarginConverterTest()
         {
-            FullCategoryNameToMarginConverter converter = new FullCategoryNameToMarginConverter();
+            var converter = new FullCategoryNameToMarginConverter();
             string name = "";
-            Thickness thickness = new Thickness(5, 0, 0, 0);
+            var thickness = new Thickness(5, 0, 0, 0);
             object result;
 
             //1. Name is null.
@@ -358,10 +358,10 @@ namespace Dynamo.Tests
             //5. Name is "Category.NestedClass1.NestedClass2".
 
             // 1 case            
-            Assert.Throws<ArgumentException>(() => { converter.Convert(null, null, null, null); });
+            Assert.Throws<ArgumentException>(() => converter.Convert(null, null, null, null));
 
             // 2 case            
-            Assert.Throws<ArgumentException>(() => { converter.Convert(name, null, null, null); });
+            Assert.Throws<ArgumentException>(() => converter.Convert(name, null, null, null));
 
             // 3 case
             name = "Category";
@@ -385,7 +385,7 @@ namespace Dynamo.Tests
         [Test]
         public void IntToVisibilityConverterTest()
         {
-            IntToVisibilityConverter converter = new IntToVisibilityConverter();
+            var converter = new IntToVisibilityConverter();
             object result;
 
             //1. Number is null.
@@ -394,7 +394,7 @@ namespace Dynamo.Tests
             //4. Number >0.
 
             // 1 case
-            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
+            Assert.Throws<NullReferenceException>(() => converter.Convert(null, null, null, null));
 
             // 2 case
             result = converter.Convert(-1, null, null, null);
@@ -430,19 +430,17 @@ namespace Dynamo.Tests
         [Test]
         public void SearchHighlightMarginConverterTest()
         {
-            SearchHighlightMarginConverter converter = new SearchHighlightMarginConverter();
-            TextBlock textBlock = new TextBlock();
-            textBlock.Width = 50;
-            textBlock.Height = 10;
+            var converter = new SearchHighlightMarginConverter();
+            var textBlock = new TextBlock { Width = 50, Height = 10 };
 
             # region dynamoViewModel and searchModel
             DynamoViewModel dynamoViewModel = DynamoViewModel.Start();
-            NodeSearchModel searchModel = new NodeSearchModel();
+            var searchModel = new NodeSearchModel();
             # endregion
 
-            SearchViewModel searhViewModel = new SearchViewModel(dynamoViewModel, searchModel);
+            var searhViewModel = new SearchViewModel(dynamoViewModel, searchModel);
             object[] array = { textBlock, searhViewModel };
-            Thickness thickness = new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+            var thickness = new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
             object result;
 
             //1. Array is null.
@@ -450,7 +448,7 @@ namespace Dynamo.Tests
             //3. TextBlock contains highlighted phrase.
 
             // 1 case
-            Assert.Throws<NullReferenceException>(delegate { converter.Convert(null, null, null, null); });
+            Assert.Throws<NullReferenceException>(() => converter.Convert(null, null, null, null));
 
             // 2 case
             textBlock.Text = "";
@@ -474,14 +472,16 @@ namespace Dynamo.Tests
         [Test]
         public void SelectedItemToActiveConverterTest()
         {
-            var converter = new SelectedItemToActiveConverter();
-            converter.NormalColor = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            converter.ActiveColor = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            var converter = new SelectedItemToActiveConverter
+            {
+                NormalColor = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+                ActiveColor = new SolidColorBrush(Color.FromRgb(0, 0, 0))
+            };
 
-            Assert.Throws<NullReferenceException>(() => { converter.Convert(null, null, null, null); });
+            Assert.Throws<NullReferenceException>(() => converter.Convert(null, null, null, null));
 
             var array = new object[] { 5 };
-            Assert.Throws<ArgumentException>(() => { converter.Convert(array, null, null, null); });
+            Assert.Throws<ArgumentException>(() => converter.Convert(array, null, null, null));
 
             array = new object[] { -1, 1 };
             var result = converter.Convert(array, null, null, null);

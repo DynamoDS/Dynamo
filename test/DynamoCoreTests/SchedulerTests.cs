@@ -1,15 +1,11 @@
 ﻿using System.IO;
 using System.Reflection;
 
-using DSCoreNodesUI;
-
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
 using DynamoShapeManager;
-using DynamoUtilities;
 
 using NUnit.Framework;
 using System;
@@ -18,8 +14,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ProtoCore.AST;
-using ProtoCore.DSASM;
 using TestServices;
 
 namespace Dynamo.Tests

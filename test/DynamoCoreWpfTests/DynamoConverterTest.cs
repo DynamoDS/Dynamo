@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Media.Imaging;
 using DSCoreNodesUI.Input;
+
+using Dynamo;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.Wpf;
@@ -18,7 +20,7 @@ using DynamoConverter = DSCoreNodesUI.DynamoConvert;
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
-    public class DynamoConverterTest : DSEvaluationViewModelUnitTest
+    public class DynamoConverterTest : DynamoViewModelUnitTest
     {
         public override void Setup()
         {

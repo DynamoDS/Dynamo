@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using Dynamo.Controls;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using NUnit.Framework;
+
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -72,7 +67,7 @@ namespace Dynamo.Tests
             //Update the Annotation Text
             model.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
-                        System.Guid.Empty, annotation.GUID, "TextBlockText",
+                        Guid.Empty, annotation.GUID, "TextBlockText",
                         "This is a unit test"));
             Assert.AreEqual("This is a unit test", annotation.AnnotationText);
 
@@ -108,8 +103,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
             Assert.AreNotEqual(0, annotation.Width);
 
-            var modelToDelete = new List<ModelBase>();
-            modelToDelete.Add(addNode);
+            var modelToDelete = new List<ModelBase> { addNode };
 
             //Delete the model
             model.DeleteModelInternal(modelToDelete);
@@ -150,9 +144,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
             Assert.AreNotEqual(0, annotation.Width);
 
-            var modelsToDelete = new List<ModelBase>();
-            modelsToDelete.Add(addNote);
-            modelsToDelete.Add(addNode);
+            var modelsToDelete = new List<ModelBase> { addNote, addNode };
 
             //Delete the models
             model.DeleteModelInternal(modelsToDelete);
@@ -168,8 +160,8 @@ namespace Dynamo.Tests
            
             //Check for the model count 
             annotation = model.CurrentWorkspace.Annotations.FirstOrDefault();
-            Assert.AreNotEqual(null,annotation);            
-            Assert.AreEqual(2, annotation.SelectedModels.Count());     
+            Assert.NotNull(annotation);
+            Assert.AreEqual(2, annotation.SelectedModels.Count());
         }
 
         [Test]
@@ -197,8 +189,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
             Assert.AreNotEqual(0, annotation.Width);
 
-            var modelToUngroup = new List<ModelBase>();
-            modelToUngroup.Add(addNode);
+            var modelToUngroup = new List<ModelBase> { addNode };
 
             //Delete the model
             model.UngroupModel(modelToUngroup);
@@ -239,15 +230,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
             Assert.AreNotEqual(0, annotation.Width);
 
-            var modelsToUngroup = new List<ModelBase>();
-            modelsToUngroup.Add(addNote);
-            modelsToUngroup.Add(addNode);
+            var modelsToUngroup = new List<ModelBase> { addNote, addNode };
 
             //Delete the models
             model.UngroupModel(modelsToUngroup);
            
             //Group should be deleted
-            Assert.AreEqual(null, model.CurrentWorkspace.Annotations.FirstOrDefault());           
+            Assert.AreEqual(null, model.CurrentWorkspace.Annotations.FirstOrDefault());
         }
 
         [Test]
@@ -275,10 +264,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
             Assert.AreNotEqual(0, annotation.Width);
 
-            var modelToUngroup = new List<ModelBase>();
-            var modelsToUngroup = new List<ModelBase>();
-            modelsToUngroup.Add(addNote);
-            modelsToUngroup.Add(addNode);
+            var modelsToUngroup = new List<ModelBase> { addNote, addNode };
 
             //Delete the models
             model.UngroupModel(modelsToUngroup);
@@ -295,7 +281,8 @@ namespace Dynamo.Tests
             //Undo again should get the first model into the group
             model.CurrentWorkspace.Undo();
             annotation = model.CurrentWorkspace.Annotations.FirstOrDefault();
-            Assert.AreEqual(2, annotation.SelectedModels.Count());           
+            Assert.NotNull(annotation);
+            Assert.AreEqual(2, annotation.SelectedModels.Count());
         }
 
         [Test]
