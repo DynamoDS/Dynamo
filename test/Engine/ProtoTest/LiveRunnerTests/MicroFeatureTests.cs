@@ -3379,48 +3379,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             liveRunner.UpdateGraph(syncData);
         }
 
-        [Test]
-        public void TestNodeMapping()
-        {
-            List<string> codes = new List<string>()
-            {
-                @"def foo(x) { return = x + 42; }",
-                @"x = 1; y = foo(x);",
-            };
-
-            Guid guid1 = System.Guid.NewGuid();
-            Guid guid2 = System.Guid.NewGuid();
-
-            List<Subtree> added = new List<Subtree>();
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
-            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
-
-            var syncData = new GraphSyncData(null, added, null);
-            liveRunner.UpdateGraph(syncData);
-
-            // Graph UI node -> ASTs
-            var astNodes = liveRunner.Core.DSExecutable.CachedSSANodes;
-            bool foundCallsite = false;
-            Guid callsiteId = Guid.Empty;
-
-            // AST -> CallSite
-            foreach (var ast in astNodes)
-            {
-                ProtoCore.CallSite callsite;
-                if (liveRunner.Core.DSExecutable.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
-                {
-                    callsiteId = callsite.CallSiteID;
-                    foundCallsite = true;
-                    break;
-                }
-            }
-
-
-            // CallSite -> Graph UI node
-            Assert.IsTrue(foundCallsite);
-            Assert.AreEqual(guid2, liveRunner.Core.DSExecutable.CallSiteToNodeMap[callsiteId]);
-        }
-
+       
         [Test]
         public void TestReExecute01()
         {

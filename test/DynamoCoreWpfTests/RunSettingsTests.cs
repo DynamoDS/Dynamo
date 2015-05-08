@@ -79,7 +79,16 @@ namespace DynamoCoreWpfTests
             var tb = View.RunSettingsControl.RunPeriodTextBox;
             View.RunSettingsControl.RunPeriodTextBox.Text = "dingbat";
             tb.RaiseEvent(GetKeyboardEnterEventArgs(tb));
-            Assert.AreEqual(GetHomeSpace().RunSettings.RunPeriod, 100);
+            Assert.AreEqual(GetHomeSpace().RunSettings.RunPeriod, RunSettings.DefaultRunPeriod);
+        }
+
+        [Test]
+        public void RunPeriodAcceptsTextWithProperSuffix()
+        {
+            var tb = View.RunSettingsControl.RunPeriodTextBox;
+            View.RunSettingsControl.RunPeriodTextBox.Text = "5000" + RunPeriodConverter.ExpectedSuffix;
+            tb.RaiseEvent(GetKeyboardEnterEventArgs(tb));
+            Assert.AreEqual(GetHomeSpace().RunSettings.RunPeriod, 5000);
         }
 
         [Test]
@@ -120,7 +129,7 @@ namespace DynamoCoreWpfTests
             homeSpace.RunSettings.RunPeriod = 10;
             homeSpace.Clear();
             Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Automatic);
-            Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 100);
+            Assert.AreEqual(homeSpace.RunSettings.RunPeriod, RunSettings.DefaultRunPeriod);
         }
 
         [Test]
@@ -131,7 +140,7 @@ namespace DynamoCoreWpfTests
             homeSpace.FileName = tmpPath;
             homeSpace.RunSettings.RunType = RunType.Periodic;
             homeSpace.RunSettings.RunPeriod = 10;
-            ViewModel.Model.CurrentWorkspace.Save(Model.EngineController.LiveRunnerCore);
+            ViewModel.Model.CurrentWorkspace.Save(Model.EngineController.LiveRunnerRuntimeCore);
             homeSpace.Clear();
             Model.OpenFileFromPath(tmpPath);
             homeSpace = GetHomeSpace();
