@@ -2,9 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-
+using System.Threading;
 using Autodesk.DesignScript.Runtime;
 
 #endregion
@@ -681,6 +682,72 @@ namespace DSCore
             }
 
             return transposedList;
+        }
+
+        private static bool IsNull(IList list)
+        {
+            return list.Cast<object>().All(el => el == null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="preserveIndices"></param>
+        /// <returns></returns>
+        public static IList Clean(IList list, bool preserveIndices = true)
+        {
+            if (list.Count == 0)
+                return list;
+
+            var culledList = new List<object>();
+            if (preserveIndices)
+            {
+                if (IsNull(list))
+                    return null;
+
+                int j = list.Count - 1;
+                while (j >= 0 && list[j] == null)
+                    j--;
+
+                for (int i = 0; i <= j; i++)
+                {
+                    var subList = list[i] as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList);
+                        if (val == null || !List.IsEmpty(val))
+                        {
+                            culledList.Add(val);
+                        }
+                    }
+                    else
+                    {
+                        culledList.Add(list[i]);    
+                    }
+                }
+            }
+            else
+            {
+                if (IsNull(list))
+                    return new List<object>();
+
+                foreach (var el in list)
+                {
+                    var subList = el as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList);
+                        if (!List.IsEmpty(val))
+                            culledList.Add(val);
+                    }
+                    else if (el != null)
+                    {
+                        culledList.Add(el);
+                    }
+                }
+            }
+            return culledList;
         }
 
 
