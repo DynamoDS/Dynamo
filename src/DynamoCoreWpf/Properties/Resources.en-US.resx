@@ -1648,4 +1648,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
     <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
   </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>PKG</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
 </root>

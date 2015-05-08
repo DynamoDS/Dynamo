@@ -612,6 +612,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DS.
+        /// </summary>
+        public static string CustomNodeTypeShortString {
+            get {
+                return ResourceManager.GetString("CustomNodeTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecating Package.
         /// </summary>
         public static string DeprecatingPackageMessageBoxTitle {
@@ -3228,6 +3237,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PKG.
+        /// </summary>
+        public static string PackageTypeShortString {
+            get {
+                return ResourceManager.GetString("PackageTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compressing....
         /// </summary>
         public static string PackageUploadStateCompressing {
@@ -3919,6 +3937,15 @@ namespace Dynamo.Wpf.Properties {
         public static string Watch3DViewContextMenuZoomToFit {
             get {
                 return ResourceManager.GetString("Watch3DViewContextMenuZoomToFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DLL.
+        /// </summary>
+        public static string ZeroTouchTypeShortString {
+            get {
+                return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
             }
         }
     }
