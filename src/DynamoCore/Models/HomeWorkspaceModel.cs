@@ -185,10 +185,6 @@ namespace Dynamo.Models
             }
             historicalTraceData = copiedData;
 
-            if (RunSettings.RunType == RunType.Periodic)
-            {
-                //StartPeriodicEvaluation(RunSettings.RunPeriod);
-            }
         }
 
         #endregion
