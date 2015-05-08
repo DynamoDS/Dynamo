@@ -1211,7 +1211,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerCore);
+            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
         }
 
         /// <summary>
@@ -1225,7 +1225,7 @@ namespace Dynamo.ViewModels
             // crash sould always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerCore);
+                workspace.Save(EngineController.LiveRunnerRuntimeCore);
                 return true;
             }
             else
@@ -1236,7 +1236,7 @@ namespace Dynamo.ViewModels
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerCore);
+                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
                     return true;
                 }
             }
