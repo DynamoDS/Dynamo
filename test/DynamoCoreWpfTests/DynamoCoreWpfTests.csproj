@@ -37,6 +37,10 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
     <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2014.2.1.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\Helix3D_SharpDX\HelixToolkit.Wpf.SharpDX.dll</HintPath>
@@ -80,14 +84,17 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
     <Compile Include="DropDownTests.cs" />
     <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
+    <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
+    <Compile Include="PackageManager\PackageManagerSearchViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordedTests.cs" />
     <Compile Include="RunSettingsTests.cs" />

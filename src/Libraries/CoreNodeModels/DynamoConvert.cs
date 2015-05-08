@@ -12,8 +12,8 @@ namespace DSCoreNodesUI
 {
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert Between Units")]
-    [NodeDescription("ConversionNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("Convert", "Units", "Length", "Area", "Volume")]
+    [NodeDescription("ConversionNodeDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("DynamoConvertSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DynamoConvert : NodeModel
     {

@@ -126,4 +126,8 @@
   <data name="ExportToSatGeometryInputDescription" xml:space="preserve">
     <value>Geometry to export into a SAT file.</value>
   </data>
+  <data name="ExportWithUnitsSearchTags" xml:space="preserve">
+    <value>Export;SAT</value>
+    <comment>Search tags for ExportWithUnits node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
+  </data>
 </root>

@@ -193,16 +193,16 @@ namespace ProtoCore
             // Cache this function call instance count 
             // This is the count of the number of times in which this callsite appears in the program
             int callInstance = 0;
-            if (!core.DSExecutable.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
+            if (!core.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
             {
                 // The guid doesnt exist yet
-                core.DSExecutable.CallsiteGuidMap.Add(graphNode.guid, 0);
+                core.CallsiteGuidMap.Add(graphNode.guid, 0);
             }
             else
             {
                 // Increment the current count
-                core.DSExecutable.CallsiteGuidMap[graphNode.guid]++;
-                functionCallInstance = core.DSExecutable.CallsiteGuidMap[graphNode.guid];
+                core.CallsiteGuidMap[graphNode.guid]++;
+                functionCallInstance = core.CallsiteGuidMap[graphNode.guid];
             }
 
             // Build the unique ID for a callsite 
@@ -1467,10 +1467,10 @@ namespace ProtoCore
                 codeBlock.instrStream.instrList[bp].op1.opdata = pc;
             }
             else if (ProtoCore.DSASM.OpCode.CJMP == codeBlock.instrStream.instrList[bp].opCode
-                && codeBlock.instrStream.instrList[bp].op2.IsLabelIndex)
+                && codeBlock.instrStream.instrList[bp].op1.IsLabelIndex)
             {
-                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op2.opdata);
-                codeBlock.instrStream.instrList[bp].op2.opdata = pc;
+                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op1.opdata);
+                codeBlock.instrStream.instrList[bp].op1.opdata = pc;
             }
         }
 
@@ -1580,28 +1580,14 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-         protected void EmitJz(StackValue op1, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+        protected void EmitCJmp(int label, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.JZ;
-            instr.op1 = op1;
-            instr.op2 = StackValue.BuildLabelIndex(L1);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
-            AppendInstruction(instr, line, col);
-        }
-
-        protected void EmitCJmp(int L1, int L2, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            EmitInstrConsole(ProtoCore.DSASM.kw.cjmp, ProtoCore.DSASM.kw.regCX + " L1(" + L1 + ") L2(" + L2 + ")");
+            EmitInstrConsole(ProtoCore.DSASM.kw.cjmp, " L(" + label + ")");
 
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.CJMP;
-            instr.op1 = StackValue.BuildLabelIndex(L1);
-            instr.op2 = StackValue.BuildLabelIndex(L2);
+            instr.op1 = StackValue.BuildLabelIndex(label);
 
             ++pc;
             if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
@@ -1609,7 +1595,7 @@ namespace ProtoCore
                 instr.debug = null;
             }
             else
-                instr.debug = GetDebugObject(line, col, eline, ecol, L1, L2);
+                instr.debug = GetDebugObject(line, col, eline, ecol, label);
 
             AppendInstruction(instr, line, col);
         }
@@ -1781,16 +1767,6 @@ namespace ProtoCore
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSHB;
             instr.op1 = StackValue.BuildInt(blockID);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
-        protected void EmitPopBlockID()
-        {
-            EmitInstrConsole(ProtoCore.DSASM.kw.popb);
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.POPB;
 
             ++pc;
             AppendInstruction(instr);

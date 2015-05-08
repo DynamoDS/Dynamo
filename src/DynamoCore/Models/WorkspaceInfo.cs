@@ -15,7 +15,7 @@ namespace Dynamo.Models
             X = 0; 
             Y = 0;
             RunType = RunType.Automatic;
-            RunPeriod = 100;
+            RunPeriod = RunSettings.DefaultRunPeriod;
             HasRunWithoutCrash = true;
         }
 
@@ -33,7 +33,7 @@ namespace Dynamo.Models
                 string description = "";
                 string version = "";
                 var runType = RunType.Manual;
-                int runPeriod = 100;
+                int runPeriod = RunSettings.DefaultRunPeriod;
                 bool hasRunWithoutCrash = false;
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");

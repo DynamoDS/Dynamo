@@ -46,9 +46,7 @@ namespace ProtoCore.DSASM
         /// The RuntimeData will eventually be integrated completely into executable,
         /// this means moving RuntimeData properties to Executable and deprecating the RuntimeData object
         /// </summary>
-        public RuntimeData RuntimeData { get; set; }
 
-        public bool isSingleAssocBlock { get; set; }
         public ProtoCore.DSASM.ClassTable classTable { get; set; }
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }
         public ProtoCore.DSASM.SymbolTable[] runtimeSymbols { get; set; }
@@ -65,20 +63,12 @@ namespace ProtoCore.DSASM
         
 #region COMPILER_GENERATED_READ_ONLY
         public FunctionTable FunctionTable { get; set; }
-        public IDictionary<string, CallSite> CallsiteCache { get; set; }
-        /// <summary>
-        /// Map from a callsite's guid to a graph UI node. 
-        /// </summary>
-        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
-        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
         /// <summary>
         /// This is a mapping of the current guid and number of callsites that appear within that guid.
         /// Language only execution contains only 1 guid for the entire program.
         /// Execution within a visual programming host means 1 guid per node, where 1 node contains a set of DS code.
         /// Each of the callsite instances are mapped to a guid and an instance count.
         /// </summary>
-        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
-        public List<AssociativeNode> CachedSSANodes { get; set; }
         public DynamicVariableTable DynamicVarTable { get; set; }
         public DynamicFunctionTable DynamicFuncTable { get; set; }
         public FunctionPointerTable FuncPointerTable { get; set; }
@@ -117,20 +107,13 @@ namespace ProtoCore.DSASM
 
         public void Reset()
         {
-            isSingleAssocBlock = true;
             runtimeSymbols = null;
             procedureTable = null;
             classTable = null;
             instrStreamList = null;
             iStreamCanvas = null;
-            RuntimeData = null;
             CodeBlocks = null;
             CompleteCodeBlocks = null;
-            CallsiteCache = new Dictionary<string, CallSite>();
-            CallSiteToNodeMap = new Dictionary<Guid, Guid>();
-            ASTToCallSiteMap = new Dictionary<int, CallSite>();
-            CallsiteGuidMap = new Dictionary<Guid, int>();
-            CachedSSANodes = new List<AssociativeNode>();
             ContextDataMngr = null;
             CodeToLocation = null;
             CurrentDSFileName = string.Empty;
