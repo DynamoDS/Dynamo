@@ -62,8 +62,9 @@ namespace Dynamo.Core.Threading
                 graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
                 return graphSyncData != null;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                System.Diagnostics.Debug.WriteLine("UpgradeGraphAsyncTask saw: " + e.ToString());
                 return false;
             }
         }
@@ -108,14 +109,24 @@ namespace Dynamo.Core.Threading
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-            // Comparing to another UpdateGraphAsyncTask, the one 
-            // that gets scheduled more recently stay, while the earlier one 
-            // gets dropped. If this task has a higher tick count, keep this.
-            // 
-            if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
-                return TaskMergeInstruction.KeepThis;
 
-            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
+            // Comparing to another UpdateGraphAsyncTask, verify that they are updating
+            // a similar set of nodes
+
+            // Other node is either equal or a superset of this task
+            if (ModifiedNodes.All(x => theOtherTask.ModifiedNodes.Contains(x)))
+            {
+                return TaskMergeInstruction.KeepOther;
+            }
+
+            // This node is a superset of the other
+            if (theOtherTask.ModifiedNodes.All(x => ModifiedNodes.Contains(x)))
+            {
+                return TaskMergeInstruction.KeepThis;
+            }
+
+            // They're different, keep both
+            return TaskMergeInstruction.KeepBoth;
         }
 
         #endregion
