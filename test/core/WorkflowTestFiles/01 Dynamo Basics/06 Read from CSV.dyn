@@ -12,7 +12,7 @@
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.DSFunction>
     <DSCore.File.Filename guid="0fb0e8d9-0cf6-4a99-bdf6-ed07a02a8143" type="DSCore.File.Filename" nickname="File Path" x="403.795267243145" y="356.359487851088" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>C:\Users\t_yanz\Desktop\20140901 Colin's Workshop Files\20140901 Colin's Workshop Files\01 Dynamo Basics\ecaade.csv</System.String>
+      <System.String>..\..\..\test\core\WorkflowTestFiles\01 Dynamo Basics\ecaade.csv</System.String>
     </DSCore.File.Filename>
   </Elements>
   <Connectors>
