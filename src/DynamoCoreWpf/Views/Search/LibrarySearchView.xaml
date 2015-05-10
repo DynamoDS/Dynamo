@@ -128,8 +128,10 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                             Handler="OnMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="OnMouseLeftButtonUp" />
+                <EventSetter Event="PreviewMouseMove"
+                             Handler="OnPreviewMouseMove" />
                 <EventSetter Event="KeyDown"
                              Handler="OnMemberButtonKeyDown" />
                 <EventSetter Event="MouseEnter"
