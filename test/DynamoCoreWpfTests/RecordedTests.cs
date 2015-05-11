@@ -2813,7 +2813,7 @@ namespace DynamoCoreWpfTests
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
 
-                    Assert.AretEqual(ElementState.Warning, node.State);
+                    Assert.AreEqual(ElementState.Warning, node.State);
 
                 }
 
