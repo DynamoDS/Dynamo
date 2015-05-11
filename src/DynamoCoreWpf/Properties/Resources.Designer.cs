@@ -1948,6 +1948,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Group.
+        /// </summary>
+        public static string GroupContextMenuDeleteGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuDeleteGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Font Size.
         /// </summary>
         public static string GroupContextMenuFont {

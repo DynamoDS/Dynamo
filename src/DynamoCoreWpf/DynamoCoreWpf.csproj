@@ -118,11 +118,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resource1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource1.resx</DependentUpon>
-    </Compile>
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
@@ -375,11 +370,6 @@
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resource1.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />

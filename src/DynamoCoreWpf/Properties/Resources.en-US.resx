@@ -1654,4 +1654,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
     <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
   </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
 </root>
