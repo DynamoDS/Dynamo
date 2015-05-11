@@ -8,6 +8,7 @@ using System.Xml;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using ICSharpCode.AvalonEdit.Editing;
 using ProtoCore.AST;
 
@@ -29,7 +30,7 @@ namespace Dynamo.Models
         public bool loadFromXML { get; set; }
 
         private double width;
-        public new double Width
+        public override double Width
         {
             get
             {
@@ -43,7 +44,7 @@ namespace Dynamo.Models
         }
 
         private double height;
-        public new double Height
+        public override double Height
         {
             get
             {
@@ -408,6 +409,36 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        /// <summary>
+        /// Overriding the Select behavior
+        /// because selecting the  group should select the models
+        /// within that group
+        /// </summary>
+        public override void Select()
+        {
+            foreach (var models in SelectedModels)
+            {
+                models.IsSelected = true;
+            }
+
+            base.Select();
+        }
+
+        /// <summary>
+        /// Overriding the Deselect behavior
+        /// because deselecting the  group should deselect the models
+        /// within that group
+        /// </summary>
+        public override void Deselect()
+        {           
+            foreach (var models in SelectedModels)
+            {
+                models.IsSelected = false;
+            }   
+       
+            base.Deselect();
+        }
 
         public override void Dispose()
         {           
