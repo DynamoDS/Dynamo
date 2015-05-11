@@ -689,17 +689,23 @@ namespace DSCore
             return transposedList;
         }
 
-        private static bool IsNull(IList list)
+        /// <summary>
+        /// Checks if a a given single dimensional list contains only null values
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns>Returns true if the input list contains only null values</returns>
+        public static bool IsNullOrEmpty(IList list)
         {
             return list.Cast<object>().All(el => el == null);
         }
 
         /// <summary>
-        /// 
+        /// Cleans data of nulls and empty lists from a given list of arbitrary dimension
         /// </summary>
         /// <param name="list"></param>
-        /// <param name="preserveIndices"></param>
-        /// <returns></returns>
+        /// <param name="preserveIndices">Provide an option to preserve the indices of the data
+        /// such that non-trailing nulls may not be filtered out</param>
+        /// <returns>A list cleaned of nulls and empty lists</returns>
         public static IList Clean(IList list, bool preserveIndices = true)
         {
             if (list.Count == 0)
@@ -708,7 +714,7 @@ namespace DSCore
             var culledList = new List<object>();
             if (preserveIndices)
             {
-                if (IsNull(list))
+                if (IsNullOrEmpty(list))
                     return null;
 
                 int j = list.Count - 1;
@@ -734,7 +740,7 @@ namespace DSCore
             }
             else
             {
-                if (IsNull(list))
+                if (IsNullOrEmpty(list))
                     return new List<object>();
 
                 foreach (var el in list)

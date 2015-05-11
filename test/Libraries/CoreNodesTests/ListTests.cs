@@ -763,6 +763,54 @@ namespace DSCoreNodesTests
             indices = List.AllIndicesOf(input, 21).Cast<int>();
             Assert.IsEmpty(indices);
         }
- 
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsPreserveIndices()
+        {
+            var input = new ArrayList
+            {
+                new ArrayList {1, null, 2, null, null},
+                new ArrayList {null, null, 3, 4, null},
+                new ArrayList {null, null},
+                new ArrayList {1, 2}
+            };
+
+            var output = List.Clean(input);
+
+            var expected = new ArrayList
+            {
+                new ArrayList {1, null, 2},
+                new ArrayList {null, null, 3, 4},
+                null,
+                new ArrayList {1, 2}
+            };
+
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsChangeIndices()
+        {
+            var input = new ArrayList
+            {
+                new ArrayList {1, null, 2, null, null},
+                new ArrayList {null, null, 3, 4, null},
+                new ArrayList {null, null},
+                new ArrayList {1, 2}
+            };
+
+            var output = List.Clean(input, false);
+
+            var expected = new ArrayList
+            {
+                new ArrayList {1, 2},
+                new ArrayList {3, 4},
+                new ArrayList {1, 2}
+            };
+
+            Assert.AreEqual(expected, output);
+        }
     }
 }
