@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 
 using Autodesk.DesignScript.Runtime;
+using ProtoCore.DSASM;
 
 namespace DSOffice
 {
@@ -374,6 +375,10 @@ namespace DSOffice
                         {
                             output[i, j] = "";
                         }
+                        else if (((StackValue) item).IsPointer)
+                        {
+                            return null;
+                        }
                         else
                         {
                             output[i, j] = item.ToString();
@@ -457,6 +462,9 @@ namespace DSOffice
             int numRows, numColumns;
 
             object[,] rangeData = ConvertToDimensionalArray(data, out numRows, out numColumns);
+
+            if (rangeData == null)
+                return this;
 
             var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
             var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
