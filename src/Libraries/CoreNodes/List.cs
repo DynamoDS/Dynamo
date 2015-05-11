@@ -737,7 +737,7 @@ namespace DSCore
                     var subList = el as IList;
                     if (subList != null)
                     {
-                        var val = Clean(subList);
+                        var val = Clean(subList, false);
                         if (!List.IsEmpty(val))
                             culledList.Add(val);
                     }
