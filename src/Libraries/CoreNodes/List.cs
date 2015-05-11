@@ -690,10 +690,10 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Checks if a a given single dimensional list contains only null values
+        /// Checks if a given list is empty or is a single dimensional list that contains only null values
         /// </summary>
         /// <param name="list"></param>
-        /// <returns>Returns true if the input list contains only null values</returns>
+        /// <returns>Returns true if the input list is empty or contains only null values</returns>
         public static bool IsNullOrEmpty(IList list)
         {
             return list.Cast<object>().All(el => el == null);
