@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	<DocumentationFile>..\..\..\bin\AnyCPU\Debug\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Debug\$(UICulture)\DSOffice.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-	<DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\DSOffice.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -77,6 +77,12 @@
     <Content Include="DSOffice_DynamoCustomization.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
