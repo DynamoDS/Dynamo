@@ -2596,6 +2596,22 @@ namespace ProtoCore
                     ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
                     dependentNode.updateNodeRefList.Add(nodeRef);
                     graphNode.PushDependent(dependentNode);
+
+                    // If the pointerList is a setter, then it should also be in the lhs of a graphNode
+                    //  Given:
+                    //      a.x = 1 
+                    //  Which was converted to: 
+                    //      tvar = a.set_x(1)
+                    //  Set a.x as lhs of the graphnode. 
+                    //  This means that statement that depends on a.x can re-execute, such as:
+                    //      p = a.x;
+                    //
+                    string propertyName = ssaPointerList[ssaPointerList.Count - 1].Name;
+                    bool isSetter = propertyName.StartsWith(Constants.kSetterPrefix);
+                    if (isSetter)
+                    {
+                        graphNode.updateNodeRefList.Add(nodeRef);
+                    }
                 }
             }
         }

@@ -2934,6 +2934,19 @@ namespace ProtoAssociative
             }
 
             // Handle other LHS cases here
+            else if (node is IdentifierListNode)
+            {
+                // TODO Handle LHS ssa for identifier lists
+
+                // For LHS idenlist, resolve them to the fully qualified name
+                IdentifierListNode identList = node as IdentifierListNode;
+                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
+                if (classNames.Length == 1)
+                {
+                    identList.LeftNode.Name = classNames[0];
+                    (identList.LeftNode as IdentifierNode).Value = classNames[0];
+                }
+            }
         }
 
         /// <summary>
@@ -2952,7 +2965,14 @@ namespace ProtoAssociative
 
             List<AssociativeNode> args = new List<AssociativeNode>();
             args.Add(bNode.RightNode);
-            AssociativeNode fcall = nodeBuilder.BuildFunctionCall(Constants.kSetterPrefix + identList.RightNode.Name, args);
+            
+            //AssociativeNode fcall = nodeBuilder.BuildFunctionCall(Constants.kSetterPrefix + identList.RightNode.Name, args);
+
+            ProtoCore.AST.AssociativeAST.FunctionCallNode fcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+            fcall.Function = new IdentifierNode(identList.RightNode.Name);
+            fcall.Function.Name = ProtoCore.DSASM.Constants.kSetterPrefix + identList.RightNode.Name;
+            fcall.FormalArguments = args;
+
             identList.RightNode = fcall;
 
             BinaryExpressionNode converetdAssignNode = new BinaryExpressionNode(lhsTemp, identList);
