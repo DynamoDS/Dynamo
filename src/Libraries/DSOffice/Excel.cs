@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -375,9 +376,12 @@ namespace DSOffice
                         {
                             output[i, j] = "";
                         }
-                        else if (((StackValue) item).IsPointer)
+                        else if (item is StackValue)
                         {
-                            return null;
+                            if(((StackValue)item).IsPointer)
+                                return null;
+
+                            output[i, j] = item.ToString();
                         }
                         else
                         {
