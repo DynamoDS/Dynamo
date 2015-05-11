@@ -12,7 +12,10 @@ using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+
+using ProtoCore;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
@@ -30,6 +33,15 @@ namespace Dynamo.DSEngine
     public class EngineController : LogSourceBase, IAstNodeContainer, IDisposable
     {
         public event AstBuiltEventHandler AstBuilt;
+
+        public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
+        {
+            if (TraceReconcliationComplete != null)
+            {
+                TraceReconcliationComplete(e);
+            }
+        }
 
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
@@ -472,6 +484,25 @@ namespace Dynamo.DSEngine
             }
         }
 
+        internal void ReconcileTraceDataAndNotify()
+        {
+            var callsiteToOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+            foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
+            {
+                var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
+                if (callsiteToOrphanMap.ContainsKey(cs.CallSiteID))
+                {
+                    callsiteToOrphanMap[cs.CallSiteID].AddRange(orphanedSerializables);
+                }
+                else
+                {
+                    callsiteToOrphanMap.Add(cs.CallSiteID, orphanedSerializables);
+                }
+            }
+
+            OnTraceReconciliationComplete(new TraceReconciliationEventArgs(callsiteToOrphanMap));
+        }
+
         private static void ClearWarnings(IEnumerable<NodeModel> nodes)
         {
             var warningNodes = nodes.Where(n => n.State == ElementState.Warning);
@@ -592,5 +623,23 @@ namespace Dynamo.DSEngine
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);
         }
+    }
+
+    public class TraceReconciliationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// A list of ISerializable items.
+        /// </summary>
+        public Dictionary<Guid,List<ISerializable>> CallsiteToOrphanMap { get; private set; }
+
+        public TraceReconciliationEventArgs(Dictionary<Guid, List<ISerializable>> callsiteToOrphanMap)
+        {
+            CallsiteToOrphanMap = callsiteToOrphanMap;
+        }
+    }
+
+    public interface ITraceReconciliationProcessor
+    {
+        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
     }
 }

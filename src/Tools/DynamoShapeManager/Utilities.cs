@@ -172,7 +172,7 @@ namespace DynamoShapeManager
                 throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
             }
 
-            var methodParams = new object[] { "Autodesk", "ASMAHL*.dll" };
+            var methodParams = new object[] { "Revit", "ASMAHL*.dll" };
             return installationsMethod.Invoke(null, methodParams) as IEnumerable;
         }
     }

@@ -3284,20 +3284,7 @@ namespace ProtoAssociative
                 inlineExpressionASTList.Clear();
 
 
-                // Emit the True exprssion
-                DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
-                AssociativeNode trueExpr = ssaStack.Pop();
-                ilnode.TrueExpression = trueExpr is BinaryExpressionNode ? (trueExpr as BinaryExpressionNode).LeftNode : trueExpr;
-                astlist.AddRange(inlineExpressionASTList);
-                inlineExpressionASTList.Clear();
-
-
-                // Emit the True exprssion
-                DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
-                AssociativeNode falseExpr = ssaStack.Pop();
-                ilnode.FalseExpression = falseExpr is BinaryExpressionNode ? (falseExpr as BinaryExpressionNode).LeftNode : falseExpr;
-                astlist.AddRange(inlineExpressionASTList);
-                inlineExpressionASTList.Clear();
+                // SSA for true and false body are handled by EmitInlineConditionalNode
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode();
                 bnode.Optr = ProtoCore.DSASM.Operator.assign;
@@ -4013,9 +4000,7 @@ namespace ProtoAssociative
                             //Audit class table for multiple symbol definition and emit warning.
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus, graphNode);
                         }
-                        codeblock.Body = BuildSSA(codeblock.Body, context);
-                        core.DSExecutable.CachedSSANodes.Clear();
-                        core.DSExecutable.CachedSSANodes.AddRange(codeblock.Body);
+                        codeblock.Body = BuildSSA(codeblock.Body, context);              
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -4086,7 +4071,7 @@ namespace ProtoAssociative
             this.localCodeBlockNode = codeBlockNode;
 
             // Reset the callsite guids in preparation for the next compilation
-            core.DSExecutable.CallsiteGuidMap = new Dictionary<Guid, int>();
+            core.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
         }
@@ -4875,7 +4860,6 @@ namespace ProtoAssociative
                     throw new BuildHaltException("Invalid language block type (B1C57E37)");
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.applySSATransform = false;
 
                 // Set the current class scope so the next language can refer to it
                 core.ClassIndex = globalClassIndex;
@@ -4888,7 +4872,8 @@ namespace ProtoAssociative
                         core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
                 }
 
-                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, graphNode);
+                core.Compilers[langblock.codeblock.language].Compile(
+                    out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, null);
                 
             }
         }
@@ -5954,15 +5939,7 @@ namespace ProtoAssociative
                         {
                             throw new BuildHaltException("B2CB2093");
                         }
-                    });
-
-                    // TODO Jun: Remove this once agree that alltest cases assume the default assoc block is block 0
-                    // NOTE: Only affects mirror, not actual execution
-                    if (null == codeBlock.parent && pc <= 0)
-                    {
-                        // The first node in the top level block is a function
-                        core.DSExecutable.isSingleAssocBlock = false;
-                    }
+                    });                   
                 }
                 else
                 {
@@ -6504,16 +6481,13 @@ namespace ProtoAssociative
         {
             int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
             int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-            int L2 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
 
             // If-expr
             IfStatementNode ifnode = node as IfStatementNode;
             DfsTraverse(ifnode.ifExprNode, ref inferedType, false, graphNode);
-
-            L1 = pc + 1;
-            L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
+            L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
             bp = pc;
-            EmitCJmp(L1, L2);
+            EmitCJmp(L1);
 
 
             // Create a new codeblock for this block
@@ -6740,7 +6714,15 @@ namespace ProtoAssociative
                     langblockT.codeblock.fingerprint = "";
                     langblockT.codeblock.version = "";
                     core.AssocNode = bExprTrue;
+                    core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockT, bExprTrue, ref inferedType, ref trueBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);
+                    List<GraphNode> trueBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+
+                    // Append dependent nodes of the inline conditional 
+                    foreach (GraphNode gnode in trueBodyNodes)
+                        foreach (GraphNode dNode in gnode.dependentList)
+                            graphNode.PushDependent(dNode);
+
                     core.AssocNode = null;
                     DynamicBlockNode dynBlockT = new DynamicBlockNode(trueBlockId);
 
@@ -6756,7 +6738,15 @@ namespace ProtoAssociative
                     langblockF.codeblock.fingerprint = "";
                     langblockF.codeblock.version = "";
                     core.AssocNode = bExprFalse;
+                    core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockF, bExprFalse, ref inferedType, ref falseBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);
+                    List<GraphNode> falseBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+
+                    // Append dependent nodes of the inline conditional 
+                    foreach (GraphNode gnode in falseBodyNodes)
+                        foreach (GraphNode dNode in gnode.dependentList)
+                            graphNode.PushDependent(dNode);
+
                     core.AssocNode = null;
                     DynamicBlockNode dynBlockF = new DynamicBlockNode(falseBlockId);
 
@@ -8653,6 +8643,10 @@ namespace ProtoAssociative
                     }
 
                     PushGraphNode(graphNode);
+                    if (core.InlineConditionalBodyGraphNodes.Count > 0)
+                    {
+                        core.InlineConditionalBodyGraphNodes.Last().Add(graphNode);
+                    }
 
                     SymbolNode cyclicSymbol1 = null;
                     SymbolNode cyclicSymbol2 = null;

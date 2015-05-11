@@ -256,10 +256,14 @@ namespace ProtoCore.DSASM
 
         // TODO Jun: Optimization - instead of inspecting the stack, just store the 'is in function' flag in the stackframe
         // Performance would only siffer if you have so a huge number of nested language blocks
-        private bool IsInsideFunction()
+        // TODO Jun: Optimization - instead of inspecting the stack, just store the 'is in function' flag in the stackframe
+        // Performance would only siffer if you have so a huge number of nested language blocks
+        private bool GetCurrentScope(out int classIndex, out int functionIndex)
         {
             int fpRestore = rmem.FramePointer;
             StackValue svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
+            classIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            functionIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             while (svFrameType.IsFrameType)
             {
                 StackFrameType frametype = (StackFrameType)svFrameType.opdata;
@@ -267,6 +271,7 @@ namespace ProtoCore.DSASM
                 if (frametype == StackFrameType.kTypeFunction)
                 {
                     rmem.FramePointer = fpRestore;
+
                     return true;
                 }
 
@@ -274,6 +279,8 @@ namespace ProtoCore.DSASM
                 if (rmem.FramePointer >= StackFrame.kStackFrameSize)
                 {
                     svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
+                    classIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                    functionIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                 }
                 else
                 {
@@ -713,12 +720,18 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                // There is no depth but check if the function is a member function
+                // There is no depth, but check if the function is a member function
                 // If its a member function, the this pointer is required by the core to pass on to the FEP call
                 if (isCallingMemberFunction && !fNode.isConstructor && !fNode.isStatic)
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
+                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                }
+                else if (fNode.name.Equals(Constants.kInlineConditionalMethodName))
+                {
+                    // The built-in inlinecondition function is global but it is treated as a conditional execution rather than a normal function call
+                    // This is why the class scope  needs to be preserved such that the auto-generated language blocks in an inline conditional can still refer to member functions and properties
                     svThisPtr = rmem.CurrentStackFrame.ThisPtr;
                 }
                 else
@@ -755,7 +768,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = exe.RuntimeData.GetCallSite(
+            CallSite callsite = runtimeCore.RuntimeData.GetCallSite(
                 exe.ExecutingGraphnode, 
                 classIndex, 
                 fNode.name, 
@@ -1027,7 +1040,7 @@ namespace ProtoCore.DSASM
                                             registers,
                                             new List<bool>());
 
-            var callsite = exe.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
+            var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
                                             exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);
@@ -1412,6 +1425,11 @@ namespace ProtoCore.DSASM
             else
             {
                 graphNodeList = istream.dependencyGraph.GraphList;
+            }
+
+            if (graphNodeList.Count > 0)
+            {
+                Properties.executingGraphNode = graphNodeList[0];
             }
 
             foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
@@ -4294,15 +4312,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void POPB_Handler()
-        {
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                runtimeCore.RuntimeMemory.PopConstructBlockId();
-            }
-            ++pc;
-        }
-
         private void PUSHM_Handler(Instruction instruction)
         {
             int blockId = (int)instruction.op3.opdata;
@@ -6145,42 +6154,27 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.RawDoubleValue.Equals(0))
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1; 
                 }
             }
             else
             {
                 if (opdata1.IsPointer)
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1;
                 }
                 else if (0 == opdata1.opdata)
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1;
                 }
-            }
-        }
-
-        private void JZ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-
-            var opvalue = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-            if (MathUtils.Equals(opvalue, 0))
-            {
-                pc = (int)instruction.op2.opdata;
-            }
-            else
-            {
-                ++pc;
             }
         }
 
@@ -6218,7 +6212,11 @@ namespace ProtoCore.DSASM
             // The current function and class scope
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
-            bool isInFunction = IsInsideFunction();
+
+
+            int classIndex = Constants.kInvalidIndex;
+            int functionIndex = Constants.kGlobalScope;
+            bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -6230,8 +6228,8 @@ namespace ProtoCore.DSASM
 
             if (isInFunction)
             {
-                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                ci = classIndex;
+                fi = functionIndex;
             }
 
             if (null != Properties.executingGraphNode)
@@ -6347,7 +6345,11 @@ namespace ProtoCore.DSASM
             // The current function and class scope
             int ci = DSASM.Constants.kInvalidIndex;
             int fi = DSASM.Constants.kGlobalScope;
-            bool isInFunction = IsInsideFunction();
+
+            int classIndex = Constants.kInvalidIndex;
+            int functionIndex = Constants.kGlobalScope;
+            bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
+
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -6357,8 +6359,8 @@ namespace ProtoCore.DSASM
 
             if (isInFunction)
             {
-                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                ci = classIndex;
+                fi = functionIndex;
             }
             SetupNextExecutableGraph(fi, ci);
         }
@@ -6526,12 +6528,6 @@ namespace ProtoCore.DSASM
                 case OpCode.PUSHB:
                     {
                         PUSHB_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.POPB:
-                    {
-                        POPB_Handler();
                         return;
                     }
 
@@ -6755,12 +6751,6 @@ namespace ProtoCore.DSASM
                 case OpCode.CJMP:
                     {
                         CJMP_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JZ:
-                    {
-                        JZ_Handler(instruction);
                         return;
                     }
 
