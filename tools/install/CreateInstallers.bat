@@ -48,7 +48,7 @@ robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\samples %cwd%\temp\s
 
 robocopy %cwd%\Extra\DirectX %cwd%\temp\DirectX
 
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\gallery %cwd%\temp\gallery
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\gallery %cwd%\temp\gallery /s
 
 "C:\Program Files (x86)\Inno Setup 5\iscc.exe" %cwd%\DynamoInstaller.iss
 rmdir /Q /S %cwd%\temp
