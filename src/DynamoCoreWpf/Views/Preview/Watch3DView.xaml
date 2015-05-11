@@ -25,6 +25,7 @@
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
             <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
+            <controls:Watch3DBackgroundColorConverter x:Key="Watch3DBackgroundColorConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -108,7 +109,7 @@
             IsInertiaEnabled="False" 
             IsChangeFieldOfViewEnabled="False" 
             SpinReleaseTime="0" 
-            ShowFieldOfView="False">
+            ShowFieldOfView="False" BackgroundColor="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}">
             <hx:Viewport3DX.InputBindings>
                 <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+E"/>
                 <MouseBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+LeftDoubleClick"/>
