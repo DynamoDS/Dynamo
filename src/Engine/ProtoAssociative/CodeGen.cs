@@ -2932,19 +2932,31 @@ namespace ProtoAssociative
                 // Handle LHS ssa for indexed identifiers
                 EmitSSAArrayIndexRetainDimension(ref node, ref astlist);
             }
-            else if (node is IdentifierListNode)
-            {
-                // TODO Handle LHS ssa for identifier lists
 
-                // For LHS idenlist, resolve them to the fully qualified name
-                IdentifierListNode identList = node as IdentifierListNode;
-                string[] classNames = ProtoCore.Utils.CoreUtils.GetResolvedClassName(core.ClassTable, identList);
-                if (classNames.Length == 1)
-                {
-                    identList.LeftNode.Name = classNames[0];
-                    (identList.LeftNode as IdentifierNode).Value = classNames[0];
-                }
-            }
+            // Handle other LHS cases here
+        }
+
+        /// <summary>
+        /// Converts lhs ident lists to a function call
+        /// a.x = 10 -> t = a.%set_x(10)
+        /// a.x.y = b + c -> a.x.%set_y(b + c)
+        /// </summary>
+        /// <param name="bNode"></param>
+        /// <returns></returns>
+        private BinaryExpressionNode ConvertLHSAssignmentToFunctionCall(BinaryExpressionNode bNode)
+        {
+            IdentifierNode lhsTemp = new IdentifierNode(Constants.kTempVar);
+
+            IdentifierListNode identList = bNode.LeftNode as IdentifierListNode;
+            Validity.Assert(identList != null);
+
+            List<AssociativeNode> args = new List<AssociativeNode>();
+            args.Add(bNode.RightNode);
+            AssociativeNode fcall = nodeBuilder.BuildFunctionCall(Constants.kSetterPrefix + identList.RightNode.Name, args);
+            identList.RightNode = fcall;
+
+            BinaryExpressionNode converetdAssignNode = new BinaryExpressionNode(lhsTemp, identList);
+            return converetdAssignNode;
         }
 
         private void DFSEmitSSA_AST(AssociativeNode node, Stack<AssociativeNode> ssaStack, ref List<AssociativeNode> astlist)
@@ -2958,6 +2970,12 @@ namespace ProtoAssociative
                 bool isSSAAssignment = false;
                 if (ProtoCore.DSASM.Operator.assign == astBNode.Optr)
                 {
+                    bool isLHSIdentList = astBNode.LeftNode is IdentifierListNode;
+                    if (isLHSIdentList)
+                    {
+                        astBNode = ConvertLHSAssignmentToFunctionCall(astBNode);
+                    }
+
                     leftNode = astBNode.LeftNode;
                     DFSEmitSSA_AST(astBNode.RightNode, ssaStack, ref astlist);
                     AssociativeNode assocNode = ssaStack.Pop();
