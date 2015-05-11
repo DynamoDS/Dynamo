@@ -19,8 +19,7 @@ namespace ProtoCore.AssociativeEngine
         /// Builds the dependencies within the list of graphNodes
         /// </summary>
         /// <param name="graphNodeScopeToCheck"></param>
-        public static void BuildGraphNodeDependencies(
-            List<AssociativeGraph.GraphNode> graphNodesInScope)
+        public static void BuildGraphNodeDependencies(List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             if (graphNodesInScope == null)
             {
