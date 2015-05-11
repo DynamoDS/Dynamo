@@ -114,11 +114,12 @@ namespace Dynamo.UI.Controls
         ObservableCollection<SampleFileEntry> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
         internal readonly DynamoViewModel DynamoViewModel;
+        private readonly bool isFirstRun;
 
         internal StartPageViewModel(DynamoViewModel dynamoViewModel, bool isFirstRun)
         {
             this.DynamoViewModel = dynamoViewModel;
-            IsFirstRun = isFirstRun;
+            this.isFirstRun = isFirstRun;
 
             this.recentFiles = new ObservableCollection<StartPageListItem>();
             sampleFiles = new ObservableCollection<SampleFileEntry>();
@@ -278,7 +279,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        public bool IsFirstRun { get; private set; }
+        public bool IsFirstRun { get { return isFirstRun; } }
 
         public string SampleFolderPath
         {
@@ -370,9 +371,9 @@ namespace Dynamo.UI.Controls
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
                     break;
 
-                /*case ButtonNames.ShowGallery:
+                case ButtonNames.ShowGallery:
                     dvm.ShowGalleryCommand.Execute(null);
-                    break;*/
+                    break;
 
                 default:
                     throw new ArgumentException(
@@ -438,10 +439,10 @@ namespace Dynamo.UI.Controls
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
 
-            /*if (startPageViewModel.IsFirstRun)
+            if (startPageViewModel.IsFirstRun)
             {
                 dynamoViewModel.ShowGalleryCommand.Execute(null);
-            }*/
+            }
 
         }
 

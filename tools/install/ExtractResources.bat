@@ -26,7 +26,7 @@ robocopy "%binroot%\en-US"                    "%wwlroot%\en-US"                 
 robocopy "%binroot%\libg_locale\en_US"        "%wwlroot%\libg_locale\en_US"         /e
 robocopy "%binroot%\nodes\en-US"              "%wwlroot%\nodes\en-US"               *.resources.dll *.xml
 robocopy "%binroot%\samples\en-US"            "%wwlroot%\samples\en-US"             /e
-robocopy "%binroot%\gallery\en-US" 			  "%wwlroot%\gallery\en-US" 		*.xml
+robocopy "%binroot%\gallery\en-US"            "%wwlroot%\gallery\en-US"             *.xml
 
 rem Copy all accompanying main assemblies (due to build time dependencies, these are 
 rem required for translation tool to even open up localizable resource assemblies above).
