@@ -1,0 +1,22 @@
+<Workspace Version="0.7.5.3327" X="150.234372536137" Y="260.008822913701" zoom="1.73395833333333" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a626bc19-1d6b-407c-a810-c98c4c3f3228" nickname="Number" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="42" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="6230518d-f7d7-42dd-af4e-a34f9d0b1f75" nickname="String" x="0" y="83" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="The answer to everything" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5aa7b2cc-ceb8-44d9-bb7e-78f0235aab3e" nickname="Code Block" x="0" y="167.218333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;foo&quot;,&quot;bar&quot;};" ShouldFocus="false" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="cd7d56c0-3e0d-46c7-9dad-777008030045" nickname="List.Create" x="279" y="56" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="fce874fa-a22b-4c8b-b4a3-c7ddc08596d3" nickname="Watch" x="505" y="56" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a626bc19-1d6b-407c-a810-c98c4c3f3228" start_index="0" end="cd7d56c0-3e0d-46c7-9dad-777008030045" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6230518d-f7d7-42dd-af4e-a34f9d0b1f75" start_index="0" end="cd7d56c0-3e0d-46c7-9dad-777008030045" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5aa7b2cc-ceb8-44d9-bb7e-78f0235aab3e" start_index="0" end="cd7d56c0-3e0d-46c7-9dad-777008030045" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cd7d56c0-3e0d-46c7-9dad-777008030045" start_index="0" end="fce874fa-a22b-4c8b-b4a3-c7ddc08596d3" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="List.Create enables the creation of a list of disparate elements. These elements can be single elements or lists of elements." x="203.074901445467" y="-18.9414246605343" />
+  </Notes>
+</Workspace>
