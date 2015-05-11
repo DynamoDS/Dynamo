@@ -581,5 +581,266 @@ namespace Dynamo.Tests
             AssertPreviewValue(getItemAtIndex2, new int[] { 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55 });    
         }
         #endregion
+
+
+        [Test]
+        public void Test_Lacing()
+        {
+            // Create automation for Dynamo file : Lacing.dyn
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Lacing.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check the number of nodes and connectors
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+
+            //check List.ByStartPointEndPoint
+            var list = "5c02325a-f5fc-403c-b46f-0a492cbce5cf";
+            AssertPreviewCount(list, 4);
+            for (int i = 0; i < 4; i++)
+            {
+                var line = GetPreviewValueAtIndex(list, i) as Line;
+                Assert.IsNotNull(line);
+            }
+        }
+
+
+        [Test]
+        public void Test_Map()
+        {
+            // Create automation for Dynamo file : Map.dyn
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Map.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check the number of nodes and connectors
+            Assert.AreEqual(32, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(26, model.CurrentWorkspace.Nodes.Count);
+
+            //check List.Map
+            var list = "34986114-3561-4feb-993b-3c53c9ef352f";
+            AssertPreviewCount(list, 36);
+            for (int i = 0; i < 36; i++)
+            {
+                var nurb = GetPreviewValueAtIndex(list, i) as NurbsCurve;
+                Assert.IsNotNull(nurb);
+            }
+        }
+
+
+        [Test]
+        public void Test_MinMax()
+        {
+            // Create automation for Dynamo file : MinMax.dyn
+            // This is a training file for demonstrating List.MinimumItem and List.MaximumItem
+            // To test various types supported in List.  
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\MinMax.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check preview values of CBNs
+            var cbn = "1db3330e-bd1b-4116-b5ca-df4a18e78960";
+            AssertPreviewValue(cbn, new string[]{"Tywin","Cersei","Hodor","Tyrian"});
+           
+            //check preview value of List.MaximumItem
+            var maxNumber = "9e48b2a9-82fe-445f-bfb1-cee9d6e591cd";
+            AssertPreviewValue(maxNumber, 42);
+          
+            //check preview value of List.MinmumItem
+            var minNumber = "93a0599d-2456-41e9-a36b-3022cf9c733b";
+            AssertPreviewValue(minNumber, 0);
+
+            //check preview value of List.MaximumItem
+            var maxString = "c4f3d21a-aed2-4ebd-aaf6-a49358174544";
+            AssertPreviewValue(maxString, "Tywin");
+
+            //check preview value of List.MinmumItem
+            var minString = "b9a7de54-e4b6-4fcc-acfb-30331b0e519a";           
+            AssertPreviewValue(minString, "Cersei");
+
+            //check List.Create
+            var listNumber = "259de8c8-25b8-4441-b3fd-c2d1caa5a2ab";
+            var flatListNumber = GetFlattenedPreviewValues(listNumber);
+            flatListNumber[0].ToString().Equals("0");
+            flatListNumber[1].ToString().Equals("42");
+
+            //check List.Create
+            var listString = "d6813751-ae9b-4866-b1ab-8062d3062843";
+            var flatListString = GetFlattenedPreviewValues(listString);
+            Assert.AreEqual(flatListString, new string[] { "Cersei", "Tywin" });          
+        }
+
+
+        [Test]
+        public void Test_PassingFunctions()
+        {
+            // Create automation for Dynamo file : PassingFunctions.dyn
+            // This is a training file for demonstrating surface   
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\PassingFunctions.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check preview values of Curve.Extrude
+            var curve = "2abb7d97-6b23-4b26-91af-c11407503a66";
+            AssertPreviewCount(curve, 2);
+            var surfaces = GetFlattenedPreviewValues(curve);
+            foreach (var element in surfaces)
+            {
+                Assert.IsNotNull(element);
+            }
+
+            //check preview values of Curve.Extrude
+            var curve2 = "44b197d9-25e2-4afe-96d2-badc82b0e37d";
+            AssertPreviewCount(curve2, 8);
+            var surfaces2 = GetFlattenedPreviewValues(curve2);
+            foreach (var element in surfaces2)
+            {
+                Assert.IsNotNull(element);
+            }
+        }
+
+
+        [Test]
+        public void Test_Reverse()
+        {
+            // Create automation for Dynamo file : Reverse.dyn
+            // This is a training file for demonstrating reverse functions   
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Reverse.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check preview values of List.Map, List.Reverse
+            var map = "45ea27b6-a33c-429d-bf20-6d147d3c5893";
+            var flatMap = GetFlattenedPreviewValues(map);
+            var reverse = "10be37ae-4a54-49a2-aaf3-60c7c14ddac5";
+            var flatReverse = GetFlattenedPreviewValues(reverse);
+            var size = (flatMap.Count)/2;
+            for (int i = 0; i <= size; i++)
+            {
+                Assert.AreEqual(flatMap[i], flatReverse[size * 2 - 1 - i]);
+            }
+
+            //check preview value of List.Reverse
+            var listreverse = "4b56a76f-01a1-48e2-8f33-256219f9ddc7";
+            AssertPreviewValue(listreverse, new int[] { 5, 4, 3, 2, 1, 0 });
+        }
+
+
+
+        [Test]
+        public void Test_Sort()
+        {
+            // Create automation for Dynamo file : Sort.dyn
+            // This is a training file for demonstrating sort function  
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Sort.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check preview values of List.Sort
+            var sort = "e537e6b8-aa95-42ec-b33b-95cda3d1f20e";
+            var flat = GetFlattenedPreviewValues(sort);
+            Assert.AreEqual(flat, new object[] { -2, 42, "cat", "cheese", "dog" });         
+        }
+
+        [Test]
+        public void Test_SortGeometry()
+        {
+            // Create automation for Dynamo file : SortGeometry.dyn
+            // This is a training file for demonstrating sort function 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\SortGeometry.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check preview values of PolyCurve.ByPoint
+            var sort = "7c636447-6099-48ab-8a1c-758ee8feecaf";
+            Assert.IsNotNull(GetPreviewValue(sort) as PolyCurve);
+
+            //check preview vlaues of SortByKey
+            var sortByKey = "29df5b54-4e2c-4f5d-8584-bd59df05e2e8";
+            for (int i = 0; i < 16; i++)
+            {
+                var point = GetPreviewValueAtIndex(sortByKey, i) as Point;
+                Assert.IsNotNull(point);
+            }
+        }
+
+        [Test]
+        public void Test_Surface()
+        {
+            // Create automation for Dynamo file : Surface.dyn
+            // This is a training file for demonstrating surface
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Surface.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check CBN
+            var cbn = "9ab004ca-0917-4858-85bc-57ae681e33e8";
+            for (int i = 0; i < 3; i++)
+            {
+                Assert.IsNotNull(GetPreviewValueAtIndex(cbn,i) as NurbsCurve);
+            }          
+            //check Surface.ByLoft
+            var surface = "b5cb4be4-d90d-4783-8b0b-c44c6e18b327";           
+            Assert.IsNotNull(GetPreviewValue(surface) as Surface);          
+        }
+
+
+        [Test]
+        public void Test_Transpose()
+        {
+            // Create automation for Dynamo file : Transpose.dyn
+            // This is a training file for demonstrating transpose function
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Transpose.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check List.Transpose
+            var transpose = "5fd2a365-4831-4400-abbe-b8bc04cdfe7a";
+            var flattranspose = GetFlattenedPreviewValues(transpose);
+            Assert.AreEqual(flattranspose.Count, 121);
+            for (int i = 0; i < 121; i++)
+            {
+                var point = flattranspose[i] as Point;
+                Assert.IsNotNull(point);
+            }
+
+            //check Point.ByCoordinates
+            var points = "5462da5b-1473-44a6-a3f8-9f5098b4675a";
+            var flatpoints = GetFlattenedPreviewValues(points);
+            Assert.AreEqual(flatpoints.Count, 121);
+            for (int i = 0; i < 121; i++) 
+            {
+                var point = flatpoints[i] as Point;
+                Assert.IsNotNull(point);
+            }                     
+        }
     }
 }
