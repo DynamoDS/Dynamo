@@ -30,7 +30,11 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.Wpf.Utilities;
+
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views.Gallery;
 
 namespace Dynamo.Controls
 {
@@ -44,6 +48,7 @@ namespace Dynamo.Controls
         private Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
+        private GalleryView galleryView;
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
@@ -272,8 +277,11 @@ namespace Dynamo.Controls
         /// page is incurred, when user opts to not display start page at start 
         /// up, then this method will not be called (therefore incurring no cost).
         /// </summary>
-        /// 
-        private void InitializeStartPage()
+        /// <param name="isFirstRun">
+        /// Indicates if it is the first time new Dynamo version runs.
+        /// It is used to decide whether the Gallery need to be shown on the StartPage.
+        /// </param>
+        private void InitializeStartPage(bool isFirstRun)
         {
             if (DynamoModel.IsTestMode) // No start screen in unit testing.
                 return;
@@ -286,7 +294,7 @@ namespace Dynamo.Controls
                     throw new InvalidOperationException(message);
                 }
 
-                startPage = new StartPageViewModel(dynamoViewModel);
+                startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
             }
         }
@@ -321,7 +329,11 @@ namespace Dynamo.Controls
 
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
+            // Do an initial load of the cursor collection
+            CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
+            //Backing up IsFirstRun to determine whether to show Gallery
+            var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
@@ -336,7 +348,7 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeLogin();
             InitializeShortcutBar();
-            InitializeStartPage();
+            InitializeStartPage(isFirstRun);
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
@@ -386,6 +398,9 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
+            //SHOW or HIDE GALLERY
+            dynamoViewModel.RequestShowHideGallery += DynamoViewModelRequestShowHideGallery;
+
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
@@ -428,6 +443,46 @@ namespace Dynamo.Controls
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             aboutWindow.ShowDialog();
+        }
+
+        private void OnGalleryBackgroundMouseClick(object sender, MouseButtonEventArgs e)
+        {
+            dynamoViewModel.CloseGalleryCommand.Execute(null);
+            e.Handled = true;
+        }
+
+        void DynamoViewModelRequestShowHideGallery(bool showGallery)
+        {
+            //Disable for now
+            return;
+
+            if (showGallery)
+            {
+                if (galleryView == null) //On-demand instantiation
+                {
+                    galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
+                    Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
+                    Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
+                }
+
+                if (galleryView.ViewModel.HasContents)
+                {
+                    galleryBackground.Children.Add(galleryView);
+                    galleryBackground.Visibility = Visibility.Visible;
+                    galleryView.Focus(); //get keyboard focus
+                }
+            }
+            //hide gallery
+            else
+            {
+                if (galleryBackground != null)
+                {
+                    if (galleryView != null && galleryBackground.Children.Contains(galleryView))
+                        galleryBackground.Children.Remove(galleryView);
+
+                    galleryBackground.Visibility = Visibility.Hidden;
+                }
+            }
         }
 
         private PublishPackageView _pubPkgView;
@@ -772,6 +827,9 @@ namespace Dynamo.Controls
 
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
+
+            //SHOW or HIDE GALLERY
+            dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
         }
 
         // the key press event is being intercepted before it can get to

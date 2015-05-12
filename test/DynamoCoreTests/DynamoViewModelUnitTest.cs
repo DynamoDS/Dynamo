@@ -103,23 +103,31 @@ namespace Dynamo.Tests
             // derived class.
         }
 
+        protected virtual string GetUserDataDirectory()
+        {
+            return string.Empty;
+        }
+
         protected void StartDynamo()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
+            var userDataDirectory = GetUserDataDirectory();
+
             TestPathResolver pathResolver = null;
             var preloadedLibraries = new List<string>();
             GetLibrariesToPreload(preloadedLibraries);
 
-            if (preloadedLibraries.Any())
+            if (preloadedLibraries.Any() || !string.IsNullOrEmpty(userDataDirectory))
             {
                 // Only when any library needs preloading will a path resolver be 
                 // created, otherwise DynamoModel gets created without preloading 
                 // any library.
                 // 
-                pathResolver = new TestPathResolver();
+                var resolverParams = new TestPathResolverParams(){UserDataRootFolder = userDataDirectory};
+                pathResolver = new TestPathResolver(resolverParams);
                 foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
                     pathResolver.AddPreloadLibraryPath(preloadedLibrary);
@@ -131,7 +139,7 @@ namespace Dynamo.Tests
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
                 });
 
             this.ViewModel = DynamoViewModel.Start(
