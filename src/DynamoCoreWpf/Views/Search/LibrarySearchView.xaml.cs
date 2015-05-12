@@ -686,7 +686,7 @@ namespace Dynamo.UI.Views
                     {
                         UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
                     }),
-                    DispatcherPriority.Input);
+                    DispatcherPriority.Loaded);
             }
         }
 
