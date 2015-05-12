@@ -8168,17 +8168,23 @@ namespace ProtoAssociative
                                 FunctionDotCallNode dotcall = bnode.RightNode as FunctionDotCallNode;
                                 Validity.Assert(dotcall.FunctionCall.Function is IdentifierNode);
 
+                                string className = dotcall.DotCall.FormalArguments[0].Name;
+                                string fullyQualifiedClassName = string.Empty;
+                                bool isClassName = core.ClassTable.TryGetFullyQualifiedName(className, out fullyQualifiedClassName);
+
                                 if (ProtoCore.Utils.CoreUtils.IsGetterSetter(dotcall.FunctionCall.Function.Name))
                                 {
+                                    //string className = dotcall.DotCall.FormalArguments[0].Name;
+                                    if (isClassName)
+                                    {
+                                        ssaPointerList.Add(dotcall.DotCall.FormalArguments[0]);
+                                    }
+
                                     // This function is an internal getter or setter, store the identifier node
                                     ssaPointerList.Add(dotcall.FunctionCall.Function);
                                 }
                                 else
                                 {
-
-                                    string className = dotcall.DotCall.FormalArguments[0].Name;
-                                    string fullyQualifiedClassName = string.Empty;
-                                    bool isClassName = core.ClassTable.TryGetFullyQualifiedName(className, out fullyQualifiedClassName);
                                     bool isConstructorCall = isClassName ? true : false;
                                     if (!isConstructorCall)
                                     {

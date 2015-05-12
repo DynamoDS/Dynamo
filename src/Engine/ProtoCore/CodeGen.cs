@@ -2611,6 +2611,7 @@ namespace ProtoCore
                     if (isSetter)
                     {
                         graphNode.updateNodeRefList.Add(nodeRef);
+                        graphNode.IsLHSIdentList = true;
                     }
                 }
             }

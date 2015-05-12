@@ -89,6 +89,12 @@ namespace ProtoCore.AssociativeEngine
                             continue;
                         }
 
+                        bool equalIdentList = AreLHSEqualIdentList(currentNode, gnode);
+                        if (equalIdentList)
+                        {
+                            continue;
+                        }
+
                         currentNode.PushGraphNodeToExecute(gnode);
                     }
                 }
@@ -185,6 +191,36 @@ namespace ProtoCore.AssociativeEngine
 
             bool areLHSEqual = AreLHSEqual(varAssignNode, assignNode);  
             return areLHSEqual;
+        }
+
+        /// <summary>
+        /// Checks if both nodes are LHS identlists and that their identlists are equal
+        /// </summary>
+        /// <param name="executingNode"></param>
+        /// <param name="dependentNode"></param>
+        /// <returns></returns>
+        private static bool AreLHSEqualIdentList(AssociativeGraph.GraphNode node, AssociativeGraph.GraphNode otherNode)
+        {
+            bool areBothLHSIdentList = node.IsLHSIdentList && otherNode.IsLHSIdentList;
+            if (!areBothLHSIdentList)
+            {
+                return false;
+            }
+
+            for (int n = 0; n < node.updateNodeRefList.Count; ++n)
+            {
+                // Only check for identlists where the nodeList > 1 
+                // nodeList contains all the symbols in an identlist 
+                // a.b.c -> nodeList.Count == 3
+                if (node.updateNodeRefList[n].nodeList.Count > 1)
+                {
+                    if (!node.updateNodeRefList[n].Equals(otherNode.updateNodeRefList[n]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
 
@@ -881,6 +917,7 @@ namespace ProtoCore.AssociativeGraph
         public bool allowDependents { get; set; }
         public bool isIndexingLHS { get; set; }
         public bool isLHSNode { get; set; }
+        public bool IsLHSIdentList { get; set; }
         public ProcedureNode firstProc { get; set; }
         public int firstProcRefIndex { get; set; }
         public bool isCyclic { get; set; }
@@ -946,6 +983,7 @@ namespace ProtoCore.AssociativeGraph
             allowDependents = true;
             isIndexingLHS = false;
             isLHSNode = false;
+            IsLHSIdentList = false;
             firstProc = null;
             firstProcRefIndex = Constants.kInvalidIndex;
             isCyclic = false;
