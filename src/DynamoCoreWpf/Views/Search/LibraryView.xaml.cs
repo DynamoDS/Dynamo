@@ -136,6 +136,15 @@ namespace Dynamo.UI.Views
 
                     classInfoPanel.Loaded += (send, handler) =>
                         {
+                            // This call is made whenever a class button is clicked on to expand the class 
+                            // information (right after the corresponding "StandardPanel" view is created).
+                            // "selectedElement" here can either be the TextBlock or Image on the class button.
+                            // 
+                            // Required height is calculated by adding class button and "StandardPanel" heights.
+                            // If the required height is larger than the visible library height, then the class 
+                            // button is placed on the top of library, with the rest of the space occupied by the 
+                            // "StandardPanel".
+
                             var selectedClassButton = WpfUtilities.FindUpVisualTree<Border>(selectedElement);
                             var height = classInfoPanel.RenderSize.Height + selectedClassButton.RenderSize.Height;
                             if (height > ScrollLibraryViewer.ActualHeight)
@@ -144,7 +153,9 @@ namespace Dynamo.UI.Views
                             }
                             else
                             {
-                                if (IsUserVisible(selectedClassButton, ScrollLibraryViewer))
+                                // If the class button is already visible on the library, simply bring the 
+                                // "StandardPanel" into view. Otherwise, the class button is brought into view.
+                                if (IsElementVisible(selectedClassButton, ScrollLibraryViewer))
                                     classInfoPanel.BringIntoView();
                                 else
                                     selectedClassButton.BringIntoView();
@@ -158,14 +169,21 @@ namespace Dynamo.UI.Views
             e.Handled = !(selectedClass is RootNodeCategoryViewModel);
         }
 
-        private bool IsUserVisible(FrameworkElement element, FrameworkElement container)
+        private bool IsElementVisible(FrameworkElement element, FrameworkElement container)
         {
             if (!element.IsVisible)
                 return false;
 
-            Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
-            Rect rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
-            return rect.IntersectsWith(bounds);
+            // "element" here represents the "Border" object which contains TextBlock/Image of 
+            // a class button. "container" here is the "ScrollLibraryViewer" on the library. 
+            // The bounds of this class button is transformed to the rectangle it occupies in 
+            // the "ScrollLibraryViewer" before being compared to the the region of container 
+            // to determine if it lies outside of the container.
+            // 
+            var elementRect = new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight);
+            var containerRect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
+            elementRect = element.TransformToAncestor(container).TransformBounds(elementRect);
+            return containerRect.IntersectsWith(elementRect);
         }
 
         private bool ExpandCategory(IEnumerable<NodeCategoryViewModel> categories, NodeCategoryViewModel selectedClass)
