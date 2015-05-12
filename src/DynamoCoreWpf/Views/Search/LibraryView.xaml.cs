@@ -9,6 +9,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.UI.Controls;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.UI.Views
 {
@@ -332,7 +333,7 @@ namespace Dynamo.UI.Views
             e.UseDefaultCursors = e.Effects.HasFlag(DragDropEffects.Copy) || e.Effects.HasFlag(DragDropEffects.Move);
 
             if (!e.UseDefaultCursors)
-                Mouse.SetCursor(Cursors.No);
+                Mouse.SetCursor(CursorLibrary.GetCursor(CursorSet.Pointer));
 
             e.Handled = true;
         }
