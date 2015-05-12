@@ -8,7 +8,6 @@ using System.Xml;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using ICSharpCode.AvalonEdit.Editing;
 using ProtoCore.AST;
 
