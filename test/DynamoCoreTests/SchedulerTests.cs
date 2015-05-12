@@ -22,7 +22,7 @@ using ProtoCore.AST;
 using ProtoCore.DSASM;
 using TestServices;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
     using TaskState = TaskStateChangedEventArgs.State;
 

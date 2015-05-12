@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Dynamo.Models;
 using System;
+using System.Windows.Input;
+using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Views;
@@ -112,6 +116,39 @@ namespace Dynamo.ViewModels
                 return _changeFontSize;
             }
         }
+
+        private DelegateCommand _addToGroupCommand;
+        public DelegateCommand AddToGroupCommand
+        {
+             get
+            {
+                if (_addToGroupCommand == null)
+                    _addToGroupCommand =
+                        new DelegateCommand(AddToGroup, CanAddToGroup);
+
+                return _addToGroupCommand;
+            }
+        }
+
+        private bool CanAddToGroup(object obj)
+        {
+            return DynamoSelection.Instance.Selection.Count >= 0;
+        }
+
+        private void AddToGroup(object obj)
+        {
+            if (annotationModel.IsSelected)
+            {
+                var selectedModels = DynamoSelection.Instance.Selection.OfType<ModelBase>();
+                foreach (var model in selectedModels)
+                {
+                    if (!(model is AnnotationModel))
+                    {
+                        this.AnnotationModel.AddToSelectedModels(model, true);
+                    }
+                }
+            }
+        }
       
         public Double FontSize
         {
@@ -190,6 +227,27 @@ namespace Dynamo.ViewModels
                     this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
             }
-        }      
+        }
+
+        /// <summary>
+        /// Selects this group and models within it.
+        /// </summary>
+        internal void Select()
+        {
+            var annotationGuid = this.AnnotationModel.GUID;
+            this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            //Select all the models inside the group - This avoids some performance bottleneck 
+            //with many nodes selected at the same time - which makes moving the group very slow
+            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.SelectedModels);
+
+            foreach (var models in this.AnnotationModel.SelectedModels)
+            {
+                //Make sure that models have the selection border inside a group when selected
+                models.IsSelected = true;
+            }
+
+        }
     }
 }

@@ -14,23 +14,14 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            
-            <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-            <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
-            <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
-            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-            <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
-                                               TrueBrush="#cccccc"
-                                               FalseBrush="#777777" />
-            <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
-                                              TrueBrush="#cccccc"
-                                              FalseBrush="#666666" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Border CornerRadius="5"
             Opacity=".95"
-            Background="#333333"
+            Background="{StaticResource LibraryCommonBackground}"
             Padding="10">
         <Grid Width="325">
             <Grid.RowDefinitions>
@@ -101,10 +92,10 @@
                     <DataTemplate>
                         <WrapPanel Orientation="Horizontal">
                             <TextBlock FontSize="13"
-                                       Foreground="#cccccc"
+                                       Foreground="{StaticResource CommonSidebarTextColor}"
                                        Text="{Binding Item1, Mode=OneWay}" />
                             <TextBlock FontSize="13"
-                                       Foreground="#777777">
+                                       Foreground="{StaticResource VariableTypeTextColor}">
                                 <TextBlock.Text>
                                     <Binding Path="Item2"
                                              Mode="OneWay"

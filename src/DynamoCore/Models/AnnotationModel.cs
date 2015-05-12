@@ -22,6 +22,7 @@ namespace Dynamo.Models
         private const double DoubleValue = 0.0;
         private const double MinTextHeight = 20.0;
         private const double ExtendSize = 10.0;
+        public  string GroupBackground = "#FFC1D676";
         //DeletedModelBases is used to keep track of deleted / ungrouped models. 
         //During Undo operations this is used to get those models that are deleted from the group
         public List<ModelBase> DeletedModelBases { get; set; }
@@ -81,7 +82,7 @@ namespace Dynamo.Models
         private string background;
         public string Background
         {
-            get { return background ?? "#ff7bac"; }
+            get { return background ?? GroupBackground; }
             set
             {
                 background = value;
@@ -123,9 +124,12 @@ namespace Dynamo.Models
             get { return textBlockHeight; }
             set
             {
-                textBlockHeight = value;                
-                Y = InitialTop - textBlockHeight;
+                textBlockHeight = value;
+                //Increase the Y value by 10. This provides the extra space between
+                // a model and textbox. Otherwise there will be some overlap
+                Y = InitialTop - ExtendSize - textBlockHeight;
                 Height = InitialHeight + textBlockHeight - MinTextHeight;
+                UpdateBoundaryFromSelection();
             }
         }
 
@@ -148,31 +152,22 @@ namespace Dynamo.Models
         /// <param name="nodes">The nodes.</param>
         /// <param name="notes">The notes.</param>
         /// <param name="loadFromGraph">This is true when graph is loaded from XML</param>
-        public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes, bool loadFromGraph=false)
+        public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {                                 
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
             DeletedModelBases = new List<ModelBase>(); 
-            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();            
-            loadFromXML = loadFromGraph;
-            if (!loadFromGraph)
-                UpdateBoundaryFromSelection();
+            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();      
+            UpdateBoundaryFromSelection();
         }
 
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
-            {
-                case "X":
-                    UpdateBoundaryFromSelection();
-                    break;
-                case "Y":
-                    UpdateBoundaryFromSelection();
-                    break;
-                case "Position":
-                    if(!loadFromXML)
-                        UpdateBoundaryFromSelection();
+            {                
+                case "Position":                  
+                     UpdateBoundaryFromSelection();
                     break;
                 case "Text":
                     UpdateBoundaryFromSelection();
@@ -209,7 +204,9 @@ namespace Dynamo.Models
               
                 //Shifting x by 10 and y to the height of textblock
                 var regionX = groupModels.Min(x => x.X) - ExtendSize;
-                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
+                //Increase the Y value by 10. This provides the extra space between
+                // a model and textbox. Otherwise there will be some overlap
+                var regionY = groupModels.Min(y => y.Y) - ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => x.X) - regionX;
@@ -265,7 +262,14 @@ namespace Dynamo.Models
                 }
                                
                 //Initial Height is to store the Actual height of the group.
-                this.InitialHeight = region.Height;
+                //that is the height should be the initial height without the textblock height.
+                if (this.InitialHeight <= 0.0)
+                    this.InitialHeight = region.Height;
+            }
+            else
+            {
+                this.Width = 0;
+                this.height = 0;               
             }
         }
 
@@ -364,7 +368,7 @@ namespace Dynamo.Models
                         listOfModels.Add(model);
                     }                  
                 }
-                selectedModels = listOfModels;        
+                SelectedModels = listOfModels;        
             }
 
             //On any Undo Operation, current values are restored to previous values.
@@ -380,13 +384,27 @@ namespace Dynamo.Models
         /// and UNDO is clicked.
         /// </summary>
         /// <param name="model">The model.</param>
-        internal void AddToSelectedModels(ModelBase model)
+        /// <param name="checkOverlap"> checkoverlap determines whether the selected model is 
+        /// completely inside that group</param>
+        internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
         {           
             var list = this.SelectedModels.ToList();
+            if (list.Where(x => x.GUID == model.GUID).Any()) return;
+            if (!CheckModelIsInsideGroup(model, checkOverlap)) return;           
             list.Add(model);
             this.SelectedModels = list;
-            this.loadFromXML = false;
             this.UpdateBoundaryFromSelection();
+        }
+
+        private bool CheckModelIsInsideGroup(ModelBase model, bool checkOverlap)
+        {
+            if (!checkOverlap) return true;
+            var modelRect = model.Rect;
+            if (this.Rect.Contains(modelRect))
+            {
+                return true;
+            }
+            return false;
         }
 
         #endregion

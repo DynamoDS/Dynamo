@@ -857,23 +857,24 @@ namespace ProtoCore.AST.AssociativeAST
 
                 if (Enum.TryParse(nameWithoutPrefix, out op))
                 {
-                    bool needsParens = !FormalArguments[0].IsLiteral;
+                    var arg1 = FormalArguments[0];
+                    bool needsParens = !arg1.IsLiteral && !(arg1 is IdentifierNode);
                     if (needsParens)
                         buf.Append("(");
 
-                    buf.Append(FormalArguments[0]);
+                    buf.Append(arg1);
 
                     if (needsParens)
                         buf.Append(")");
 
-
                     buf.Append(" " + Op.GetOpSymbol(op) + " ");
 
-                    needsParens = !FormalArguments[1].IsLiteral;
+                    var arg2 = FormalArguments[1];
+                    needsParens = !arg2.IsLiteral && !(arg2 is IdentifierNode); ;
                     if (needsParens)
                         buf.Append("(");
 
-                    buf.Append(FormalArguments[1]);
+                    buf.Append(arg2);
 
                     if (needsParens)
                         buf.Append(")");
@@ -2187,7 +2188,15 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitRangeExprNode(this);
+        }
 
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitRangeExprNode(this);
+        }
     }
 
     public class ExprListNode : ArrayNameNode
@@ -2236,6 +2245,16 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(base.ToString());
 
             return buf.ToString();
+        }
+
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitExprListNode(this);
+        }
+
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitExprListNode(this);
         }
     }
 

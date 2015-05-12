@@ -1,23 +1,24 @@
-﻿using Autodesk.DesignScript.Geometry;
-
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
-using ProtoCore.Mirror;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Runtime.Serialization;
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using Autodesk.DesignScript.Interfaces;
+using Dynamo.Properties;
+using Dynamo.Interfaces;
+
+using ProtoCore.Mirror;
 
 namespace Dynamo.Core.Threading
 {
     class UpdateRenderPackageParams
     {
-        internal int MaxTesselationDivisions { get; set; }
+        internal IRenderPackageFactory RenderPackageFactory { get; set; }
         internal string PreviewIdentifierName { get; set; }
         internal NodeModel Node { get; set; }
         internal EngineController EngineController { get; set; }
@@ -35,17 +36,24 @@ namespace Dynamo.Core.Threading
     /// 
     class UpdateRenderPackageAsyncTask : AsyncTask
     {
+        private const byte DefR = 101;
+        private const byte DefG = 86;
+        private const byte DefB = 130;
+        private const byte DefA = 255;
+        private const byte MidTone = 180;
+        private bool renderEdges = false;
+
         #region Class Data Members and Properties
 
         protected Guid nodeGuid;
 
-        private int maxTesselationDivisions;
         private bool displayLabels;
         private bool isNodeSelected;
         private string previewIdentifierName;
         private EngineController engineController;
         private IEnumerable<string> drawableIds;
         private readonly List<IRenderPackage> renderPackages;
+        private IRenderPackageFactory factory;
 
         internal IEnumerable<IRenderPackage> RenderPackages
         {
@@ -98,7 +106,7 @@ namespace Dynamo.Core.Threading
 
             displayLabels = nodeModel.DisplayLabels;
             isNodeSelected = nodeModel.IsSelected;
-            maxTesselationDivisions = initParams.MaxTesselationDivisions;
+            factory = initParams.RenderPackageFactory;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
 
@@ -130,26 +138,22 @@ namespace Dynamo.Core.Threading
             foreach (var mirrorData in data)
             {
                 AddToLabelMap(mirrorData, labelMap, previewIdentifierName);
-                GetRenderPackagesFromMirrorData(mirrorData, ref labelMap,  ref count);
+                GetRenderPackagesFromMirrorData(mirrorData, displayLabels, isNodeSelected, ref labelMap,  ref count);
             }
         }
 
-        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, ref List<string> labelMap, ref int count)
+        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, bool displayLabels, bool isNodeSelected, ref List<string> labelMap, ref int count)
         {
             if (mirrorData.IsNull)
             {
                 return;
             }
 
-            byte defR = 101;
-            byte defG = 86;
-            byte defB = 130;
-
             if (mirrorData.IsCollection)
             {
                 foreach (var el in mirrorData.GetElements())
                 {
-                    GetRenderPackagesFromMirrorData(el, ref labelMap, ref count);
+                    GetRenderPackagesFromMirrorData(el, displayLabels, isNodeSelected, ref labelMap, ref count);
                 }
             }
             else
@@ -160,38 +164,41 @@ namespace Dynamo.Core.Threading
                     return;
                 }
 
-
-                var package = new RenderPackage(isNodeSelected, displayLabels)
-                {
-                    Tag = labelMap.Count > count ? labelMap[count] : "?",
-                };
+                var package = factory.CreateRenderPackage();
+                package.Description = labelMap.Count > count ? labelMap[count] : "?";
 
                 try
                 {
-                    graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
+                    graphicItem.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
 
-                    var surf = graphicItem as Surface;
-                    if (surf != null)
+                    if (renderEdges)
                     {
-                        foreach (var curve in surf.PerimeterCurves())
+                        var surf = graphicItem as Surface;
+                        if (surf != null)
                         {
-                            curve.Tessellate(package, -1.0, maxTesselationDivisions);
-                            curve.Dispose();
+                            foreach (var curve in surf.PerimeterCurves())
+                            {
+                                curve.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                                curve.Dispose();
+                            }
+                        }
+
+                        var solid = graphicItem as Solid;
+                        if (solid != null)
+                        {
+                            foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                            {
+                                geom.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                                geom.Dispose();
+                            }
                         }
                     }
-
-                    var solid = graphicItem as Solid;
-                    if (solid != null)
-                    {
-                        foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
-                            geom.Tessellate(package, -1.0, maxTesselationDivisions);
-                            geom.Dispose();
-                        }
-                    }
-
+                    
                     var plane = graphicItem as Plane;
                     if (plane != null)
                     {
+                        package.RequiresPerVertexColoration = true;
+
                         var s = 2.5;
 
                         var cs = CoordinateSystem.ByPlane(plane);
@@ -201,53 +208,57 @@ namespace Dynamo.Core.Threading
                         var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
 
                         // Get rid of the original plane geometry.
-                        package.LineStripVertices.Clear();
-                        package.LineStripVertexColors.Clear();
-                        package.LineStripVertexCounts.Clear();
+                        package.Clear();
 
-                        package.PushTriangleVertex(a.X, a.Y, a.Z);
-                        package.PushTriangleVertex(b.X, b.Y, b.Z);
-                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+                        package.AddTriangleVertex(a.X, a.Y, a.Z);
+                        package.AddTriangleVertex(b.X, b.Y, b.Z);
+                        package.AddTriangleVertex(c.X, c.Y, c.Z);
 
-                        package.PushTriangleVertex(c.X, c.Y, c.Z);
-                        package.PushTriangleVertex(d.X, d.Y, d.Z);
-                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+                        package.AddTriangleVertex(c.X, c.Y, c.Z);
+                        package.AddTriangleVertex(d.X, d.Y, d.Z);
+                        package.AddTriangleVertex(a.X, a.Y, a.Z);
+
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
 
                         // Draw plane edges
-                        package.PushLineStripVertex(a.X, a.Y, a.Z);
-                        package.PushLineStripVertex(b.X, b.Y, b.Z);
-                        package.PushLineStripVertex(b.X, b.Y, b.Z);
-                        package.PushLineStripVertex(c.X, c.Y, c.Z);
-                        package.PushLineStripVertex(c.X, c.Y, c.Z);
-                        package.PushLineStripVertex(d.X, d.Y, d.Z);
-                        package.PushLineStripVertex(d.X, d.Y, d.Z);
-                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+                        package.AddLineStripVertex(a.X, a.Y, a.Z);
+                        package.AddLineStripVertex(b.X, b.Y, b.Z);
+                        package.AddLineStripVertex(b.X, b.Y, b.Z);
+                        package.AddLineStripVertex(c.X, c.Y, c.Z);
+                        package.AddLineStripVertex(c.X, c.Y, c.Z);
+                        package.AddLineStripVertex(d.X, d.Y, d.Z);
+                        package.AddLineStripVertex(d.X, d.Y, d.Z);
+                        package.AddLineStripVertex(a.X, a.Y, a.Z);
 
                         // Draw normal
-                        package.PushLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
+                        package.AddLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
                         var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
-                        package.PushLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
+                        package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
-                        for (var i = 0; i < package.LineStripVertices.Count/3/2; i++)
+                        for (var i = 0; i < package.LineVertexCount / 2; i++)
                         {
-                            package.PushLineStripVertexCount(2);
+                            package.AddLineStripVertexCount(2);
                         }
 
-                        for (var i = 0; i < (package.LineStripVertices.Count/3)*4; i += 4)
+                        for (var i = 0; i < package.LineVertexCount; i ++)
                         {
-                            package.PushLineStripVertexColor(180,180,180,255);
+                            package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
                         }
 
-                        for (var i = 0; i < 6; i++)
+                        for (var i = 0; i < package.MeshVertexCount; i++)
                         {
-                            package.PushTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                            package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
                         }
 
-                        for (var i = 0; i < 6; i++)
+                        for (var i = 0; i < package.MeshVertexCount; i++)
                         {
-                            package.PushTriangleVertexColor(0, 0, 0, 10);
+                            package.AddTriangleVertexColor(0, 0, 0, 10);
                         }
-
                     }
 
                     // The default color coming from the geometry library for
@@ -255,31 +266,42 @@ namespace Dynamo.Core.Threading
                     // color of 0,0,0,255 (Black), we adjust the color components here.
                     if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
                     {
-                        for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
+                        if (package.LineVertexCount > 0)
                         {
-                            package.LineStripVertexColors[i] = defR;
-                            package.LineStripVertexColors[i + 1] = defG;
-                            package.LineStripVertexColors[i + 2] = defB;
+                            package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, DefR, DefG, DefB, DefA));
                         }
 
-                        for (var i = 0; i < package.PointVertexColors.Count; i += 4)
+                        if (package.PointVertexCount > 0)
                         {
-                            package.LineStripVertexColors[i] = defR;
-                            package.LineStripVertexColors[i + 1] = defG;
-                            package.LineStripVertexColors[i + 2] = defB;
+                            package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, DefR, DefG, DefB, DefA));
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(
+                    Debug.WriteLine(
                         "PushGraphicItemIntoPackage: " + e);
                 }
-                    
-                package.ItemsCount++;
+
+                package.DisplayLabels = displayLabels;
+                package.IsSelected = isNodeSelected;
+
                 renderPackages.Add(package);
                 count++;
             }
+        }
+
+        private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
+        {
+            var arr = new byte[size * 4];
+            for (var i = 0; i < arr.Count(); i += 4)
+            {
+                arr[i] = red;
+                arr[i + 1] = green;
+                arr[i + 2] = blue;
+                arr[i + 3] = alpha;
+            }
+            return arr;
         }
 
         protected override void HandleTaskCompletionCore()

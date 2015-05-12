@@ -305,6 +305,18 @@ namespace Dynamo.Models
             UngroupModel(modelsToUngroup);
         }
 
+        void AddToGroupImpl(AddModelToGroupCommand command)
+        {
+            var modelsToUngroup = new List<ModelBase>();
+            if (command.ModelGuid != Guid.Empty)
+            {
+                modelsToUngroup.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
+            }
+
+            AddToGroup(modelsToUngroup);
+        }
+
+       
         void UndoRedoImpl(UndoRedoCommand command)
         {
             switch (command.CmdOperation)
@@ -333,13 +345,9 @@ namespace Dynamo.Models
                 command.Name, command.Value);
         }
 
-        [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(
-                command.NodeId,
-                EngineController,
-                DebugSettings.VerboseLogging);
+            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }

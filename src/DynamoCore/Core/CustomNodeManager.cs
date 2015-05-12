@@ -6,6 +6,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
@@ -288,12 +289,17 @@ namespace Dynamo.Core
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
+        /// <param name="isPackageMember">
+        ///     Indicates whether custom node comes from package or not.
+        /// </param>
         /// <returns></returns>
-        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode)
+        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode, bool isPackageMember = false)
         {
             var result = new List<CustomNodeInfo>();
             foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode))
             {
+                info.IsPackageMember = isPackageMember;
+
                 SetNodeInfo(info);
                 result.Add(info);
             }
@@ -538,7 +544,9 @@ namespace Dynamo.Core
 
             newWorkspace.FunctionIdChanged += oldGuid =>
             {
-                Uninitialize(oldGuid);
+                loadedWorkspaceModels.Remove(oldGuid);
+                loadedCustomNodes.Remove(oldGuid);
+                loadOrder.Remove(oldGuid);
                 loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
             };
         }

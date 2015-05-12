@@ -799,7 +799,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
             var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
             var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
-            Assert.IsTrue(node.State == Models.ElementState.Warning);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
         }
 
         [Test]
@@ -1232,21 +1232,6 @@ namespace Dynamo.Tests
             Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0"));
             node.InPorts[0].UsingDefaultValue = false;
             Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0 (disabled)"));
-        }
-        [Test]
-        public void Preview_Functionobject_6560()
-        {
-            // Test Hovering over a node which returns function pointer
-            // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6560
-
-            var model = ViewModel.Model;
-            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\Preview_FunctionObject.dyn");
-            RunModel(dynFilePath);
-            var node1 = model.CurrentWorkspace.NodeFromWorkspace("66accf7c-8517-4d5c-9deb-e3e7d6d0de3c");
-
-
-            Assert.NotNull(node1);
-
         }
     }
 

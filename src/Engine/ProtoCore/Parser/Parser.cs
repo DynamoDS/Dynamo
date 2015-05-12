@@ -2703,9 +2703,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		node = new ProtoCore.AST.AssociativeAST.StringNode() 
 		{ 
 		   value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
-		   line = t.line,
-		   col = t.col
-		}; 
+		};
+        NodeUtils.SetNodeLocation(node, t);
 		
 	}
 

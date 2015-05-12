@@ -482,16 +482,11 @@ namespace Dynamo.PackageManager
                 // allowing them to cancel the package download
                 if (futureDeps.Any())
                 {
-                    var sb = new StringBuilder();
-                    foreach (var elem in futureDeps)
-                    {
-                        sb.AppendLine(elem.Item1.name + " " + elem.Item2);
-                    }
+                    var versionList = FormatPackageVersionList(futureDeps);
 
-                    // If the user
                     if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
-                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
-                        sb.ToString()),
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName,
+                        versionList),
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
                         PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
@@ -527,8 +522,6 @@ namespace Dynamo.PackageManager
 
                     immediateUninstalls.Add(localPkg);
                 }
-
-                string msg;
 
                 if (uninstallRequiringUserModifications.Any())
                 {
@@ -574,6 +567,14 @@ namespace Dynamo.PackageManager
                         .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x));
 
             }
+        }
+
+        /// <summary>
+        ///     Returns a newline delimited string representing the package name and version of the argument
+        /// </summary>
+        public static string FormatPackageVersionList(IEnumerable<Tuple<PackageHeader, PackageVersion>> packages)
+        {
+            return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
         }
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)

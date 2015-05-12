@@ -12556,6 +12556,7 @@ def foo(y : int)
         }
 
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_656_6()
@@ -12659,6 +12660,7 @@ def foo(y : int)
 
         }
         [Test]
+        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_656_7()
@@ -12759,9 +12761,10 @@ def foo(y : int)
             vms = fsr.Step();
             TestFrameWork.Verify(mirror, "b", 2, 0);
         }
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
 
+        [Test]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_9()
         {
             // Execute and verify the main script in a debug session
@@ -12999,9 +13002,10 @@ a =
             vms = fsr.StepOver();
             TestFrameWork.Verify(mirror, "a", 4, 0);
         }
-        [Test]
-        [Category("ExpressionInterpreterRunner")]
 
+        [Test]
+        [Category("Failure")]
+        [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_10()
         {
             // Execute and verify the main script in a debug session
@@ -13043,7 +13047,6 @@ a = x > foo(22) ? foo(1) : A.foo(4);
 
         [Test]
         [Category("ExpressionInterpreterRunner")]
-        [Category("Failure")]
         public void inlineconditional_stepin_656_10()
         {
             // Execute and verify the main script in a debug session

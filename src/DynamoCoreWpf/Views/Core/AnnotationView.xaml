@@ -9,7 +9,7 @@
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
-             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"              
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">   
     <UserControl.Resources>
@@ -131,9 +131,12 @@
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                               Name="UngroupAnnotation"
+                           Click="OnUngroupAnnotation"/>               
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
                                Name="ChangeSize">                   
                     <MenuItem Header ="14" Name="FontSize0" Command="{Binding ChangeFontSize}" CommandParameter="14"
@@ -200,7 +203,7 @@
             </Rectangle.Fill>
         </Rectangle>
         <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
-              Margin="0,0,0,0"
+              Margin="5,0,0,0"
               VerticalAlignment="Top">            
             <TextBlock x:Name="GroupTextBlock"                                     
                     Text ="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}}"    
@@ -209,8 +212,7 @@
                     MinHeight="20"   
                     FontFamily="Trebuchet" 
                     FontSize="{Binding FontSize}"                   
-                    LineStackingStrategy="BlockLineHeight"
-                    IsVisibleChanged="GroupTextBlock_OnIsVisibleChanged"   
+                    LineStackingStrategy="BlockLineHeight"                    
                     TextWrapping="Wrap">                  
             </TextBlock>
             <TextBox 
@@ -224,7 +226,9 @@
                     FontSize="{Binding FontSize}"                                 
                     IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
                     GotFocus="GroupTextBox_OnGotFocus"                   
-                    TextChanged="GroupTextBox_OnTextChanged"                            
+                    TextChanged="GroupTextBox_OnTextChanged"   
+                    AcceptsReturn="True"
+                    AcceptsTab="True"
                     Style="{StaticResource SZoomFadeTextBox}">                  
             </TextBox>
             

@@ -9,7 +9,7 @@ using Greg.Responses;
 
 using NUnit.Framework;
 
-namespace Dynamo.PackageManager
+namespace Dynamo.PackageManager.Tests
 {
     [TestFixture]
     class PackageUtilitiesTests

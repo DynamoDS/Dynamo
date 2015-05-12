@@ -49,19 +49,18 @@ namespace Dynamo.ViewModels
             }
         }
 
-        // REVIVE ME!
-        //private DelegateCommand _nodeToCodeCommand;
-        //public DelegateCommand NodeToCodeCommand
-        //{
-        //    get
-        //    {
-        //        if (_nodeToCodeCommand == null)
-        //        {
-        //            _nodeToCodeCommand = new DelegateCommand(Model.NodeToCode, Model.CanNodeToCode);
-        //        }
-        //        return _nodeToCodeCommand;
-        //    }
-        //}
+        private DelegateCommand _nodeToCodeCommand;
+        public DelegateCommand NodeToCodeCommand
+        {
+            get
+            {
+                if (_nodeToCodeCommand == null)
+                {
+                    _nodeToCodeCommand = new DelegateCommand(NodeToCode, CanNodeToCode);
+                }
+                return _nodeToCodeCommand;
+            }
+        }
 
         public DelegateCommand HideCommand
         {
@@ -246,10 +245,18 @@ namespace Dynamo.ViewModels
             // For now this returns the most common lacing strategy in the collection.
             get
             {
+                // We were still hitting this getter when the Selection
+                // was empty, and throwing an exception when attempting to
+                // sort a null collection. If the Selection is empty, just
+                // return First lacing.
+
+                if(!DynamoSelection.Instance.Selection.Any())
+                    return LacingStrategy.First;
+
                 return DynamoSelection.Instance.Selection.OfType<NodeModel>()
                     .GroupBy(node => node.ArgumentLacing)
                     .OrderByDescending(group => group.Count())
-                    .Select(group => group.Key).First();
+                    .Select(group => group.Key).FirstOrDefault();
             }
         }
 
