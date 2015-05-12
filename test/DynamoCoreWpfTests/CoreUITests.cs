@@ -12,6 +12,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
@@ -639,6 +640,25 @@ namespace DynamoCoreWpfTests
 
         #endregion
 
-        
+        [Test]
+        [Category("UnitTests")]
+        public void TestDraggedNode()
+        {
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) { X = 16, Y = 32 };
+            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            NodeModel locatable = ViewModel.Model.CurrentWorkspace.Nodes[0];
+
+            var startPoint = new Point2D(8, 64);
+            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
+
+            // Initial node position.
+            Assert.AreEqual(16, locatable.X);
+            Assert.AreEqual(32, locatable.Y);
+
+            // Move the mouse cursor to move node.
+            dn.Update(new Point2D(-16, 72));
+            Assert.AreEqual(-8, locatable.X);
+            Assert.AreEqual(40, locatable.Y);
+        }
     }
 }
