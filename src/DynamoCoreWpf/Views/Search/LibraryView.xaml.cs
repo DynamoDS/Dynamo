@@ -292,6 +292,11 @@ namespace Dynamo.UI.Views
         /// </summary>
         private Point startPosition;
 
+        /// <summary>
+        /// Indicates whether item is dragging or not, so that there won't be more than one DoDragDrop event.
+        /// </summary>
+        private bool IsDragging;
+
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton != MouseButtonState.Pressed)
@@ -301,8 +306,9 @@ namespace Dynamo.UI.Views
 
             // If item was dragged enough, then fire DoDragDrop. 
             // Otherwise it means user click on item and there is no need to fire DoDragDrop.
-            if (System.Math.Abs(currentPosition.X - startPosition.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                System.Math.Abs(currentPosition.Y - startPosition.Y) > SystemParameters.MinimumVerticalDragDistance)
+            if ((System.Math.Abs(currentPosition.X - startPosition.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                System.Math.Abs(currentPosition.Y - startPosition.Y) > SystemParameters.MinimumVerticalDragDistance) &&
+                !IsDragging)
             {
                 StartDrag(e);
             }
@@ -311,13 +317,18 @@ namespace Dynamo.UI.Views
 
         private void StartDrag(MouseEventArgs e)
         {
+            IsDragging = true;
             var senderButton = e.OriginalSource as FrameworkElement;
 
             var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
             if (searchElementVM == null)
+            {
+                IsDragging = false;
                 return;
+            }
 
             DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
+            IsDragging = false;
         }
 
         private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
