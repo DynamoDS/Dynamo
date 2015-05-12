@@ -520,8 +520,8 @@ namespace Dynamo.Tests
 			// {                            {
 			//     { "AB", "CD" }               { "AB", 21, 31 }
 			//     { 21, 22, 23, 24 }           { "CD", 22, 32 }
-			//     { 31, 32, 33 }               { 23, 33 }
-			// }                                { 24 }
+			//     { 31, 32, 33 }               { null, 23, 33 }
+			// }                                { null, 24, null }
 			//                              }
 
 			DynamoModel model = ViewModel.Model;
@@ -535,16 +535,16 @@ namespace Dynamo.Tests
 			Assert.AreEqual(4, elements.Count);
 			Assert.AreEqual(3, elements[0].GetElements().Count);
 			Assert.AreEqual(3, elements[1].GetElements().Count);
-			Assert.AreEqual(2, elements[2].GetElements().Count);
-			Assert.AreEqual(1, elements[3].GetElements().Count);
+			Assert.AreEqual(3, elements[2].GetElements().Count);
+			Assert.AreEqual(3, elements[3].GetElements().Count);
 
 			AssertPreviewValue(guid,
 				new object[][]
 				{
 					new object[] { "AB", 21, 31 },
 					new object[] { "CD", 22, 32 },
-					new object[] { 23, 33 },
-					new object[] { 24 }
+					new object[] { null, 23, 33 },
+					new object[] { null, 24, null }
 				});
 		}
 
@@ -559,7 +559,7 @@ namespace Dynamo.Tests
 				new object[] { new object[] {1,3 }, new object[] {2, 4}, });
 
 			AssertPreviewValue("919d4d0d-f4e3-4a3c-87c8-dd4466a8ca87",
-				new object[] { new object[] {1,4,6}, new object[] {2, 5,7}, new object[] {3, 8}, new object[] {9}});
+				new object[] { new object[] {1,4,6}, new object[] {2, 5,7}, new object[] {3, null, 8}, new object[] {null, null, 9}});
 
 			AssertPreviewValue("bcf696d1-43e7-4633-8eb9-d5cb64dde939",
 				new object[] { new object[] { new object[] { 1 }, 3 }, new object[] { 2, 4 } });
@@ -2505,5 +2505,23 @@ namespace Dynamo.Tests
             AssertPreviewValue("fe77da6f-71db-4712-bffb-27d5acc86e0b", new object[] { });
         }
         #endregion
+
+        [Test]
+        public void FirstIndexOf()
+        {
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\list\FirstIndexOf.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("04a0347f-b931-40ff-81c9-7c0e5c61d051", 0); 
+        }
+
+        [Test]
+        public void AllIndicesOf()
+        {
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\list\AllIndicesOf.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("404af9cd-3668-4aa8-aea1-314a228bd6e1", new object[] { 0, 2 });
+        }
     }
 }

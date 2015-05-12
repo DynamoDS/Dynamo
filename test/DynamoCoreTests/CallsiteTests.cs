@@ -1,0 +1,149 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+
+using Dynamo.DSEngine;
+using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
+
+using DynamoShapeManager;
+
+using NUnit.Framework;
+
+using TestServices;
+
+namespace Dynamo.Tests
+{
+    internal class TestTraceReconciliationProcessor : ITraceReconciliationProcessor
+    {
+        public int ExpectedOrphanCount { get; internal set; }
+
+        public TestTraceReconciliationProcessor(int expectedOrphanCount)
+        {
+            ExpectedOrphanCount = expectedOrphanCount;
+        }
+
+        public void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            Assert.AreEqual(orphanedSerializables.SelectMany(kvp=>kvp.Value).Count(), ExpectedOrphanCount);
+        }
+    }
+
+    [TestFixture]
+    public sealed class CallsiteTests : DynamoModelTestBase
+    {
+        private const string callsiteDir = @"core\callsite";
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        /// <summary>
+        /// These tests depend on nodes in the Dynamo Samples package, which are copied
+        /// at build time into a packages folder in the build directory. We
+        /// override the UserDataRootFolder on the IPathResolver to have the tests look in 
+        /// the packages folder built into the build directory.
+        /// </summary>
+        protected override string GetUserUserDataRootFolder()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
+        /* Multi-dimension tests
+         * This graph contains:
+         * One list: {"Tywin","Cersei","Hodor"}
+         * One double input: 0..2
+         * A + node with the list and the double connected and CARTESIAN PRODUCT lacing.
+         */
+
+        [Test]
+        public void Callsite_MultiDimensionDecreaseDimensionOnOpenAndRun_OrphanCountCorrect()
+        {
+            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);
+        }
+
+        [Test]
+        public void CallSite_MultiDimensionIncreaseDimensionOnOpenAndRun()
+        {
+            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..3", 0);
+        }
+
+
+        /* Single-dimension tests
+         * This graph contains:
+         * One list: {"Tywin","Cersei","Hodor"}
+         * One double input: 0..2
+         * A + node with the list and the double connected and SINGLE lacing.
+         */
+
+        [Test]
+        public void Callsite_SingleDimensionDecreaseDimensionOnOpenAndRun()
+        {
+            OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..1", 1);
+        }
+
+        [Test]
+        public void Callsite_SingleDimensionIncreaseDimensionOnOpenAndRun()
+        {
+            OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..3", 0);
+        }
+
+        private void OpenChangeAndCheckOrphans(string testFileName, string numNodeValue, int expectedOrphanCount)
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, testFileName);
+
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(expectedOrphanCount);
+
+            var numNode = ws.FirstNodeFromWorkspace<DoubleInput>();
+
+            // Increase the number values.
+            numNode.Value = numNodeValue;
+
+            BeginRun();
+        }
+
+        [Test]
+        public void Callsite_DeleteNodeBeforeRun()
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
+
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
+
+            var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.NickName == "TraceExampleWrapper.ByString");
+            Assert.NotNull(traceNode);
+
+            ws.RemoveNode(traceNode);
+
+            BeginRun();
+        }
+
+        [Test]
+        public void Callsite_RunWithTraceDataFromUnresolvedNodes_DoesNotCrash()
+        {
+            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Geometry", "Geometry_Surfaces.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(42, ws.Nodes.Count);
+
+            // The number of connectors is less than what we would expect
+            // beause several of the nodes load as un-commented dummy nodes.
+            Assert.AreEqual(46, ws.Connectors.Count());
+
+            // The guard added around deserialization of types that
+            // can't be resolved will prevent a crash. This test
+            // passes if the workspace runs.
+
+            BeginRun();
+
+            Assert.Pass();
+        }
+    }
+}

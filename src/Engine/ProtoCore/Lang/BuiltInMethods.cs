@@ -470,7 +470,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kEquals,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.DeterminesObjectsAreEqual}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.DeterminesObjectsAreEqual}
                    
                 },
 

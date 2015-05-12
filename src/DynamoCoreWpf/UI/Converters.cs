@@ -21,6 +21,7 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
+using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Controls
 {
@@ -2151,5 +2152,27 @@ namespace Dynamo.Controls
         }
     }
 
-    
+    internal class Watch3DBackgroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var homeColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+            var customColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
+
+            //parameter will contain a true or false
+            //whether this is the home space
+            if ((bool)value)
+            {
+                return homeColor.ToColor4();
+            }
+
+            return customColor.ToColor4();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }

@@ -117,13 +117,25 @@ limitations under the License.
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="DefaultRenderPackageFactory.cs" />
+    <Compile Include="Interfaces\IRenderPackageFactory.cs" />
     <Compile Include="Models\AnnotationModel.cs" />
     <Compile Include="Core\PathManager.cs" />
     <Compile Include="Library\MemberDocumentNode.cs" />
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
     <Compile Include="Interfaces\IPathResolver.cs" />
+    <Compile Include="PackageManager\Interfaces\IFileCompressor.cs" />
+    <Compile Include="PackageManager\Interfaces\IDirectoryInfo.cs" />
+    <Compile Include="PackageManager\Interfaces\IFileInfo.cs" />
+    <Compile Include="PackageManager\Interfaces\IFileSystem.cs" />
+    <Compile Include="PackageManager\MutatingFileCompressor.cs" />
+    <Compile Include="PackageManager\MutatingFileSystem.cs" />
+    <Compile Include="PackageManager\CustomNodePathRemapper.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
+    <Compile Include="PackageManager\PackageUploadBuilder.cs" />
+    <Compile Include="PackageManager\RealDirectoryInfo.cs" />
+    <Compile Include="PackageManager\RealFileInfo.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
@@ -219,7 +231,7 @@ limitations under the License.
     <Compile Include="Services\Log.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="PackageManager\Package.cs" />
-    <Compile Include="PackageManager\PackageUploadBuilder.cs" />
+    <Compile Include="PackageManager\PackageDirectoryBuilder.cs" />
     <Compile Include="PackageManager\PackageUploadHandle.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\ModelBase.cs" />
@@ -271,7 +283,6 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
-    <Compile Include="DSEngine\RenderPackage.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -336,10 +347,13 @@ limitations under the License.
       <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
+      <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(SolutionDir)..\doc\distrib\GoogleAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
@@ -349,5 +363,6 @@ limitations under the License.
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
+    <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)"/>
   </Target>
 </Project>

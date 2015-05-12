@@ -454,15 +454,19 @@
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
-    <value>Detailed reporting sends behaviour data that we use for improving {0}.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
+    <value>Detailed reporting sends behaviour data that we use for improving {0}.
+
+It includes the graph being created as well as errors and warnings</value>
     <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
     <value>Enable anonymous summary reporting (Google Analytics)</value>
-    <comment>Setting menu | Eanble summary reporting</comment>
+    <comment>Setting menu | Enable summary reporting</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReportingTooltip" xml:space="preserve">
-    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
+    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.
+
+It does not contain your graph or any personal data</value>
     <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
@@ -728,6 +732,18 @@
   </data>
   <data name="StartPageCode" xml:space="preserve">
     <value>CODE</value>
+  </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>RECOVER FROM BACKUP</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>BACKUP</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>Backup location</value>
+  </data>
+  <data name="StartPageOpenAll" xml:space="preserve">
+    <value>Open all</value>
   </data>
   <data name="StartPageDiscussionForum" xml:space="preserve">
     <value>Discussion forum</value>
@@ -1029,29 +1045,6 @@ You will get a chance to save your work.</value>
   </data>
   <data name="GenericTaskDialogTitle" xml:space="preserve">
     <value>Generic Task Dialog</value>
-  </data>
-  <data name="UsageReportPromptDialogFeatureUsage" xml:space="preserve">
-    <value>The features and commands you use in {0}</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart1" xml:space="preserve">
-    <value>We would like to collect some information about how {0} is used.
-
-Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
-
-The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
-
-The information being collected is:</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart2" xml:space="preserve">
-    <value>It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting 'Enable usability data reporting' in the settings menu of the UI.
-
-ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.
-
-Many thanks!</value>
-  </data>
-  <data name="UsageReportPromptDialogNodeUsage" xml:space="preserve">
-    <value>The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).
-</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
     <value>Agreement to collect usability data on your use of {0}</value>
@@ -1643,6 +1636,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackage" xml:space="preserve">
     <value>Publish Package !</value>
   </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>What's New</value>
+  </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
     <value>I Accept</value>
   </data>
@@ -1652,12 +1648,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
   </data>
-  <data name="UsageReportPromptDialogMessagePart3" xml:space="preserve">
-    <value>Autodesk uses Google Analytics in this product. If you agree to its use, Autodesk will receive non-personal product usage information about this Autodesk software.  We use this information to improve our products and understand how people use them.
-
-This information is limited to session length times, use frequency, which features are used (feature buttons), your city and country location, and operating system type.  This information is not used to identify or contact you, and we do not track use of standard pull down menu controls (e.g., “file,” “edit,” etc.).  
-
-You can turn data collection off by using the tick box below or later by bringing this dialogue box back up though the Setting menu tool.  Thank you for your consideration.</value>
+  <data name="GalleryDynamoVersion" xml:space="preserve">
+    <value>Version {0}.{1}</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
@@ -1667,5 +1659,14 @@ You can turn data collection off by using the tick box below or later by bringin
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
+  </data>
+  <data name="ConsentFormGoogleAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>Yes, I would like to contribute to this program (Google Analytics).</value>
+  </data>
+  <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
+    <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>Delete Group</value>
   </data>
 </root>

@@ -146,8 +146,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        protected void RunCommandsFromFile(string commandFileName,
-            bool autoRun = false, CommandCallback commandCallback = null)
+        protected void RunCommandsFromFile(string commandFileName, CommandCallback commandCallback = null)
         {
             string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
@@ -203,9 +202,7 @@ namespace DynamoCoreWpfTests
                     DynamoModel = model
                 });
 
-            ViewModel.HomeSpace.RunSettings.RunType = autoRun ?
-                RunType.Automatic :
-                RunType.Manual;
+            ViewModel.HomeSpace.RunSettings.RunType = RunType.Automatic;
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
@@ -538,7 +535,7 @@ namespace DynamoCoreWpfTests
             //3. Verify the results of custom node instance are correct
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
-            RunCommandsFromFile("Defect_MAGN_6821_withoutInput.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_6821_withoutInput.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 var cbn = GetNode("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c") as Function;
@@ -564,7 +561,7 @@ namespace DynamoCoreWpfTests
             //4. Place the custom node instance and connect with relavant inputs
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
-            RunCommandsFromFile("Defect_MAGN_6821_withInput.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_6821_withInput.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "Run")
@@ -587,7 +584,7 @@ namespace DynamoCoreWpfTests
             //3. Create instance of custom node and Execute.
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
-            RunCommandsFromFile("Defect_MAGN_6821_multipleInput.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInput.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "Run")
@@ -610,7 +607,7 @@ namespace DynamoCoreWpfTests
             //4. verify the results are correct
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
-            RunCommandsFromFile("Defect_MAGN_6821_multipleInstance.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInstance.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -629,7 +626,7 @@ namespace DynamoCoreWpfTests
             //Scenario: Create a custom node inside another one
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
-            RunCommandsFromFile("Defect_MAGN_6821_nestedCustomNode.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_6821_nestedCustomNode.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -671,7 +668,7 @@ namespace DynamoCoreWpfTests
         
         public void TestCustomNodeUI()
         {
-            RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
+            RunCommandsFromFile("CustomNodeUI.xml", (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -724,7 +721,7 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA]
         public void TestRunEnabledButtonCanBeDisabled()
         {
-            RunCommandsFromFile("TestRunEnabledButtonCanBeDisabled.xml", false, (commandTag) =>
+            RunCommandsFromFile("TestRunEnabledButtonCanBeDisabled.xml", (commandTag) =>
             {
                 //This test case is to verify that when RunEnabled is changed to false from the model, 
                 //the Run button is disabled. The strategy here is to directly modify the RunEnabled value
@@ -745,7 +742,7 @@ namespace DynamoCoreWpfTests
         public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
-            RunCommandsFromFile("Defect_MAGN_1143_CN.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_1143_CN.xml", (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -781,7 +778,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Defect_MAGN_2144_CN()
         {
-            RunCommandsFromFile("Defect_MAGN_2144_CN.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2144_CN.xml", (commandTag) =>
             {
                 var workspaces = ViewModel.Model.Workspaces;
 
@@ -847,7 +844,7 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA, Category("Failure")]
         public void MultiPassValidationSample()
         {
-            RunCommandsFromFile("MultiPassValidationSample.xml", false, (commandTag) =>
+            RunCommandsFromFile("MultiPassValidationSample.xml", (commandTag) =>
             {
                 if (commandTag == "InitialRun")
                 {
@@ -998,7 +995,7 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA]
         public void RedoDeletedNodeShowsConnector()
         {
-            RunCommandsFromFile("RedoDeletedNodeShowsConnector.xml", false, (commandTag) =>
+            RunCommandsFromFile("RedoDeletedNodeShowsConnector.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 Assert.IsNotNull(workspace);
@@ -1246,7 +1243,7 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
-            RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
+            RunCommandsFromFile("ReExecuteASTTest.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -1271,7 +1268,7 @@ namespace DynamoCoreWpfTests
             // http://adsk-oss.myjetbrains.com/youtrack/issues?q=3872
 
 
-            RunCommandsFromFile("Error_CBN_3872.xml", true, (commandTag) =>
+            RunCommandsFromFile("Error_CBN_3872.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 NodeModel nodeModel = workspace.NodeFromWorkspace("37c9b30b-1b78-442a-b433-ec31da996c52");
@@ -1290,7 +1287,7 @@ namespace DynamoCoreWpfTests
             // Create a CBN with {1,2,3} adn it must execute correctly
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3921
 
-            RunCommandsFromFile("Array_CBN_3921.xml", false, (commandTag) =>
+            RunCommandsFromFile("Array_CBN_3921.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 AssertPreviewValue("36d2aca5-034c-43c7-b43c-a9774d9432a2", new int [] { 1, 2, 3 });
@@ -1315,7 +1312,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
 
-            RunCommandsFromFile("Defect_MAGN_159.xml", true);
+            RunCommandsFromFile("Defect_MAGN_159.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count());
@@ -1838,7 +1835,9 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
-            var cbn = GetNode("3a379c45-d128-467b-a530-2b741d330dc4") as CodeBlockNodeModel;
+            var cbn = ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>()
+                                                            .Where(c => c.InPortData.Count == 2)
+                                                            .First();
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(2, cbn.OutPorts.Count);
             Assert.AreEqual(2, cbn.InPorts.Count);
@@ -2102,7 +2101,7 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests")]
         public void MethodResolutionFailRedef_MAGN_2262()
         {
-            RunCommandsFromFile("MethodResolutionFailRedef_MAGN_2262.xml", false, (commandTag) =>
+            RunCommandsFromFile("MethodResolutionFailRedef_MAGN_2262.xml", (commandTag) =>
             {
                 if (commandTag == "Tag-204ca7e6")
                 {
@@ -2126,20 +2125,20 @@ namespace DynamoCoreWpfTests
             Guid FunctionCallNodeGuid = new Guid("22939bf5-50bc-4aa3-9c91-0dc5b5017252");
 
             preloadGeometry = true;
-            RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
+            RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", (commandTag) =>
             {
-                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
+                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2147,14 +2146,14 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -2209,7 +2208,7 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests")]
         public void Defect_MAGN_747_MultiReference()
         {
-            RunCommandsFromFile("Defect_MAGN_747_MultiReference.xml", true);
+            RunCommandsFromFile("Defect_MAGN_747_MultiReference.xml");
             Assert.AreEqual(1, workspace.Nodes.Count);
             AssertPreviewValue("a76409a1-1280-428c-9cf7-16580c48ff96", 1);
 
@@ -2224,20 +2223,20 @@ namespace DynamoCoreWpfTests
             Guid FunctionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
 
             preloadGeometry = true;
-            RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
+            RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", (commandTag) =>
             {
-                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
+                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2245,14 +2244,14 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -2273,7 +2272,7 @@ namespace DynamoCoreWpfTests
         public void Defect_MAGN_2521()
         {
             preloadGeometry = true;
-            RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2521.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2309,7 +2308,7 @@ namespace DynamoCoreWpfTests
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
             preloadGeometry = true;
-            RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2378.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2339,7 +2338,7 @@ namespace DynamoCoreWpfTests
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
             preloadGeometry = true;
-            RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2378_Another.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2373,7 +2372,7 @@ namespace DynamoCoreWpfTests
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2100
 
-            RunCommandsFromFile("Defect_MAGN_2100.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2100.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2406,7 +2405,7 @@ namespace DynamoCoreWpfTests
         {
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2102
 
-            RunCommandsFromFile("Defect_MAGN_2102.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2102.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2451,7 +2450,7 @@ namespace DynamoCoreWpfTests
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2272
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2545
 
-            RunCommandsFromFile("Defect_MAGN_2272.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2272.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2486,7 +2485,7 @@ namespace DynamoCoreWpfTests
         public void Defect_MAGN_2528()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2528
-            RunCommandsFromFile("Defect_MAGN_2528.xml", true);
+            RunCommandsFromFile("Defect_MAGN_2528.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count());
@@ -2505,7 +2504,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2453
 
-            RunCommandsFromFile("Defect_MAGN_2453.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2453.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2541,7 +2540,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1463
 
-            RunCommandsFromFile("Defect_MAGN_1463.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_1463.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2573,7 +2572,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2593
 
-            RunCommandsFromFile("Defect_MAGN_2593.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2593.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2634,7 +2633,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3113
 
-            RunCommandsFromFile("Defect_MAGN_3113.xml", true);
+            RunCommandsFromFile("Defect_MAGN_3113.xml");
             var workspace = ViewModel.Model.CurrentWorkspace;
 
             // check for number of Nodes and Connectors
@@ -2654,7 +2653,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2373
 
-            RunCommandsFromFile("Defect_MAGN_2373.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2373.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2688,7 +2687,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2563
 
-            RunCommandsFromFile("Defect_MAGN_2563.xml", true);
+            RunCommandsFromFile("Defect_MAGN_2563.xml");
 
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Connectors.Count());
@@ -2707,7 +2706,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2247
 
             preloadGeometry = true;
-            RunCommandsFromFile("Defect_MAGN_2247.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2247.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2746,7 +2745,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2311
 
-            RunCommandsFromFile("Defect_MAGN_2311.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2311.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2779,7 +2778,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2279
 
-            RunCommandsFromFile("Defect_MAGN_2279.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2279.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2814,7 +2813,7 @@ namespace DynamoCoreWpfTests
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("bc2c4de8-43a1-4b36-b0d6-309423664089");
 
-                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    Assert.AreEqual(ElementState.Warning, node.State);
 
                 }
 
@@ -2828,7 +2827,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3116
 
-            RunCommandsFromFile("Defect_MAGN_3116.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_3116.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2867,7 +2866,7 @@ namespace DynamoCoreWpfTests
 
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2290
 
-            RunCommandsFromFile("Defect_MAGN_2290.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_2290.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2914,7 +2913,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3166
 
-            RunCommandsFromFile("Defect_MAGN_3166.xml", false, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_3166.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -2962,7 +2961,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3599
 
-            RunCommandsFromFile("Defect_MAGN_3599.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_3599.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3007,7 +3006,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3580
 
-            RunCommandsFromFile("Defect_MAGN_3580.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_3580.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3092,7 +3091,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3212
 
-            RunCommandsFromFile("Defect_MAGN_3212.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_3212.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3133,7 +3132,7 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests"), Category("Failure")]
         public void TestCancelExecution()
         {
-            RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", false, (commandTag) =>
+            RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", (commandTag) =>
             {
                 // We need to run asynchronously for this test case as we need to 
                 // simulate cancellation of execution from UI asynchoronously
@@ -3163,7 +3162,7 @@ namespace DynamoCoreWpfTests
         [Category("Failure")]
         public void TestCancelExecutionWhileLoop()
         {
-            RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", false, (commandTag) =>
+            RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", (commandTag) =>
             {
                 // We need to run asynchronously for this test case as we need to 
                 // simulate cancellation of execution from UI asynchoronously
@@ -3205,7 +3204,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4710
 
-            RunCommandsFromFile("Defect_MAGN_4710.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_4710.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3247,7 +3246,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4659
 
-            RunCommandsFromFile("Defect_MAGN_4659.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_MAGN_4659.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3289,7 +3288,7 @@ namespace DynamoCoreWpfTests
             // If Run Automatically On, third file onwards it executes to null
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5068
 
-            RunCommandsFromFile("RunAutomatically_5068.xml", true, (commandTag) =>
+            RunCommandsFromFile("RunAutomatically_5068.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3329,7 +3328,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6694
 
-            RunCommandsFromFile("Defect_6694_EqualEqualOperatorTest.xml", true, (commandTag) =>
+            RunCommandsFromFile("Defect_6694_EqualEqualOperatorTest.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3391,7 +3390,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
 
-            RunCommandsFromFile("Defect_MAGN_159.xml", true);
+            RunCommandsFromFile("Defect_MAGN_159.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count());
@@ -3420,7 +3419,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
 
-            RunCommandsFromFile("Defect_MAGN_164.xml", true);
+            RunCommandsFromFile("Defect_MAGN_164.xml");
 
             Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count());
@@ -3518,7 +3517,7 @@ namespace DynamoCoreWpfTests
         public void Defect_MAGN_520()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
-            RunCommandsFromFile("Defect_MAGN_520.xml", true);
+            RunCommandsFromFile("Defect_MAGN_520.xml");
             Assert.AreEqual(2, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count());
             AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
@@ -3654,7 +3653,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void TestUpdateNodeContents()
         {
-            RunCommandsFromFile("UpdateNodeContents.xml", true);
+            RunCommandsFromFile("UpdateNodeContents.xml");
             Assert.AreEqual(2, workspace.Connectors.Count());
             Assert.AreEqual(3, workspace.Nodes.Count);
 
@@ -3683,7 +3682,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void TestVerifyRuntimeValues()
         {
-            RunCommandsFromFile("VerifyRuntimeValues.xml", true);
+            RunCommandsFromFile("VerifyRuntimeValues.xml");
             Assert.AreEqual(2, workspace.Connectors.Count());
             Assert.AreEqual(3, workspace.Nodes.Count);
 
@@ -3693,7 +3692,7 @@ namespace DynamoCoreWpfTests
         public void TestScopeIf_6322()
         {
             // to test scope if 
-            RunCommandsFromFile("ScopeIf_6322.xml", true);
+            RunCommandsFromFile("ScopeIf_6322.xml");
 
             AssertPreviewValue("cd759105-3c6b-4f8e-81e7-73266e92f357", false);
         }
@@ -3702,7 +3701,7 @@ namespace DynamoCoreWpfTests
         public void modifyCN_6191()
         {
 
-            RunCommandsFromFile("modifyCN_6191.xml", false, (commandTag) =>
+            RunCommandsFromFile("modifyCN_6191.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
@@ -3726,7 +3725,7 @@ namespace DynamoCoreWpfTests
 
 
 
-            RunCommandsFromFile("recursion_6415.xml", true);
+            RunCommandsFromFile("recursion_6415.xml");
 
             AssertPreviewValue("3e30c7d3-6316-4fb6-aec7-13c3ca706621", 10);
         }
@@ -3734,7 +3733,7 @@ namespace DynamoCoreWpfTests
         public void workspace_5919()
         {
 
-            RunCommandsFromFile("workspace_5919.xml", true);
+            RunCommandsFromFile("workspace_5919.xml");
 
             AssertPreviewValue("3f42da77-4fb9-4af0-ade0-444e81614133", 0);
         }
@@ -3743,7 +3742,7 @@ namespace DynamoCoreWpfTests
         {
 
             
-            RunCommandsFromFile("DeleteInput_887.xml", false, (commandTag) =>
+            RunCommandsFromFile("DeleteInput_887.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "FirstRun")
@@ -3765,7 +3764,7 @@ namespace DynamoCoreWpfTests
         public void EmptyCBN_Save_5454()
         {
 
-            RunCommandsFromFile("EmptyCBN_Save_5454.xml", false, (commandTag) =>
+            RunCommandsFromFile("EmptyCBN_Save_5454.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "FirstRun")
@@ -3785,7 +3784,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2279
 
-            RunCommandsFromFile("Lacing_Deffect_5759.xml", false, (commandTag) =>
+            RunCommandsFromFile("Lacing_Deffect_5759.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 // check for number of Nodes and Connectors

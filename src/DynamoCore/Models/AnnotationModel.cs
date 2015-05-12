@@ -22,6 +22,7 @@ namespace Dynamo.Models
         private const double DoubleValue = 0.0;
         private const double MinTextHeight = 20.0;
         private const double ExtendSize = 10.0;
+        public  string GroupBackground = "#FFC1D676";
         //DeletedModelBases is used to keep track of deleted / ungrouped models. 
         //During Undo operations this is used to get those models that are deleted from the group
         public List<ModelBase> DeletedModelBases { get; set; }
@@ -81,7 +82,7 @@ namespace Dynamo.Models
         private string background;
         public string Background
         {
-            get { return background ?? "#ff7bac"; }
+            get { return background ?? GroupBackground; }
             set
             {
                 background = value;
@@ -265,6 +266,11 @@ namespace Dynamo.Models
                 if (this.InitialHeight <= 0.0)
                     this.InitialHeight = region.Height;
             }
+            else
+            {
+                this.Width = 0;
+                this.height = 0;               
+            }
         }
 
         /// <summary>
@@ -362,7 +368,7 @@ namespace Dynamo.Models
                         listOfModels.Add(model);
                     }                  
                 }
-                selectedModels = listOfModels;        
+                SelectedModels = listOfModels;        
             }
 
             //On any Undo Operation, current values are restored to previous values.

@@ -312,8 +312,22 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
-        public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
-        public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
+
+        public bool IsPanning
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
+            }
+        }
+
+        public bool IsOrbiting
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
+            }
+        }
 
         public ConnectorType ConnectorType
         {
@@ -385,12 +399,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTesselationDivisions
+        public int MaxTessellationDivisions
         {
-            get { return model.MaxTesselationDivisions; }
+            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
             set
             {
-                model.MaxTesselationDivisions = value;
+                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
                 model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
@@ -903,7 +917,27 @@ namespace Dynamo.ViewModels
 
         internal bool CanAddAnnotation(object parameter)
         {
-            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+            var groups = Model.CurrentWorkspace.Annotations;
+            //Create Group should be disabled when a group is selected
+            if (groups.Any(x => x.IsSelected))
+            {
+                return false;
+            }
+
+            //Create Group should be disabled when a node selected is already in a group
+            if (!groups.Any(x => x.IsSelected))
+            {
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                foreach (var model in modelSelected)
+                {
+                    if (groups.ContainsModel(model.GUID))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         internal void UngroupAnnotation(object parameters)
@@ -978,8 +1012,6 @@ namespace Dynamo.ViewModels
             if (item is HomeWorkspaceModel)
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
-                Model.RemoveWorkspace(HomeSpace);
-                Model.ResetEngine();
                 workspaces.Insert(0, newVm);
 
                 // The RunSettings control is a child of the DynamoView, 
@@ -1179,7 +1211,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerCore);
+            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
         }
 
         /// <summary>
@@ -1193,7 +1225,7 @@ namespace Dynamo.ViewModels
             // crash sould always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerCore);
+                workspace.Save(EngineController.LiveRunnerRuntimeCore);
                 return true;
             }
             else
@@ -1204,7 +1236,7 @@ namespace Dynamo.ViewModels
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerCore);
+                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
                     return true;
                 }
             }
