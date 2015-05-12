@@ -690,16 +690,6 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Checks if a given list is empty or is a single dimensional list that contains only null values
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns>Returns true if the input list is empty or contains only null values</returns>
-        public static bool IsNullOrEmpty(IList list)
-        {
-            return list.Cast<object>().All(el => el == null);
-        }
-
-        /// <summary>
         /// Cleans data of nulls and empty lists from a given list of arbitrary dimension
         /// </summary>
         /// <param name="list"></param>
@@ -708,13 +698,17 @@ namespace DSCore
         /// <returns>A list cleaned of nulls and empty lists</returns>
         public static IList Clean(IList list, bool preserveIndices = true)
         {
+            if (list == null)
+                return null;
+
             if (list.Count == 0)
                 return list;
 
             var culledList = new List<object>();
             if (preserveIndices)
             {
-                if (IsNullOrEmpty(list))
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
                     return null;
 
                 int j = list.Count - 1;
@@ -727,10 +721,7 @@ namespace DSCore
                     if (subList != null)
                     {
                         var val = Clean(subList);
-                        if (val == null || !List.IsEmpty(val))
-                        {
-                            culledList.Add(val);
-                        }
+                        culledList.Add(val);
                     }
                     else
                     {
@@ -740,7 +731,8 @@ namespace DSCore
             }
             else
             {
-                if (IsNullOrEmpty(list))
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
                     return new List<object>();
 
                 foreach (var el in list)

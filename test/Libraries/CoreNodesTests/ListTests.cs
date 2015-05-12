@@ -812,5 +812,73 @@ namespace DSCoreNodesTests
 
             Assert.AreEqual(expected, output);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsChangeIndicesEdgeCases()
+        {
+            // 1D array of nulls
+            var input = new ArrayList { null };
+            var output = List.Clean(input, false);
+            var expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // list is null itself
+            input = null;
+            output = List.Clean(input, false);
+            expected = null;
+            Assert.AreEqual(expected, output);
+
+            // nested array of nulls
+            input = new ArrayList { new ArrayList { null } };
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // empty list
+            input = new ArrayList();
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // nested empty list
+            input = new ArrayList { new ArrayList() };
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsPreserveIndicesEdgeCases()
+        {
+            // 1D array of nulls
+            var input = new ArrayList { null };
+            var output = List.Clean(input);
+            Assert.AreEqual(null, output);
+
+            // list is null itself
+            input = null;
+            output = List.Clean(input);
+            Assert.AreEqual(null, output);
+
+            // nested array of nulls
+            input = new ArrayList { new ArrayList { null } };
+            output = List.Clean(input);
+            var expected = new ArrayList { null };
+            Assert.AreEqual(expected, output);
+
+            // empty list
+            input = new ArrayList();
+            output = List.Clean(input);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // nested empty list
+            input = new ArrayList { new ArrayList() };
+            output = List.Clean(input);
+            expected = new ArrayList { new ArrayList() };
+            Assert.AreEqual(expected, output);
+        }
     }
 }
