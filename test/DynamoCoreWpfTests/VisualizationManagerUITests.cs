@@ -15,6 +15,7 @@ using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf;
 
@@ -624,6 +625,41 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(original.LookDirection.X, nodeFromCopy.LookDirection.X);
             Assert.AreEqual(original.LookDirection.Y, nodeFromCopy.LookDirection.Y);
             Assert.AreEqual(original.LookDirection.Z, nodeFromCopy.LookDirection.Z);
+        }
+
+        [Test]
+        public void Watch3D_SwitchWorkspaceType_BackgroundColorIsCorrect()
+        {
+            CustomNodeInfo info;
+
+            var customNodePath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\Points.dyf");
+
+            Assert.IsTrue(
+                ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
+                    customNodePath,
+                    true,
+                    out info));
+
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_customNode.dyn");
+
+            Open(openPath);
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            ws.RunSettings.RunType = RunType.Automatic;
+
+            var homeColor = (System.Windows.Media.Color) SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+
+            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor.ToColor4());
+
+            Open(customNodePath);
+
+            var customColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
+
+            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor.ToColor4());
         }
 
         private int GetTotalDrawablesInModel()
