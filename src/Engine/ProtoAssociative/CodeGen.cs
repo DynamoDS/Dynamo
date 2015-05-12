@@ -2949,36 +2949,6 @@ namespace ProtoAssociative
             }
         }
 
-        /// <summary>
-        /// Converts lhs ident lists to a function call
-        /// a.x = 10 -> t = a.%set_x(10)
-        /// a.x.y = b + c -> a.x.%set_y(b + c)
-        /// </summary>
-        /// <param name="bNode"></param>
-        /// <returns></returns>
-        private BinaryExpressionNode ConvertLHSAssignmentToFunctionCall(BinaryExpressionNode bNode)
-        {
-            IdentifierNode lhsTemp = new IdentifierNode(Constants.kTempVar);
-
-            IdentifierListNode identList = bNode.LeftNode as IdentifierListNode;
-            Validity.Assert(identList != null);
-
-            List<AssociativeNode> args = new List<AssociativeNode>();
-            args.Add(bNode.RightNode);
-            
-            //AssociativeNode fcall = nodeBuilder.BuildFunctionCall(Constants.kSetterPrefix + identList.RightNode.Name, args);
-
-            ProtoCore.AST.AssociativeAST.FunctionCallNode fcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            fcall.Function = new IdentifierNode(identList.RightNode.Name);
-            fcall.Function.Name = ProtoCore.DSASM.Constants.kSetterPrefix + identList.RightNode.Name;
-            fcall.FormalArguments = args;
-
-            identList.RightNode = fcall;
-
-            BinaryExpressionNode converetdAssignNode = new BinaryExpressionNode(lhsTemp, identList);
-            return converetdAssignNode;
-        }
-
         private void DFSEmitSSA_AST(AssociativeNode node, Stack<AssociativeNode> ssaStack, ref List<AssociativeNode> astlist)
         {
             Validity.Assert(null != astlist && null != ssaStack);
@@ -2990,11 +2960,11 @@ namespace ProtoAssociative
                 bool isSSAAssignment = false;
                 if (ProtoCore.DSASM.Operator.assign == astBNode.Optr)
                 {
-                    bool isLHSIdentList = astBNode.LeftNode is IdentifierListNode;
-                    if (isLHSIdentList)
-                    {
-                        astBNode = ConvertLHSAssignmentToFunctionCall(astBNode);
-                    }
+                    //bool isLHSIdentList = astBNode.LeftNode is IdentifierListNode;
+                    //if (isLHSIdentList)
+                    //{
+                    //    astBNode = ConvertLHSAssignmentToFunctionCall(astBNode);
+                    //}
 
                     leftNode = astBNode.LeftNode;
                     DFSEmitSSA_AST(astBNode.RightNode, ssaStack, ref astlist);
@@ -3867,6 +3837,87 @@ namespace ProtoAssociative
             return node;
         }
 
+        /// <summary>
+        /// Converts lhs ident lists to a function call
+        /// a.x = 10 
+        ///     -> t = a.%set_x(10)
+        ///     
+        /// a.x.y = b + c 
+        ///     -> a.x.%set_y(b + c)
+        ///     
+        /// a.x[0] = 10
+        ///     ->  tval = a.%get_x()
+        ///         tval[0] = 10         
+        ///         tmp = a.%set_x(tval)
+        /// </summary>
+        /// <param name="astList"></param>
+        /// <returns></returns>
+        private List<AssociativeNode> TransformLHSIdentList(List<AssociativeNode> astList)
+        {
+            if (null != astList && astList.Count > 0)
+            {
+                List<AssociativeNode> newAstList = new List<AssociativeNode>();
+                foreach (AssociativeNode node in astList)
+                {
+                    BinaryExpressionNode bNode = node as BinaryExpressionNode;
+                    if (bNode == null)
+                    {
+                        newAstList.Add(node);
+                    }
+                    else
+                    {
+                        bool isLHSIdentList = bNode.LeftNode is IdentifierListNode;
+                        if (!isLHSIdentList)
+                        {
+                            newAstList.Add(node);
+                        }
+                        else
+                        {
+                            IdentifierNode lhsTemp = new IdentifierNode(Constants.kTempVar);
+
+                            IdentifierListNode identList = bNode.LeftNode as IdentifierListNode;
+                            Validity.Assert(identList != null);
+
+                            List<AssociativeNode> args = new List<AssociativeNode>();
+                            args.Add(bNode.RightNode);
+
+                            IdentifierNode identFunctionCall = identList.RightNode as IdentifierNode;
+                            string setterName = ProtoCore.DSASM.Constants.kSetterPrefix + identList.RightNode.Name;
+
+                            bool isArrayIndexed = identFunctionCall.ArrayDimensions != null;
+                            //if (isArrayIndexed)
+                            //{
+                            //    // a.x[0] = 10
+                            //    //      tval = a.%get_x()
+                            //    string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + identList.RightNode.Name;
+                            //    BinaryExpressionNode bnode1 = new BinaryExpressionNode(
+                            //        new IdentifierNode(Constants.kTempVar),
+                            //        null
+                            //        );
+
+                            //    //      tval[0] = 10         
+                            //    //      tmp = a.%set_x(tval)
+
+                            //}
+                            //else
+                            {
+                                ProtoCore.AST.AssociativeAST.FunctionCallNode fcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+                                fcall.Function = new IdentifierNode(identList.RightNode.Name);
+                                fcall.Function.Name = setterName;
+                                fcall.FormalArguments = args;
+                                identList.RightNode = fcall;
+                                BinaryExpressionNode convertedAssignNode = new BinaryExpressionNode(lhsTemp, identList);
+                                NodeUtils.CopyNodeLocation(convertedAssignNode, bNode);
+                                newAstList.Add(convertedAssignNode);
+                            }
+                        }
+                    }
+                }
+                return newAstList;
+            }
+            return astList;
+        }
+
         private List<AssociativeNode> SplitMulitpleAssignment(List<AssociativeNode> astList)
         {
             if (null != astList && astList.Count > 0)
@@ -3906,7 +3957,7 @@ namespace ProtoAssociative
                                 FunctionDefinitionNode fNode = procNode as FunctionDefinitionNode;
                                 if (!fNode.IsExternLib)
                                 {
-                                    fNode.FunctionBody.Body = SplitMulitpleAssignment(fNode.FunctionBody.Body);
+                                    fNode.FunctionBody.Body = ApplyTransform(fNode.FunctionBody.Body);
                                 }
                             }
                             else if (procNode is ConstructorDefinitionNode)
@@ -3914,7 +3965,7 @@ namespace ProtoAssociative
                                 ConstructorDefinitionNode cNode = procNode as ConstructorDefinitionNode;
                                 if (!cNode.IsExternLib)
                                 {
-                                    cNode.FunctionBody.Body = SplitMulitpleAssignment(cNode.FunctionBody.Body);
+                                    cNode.FunctionBody.Body = ApplyTransform(cNode.FunctionBody.Body);
                                 }
                             }
                         }
@@ -3925,7 +3976,7 @@ namespace ProtoAssociative
                         FunctionDefinitionNode fNode = node as FunctionDefinitionNode;
                         if (!fNode.IsExternLib)
                         {
-                            fNode.FunctionBody.Body = SplitMulitpleAssignment(fNode.FunctionBody.Body);
+                            fNode.FunctionBody.Body = ApplyTransform(fNode.FunctionBody.Body);
                         }
                         newAstList.Add(node);
                     }
@@ -3934,7 +3985,7 @@ namespace ProtoAssociative
                         ConstructorDefinitionNode fNode = node as ConstructorDefinitionNode;
                         if (!fNode.IsExternLib)
                         {
-                            fNode.FunctionBody.Body = SplitMulitpleAssignment(fNode.FunctionBody.Body);
+                            fNode.FunctionBody.Body = ApplyTransform(fNode.FunctionBody.Body);
                         }
                         newAstList.Add(node);
                     }
@@ -3945,6 +3996,13 @@ namespace ProtoAssociative
                 }
                 return newAstList;
             }
+            return astList;
+        }
+
+        private List<AssociativeNode> ApplyTransform(List<AssociativeNode> astList)
+        {
+            astList = SplitMulitpleAssignment(astList);
+            astList = TransformLHSIdentList(astList);
             return astList;
         }
 
@@ -3989,7 +4047,7 @@ namespace ProtoAssociative
         public List<AssociativeNode> EmitSSA(List<AssociativeNode> astList)
         {
             Validity.Assert(null != astList);
-            astList = SplitMulitpleAssignment(astList);
+            astList = ApplyTransform(astList);
             return BuildSSA(astList, new ProtoCore.CompileTime.Context());
         }
 
@@ -4116,7 +4174,7 @@ namespace ProtoAssociative
                 compilePass = ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncSig;
             }
 
-            codeblock.Body = SplitMulitpleAssignment(codeblock.Body);
+            codeblock.Body = ApplyTransform(codeblock.Body);
             
             bool hasReturnStatement = false;
             ProtoCore.Type inferedType = new ProtoCore.Type();
@@ -8877,7 +8935,7 @@ namespace ProtoAssociative
                 // Transform after class name compile pass
                 if (ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassName > compilePass)
                 {
-                    codeBlockNode.Body = SplitMulitpleAssignment(codeBlockNode.Body);
+                    codeBlockNode.Body = ApplyTransform(codeBlockNode.Body);
                     codeBlockNode.Body = BuildSSA(codeBlockNode.Body, context);
                 }
 
