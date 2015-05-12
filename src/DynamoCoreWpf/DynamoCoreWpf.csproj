@@ -205,6 +205,7 @@
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
+    <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
@@ -218,6 +219,9 @@
     <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Gallery\GalleryView.xaml.cs">
+      <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
@@ -971,6 +975,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Gallery\GalleryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\TermsOfUseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1138,6 +1146,9 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
+    <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
+    <Resource Include="UI\Images\Gallery\gallery-button-next-prev-states.png" />
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
