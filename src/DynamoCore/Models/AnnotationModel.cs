@@ -22,6 +22,7 @@ namespace Dynamo.Models
         private const double DoubleValue = 0.0;
         private const double MinTextHeight = 20.0;
         private const double ExtendSize = 10.0;
+        private const double ExtendYHeight = 5.0;
         public  string GroupBackground = "#FFC1D676";
         //DeletedModelBases is used to keep track of deleted / ungrouped models. 
         //During Undo operations this is used to get those models that are deleted from the group
@@ -281,8 +282,14 @@ namespace Dynamo.Models
         {           
             var xgroup = SelectedModels.OrderBy(x => x.X).ToList();
             var ygroup = SelectedModels.OrderBy(x => x.Y).ToList();
-          
-            return Tuple.Create(xgroup.Last().Width, ygroup.Last().Height);
+            double yheight = ygroup.Last().Height;
+
+            //If the last model is Node, then increase the height so that 
+            //node border does not overlap with the group
+            if (ygroup.Last() is NodeModel)
+                yheight = yheight + ExtendYHeight;
+
+            return Tuple.Create(xgroup.Last().Width, yheight);
         }
               
         #region Serialization/Deserialization Methods
