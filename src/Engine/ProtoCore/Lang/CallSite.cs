@@ -87,7 +87,6 @@ namespace ProtoCore
                 {
                     Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
 
-
                     IFormatter formatter = new SoapFormatter();
                     MemoryStream s = new MemoryStream(data);
                     formatter.Binder = new TraceBinder();
@@ -218,6 +217,11 @@ namespace ProtoCore
             }
         }
 
+        /// <summary>
+        /// TraceBinder is used to find assemblies to be used for
+        /// deserialization in cases where the exact assemlby that was
+        /// used in the serialization is not available. 
+        /// </summary>
         private class TraceBinder : SerializationBinder
         {
             // Use a custom serialization binder to make the serializer more permissive
@@ -264,9 +268,23 @@ namespace ProtoCore
                 int noElements = info.GetInt32("NumberOfElements");
                 for (int i = 0; i < noElements; i++)
                 {
-                    SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
-                        info, context, i, "Base-");
-                    TraceData.Add(srtd);
+                    try
+                    {
+                        SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
+                            info, context, i, "Base-");
+                        TraceData.Add(srtd);
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        // If deserialization fails, continue to the next 
+                        // element. Deserialization will throw an exception in
+                        // contexts where the assembly used do do the serialization,
+                        // or any of its referenced assemblies cannot be resolved.
+#if DEBUG
+                        Debug.WriteLine("Deserialization of trace data failed.");
+#endif
+                        continue;
+                    }
                 }
 
             }
@@ -283,14 +301,32 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// Create a TraceSerialiserHelper from CallSiteData.
+            /// </summary>
+            /// <param name="callSiteData">A string repsenting the CallSiteData </param>
+            /// <returns>A TraceSerialiserHelper or null if deserialization fails.</returns>
             internal static TraceSerialiserHelper FromCallSiteData(string callSiteData)
             {
-                Validity.Assert(!String.IsNullOrEmpty(callSiteData));
-                var data = Convert.FromBase64String(callSiteData);
-                var formatter = new SoapFormatter();
-                var s = new MemoryStream(data);
-                var helper = (TraceSerialiserHelper)formatter.Deserialize(s);
-                return helper;
+                try
+                {
+                    Validity.Assert(!String.IsNullOrEmpty(callSiteData));
+                    var data = Convert.FromBase64String(callSiteData);
+                    var formatter = new SoapFormatter();
+                    formatter.Binder = new TraceBinder();
+                    var s = new MemoryStream(data);
+                    var helper = (TraceSerialiserHelper) formatter.Deserialize(s);
+                    return helper;
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debug.WriteLine("Constructing a TraceSerialiserHelper from CallSiteData failed.");
+                    Debug.WriteLine(ex.Message);
+#endif
+                    return null;
+                }
+                
             }
 
             public List<SingleRunTraceData> TraceData { get; set; }
@@ -398,6 +434,12 @@ namespace ProtoCore
         public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
         {
             var helper = TraceSerialiserHelper.FromCallSiteData(serializedTraceData);
+            if (helper == null)
+            {
+                beforeFirstRunSerializables =  new List<ISerializable>();
+                return;
+            }
+
             this.traceData = helper.TraceData;
 
             // Cache the historical trace data for comparison
@@ -2093,6 +2135,11 @@ namespace ProtoCore
             string callSiteData)
         {
             var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData);
+            if (helper == null)
+            {
+                return new List<ISerializable>();
+            }
+
             var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData()).ToList();
             return serializables;
         }

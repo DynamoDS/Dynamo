@@ -18,17 +18,18 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH)</DefineConstants>
+    <DefineConstants>Debug;definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(OutputPath)</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH)</DefineConstants>
+    <DefineConstants>definitions=$(DYNAMO_MIGRATION_NODES_PATH);base=$(DYNAMO_BASE_PATH);harvest=$(DYNAMO_HARVEST_PATH);samples=$(DYNAMO_SAMPLES_PATH);gallery=$(DYNAMO_GALLERY_PATH)</DefineConstants>
     <WixVariables>
     </WixVariables>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Definitions.wxs" />
+    <Compile Include="Gallery.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Release.wxs" />
     <Compile Include="Samples.wxs" />
@@ -52,6 +53,7 @@ copy $(DYNAMO_BASE_PATH)\tools\install\Extra\RevitAddinUtility.dll $(DYNAMO_HARV
 
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
+"%25WIX%25bin\heat.exe" dir $(DYNAMO_GALLERY_PATH) -cg GALLERY -gg -scom -sreg -dr PROGDATA -var var.gallery -out "$(ProjectDir)Gallery.wxs"
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="BeforeBuild">

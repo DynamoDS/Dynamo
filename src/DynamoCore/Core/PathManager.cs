@@ -47,6 +47,7 @@ namespace Dynamo.Core
         public const string DefinitionsDirectoryName = "definitions";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
+        public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
@@ -61,6 +62,7 @@ namespace Dynamo.Core
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
+        private readonly string galleryFilePath;
 
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
@@ -113,6 +115,11 @@ namespace Dynamo.Core
         public string PreferenceFilePath
         {
             get { return preferenceFilePath; }
+        }
+
+        public string GalleryFilePath
+        {
+            get { return galleryFilePath; }
         }
 
         public IEnumerable<string> NodeDirectories
@@ -260,6 +267,8 @@ namespace Dynamo.Core
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
+            var galleryDirectory = GetGalleryDirectory(commonDataDir);
+            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
             nodeDirectories = new HashSet<string>
             {
@@ -374,6 +383,28 @@ namespace Dynamo.Core
             }
 
             return sampleDirectory;
+        }
+
+        private static string GetGalleryDirectory(string commonDataDir)
+        {
+            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var galleryDirectory = Path.Combine(commonDataDir, "gallery", uiCulture);
+
+            // If the localized samples directory does not exist then fall back 
+            // to using the en-US samples folder. Do an additional check to see 
+            // if the localized folder is available but is empty.
+            // 
+            var di = new DirectoryInfo(galleryDirectory);
+            if (!Directory.Exists(galleryDirectory) ||
+                !di.GetDirectories().Any() ||
+                !di.GetFiles().Any())
+            {
+                var neturalCommonSamples = Path.Combine(commonDataDir, "gallery", "en-US");
+                if (Directory.Exists(neturalCommonSamples))
+                    galleryDirectory = neturalCommonSamples;
+            }
+
+            return galleryDirectory;
         }
 
         private IEnumerable<string> LibrarySearchPaths(string library)

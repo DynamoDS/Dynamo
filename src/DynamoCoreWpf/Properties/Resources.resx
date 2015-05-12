@@ -1624,6 +1624,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackage" xml:space="preserve">
     <value>Publish Package !</value>
   </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>What's New</value>
+  </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
     <value>I Accept</value>
   </data>
@@ -1632,6 +1635,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
+  </data>
+  <data name="GalleryDynamoVersion" xml:space="preserve">
+    <value>Version {0}.{1}</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
@@ -1647,5 +1653,8 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
     <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>Delete Group</value>
   </data>
 </root>

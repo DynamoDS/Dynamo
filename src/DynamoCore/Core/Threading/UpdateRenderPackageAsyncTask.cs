@@ -41,6 +41,7 @@ namespace Dynamo.Core.Threading
         private const byte DefB = 130;
         private const byte DefA = 255;
         private const byte MidTone = 180;
+        private bool renderEdges = false;
 
         #region Class Data Members and Properties
 
@@ -170,25 +171,29 @@ namespace Dynamo.Core.Threading
                 {
                     graphicItem.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
 
-                    var surf = graphicItem as Surface;
-                    if (surf != null)
+                    if (renderEdges)
                     {
-                        foreach (var curve in surf.PerimeterCurves())
+                        var surf = graphicItem as Surface;
+                        if (surf != null)
                         {
-                            curve.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
-                            curve.Dispose();
+                            foreach (var curve in surf.PerimeterCurves())
+                            {
+                                curve.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                                curve.Dispose();
+                            }
+                        }
+
+                        var solid = graphicItem as Solid;
+                        if (solid != null)
+                        {
+                            foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                            {
+                                geom.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                                geom.Dispose();
+                            }
                         }
                     }
-
-                    var solid = graphicItem as Solid;
-                    if (solid != null)
-                    {
-                        foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
-                            geom.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
-                            geom.Dispose();
-                        }
-                    }
-
+                    
                     var plane = graphicItem as Plane;
                     if (plane != null)
                     {

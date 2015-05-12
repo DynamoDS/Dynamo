@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Reflection;
 
 using SystemTestServices;
@@ -37,8 +38,11 @@ namespace DynamoServicesTests
             // Open a definition
             OpenDynamoDefinition(@".\math\Add.dyn");
 
+            var ws = Model.Workspaces.FirstOrDefault();
+            Assert.NotNull(ws);
+
             // Register for the removed event.
-            WorkspaceEvents.WorkspaceRemoved += (args) => Assert.AreEqual(args.Name, "Add");
+            WorkspaceEvents.WorkspaceRemoved += (args) => Assert.AreEqual(args.Id, ws.Guid);
 
             // Open a new definition which should trigger both the 
             // workspace removed and the workspace added events.
