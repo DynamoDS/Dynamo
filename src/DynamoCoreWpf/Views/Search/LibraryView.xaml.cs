@@ -323,5 +323,18 @@ namespace Dynamo.UI.Views
         {
             startPosition = e.GetPosition(null);
         }
+
+        /// <summary>
+        /// On drag&drop starts change cursor to cursor, that is shown when the user is hovering over the workspace.
+        /// </summary>
+        private void OnLibraryViewGiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            e.UseDefaultCursors = e.Effects.HasFlag(DragDropEffects.Copy) || e.Effects.HasFlag(DragDropEffects.Move);
+
+            if (!e.UseDefaultCursors)
+                Mouse.SetCursor(Cursors.No);
+
+            e.Handled = true;
+        }
     }
 }
