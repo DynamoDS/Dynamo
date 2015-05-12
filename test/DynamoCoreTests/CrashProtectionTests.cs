@@ -74,7 +74,7 @@ namespace Dynamo.Tests
 
             // save the file to a temp location
             var tp = Path.Combine(TempFolder, "tempCrashProtection.dyn");
-            ws.SaveAs(tp, CurrentDynamoModel.EngineController.LiveRunnerCore);
+            ws.SaveAs(tp, CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
 
             // open the file
             var nws = Open<HomeWorkspaceModel>(tp);
@@ -147,5 +147,17 @@ namespace Dynamo.Tests
             }
         }
 
+        [Test]
+        public void MAGN_7146()
+        {
+            Assert.DoesNotThrow(() =>
+            {
+                // MAGN-7146 was saved after a crash- Test is to check if it reopens as manual after a crash
+                var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "MAGN_7146.dyn");
+                var a = ws.RunSettings.RunType;
+                Assert.AreEqual(ws.RunSettings.RunType, RunType.Manual);
+            });
+            
+        }
     }
 }

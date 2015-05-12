@@ -46,9 +46,7 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(0, annotation.Y);
             Assert.AreNotEqual(0, annotation.X);
             Assert.AreNotEqual(0, annotation.Width);
-            Assert.AreNotEqual(0, annotation.Height);
-
-            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+            Assert.AreNotEqual(0, annotation.Height);           
         }
 
         [Test]
@@ -294,8 +292,6 @@ namespace DynamoCoreWpfTests
 
             //verify only annotation was deleted and not the note
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
-
-            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
 
         [Test]
@@ -325,9 +321,7 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(0, annotation.Y);
             Assert.AreNotEqual(0, annotation.X);
             Assert.AreNotEqual(0, annotation.Width);
-            Assert.AreNotEqual(0, annotation.Height);
-
-            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+            Assert.AreNotEqual(0, annotation.Height);           
         }
 
         [Test]
@@ -360,8 +354,6 @@ namespace DynamoCoreWpfTests
 
             //verify only annotation was deleted and not the note
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
-
-            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
 
         [Test]
@@ -548,6 +540,150 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(false, ViewModel.CanAddModelsToGroup(null));
         }
 
+        [Test]
+        [Category("DynamoUI")]
+        public void SelectingTheGroupShouldSelectTheModels()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+           
+            //Selecting the Group should select the models within that group
+            var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+            Assert.IsNotNull(vm);
+            vm.Select();
+            Assert.AreEqual(annotation.SelectedModels.Count(), annotation.SelectedModels.Count(x => x.IsSelected));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void DeletingTheGroupShouldDeleteTheGroupAndModels()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            //Selecting the Group should select the models within that group 
+            var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+            Assert.IsNotNull(vm);
+            vm.Select();
+            Assert.AreEqual(annotation.SelectedModels.Count(), annotation.SelectedModels.Count(x => x.IsSelected));
+
+            //Execute the delete command - This should delete the entire group and models
+            ViewModel.DeleteCommand.Execute(null);
+            Assert.AreEqual(null, ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault());
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void UndoDeletingTheGroupShouldBringTheGroupAndModelsBack()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            //Selecting the Group should select the models within that group 
+            var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+            Assert.IsNotNull(vm);
+            vm.Select();
+            Assert.AreEqual(annotation.SelectedModels.Count(), annotation.SelectedModels.Count(x => x.IsSelected));
+
+            //Execute the delete command - This should delete the entire group and models
+            ViewModel.DeleteCommand.Execute(null);
+            Assert.AreEqual(null, ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault());
+
+            //Undo the operation
+            ViewModel.CurrentSpace.Undo();
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count());
+
+            annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+            Assert.IsNotNull(annotation);
+            Assert.AreEqual(1, annotation.SelectedModels.Count());
+
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void TestCrossSelectingGroups()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            //Get the Rect for the group
+            var rect = annotation.Rect;
+            ViewModel.CurrentSpaceViewModel.SelectInRegion(rect,true);
+
+            //Check whether group is selected
+            Assert.AreEqual(true, annotation.IsSelected);
+
+            //Check whether the model is selected
+            Assert.AreEqual(true,addNode.IsSelected);
+        }
 
         #endregion
     }

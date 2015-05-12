@@ -500,7 +500,7 @@ namespace Dynamo.DSEngine
             }
 
             var callsiteToOrphanMap = new Dictionary<Guid, List<ISerializable>>();
-            foreach (var cs in liveRunnerServices.Core.DSExecutable.CallsiteCache.Values)
+            foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
             {
                 var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
                 if (callsiteToOrphanMap.ContainsKey(cs.CallSiteID))

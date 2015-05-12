@@ -52,7 +52,7 @@ namespace Dynamo.Models
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
-
+        private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         #endregion
 
         #region events
@@ -576,7 +576,7 @@ namespace Dynamo.Models
             {
                 if (!kvp.Value.Any()) continue;
 
-                var nodeGuid = EngineController.LiveRunnerCore.DSExecutable.CallSiteToNodeMap[kvp.Key];
+                var nodeGuid = EngineController.LiveRunnerRuntimeCore.RuntimeData.CallSiteToNodeMap[kvp.Key];
 
                 // TODO: MAGN-7314
                 // Find the owning workspace for a node.
@@ -741,7 +741,10 @@ namespace Dynamo.Models
                 CustomNodeManager.InfoUpdated += newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
+                    {
                         searchElement.SyncWithCustomNodeInfo(newInfo);
+                        SearchModel.Update(searchElement);
+                    }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
                 {
@@ -1165,28 +1168,39 @@ namespace Dynamo.Models
         protected void SaveBackupFiles(object state)
         {
             OnRequestDispatcherBeginInvoke(() =>
-            {
+            {               
+                // tempDict stores the list of backup files and their corresponding workspaces IDs
+                // when the last auto-save operation happens. Now the IDs will be used to know
+                // whether some workspaces have already been backed up. If so, those workspaces won't be
+                // backed up again.
+                var tempDict = new Dictionary<Guid,string>(backupFilesDict);
+                backupFilesDict.Clear();
+                PreferenceSettings.BackupFiles.Clear();
                 foreach (var workspace in Workspaces)
                 {
                     if (!workspace.HasUnsavedChanges)
-                        continue;
+                    {
+                        if (workspace.Nodes.Count == 0 &&
+                            workspace.Notes.Count == 0)
+                            continue;
 
-                    string fileName;
-                    if (string.IsNullOrEmpty(workspace.FileName))
-                    {
-                        fileName = Configurations.BackupFileNamePrefix + workspace.Guid;
-                        var ext = workspace is HomeWorkspaceModel ? ".DYN" : ".DYF";
-                        fileName += ext;
-                    }
-                    else
-                    {
-                        fileName = Path.GetFileName(workspace.FileName);
+                        if (tempDict.ContainsKey(workspace.Guid))
+                        {
+                            backupFilesDict.Add(workspace.Guid, tempDict[workspace.Guid]);
+                            continue;
+                        }
                     }
 
-                    var savePath = Path.Combine(pathManager.BackupDirectory, fileName);
+                    var savePath = pathManager.GetBackupFilePath(workspace);
+                    var oldFileName = workspace.FileName;
+                    var oldName = workspace.Name;
                     workspace.SaveAs(savePath, null);
+                    workspace.FileName = oldFileName;
+                    workspace.Name = oldName;
+                    backupFilesDict.Add(workspace.Guid, savePath);
                     Logger.Log("Backup file is saved: " + savePath);
                 }
+                PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
         }
 
