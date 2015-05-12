@@ -496,6 +496,57 @@ namespace ProtoCore
             ProtoCore.AST.Node setterArgument = null
             );
 
+        //
+        //  proc AutoGenerateUpdateArgumentReference(node)
+        //      def proplist = dfsGetSymbolList(node)
+        //      if lhs[0] is an argument
+        //          proplist = getExceptFirst(lhs)
+        //      end
+        //      fnode.updatedArgProps.push(proplist)
+        //  end
+        //
+        protected ProtoCore.AssociativeGraph.UpdateNodeRef AutoGenerateUpdateArgumentReference(
+            ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef, ProtoCore.AssociativeGraph.GraphNode graphNode)
+        {
+
+            ProtoCore.DSASM.SymbolNode firstSymbol = null;
+
+
+            // Check if we are inside a procedure
+            if (null != localProcedure)
+            {
+                // Check if there are at least 2 symbols in the list
+                if (nodeRef.nodeList.Count >= 2)
+                {
+                    firstSymbol = nodeRef.nodeList[0].symbol;
+                    if (null != firstSymbol && nodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
+                    {
+                        // Now check if the first element of the identifier list is an argument
+                        foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.argInfoList)
+                        {
+                            if (argInfo.Name == firstSymbol.name)
+                            {
+                                nodeRef.nodeList.RemoveAt(0);
+
+                                List<ProtoCore.AssociativeGraph.UpdateNodeRef> refList = null;
+                                bool found = localProcedure.updatedArgumentProperties.TryGetValue(argInfo.Name, out refList);
+                                if (found)
+                                {
+                                    refList.Add(nodeRef);
+                                }
+                                else
+                                {
+                                    refList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
+                                    refList.Add(nodeRef);
+                                    localProcedure.updatedArgumentProperties.Add(argInfo.Name, refList);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return nodeRef;
+        }
 
         //  
         //  proc dfsgetsymbollist(node, lefttype, nodeRef)
@@ -2612,6 +2663,9 @@ namespace ProtoCore
                     {
                         graphNode.updateNodeRefList.Add(nodeRef);
                         graphNode.IsLHSIdentList = true;
+
+                        ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeArgRef = AutoGenerateUpdateArgumentReference(nodeRef, graphNode);
+                        //graphNode.updateNodeRefList.Add(leftNodeArgRef);
                     }
                 }
             }

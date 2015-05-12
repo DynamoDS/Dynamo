@@ -7682,7 +7682,7 @@ namespace ProtoAssociative
         //      fnode.updatedArgProps.push(proplist)
         //  end
         //
-        private ProtoCore.AssociativeGraph.UpdateNodeRef AutoGenerateUpdateArgumentReference(AssociativeNode node, ProtoCore.AssociativeGraph.GraphNode graphNode)
+        private ProtoCore.AssociativeGraph.UpdateNodeRef __To__Deprecate__AutoGenerateUpdateArgumentReference(AssociativeNode node, ProtoCore.AssociativeGraph.GraphNode graphNode)
         {
             // Get the lhs symbol list
             ProtoCore.Type type = new ProtoCore.Type();
@@ -7883,7 +7883,7 @@ namespace ProtoAssociative
             }
 
             ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = AutoGenerateUpdateReference(binaryExpr.LeftNode, graphNode);
-            ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeArgRef = AutoGenerateUpdateArgumentReference(binaryExpr.LeftNode, graphNode);
+            ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeArgRef = __To__Deprecate__AutoGenerateUpdateArgumentReference(binaryExpr.LeftNode, graphNode);
 
             ProtoCore.AST.Node lnode = binaryExpr.LeftNode;
             NodeUtils.CopyNodeLocation(lnode, binaryExpr);
