@@ -144,7 +144,7 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
 
 	<!-- Get System.Drawing.dll -->
 	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v4.0">
