@@ -93,22 +93,6 @@ namespace Dynamo
                 });
         }
 
-        protected virtual string GetUserUserDataRootFolder()
-        {
-            // Override in derived classed to provide a custom
-            // UserAppDataRootFolder. Returning an empty string
-            // here will cause the PathManager to use its default.
-            return string.Empty;
-        }
-
-        protected virtual string GetCommonDataRootFolder()
-        {
-            // Override in derived classed to provide a custom
-            // CommonAppDataRootFolder. Returning an empty string
-            // here will cause the PathManager to use its default.
-            return string.Empty;
-        }
-
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel
         {
             var path = Path.Combine(relativePathParts);

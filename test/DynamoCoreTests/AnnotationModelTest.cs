@@ -351,5 +351,99 @@ namespace Dynamo.Tests
             //Group should have the new note added 
             Assert.AreEqual(4, annotation.SelectedModels.Count());
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestDefaultColorForAGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            //Check the default color - it should be green
+            Assert.AreEqual(annotation.GroupBackground, annotation.Background);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeTheBackgroundForAGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            //Check the default color - it should be green
+            Assert.AreEqual(annotation.GroupBackground, annotation.Background);
+
+            //change the color
+            annotation.Background = "#ff7bac";
+
+            //Check the  color - it should be ff7bac
+            Assert.AreEqual("#ff7bac", annotation.Background);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CopyPasteTextWithCarriageIntoAGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            //now change the text
+            annotation.AnnotationText = "This is a test\r\n\r\nfor carriage return";
+            Assert.AreEqual(annotation.AnnotationText, "This is a test\r\n\r\nfor carriage return");                   
+        }
     }
 }

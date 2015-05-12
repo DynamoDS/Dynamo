@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<GalleryContents xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<GalleryUiContents>
+	<GalleryContent>
+		<Header>Colors in geometry</Header>
+		<Body>You can now apply colors into the geometry that you create. Visualise all your analysis data using color coded elements within Dynamo. Look out for Core > Display. Canvas also comes with better grid and the ability to visualise vectors.</Body>
+		<ImagePath>colored_geometry.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Grouping and annotation</Header>
+		<Body>You can select multiple nodes and group them together to add note related to that group. Shortcut is Ctrl + G for grouping. For switching between background preview and node view, use Ctrl + B</Body>
+		<ImagePath>grouping_annotation.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Crash recovery</Header>
+		<Body>All your working files are always safe, even when Dynamo crashes. Look out for the recovered files in the start page when you restart Dynamo after crash.</Body>
+		<ImagePath>crash_recovery.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Control multiple node states</Header>
+		<Body>You can select multiple nodes at one to toggle on / off the geometry preview.</Body>
+		<ImagePath>multiple_previews.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Library items drag-able</Header>
+		<Body>You can now drag items from library. It helps you place your nodes precisely in the first try.</Body>
+		<ImagePath>library_draggable.png</ImagePath>
+	</GalleryContent>
+	</GalleryUiContents>
+</GalleryContents>

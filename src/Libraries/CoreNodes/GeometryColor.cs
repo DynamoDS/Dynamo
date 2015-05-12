@@ -12,6 +12,7 @@ namespace DSCore
     {
         internal Geometry geometry;
         internal Color color;
+        private bool renderEdges = false;
 
         private Display(Geometry geometry, Color color)
         {
@@ -51,23 +52,26 @@ namespace DSCore
 
             geometry.Tessellate(package, tol, maxGridLines);
 
-            var surf = geometry as Surface;
-            if (surf != null)
+            if (renderEdges)
             {
-                foreach (var curve in surf.PerimeterCurves())
+                var surf = geometry as Surface;
+                if (surf != null)
                 {
-                    curve.Tessellate(package, tol, maxGridLines);
-                    curve.Dispose();
+                    foreach (var curve in surf.PerimeterCurves())
+                    {
+                        curve.Tessellate(package, tol, maxGridLines);
+                        curve.Dispose();
+                    }
                 }
-            }
 
-            var solid = geometry as Solid;
-            if (solid != null)
-            {
-                foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                var solid = geometry as Solid;
+                if (solid != null)
                 {
-                    geom.Tessellate(package, tol, maxGridLines);
-                    geom.Dispose();
+                    foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                    {
+                        geom.Tessellate(package, tol, maxGridLines);
+                        geom.Dispose();
+                    }
                 }
             }
 

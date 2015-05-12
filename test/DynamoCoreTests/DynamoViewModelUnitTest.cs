@@ -104,7 +104,12 @@ namespace Dynamo.Tests
                 // created, otherwise DynamoModel gets created without preloading 
                 // any library.
                 // 
-                pathResolver = new TestPathResolver();
+                var pathResolverParams = new TestPathResolverParams()
+                {
+                    UserDataRootFolder = GetUserUserDataRootFolder(),
+                    CommonDataRootFolder = GetCommonDataRootFolder()
+                };
+                pathResolver = new TestPathResolver(pathResolverParams);
                 foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
                     pathResolver.AddPreloadLibraryPath(preloadedLibrary);
@@ -116,7 +121,7 @@ namespace Dynamo.Tests
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
                 });
 
             this.ViewModel = DynamoViewModel.Start(
