@@ -149,10 +149,15 @@ namespace Dynamo.Tests
 
         [Test]
         public void MAGN_7146()
-        {  
-            var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "MAGN_7146.dyn");
-            var a= ws.RunSettings.RunType;
-            Assert.AreEqual(ws.RunSettings.RunType, RunType.Manual);
+        {
+            Assert.DoesNotThrow(() =>
+            {
+                // MAGN-7146 was saved after a crash- Test is to check if it reopens as manual after a crash
+                var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "MAGN_7146.dyn");
+                var a = ws.RunSettings.RunType;
+                Assert.AreEqual(ws.RunSettings.RunType, RunType.Manual);
+            });
+            
         }
     }
 }
