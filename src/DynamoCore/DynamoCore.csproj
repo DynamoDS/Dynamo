@@ -283,7 +283,6 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
-    <Compile Include="DSEngine\RenderPackage.cs" />
     <EmbeddedResource Include="DynamoCoreImages.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -372,8 +371,8 @@ limitations under the License.
 
 	<!-- Get System.Drawing.dll -->
 	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    	</GetReferenceAssemblyPaths>
+      	<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
 
 	<!-- Get DynamoCore -->
 	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
@@ -387,10 +386,10 @@ limitations under the License.
 
 	<!-- Generate customization dll for ProtoGeometry -->
 	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)ProtoGeometryImages.resx" OutputResources="$(ProjectDir)ProtoGeometryImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    	<AL TargetType="library" EmbedResources="$(ProjectDir)ProtoGeometryImages.resources" OutputAssembly="$(OutDir)ProtoGeometry.customization.dll" Version="%(ProtoGeometryInfo.Version)" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)ProtoGeometryImages.resources" OutputAssembly="$(OutDir)ProtoGeometry.customization.dll" Version="%(ProtoGeometryInfo.Version)" />
 	
 	<!-- Generate customization dll for DynamoCore -->
-    	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    	<AL TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
 </Project>
