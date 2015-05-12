@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Resources;
+using Dynamo.Wpf.UI;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -59,9 +60,8 @@ namespace Dynamo.Wpf.Utilities
 
             foreach (KeyValuePair<CursorSet, string> resource in resources)
             {
-                //Uri uri = new Uri("/DynamoCoreWpf;component/UI/Images/" + resource.Value, UriKind.Relative);
-                Uri uri = new Uri(ResourceNames.ResourceBaseUri + resource.Value);
-                StreamResourceInfo cursorStream = Application.GetResourceStream(uri);
+                const string baseUri = "pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
+                var cursorStream = Application.GetResourceStream(new Uri(baseUri + resource.Value));
                 cursors.Add(new Cursor(cursorStream.Stream));
             }
 

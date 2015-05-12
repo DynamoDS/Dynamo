@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
             }                                
         }
 
-        private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
+        private void OnUngroupAnnotation(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
             {
@@ -98,19 +98,14 @@ namespace Dynamo.Nodes
         {         
             if (GroupTextBlock.IsVisible)
             {
-                var annotationGuid = this.ViewModel.AnnotationModel.GUID;
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+                ViewModel.Select();
+            }
 
-                //Select all the models inside the group - This avoids some performance bottleneck 
-                //with many nodes selected at the same time - which makes moving the group very slow
-                DynamoSelection.Instance.Selection.AddRange(ViewModel.AnnotationModel.SelectedModels);
-
-                foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
-                {
-                    //Make sure that models have the selection border inside a group when selected
-                    models.IsSelected = true;                    
-                }
+            //When Textbox is visible,clear the selection. That way, models will not be added to
+            //dragged nodes one more time. Ref: MAGN-7321
+            if (GroupTextBlock.IsVisible && e.ClickCount >= 2)
+            {
+                DynamoSelection.Instance.ClearSelection();
             }
         }
      
@@ -163,6 +158,15 @@ namespace Dynamo.Nodes
             var textbox = sender as TextBox;
             if (textbox != null && textbox.Visibility == Visibility.Visible)
             {
+                //Record the value here, this is useful when title is poped from stack during undo
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                   new DynCmd.UpdateModelValueCommand(
+                       System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
+                       GroupTextBox.Text));
+
+                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+
                 textbox.Focus();
                 if (textbox.Text.Equals(Dynamo.Properties.Resources.GroupDefaultText))
                 {
@@ -182,19 +186,19 @@ namespace Dynamo.Nodes
             this.GroupTextBox.CaretIndex = Int32.MaxValue;
         }
 
-        private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        /// <summary>
+        /// This function will delete the group with modes
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
         {
-            if (ViewModel != null && (bool) e.NewValue)
+            //Select the group and the models within that group
+            if (ViewModel != null)
             {
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
-                        GroupTextBox.Text));
-
-                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+                ViewModel.Select();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }
-
         }
     }
 }

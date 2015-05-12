@@ -10,9 +10,11 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerClient
+    internal class PackageManagerClient
     {
         #region Properties/Fields
+
+        public const string PackageEngineName = "dynamo";
 
         // These were used early on in order to identify packages with binaries and python scripts
         // This is now a bona fide field in the DB so they are obsolete. 
@@ -24,10 +26,11 @@ namespace Dynamo.PackageManager
             "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
         private readonly IGregClient client;
-        private readonly CustomNodeManager customNodeManager;
-        private readonly string rootPackageDirectory;
         private readonly IAuthProvider authProvider;
+        private readonly IPackageUploadBuilder uploadBuilder;
 
+        private readonly string packagesDirectory;
+       
         public event Action<LoginState> LoginStateChanged;
 
         /// <summary>
@@ -53,7 +56,7 @@ namespace Dynamo.PackageManager
         {
             get { return this.client.BaseUrl; }
         }
-
+        
         /// <summary>
         ///     Determines if the this.client has login capabilities
         /// </summary>
@@ -64,13 +67,15 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        internal PackageManagerClient(IGregClient client, string rootPackageDirectory, CustomNodeManager customNodeManager)
+        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder)
         {
-            this.rootPackageDirectory = rootPackageDirectory;
-            this.customNodeManager = customNodeManager;
+            this.uploadBuilder = builder;
             this.client = client;
+
             this.authProvider = this.client.AuthProvider;
 
+            // The lack of AuthProvider indicates that the user cannot login for this
+            // session.  Hence, we do not subscribe to this event.
             if (this.authProvider != null)
             {
                 this.authProvider.LoginStateChanged += OnLoginStateChanged;
@@ -103,10 +108,19 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal string DownloadPackage(string packageId, string version)
+        internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
         {
-            var response = this.client.Execute( new PackageDownload( packageId, version) );
-            return PackageDownload.GetFileFromResponse(response);
+            try
+            {
+                var response = this.client.Execute(new PackageDownload(packageId, version));
+                pathToPackage = PackageDownload.GetFileFromResponse(response);
+                return PackageManagerResult.Succeeded();
+            }
+            catch (Exception e)
+            {
+                pathToPackage = null;
+                return PackageManagerResult.Failed(e.Message);
+            }
         }
 
         internal IEnumerable<PackageHeader> ListAll()
@@ -138,55 +152,53 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle Publish(Package package, List<string> files, bool isNewVersion, bool isTestMode)
+        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, bool isNewVersion)
         {
-            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(package));
-            return PublishPackage(isNewVersion, package, files, packageUploadHandle, isTestMode);
-        }
+            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
-        private PackageUploadHandle PublishPackage(bool isNewVersion, Package package, List<string> files,
-            PackageUploadHandle packageUploadHandle, bool isTestMode)
-        {
             Task.Factory.StartNew(() =>
             {
-                try
-                {
-                    ResponseBody ret = null;
-                    if (isNewVersion)
-                    {
-                        var pkg = PackageUploadBuilder.NewPackageVersion(this.rootPackageDirectory, this.customNodeManager, package, files,
-                            packageUploadHandle, isTestMode);
-                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                        ret = this.client.ExecuteAndDeserialize(pkg);
-                    }
-                    else
-                    {
-                        var pkg = PackageUploadBuilder.NewPackage(this.rootPackageDirectory, this.customNodeManager, package, files,
-                            packageUploadHandle, isTestMode);
-                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                        ret = this.client.ExecuteAndDeserialize(pkg);
-                    }
-                    if (ret == null)
-                    {
-                        packageUploadHandle.Error("Failed to submit.  Try again later.");
-                        return;
-                    }
-
-                    if (ret != null && !ret.success)
-                    {
-                        packageUploadHandle.Error(ret.message);
-                        return;
-                    }
-
-                    packageUploadHandle.Done(null);
-                }
-                catch (Exception e)
-                {
-                    packageUploadHandle.Error(e.GetType() + ": " + e.Message);
-                }
+                Publish(package, files, isNewVersion, packageUploadHandle);
             });
 
             return packageUploadHandle;
+        }
+
+        internal void Publish(Package package, IEnumerable<string> files, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        {
+            try
+            {
+                ResponseBody ret = null;
+                if (isNewVersion)
+                {
+                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packagesDirectory, files,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                else
+                {
+                    var pkg = uploadBuilder.NewPackageUpload(package, packagesDirectory, files,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                if (ret == null)
+                {
+                    packageUploadHandle.Error("Failed to submit.  Try again later.");
+                }
+
+                if (ret != null && !ret.success)
+                {
+                    packageUploadHandle.Error(ret.message);
+                }
+
+                packageUploadHandle.Done(null);
+            }
+            catch (Exception e)
+            {
+                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+            }
         }
 
         internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
@@ -213,7 +225,7 @@ namespace Dynamo.PackageManager
         {
             return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = this.client.ExecuteAndDeserialize(new Deprecate(name, "dynamo"));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Deprecate(name, PackageEngineName));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
         }
@@ -222,7 +234,7 @@ namespace Dynamo.PackageManager
         {
             return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, "dynamo"));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, PackageEngineName));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
         }

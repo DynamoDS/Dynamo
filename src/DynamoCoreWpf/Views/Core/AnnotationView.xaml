@@ -131,9 +131,12 @@
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                               Name="UngroupAnnotation"
+                           Click="OnUngroupAnnotation"/>               
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
                                Name="ChangeSize">                   
                     <MenuItem Header ="14" Name="FontSize0" Command="{Binding ChangeFontSize}" CommandParameter="14"
@@ -209,8 +212,7 @@
                     MinHeight="20"   
                     FontFamily="Trebuchet" 
                     FontSize="{Binding FontSize}"                   
-                    LineStackingStrategy="BlockLineHeight"
-                    IsVisibleChanged="GroupTextBlock_OnIsVisibleChanged"   
+                    LineStackingStrategy="BlockLineHeight"                    
                     TextWrapping="Wrap">                  
             </TextBlock>
             <TextBox 
@@ -224,7 +226,9 @@
                     FontSize="{Binding FontSize}"                                 
                     IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
                     GotFocus="GroupTextBox_OnGotFocus"                   
-                    TextChanged="GroupTextBox_OnTextChanged"                            
+                    TextChanged="GroupTextBox_OnTextChanged"   
+                    AcceptsReturn="True"
+                    AcceptsTab="True"
                     Style="{StaticResource SZoomFadeTextBox}">                  
             </TextBox>
             

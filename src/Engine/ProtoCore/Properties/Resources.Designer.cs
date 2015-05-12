@@ -1222,6 +1222,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type is invalid.
+        /// </summary>
+        public static string kInvalidType {
+            get {
+                return ResourceManager.GetString("kInvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal error, please report: Method &apos;{0}()&apos; is invoked on an invalid object. (fa006d2b).
         /// </summary>
         public static string kInvokeMethodOnInvalidObject {

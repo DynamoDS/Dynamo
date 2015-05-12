@@ -159,7 +159,7 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
-        public PackageManagerClient Model { get; private set; }
+        internal PackageManagerClient Model { get; private set; }
 
         public LoginState LoginState
         {
@@ -186,7 +186,7 @@ namespace Dynamo.ViewModels
 
         public ICommand ToggleLoginStateCommand { get; private set; }
 
-        public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
+        internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
             this.DynamoViewModel = dynamoViewModel;
             Model = model;
@@ -411,7 +411,6 @@ namespace Dynamo.ViewModels
         /// 
         /// Note that, if the package is already installed, it must be uninstallable
         /// </summary>
-        /// <param name="packageDownloadHandle"></param>
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
         {
             Downloads.Add(packageDownloadHandle);
@@ -420,56 +419,58 @@ namespace Dynamo.ViewModels
 
             Task.Factory.StartNew(() =>
             {
-                try
-                {
-                    var pathDl = Model.DownloadPackage(packageDownloadHandle.Header._id,
-                        packageDownloadHandle.VersionName);
+                // Attempt to download package
+                string pathDl;
+                var res = Model.DownloadPackage(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName, out pathDl);
 
-                    DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
+                // if you fail, update download handle and return
+                if (!res.Success)
+                {
+                    packageDownloadHandle.Error(res.Error);
+                    return;
+                }
+
+                // if success, proceed to install the package
+                DynamoViewModel.UIDispatcher.BeginInvoke((Action)(() =>
+                {
+                    try
                     {
-                        try
+                        packageDownloadHandle.Done(pathDl);
+
+                        Package dynPkg;
+
+                        var firstOrDefault = DynamoViewModel.Model.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                        if (firstOrDefault != null)
                         {
-                            packageDownloadHandle.Done(pathDl);
-
-                            Package dynPkg;
-
-                            var firstOrDefault = DynamoViewModel.Model.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
-                            if (firstOrDefault != null)
+                            var dynModel = DynamoViewModel.Model;
+                            try
                             {
-                                var dynModel = DynamoViewModel.Model;
-                                try
-                                {
-                                    firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynModel.PackageLoader, dynModel.PreferenceSettings);
-                                }
-                                catch
-                                {
-                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
-                                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                                        packageDownloadHandle.Name),
-                                        Resources.UninstallFailureMessageBoxTitle, 
-                                        MessageBoxButton.OK, MessageBoxImage.Error);
-                                }
+                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynModel.PackageLoader, dynModel.PreferenceSettings);
                             }
-
-                            if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
+                            catch
                             {
-                                var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
-                                DynamoViewModel.Model.PackageLoader.Load(p);
-
-                                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                                MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
+                                    DynamoViewModel.BrandingResourceProvider.ProductName,
+                                    packageDownloadHandle.Name),
+                                    Resources.UninstallFailureMessageBoxTitle, 
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
-                        catch (Exception e)
-                        {
-                            packageDownloadHandle.Error(e.Message);
-                        }
-                    }));
 
-                }
-                catch (Exception e)
-                {
-                    packageDownloadHandle.Error(e.Message);
-                }
+                        if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
+                        {
+                            var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                            DynamoViewModel.Model.PackageLoader.Load(p);
+
+                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        packageDownloadHandle.Error(e.Message);
+                    }
+                }));
+
             });
 
         }

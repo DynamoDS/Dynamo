@@ -516,4 +516,12 @@
     <value>entwine;listcreate,newlist;makelist;list;</value>
     <comment>search tags for list.create</comment>
   </data>
+  <data name="DoubleSliderSearchTags" xml:space="preserve">
+    <value>double;number;float;integer;slider</value>
+    <comment>Search tags for DoubleSlider node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
+  </data>
+  <data name="DynamoConvertSearchTags" xml:space="preserve">
+    <value>Convert;Units;Length;Area;Volume</value>
+    <comment>Search tags for DynamoConvert node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
+  </data>
 </root>

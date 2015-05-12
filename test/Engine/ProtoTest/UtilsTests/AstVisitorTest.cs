@@ -51,6 +51,27 @@ namespace ProtoTest.UtilsTests
         }
     }
 
+    class AstReplacerTest: AstReplacer 
+    {
+        private string variableName;
+        private IntNode newValueNode;
+
+        public BinaryExpressionNode ReplaceWithConstant(BinaryExpressionNode node, string variable, int value)
+        {
+            variableName = variable;
+            newValueNode = AstFactory.BuildIntNode(value);
+            return node.Accept(this) as BinaryExpressionNode;
+        }
+
+        public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
+        {
+            if (node.Value.Equals(variableName))
+                return newValueNode;
+            else
+                return node;
+        }
+    }
+
     [TestFixture]
     class AstVisitorTest
     {
@@ -69,5 +90,19 @@ namespace ProtoTest.UtilsTests
             Assert.IsTrue(newLhs != null && newLhs.Value == "x" && newRhs != null && newRhs.Value == 21);
         }
         
+        [Test]
+        public void TestAstReplacer()
+        {
+            AstReplacerTest replacer = new AstReplacerTest();
+
+            var lhs = AstFactory.BuildIdentifier("x");
+            var rhs = AstFactory.BuildIdentifier("y");
+            var expression1 = AstFactory.BuildAssignment(lhs, rhs);
+
+            var newExpression = replacer.ReplaceWithConstant(expression1, "y", 21);
+            var newLhs = newExpression.LeftNode as IdentifierNode;
+            var newRhs = newExpression.RightNode as IntNode;
+            Assert.IsTrue(newLhs != null && newLhs.Value == "x" && newRhs != null && newRhs.Value == 21);
+        }
     }
 }

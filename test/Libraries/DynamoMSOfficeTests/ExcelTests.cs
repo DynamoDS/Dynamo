@@ -17,6 +17,7 @@ namespace Dynamo.Tests
         {
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSOffice.dll");
+            libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -320,7 +321,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -523,7 +524,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNodeAndUpdateData.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -563,6 +564,166 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void CanWriteJaggedArrayToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteJaggedArrayToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            // Makes use of UnitTestBase.TempFolder since that folder is always 
+            // guaranteed to be different for each test, and will get deleted when 
+            // the test shuts down.
+            // 
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            Assert.AreEqual(4, list.Count());
+
+            // get data returns 2d array
+            // input array is Transpose of {{1,2,3,null}, {1,2,3,4}, {null,2,3}}
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(3, rowList.Count());
+            Assert.AreEqual(null, rowList[2].Data);
+
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            Assert.AreEqual(3, rowList.Count());
+            Assert.AreEqual(null, rowList[0].Data);
+            Assert.AreEqual(null, rowList[2].Data);
+
+        }
+
+        [Test]
+        public void CanWriteEmptyArrayToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteEmptyArrayToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            Assert.AreEqual(3, list.Count());
+
+            // get data returns 1d array
+            // input array is {2, null, 3}
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(2, rowList[0].Data);
+
+            rowList = list[1].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(null, rowList[0].Data);
+
+            rowList = list[2].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(3, rowList[0].Data);
+            
+        }
+
+        [Test]
+        public void CanWriteNullValuesToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // returns empty list
+            Assert.AreEqual(0, list.Count());
+
+        }
+
+        [Test]
+        public void CanWriteNullValuesToExcel1()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel1.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            Assert.AreEqual(3, list.Count());
+
+            // get data returns 1d array
+            // input array is {2, null, 3}
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(2, rowList[0].Data);
+
+            rowList = list[1].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(null, rowList[0].Data);
+
+            rowList = list[2].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(3, rowList[0].Data);
+
+        }
+
+        [Test]
+        public void TestWriteFunctionObjectToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteFunctionobject.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // Empty list expected
+            Assert.AreEqual(0, list.Count);
+        }
 
         #endregion
 
@@ -574,7 +735,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_SaveAs.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
 
             stringNode.Value = filePath;

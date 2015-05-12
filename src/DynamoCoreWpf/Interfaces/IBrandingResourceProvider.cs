@@ -10,11 +10,6 @@ namespace Dynamo.Wpf.Interfaces
         {
             Image,
             Title,
-            AgreementOne,
-            AgreementTwo,
-            FeatureUsage,
-            NodeUsage,
-            AgreementThree,
         }
 
         public enum StartPage

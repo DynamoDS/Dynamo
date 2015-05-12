@@ -76,6 +76,8 @@ namespace Dynamo.ViewModels
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
+            ShowGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(true), o => true);
+            CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
         }
        
         public DelegateCommand OpenCommand { get; set; }
@@ -149,5 +151,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
+        public DelegateCommand ShowGalleryCommand { get; set; }
+        public DelegateCommand CloseGalleryCommand { get; set; }
     }
 }
