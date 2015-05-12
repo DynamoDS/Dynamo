@@ -230,14 +230,8 @@ namespace Dynamo.UI
 
         #region Backup
 
-        public static string BackupFileNamePrefix = "recent_new_file_";
+        public static string BackupFileNamePrefix = "backup";
 
         #endregion
-    }
-
-    public class ResourceNames
-    {
-        public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
-        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
     }
 }

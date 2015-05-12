@@ -1294,16 +1294,7 @@ namespace ProtoImperative
                         ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { DefaultExpression = aDefaultExpression };
                         localProcedure.argInfoList.Add(argInfo);
                     }
-                }
-
-
-                // TODO Jun: Remove this once agree that alltest cases assume the default assoc block is block 0
-                // NOTE: Only affects mirror, not actual execution
-                if (null == codeBlock.parent && pc <= 0)
-                {
-                    // The first node in the top level block is a function
-                    core.DSExecutable.isSingleAssocBlock = false;
-                }
+                }         
             }
             else if (parseGlobalFunctionBody)
             {
@@ -1523,16 +1514,14 @@ namespace ProtoImperative
 
                 int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-                int L2 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
 
                 // If-expr
                 IfStmtNode ifnode = node as IfStmtNode;
                 DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, parentNode);
 
-                L1 = pc + 1;
-                L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
+                L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
                 bp = pc;
-                EmitCJmp(L1, L2, ifnode.IfExprNode.line, ifnode.IfExprNode.col, ifnode.IfExprNode.endLine, ifnode.IfExprNode.endCol);
+                EmitCJmp(L1, ifnode.IfExprNode.line, ifnode.IfExprNode.col, ifnode.IfExprNode.endLine, ifnode.IfExprNode.endCol);
 
                 if (!isForInlineCondition)
                 {
@@ -1589,9 +1578,11 @@ namespace ProtoImperative
                 L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
 
                 BackpatchTable backpatchTable = new BackpatchTable();
-                backpatchTable.Append(pc, L1);
-                EmitJmp(L1);
-                EmitPopBlockID();
+                if (ifnode.ElseIfList.Count > 0 || ifnode.ElseBody.Count > 0)
+                {
+                    backpatchTable.Append(pc, L1);
+                    EmitJmp(L1);
+                }
 
                 // Backpatch the L2 destination of the if block
                 Backpatch(bp, pc);
@@ -1617,10 +1608,9 @@ namespace ProtoImperative
                 {
                     DfsTraverse(elseifNode.Expr, ref inferedType, false, graphNode);
 
-                    L1 = pc + 1;
-                    L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
+                    L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
                     bp = pc;
-                    EmitCJmp(L1, L2, elseifNode.Expr.line, elseifNode.Expr.col, elseifNode.Expr.endLine, elseifNode.Expr.endCol);
+                    EmitCJmp(L1, elseifNode.Expr.line, elseifNode.Expr.col, elseifNode.Expr.endLine, elseifNode.Expr.endCol);
 
                     EmitSetExpressionUID(core.ExpressionUID++);
 
@@ -1671,7 +1661,6 @@ namespace ProtoImperative
                     L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
                     backpatchTable.Append(pc, L1);
                     EmitJmp(L1);
-                    EmitPopBlockID();
 
                     // Backpatch the L2 destination of the elseif block
                     Backpatch(bp, pc);
@@ -1735,11 +1724,6 @@ namespace ProtoImperative
 
                     // Restore - Set the local codeblock parent to be the current codeblock
                     codeBlock = localCodeBlock.parent;
-
-                    L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
-                    backpatchTable.Append(pc, L1);
-                    EmitJmp(L1);
-                    EmitPopBlockID();
                 }
 
                 /*
@@ -1775,7 +1759,6 @@ namespace ProtoImperative
 
                 int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-                int L2 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 int entry = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
 
                 entry = pc;
@@ -1783,10 +1766,9 @@ namespace ProtoImperative
                 WhileStmtNode whileNode = node as WhileStmtNode;
                 DfsTraverse(whileNode.Expr, ref inferedType);
 
-                L1 = pc + 1;
-                L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
+                L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
                 bp = pc;
-                EmitCJmp(L1, L2, whileNode.Expr.line, whileNode.Expr.col, whileNode.Expr.endLine, whileNode.Expr.endCol);
+                EmitCJmp(L1, whileNode.Expr.line, whileNode.Expr.col, whileNode.Expr.endLine, whileNode.Expr.endCol);
 
                 EmitSetExpressionUID(core.ExpressionUID++);
 
@@ -1858,7 +1840,6 @@ namespace ProtoImperative
                     codeBlock = localCodeBlock.parent;
 
                     EmitJmp(entry);
-                    EmitPopBlockID();
                     Backpatch(backpatchMap.BreakTable[localCodeBlock.codeBlockId].backpatchList, pc);
                 }
                 Backpatch(bp, pc);

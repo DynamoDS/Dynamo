@@ -46,6 +46,17 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
+        /// <summary>
+        /// These tests depend on nodes in the Dynamo Samples package, which are copied
+        /// at build time into a packages folder in the build directory. We
+        /// override the UserDataRootFolder on the IPathResolver to have the tests look in 
+        /// the packages folder built into the build directory.
+        /// </summary>
+        protected override string GetUserUserDataRootFolder()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
         /* Multi-dimension tests
          * This graph contains:
          * One list: {"Tywin","Cersei","Hodor"}
@@ -112,6 +123,27 @@ namespace Dynamo.Tests
             ws.RemoveNode(traceNode);
 
             BeginRun();
+        }
+
+        [Test]
+        public void Callsite_RunWithTraceDataFromUnresolvedNodes_DoesNotCrash()
+        {
+            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Geometry", "Geometry_Surfaces.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(42, ws.Nodes.Count);
+
+            // The number of connectors is less than what we would expect
+            // beause several of the nodes load as un-commented dummy nodes.
+            Assert.AreEqual(46, ws.Connectors.Count());
+
+            // The guard added around deserialization of types that
+            // can't be resolved will prevent a crash. This test
+            // passes if the workspace runs.
+
+            BeginRun();
+
+            Assert.Pass();
         }
     }
 }

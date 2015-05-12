@@ -768,7 +768,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = exe.RuntimeData.GetCallSite(
+            CallSite callsite = runtimeCore.RuntimeData.GetCallSite(
                 exe.ExecutingGraphnode, 
                 classIndex, 
                 fNode.name, 
@@ -1040,7 +1040,7 @@ namespace ProtoCore.DSASM
                                             registers,
                                             new List<bool>());
 
-            var callsite = exe.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
+            var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
                                             exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);
@@ -4312,15 +4312,6 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void POPB_Handler()
-        {
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                runtimeCore.RuntimeMemory.PopConstructBlockId();
-            }
-            ++pc;
-        }
-
         private void PUSHM_Handler(Instruction instruction)
         {
             int blockId = (int)instruction.op3.opdata;
@@ -6163,42 +6154,27 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.RawDoubleValue.Equals(0))
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1; 
                 }
             }
             else
             {
                 if (opdata1.IsPointer)
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1;
                 }
                 else if (0 == opdata1.opdata)
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op1).opdata;
+                    pc += 1;
                 }
-            }
-        }
-
-        private void JZ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-
-            var opvalue = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-            if (MathUtils.Equals(opvalue, 0))
-            {
-                pc = (int)instruction.op2.opdata;
-            }
-            else
-            {
-                ++pc;
             }
         }
 
@@ -6555,12 +6531,6 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.POPB:
-                    {
-                        POPB_Handler();
-                        return;
-                    }
-
                 case OpCode.PUSHM:
                     {
                         PUSHM_Handler(instruction);
@@ -6781,12 +6751,6 @@ namespace ProtoCore.DSASM
                 case OpCode.CJMP:
                     {
                         CJMP_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JZ:
-                    {
-                        JZ_Handler(instruction);
                         return;
                     }
 
