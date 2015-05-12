@@ -122,7 +122,7 @@
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   
 	<!-- Get System.Drawing.dll -->
-	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v4.0">
       		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     	</GetReferenceAssemblyPaths>
 	
