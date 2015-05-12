@@ -89,6 +89,14 @@ namespace ProtoCore.AssociativeEngine
                             continue;
                         }
 
+                        // No update for auto generated temps
+                        bool isTempVarUpdate = IsTempVarLHS(currentNode);
+                        if (isTempVarUpdate)
+                        {
+                            continue;
+                        }
+
+
                         bool equalIdentList = AreLHSEqualIdentList(currentNode, gnode);
                         if (equalIdentList)
                         {
@@ -99,6 +107,13 @@ namespace ProtoCore.AssociativeEngine
                     }
                 }
             }
+        }
+
+        public static bool IsTempVarLHS(AssociativeGraph.GraphNode graphNode)
+        {
+            Validity.Assert(graphNode != null);
+            Validity.Assert(graphNode.updateNodeRefList.Count > 0);
+            return graphNode.updateNodeRefList[0].nodeList[0].symbol.name.Equals(Constants.kTempVar);
         }
 
         /// <summary>

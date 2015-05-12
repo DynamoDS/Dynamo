@@ -352,6 +352,13 @@ namespace ProtoAssociative
                     continue;
                 }
 
+                // No update for auto generated temps
+                bool isTempVarUpdate = ProtoCore.AssociativeEngine.Utils.IsTempVarLHS(node);
+                if (isTempVarUpdate)
+                {
+                    continue;
+                }
+
                 subNode = GetFinanlStatementOfSSA(subNode, ref n);
 
                 if (indexMap[subNode] == Constants.kInvalidIndex)
@@ -2960,12 +2967,6 @@ namespace ProtoAssociative
                 bool isSSAAssignment = false;
                 if (ProtoCore.DSASM.Operator.assign == astBNode.Optr)
                 {
-                    //bool isLHSIdentList = astBNode.LeftNode is IdentifierListNode;
-                    //if (isLHSIdentList)
-                    //{
-                    //    astBNode = ConvertLHSAssignmentToFunctionCall(astBNode);
-                    //}
-
                     leftNode = astBNode.LeftNode;
                     DFSEmitSSA_AST(astBNode.RightNode, ssaStack, ref astlist);
                     AssociativeNode assocNode = ssaStack.Pop();
@@ -3878,23 +3879,75 @@ namespace ProtoAssociative
                             IdentifierListNode identList = bNode.LeftNode as IdentifierListNode;
                             Validity.Assert(identList != null);
 
-                            List<AssociativeNode> args = new List<AssociativeNode>();
-                            args.Add(bNode.RightNode);
+                            AssociativeNode argument = bNode.RightNode;
 
-                            //AssociativeNode fcall = nodeBuilder.BuildFunctionCall(Constants.kSetterPrefix + identList.RightNode.Name, args);
+                            IdentifierNode identFunctionCall = identList.RightNode as IdentifierNode;
+                            string setterName = ProtoCore.DSASM.Constants.kSetterPrefix + identList.RightNode.Name;
+                            bool isArrayIndexed = identFunctionCall.ArrayDimensions != null;
+                            if (isArrayIndexed)
+                            {
+                                // a.x[0] = 10
+                                //      tval = a.%get_x()
+                                string getterName = ProtoCore.DSASM.Constants.kGetterPrefix + identList.RightNode.Name;
+                                ProtoCore.AST.AssociativeAST.FunctionCallNode fcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+                                fcall.Function = new IdentifierNode(identList.RightNode.Name);
+                                fcall.Function.Name = getterName;
 
-                            ProtoCore.AST.AssociativeAST.FunctionCallNode fcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-                            fcall.Function = new IdentifierNode(identList.RightNode.Name);
-                            fcall.Function.Name = ProtoCore.DSASM.Constants.kSetterPrefix + identList.RightNode.Name;
-                            fcall.FormalArguments = args;
+                                IdentifierListNode identList1 = new IdentifierListNode();
+                                identList1.LeftNode = identList.LeftNode;
+                                identList1.RightNode = fcall;
+                                BinaryExpressionNode bnodeGet = new BinaryExpressionNode(
+                                    lhsTemp,
+                                    identList1
+                                    );
+                                newAstList.Add(bnodeGet);
 
-                            identList.RightNode = fcall;
+                                //      tval[0] = 10     
+                                IdentifierNode lhsTempIndexed = new IdentifierNode(Constants.kTempVar);
+                                lhsTempIndexed.ArrayDimensions = identFunctionCall.ArrayDimensions;
+                                BinaryExpressionNode bnodeAssign = new BinaryExpressionNode(
+                                    lhsTempIndexed,
+                                    argument
+                                    );
+                                newAstList.Add(bnodeAssign);
 
-                            BinaryExpressionNode convertedAssignNode = new BinaryExpressionNode(lhsTemp, identList);
-                            
-                            NodeUtils.CopyNodeLocation(convertedAssignNode, bNode);
-                            newAstList.Add(convertedAssignNode);
-                            
+                                //      tmp = a.%set_x(tval)
+                                ProtoCore.AST.AssociativeAST.FunctionCallNode fcallSet = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+                                fcallSet.Function = identFunctionCall;
+                                fcallSet.Function.Name = setterName;
+                                List<AssociativeNode> args = new List<AssociativeNode>();
+                                IdentifierNode lhsTempAssignBack = new IdentifierNode(Constants.kTempVar);
+                                args.Add(lhsTempAssignBack);
+                                fcallSet.FormalArguments = args;
+
+                                IdentifierListNode identList2 = new IdentifierListNode();
+                                identList2.LeftNode = identList.LeftNode;
+                                identList2.RightNode = fcallSet;
+
+                                IdentifierNode lhsTempAssign = new IdentifierNode(Constants.kTempPropertyVar);
+
+                                BinaryExpressionNode bnodeSet = new BinaryExpressionNode(
+                                  lhsTempAssign,
+                                  identList2
+                                  );
+                                newAstList.Add(bnodeSet);
+                            }
+                            else
+                            {
+                                List<AssociativeNode> args = new List<AssociativeNode>();
+                                args.Add(argument);
+
+                                ProtoCore.AST.AssociativeAST.FunctionCallNode fcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
+                                fcall.Function = identFunctionCall;
+                                fcall.Function.Name = setterName;
+                                fcall.FormalArguments = args;
+
+                                identList.RightNode = fcall;
+                                BinaryExpressionNode convertedAssignNode = new BinaryExpressionNode(lhsTemp, identList);
+
+                                NodeUtils.CopyNodeLocation(convertedAssignNode, bNode);
+                                newAstList.Add(convertedAssignNode);
+                            }
                         }
                     }
                 }
