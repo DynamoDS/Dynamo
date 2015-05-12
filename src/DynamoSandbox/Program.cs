@@ -26,10 +26,9 @@ namespace DynamoSandbox
 
         internal PathResolver(string preloaderLocation)
         {
-            additionalResolutionPaths = new List<string>
-            {
-                preloaderLocation
-            };
+            additionalResolutionPaths = new List<string>();
+            if (Directory.Exists(preloaderLocation))
+                additionalResolutionPaths.Add(preloaderLocation);
 
             additionalNodeDirectories = new List<string>();
             preloadedLibraryPaths = new List<string>
