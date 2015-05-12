@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Models;
 using System.Linq;
+using System;
 
 namespace Dynamo.Tests
 {
@@ -69,7 +70,7 @@ namespace Dynamo.Tests
         }
 
 
-         [Test]
+        [Test]
         public void AttractorPoint()
         {
             // Create automation for Dynamo file : 03 Attractor Point.dyn
@@ -742,7 +743,6 @@ namespace Dynamo.Tests
         }
 
 
-
         [Test]
         public void Test_Sort()
         {
@@ -760,6 +760,7 @@ namespace Dynamo.Tests
             var flat = GetFlattenedPreviewValues(sort);
             Assert.AreEqual(flat, new object[] { -2, 42, "cat", "cheese", "dog" });         
         }
+
 
         [Test]
         public void Test_SortGeometry()
@@ -785,6 +786,7 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(point);
             }
         }
+
 
         [Test]
         public void Test_Surface()
@@ -842,5 +844,213 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(point);
             }                     
         }
+
+
+        [Test]
+        public void Test_buckyballInCodeBlock()
+        {
+            //Create automation for Dynamo file : buckyball in a code block.dyn
+            //This is a training file for demostrating code block function
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\buckyball in a code block.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check CBN that contains 84 lines
+            var lineID = "93a30c71-6a3d-4cf3-8140-b5acc1d33cd6";
+            AssertPreviewCount(lineID, 84);
+            for (int i = 0; i < 84; i++)
+            {
+                var line = GetPreviewValueAtIndex(lineID, i) as Line;
+                Assert.IsNotNull(line);
+            }
+
+            //check CBN tht contains lists of points
+            var p1ID = "d1069b0a-eee2-4784-8793-bbbf5791f52f";
+            var p1List = GetFlattenedPreviewValues(p1ID);
+            Assert.AreEqual(p1List.Count, 4);
+            var point0 = p1List[0] as Point;
+            var point1 = p1List[1] as Point;
+            
+            Assert.AreEqual(point0.X, -point1.X);
+            Assert.AreEqual(System.Math.Floor(point0.Y), 0);
+            Assert.AreEqual(System.Math.Floor(point0.Z), -2);
+            Assert.AreEqual(p1List[2].ToString(), "Point(X = -7.835, Y = 0.000, Z = 1.614)");
+            Assert.AreEqual(p1List[3].ToString(), "Point(X = 7.835, Y = 0.000, Z = 1.614)");      
+        }
+
+
+        [Test]
+        public void Test_SmileyFace()
+        {
+            //Create automation for Dynamo file : SmileyFace.dyn
+            //This is a training file for demostrating cylinder,solid
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\SmileyFace.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check Cylinder.ByPointsRadius
+            var lineID = "c8aaaf1b-975a-4075-99e0-fb0092a232fb";
+            Assert.IsNotNull(lineID);
+            var cylinder = GetPreviewValue(lineID);
+            Assert.AreEqual(cylinder.ToString(), "Cylinder(Radius = 6.000)");
+            
+            //check CBN which contain a function
+            var cbnId = "18e3cdff-8932-4e31-ae82-98c3beee8b08";
+            var cbnValue = GetPreviewValue(cbnId) as Point;
+            Assert.AreEqual(cbnValue.ToString(), "Point(X = 10.000, Y = -19.972, Z = 33.511)");
+            
+            // check Solid.UnionAll
+            var solidId = "0150d478-21a8-472d-a444-6976a3f1079b";
+            var solidValue = GetPreviewValue(solidId) as Solid;
+            Assert.IsNotNull(solidValue);
+            Assert.AreEqual(solidValue.ToString(), "Solid");
+        }
+
+
+        [Test]
+        public void Test_WovenSurface()
+        {
+            //Create automation for Dynamo file : Woven Surface.dyn
+            //This is a training file for demostrating surface, CBN with function
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\Woven Surface.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check Surface.Thicken
+            var surfaceID = "a7b4e678-3278-4554-8ce2-7c76faca79d7";
+            AssertPreviewCount(surfaceID, 4);
+            for (int i = 0; i < 4; i++)
+            {
+                var solid = GetPreviewValueAtIndex(surfaceID, i) as Solid;
+                Assert.AreEqual(solid.ToString(), "Solid");
+            }
+           
+            //check CBN which contain a function
+            var cbnId = "73aa7872-fd75-4542-9270-80daa02de33f";
+            AssertPreviewValue(cbnId,new object[]{0.125,0.375,0.625,0.875});        
+        }
+
+
+
+        [Test]
+        public void Test_Mobius()
+        {
+            //Create automation for Dynamo file : mobius.dyn
+            //This is a training file for demostrating surfaces
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\mobius.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check Surface.ByLoft
+            var surface1ID = "3675e40d-1d1d-4869-b3e1-f8ea67286486";
+            var surface1 = GetPreviewValue(surface1ID) as Surface;
+            Assert.AreEqual(surface1.ToString(), "Surface");
+            var surface2ID = "bca2356e-9225-43d1-a4c1-79f9b9c7e52d";
+            var surface2 = GetPreviewValue(surface2ID) as Surface;
+            Assert.AreEqual(surface2.ToString(), "Surface");
+          
+            //check CBN, which includes a list of Vector
+            var cbnId = "e14439c9-b377-4653-bb63-4edd9a4f90a0";
+            AssertPreviewCount(cbnId, 18);
+            for (int i = 0; i < 18; i++)
+            {
+                var vector = GetPreviewValueAtIndex(cbnId, i) as Vector;
+                Assert.IsNotNull(vector);
+            }
+
+            //check List.Sublist
+            var listID = "07ad5b99-cbb0-481c-b1cc-0b569a88ff2e";
+            var flatList = GetFlattenedPreviewValues(listID);
+            Assert.AreEqual(flatList.Count, 19);
+            foreach (var sublist in flatList)
+            {
+                Assert.IsNotNull(sublist);
+                sublist.GetType().ToString().Equals("Point");
+            }
+               
+        }
+
+
+        #region Vignette Test
+        [Test]
+        public void Test_Vignette_01Plane_Offset()
+        {
+            //Create automation for Dynamo file : Vignette-01-Plane-Offset.dyn
+            //This is a training file for demostrating Plane and Rectangle
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\Vignette\Vignette-01-Plane-Offset.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check Plane.XY
+            var planeID = "80f6e70a-b6e4-452e-9ec3-dffa1106ee28";
+            var plane = GetPreviewValue(planeID) as Plane;
+            Assert.IsNotNull(plane);
+            Assert.AreEqual(plane.ToString(), "Plane(Origin = Point(X = 0.000, Y = 0.000, Z = 0.000), Normal = Vector(X = 0.000, Y = 0.000, Z = 1.000, Length = 1.000), XAxis = Vector(X = 1.000, Y = 0.000, Z = 0.000, Length = 1.000), YAxis = Vector(X = 0.000, Y = 1.000, Z = 0.000, Length = 1.000))");
+
+            // check Plane.Offset
+            var planeOffsetID = "a0db9245-1b0d-4ea2-a125-ec63c69705d5";
+            var planeOffset = GetPreviewValue(planeOffsetID) as Plane;
+            Assert.IsNotNull(plane);
+            Assert.AreEqual(planeOffset.ToString(), "Plane(Origin = Point(X = 0.000, Y = 0.000, Z = 20.000), Normal = Vector(X = 0.000, Y = 0.000, Z = 1.000, Length = 1.000), XAxis = Vector(X = 1.000, Y = 0.000, Z = 0.000, Length = 1.000), YAxis = Vector(X = 0.000, Y = 1.000, Z = 0.000, Length = 1.000))");
+
+            //check Rectangle.ByWidthHeight
+            var rectangle1ID = "49f7b7e2-2e41-463f-9a2e-c77d902d5d97";
+            var rectangle2ID = "2e436c2f-88b6-461f-9208-9852ccf6e731";
+            var rectangle1 = GetPreviewValue(rectangle1ID) as Rectangle;
+            var rectangle2 = GetPreviewValue(rectangle2ID) as Rectangle;
+            Assert.AreEqual(rectangle1.ToString(), rectangle2.ToString());  
+        }
+
+
+        [Test]
+        public void Test_Vignette_01WireFrame_Section()
+        {
+            //Create automation for Dynamo file : Vignette-01-Wireframe-Section.dyn
+            //This is a training file for demostrating Lines and Rectangles
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\Vignette\Vignette-01-Wireframe-Section.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check Line.ByStartPointEndPoint
+            var lineID = "ead8e061-d570-436b-aece-c66c2cd02326";
+            var line = GetPreviewValueAtIndex(lineID, 0);
+            Assert.IsNotNull(line);
+            Assert.AreEqual(line.ToString(), "Line(StartPoint = Point(X = 7.967, Y = 0.000, Z = 18.800), EndPoint = Point(X = -7.967, Y = 0.000, Z = 18.800), Direction = Vector(X = -15.934, Y = 0.000, Z = 0.000, Length = 15.934))");
+
+            // check Line.ByStartPointEndPoint
+            var line2ID = "75480d24-9c8d-46ba-991b-e983cd0d58d3";
+            var line2 = GetPreviewValueAtIndex(line2ID, 0);
+            Assert.IsNotNull(line2);
+            Assert.AreEqual(line2.ToString(), "Line(StartPoint = Point(X = 12.713, Y = 0.000, Z = 30.000), EndPoint = Point(X = -12.713, Y = 0.000, Z = 30.000), Direction = Vector(X = -25.426, Y = 0.000, Z = 0.000, Length = 25.426))");
+
+            //check Rectangular.ByWidthHeight
+            var rectangular1ID = "bc931a2b-bfed-4953-890a-81e672631348";
+            var rectangular1 = GetPreviewValue(rectangular1ID) as Rectangle;
+            Assert.IsNotNull(rectangular1);
+   
+            // check Rectangular.ByWidthHeight
+            var rectangular2ID = "b80fd260-243f-4475-96ec-5542ff0f1d75";
+            var rectangular2 = GetPreviewValue(rectangular2ID) as Rectangle;
+            Assert.AreEqual(rectangular1.ToString(), rectangular2.ToString());
+        }
+        #endregion
     }
 }
