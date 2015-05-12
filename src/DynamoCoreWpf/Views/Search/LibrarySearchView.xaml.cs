@@ -682,10 +682,9 @@ namespace Dynamo.UI.Views
                 topResultListBox.ItemContainerGenerator.StatusChanged -= OnTopResultListBoxIcgStatusChanged;
                 Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
-                            UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
+                        UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
                     }),
-                    DispatcherPriority.Input);
+                    DispatcherPriority.Loaded);
             }
         }
 
