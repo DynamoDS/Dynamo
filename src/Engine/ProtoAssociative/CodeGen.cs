@@ -352,6 +352,12 @@ namespace ProtoAssociative
                     continue;
                 }
 
+                bool equalIdentList = ProtoCore.AssociativeEngine.Utils.AreLHSEqualIdentList(node, subNode);
+                if (equalIdentList)
+                {
+                    continue;
+                }
+
                 // No update for auto generated temps
                 bool isTempVarUpdate = ProtoCore.AssociativeEngine.Utils.IsTempVarLHS(node);
                 if (isTempVarUpdate)

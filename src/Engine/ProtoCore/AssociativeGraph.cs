@@ -214,7 +214,7 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="executingNode"></param>
         /// <param name="dependentNode"></param>
         /// <returns></returns>
-        private static bool AreLHSEqualIdentList(AssociativeGraph.GraphNode node, AssociativeGraph.GraphNode otherNode)
+        public static bool AreLHSEqualIdentList(AssociativeGraph.GraphNode node, AssociativeGraph.GraphNode otherNode)
         {
             bool areBothLHSIdentList = node.IsLHSIdentList && otherNode.IsLHSIdentList;
             if (!areBothLHSIdentList)
