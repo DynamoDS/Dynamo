@@ -221,11 +221,14 @@ namespace ProtoCore.Namespace
             {
                 var identListNode = astNode as IdentifierListNode;
                 var rightNode = identListNode.RightNode;
+                var leftNode = identListNode.LeftNode;
 
                 if (rightNode is FunctionCallNode)
                 {
                     DfsTraverse(ref rightNode, classIdentifiers, resolvedNames);
                 }
+                DfsTraverse(ref leftNode, classIdentifiers, resolvedNames);
+
                 if (resolvedNames.Any())
                 {
                     astNode = RewriteIdentifierListNode(identListNode, resolvedNames);
