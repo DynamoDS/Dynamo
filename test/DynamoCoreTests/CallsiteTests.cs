@@ -8,14 +8,9 @@ using System.Runtime.Serialization;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Core;
-
-using DynamoShapeManager;
 
 using NUnit.Framework;
 
-using TestServices;
 
 namespace Dynamo.Tests
 {
