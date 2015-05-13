@@ -241,13 +241,6 @@ namespace Dynamo.ViewModels
             //Select all the models inside the group - This avoids some performance bottleneck 
             //with many nodes selected at the same time - which makes moving the group very slow
             DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.SelectedModels);
-
-            foreach (var models in this.AnnotationModel.SelectedModels)
-            {
-                //Make sure that models have the selection border inside a group when selected
-                models.IsSelected = true;
-            }
-
         }
     }
 }

@@ -230,7 +230,7 @@ namespace Dynamo.UI
 
         #region Backup
 
-        public static string BackupFileNamePrefix = "recent_new_file_";
+        public static string BackupFileNamePrefix = "backup";
 
         #endregion
     }

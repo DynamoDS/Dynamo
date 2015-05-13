@@ -58,6 +58,7 @@
     <Compile Include="GeometryDefectTests.cs" />
     <Compile Include="DynamoSamples.cs" />
     <Compile Include="ComplexTests.cs" />
+    <Compile Include="PackageValidationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

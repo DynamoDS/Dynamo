@@ -108,7 +108,7 @@ Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\de
 Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
 
 ;Gallery
-Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery\en-US"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 [Registry]
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey

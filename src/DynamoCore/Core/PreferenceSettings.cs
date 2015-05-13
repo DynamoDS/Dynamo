@@ -84,6 +84,11 @@ namespace Dynamo
         public List<string> RecentFiles { get; set; }
 
         /// <summary>
+        /// A list of backup file paths.
+        /// </summary>
+        public List<string> BackupFiles { get; set; }
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>

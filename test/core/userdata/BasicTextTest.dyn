@@ -1,0 +1,31 @@
+<Workspace Version="0.8.1.1316" X="205.019424515997" Y="20.1676674131677" zoom="0.605594386467995" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="Vector" resolvedName="Autodesk.DesignScript.Geometry.Vector" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="343723bb-fdac-49c7-ace8-c2cc91a2fae2" type="Dynamo.Nodes.DSFunction" nickname="Text.FromStringOriginAndScale" x="348.90968145363" y="85.5105156840458" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DynamoText.dll" function="DynamoText.Text.FromStringOriginAndScale@string,Autodesk.DesignScript.Geometry.Point,double" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="aab35597-b6ec-499c-845c-d78d84f303fb" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="112" y="57" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;Hello Word Dynamo&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="f1fa3383-6592-4bc7-bcf2-eecc36d7111e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-2.38214516683752" y="149.724796528744" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(4,4,0);" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="2189b5c9-7f9d-4067-bb60-0a93c75c6e24" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="217.48729739996" y="249.466513380053" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="efddc49e-ea38-43ae-8de9-dc913f0dc492" type="Dynamo.Nodes.DSFunction" nickname="Curve.Extrude" x="648.263858204992" y="272.559774603475" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Extrude@Autodesk.DesignScript.Geometry.Vector,double">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="15aa7fc9-650a-47a4-afe0-286e2650ae4c" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="383.066973239895" y="339.441108179972" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Vector.ZAxis();" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="c44bf1a4-2b18-480d-af18-1640ec5cc4fe" type="Dynamo.Nodes.DSFunction" nickname="Surface.Thicken" x="1045.325535801" y="319.937985608967" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Surface.Thicken@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="fb53f84d-5264-4043-a8d5-18d5c9d754ba" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="877" y="379" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0.2;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="343723bb-fdac-49c7-ace8-c2cc91a2fae2" start_index="0" end="efddc49e-ea38-43ae-8de9-dc913f0dc492" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aab35597-b6ec-499c-845c-d78d84f303fb" start_index="0" end="343723bb-fdac-49c7-ace8-c2cc91a2fae2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f1fa3383-6592-4bc7-bcf2-eecc36d7111e" start_index="0" end="343723bb-fdac-49c7-ace8-c2cc91a2fae2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2189b5c9-7f9d-4067-bb60-0a93c75c6e24" start_index="0" end="343723bb-fdac-49c7-ace8-c2cc91a2fae2" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="efddc49e-ea38-43ae-8de9-dc913f0dc492" start_index="0" end="c44bf1a4-2b18-480d-af18-1640ec5cc4fe" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="15aa7fc9-650a-47a4-afe0-286e2650ae4c" start_index="0" end="efddc49e-ea38-43ae-8de9-dc913f0dc492" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb53f84d-5264-4043-a8d5-18d5c9d754ba" start_index="0" end="c44bf1a4-2b18-480d-af18-1640ec5cc4fe" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

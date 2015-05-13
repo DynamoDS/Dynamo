@@ -17,6 +17,7 @@ namespace Dynamo.Tests
         {
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSOffice.dll");
+            libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -701,6 +702,28 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void TestWriteFunctionObjectToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteFunctionobject.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // Empty list expected
+            Assert.AreEqual(0, list.Count);
+        }
 
         #endregion
 
