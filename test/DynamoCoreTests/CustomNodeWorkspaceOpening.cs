@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    internal class CustomNodeWorkspaceOpening : DSEvaluationViewModelTest
+    internal class CustomNodeWorkspaceOpening : DSEvaluationViewModelUnitTest
     {
         public void OpenTestFile(string folder, string fileName)
         {
