@@ -70,7 +70,6 @@
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="PackageManager\RecordedFileSystem.cs" />
-    <Compile Include="PackageValidationTest.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />

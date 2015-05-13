@@ -1209,6 +1209,11 @@ namespace Dynamo.Models
         /// </summary>
         private void StartBackupFilesTimer()
         {
+            // When running test cases, the dispatcher may be null which will cause the timer to
+            // introduce a lot of threads. So the timer will not be started if test cases are running.
+            if (!IsTestMode)
+                return;
+
             if (backupFilesTimer != null)
             {
                 throw new Exception("The timer to backup files has already been started!");

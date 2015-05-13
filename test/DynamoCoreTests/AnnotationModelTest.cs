@@ -445,5 +445,67 @@ namespace Dynamo.Tests
             annotation.AnnotationText = "This is a test\r\n\r\nfor carriage return";
             Assert.AreEqual(annotation.AnnotationText, "This is a test\r\n\r\nfor carriage return");                   
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestDefaultFontSizeForAGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            //Check the default font size
+            Assert.AreEqual(annotation.FontSize, 14.0);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ChangeFontSizeForAGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            //Check the default font size
+            Assert.AreEqual(annotation.FontSize, 14.0);
+
+            //Change the font size
+            annotation.FontSize = 30;
+            Assert.AreEqual(annotation.FontSize, 30.0);
+        }
     }
 }
