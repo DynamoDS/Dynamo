@@ -88,11 +88,6 @@ namespace Dynamo.Tests
             e.Success = true;
         }
 
-        protected virtual string GetUserDataDirectory()
-        {
-            return string.Empty;
-        }
-
         protected void StartDynamo()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -128,7 +123,7 @@ namespace Dynamo.Tests
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             this.ViewModel = DynamoViewModel.Start(

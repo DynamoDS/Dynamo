@@ -86,31 +86,48 @@
     </Compile>
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
+    <Compile Include="ConverterTests.cs" />
     <Compile Include="CoreUITests.cs" />
     <Compile Include="DropDownTests.cs" />
     <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
+    <Compile Include="DynamoViewModelUnitTest.cs" />
+    <Compile Include="ExecutionIntervalTests.cs" />
     <Compile Include="HelixRenderPackageTests.cs" />
+    <Compile Include="IconsTests.cs" />
+    <Compile Include="LibraryTests.cs" />
     <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
+    <Compile Include="PackageManager\PackageDependencyTests.cs" />
     <Compile Include="PackageManager\PackageManagerSearchViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordedTests.cs" />
     <Compile Include="RunSettingsTests.cs" />
+    <Compile Include="SearchMemberGroupTests.cs" />
+    <Compile Include="SearchSideEffects.cs" />
+    <Compile Include="SearchViewModelTests.cs" />
+    <Compile Include="SerializationTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="SliderTests.cs" />
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="VisualizationManagerUITests.cs" />
+    <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
+    <Compile Include="WorkspaceOpeningTests.cs" />
+    <Compile Include="WorkspaceSaving.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
+      <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
+      <Name>ProtoAssociative</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
