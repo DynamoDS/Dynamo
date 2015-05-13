@@ -321,5 +321,24 @@ namespace DynamoCoreWpfTests
             inPortGrid = nodeView.inPortGrid;
             Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
         }
+
+        [Test]
+        public void TestColorRangeNodeOnMultipleFilesWithoutClosing()
+        {
+            Open(@"UI\UIColorRange.dyn");
+
+            var nodeView = NodeViewWithGuid("72a66222-5a7d-4dce-b695-5e18b5a93bc3");
+            var image = nodeView.inputGrid.ChildrenOfType<Image>().FirstOrDefault();
+            Assert.IsNotNull(image);
+            Assert.IsNotNull(image.Source);
+
+            //Open another or same ColorRange file
+            Open(@"UI\UIColorRange2.dyn");
+
+            nodeView = NodeViewWithGuid("19b8c58f-e518-41e3-979b-811a029c1ddf");
+            image = nodeView.inputGrid.ChildrenOfType<Image>().FirstOrDefault();
+            Assert.IsNotNull(image);
+            Assert.IsNotNull(image.Source);
+        }
     }
 }
