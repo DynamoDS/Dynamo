@@ -23,7 +23,7 @@ namespace Dynamo.Core.Threading
         }
 
         /// <summary>
-        ///     Upon completion of the task, invoke the specified asynchronously in the specified
+        ///     Upon completion of the task, invoke the action asynchronously in the specified
         ///     SynchronizationContext
         /// </summary>
         /// <returns>An IDisposable representing the event subscription</returns>
@@ -34,7 +34,7 @@ namespace Dynamo.Core.Threading
         }
 
         /// <summary>
-        ///     Upon completion of the task, invoke the specified synchronously in the specified
+        ///     Upon completion of the task, invoke the action synchronously in the specified
         ///     SynchronizationContext
         /// </summary>
         /// <returns>An IDisposable representing the event subscription</returns>
@@ -46,8 +46,9 @@ namespace Dynamo.Core.Threading
 
         /// <summary>
         ///     Await the completion of a collection of scheduled tasks.  The given action
-        ///     will only be executed after all events are complete.  The tasks must already
-        ///     be scheduled or this action will never be executed.
+        ///     will only be executed after all events are complete or discarded.  The tasks
+        ///     must already be scheduled and not yet completed or this action will never be 
+        ///     executed.
         /// </summary>
         /// <returns>An IDisposable representing all of the event subscription</returns>
         internal static IDisposable AllComplete(this IEnumerable<AsyncTask> tasks, Action<IEnumerable<AsyncTask>> action)

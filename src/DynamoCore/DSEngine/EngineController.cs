@@ -40,7 +40,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public readonly LiveRunnerServices liveRunnerServices;
+        private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
         private CodeCompletionServices codeCompletionServices;
         private readonly AstBuilder astBuilder;
@@ -494,7 +494,7 @@ namespace Dynamo.DSEngine
 
         internal void ReconcileTraceDataAndNotify()
         {
-            if (liveRunnerServices.Core == null)
+            if (this.IsDisposed)
             {
                 throw new ObjectDisposedException("EngineController");
             }
