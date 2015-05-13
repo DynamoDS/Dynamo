@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-
+using Dynamo.Annotations;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
@@ -67,6 +67,11 @@ namespace Dynamo.Core.Threading
         /// <param name="asyncTask">The task to execute asynchronously.</param>
         /// 
         void ScheduleForExecution(AsyncTask asyncTask);
+
+        /// <summary>
+        /// The complete collection of all of the currently scheduled tasks
+        /// </summary>
+        IEnumerable<AsyncTask> Tasks { get; }
     }
 
     public partial class DynamoScheduler : IScheduler
@@ -197,6 +202,7 @@ namespace Dynamo.Core.Threading
                     // The task queue has been updated since the last time 
                     // a task was processed, it might need compacting.
                     droppedTasks = CompactTaskQueue();
+
                     ReprioritizeTasksInQueue();
                     taskQueueUpdated = false;
                 }
@@ -220,7 +226,9 @@ namespace Dynamo.Core.Threading
                 // queue will not be held up for a prolonged period of time.
                 // 
                 foreach (var droppedTask in droppedTasks)
+                {
                     NotifyTaskStateChanged(droppedTask, TaskState.Discarded);
+                } 
             }
 
             if (nextTask != null)
