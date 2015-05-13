@@ -1,11 +1,10 @@
 ﻿using System.IO;
 
 using Dynamo.Models;
-using Dynamo.Tests;
 
 using NUnit.Framework;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
     [TestFixture]
     public class WorkspaceOpeningTests : DynamoViewModelUnitTest

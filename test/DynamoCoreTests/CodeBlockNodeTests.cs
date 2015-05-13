@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using NUnit.Framework;
-using ProtoCore.AST.AssociativeAST;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using ProtoCore.DSASM;
+using System.Linq;
+
+using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.Models;
-using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Nodes;
+using Dynamo.UI;
+using Dynamo.Utilities;
+using NUnit.Framework;
+
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-using Dynamo.DSEngine.CodeCompletion;
-using Dynamo.UI;
+
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
-    class CodeBlockNodeTests : DynamoViewModelUnitTest
+    class CodeBlockNodeTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSCoreNodes.dll");
-            
+
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -258,25 +261,23 @@ b = c[w][x][y][z];";
         [Category("RegressionTests")]
         public void Defect_MAGN_4024()
         {
-            var model = ViewModel.Model;
-
             // Create the initial code block node.
             var codeBlockNodeOne = CreateCodeBlockNode();
             UpdateCodeBlockNodeContent(codeBlockNodeOne, "arr = 20 .. 29;");
 
             // We should have one code block node by now.
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // Copy and paste the code block node.
-            model.AddToSelection(codeBlockNodeOne);
-            model.Copy(); // Copy the selected node.
-            model.Paste(); // Paste the copied node.
+            CurrentDynamoModel.AddToSelection(codeBlockNodeOne);
+            CurrentDynamoModel.Copy(); // Copy the selected node.
+            CurrentDynamoModel.Paste(); // Paste the copied node.
 
             // After pasting, we should have two nodes.
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // Make sure we are able to get the second code block node.
-            var codeBlockNodeTwo = model.CurrentWorkspace.Nodes[1] as CodeBlockNodeModel;
+            var codeBlockNodeTwo = CurrentDynamoModel.CurrentWorkspace.Nodes[1] as CodeBlockNodeModel;
             Assert.IsNotNull(codeBlockNodeTwo);
 
             // The preview identifier should be named as "arr_GUID" (the prefix 
@@ -291,48 +292,44 @@ b = c[w][x][y][z];";
         [Category("RegressionTests")]
         public void Defect_MAGN_4946()
         {
-            var model = ViewModel.Model;
             int value = 10;
-            string codeInCBN = "a = " + value.ToString();
+            string codeInCBN = "a = " + value;
 
             // Create the initial code block node.
             var codeBlockNodeOne = CreateCodeBlockNode();
             UpdateCodeBlockNodeContent(codeBlockNodeOne, codeInCBN);
 
             // We should have one code block node by now.
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
-
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // Run 
-            ViewModel.HomeSpace.Run();
+            BeginRun();
 
             // Get preview data given AstIdentifierBase
-            var core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
-            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            var core = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            var runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
             MirrorData mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
 
             // Copy and paste the code block node.
-            model.AddToSelection(codeBlockNodeOne);
-            model.Copy(); // Copy the selected node.
-            model.Paste(); // Paste the copied node.
+            CurrentDynamoModel.AddToSelection(codeBlockNodeOne);
+            CurrentDynamoModel.Copy(); // Copy the selected node.
+            CurrentDynamoModel.Paste(); // Paste the copied node.
 
             // After pasting, we should have two nodes.
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // Make sure we are able to get the second code block node.
-            var codeBlockNodeTwo = model.CurrentWorkspace.Nodes[1] as CodeBlockNodeModel;
+            var codeBlockNodeTwo = CurrentDynamoModel.CurrentWorkspace.Nodes[1] as CodeBlockNodeModel;
             Assert.IsNotNull(codeBlockNodeTwo);
 
-
             // Run 
-            ViewModel.HomeSpace.Run();
+            BeginRun();
 
             // Get preview data given AstIdentifierBase
             runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
             mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
-
         }
 
         [Test]
@@ -340,10 +337,10 @@ b = c[w][x][y][z];";
         public void Defect_MAGN_784()
         {
             string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\Defect_MAGN_784.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
-            Assert.IsFalse(ViewModel.Model.CurrentWorkspace.CanUndo);
-            Assert.IsFalse(ViewModel.Model.CurrentWorkspace.CanRedo);
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.CanUndo);
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.CanRedo);
         }
 
         [Test]
@@ -409,14 +406,14 @@ b = c[w][x][y][z];";
             var command = new DynCmd.CreateNodeCommand(
                 watch, 0, 0, true, false);
 
-            ViewModel.ExecuteCommand(command);
-            var workspace = ViewModel.Model.CurrentWorkspace;
+            CurrentDynamoModel.ExecuteCommand(command);
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
 
             // Connect the two nodes
             ConnectorModel.Make(codeBlockNode0, watch, 0, 0);
 
             // Run
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            Assert.DoesNotThrow(BeginRun);
 
             // Update the code block node
             UpdateCodeBlockNodeContent(codeBlockNode0, @"truuuue;");
@@ -432,7 +429,7 @@ b = c[w][x][y][z];";
             ConnectorModel.Make(codeBlockNode1, codeBlockNode0, 0, 0);
 
             // Run
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            Assert.DoesNotThrow(BeginRun);
 
             UpdateCodeBlockNodeContent(codeBlockNode0, @"true;");
 
@@ -440,12 +437,11 @@ b = c[w][x][y][z];";
             Assert.AreEqual(0, codeBlockNode0.InPortData.Count);
 
             // Run
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            Assert.DoesNotThrow(BeginRun);
 
             // Delete the first code block node
-            List<ModelBase> nodes = new List<ModelBase>();
-            nodes.Add(codeBlockNode0);
-            ViewModel.Model.DeleteModelInternal(nodes);
+            var nodes = new List<ModelBase> { codeBlockNode0 };
+            CurrentDynamoModel.DeleteModelInternal(nodes);
 
             // Undo
             workspace.Undo();
@@ -461,11 +457,11 @@ b = c[w][x][y][z];";
 
             // Create the Point.Origin node.
             var pointOriginNode =
-                new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("Point.Origin"));
+                new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("Point.Origin"));
 
             var command = new DynCmd.CreateNodeCommand(pointOriginNode, 0, 0, true, false);
 
-            ViewModel.ExecuteCommand(command);
+            CurrentDynamoModel.ExecuteCommand(command);
 
             // Connect the two nodes
             ConnectorModel.Make(pointOriginNode, codeBlockNode, 0, 0);
@@ -688,9 +684,11 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void GenerateInputPortData02()
         {
-            var unboundIdentifiers = new List<string>();
-            unboundIdentifiers.Add("ShortVarName");
-            unboundIdentifiers.Add("LongerVariableNameThatWillGetTruncated");
+            var unboundIdentifiers = new List<string>
+            {
+                "ShortVarName",
+                "LongerVariableNameThatWillGetTruncated"
+            };
 
             var data = CodeBlockUtils.GenerateInputPortData(unboundIdentifiers);
             Assert.IsNotNull(data);
@@ -726,7 +724,7 @@ b = c[w][x][y][z];";
             var binExprNode = new BinaryExpressionNode(
                 leftNode, rightNode, Operator.assign);
 
-            var statements = new List<Statement>()
+            var statements = new List<Statement>
             {
                 Statement.CreateInstance(binExprNode)
             };
@@ -752,7 +750,7 @@ b = c[w][x][y][z];";
             });
 
             // Create a list of another empty list.
-            var svs = new List<List<string>>() { new List<string>() };
+            var svs = new List<List<string>> { new List<string>() };
 
             Assert.Throws<IndexOutOfRangeException>(() =>
             {
@@ -778,19 +776,19 @@ b = c[w][x][y][z];";
         [Test]
         public void StatementRequiresOutputPort02()
         {
-            var svs = new List<List<string>>()
+            var svs = new List<List<string>>
             {
-                new List<string>()
+                new List<string>
                 {
                     "Apple", "Orange"
                 },
 
-                new List<string>()
+                new List<string>
                 {
                     "Watermelon", "Grape", "HoneyDew"
                 },
 
-                new List<string>()
+                new List<string>
                 {
                     "Lemon", "Apple"
                 }
@@ -809,7 +807,7 @@ b = c[w][x][y][z];";
         [Test]
         public void TypedIdentifier_AssignedToDifferentType_ThrowsWarning()
         {
-            var model = ViewModel.Model;
+            var model = CurrentDynamoModel;
             string codeInCBN = @"a : int = Point.ByCoordinates();";
 
             // Create the initial code block node.
@@ -820,11 +818,11 @@ b = c[w][x][y][z];";
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
 
             // Run 
-            ViewModel.HomeSpace.Run();
+            BeginRun();
 
             // Get preview data given AstIdentifierBase
-            var core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
-            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            var core = CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore;
+            var runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
             MirrorData mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, null);
 
@@ -838,15 +836,12 @@ b = c[w][x][y][z];";
         {
             string openPath = Path.Combine(TestDirectory,
                 @"core\dsevaluation\typedIdentifier_warning.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
-            var dynamoModel = ViewModel.Model;
-            ViewModel.OpenCommand.Execute(openPath);
-            var workspace = dynamoModel.CurrentWorkspace;
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            BeginRun();
 
-            ViewModel.HomeSpace.Run();
-
-            var node = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
                 Guid.Parse("17d2f866-dc5a-43ef-b3c5-ac7474d16467"));
 
             Assert.IsNotNull(node);
@@ -856,7 +851,7 @@ b = c[w][x][y][z];";
             Assert.IsTrue(node.ToolTipText.Contains(
                 ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
         }
-        
+
         #endregion
 
         #region Codeblock Namespace Resolution Tests
@@ -876,11 +871,11 @@ b = c[w][x][y][z];";
             const string libraryPath = "FFITarget.dll";
 
             CompilerUtils.TryLoadAssemblyIntoCore(
-                ViewModel.Model.LibraryServices.LibraryManagementCore, libraryPath);
+                CurrentDynamoModel.LibraryServices.LibraryManagementCore, libraryPath);
 
             code = "Point.ByCoordinates(0,0,0);";
             UpdateCodeBlockNodeContent(cbn, code);
-            Assert.AreEqual(0, ViewModel.Model.LibraryServices.LibraryManagementCore.BuildStatus.Warnings.Count());
+            Assert.AreEqual(0, CurrentDynamoModel.LibraryServices.LibraryManagementCore.BuildStatus.Warnings.Count());
         }
 
         #endregion
@@ -888,10 +883,10 @@ b = c[w][x][y][z];";
 
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
-            var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
             var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
 
-            ViewModel.ExecuteCommand(command);
+            CurrentDynamoModel.ExecuteCommand(command);
 
             Assert.IsNotNull(cbn);
             return cbn;
@@ -899,15 +894,15 @@ b = c[w][x][y][z];";
 
         private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
         {
-            var command = new DynCmd.UpdateModelValueCommand(System.Guid.Empty, cbn.GUID, "Code", value);
-            ViewModel.ExecuteCommand(command);
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, cbn.GUID, "Code", value);
+            CurrentDynamoModel.ExecuteCommand(command);
         }
     }
 
 
-    public class CodeBlockCompletionTests 
+    public class CodeBlockCompletionTests
     {
-        private ProtoCore.Core libraryServicesCore = null;
+        private ProtoCore.Core libraryServicesCore;
 
         [SetUp]
         public void Init()
@@ -946,7 +941,7 @@ b = c[w][x][y][z];";
 
             var members = type.GetMembers();
 
-            var expected = new string[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
+            var expected = new[] { "CodeCompletionClass", "StaticFunction", "StaticProp" };
             AssertCompletions(members, expected);
         }
 
@@ -962,7 +957,7 @@ b = c[w][x][y][z];";
 
             var members = type.GetInstanceMembers();
 
-            var expected = new string[] { "AddWithValueContainer", "ClassProperty", 
+            var expected = new[] { "AddWithValueContainer", "ClassProperty", 
                 "IntVal", "IsEqualTo", "OverloadedAdd" };
             AssertCompletions(members, expected);
         }
@@ -975,7 +970,6 @@ b = c[w][x][y][z];";
             string actual = CodeCompletionParser.GetStringToComplete(code);
             string expected = "x[y[z.foo()].goo()].bar";
             Assert.AreEqual(expected, actual);
-
 
             code = @"abc.X[xyz.foo().Y";
             actual = CodeCompletionParser.GetStringToComplete(code);
@@ -1055,7 +1049,7 @@ b = c[w][x][y][z];";
 
             var members = type.GetInstanceMembers();
 
-            var expected = new string[] { "PropertyA", "PropertyB", "PropertyC" };
+            var expected = new[] { "PropertyA", "PropertyB", "PropertyC" };
             AssertCompletions(members, expected);
 
             code = @"b : FFITarget.SecondNamespace.ClassWithNameConflict;";
@@ -1068,7 +1062,7 @@ b = c[w][x][y][z];";
 
             members = type.GetInstanceMembers();
 
-            expected = new string[] { "PropertyD", "PropertyE", "PropertyF" };
+            expected = new[] { "PropertyD", "PropertyE", "PropertyF" };
             AssertCompletions(members, expected);
         }
 
@@ -1128,7 +1122,6 @@ b = c[w][x][y][z];";
         [Category("UnitTests")]
         public void TestMethodSignatureReturnTypeCompletion()
         {
-
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 
             string functionPrefix = "a";
@@ -1169,7 +1162,6 @@ b = c[w][x][y][z];";
                 Assert.AreEqual(functionName, overload.Text);
             }
             Assert.AreEqual("Count : int (list : [])", overloads.ElementAt(0).Stub);
-
         }
 
         [Test]
@@ -1200,7 +1192,7 @@ b = c[w][x][y][z];";
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             string code = "Poi";
-            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+            var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 4 completion items
             Assert.AreEqual(4, completions.Count());
@@ -1219,7 +1211,7 @@ b = c[w][x][y][z];";
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             string code = "im";
-            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+            var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 5 completion items
             Assert.AreEqual(5, completions.Count());
@@ -1239,7 +1231,7 @@ b = c[w][x][y][z];";
             // "SampleClassB" defined in FFITarget library with "IsVisibleInDynamoLibrary" attribute
             // is set to false. We verify that this class does not appear in code completion results
             string code = "sam";
-            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+            var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 2 completion items
             Assert.AreEqual(2, completions.Count());
@@ -1261,7 +1253,7 @@ b = c[w][x][y][z];";
             // and that only "FirstNamespace.AnotherClassWithNameConflict" appears in code completion results with
             // fully qualified name so that it can be resolved against "SecondNamespace.AnotherClassWithNameConflict" 
             string code = "ano";
-            var completions = codeCompletionServices.SearchCompletions(code, System.Guid.Empty);
+            var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
             // Expected 1 completion items
             Assert.AreEqual(1, completions.Count());
@@ -1277,7 +1269,7 @@ b = c[w][x][y][z];";
 
             var members = type.GetMembers();
 
-            expected = new string[] { "AnotherClassWithNameConflict", "PropertyA", "PropertyB", "PropertyC" };
+            expected = new[] { "AnotherClassWithNameConflict", "PropertyA", "PropertyB", "PropertyC" };
             AssertCompletions(members, expected);
         }
 
