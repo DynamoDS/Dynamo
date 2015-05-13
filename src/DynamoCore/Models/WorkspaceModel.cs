@@ -709,7 +709,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="modelGuid">The model unique identifier.</param>
         /// <returns></returns>
-        private ModelBase annotationModel_GetModelBase(Guid modelGuid)
+        public ModelBase annotationModel_GetModelBase(Guid modelGuid)
         {
             ModelBase model = null;
             model = this.Nodes.FirstOrDefault(x => x.GUID == modelGuid);
@@ -1363,19 +1363,32 @@ namespace Dynamo.Models
 
         public void DeleteModel(XmlElement modelData)
         {
+            //When there is a Redo operation, model is removed from 
+            //the workspace but the model is "not disposed" from memory.
+            //Identified this when redo operation is performed on groups
             ModelBase model = GetModelForElement(modelData);
 
             if (model is NoteModel)
-                Notes.Remove(model as NoteModel);
+            {
+                var note = model as NoteModel;
+                Notes.Remove(note);                
+                note.Dispose();
+            }
             else if (model is AnnotationModel)
-                Annotations.Remove(model as AnnotationModel);
+            {
+                var annotation = model as AnnotationModel;
+                Annotations.Remove(annotation);
+                annotation.Dispose();
+            }
             else if (model is ConnectorModel)
             {
                 var connector = model as ConnectorModel;
                 connector.Delete();
             }
             else if (model is NodeModel)
-                Nodes.Remove(model as NodeModel);
+            {
+                RemoveNode(model as NodeModel);
+            }
             else
             {
                 // If it gets here we obviously need to handle it.
