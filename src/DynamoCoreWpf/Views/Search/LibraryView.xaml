@@ -506,7 +506,6 @@
                 <TreeView ItemsSource="{Binding BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
                           ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
-                          RequestBringIntoView="OnRequestBringIntoView"
                           Name="CategoryTreeView">
                     <TreeView.Template>
                         <ControlTemplate>

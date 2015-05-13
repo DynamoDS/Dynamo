@@ -40,7 +40,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public readonly LiveRunnerServices liveRunnerServices;
+        private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
         private CodeCompletionServices codeCompletionServices;
         private readonly AstBuilder astBuilder;
@@ -494,13 +494,13 @@ namespace Dynamo.DSEngine
 
         internal void ReconcileTraceDataAndNotify()
         {
-            if (liveRunnerServices.Core == null)
+            if (this.IsDisposed)
             {
                 throw new ObjectDisposedException("EngineController");
             }
 
             var callsiteToOrphanMap = new Dictionary<Guid, List<ISerializable>>();
-            foreach (var cs in liveRunnerServices.Core.DSExecutable.CallsiteCache.Values)
+            foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
             {
                 var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
                 if (callsiteToOrphanMap.ContainsKey(cs.CallSiteID))

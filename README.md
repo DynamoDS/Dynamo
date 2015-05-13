@@ -9,7 +9,15 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 
 ## Build ###
 
-You'll need Visual Studio and a git client to build Dynamo.  Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
+You will need the following to build Dynamo:
+
+- Microsoft Visual Studio 2013
+- [GitHub for Windows](https://windows.github.com/)
+- [Microsoft .NET Framework 3.5 with SP1](http://www.microsoft.com/en-sg/download/details.aspx?id=25150)
+- Microsoft .NET Framework 4.0 and above (included with Visual Studio 2013)
+- Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
+
+Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
 
 
 ## Contribute ##

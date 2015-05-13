@@ -23,7 +23,7 @@ namespace Dynamo.Core.Threading
         }
 
         /// <summary>
-        ///     Upon completion of the task, invoke the specified asynchronously in the specified
+        ///     Upon completion of the task, invoke the action asynchronously in the specified
         ///     SynchronizationContext
         /// </summary>
         /// <returns>An IDisposable representing the event subscription</returns>
@@ -34,7 +34,7 @@ namespace Dynamo.Core.Threading
         }
 
         /// <summary>
-        ///     Upon completion of the task, invoke the specified synchronously in the specified
+        ///     Upon completion of the task, invoke the action synchronously in the specified
         ///     SynchronizationContext
         /// </summary>
         /// <returns>An IDisposable representing the event subscription</returns>
@@ -46,8 +46,9 @@ namespace Dynamo.Core.Threading
 
         /// <summary>
         ///     Await the completion of a collection of scheduled tasks.  The given action
-        ///     will only be executed after all events are complete.  The tasks must already
-        ///     be scheduled or this action will never be executed.
+        ///     will only be executed after all events are complete or discarded.  The tasks
+        ///     must already be scheduled and not yet completed or this action will never be 
+        ///     executed.
         /// </summary>
         /// <returns>An IDisposable representing all of the event subscription</returns>
         internal static IDisposable AllComplete(this IEnumerable<AsyncTask> tasks, Action<IEnumerable<AsyncTask>> action)
@@ -59,7 +60,7 @@ namespace Dynamo.Core.Threading
             }
 
             // We'll have to keep track of the event subscriptions for disposal
-            var cbs = new List<Tuple<AsyncTask, AsyncTaskCompletedHandler>>();
+            var callbacks = new List<Tuple<AsyncTask, AsyncTaskCompletedHandler>>();
 
             // We'll perform an asynchronous count down
             var count = tasks.Count();
@@ -76,30 +77,30 @@ namespace Dynamo.Core.Threading
                     {
                         // Decrement the count
                         count--;
+                    }
 
-                        // If count is 0, we're done running tasks
-                        if (count == 0)
-                        {
-                            action(tasks);
-                        }
+                    // If count is 0, we're done running tasks
+                    if (count == 0)
+                    {
+                        action(tasks);
                     }
                 };
 
                 // Store the subscription
-                cbs.Add(new Tuple<AsyncTask, AsyncTaskCompletedHandler>(task, innerAction));
+                callbacks.Add(new Tuple<AsyncTask, AsyncTaskCompletedHandler>(task, innerAction));
 
                 // Subscribe!
                 task.Completed += innerAction;
                 task.Discarded += innerAction;
             }
 
-            // This disposable will unsubscribe from all of the Completed events
+            // This disposable will unsubscribe from all of the Completed, Discarded events
             return Disposable.Create(() =>
             {
-                foreach (var cbt in cbs)
+                foreach (var t in callbacks)
                 {
-                    cbt.Item1.Completed -= cbt.Item2;
-                    cbt.Item1.Discarded -= cbt.Item2;
+                    t.Item1.Completed -= t.Item2;
+                    t.Item1.Discarded -= t.Item2;
                 }
             });
         }
