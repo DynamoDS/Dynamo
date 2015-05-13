@@ -1820,7 +1820,7 @@ d2;
     //f2 = a2 > b2;	
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[] v1 = new Object[] { new Object[] { false, false }, new Object[] { false, false } };
+            Object[] v1 = new Object[] { false,false};
             //Verification 
             thisTest.Verify("d2", v1);
 
