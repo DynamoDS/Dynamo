@@ -26,10 +26,14 @@ namespace DynamoSandbox
 
         internal PathResolver(string preloaderLocation)
         {
-            additionalResolutionPaths = new List<string>
-            {
-                preloaderLocation
-            };
+            // If a suitable preloader cannot be found on the system, then do 
+            // not add invalid path into additional resolution. The default 
+            // implementation of IPathManager in Dynamo insists on having valid 
+            // paths specified through "IPathResolver" implementation.
+            // 
+            additionalResolutionPaths = new List<string>();
+            if (Directory.Exists(preloaderLocation))
+                additionalResolutionPaths.Add(preloaderLocation);
 
             additionalNodeDirectories = new List<string>();
             preloadedLibraryPaths = new List<string>
@@ -84,20 +88,14 @@ namespace DynamoSandbox
             var preloaderLocation = string.Empty;
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
-            // TODO(PATHMANAGER): Do we really libg_xxx folder on resolution path?
-            // If not, PathResolver will be completely redundant so please remove it.
-            var pathResolver = new PathResolver(preloaderLocation);
-
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
 
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
-                    PathResolver = pathResolver,
+                    PathResolver = new PathResolver(preloaderLocation),
                     GeometryFactoryPath = geometryFactoryPath
                 });
-
-            
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
