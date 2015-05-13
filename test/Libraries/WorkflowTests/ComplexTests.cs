@@ -402,6 +402,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
+
             //check preview values of CBNs
             var cbn = "27c2f333-f51f-4a0c-9f71-70dc64f2ecbe";
             AssertPreviewValue(cbn, 3.142);
@@ -649,6 +653,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+
             //check preview values of CBNs
             var cbn = "1db3330e-bd1b-4116-b5ca-df4a18e78960";
             AssertPreviewValue(cbn, new string[]{"Tywin","Cersei","Hodor","Tyrian"});
@@ -694,6 +702,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+
             //check preview values of Curve.Extrude
             var curve = "2abb7d97-6b23-4b26-91af-c11407503a66";
             AssertPreviewCount(curve, 2);
@@ -726,6 +738,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+
             //check preview values of List.Map, List.Reverse
             var map = "45ea27b6-a33c-429d-bf20-6d147d3c5893";
             var flatMap = GetFlattenedPreviewValues(map);
@@ -755,6 +771,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+
             //check preview values of List.Sort
             var sort = "e537e6b8-aa95-42ec-b33b-95cda3d1f20e";
             var flat = GetFlattenedPreviewValues(sort);
@@ -773,6 +793,10 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
 
             //check preview values of PolyCurve.ByPoint
             var sort = "7c636447-6099-48ab-8a1c-758ee8feecaf";
@@ -799,6 +823,10 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(26, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(21, model.CurrentWorkspace.Nodes.Count);
 
             //check CBN
             var cbn = "9ab004ca-0917-4858-85bc-57ae681e33e8";
@@ -834,6 +862,10 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(point);
             }
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+
             //check Point.ByCoordinates
             var points = "5462da5b-1473-44a6-a3f8-9f5098b4675a";
             var flatpoints = GetFlattenedPreviewValues(points);
@@ -857,6 +889,10 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
 
             //check CBN that contains 84 lines
             var lineID = "93a30c71-6a3d-4cf3-8140-b5acc1d33cd6";
@@ -894,6 +930,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(40, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
+
             //check Cylinder.ByPointsRadius
             var lineID = "c8aaaf1b-975a-4075-99e0-fb0092a232fb";
             Assert.IsNotNull(lineID);
@@ -925,6 +965,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(64, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(40, model.CurrentWorkspace.Nodes.Count);
+
             //check Surface.Thicken
             var surfaceID = "a7b4e678-3278-4554-8ce2-7c76faca79d7";
             AssertPreviewCount(surfaceID, 4);
@@ -952,6 +996,10 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(38, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(29, model.CurrentWorkspace.Nodes.Count);
 
             //check Surface.ByLoft
             var surface1ID = "3675e40d-1d1d-4869-b3e1-f8ea67286486";
@@ -996,6 +1044,10 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
 
+            //check the number of nodes and connectors
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+
             //check Plane.XY
             var planeID = "80f6e70a-b6e4-452e-9ec3-dffa1106ee28";
             var plane = GetPreviewValue(planeID) as Plane;
@@ -1028,6 +1080,10 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(48, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
 
             //check Line.ByStartPointEndPoint
             var lineID = "ead8e061-d570-436b-aece-c66c2cd02326";
