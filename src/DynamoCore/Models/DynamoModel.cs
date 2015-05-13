@@ -1105,7 +1105,7 @@ namespace Dynamo.Models
                         // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
                         // as it causes an immediate crash due to the above ResetEngine call.
                         var hws = ws as HomeWorkspaceModel;
-                        if (ws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
                         {
                             hws.StartPeriodicEvaluation();
                         }
