@@ -118,8 +118,12 @@ limitations under the License.
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="DefaultRenderPackageFactory.cs" />
-    <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="Extensions\ExtensionDefinition.cs" />
+    <Compile Include="Extensions\IExtensionLoader.cs" />
+    <Compile Include="Extensions\IExtensionManager.cs" />
     <Compile Include="Extensions\IExtension.cs" />
+    <Compile Include="Extensions\ReadyParams.cs" />
+    <Compile Include="Extensions\StartupParams.cs" />
     <Compile Include="Interfaces\IRenderPackageFactory.cs" />
     <Compile Include="Models\AnnotationModel.cs" />
     <Compile Include="Core\PathManager.cs" />

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Extensions;
 
-namespace Dynamo.Extensions
+namespace Dynamo.Wpf.Extensions
 {
     /// <summary>
-    /// An extension to the model layer of Dynamo
+    /// An extension to the UI layer of Dynamo.
     /// </summary>
-    public interface IExtension : IDisposable
+    public interface IViewExtension : IDisposable
     {
         /// <summary>
         /// A unique id for this extension instance.  
@@ -19,30 +20,24 @@ namespace Dynamo.Extensions
         Guid Id { get; }
 
         /// <summary>
-        /// A name for the Extension.  This is used for more user-readable logging.
+        /// A name for the extension instance.  This is used for more user-readable logging.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// Action to be invoked when Dynamo begins to start up.  
+        /// Action to be invoked when DynamoView begins to start up.  
         /// 
         /// Exceptions thrown from this method should be caught by Dynamo and 
-        /// logged.
+        /// displayed.
         /// </summary>
-        void Startup(StartupParams sp);
+        void Startup(ViewStartupParams p);
 
         /// <summary>
-        /// Action to be invoked when the Dynamo has started up and is ready
-        /// for user interaction.
+        /// Action to be invoked when DynamoView is loaded.
         /// 
         /// Exceptions thrown from this method should be caught by Dynamo and 
-        /// logged.
+        /// displayed.
         /// </summary>
-        void Ready(ReadyParams sp);
-
-        /// <summary>
-        /// Action to be invoked when shutdown has begun.
-        /// </summary>
-        void Shutdown();
+        void Loaded(ViewLoadedParams p);
     }
 }
