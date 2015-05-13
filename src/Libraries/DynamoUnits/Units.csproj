@@ -74,7 +74,7 @@
     <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
   </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
 	

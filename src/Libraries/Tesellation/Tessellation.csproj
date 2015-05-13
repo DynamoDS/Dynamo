@@ -88,7 +88,7 @@
     <EmbeddedResource Include="TessellationImages.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)Tessellation_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
 
