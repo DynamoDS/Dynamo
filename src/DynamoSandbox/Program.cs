@@ -88,6 +88,8 @@ namespace DynamoSandbox
             var preloaderLocation = string.Empty;
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
+            DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
