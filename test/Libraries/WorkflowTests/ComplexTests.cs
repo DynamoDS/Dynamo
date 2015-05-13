@@ -855,8 +855,8 @@ namespace Dynamo.Tests
             //check List.Transpose
             var transpose = "5fd2a365-4831-4400-abbe-b8bc04cdfe7a";
             var flattranspose = GetFlattenedPreviewValues(transpose);
-            Assert.AreEqual(flattranspose.Count, 121);
-            for (int i = 0; i < 121; i++)
+            Assert.AreEqual(flattranspose.Count, 100);
+            for (int i = 0; i < 100; i++)
             {
                 var point = flattranspose[i] as Point;
                 Assert.IsNotNull(point);
@@ -869,12 +869,23 @@ namespace Dynamo.Tests
             //check Point.ByCoordinates
             var points = "5462da5b-1473-44a6-a3f8-9f5098b4675a";
             var flatpoints = GetFlattenedPreviewValues(points);
-            Assert.AreEqual(flatpoints.Count, 121);
-            for (int i = 0; i < 121; i++) 
+            Assert.AreEqual(flatpoints.Count, 100);
+            for (int i = 0; i < 100; i++) 
             {
                 var point = flatpoints[i] as Point;
                 Assert.IsNotNull(point);
-            }                     
+            }     
+            
+            //compare Point.ByCoordinates and List.Transpose
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    var point1 = flattranspose[i * 10 + j] as Point;
+                    var point2 = flatpoints[i + j * 10] as Point;
+                    Assert.AreEqual(point1.ToString(), point2.ToString());
+                }
+            }
         }
 
 
