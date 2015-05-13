@@ -1373,7 +1373,12 @@ namespace Dynamo.Models
                     var arr = value.Split(';');
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                        var useDef = !bool.Parse(arr[i]); 
+                        // do not set true, if default value is disabled
+                        if (!useDef || InPorts[i].DefaultValueEnabled)
+                        {
+                            InPorts[i].UsingDefaultValue = useDef;
+                        }
                     }
                     return true;
 
