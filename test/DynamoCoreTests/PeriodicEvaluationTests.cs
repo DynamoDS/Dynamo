@@ -138,5 +138,18 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, count);
         }
 
+        [Test]
+        public void DynamoModel_OpenFileFromPath_StartsPeriodicEvaluation()
+        {
+            // asser that SampleLibraryZeroTouch must be loaded
+            Assert.IsTrue(CurrentDynamoModel.LibraryServices.ImportedLibraries.Any(x => x.Contains("SampleLibraryZeroTouch")));
+
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, "core", "periodic", "simple.dyn");
+
+            Thread.Sleep(2000);
+
+            Assert.Greater(ws.EvaluationCount, 1);
+        }
+
     }
 }

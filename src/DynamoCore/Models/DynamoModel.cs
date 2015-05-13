@@ -1100,6 +1100,16 @@ namespace Dynamo.Models
                         // This call formerly lived in DynamoViewModel
                         ResetEngine();
 
+                        // TODO: #4258
+                        // The following logic to start periodic evaluation will need to be moved
+                        // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
+                        // as it causes an immediate crash due to the above ResetEngine call.
+                        var hws = ws as HomeWorkspaceModel;
+                        if (ws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        {
+                            hws.StartPeriodicEvaluation();
+                        }
+
                         CurrentWorkspace = ws;
                         return;
                     }
@@ -1144,7 +1154,7 @@ namespace Dynamo.Models
                );
 
             RegisterHomeWorkspace(newWorkspace);
-           
+
             workspace = newWorkspace;            
             return true;
         }
