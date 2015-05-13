@@ -1,4 +1,5 @@
 ﻿
+using System.Linq;
 using ProtoCore.DSASM;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
@@ -788,6 +789,38 @@ namespace ProtoCore.Utils
                 {
                     LeftNode = newIdentList,
                     RightNode = new IdentifierNode(strIdentList[n]),
+                    Optr = Operator.dot
+                };
+                newIdentList = subIdentList;
+            }
+
+            return newIdentList;
+        }
+
+        public static AssociativeNode CreateNodeByCombiningIdentifiers(IList<AssociativeNode> nodeList)
+        {
+            int count = nodeList.Count;
+            if(count == 0)
+                return null;
+
+            if (count == 1)
+            {
+                return nodeList[0];
+            }
+
+            var newIdentList = new IdentifierListNode
+            {
+                LeftNode = nodeList[0],
+                RightNode = nodeList[1],
+                Optr = Operator.dot
+            };
+
+            for (var n = 2; n < count; ++n)
+            {
+                var subIdentList = new IdentifierListNode
+                {
+                    LeftNode = newIdentList,
+                    RightNode = nodeList[n],
                     Optr = Operator.dot
                 };
                 newIdentList = subIdentList;

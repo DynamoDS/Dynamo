@@ -250,12 +250,25 @@ namespace ProtoCore.Namespace
             Validity.Assert(newIdentList is IdentifierListNode);
 
             var identListNode = identifier as IdentifierListNode;
+
+            AssociativeNode leftNode = identListNode != null ? identListNode.LeftNode : identifier;
             AssociativeNode rightNode = identListNode != null ? identListNode.RightNode : identifier;
+
+            var intermediateNodes = new List<AssociativeNode>();
+            while (leftNode is IdentifierListNode)
+            {
+                intermediateNodes.Insert(0, ((IdentifierListNode)leftNode).RightNode);
+                leftNode = ((IdentifierListNode)leftNode).LeftNode;
+            }
+            intermediateNodes.Insert(0, newIdentList);
+
+            var lNode = CoreUtils.CreateNodeByCombiningIdentifiers(intermediateNodes);
+            Validity.Assert(lNode is IdentifierListNode);
 
             // The last ident list for the functioncall or identifier rhs
             var lastIdentList = new IdentifierListNode
             {
-                LeftNode = newIdentList,
+                LeftNode = lNode,
                 RightNode = rightNode,
                 Optr = Operator.dot
             };
