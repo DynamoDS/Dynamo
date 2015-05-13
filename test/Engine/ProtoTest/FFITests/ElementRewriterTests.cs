@@ -52,6 +52,36 @@ namespace ProtoTest.FFITests
             Assert.AreEqual("FFITarget.ElementResolverTarget", resolvedName);
         }
 
+        [Test]
+        public void LookupResolvedName_ForComplexExpression_RewriteAst()
+        {
+            var astNodes = CoreUtils.BuildASTList(core, "p = Point.ByCoordinates(x, y, z).X;");
+            var astNode = astNodes[0];
+
+            var elementResolver = new ElementResolver();
+            elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
+
+            var elementRewriter = new ElementRewriter(core.ClassTable);
+            elementRewriter.LookupResolvedNameAndRewriteAst(elementResolver, ref astNode);
+
+            Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X;\n", astNode.ToString());
+        }
+
+        [Test]
+        public void LookupResolvedName_ForTypedIdentifier_RewriteAst()
+        {
+            var astNodes = CoreUtils.BuildASTList(core, "p : Point;");
+            var astNode = astNodes[0];
+
+            var elementResolver = new ElementResolver();
+            elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
+
+            var elementRewriter = new ElementRewriter(core.ClassTable);
+            elementRewriter.LookupResolvedNameAndRewriteAst(elementResolver, ref astNode);
+
+            Assert.AreEqual("p : Autodesk.DS.Geometry.Point", astNode.ToString());
+        }
+
         // Add tests for ElementRewriter.GetClassIdentifiers() api
         [Test]
         public void GetClassIdentifiers_FromAst()
