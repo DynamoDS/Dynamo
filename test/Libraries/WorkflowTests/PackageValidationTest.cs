@@ -5,9 +5,9 @@ using Path = System.IO.Path;
 
 namespace Dynamo.Tests
 {
-    public class PackageValidationTest : DSEvaluationViewModelUnitTest
+    public class PackageValidationTest : DynamoModelTestBase
     {
-        protected override string GetUserDataDirectory()
+        protected override string GetUserUserDataRootFolder()
         {
             string userDataDirectory = Path.Combine(TestDirectory, @"core\userdata");
             return userDataDirectory;
@@ -41,8 +41,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, ViewModel.Model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(7, ViewModel.Model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
 
             var textNodeID = "343723bb-fdac-49c7-ace8-c2cc91a2fae2";

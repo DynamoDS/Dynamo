@@ -62,7 +62,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +70,7 @@
     <Compile Include="CallsiteTests.cs" />
     <Compile Include="ConverterTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
+    <Compile Include="DSEvaluationUnitTestBase.cs" />
     <Compile Include="DynamoModelTestBase.cs" />
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="IconsTests.cs" />
@@ -85,7 +85,7 @@
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
-    <Compile Include="DSEvaluationViewModelTest.cs" />
+    <Compile Include="DSEvaluationModelTest.cs" />
     <Compile Include="DSFunctionNodeTest.cs" />
     <Compile Include="DSLibraryTest.cs" />
     <Compile Include="DynamoDefects.cs" />
@@ -174,11 +174,6 @@
     <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoWatch3D\Watch3D.csproj">
-      <Project>{b9e338ca-6677-4772-b01d-1fceabcdaaab}</Project>
-      <Name>Watch3D</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">

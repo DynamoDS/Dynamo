@@ -27,11 +27,17 @@ namespace Dynamo.Tests
     ///     better yet, use an even lighter weight class.  
     ///
     /// </summary>
-    public class DynamoViewModelUnitTest : UnitTestBase
+    public class DynamoViewModelUnitTest : DSEvaluationUnitTestBase
     {
         protected DynamoViewModel ViewModel;
         protected Preloader preloader;
 
+        protected override DynamoModel GetModel()
+        {
+            return ViewModel.Model;
+        }
+
+        [SetUp]
         public override void Setup()
         {
             base.Setup();
@@ -82,27 +88,6 @@ namespace Dynamo.Tests
             e.Success = true;
         }
 
-        protected void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
-        {
-            var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
-            foreach (var pair in modelExistenceMap)
-            {
-                Guid guid = Guid.Parse(pair.Key);
-                var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
-                bool nodeExists = (null != node);
-                Assert.AreEqual(nodeExists, pair.Value);
-            }
-        }
-
-        protected virtual void GetLibrariesToPreload(List<string> libraries)
-        {
-            // Nothing here by design. If you find yourself having to add 
-            // anything here, something must be wrong. DynamoViewModelUnitTest
-            // is designed to contain no test cases, so it does not need any 
-            // preloaded library, all of which should only be specified in the
-            // derived class.
-        }
-
         protected virtual string GetUserDataDirectory()
         {
             return string.Empty;
@@ -114,20 +99,24 @@ namespace Dynamo.Tests
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
-            var userDataDirectory = GetUserDataDirectory();
-
             TestPathResolver pathResolver = null;
             var preloadedLibraries = new List<string>();
             GetLibrariesToPreload(preloadedLibraries);
 
-            if (preloadedLibraries.Any() || !string.IsNullOrEmpty(userDataDirectory))
+            if (preloadedLibraries.Any())
             {
                 // Only when any library needs preloading will a path resolver be 
                 // created, otherwise DynamoModel gets created without preloading 
                 // any library.
                 // 
-                var resolverParams = new TestPathResolverParams(){UserDataRootFolder = userDataDirectory};
-                pathResolver = new TestPathResolver(resolverParams);
+
+                var pathResolverParams = new TestPathResolverParams()
+                {
+                    UserDataRootFolder = GetUserUserDataRootFolder(),
+                    CommonDataRootFolder = GetCommonDataRootFolder()
+                };
+
+                pathResolver = new TestPathResolver(pathResolverParams);
                 foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
                     pathResolver.AddPreloadLibraryPath(preloadedLibrary);
@@ -174,109 +163,27 @@ namespace Dynamo.Tests
             }
         }
 
-        protected void AssertNoDummyNodes()
+        protected void OpenModel(string relativeFilePath)
         {
-            var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
-
-            var dummyNodes = nodes.OfType<DSCoreNodesUI.DummyNode>();
-            string logs = string.Empty;
-            foreach (var node in dummyNodes)
-            {
-                logs += string.Format("{0} is a {1} node\n", node.NickName, node.NodeNature);
-            }
-
-            double dummyNodesCount = dummyNodes.Count();
-            if (dummyNodesCount >= 1)
-            {
-                Assert.Fail(logs + "Number of dummy nodes found in Sample: " + dummyNodesCount);
-            }
+            string openPath = Path.Combine(TestDirectory, relativeFilePath);
+            ViewModel.OpenCommand.Execute(openPath);
         }
 
-        protected IEnumerable<object> GetPreviewValues()
+        protected void OpenSampleModel(string relativeFilePath)
         {
-            List<object> objects = new List<object>();
-            foreach (var node in ViewModel.Model.CurrentWorkspace.Nodes)
-            {
-                objects.Add(GetPreviewValue(node.GUID));
-            }
-            return objects;
+            string openPath = Path.Combine(SampleDirectory, relativeFilePath);
+            ViewModel.OpenCommand.Execute(openPath);
         }
 
-        protected void AssertNullValues()
+        protected void RunModel(string relativeDynFilePath)
         {
-            foreach (var node in ViewModel.Model.CurrentWorkspace.Nodes)
-            {
-                string varname = GetVarName(node.GUID);
-                var mirror = GetRuntimeMirror(varname);
-                Assert.IsNull(mirror);
-            }
-
+            OpenModel(relativeDynFilePath);
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
 
-        protected object GetPreviewValue(System.Guid guid)
+        protected void RunCurrentModel() // Run currently loaded model.
         {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-
-            return mirror.GetData().Data;
+            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
         }
-
-        protected string GetVarName(System.Guid guid)
-        {
-            var model = ViewModel.Model;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-
-            int outportCount = node.OutPorts.Count;
-            Assert.IsTrue(outportCount > 0);
-
-            if (outportCount > 1)
-                return node.AstIdentifierBase;
-            else
-                return node.GetAstIdentifierForOutputIndex(0).Value;
-
-        }
-
-        protected string GetVarName(string guid)
-        {
-            var model = ViewModel.Model;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-
-            int outportCount = node.OutPorts.Count;
-            Assert.IsTrue(outportCount > 0);
-
-            if (outportCount > 1)
-                return node.AstIdentifierBase;
-            else
-                return node.GetAstIdentifierForOutputIndex(0).Value;
-
-        }
-
-        /// <summary>
-        /// Used to reflect on runtime data such as values of a variable
-        /// </summary>
-        /// <param name="varName"></param>
-        /// <returns></returns>
-        protected RuntimeMirror GetRuntimeMirror(string varName)
-        {
-            RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
-            return mirror;
-        }
-
-        /// <summary>
-        /// Used to reflect on static data such as classes and class members
-        /// </summary>
-        /// <param name="varName"></param>
-        /// <returns></returns>
-        protected ClassMirror GetClassMirror(string className)
-        {
-            ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
-            var classMirror = new ClassMirror(className, core);
-            return classMirror;
-        }
-
     }
 }
