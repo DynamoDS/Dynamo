@@ -25,7 +25,11 @@ namespace Dynamo.Wpf.Extensions
         string Name { get; }
 
         /// <summary>
-        /// Action to be invoked when DynamoView begins to start up.  
+        /// Action to be invoked when DynamoView begins to start up.  This is guaranteed to happen
+        /// after the DynamoModel has been created.
+        /// 
+        /// This method is *not* guaranteed to be invoked unless the extension is present
+        /// at startup.
         /// 
         /// Exceptions thrown from this method should be caught by Dynamo and 
         /// displayed.
@@ -35,9 +39,20 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// Action to be invoked when DynamoView is loaded.
         /// 
+        /// This action is guaranteed to be invoked, even if the extension is not present 
+        /// at startup.
+        /// 
         /// Exceptions thrown from this method should be caught by Dynamo and 
         /// displayed.
         /// </summary>
         void Loaded(ViewLoadedParams p);
+
+        /// <summary>
+        /// Action to be invoked when shutdown has begun.  This gives the UI a last minute chance to interact
+        /// with the user.
+        /// 
+        /// This action is guaranteed to be invoked before the associated model layer method on IExtension.
+        /// </summary>
+        void Shutdown();
     }
 }

@@ -24,7 +24,10 @@ namespace Dynamo.Extensions
         string Name { get; }
 
         /// <summary>
-        /// Action to be invoked when Dynamo begins to start up.  
+        /// Action to be invoked when Dynamo begins to start up. 
+        /// 
+        /// This action is *not* guaranteed to be invoked unless the extension is 
+        /// already installed at startup. 
         /// 
         /// Exceptions thrown from this method should be caught by Dynamo and 
         /// logged.
@@ -34,6 +37,9 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Action to be invoked when the Dynamo has started up and is ready
         /// for user interaction.
+        /// 
+        /// This action is guaranteed to be called even if the extension is installed
+        /// after startup.  
         /// 
         /// Exceptions thrown from this method should be caught by Dynamo and 
         /// logged.

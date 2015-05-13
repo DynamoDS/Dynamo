@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Extensions;
 
 namespace Dynamo.Wpf.Extensions
 {
     public class ViewStartupParams
     {
+        /// <summary>
+        /// A handle to the extensions that are already constructed in the Model layer
+        /// </summary>
+        public IExtensionManager extensionManager;
+
         // TBD MAGN-7366
         //
         // Implementation notes:
