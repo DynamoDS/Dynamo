@@ -3621,7 +3621,6 @@ class A
 x:int = 3; 
 }
 a = A.A();
-a.x = 2;
 b1 = a.x;
 c = [Imperative]
 {
