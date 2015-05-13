@@ -370,7 +370,7 @@ limitations under the License.
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
 
 	<!-- Get System.Drawing.dll -->
-	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v4.0">
+	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
       	<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
 
