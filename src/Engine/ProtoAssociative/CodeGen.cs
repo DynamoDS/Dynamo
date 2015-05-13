@@ -5899,12 +5899,15 @@ namespace ProtoAssociative
                 {
                     // Traverse default assignment for the class
                     emitDebugInfo = false;
-                    foreach (BinaryExpressionNode bNode in core.ClassTable.ClassNodes[globalClassIndex].defaultArgExprList)
-                    {
 
+                    List<AssociativeNode> defaultArgList = core.ClassTable.ClassNodes[globalClassIndex].defaultArgExprList;
+                    defaultArgList = BuildSSA(defaultArgList, context);
+                    foreach (BinaryExpressionNode bNode in defaultArgList)
+                    {
                         ProtoCore.AssociativeGraph.GraphNode graphNode = new ProtoCore.AssociativeGraph.GraphNode();
                         graphNode.exprUID = bNode.exprUID;
                         graphNode.modBlkUID = bNode.modBlkUID;
+                        graphNode.ssaExpressionUID = bNode.ssaExpressionUID;
                         graphNode.procIndex = globalProcIndex;
                         graphNode.classIndex = globalClassIndex;
                         graphNode.languageBlockId = codeBlock.codeBlockId;
