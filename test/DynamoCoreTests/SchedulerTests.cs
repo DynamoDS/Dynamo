@@ -406,6 +406,12 @@ namespace Dynamo.Tests
             this.data = data;
         }
 
+        internal void InitializeTestData()
+        {
+            if (ModifiedNodes == null)
+                ModifiedNodes = new List<NodeModel>();
+        }
+
         protected override void HandleTaskExecutionCore()
         {
             data.WriteExecutionLog(this);
@@ -1016,6 +1022,12 @@ namespace Dynamo.Tests
                 MakeAggregateRenderPackageAsyncTask(Guid.Empty),
             };
 
+            // Due to defaulting to auto-run mode, multiple UpdateGraphAsyncTask
+            // may have been scheduled prior to this. Clear those tasks before test 
+            // starts in a predictable state.
+            // 
+            schedulerThread.GetSchedulerToProcessTasks();
+
             var scheduler = dynamoModel.Scheduler;
             foreach (var stubAsyncTask in tasksToSchedule)
             {
@@ -1026,7 +1038,6 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeUpdateGraphAsyncTask: 6",
                 "FakeUpdateGraphAsyncTask: 10",
                 "FakeQueryMirrorDataAsyncTask: 0",
                 "FakeUpdateRenderPackageAsyncTask: 1",
@@ -1303,7 +1314,9 @@ namespace Dynamo.Tests
 
         private AsyncTask MakeUpdateGraphAsyncTask()
         {
-            return new FakeUpdateGraphAsyncTask(MakeAsyncTaskData());
+            var t = new FakeUpdateGraphAsyncTask(MakeAsyncTaskData());
+            t.InitializeTestData();
+            return t;
         }
 
         private AsyncTask MakeUpdateRenderPackageAsyncTask(Guid nodeGuid)
