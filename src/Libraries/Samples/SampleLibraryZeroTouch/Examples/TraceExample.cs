@@ -43,6 +43,7 @@ namespace SampleLibraryZeroTouch.Examples
     /// <summary>
     /// A class which contains methods to construct TraceExampleItem objects.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public static class TraceExampleWrapper
     {
         /// <summary>

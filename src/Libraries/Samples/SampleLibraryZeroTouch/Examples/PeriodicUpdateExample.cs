@@ -71,6 +71,7 @@ namespace SampleLibraryZeroTouch.Examples
             return new PeriodicUpdateExample(t, id);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             for (var i = 0; i < width - 1; i++)

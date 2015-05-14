@@ -1,4 +1,5 @@
 ﻿using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 
 namespace SampleLibraryZeroTouch.Examples
 {
@@ -14,6 +15,7 @@ namespace SampleLibraryZeroTouch.Examples
             return new CustomRenderExample();
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             // Dynamo's renderer uses IRenderPackage objects
