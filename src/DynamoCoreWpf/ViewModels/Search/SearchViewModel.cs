@@ -375,7 +375,7 @@ namespace Dynamo.ViewModels
                     return;
 
                 // Do not continue if parent is root library tree category (i.e. Top).
-                if (!treeStack.Any() && parent.Name == String.Empty && parent.Description == String.Empty)
+                if (!treeStack.Any())
                     return;
 
                 // Do not continue as soon as our target is not class.
