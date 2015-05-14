@@ -10,4 +10,4 @@ build:
   
 test:
   assemblies:
-    - ProtoTest.dll
+    - bin/AnyCPU/Release/ProtoTest.dll
