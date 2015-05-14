@@ -549,8 +549,8 @@ namespace Dynamo.Tests
             var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             CurrentDynamoModel.ExecuteCommand(undo);
 
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 2);
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 3);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 4);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 4);
         }
 
         [Test]
