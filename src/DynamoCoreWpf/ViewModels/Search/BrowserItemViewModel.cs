@@ -540,17 +540,38 @@ namespace Dynamo.Wpf.ViewModels
             var nextLargerItemIndex = -1;
             foreach (var item in list)
             {
+                // Compare names. E.g. "B" > "A", "Point" > "Geometry"
                 if (string.Compare(item.Name, name, StringComparison.Ordinal) >= 0)
                 {
+                    // For the first time set index to the first found larger item.
                     if (nextLargerItemIndex < 0)
                     {
                         nextLargerItemIndex = list.ToList().IndexOf(item);
+                        // If larger item is node, then subtract the number of categories.
                         if(item is NodeSearchElementViewModel)
                             nextLargerItemIndex -= list.Count(cat => cat is NodeCategoryViewModel);
                     }
+                    // If item(for which we are looking index) is category, Then we are done here.
                     if (!IsEntry) break;
                 }
-                else if (item is NodeSearchElementViewModel && nextLargerItemIndex >= 0)
+                else 
+                    // If index was found among categories and 
+                    // if item(for which we are looking index) is node, 
+                    // we have to add +1.
+                    // E.g.
+                    //           Top
+                    //            |
+                    //     ┌──────┴─────┐
+                    // ZCategory     AMember
+                    //
+                    // We are trying to add BMember.
+                    //
+                    // ZCategory > BMember => nextLargerItemIndex = ZCategory.index (it is 0)
+                    // AMember < BMember => nextLargerItemIndex++ (it is 1 now)
+                    // After last iteration answer will be 1.
+                    // If we insert entry, we are adding number of categories (look in AddToItems).
+                    // Final index will be 2 (nextLargerItemIndex + Subcategories.Count).
+                    if (item is NodeSearchElementViewModel && nextLargerItemIndex >= 0)
                     nextLargerItemIndex++;
             }
             return nextLargerItemIndex;
