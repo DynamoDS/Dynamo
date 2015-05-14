@@ -1622,6 +1622,7 @@ namespace Dynamo.Models
                     Background = annotation.Background,
                     FontSize = annotation.FontSize
                 };
+              
                 newAnnotations.Add(annotationModel);
             }
 
