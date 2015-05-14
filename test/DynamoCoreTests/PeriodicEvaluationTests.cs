@@ -139,6 +139,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void DynamoModel_OpenFileFromPath_StartsPeriodicEvaluation()
         {
             // asser that SampleLibraryZeroTouch must be loaded
