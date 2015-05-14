@@ -294,10 +294,15 @@ namespace Dynamo.Core
                 // check will not be performed.
                 // 
                 XmlAttribute guidAttribute = childNode.Attributes["guid"];
-                XmlAttribute actionAttribute = childNode.Attributes[UserActionAttrib];
-                var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                if (guidAttribute == null)
+                    continue;
 
-                if (null != guidAttribute && (guid == Guid.Parse(guidAttribute.Value)) && (action == modelActionType))
+                XmlAttribute actionAttribute = childNode.Attributes[UserActionAttrib];
+                if (actionAttribute == null)
+                    continue;
+
+                if (guid == Guid.Parse(guidAttribute.Value) && 
+                    action == (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value))
                     return true; // This model was found to be recorded.
             }
 
