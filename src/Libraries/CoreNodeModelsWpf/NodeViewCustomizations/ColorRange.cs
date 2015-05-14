@@ -55,7 +55,7 @@ namespace Dynamo.Wpf.Nodes
                         var data = colorsMirror.GetData();
                         if (data.IsCollection)
                         {
-                            colors.AddRange(data.GetElements().Select(e => e.Data).Cast<Color>());
+                            colors.AddRange(data.GetElements().Select(e => e.Data).OfType<Color>());
                         }
                         else
                         {
