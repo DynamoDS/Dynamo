@@ -4128,6 +4128,7 @@ l = Line.Line(x, y);
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void TestStepIntoClassConstructor3()
         {
             String code =
@@ -4249,6 +4250,7 @@ c = 3;
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void PropertyAssignFromBuiltInFunction()
         {
             string sourceCode = @"
@@ -6855,6 +6857,7 @@ l1 = p.mx;";
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void TestSSAassignments1()
         {
             String code =
@@ -10799,6 +10802,7 @@ class test
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void Defect_IDE_607()
         {
             // Execute and verify the defect IDE-519
