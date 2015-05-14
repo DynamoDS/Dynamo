@@ -663,6 +663,8 @@ namespace Dynamo.Models
 
         public void AddAnnotation(AnnotationModel annotationModel)
         {
+            annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
             Annotations.Add(annotationModel);
         }
 
@@ -709,7 +711,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="modelGuid">The model unique identifier.</param>
         /// <returns></returns>
-        public ModelBase annotationModel_GetModelBase(Guid modelGuid)
+        private ModelBase annotationModel_GetModelBase(Guid modelGuid)
         {
             ModelBase model = null;
             model = this.Nodes.FirstOrDefault(x => x.GUID == modelGuid);

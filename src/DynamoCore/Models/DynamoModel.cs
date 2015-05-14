@@ -1612,7 +1612,7 @@ namespace Dynamo.Models
                     Background = annotation.Background,
                     FontSize = annotation.FontSize
                 };
-                annotationModel.ModelBaseRequested += CurrentWorkspace.annotationModel_GetModelBase;
+              
                 newAnnotations.Add(annotationModel);
             }
 
