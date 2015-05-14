@@ -106,7 +106,6 @@ namespace Dynamo.Wpf.ViewModels
             set
             {
                 Model.RunPeriod = value;
-                RaisePropertyChanged("RunPeriod");
             }
         }
 

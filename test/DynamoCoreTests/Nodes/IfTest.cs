@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class IfTest : DSEvaluationViewModelUnitTest
+    class IfTest : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -20,7 +20,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestIFBasic()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfBasic.dyn");
             RunModel(testFilePath);
 
@@ -35,7 +34,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfAsFunctionObject()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFAsFunctionObject.dyn");
             RunModel(testFilePath);
 
@@ -46,7 +44,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode1()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfInCustomNode1.dyn");
             RunModel(testFilePath);
 
@@ -57,7 +54,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode2()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFInCustomNode2.dyn");
             RunModel(testFilePath);
 
@@ -69,7 +65,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestScopeIfForFactorial()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "callFactorial.dyn");
             RunModel(testFilePath);
 
@@ -80,7 +75,6 @@ namespace Dynamo.Tests
         [Category("SmokeTest")]
         public void TestScopeIfForPreview()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testScopeIf.dyn");
             RunModel(testFilePath);
             AssertPreviewValue("9fe8e82f-760d-43a6-90b2-5f9c252139d7", 42);

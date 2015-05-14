@@ -1,31 +1,28 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    internal class CustomNodeWorkspaceOpening : DSEvaluationViewModelTest
+    internal class CustomNodeWorkspaceOpening : DynamoModelTestBase
     {
         public void OpenTestFile(string folder, string fileName)
         {
             var examplePath = Path.Combine(TestDirectory, folder, fileName);
-            ViewModel.OpenCommand.Execute(examplePath);
+            OpenModel(examplePath);
         }
 
         [Test]
         public void CanOpenWorkspaceWithMissingCustomNodeThenFixByOpeningNeededCustomNodeWorkspace()
         {
-            var model = ViewModel.Model;
-
             // a file with a missing custom node definition is opened
             OpenTestFile(@"core\CustomNodes", "noro.dyn");
 
-            var homeWorkspace = model.CurrentWorkspace as HomeWorkspaceModel;
+            var homeWorkspace = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
             Assert.NotNull(homeWorkspace);
 
             var funcNode = homeWorkspace.Nodes.OfType<Function>().First();
@@ -37,7 +34,7 @@ namespace Dynamo.Tests
             
             homeWorkspace.Run();
 
-            model.CurrentWorkspace = homeWorkspace;
+            CurrentDynamoModel.CurrentWorkspace = homeWorkspace;
 
             Assert.AreEqual(12.0, GetPreviewValue(funcNode.GUID));
         }
@@ -45,22 +42,19 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenCustomNodeWorkspace()
         {
-            var model = ViewModel.Model;
-            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
-            ViewModel.OpenCommand.Execute(examplePath);
+            OpenTestFile(@"core\combine", "Sequence2.dyf");
 
-            var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            var nodeWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
             Assert.IsNotNull(nodeWorkspace);
-            Assert.AreEqual( model.CurrentWorkspace.Name, "Sequence2");
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Name, "Sequence2");
         }
 
         [Test]
         public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
-            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
-            ViewModel.OpenCommand.Execute(examplePath);
+            OpenTestFile(@"core\combine", "Sequence2.dyf");
             
-            var res = ViewModel.Model.SearchModel.Search("Sequence2");
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
             Assert.AreEqual(1, res.Count());
             Assert.AreEqual("Sequence2", res.First().Name);
         }

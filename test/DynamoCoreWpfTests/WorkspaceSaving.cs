@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Tests;
-using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Tests
 {

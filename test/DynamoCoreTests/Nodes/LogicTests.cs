@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class ComparisonTests : DSEvaluationViewModelUnitTest
+    class ComparisonTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -145,7 +145,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testGreaterThanOrEqualStringInput.dyn");
 
             RunModel(testFilePath);
-            ViewModel.HomeSpace.Run();
+            BeginRun();
             AssertPreviewValue("b5b07b97-bd27-4a31-bca1-59d791150b4b", 0);
             AssertPreviewValue("370abb34-9866-465e-98f0-8df73cad39ba", 1);
             AssertPreviewValue("6b703733-fb5a-431d-9180-08538dffbd8c", 1);
@@ -169,7 +169,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testLessThanOrEqualNumberInput.dyn");
 
             RunModel(testFilePath);
-            ViewModel.HomeSpace.Run();
+            BeginRun();
             AssertPreviewValue("49723f58-2a48-4cf8-815d-899bf3691938", 1);
             AssertPreviewValue("cfd23808-b7da-46f5-acb7-ffe9bd80da53", 1);
             AssertPreviewValue("0643bd3b-8d20-4300-aa96-1c1789b90303", 0);
@@ -256,7 +256,7 @@ namespace Dynamo.Tests
     }
 
     [TestFixture]
-    class ConditionalTest : DSEvaluationViewModelUnitTest
+    class ConditionalTest : DynamoModelTestBase
     {
         private string logicTestFolder { get { return Path.Combine(TestDirectory, "core", "logic", "conditional"); } }
 
