@@ -1,0 +1,14 @@
+<Workspace Version="0.7.5.3327" X="-959.281673247033" Y="-800.609163679041" zoom="1.75507981918222" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ac626d05-e553-48b7-88c2-7a5b44de3cbe" nickname="Code Block" x="639.143532738046" y="632.507518819327" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;dog&quot;,&quot;cat&quot;,&quot;cheese&quot;,-2,42.0};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e537e6b8-aa95-42ec-b33b-95cda3d1f20e" nickname="List.Sort" x="1040.41633077917" y="632.507518819327" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Sort@var[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="dd6ca57c-312a-47e8-a0dc-ccd163756e75" nickname="Watch" x="1243.68912882029" y="632.507518819327" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ac626d05-e553-48b7-88c2-7a5b44de3cbe" start_index="0" end="e537e6b8-aa95-42ec-b33b-95cda3d1f20e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e537e6b8-aa95-42ec-b33b-95cda3d1f20e" start_index="0" end="dd6ca57c-312a-47e8-a0dc-ccd163756e75" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Sort uses the natural sort order of the items in the list to reorder the list." x="960.511124852599" y="572.681179952913" />
+  </Notes>
+</Workspace>
