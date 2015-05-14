@@ -382,15 +382,14 @@ namespace Dynamo.Tests
             // This is a training file for demonstrating capabilities of Codeblock
             // To test various types supported in codeblock.  
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\04 Code blocks\Code Blocks Reference.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check preview values of CBNs
             var cbn = "27c2f333-f51f-4a0c-9f71-70dc64f2ecbe";
@@ -464,15 +463,14 @@ namespace Dynamo.Tests
         {
             // Create automation for Dynamo file : Basket1.dyn
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\05 Geometry\Basket1.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(31, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             // check Geometry.Rotate
             var rotate = "dfdfa7b1-533b-4dca-afa2-1d9d62233b7f";
@@ -490,15 +488,14 @@ namespace Dynamo.Tests
         {
             // Create automation for Dynamo file : Basket2.dyn
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\05 Geometry\Basket2.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(53, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(45, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(53, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(45, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             // check Curve.ExtrudeAsSolid
             var solid = "9349f9d5-aa7c-43d9-a336-5610004ed7ef";
@@ -516,15 +513,14 @@ namespace Dynamo.Tests
         {
             // Create automation for Dynamo file : Basket3.dyn
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\05 Geometry\Basket3.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(199, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(141, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(141, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             // check Surface.Thicken
             var solid1 = "db78b128-fec5-40b9-9e59-0ca371a4de43";
@@ -553,15 +549,14 @@ namespace Dynamo.Tests
         {
             // Create automation for Dynamo file : Core_Python.dyn
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\06 Python\Core_Python.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check List.GetItemAtIndex
             var getItemAtIndex1 = "b1be50ed-f93c-4d9c-b7c4-55d97e820672";
@@ -579,15 +574,14 @@ namespace Dynamo.Tests
         {
             // Create automation for Dynamo file : Lacing.dyn
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Lacing.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check List.ByStartPointEndPoint
             var list = "5c02325a-f5fc-403c-b46f-0a492cbce5cf";
@@ -605,15 +599,14 @@ namespace Dynamo.Tests
         {
             // Create automation for Dynamo file : Map.dyn
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Map.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(32, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(26, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(32, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check List.Map
             var list = "34986114-3561-4feb-993b-3c53c9ef352f";
@@ -633,15 +626,14 @@ namespace Dynamo.Tests
             // This is a training file for demonstrating List.MinimumItem and List.MaximumItem
             // To test various types supported in List.  
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\MinMax.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check preview values of CBNs
             var cbn = "1db3330e-bd1b-4116-b5ca-df4a18e78960";
@@ -682,15 +674,14 @@ namespace Dynamo.Tests
             // Create automation for Dynamo file : PassingFunctions.dyn
             // This is a training file for demonstrating surface   
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\PassingFunctions.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(16, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check preview values of Curve.Extrude
             var curve = "2abb7d97-6b23-4b26-91af-c11407503a66";
@@ -718,15 +709,14 @@ namespace Dynamo.Tests
             // Create automation for Dynamo file : Reverse.dyn
             // This is a training file for demonstrating reverse functions   
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Reverse.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check preview values of List.Map, List.Reverse
             var map = "45ea27b6-a33c-429d-bf20-6d147d3c5893";
@@ -751,15 +741,14 @@ namespace Dynamo.Tests
             // Create automation for Dynamo file : Sort.dyn
             // This is a training file for demonstrating sort function  
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Sort.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check preview values of List.Sort
             var sort = "e537e6b8-aa95-42ec-b33b-95cda3d1f20e";
@@ -774,15 +763,14 @@ namespace Dynamo.Tests
             // Create automation for Dynamo file : SortGeometry.dyn
             // This is a training file for demonstrating sort function 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\SortGeometry.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check preview values of PolyCurve.ByPoint
             var sort = "7c636447-6099-48ab-8a1c-758ee8feecaf";
@@ -804,15 +792,14 @@ namespace Dynamo.Tests
             // Create automation for Dynamo file : Surface.dyn
             // This is a training file for demonstrating surface
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Surface.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(26, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(21, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(21, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check CBN
             var cbn = "9ab004ca-0917-4858-85bc-57ae681e33e8";
@@ -832,7 +819,6 @@ namespace Dynamo.Tests
             // Create automation for Dynamo file : Transpose.dyn
             // This is a training file for demonstrating transpose function
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ListManagementMisc\Transpose.dyn");
             RunModel(openPath);
 
@@ -849,8 +835,8 @@ namespace Dynamo.Tests
             }
 
             //check the number of nodes and connectors
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check Point.ByCoordinates
             var points = "5462da5b-1473-44a6-a3f8-9f5098b4675a";
@@ -881,15 +867,14 @@ namespace Dynamo.Tests
             //Create automation for Dynamo file : buckyball in a code block.dyn
             //This is a training file for demostrating code block function
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\buckyball in a code block.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check CBN that contains 84 lines
             var lineID = "93a30c71-6a3d-4cf3-8140-b5acc1d33cd6";
@@ -921,15 +906,14 @@ namespace Dynamo.Tests
             //Create automation for Dynamo file : SmileyFace.dyn
             //This is a training file for demostrating cylinder,solid
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\SmileyFace.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(40, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check Cylinder.ByPointsRadius
             var lineID = "c8aaaf1b-975a-4075-99e0-fb0092a232fb";
@@ -956,15 +940,14 @@ namespace Dynamo.Tests
             //Create automation for Dynamo file : Woven Surface.dyn
             //This is a training file for demostrating surface, CBN with function
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\Woven Surface.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(64, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(40, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(64, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check Surface.Thicken
             var surfaceID = "a7b4e678-3278-4554-8ce2-7c76faca79d7";
@@ -988,15 +971,14 @@ namespace Dynamo.Tests
             //Create automation for Dynamo file : mobius.dyn
             //This is a training file for demostrating surfaces
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\MiscDefinitions\mobius.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(38, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(29, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(38, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(29, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check Surface.ByLoft
             var surface1ID = "3675e40d-1d1d-4869-b3e1-f8ea67286486";
@@ -1035,15 +1017,14 @@ namespace Dynamo.Tests
             //Create automation for Dynamo file : Vignette-01-Plane-Offset.dyn
             //This is a training file for demostrating Plane and Rectangle
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\Vignette\Vignette-01-Plane-Offset.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check Plane.XY
             var planeID = "80f6e70a-b6e4-452e-9ec3-dffa1106ee28";
@@ -1072,15 +1053,14 @@ namespace Dynamo.Tests
             //Create automation for Dynamo file : Vignette-01-Wireframe-Section.dyn
             //This is a training file for demostrating Lines and Rectangles
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
-            DynamoModel model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\Vignette\Vignette-01-Wireframe-Section.dyn");
             RunModel(openPath);
 
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(48, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(48, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(33, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
             //check Line.ByStartPointEndPoint
             var lineID = "ead8e061-d570-436b-aece-c66c2cd02326";
