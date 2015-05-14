@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Media.Imaging;
-using DSCoreNodesUI.Input;
 
-using Dynamo;
-using Dynamo.Models;
 using Dynamo.Tests;
-using Dynamo.Wpf;
-using Dynamo.Wpf.Controls;
 using DynamoConversions;
 using Dynamo.Nodes;
 using NUnit.Framework;
