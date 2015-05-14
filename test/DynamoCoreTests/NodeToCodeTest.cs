@@ -479,6 +479,12 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(expr1.ToString().StartsWith("a = 1;"));
             Assert.IsTrue(expr2.ToString().StartsWith("x = a;"));
+
+            var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            CurrentDynamoModel.ExecuteCommand(undo);
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 2);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 3);
         }
 
         [Test]
@@ -519,6 +525,12 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 3);
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 3);
+
+            var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            CurrentDynamoModel.ExecuteCommand(undo);
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 4);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 5);
         }
 
         [Test]
@@ -532,6 +544,12 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(command);
 
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 3);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 3);
+
+            var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            CurrentDynamoModel.ExecuteCommand(undo);
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 2);
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 3);
         }
 
