@@ -95,6 +95,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DynamoWatch3DImages.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -109,11 +110,21 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+
+	<!-- Get System.Drawing.dll -->
+	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    	</GetReferenceAssemblyPaths>
+	
+	<!-- Get assembly -->
+	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
+	</GetAssemblyIdentity>
+	
+	<!-- Generate customization dll -->
+	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoWatch3DImages.resx" OutputResources="$(ProjectDir)DynamoWatch3DImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    	<AL TargetType="library" EmbedResources="$(ProjectDir)DynamoWatch3DImages.resources" OutputAssembly="$(OutDir)DynamoWatch3D.customization.dll" Version="%(AssemblyInfo.Version)" />
+
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

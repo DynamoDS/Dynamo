@@ -49,7 +49,25 @@ namespace Dynamo.Services
         }
     }
 
+    public class StabilityUtils
+    {
+        private static bool isLastShutdownClean;
 
+        /// <summary>
+        /// To check whether the last shutdown is clean(no crash)
+        /// </summary>
+        public static bool IsLastShutdownClean
+        {
+            get
+            {
+                return isLastShutdownClean;
+            }
+            internal set
+            {
+                isLastShutdownClean = value;
+            }
+        }
+    }
 
 
     /// <summary>
@@ -100,6 +118,7 @@ namespace Dynamo.Services
         /// </summary>
         public static void Startup()
         {
+            StabilityUtils.IsLastShutdownClean = IsLastShutdownClean();
             String cleanShutdownValue = Registry.GetValue(REG_KEY, SHUTDOWN_TYPE_NAME, null) as String;
             String uptimeValue = Registry.GetValue(REG_KEY, UPTIME_NAME, null) as String;
 
@@ -152,6 +171,18 @@ namespace Dynamo.Services
             // this is pesimistic
             Registry.SetValue(REG_KEY, SHUTDOWN_TYPE_NAME, ASSUMING_CRASHING_SHUTDOWN_VALUE);
 
+        }
+
+        /// <summary>
+        /// To check whether the last shutdown is clean(no crash)
+        /// </summary>
+        private static bool IsLastShutdownClean()
+        {
+            var ret = Registry.GetValue(REG_KEY, SHUTDOWN_TYPE_NAME, CRASHING_SHUTDOWN_VALUE) as string;
+            if (null != ret && string.CompareOrdinal(ret, CRASHING_SHUTDOWN_VALUE) == 0)
+                return false;
+
+            return true;
         }
     }
 }

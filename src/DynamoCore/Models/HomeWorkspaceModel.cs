@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -16,12 +17,15 @@ namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
     {
-        public EngineController EngineController { get; private set; }
+        #region Class Data Members and Properties
+
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
+
+        public EngineController EngineController { get; private set; }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
@@ -44,13 +48,82 @@ namespace Dynamo.Models
    
         public readonly bool VerboseLogging;
 
-        public RunSettings RunSettings { get; protected set; }
-       
+        public readonly RunSettings RunSettings;
+
         /// <summary>
         /// Evaluation count is incremented whenever the graph is evaluated. 
         /// It is set to zero when the graph is Cleared.
         /// </summary>
         public long EvaluationCount { get; private set; }
+
+        /// <summary>
+        /// In near future, the file loading mechanism will be completely moved 
+        /// into WorkspaceModel, that's the time we removed this property setter below.
+        /// </summary>
+        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
+        {
+            get
+            {
+                return preloadedTraceData;
+            }
+
+            set
+            {
+                if (value != null && (preloadedTraceData != null))
+                {
+                    const string message = "PreloadedTraceData cannot be set twice";
+                    throw new InvalidOperationException(message);
+                }
+
+                preloadedTraceData = value;
+            }
+        }
+        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
+
+        internal bool IsEvaluationPending
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public event EventHandler<EventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(EventArgs e)
+        {
+            this.HasRunWithoutCrash = false;
+
+            var handler = EvaluationStarted;
+            if (handler != null) handler(this, e);
+        }
+
+        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
+        {
+            this.HasRunWithoutCrash = e.EvaluationSucceeded;
+
+            var handler = EvaluationCompleted;
+            if (handler != null) handler(this, e);
+
+        }
+
+        public event EventHandler<EvaluationCompletedEventArgs> RefreshCompleted;
+        public virtual void OnRefreshCompleted(EvaluationCompletedEventArgs e)
+        {
+            var handler = RefreshCompleted;
+            if (handler != null) handler(this, e);
+        }
+
+        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
+        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
+        {
+            var handler = SetNodeDeltaState;
+            if (handler != null) handler(this, e);
+        }
+
+        #endregion
+
+        #region Constructors
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
@@ -111,7 +184,10 @@ namespace Dynamo.Models
                 copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
             }
             historicalTraceData = copiedData;
+
         }
+
+        #endregion
 
         public override void Dispose()
         {
@@ -126,38 +202,6 @@ namespace Dynamo.Models
             if (pulseMaker == null) return;
 
             pulseMaker.Stop();
-        }
-
-        /// <summary>
-        /// In near future, the file loading mechanism will be completely moved 
-        /// into WorkspaceModel, that's the time we removed this property setter below.
-        /// </summary>
-        internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
-        {
-            get
-            {
-                return preloadedTraceData;
-            }
-
-            set
-            {
-                if (value != null && (preloadedTraceData != null))
-                {
-                    const string message = "PreloadedTraceData cannot be set twice";
-                    throw new InvalidOperationException(message);
-                }
-
-                preloadedTraceData = value;
-            }
-        }
-        private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
-
-        internal bool IsEvaluationPending
-        {
-            get
-            {
-                return false;
-            }
         }
 
         protected override void OnNodeRemoved(NodeModel node)
@@ -198,6 +242,8 @@ namespace Dynamo.Models
             }
         }
 
+        #region Public Operational Methods
+
         /// <summary>
         ///     Clears this workspace of nodes, notes, and connectors.
         /// </summary>
@@ -210,12 +256,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Start periodic evaluation by the given amount of time. If there
-        /// is an on-going periodic evaluation, an exception will be thrown.
+        /// Start periodic evaluation using the currently set RunPeriod
         /// </summary>
-        /// <param name="milliseconds">The desired amount of time between two 
-        /// evaluations in milliseconds.</param>
-        public void StartPeriodicEvaluation(int milliseconds)
+        public void StartPeriodicEvaluation()
         {
             if (pulseMaker == null)
             {
@@ -223,7 +266,7 @@ namespace Dynamo.Models
             }
 
             pulseMaker.RunStarted += PulseMakerRunStarted;
-            EvaluationCompleted += pulseMaker.OnRunExpressionCompleted;
+            RefreshCompleted += pulseMaker.OnRefreshCompleted;
 
             if (pulseMaker.TimerPeriod != 0)
             {
@@ -231,13 +274,7 @@ namespace Dynamo.Models
                     "Periodic evaluation cannot be started without stopping");
             }
 
-            pulseMaker.Start(milliseconds);
-        }
-
-        private void PulseMakerRunStarted()
-        {
-            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
-            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
+            pulseMaker.Start(RunSettings.RunPeriod);
         }
 
         /// <summary>
@@ -249,9 +286,11 @@ namespace Dynamo.Models
             if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
 
             pulseMaker.RunStarted -= PulseMakerRunStarted;
-            EvaluationCompleted -= pulseMaker.OnRunExpressionCompleted;
+            RefreshCompleted -= pulseMaker.OnRefreshCompleted;
             pulseMaker.Stop();
         }
+
+        #endregion
 
         protected override bool PopulateXmlDocument(XmlDocument document)
         {
@@ -269,7 +308,15 @@ namespace Dynamo.Models
             return true;
         }
 
+        private void PulseMakerRunStarted()
+        {
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
+            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
+        }
+
+
         #region evaluation
+
         /// <summary>
         /// Call this method to reset the virtual machine, avoiding a race 
         /// condition by using a thread join inside the vm executive.
@@ -362,12 +409,6 @@ namespace Dynamo.Models
                 node.Warning(message.Value); // Update node warning message.
             }
 
-            // Refresh values of nodes that took part in update.
-            foreach (var modifiedNode in updateTask.ModifiedNodes)
-            {
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);                
-            }
-
             foreach (var node in Nodes)
             {
                 node.ClearDirtyFlag();
@@ -391,7 +432,20 @@ namespace Dynamo.Models
 
             OnEvaluationCompleted(e);
 
+            if (EngineController.IsDisposed) return;
+
             EngineController.ReconcileTraceDataAndNotify();
+
+            // Refresh values of nodes that took part in update.
+            foreach (var modifiedNode in updateTask.ModifiedNodes)
+            {
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+            }
+
+            scheduler.Tasks.AllComplete(_ =>
+            {
+                OnRefreshCompleted(e);
+            });
         }
 
         /// <summary>
@@ -446,32 +500,6 @@ namespace Dynamo.Models
                 var e = new EvaluationCompletedEventArgs(false);
                 OnEvaluationCompleted(e);
             }
-        }
-
-        public event EventHandler<EventArgs> EvaluationStarted;
-        public virtual void OnEvaluationStarted(EventArgs e)
-        {
-            this.HasRunWithoutCrash = false;
-
-            var handler = EvaluationStarted;
-            if (handler != null) handler(this, e);
-        }
-
-        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
-        public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
-        {
-            this.HasRunWithoutCrash = e.EvaluationSucceeded;
-
-            var handler = EvaluationCompleted;
-            if (handler != null) handler(this, e);
-
-        }
-
-        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
-        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
-        {
-            var handler = SetNodeDeltaState;
-            if (handler != null) handler(this, e);
         }
 
         /// <summary>
