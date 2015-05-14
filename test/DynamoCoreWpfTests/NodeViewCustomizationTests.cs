@@ -321,5 +321,19 @@ namespace DynamoCoreWpfTests
             inPortGrid = nodeView.inPortGrid;
             Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
         }
+
+        [Test]
+        public void InvalidInputShouldNotCrashColorRangeNode()
+        {
+            Open(@"UI\ColorRangeInvalidInputCrash.dyn");
+
+            // Update the code block node from "Color.FromRGBA" to "5.6", making 
+            // it a double value type. After the fix this should not have caused 
+            // any crash in ColorRange node.
+            //
+            var guid = System.Guid.Parse("c1d3a92a-e4d4-47a8-8533-bf19e63e0bf9");
+            Model.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                Model.CurrentWorkspace.Guid, guid, "Code", "5.6"));
+        }
     }
 }
