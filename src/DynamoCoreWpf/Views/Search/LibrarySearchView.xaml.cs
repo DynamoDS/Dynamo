@@ -229,6 +229,8 @@ namespace Dynamo.UI.Views
             if (HighlightedItem != null)
             {
                 HighlightedItem.IsSelected = true;
+                // If HighlightedItem is not visible for user, bring it and 5 next items into view.
+                HighlightedItem.BringIntoView(new Rect(0, 0, 0, HighlightedItem.ActualHeight * 5));
                 ShowTooltip(HighlightedItem);
             }
         }
@@ -684,7 +686,7 @@ namespace Dynamo.UI.Views
                     {
                         UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
                     }),
-                    DispatcherPriority.Input);
+                    DispatcherPriority.Loaded);
             }
         }
 

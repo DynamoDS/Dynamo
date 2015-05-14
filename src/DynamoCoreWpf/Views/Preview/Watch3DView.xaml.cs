@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -575,7 +576,6 @@ namespace Dynamo.Controls
                     break;
             }
         }
-
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {

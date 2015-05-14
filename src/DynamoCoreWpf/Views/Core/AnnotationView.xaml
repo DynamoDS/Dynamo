@@ -131,9 +131,12 @@
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                               Name="UngroupAnnotation"
+                           Click="OnUngroupAnnotation"/>               
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
                                Name="ChangeSize">                   
                     <MenuItem Header ="14" Name="FontSize0" Command="{Binding ChangeFontSize}" CommandParameter="14"
@@ -144,8 +147,16 @@
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=20}"></MenuItem>
                     <MenuItem Header ="30" Name="FontSize3" Command="{Binding ChangeFontSize}" CommandParameter="30"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=30}"></MenuItem>
-                    <MenuItem Header ="48" Name="FontSize4" Command="{Binding ChangeFontSize}" CommandParameter="48"
+                    <MenuItem Header ="36" Name="FontSize4" Command="{Binding ChangeFontSize}" CommandParameter="36"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=36}"></MenuItem>
+                    <MenuItem Header ="48" Name="FontSize5" Command="{Binding ChangeFontSize}" CommandParameter="48"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=48}"></MenuItem>
+                    <MenuItem Header ="60" Name="FontSize6" Command="{Binding ChangeFontSize}" CommandParameter="60"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=60}"></MenuItem>
+                    <MenuItem Header ="72" Name="FontSize7" Command="{Binding ChangeFontSize}" CommandParameter="72"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=72}"></MenuItem>
+                    <MenuItem Header ="96" Name="FontSize8" Command="{Binding ChangeFontSize}" CommandParameter="96"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=96}"></MenuItem>
                     
                 </MenuItem>               
                 <ListBox Style="{StaticResource ColorSelectorListBox}"
@@ -223,7 +234,9 @@
                     FontSize="{Binding FontSize}"                                 
                     IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
                     GotFocus="GroupTextBox_OnGotFocus"                   
-                    TextChanged="GroupTextBox_OnTextChanged"                            
+                    TextChanged="GroupTextBox_OnTextChanged"   
+                    AcceptsReturn="True"
+                    AcceptsTab="True"
                     Style="{StaticResource SZoomFadeTextBox}">                  
             </TextBox>
             

@@ -124,5 +124,26 @@ namespace Dynamo.Tests
 
             BeginRun();
         }
+
+        [Test]
+        public void Callsite_RunWithTraceDataFromUnresolvedNodes_DoesNotCrash()
+        {
+            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Geometry", "Geometry_Surfaces.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(42, ws.Nodes.Count);
+
+            // The number of connectors is less than what we would expect
+            // beause several of the nodes load as un-commented dummy nodes.
+            Assert.AreEqual(46, ws.Connectors.Count());
+
+            // The guard added around deserialization of types that
+            // can't be resolved will prevent a crash. This test
+            // passes if the workspace runs.
+
+            BeginRun();
+
+            Assert.Pass();
+        }
     }
 }
