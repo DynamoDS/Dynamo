@@ -13,6 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Views.Gallery;
+using Dynamo.Wpf.ViewModels.Core;
+using System.Linq;
+using Dynamo.Services;
 
 namespace Dynamo.UI.Controls
 {
@@ -110,10 +114,12 @@ namespace Dynamo.UI.Controls
         ObservableCollection<SampleFileEntry> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
         internal readonly DynamoViewModel DynamoViewModel;
+        private readonly bool isFirstRun;
 
-        internal StartPageViewModel(DynamoViewModel dynamoViewModel)
+        internal StartPageViewModel(DynamoViewModel dynamoViewModel, bool isFirstRun)
         {
             this.DynamoViewModel = dynamoViewModel;
+            this.isFirstRun = isFirstRun;
 
             this.recentFiles = new ObservableCollection<StartPageListItem>();
             sampleFiles = new ObservableCollection<SampleFileEntry>();
@@ -149,7 +155,9 @@ namespace Dynamo.UI.Controls
                 ClickAction = StartPageListItem.Action.ExternalUrl
             });
 
-            communityLinks.Add(new StartPageListItem(Resources.StartPageVisitDynamoBim, "icon-dynamobim.png")
+            communityLinks.Add(new StartPageListItem(
+                string.Format(Resources.StartPageVisitWebsite, dynamoViewModel.BrandingResourceProvider.ProductName),
+                "icon-dynamobim.png")
             {
                 ContextData = Configurations.DynamoSiteLink,
                 ClickAction = StartPageListItem.Action.ExternalUrl
@@ -158,6 +166,12 @@ namespace Dynamo.UI.Controls
             #endregion
 
             #region Reference List
+
+            /*references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-whats-new.png")
+            {
+                ContextData = ButtonNames.ShowGallery,
+                ClickAction = StartPageListItem.Action.RegularCommand
+            });*/
 
             references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, "icon-reference.png")
             {
@@ -265,6 +279,8 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        public bool IsFirstRun { get { return isFirstRun; } }
+
         public string SampleFolderPath
         {
             get { return this.sampleFolderPath; }
@@ -355,6 +371,10 @@ namespace Dynamo.UI.Controls
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
                     break;
 
+                case ButtonNames.ShowGallery:
+                    dvm.ShowGalleryCommand.Execute(null);
+                    break;
+
                 default:
                     throw new ArgumentException(
                         string.Format("Invalid command: {0}", item.ContextData));
@@ -389,6 +409,7 @@ namespace Dynamo.UI.Controls
         public const string NewWorkspace = "NewWorkspace";
         public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
+        public const string ShowGallery = "ShowGallery";
     }
 
     public partial class StartPageView : UserControl
@@ -417,6 +438,12 @@ namespace Dynamo.UI.Controls
 
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
+
+            if (startPageViewModel.IsFirstRun)
+            {
+                dynamoViewModel.ShowGalleryCommand.Execute(null);
+            }
+
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)

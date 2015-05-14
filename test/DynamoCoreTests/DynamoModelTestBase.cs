@@ -36,11 +36,11 @@ namespace Dynamo
                 preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
-                if (this.CurrentDynamoModel == null)
-                    return;
-
-                this.CurrentDynamoModel.ShutDown(false);
-                this.CurrentDynamoModel = null;
+                if (this.CurrentDynamoModel != null)
+                {
+                    this.CurrentDynamoModel.ShutDown(false);
+                    this.CurrentDynamoModel = null;
+                }
             }
             catch (Exception ex)
             {
@@ -56,6 +56,30 @@ namespace Dynamo
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+
+                var pathResolverParams = new TestPathResolverParams()
+                {
+                    UserDataRootFolder = GetUserUserDataRootFolder(),
+                    CommonDataRootFolder = GetCommonDataRootFolder()
+                };
+
+                pathResolver = new TestPathResolver(pathResolverParams);
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
             this.CurrentDynamoModel = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
@@ -63,6 +87,31 @@ namespace Dynamo
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
+        }
+
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Nothing here by design. If you find yourself having to add 
+            // anything here, something must be wrong. DynamoViewModelUnitTest
+            // is designed to contain no test cases, so it does not need any 
+            // preloaded library, all of which should only be specified in the
+            // derived class.
+        }
+
+        protected virtual string GetUserUserDataRootFolder()
+        {
+            // Override in derived classed to provide a custom
+            // UserAppDataRootFolder. Returning an empty string
+            // here will cause the PathManager to use its default.
+            return string.Empty;
+        }
+
+        protected virtual string GetCommonDataRootFolder()
+        {
+            // Override in derived classed to provide a custom
+            // CommonAppDataRootFolder. Returning an empty string
+            // here will cause the PathManager to use its default.
+            return string.Empty;
         }
 
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel

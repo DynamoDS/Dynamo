@@ -125,6 +125,9 @@
         <KeyBinding Key="G"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.AddAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="U"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.UngroupAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
@@ -347,6 +350,11 @@
                                   Command="{Binding AddAnnotationCommand}"
                                   Name="noteMenuAnnotation"
                                   InputGestureText="Ctrl + G" />
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                                  Command="{Binding UngroupAnnotationCommand}"
+                                  Name="ungroupGroup"
+                                  InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
@@ -522,14 +530,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
-                              IsEnabled="True">                   
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
-                                  Name="ToggleIsUsageReportingApprovedCommand"
-                                  Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
-                                  Focusable="False" />
+                              IsEnabled="True">
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
@@ -537,6 +538,13 @@
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
                                   Focusable="False"/>
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
+                                  Name="ToggleIsUsageReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
+                                  Focusable="False" />
                         <MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
                                   IsCheckable="True" 
@@ -736,7 +744,7 @@
                                 <Slider Width="100"
                                         Minimum="12"
                                         Maximum="512"
-                                        Value="{Binding MaxTesselationDivisions, Mode=TwoWay}"></Slider>
+                                        Value="{Binding MaxTessellationDivisions, Mode=TwoWay}"></Slider>
                                 <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                            Margin="10,0,0,0"></TextBlock>
                             </StackPanel>
@@ -1704,6 +1712,15 @@
                                             HorizontalAlignment="Left" 
                                             VerticalAlignment="Top" Margin="10,30" />
         </Grid>
+
+        <Grid Name="galleryBackground"
+              Visibility="Hidden"
+              MouseLeftButtonDown="OnGalleryBackgroundMouseClick">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.8"/>
+            </Grid.Background>
+        </Grid>
+
     </Grid>
 
 

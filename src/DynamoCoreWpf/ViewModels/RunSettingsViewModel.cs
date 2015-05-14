@@ -105,7 +105,8 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.RunPeriod; }
             set
             {
-                Model.RunPeriod = value; 
+                Model.RunPeriod = value;
+                RaisePropertyChanged("RunPeriod");
             }
         }
 
@@ -330,15 +331,27 @@ namespace Dynamo.Wpf.ViewModels
     /// </summary>
     public class RunPeriodConverter : IValueConverter
     {
+        public const string ExpectedSuffix = "ms";
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return string.Format("{0}{1}", value, "ms");
+            return string.Format("{0}{1}", value, ExpectedSuffix);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var s = value.ToString();
+
+            if (s.EndsWith(ExpectedSuffix))
+            {
+                s = s.Remove(s.Length - ExpectedSuffix.Length);
+            }
+            
             int ms;
-            return !Int32.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out ms) ? 100 : Math.Abs(ms);
+            var parseSuccess =
+                Int32.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out ms);
+
+            return parseSuccess ? Math.Abs(ms) : RunSettings.DefaultRunPeriod;
         }
     }
 }

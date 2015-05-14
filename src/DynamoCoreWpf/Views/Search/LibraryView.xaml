@@ -284,7 +284,6 @@
                                                 </ToggleButton>
 
                                                 <ContentPresenter Grid.Column="1"
-                                                                  Grid.ColumnSpan="2"
                                                                   VerticalAlignment="Center"
                                                                   ContentSource="Header" />
 
@@ -446,15 +445,10 @@
 
             <Style x:Key="LibraryTreeView"
                    TargetType="{x:Type TreeView}">
-                <Setter Property="Focusable"
-                        Value="False" />
-                <Setter Property="VerticalContentAlignment"
-                        Value="Center" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeView}">
-                            <Border SnapsToDevicePixels="True"
-                                    Background="{TemplateBinding Background}"
+                            <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}">
                                 <ItemsPresenter />

@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
+using Dynamo.Tests;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
+namespace Dynamo.PackageManager.Tests
 {
-    internal class PackageDependencyTests : DynamoViewModelUnitTest
+    internal class PackageDependencyTests : DynamoModelTestBase
     {
         [Test]
         public void CanDiscoverDependenciesForFunctionDefinitionOpenFromFile()
         {
-            var vm = ViewModel;
-            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_dep_test\");
+            Open<HomeWorkspaceModel>(TestDirectory, @"core\custom_node_dep_test\", "custom_node_dep_test.dyn");
 
-            string openPath = Path.Combine(examplePath, "custom_node_dep_test.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var funcRootNode = vm.CurrentSpace.NodeFromWorkspace<Function>("333ed3ad-c786-4064-8203-e79ce7cb109f");
+            var funcRootNode = this.CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Function>("333ed3ad-c786-4064-8203-e79ce7cb109f");
 
             var dirDeps = funcRootNode.Definition.DirectDependencies;
             Assert.AreEqual(2, dirDeps.Count() );

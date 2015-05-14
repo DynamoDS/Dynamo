@@ -1,205 +1,110 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Core;
-using Dynamo.Models;
-using Dynamo.Utilities;
+using System.Text;
+using Dynamo.PackageManager.Interfaces;
 using Greg.Requests;
-using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
-    static class PackageUploadBuilder
+    public interface IPackageUploadBuilder
     {
-        public static PackageUploadRequestBody NewPackageHeader( Package l )
+        PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files,
+            PackageUploadHandle handle);
+
+        PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory,
+            IEnumerable<string> files, PackageUploadHandle handle);
+    }
+
+    internal class PackageUploadBuilder : IPackageUploadBuilder
+    {
+        private readonly IPackageDirectoryBuilder builder;
+        private readonly IFileCompressor fileCompressor;
+
+        internal const long MaximumPackageSize = 100 * 1024 * 1024;
+
+        internal PackageUploadBuilder(IPackageDirectoryBuilder builder, IFileCompressor fileCompressor)
         {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (fileCompressor == null) throw new ArgumentNullException("fileCompressor");
+
+            this.builder = builder;
+            this.fileCompressor = fileCompressor;
+        }
+         
+        #region Public Operational Class Methods
+
+        public static PackageUploadRequestBody NewRequestBody(Package package)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
-            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, "dynamo",
-                                                         engineVersion, engineMetadata, l.Group, l.Dependencies, 
-                                                         l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName) ); 
-        } 
-
-        public static PackageUpload NewPackage(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
-        {
-            var header = NewPackageHeader(pkg);
-            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
-            return new PackageUpload(header, zipPath);
+            return new PackageUploadRequestBody(package.Name, package.VersionName, package.Description, package.Keywords, package.License, package.Contents, PackageManagerClient.PackageEngineName,
+                                                         engineVersion, engineMetadata, package.Group, package.Dependencies,
+                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, package.NodeLibraries.Select(x => x.FullName));
         }
 
-        public static PackageVersionUpload NewPackageVersion(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
+
+        public PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
         {
-            var header = NewPackageHeader(pkg);
-            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
-            return new PackageVersionUpload(header, zipPath);
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+
+            return new PackageUpload(NewRequestBody(package),
+                BuildAndZip(package, packagesDirectory, files, handle).Name);
         }
 
-    #region Utility methods
-
-        private static string DoPackageFileOperationsAndZip(string rootPkgDir, CustomNodeManager customNodeManager, PackageUploadRequestBody header, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
+        public PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
         {
-            uploadHandle.UploadState = PackageUploadHandle.State.Copying;
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
 
-            DirectoryInfo rootDir, dyfDir, binDir, extraDir;
-            FormPackageDirectory(rootPkgDir, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
-            pkg.RootDirectory = rootDir.FullName;
-            WritePackageHeader(header, rootDir);
-            CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
-            RemoveDyfFiles(files, dyfDir); 
-            RemapCustomNodeFilePaths(customNodeManager, files, dyfDir.FullName, isTestMode);
+            return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, files, handle).Name);
+        }
 
-            uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
+        #endregion
 
-            string zipPath;
-            FileInfo info;
+        #region Private Class Methods
+
+        private IFileInfo BuildAndZip(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
+        {
+            handle.UploadState = PackageUploadHandle.State.Copying;
+
+            var dir = builder.BuildDirectory(package, packagesDirectory, files);
+
+            handle.UploadState = PackageUploadHandle.State.Compressing;
+
+            return Zip(dir);
+        }
+
+        private IFileInfo Zip(IDirectoryInfo directory)
+        {
+            IFileInfo info;
 
             try
             {
-                zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
-                info = new FileInfo(zipPath);
+                info = fileCompressor.Zip(directory);
             }
             catch
             {
-                // give nicer error
                 throw new Exception(Properties.Resources.CouldNotCompressFile);
             }
 
-            if (info.Length > 100 * 1024 * 1024) throw new Exception(Properties.Resources.PackageTooLarge);
+            // the file is stored in a tempt directory, we allow it to get cleaned up by the user later
+            if (info.Length > MaximumPackageSize) throw new Exception(Properties.Resources.PackageTooLarge);
 
-            return zipPath;
+            return info;
         }
 
-        private static void RemapCustomNodeFilePaths(CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot, bool isTestMode)
-        {
-            var defList = filePaths.Where(x => x.EndsWith(".dyf"))
-                .Select(customNodeManager.GuidFromPath)
-                .Select(
-                    id =>
-                    {
-                        CustomNodeWorkspaceModel def;
-                        return
-                            new { Success = customNodeManager.TryGetFunctionWorkspace(id, isTestMode, out def), Workspace = def };
-                    }).Where(result => result.Success).Select(result => result.Workspace);
-
-            foreach (var func in defList)
-            {
-                var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.FileName));
-                func.FileName = newPath;
-            }
-        }
-
-        private static void RemoveDyfFiles(IEnumerable<string> filePaths, DirectoryInfo dyfDir)
-        {
-            filePaths
-                .Where(x => x.EndsWith(".dyf") && File.Exists(x) && Path.GetDirectoryName(x) != dyfDir.FullName)
-                .ToList()
-                .ForEach( File.Delete );
-        }
-
-        private static DirectoryInfo TryCreateDirectory(string path)
-        {
-            return Directory.Exists(path) ? new DirectoryInfo(path) : Directory.CreateDirectory(path);
-        }
-
-        private static void FormPackageDirectory(string packageDirectory, string packageName, out DirectoryInfo root, out DirectoryInfo dyfDir, out DirectoryInfo binDir, out DirectoryInfo extraDir )
-        {
-            // create a directory where the package will be stored
-            var rootPath = Path.Combine(packageDirectory, packageName);
-            var dyfPath = Path.Combine(rootPath, "dyf");
-            var binPath = Path.Combine(rootPath, "bin");
-            var extraPath = Path.Combine(rootPath, "extra");
-
-            root = TryCreateDirectory(rootPath);
-            dyfDir = TryCreateDirectory(dyfPath);
-            binDir = TryCreateDirectory(binPath);
-            extraDir = TryCreateDirectory(extraPath);
-        }
-
-        private static void WritePackageHeader(PackageUploadRequestBody pkgHeader, DirectoryInfo rootDir)
-        {
-            // build the package header json, which will be stored with the pkg
-            var jsSer = new JsonSerializer();
-            var pkgHeaderStr = jsSer.Serialize(pkgHeader);
-
-            // write the pkg header to the root directory of the pkg
-            var headerPath = Path.Combine(rootDir.FullName, "pkg.json");
-            if (File.Exists(headerPath)) File.Delete(headerPath);
-            File.WriteAllText(headerPath, pkgHeaderStr);
-        }
-
-        private static bool IsXmlDocFile(string path, IEnumerable<string> files)
-        {
-            if (!path.ToLower().EndsWith(".xml")) return false;
-
-            var fn = Path.GetFileNameWithoutExtension(path);
-
-            return
-                files.Where(x => x.EndsWith(".dll"))
-                    .Select(Path.GetFileNameWithoutExtension)
-                    .Contains(fn);
-        }
-
-        private static bool IsDynamoCustomizationFile(string path, IEnumerable<string> files)
-        {
-            if (!path.ToLower().EndsWith(".xml")) return false;
-
-            var name = Path.GetFileNameWithoutExtension(path);
-
-            if (!name.EndsWith("_DynamoCustomization")) return false;
-
-            name = name.Remove(name.Length - "_DynamoCustomization".Length);
-
-            return
-                files.Where(x => x.EndsWith(".dll"))
-                    .Select(Path.GetFileNameWithoutExtension)
-                    .Contains(name);
-        }
-
-        public static string NormalizePath(string path)
-        {
-            return Path.GetFullPath(new Uri(path).LocalPath)
-                       .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                       .ToUpperInvariant();
-        }
-
-        private static void CopyFilesIntoPackageDirectory(IEnumerable<string> files, DirectoryInfo dyfDir,
-                                                          DirectoryInfo binDir, DirectoryInfo extraDir)
-        {
-            // copy the files to their destination
-            foreach (var file in files)
-            {
-                if (file == null) continue;
-                if (!File.Exists(file)) continue;
-                string destPath;
-
-                if (file.ToLower().EndsWith(".dyf"))
-                {
-                    destPath = Path.Combine(dyfDir.FullName, Path.GetFileName(file));
-                }
-                else if (file.ToLower().EndsWith(".dll") || IsXmlDocFile(file, files) 
-                    || IsDynamoCustomizationFile(file, files))
-                {
-                    destPath = Path.Combine(binDir.FullName, Path.GetFileName(file));
-                }
-                else
-                {
-                    destPath = Path.Combine(extraDir.FullName, Path.GetFileName(file));
-                }
-
-                if (NormalizePath(destPath) == NormalizePath(file)) continue;
-                if (File.Exists(destPath))
-                {
-                    File.Delete(destPath);
-                }
-
-                File.Copy(file, destPath);
-            }
-        }
-
-#endregion
-
+        #endregion
     }
+
+
 }

@@ -55,32 +55,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(ViewModel.CurrentSpace.Notes.Count, 1);
         }
 
-        [Test]
-        [Category("UnitTests")]
-        public void CanAddAnnotation()
-        {
-            //Add a Node
-            var model = ViewModel.Model;
-            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
-            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count, 1);
-
-            //Add a Note 
-            Guid id = Guid.NewGuid();
-            var addNote = ViewModel.Model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(ViewModel.CurrentSpace.Notes.Count, 1);
-
-            //Select the node and notes
-            DynamoSelection.Instance.Selection.Add(addNode);
-            DynamoSelection.Instance.Selection.Add(addNote);
-
-            //create the group around selected nodes and notes
-            Guid groupid = Guid.NewGuid();
-            var annotation = ViewModel.Model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
-            Assert.AreEqual(ViewModel.CurrentSpace.Annotations.Count, 1);
-            Assert.AreNotEqual(0,annotation.Width);
-        }
-
+            
         [Test]
         [Category("UnitTests")]
         public void CanAddToSelectionAndNotThrowExceptionWhenPassedIncorrectType()
