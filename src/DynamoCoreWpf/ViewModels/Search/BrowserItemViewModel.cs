@@ -477,7 +477,7 @@ namespace Dynamo.Wpf.ViewModels
                 }
 
                 var list = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel));
-                var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name);
+                var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name, entry is NodeSearchElementViewModel);
 
                 // Nodecategories(i.e. namespaces) should be before members.
                 if (entry is NodeSearchElementViewModel)
@@ -522,7 +522,7 @@ namespace Dynamo.Wpf.ViewModels
         public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
         {
             var list = SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel));
-            var nextLargerItemIndex = FindInsertionPointByName(list, newSubCategory.Name);
+            var nextLargerItemIndex = FindInsertionPointByName(list, newSubCategory.Name, false);
 
             if (nextLargerItemIndex >= 0)
             {
@@ -534,16 +534,24 @@ namespace Dynamo.Wpf.ViewModels
                 SubCategories.Add(newSubCategory);
         }
 
-        internal static int FindInsertionPointByName(IEnumerable<ISearchEntryViewModel> list, string name)
+        internal static int FindInsertionPointByName(IEnumerable<ISearchEntryViewModel> list, string name,
+            bool IsEntry)
         {
-            var nextLargerItemIndex = -1; ;
+            var nextLargerItemIndex = -1;
             foreach (var item in list)
             {
                 if (string.Compare(item.Name, name, StringComparison.Ordinal) >= 0)
                 {
-                    nextLargerItemIndex = list.ToList().IndexOf(item);
-                    break;
+                    if (nextLargerItemIndex < 0)
+                    {
+                        nextLargerItemIndex = list.ToList().IndexOf(item);
+                        if(item is NodeSearchElementViewModel)
+                            nextLargerItemIndex -= list.Count(cat => cat is NodeCategoryViewModel);
+                    }
+                    if (!IsEntry) break;
                 }
+                else if (item is NodeSearchElementViewModel && nextLargerItemIndex >= 0)
+                    nextLargerItemIndex++;
             }
             return nextLargerItemIndex;
         }
