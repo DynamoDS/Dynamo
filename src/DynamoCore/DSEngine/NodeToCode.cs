@@ -8,6 +8,7 @@ using ProtoCore.DSASM;
 using Dynamo.Utilities;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Mirror;
+using Dynamo.Core;
 
 namespace Dynamo.DSEngine
 {
@@ -43,6 +44,84 @@ namespace Dynamo.DSEngine
             OutputMap = outputMap;
         }
     }
+
+    /// <summary>
+    /// Undo recroder that used in node to code. It will avoid to record creation
+    /// action that followed by a deletion action, which is not allowed in 
+    /// UndoRedoRecorder. This case happens when there are multiple code block 
+    /// node will be created in node to code, therefore some connectors may be
+    /// created and later deleted.
+    /// </summary>
+    public class NodeToCodeUndoRecorder
+    {
+        private List<Tuple<ModelBase, UndoRedoRecorder.UserAction>> recordedActions;
+
+        public NodeToCodeUndoRecorder()
+        {
+            recordedActions = new List<Tuple<ModelBase, UndoRedoRecorder.UserAction>>();
+        }
+
+        /// <summary>
+        /// Add a creation action.
+        /// </summary>
+        /// <param name="model"></param>
+        public void RecordCreation(ModelBase model)
+        {
+            recordedActions.Add(Tuple.Create(model, UndoRedoRecorder.UserAction.Creation));
+        }
+
+        /// <summary>
+        /// Add a deletion action. If a creation action for the same model has
+        /// been added, that creation action will be removed and this deletion
+        /// action won't be added.
+        /// </summary>
+        /// <param name="model"></param>
+        public void RecordDeletion(ModelBase model)
+        {
+            for (int i = 0; i < recordedActions.Count; ++i)
+            {
+                var recordedAction = recordedActions[i];
+                if (recordedAction.Item1.GUID.Equals(model.GUID) &&
+                    recordedAction.Item2 == UndoRedoRecorder.UserAction.Creation)
+                {
+                    recordedActions.RemoveAt(i);
+                    return;
+                }
+            }
+            recordedActions.Add(Tuple.Create(model, UndoRedoRecorder.UserAction.Deletion));
+        }
+
+        /// <summary>
+        /// Record all actions in recorder.
+        /// </summary>
+        /// <param name="recorder"></param>
+        public void ApplyActions(UndoRedoRecorder recorder)
+        {
+            using (recorder.BeginActionGroup())
+            {
+                foreach (var item in recordedActions)
+                {
+                    var model = item.Item1;
+                    var action = item.Item2;
+
+                    if (action == UndoRedoRecorder.UserAction.Creation)
+                        recorder.RecordCreationForUndo(model);
+                    else if (action == UndoRedoRecorder.UserAction.Deletion)
+                        recorder.RecordDeletionForUndo(model);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Return the count of recorded actions.
+        /// </summary>
+        /// <returns></returns>
+        public int ActionCount()
+        {
+            return recordedActions.Count();
+        }
+    }
+
     public class NodeToCodeUtils
     {
         /// <summary>
