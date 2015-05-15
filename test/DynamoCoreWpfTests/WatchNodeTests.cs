@@ -114,7 +114,6 @@ namespace DynamoCoreWpfTests
         }
         
         [Test]
-        [Category("Failure")]
         public void WatchLiterals()
         {
             var model = ViewModel.Model;
@@ -145,7 +144,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void Watch1DCollections()
         {
             var model = ViewModel.Model;
@@ -182,7 +180,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void WatchFunctionObject()
         {
             string openPath = Path.Combine(TestDirectory, @"core\watch\watchfunctionobject.dyn");
@@ -199,7 +196,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void WatchFunctionPointer()
         {
             string openPath = Path.Combine(TestDirectory, @"core\watch\watchFunctionPointer.dyn");
@@ -217,7 +213,6 @@ namespace DynamoCoreWpfTests
             }
         }
         [Test]
-        [Category("Failure")]
         public void WatchFunctionObject_collection_5033()
         {
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5033
