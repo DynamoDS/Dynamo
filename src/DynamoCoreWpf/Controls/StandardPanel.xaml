@@ -33,6 +33,9 @@
             <Style x:Key="ListBoxItemStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Background"
+                        Value="{StaticResource ClassButtonClickedBackground}" />
+
                 <EventSetter Event="PreviewMouseLeftButtonUp"
                              Handler="OnMouseLeftButtonUp" />
                 <EventSetter Event="KeyDown"
