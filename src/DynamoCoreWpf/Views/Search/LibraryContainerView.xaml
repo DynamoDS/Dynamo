@@ -17,7 +17,8 @@
              Visibility="Visible"
              d:DesignWidth="300"
              d:DesignHeight="300"
-             x:Name="SearchControl">
+             x:Name="SearchControl"
+             GiveFeedback="OnLibraryContainerViewGiveFeedback">
 
     <UserControl.Resources>
         <ResourceDictionary>
