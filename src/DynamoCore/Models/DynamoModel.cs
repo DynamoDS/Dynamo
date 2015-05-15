@@ -1221,7 +1221,7 @@ namespace Dynamo.Models
         {
             // When running test cases, the dispatcher may be null which will cause the timer to
             // introduce a lot of threads. So the timer will not be started if test cases are running.
-            if (!IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (backupFilesTimer != null)
@@ -1622,6 +1622,7 @@ namespace Dynamo.Models
                     Background = annotation.Background,
                     FontSize = annotation.FontSize
                 };
+              
                 newAnnotations.Add(annotationModel);
             }
 
