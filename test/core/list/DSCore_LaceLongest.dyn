@@ -1,0 +1,20 @@
+<Workspace Version="0.8.1.1314" X="-87.1057692307689" Y="5.40224572404685" zoom="1" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCore.LaceLongest guid="25daa241-d8a4-4e74-aec1-6068358babf7" type="DSCore.LaceLongest" nickname="List.Longest" x="777.461538461538" y="372.481538461538" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.DSFunction guid="3900ff5c-ea75-4ac5-9140-0ef3822181c0" type="Dynamo.Nodes.DSFunction" nickname="+" x="552.75" y="296.278888888889" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="" function="+@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.DoubleInput guid="76a66bde-2dac-4c05-991b-f208f31f0614" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="571.034072341059" y="438.416619663017" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput guid="31ef0a70-01fe-4f93-ade1-0cc6bd780767" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="571.034072341059" y="517.583286329684" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..20" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3900ff5c-ea75-4ac5-9140-0ef3822181c0" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="76a66bde-2dac-4c05-991b-f208f31f0614" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31ef0a70-01fe-4f93-ade1-0cc6bd780767" start_index="0" end="25daa241-d8a4-4e74-aec1-6068358babf7" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

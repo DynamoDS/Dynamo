@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
 using System.Globalization;
+using Dynamo.Models;
+using Dynamo.UI;
 
 namespace Dynamo.Core
 {
@@ -297,6 +299,33 @@ namespace Dynamo.Core
             // Common data folders for all users.
             CreateFolderIfNotExist(commonDataDir);
             CreateFolderIfNotExist(commonDefinitions);
+        }
+
+        /// <summary>
+        /// Get the backup file path for a workspace
+        /// </summary>
+        /// <param name="workspace"></param>
+        /// <returns></returns>
+        internal string GetBackupFilePath(WorkspaceModel workspace)
+        {
+            string fileName;
+            if (string.IsNullOrEmpty(workspace.FileName))
+            {
+                if (workspace is HomeWorkspaceModel)
+                {
+                    fileName = Configurations.BackupFileNamePrefix + ".DYN";
+                }
+                else
+                {
+                    fileName = workspace.Name + ".DYF";
+                }
+            }
+            else
+            {
+                fileName = Path.GetFileName(workspace.FileName);
+            }
+
+            return Path.Combine(BackupDirectory, fileName);
         }
 
         #endregion

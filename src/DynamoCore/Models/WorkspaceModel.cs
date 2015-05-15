@@ -579,9 +579,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="centered"></param>
-        public void AddNode(NodeModel node, bool centered)
+        public void AddNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;
@@ -663,6 +661,8 @@ namespace Dynamo.Models
 
         public void AddAnnotation(AnnotationModel annotationModel)
         {
+            annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
             Annotations.Add(annotationModel);
         }
 
@@ -1363,19 +1363,32 @@ namespace Dynamo.Models
 
         public void DeleteModel(XmlElement modelData)
         {
+            //When there is a Redo operation, model is removed from 
+            //the workspace but the model is "not disposed" from memory.
+            //Identified this when redo operation is performed on groups
             ModelBase model = GetModelForElement(modelData);
 
             if (model is NoteModel)
-                Notes.Remove(model as NoteModel);
+            {
+                var note = model as NoteModel;
+                Notes.Remove(note);                
+                note.Dispose();
+            }
             else if (model is AnnotationModel)
-                Annotations.Remove(model as AnnotationModel);
+            {
+                var annotation = model as AnnotationModel;
+                Annotations.Remove(annotation);
+                annotation.Dispose();
+            }
             else if (model is ConnectorModel)
             {
                 var connector = model as ConnectorModel;
                 connector.Delete();
             }
             else if (model is NodeModel)
-                Nodes.Remove(model as NodeModel);
+            {
+                RemoveNode(model as NodeModel);
+            }
             else
             {
                 // If it gets here we obviously need to handle it.

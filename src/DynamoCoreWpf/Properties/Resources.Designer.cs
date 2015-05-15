@@ -3660,6 +3660,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup location.
+        /// </summary>
+        public static string StartPageBackupLocation {
+            get {
+                return ResourceManager.GetString("StartPageBackupLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BACKUP.
+        /// </summary>
+        public static string StartPageBackupNoCrash {
+            get {
+                return ResourceManager.GetString("StartPageBackupNoCrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RECOVER FROM BACKUP.
+        /// </summary>
+        public static string StartPageBackupOnCrash {
+            get {
+                return ResourceManager.GetString("StartPageBackupOnCrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CODE.
         /// </summary>
         public static string StartPageCode {
@@ -3719,6 +3746,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageNewFile {
             get {
                 return ResourceManager.GetString("StartPageNewFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open all.
+        /// </summary>
+        public static string StartPageOpenAll {
+            get {
+                return ResourceManager.GetString("StartPageOpenAll", resourceCulture);
             }
         }
         

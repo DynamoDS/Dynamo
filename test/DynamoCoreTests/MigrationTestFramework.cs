@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class MigrationTestFramework : Dynamo.Tests.DSEvaluationViewModelUnitTest
+    class MigrationTestFramework : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -29,14 +29,12 @@ namespace Dynamo.Tests
             Assert.IsNotNullOrEmpty(dynamoFilePath, "Dynamo file path is invalid or missing.");
             
             //open the dyn file
-            Assert.True(ViewModel.OpenCommand.CanExecute(dynamoFilePath));
-            ViewModel.OpenCommand.Execute(dynamoFilePath);
-
+            OpenModel(dynamoFilePath);
 
             AssertNoDummyNodes();
             //run the expression and assert that it does not
             //throw an error
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            Assert.DoesNotThrow(BeginRun);
 
         }
 

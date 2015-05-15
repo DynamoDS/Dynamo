@@ -68,3 +68,14 @@ extern/ASM/
 /src/DynamoIcons/*.resources
 tools/CBNLanguageComparisonTests/GenerateTests.cs
 src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
+/src/DynamoCore/*.resources
+/src/Libraries/Analysis/*.resources
+/src/Libraries/CoreNodeModels/*.resources
+/src/Libraries/CoreNodes/*.resources
+/src/Libraries/DSOffice/*.resources
+/src/Libraries/DynamoUnits/*.resources
+/src/Libraries/DynamoWatch3D/*.resources
+/src/Libraries/GeometryUIWpf/*.resources
+/src/Libraries/IronPython/*.resources
+/src/Libraries/Tesellation/*.resources
+/src/Libraries/UnitsUI/*.resources
