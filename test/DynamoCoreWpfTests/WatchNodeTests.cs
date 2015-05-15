@@ -7,8 +7,9 @@ using ProtoCore.Mirror;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Tests;
 
-namespace Dynamo.Tests
+namespace DynamoCoreWpfTests 
 {
     [Category("DSExecution")]
     class WatchNodeTests : DynamoViewModelUnitTest
