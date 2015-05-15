@@ -7,8 +7,9 @@ using ProtoCore.Mirror;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Tests;
 
-namespace Dynamo.Tests
+namespace DynamoCoreWpfTests 
 {
     [Category("DSExecution")]
     class WatchNodeTests : DynamoViewModelUnitTest
@@ -113,7 +114,6 @@ namespace Dynamo.Tests
         }
         
         [Test]
-        [Category("Failure")]
         public void WatchLiterals()
         {
             var model = ViewModel.Model;
@@ -144,7 +144,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void Watch1DCollections()
         {
             var model = ViewModel.Model;
@@ -181,7 +180,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void WatchFunctionObject()
         {
             string openPath = Path.Combine(TestDirectory, @"core\watch\watchfunctionobject.dyn");
@@ -198,7 +196,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void WatchFunctionPointer()
         {
             string openPath = Path.Combine(TestDirectory, @"core\watch\watchFunctionPointer.dyn");
@@ -216,7 +213,6 @@ namespace Dynamo.Tests
             }
         }
         [Test]
-        [Category("Failure")]
         public void WatchFunctionObject_collection_5033()
         {
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5033
