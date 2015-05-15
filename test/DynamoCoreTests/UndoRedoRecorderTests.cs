@@ -584,19 +584,5 @@ namespace Dynamo.Tests
             //Assert that there was an Action Group that was just pushed on top of the undo stack
             Assert.Throws<InvalidOperationException>(() => { recorder.PopFromUndoGroup(); });
         }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestMultiActiosInActionGroup()
-        {
-            using (workspace.Recorder.BeginActionGroup())
-            {
-                var dummyModel = new DummyModel(1, 10);
-                workspace.Recorder.RecordCreationForUndo(dummyModel);
-                workspace.Recorder.RecordDeletionForUndo(dummyModel);
-            }
-
-            Assert.DoesNotThrow(() => recorder.Undo());
-        }
     }
 }
