@@ -10,6 +10,7 @@ using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.UI.Views
 {
@@ -63,12 +64,25 @@ namespace Dynamo.UI.Views
 
         #region MethodButton
 
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
             ExecuteSearchElement(listBoxItem);
             e.Handled = true;
+        }
+
+        private void OnPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+            var senderButton = e.OriginalSource as FrameworkElement;
+
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (searchElementVM == null)
+                return;
+
+            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
         }
 
         private void OnMemberButtonKeyDown(object sender, KeyEventArgs e)
@@ -229,6 +243,8 @@ namespace Dynamo.UI.Views
             if (HighlightedItem != null)
             {
                 HighlightedItem.IsSelected = true;
+                // If HighlightedItem is not visible for user, bring it and 5 next items into view.
+                HighlightedItem.BringIntoView(new Rect(0, 0, 0, HighlightedItem.ActualHeight * 5));
                 ShowTooltip(HighlightedItem);
             }
         }
@@ -684,7 +700,7 @@ namespace Dynamo.UI.Views
                     {
                         UpdateHighlightedItem(GetListItemByIndex(topResultListBox, 0));
                     }),
-                    DispatcherPriority.Input);
+                    DispatcherPriority.Loaded);
             }
         }
 

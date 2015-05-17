@@ -13,6 +13,8 @@ namespace DSCore
         internal Geometry geometry;
         internal Color color;
 
+        private bool renderEdges = false;
+
         private Display(Geometry geometry, Color color)
         {
             this.geometry = geometry;
@@ -51,23 +53,26 @@ namespace DSCore
 
             geometry.Tessellate(package, tol, maxGridLines);
 
-            var surf = geometry as Surface;
-            if (surf != null)
+            if (renderEdges)
             {
-                foreach (var curve in surf.PerimeterCurves())
+                var surf = geometry as Surface;
+                if (surf != null)
                 {
-                    curve.Tessellate(package, tol, maxGridLines);
-                    curve.Dispose();
+                    foreach (var curve in surf.PerimeterCurves())
+                    {
+                        curve.Tessellate(package, tol, maxGridLines);
+                        curve.Dispose();
+                    }
                 }
-            }
 
-            var solid = geometry as Solid;
-            if (solid != null)
-            {
-                foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                var solid = geometry as Solid;
+                if (solid != null)
                 {
-                    geom.Tessellate(package, tol, maxGridLines);
-                    geom.Dispose();
+                    foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                    {
+                        geom.Tessellate(package, tol, maxGridLines);
+                        geom.Dispose();
+                    }
                 }
             }
 
@@ -108,6 +113,11 @@ namespace DSCore
                 arr[i + 3] = alpha;
             }
             return arr;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, color);
         }
 
         //private static IEnumerable<double> NudgeVertexAlongVector(IList<double> vertices, IList<double> normals, int i, double amount)

@@ -363,7 +363,7 @@ namespace Dynamo.Tests
     }
 
     [TestFixture]
-    class FileWritingTests : DSEvaluationViewModelUnitTest
+    class FileWritingTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -374,42 +374,38 @@ namespace Dynamo.Tests
         [Test]
         public void FileWriter()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\files\FileWriter.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
-            var path = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
+            var path = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
             path.Value = GetNewFileNameOnTempPath(".txt");
 
-            ViewModel.HomeSpace.Run();
+            BeginRun();
         }
 
         [Test]
         public void ImageFileWriter()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\files\ImageFileWriter.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
-            var filename = model.CurrentWorkspace.NodeFromWorkspace<StringInput>("0aaae6d6-f84b-4e61-888b-14936343d80a");
+            var filename = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<StringInput>("0aaae6d6-f84b-4e61-888b-14936343d80a");
             filename.Value = GetNewFileNameOnTempPath(".png");
 
-            ViewModel.HomeSpace.Run();
+            BeginRun();
         }
     }
 
     [TestFixture]
-    public class ZeroTouchMigrationFileTests : DSEvaluationViewModelUnitTest
+    public class ZeroTouchMigrationFileTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -420,16 +416,14 @@ namespace Dynamo.Tests
         [Test]
         public void TestZeroTouchMigrationFile()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\files\MigrationHintGetClosestPoint.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
 
-            ViewModel.HomeSpace.Run();
+            BeginRun();
 
             AssertPreviewValue("8527c4f5-f8e1-491e-b446-64c495fa1848", 4.54606056566195);
         }

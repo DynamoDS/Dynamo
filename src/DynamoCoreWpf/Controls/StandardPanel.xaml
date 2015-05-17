@@ -44,6 +44,8 @@
                         Value="{x:Null}" />
                 <Setter Property="Visibility"
                         Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Setter Property="Focusable"
+                        Value="False" />
 
                 <Setter Property="Template">
                     <Setter.Value>
@@ -67,8 +69,8 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                             Handler="OnMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="OnMouseLeftButtonUp" />
                 <EventSetter Event="KeyDown"
                              Handler="OnMemberButtonKeyDown" />
                 <EventSetter Event="MouseEnter"

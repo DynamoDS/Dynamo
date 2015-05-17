@@ -1,8 +1,6 @@
 using System.IO;
 using System.Linq;
 
-using Dynamo.PackageManager;
-
 using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Tests
