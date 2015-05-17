@@ -314,8 +314,9 @@ namespace ProtoCore.Lang
                             ci = stackFrame.ClassScope;
                             fi = stackFrame.FunctionScope;
                         }
-                        StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
-                        // TODO: Need to verify that inline condition dynamic blocks are always created in the global scope - pratapa
+
+                        // The class scope does not change for inline conditional calls
+                        StackValue svThisPtr = stackFrame.ThisPtr;
 
 
                         int blockDecl = 0;
@@ -495,7 +496,7 @@ namespace ProtoCore.Lang
         {
             var runtimeCore = runtime.RuntimeCore;
             var rmem = runtime.rmem;
-            var runtimeData = runtime.exe.RuntimeData;
+            var runtimeData = runtimeCore.RuntimeData;
 
             bool isValidThisPointer = true;
             StackValue thisObject = lhs;
@@ -552,7 +553,7 @@ namespace ProtoCore.Lang
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
-            var dynamicFunction = runtimeCore.DSExecutable.RuntimeData.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
+            var dynamicFunction = runtimeCore.DSExecutable.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
@@ -631,7 +632,7 @@ namespace ProtoCore.Lang
                                                null);
 
             ProtoCore.CallSite callsite = runtimeData.GetCallSite(
-                runtimeData.ExecutingGraphnode, 
+                runtime.exe.ExecutingGraphnode, 
                 thisObjectType, 
                 functionName, 
                 runtime.exe,
@@ -680,7 +681,7 @@ namespace ProtoCore.Lang
         {
             string appname = StringUtils.GetStringValue(svAppName, runtimeCore);
 
-            IContextDataProvider provider = runtimeCore.DSExecutable.RuntimeData.ContextDataMngr.GetDataProvider(appname);
+            IContextDataProvider provider = runtimeCore.DSExecutable.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
             CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);

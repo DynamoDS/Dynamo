@@ -4,8 +4,6 @@ using System.IO;
 using Dynamo.Core;
 using Dynamo.Models;
 
-using DynamoUtilities;
-
 using Greg.Responses;
 
 namespace Dynamo.PackageManager

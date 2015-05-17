@@ -501,19 +501,33 @@ namespace DSCoreNodesTests
                 List.DiagonalLeft(Enumerable.Range(0, 20).ToList(), 5));
         }
 
-        //[Test]
-        //public static void TransposeListOfLists()
-        //{
-        //    Assert.AreEqual(
-        //        new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 } },
-        //        List.Transpose(
-        //            new List<IList<object>>
-        //            {
-        //                new List<object> { 0, 1, 2 },
-        //                new List<object> { 3, 4, 5 },
-        //                new List<object> { 6, 7, 8 }
-        //            }));
-        //}
+        [Test]
+        public static void TransposeListOfLists()
+        {
+            Assert.AreEqual(
+                new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 } },
+                List.Transpose(
+                    new List<IList<object>>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, 4, 5 },
+                        new List<object> { 6, 7, 8 }
+                    }));
+        }
+
+        [Test]
+        public static void TransposeJaggedListOfLists()
+        {
+            Assert.AreEqual(
+                new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 }, new ArrayList { null, 6, null} },
+                List.Transpose(
+                    new List<IList<object>>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, 4, 5, 6 },
+                        new List<object> { 6, 7, 8 }
+                    }));
+        }
 
         [Test]
         [Category("UnitTests")]
@@ -722,6 +736,149 @@ namespace DSCoreNodesTests
                 List.Sublists(input, new ArrayList { 0, 5, new ArrayList { 2, 3, 4 } }, 5));
 
 
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void FirstIndexOf()
+        {
+            List<int> input = Enumerable.Range(0, 10).ToList();
+
+            int index = List.FirstIndexOf(input, 3);
+            Assert.AreEqual(index, 3);
+
+            index = List.FirstIndexOf(input, 21);
+            Assert.AreEqual(index, -1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void AllIndicesOf()
+        {
+            List<int> input = new List<int> { 1, 2, 3, 1, 2, 3 };
+
+            var indices = List.AllIndicesOf(input, 3).Cast<int>();
+            Assert.IsTrue(indices.SequenceEqual(new [] {2, 5}));
+
+            indices = List.AllIndicesOf(input, 21).Cast<int>();
+            Assert.IsEmpty(indices);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsPreserveIndices()
+        {
+            var input = new ArrayList
+            {
+                new ArrayList {1, null, 2, null, null},
+                new ArrayList {null, null, 3, 4, null},
+                new ArrayList {null, null},
+                new ArrayList {1, 2}
+            };
+
+            var output = List.Clean(input);
+
+            var expected = new ArrayList
+            {
+                new ArrayList {1, null, 2},
+                new ArrayList {null, null, 3, 4},
+                null,
+                new ArrayList {1, 2}
+            };
+
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsChangeIndices()
+        {
+            var input = new ArrayList
+            {
+                new ArrayList {1, null, 2, null, null},
+                new ArrayList {null, null, 3, 4, null},
+                new ArrayList {null, null},
+                new ArrayList {1, 2}
+            };
+
+            var output = List.Clean(input, false);
+
+            var expected = new ArrayList
+            {
+                new ArrayList {1, 2},
+                new ArrayList {3, 4},
+                new ArrayList {1, 2}
+            };
+
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsChangeIndicesEdgeCases()
+        {
+            // 1D array of nulls
+            var input = new ArrayList { null };
+            var output = List.Clean(input, false);
+            var expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // list is null itself
+            input = null;
+            output = List.Clean(input, false);
+            expected = null;
+            Assert.AreEqual(expected, output);
+
+            // nested array of nulls
+            input = new ArrayList { new ArrayList { null } };
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // empty list
+            input = new ArrayList();
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // nested empty list
+            input = new ArrayList { new ArrayList() };
+            output = List.Clean(input, false);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void CleanNullsPreserveIndicesEdgeCases()
+        {
+            // 1D array of nulls
+            var input = new ArrayList { null };
+            var output = List.Clean(input);
+            Assert.AreEqual(null, output);
+
+            // list is null itself
+            input = null;
+            output = List.Clean(input);
+            Assert.AreEqual(null, output);
+
+            // nested array of nulls
+            input = new ArrayList { new ArrayList { null } };
+            output = List.Clean(input);
+            var expected = new ArrayList { null };
+            Assert.AreEqual(expected, output);
+
+            // empty list
+            input = new ArrayList();
+            output = List.Clean(input);
+            expected = new ArrayList();
+            Assert.AreEqual(expected, output);
+
+            // nested empty list
+            input = new ArrayList { new ArrayList() };
+            output = List.Clean(input);
+            expected = new ArrayList { new ArrayList() };
+            Assert.AreEqual(expected, output);
         }
     }
 }

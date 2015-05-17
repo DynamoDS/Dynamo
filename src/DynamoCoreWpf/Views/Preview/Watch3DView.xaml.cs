@@ -2,37 +2,40 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Windows.Threading;
 
 using Autodesk.DesignScript.Interfaces;
 
-using Dynamo.DSEngine;
-using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.DSEngine;
+using Dynamo.UI;
+using Dynamo.Wpf;
 
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
-using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
+using Camera = HelixToolkit.Wpf.SharpDX.Camera;
 using Color = SharpDX.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
+using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Controls
 {
-
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
@@ -54,12 +57,21 @@ namespace Dynamo.Controls
         #region private members
 
         private readonly Guid _id=Guid.Empty;
-        private Point _rightMousePoint;
-        private LineGeometry3D _grid;
+        private Point rightMousePoint;
+        private LineGeometry3D worldGrid;
+        private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
-        private HelixToolkit.Wpf.SharpDX.Camera camera;
-        private SharpDX.Color4 selectionColor = new Color4(0,158.0f/255.0f,1,1);
+        private PerspectiveCamera camera;
+        private Color4 selectionColor;
+        private Color4 materialColor;
         private bool showShadows;
+        private Vector3 directionalLightDirection;
+        private Color4 directionalLightColor;
+        private Vector3 fillLightDirection;
+        private Color4 fillLightColor;
+        private Color4 ambientLightColor;
+        private Color4 defaultLineColor;
+        private Color4 defaultPointColor;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -69,13 +81,45 @@ namespace Dynamo.Controls
 
         #region public properties
 
+        /// <summary>
+        /// The LeftClickCommand is set according to the
+        /// ViewModel's IsPanning or IsOrbiting properties.
+        /// When those properties are changed, this command is
+        /// set to ViewportCommand.Pan or ViewportCommand.Rotate depending. 
+        /// If neither panning or rotating is set, this property is set to null 
+        /// and left clicking should have no effect.
+        /// </summary>
+        public RoutedCommand LeftClickCommand
+        {
+            get
+            {
+                var vm = DataContext as DynamoViewModel;
+                if (vm == null) return null;
+
+                if (vm.IsPanning) return ViewportCommands.Pan;
+                if (vm.IsOrbiting) return ViewportCommands.Rotate;
+
+                return null;
+            }
+        }
+
         public LineGeometry3D Grid
         {
-            get { return _grid; }
+            get { return worldGrid; }
             set
             {
-                _grid = value;
+                worldGrid = value;
                 NotifyPropertyChanged("Grid");
+            }
+        }
+
+        public LineGeometry3D Axes
+        {
+            get { return worldAxes; }
+            set
+            {
+                worldAxes = value;
+                NotifyPropertyChanged("Axes");
             }
         }
 
@@ -83,7 +127,13 @@ namespace Dynamo.Controls
 
         public LineGeometry3D Lines { get; set; }
 
+        public LineGeometry3D LinesSelected { get; set; }
+
         public MeshGeometry3D Mesh { get; set; }
+
+        public MeshGeometry3D PerVertexMesh { get; set; }
+
+        public MeshGeometry3D MeshSelected { get; set; }
 
         public BillboardText3D Text { get; set; }
 
@@ -99,14 +149,60 @@ namespace Dynamo.Controls
         public int MeshCount { get; set; }
 
         public PhongMaterial WhiteMaterial { get; private set; }
-        
-        public Vector3 DirectionalLightDirection { get; private set; }
-        
-        public Color4 DirectionalLightColor { get; private set; }
-        
-        public Color4 AmbientLightColor { get; private set; }
-        
-        public System.Windows.Media.Media3D.Transform3D Model1Transform { get; private set; }
+
+        public PhongMaterial SelectedMaterial { get; private set; }
+
+        public Vector3 DirectionalLightDirection
+        {
+            get { return directionalLightDirection; }
+            private set
+            {
+                directionalLightDirection = value;
+                NotifyPropertyChanged("DirectionalLightDirection");
+            }
+        }
+
+        public Color4 DirectionalLightColor
+        {
+            get { return directionalLightColor; }
+            private set
+            {
+                directionalLightColor = value;
+                NotifyPropertyChanged("DirectionalLightColor");
+            }
+        }
+
+        public Vector3 FillLightDirection
+        {
+            get { return fillLightDirection; }
+            private set
+            {
+                fillLightDirection = value; 
+                NotifyPropertyChanged("FillLightDirection");
+            }
+        }
+
+        public Color4 FillLightColor
+        {
+            get { return fillLightColor; }
+            private set
+            {
+                fillLightColor = value; 
+                NotifyPropertyChanged("FillLightColor");
+            }
+        }
+
+        public Color4 AmbientLightColor
+        {
+            get { return ambientLightColor; }
+            private set
+            {
+                ambientLightColor = value;
+                NotifyPropertyChanged("AmbientLightColor");
+            }
+        }
+
+        public Transform3D Model1Transform { get; private set; }
         
         public RenderTechnique RenderTechnique
         {
@@ -121,7 +217,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public HelixToolkit.Wpf.SharpDX.Camera Camera
+        public PerspectiveCamera Camera
         {
             get
             {
@@ -144,6 +240,156 @@ namespace Dynamo.Controls
             {
                 showShadows = value;
                 NotifyPropertyChanged("ShowShadows");
+            }
+        }
+
+        public string KeyX
+        {
+            get { return DirectionalLightDirection.X.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightDirection = new Vector3(float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightDirection.Y, DirectionalLightDirection.Z);
+                NotifyPropertyChanged("KeyX");
+            }
+        }
+
+        public string KeyY
+        {
+            get { return DirectionalLightDirection.Y.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightDirection = new Vector3(DirectionalLightDirection.X, float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightDirection.Z);
+                NotifyPropertyChanged("KeyY");
+            }
+        }
+
+        public string KeyZ
+        {
+            get { return DirectionalLightDirection.Z.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightDirection = new Vector3(DirectionalLightDirection.X, DirectionalLightDirection.Y, float.Parse(value, CultureInfo.InvariantCulture));
+                NotifyPropertyChanged("KeyZ");
+            }
+        }
+
+        public string KeyR
+        {
+            get { return DirectionalLightColor.Red.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightColor.Green, DirectionalLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("KeyR");
+            }
+        }
+
+        public string KeyG
+        {
+            get { return DirectionalLightColor.Green.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightColor = new Color4(DirectionalLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("KeyG");
+            }
+        }
+
+        public string KeyB
+        {
+            get { return DirectionalLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightColor = new Color4(DirectionalLightColor.Red, DirectionalLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
+                NotifyPropertyChanged("KeyB");
+            }
+        }
+
+        public string FillX
+        {
+            get { return FillLightDirection.X.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightDirection = new Vector3(float.Parse(value, CultureInfo.InvariantCulture), FillLightDirection.Y, FillLightDirection.Z);
+                NotifyPropertyChanged("FillX");
+            }
+        }
+
+        public string FillY
+        {
+            get { return FillLightDirection.Y.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightDirection = new Vector3(FillLightDirection.X, float.Parse(value, CultureInfo.InvariantCulture), FillLightDirection.Z);
+                NotifyPropertyChanged("FillY");
+            }
+        }
+
+        public string FillZ
+        {
+            get { return FillLightDirection.Z.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightDirection = new Vector3(FillLightDirection.X, FillLightDirection.Y, float.Parse(value, CultureInfo.InvariantCulture));
+                NotifyPropertyChanged("FillZ");
+            }
+        }
+
+        public string FillR
+        {
+            get { return FillLightColor.Red.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), FillLightColor.Green, FillLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("FillR");
+            }
+        }
+
+        public string FillG
+        {
+            get { return FillLightColor.Green.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightColor = new Color4(FillLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), FillLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("FillG");
+            }
+        }
+
+        public string FillB
+        {
+            get { return FillLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightColor = new Color4(FillLightColor.Red, FillLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
+                NotifyPropertyChanged("FillB");
+            }
+        }
+
+        public string AmbientR
+        {
+            get { return AmbientLightColor.Red.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                AmbientLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), AmbientLightColor.Green, AmbientLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("AmbientR");
+            }
+        }
+
+        public string AmbientG
+        {
+            get { return AmbientLightColor.Green.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                AmbientLightColor = new Color4(AmbientLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), AmbientLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("AmbientG");
+            }
+        }
+
+        public string AmbientB
+        {
+            get { return AmbientLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                AmbientLightColor = new Color4(AmbientLightColor.Red, AmbientLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
+                NotifyPropertyChanged("AmbientB");
             }
         }
 
@@ -191,48 +437,88 @@ namespace Dynamo.Controls
 
         private void SetupScene()
         {
-            this.ShadowMapResolution = new Vector2(2048, 2048);
-            this.ShowShadows = false;
+            var ptColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PointColor"];
+            defaultPointColor = new Color4(ptColor.R/255.0f, ptColor.G/255.0f, ptColor.B/255.0f, ptColor.A/255.0f);
+
+            var lineColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
+            defaultLineColor = new Color4(lineColor.R/255.0f, lineColor.G/255.0f, lineColor.B/255.0f, lineColor.A/255.0f);
+
+            ShadowMapResolution = new Vector2(2048, 2048);
+            ShowShadows = false;
             
             // setup lighting            
-            this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
+            AmbientLightColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
 
-            this.DirectionalLightColor = SharpDX.Color.White;
-            this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
+            DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+            DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+            
+            FillLightColor = new Color4(new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+            FillLightDirection = new Vector3(0.5f, 1.0f, 0f);
 
-            this.RenderTechnique = Techniques.RenderPhong;
-            this.WhiteMaterial = PhongMaterials.White;
+            var matColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
+            materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
+            RenderTechnique = Techniques.RenderPhong;
+            WhiteMaterial = new PhongMaterial
+            {
+                Name = "White",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = materialColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
 
-            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
+            var selColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["SelectionColor"];
+            selectionColor = new Color4(selColor.R/255.0f, selColor.G/255.0f, selColor.B/255.0f, selColor.A/255.0f);
+            SelectedMaterial = new PhongMaterial
+            {
+                Name = "White",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = selectionColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
+
+            Model1Transform = new TranslateTransform3D(0, -0, 0);
 
             // camera setup
-            this.Camera = new HelixToolkit.Wpf.SharpDX.PerspectiveCamera
+            Camera = new PerspectiveCamera
             {
-                Position = new Point3D(10, 10, 10),
+                Position = new Point3D(10, 15, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
+                NearPlaneDistance = 1,
+                FarPlaneDistance = 2000000,
             };
 
             DrawGrid();
         }
 
-        private void DrawTestMesh()
+        private static MeshGeometry3D DrawTestMesh()
         {
             var b1 = new MeshBuilder();
-            for (int x = 0; x < 20; x++)
+            for (var x = 0; x < 4; x++)
             {
-                for (int y = 0; y < 20; y++)
+                for (var y = 0; y < 4; y++)
                 {
-                    for (int z = 0; z < 20; z++)
+                    for (var z = 0; z < 4; z++)
                     {
                         b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
-                        //b1.AddSphere(new Vector3(x, y, z), 0.25);
                     }
                 }
             }
-            Mesh = b1.ToMeshGeometry3D();
-            NotifyPropertyChanged("Mesh");
+            var mesh = b1.ToMeshGeometry3D();
+            
+            mesh.Colors = new Color4Collection();
+            foreach (var v in mesh.Positions)
+            {
+                mesh.Colors.Add(new Color4(1f,0f,0f,1f));
+            }
+
+            return mesh;
         }
+        
         #endregion
 
         #region event handlers
@@ -240,82 +526,74 @@ namespace Dynamo.Controls
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as IWatchViewModel;
-            if (vm != null)
-            {
-                vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            }
+            if (vm == null) return;
+            vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-
-#if DEBUG
             CompositionTarget.Rendering += CompositionTarget_Rendering;
-#endif
 
             MouseLeftButtonDown += view_MouseButtonIgnore;
             MouseLeftButtonUp += view_MouseButtonIgnore;
             MouseRightButtonUp += view_MouseRightButtonUp;
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
-            watch_view.InputBindings.Add(new KeyBinding(ViewportCommands.ZoomExtents, Key.E, ModifierKeys.Control));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ZoomExtents, new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Rotate, new MouseGesture(MouseAction.RightClick, ModifierKeys.None)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Zoom, new MouseGesture(MouseAction.RightClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Pan, new MouseGesture(MouseAction.MiddleClick)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ChangeFieldOfView, new MouseGesture(MouseAction.RightClick, ModifierKeys.Alt)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ZoomRectangle,
-                    new MouseGesture(MouseAction.RightClick, ModifierKeys.Control | ModifierKeys.Shift)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.SetTarget, new MouseGesture(MouseAction.RightDoubleClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.Reset, new MouseGesture(MouseAction.MiddleDoubleClick, ModifierKeys.Control)));
-
             var vm = DataContext as IWatchViewModel;
             
             //check this for null so the designer can load the preview
-            if (vm != null)
+            if (vm == null) return;
+
+            vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+
+            var renderingTier = (RenderCapability.Tier >> 16);
+            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
+            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
+            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+
+            vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
-
-                var renderingTier = (RenderCapability.Tier >> 16);
-                var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
-                var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
-                var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
-                var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
-
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+                case "IsPanning":
+                case "IsOrbiting":
+                    NotifyPropertyChanged("LeftClickCommand");
+                    break;
             }
         }
 
-#if DEBUG
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
+#if DEBUG
             if (renderTimer.IsRunning)
             {
                 renderTimer.Stop();
                 Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
                 renderTimer.Reset();
             }
-        }
 #endif
+            var c = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z);
+            if (!DirectionalLightDirection.Equals(c))
+            {
+                DirectionalLightDirection = c; 
+            }
+        }
+
 
         /// <summary>
         /// Handler for the visualization manager's ResultsReadyToVisualize event.
@@ -413,7 +691,7 @@ namespace Dynamo.Controls
 
         void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _rightMousePoint = e.GetPosition(topControl);
+            rightMousePoint = e.GetPosition(topControl);
         }
 
         void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -422,7 +700,7 @@ namespace Dynamo.Controls
             // rotation. handle the event so we don't show the context menu
             // if the user wants the contextual menu they can click on the
             // node sidebar or top bar
-            if (e.GetPosition(topControl) != _rightMousePoint)
+            if (e.GetPosition(topControl) != rightMousePoint)
             {
                 e.Handled = true;
             }
@@ -450,83 +728,104 @@ namespace Dynamo.Controls
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
-            for(int i= 0; i < 10; i += 1)
+            for(var i= 0; i < 10; i += 1)
             {
-                for (int j = 0; j < 10; j += 1)
+                for (var j = 0; j < 10; j += 1)
                 {
                     DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10);
                 }
             }
 
-            // Draw the coordinate axes
-            positions.Add(new Vector3());
-            indices.Add(positions.Count - 1);
-            positions.Add(new Vector3(1,0,0));
-            indices.Add(positions.Count - 1);
-            colors.Add(Color.Red);
-            colors.Add(Color.Red);
-
-            positions.Add(new Vector3());
-            indices.Add(positions.Count - 1);
-            positions.Add(new Vector3(0, 1, 0));
-            indices.Add(positions.Count - 1);
-            colors.Add(Color.Blue);
-            colors.Add(Color.Blue);
-
-            positions.Add(new Vector3());
-            indices.Add(positions.Count - 1);
-            positions.Add(new Vector3(0, 0, -1));
-            indices.Add(positions.Count - 1);
-            colors.Add(Color.Green);
-            colors.Add(Color.Green);
-
             Grid.Positions = positions;
             Grid.Indices = indices;
             Grid.Colors = colors;
+
+            Axes = new LineGeometry3D();
+            var axesPositions = new Vector3Collection();
+            var axesIndices = new IntCollection();
+            var axesColors = new Color4Collection();
+
+            // Draw the coordinate axes
+            axesPositions.Add(new Vector3());
+            axesIndices.Add(axesPositions.Count - 1);
+            axesPositions.Add(new Vector3(50, 0, 0));
+            axesIndices.Add(axesPositions.Count - 1);
+            axesColors.Add(Color.Red);
+            axesColors.Add(Color.Red);
+
+            axesPositions.Add(new Vector3());
+            axesIndices.Add(axesPositions.Count - 1);
+            axesPositions.Add(new Vector3(0, 5, 0));
+            axesIndices.Add(axesPositions.Count - 1);
+            axesColors.Add(Color.Blue);
+            axesColors.Add(Color.Blue);
+
+            axesPositions.Add(new Vector3());
+            axesIndices.Add(axesPositions.Count - 1);
+            axesPositions.Add(new Vector3(0, 0, -50));
+            axesIndices.Add(axesPositions.Count - 1);
+            axesColors.Add(Color.Green);
+            axesColors.Add(Color.Green);
+
+            Axes.Positions = axesPositions;
+            Axes.Indices = axesIndices;
+            Axes.Colors = axesColors;
+
         }
 
         private static void DrawGridPatch(
             Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
         {
-            var size = 10;
+            var c1 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#c5d1d8");
+            c1.Clamp();
+            var c2 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#ddeaf2");
+            c2.Clamp();
 
-            for (
-                int x = startX; x <= startX + size; x++)
+            var darkGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));
+            var lightGridColor = new Color4(new Vector4(c2.ScR, c2.ScG, c2.ScB, 1));
+
+            const int size = 10;
+
+            for (var x = startX; x <= startX + size; x++)
             {
+                if (x == 0 && startY < 0) continue;
+
                 var v = new Vector3(x, -.001f, startY);
                 positions.Add(v);
                 indices.Add(positions.Count - 1);
                 positions.Add(new Vector3(x, -.001f, startY + size));
                 indices.Add(positions.Count - 1);
 
-                if (x%5 == 0)
+                if (x % 5 == 0)
                 {
-                    colors.Add(Color.DarkGray);
-                    colors.Add(Color.DarkGray);
+                    colors.Add(darkGridColor);
+                    colors.Add(darkGridColor);
                 }
                 else
                 {
-                    colors.Add(Color.LightGray);
-                    colors.Add(Color.LightGray);
+                    colors.Add(lightGridColor);
+                    colors.Add(lightGridColor);
                 }
             }
 
-            for (int y = startY; y <= startY + size; y++)
+            for (var y = startY; y <= startY + size; y++)
             {
+                if (y == 0 && startX >= 0) continue;
+
                 positions.Add(new Vector3(startX, -.001f, y));
                 indices.Add(positions.Count - 1);
                 positions.Add(new Vector3(startX + size, -.001f, y));
                 indices.Add(positions.Count - 1);
 
-                if (y%5 == 0)
+                if (y % 5 == 0)
                 {
-                    colors.Add(Color.DarkGray);
-                    colors.Add(Color.DarkGray);
+                    colors.Add(darkGridColor);
+                    colors.Add(darkGridColor);
                 }
                 else
                 {
-                    colors.Add(Color.LightGray);
-                    colors.Add(Color.LightGray);
+                    colors.Add(lightGridColor);
+                    colors.Add(lightGridColor);
                 }
             }
         }
@@ -549,27 +848,39 @@ namespace Dynamo.Controls
 #if DEBUG
             renderTimer.Start();
 #endif
-
             Points = null;
             Lines = null;
+            LinesSelected = null;
             Mesh = null;
+            PerVertexMesh = null;
+            MeshSelected = null;
             Text = null;
             MeshCount = 0;
 
-            var packages = e.Packages
-                .Where(rp=>rp.TriangleVertices.Count % 9 == 0);
+            var packages = e.Packages.Concat(e.SelectedPackages)
+                .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
 
-            var points = InitPointGeometry();
-            var lines = InitLineGeometry();
-            var text = InitText3D(); 
-            var mesh = InitMeshGeometry();
+            var points = HelixRenderPackage.InitPointGeometry();
+            var lines = HelixRenderPackage.InitLineGeometry();
+            var linesSel = HelixRenderPackage.InitLineGeometry();
+            var mesh = HelixRenderPackage.InitMeshGeometry();
+            var meshSel = HelixRenderPackage.InitMeshGeometry();
+            var perVertexMesh = HelixRenderPackage.InitMeshGeometry();
+            var text = HelixRenderPackage.InitText3D();
 
-            foreach (var package in packages)
+            var aggParams = new PackageAggregationParams
             {
-                ConvertPoints(package, points, text);
-                ConvertLines(package, lines, text);
-                ConvertMeshes(package, mesh);
-            }
+                Packages = packages,
+                Points = points,
+                Lines = lines,
+                SelectedLines = linesSel,
+                Mesh = mesh,
+                PerVertexMesh = perVertexMesh,
+                SelectedMesh = meshSel,
+                Text = text
+            };
+
+            AggregateRenderPackages(aggParams);
 
             if (!points.Positions.Any())
                 points = null;
@@ -577,11 +888,20 @@ namespace Dynamo.Controls
             if (!lines.Positions.Any())
                 lines = null;
 
+            if (!linesSel.Positions.Any())
+                linesSel = null;
+
             if (!text.TextInfo.Any())
                 text = null;
 
             if (!mesh.Positions.Any())
                 mesh = null;
+
+            if (!meshSel.Positions.Any())
+                meshSel = null;
+
+            if (!perVertexMesh.Positions.Any())
+                perVertexMesh = null;
 
 #if DEBUG
             renderTimer.Stop();
@@ -590,267 +910,155 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            SendGraphicsToView(points, lines, mesh, text);
+            var updateGraphicsParams = new GraphicsUpdateParams
+            {
+                Points = points,
+                Lines = lines,
+                SelectedLines = linesSel,
+                Mesh = mesh,
+                SelectedMesh = meshSel,
+                PerVertexMesh = perVertexMesh,
+                Text = text
+            };
+
+            SendGraphicsToView(updateGraphicsParams);
 
             //DrawTestMesh();
         }
 
-        private static LineGeometry3D InitLineGeometry()
+        private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-            var lines = new LineGeometry3D
+
+
+            MeshCount = 0;
+            foreach (var rp in parameters.Packages)
             {
-                Positions = new Vector3Collection(),
-                Indices = new IntCollection(),
-                Colors = new Color4Collection()
-            };
+                var p = rp.Points;
+                if (p.Positions.Any())
+                {
+                    var points = parameters.Points;
 
-            return lines;
+                    var startIdx = points.Positions.Count;
+
+                    points.Positions.AddRange(p.Positions);
+                    points.Colors.AddRange(p.Colors.Any() ? p.Colors : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
+                    points.Indices.AddRange(p.Indices.Select(i=> i + startIdx));
+
+                    var endIdx = points.Positions.Count;
+
+                    if (rp.IsSelected)
+                    {
+                        for (var i = startIdx; i < endIdx; i++)
+                        {
+                            points.Colors[i] = selectionColor;
+                        }
+                    }
+
+                    if (rp.DisplayLabels)
+                    {
+                        var pt = p.Positions[0];
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    }
+                }
+
+                var l = rp.Lines;
+                if (l.Positions.Any())
+                {
+                    // Choose a collection to store the line data.
+                    var lineSet = rp.IsSelected ? parameters.SelectedLines : parameters.Lines;
+
+                    var startIdx = lineSet.Positions.Count;
+
+                    lineSet.Positions.AddRange(l.Positions);
+                    lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
+                    lineSet.Indices.AddRange(l.Indices.Select(i=>i + startIdx));
+
+                    var endIdx = lineSet.Positions.Count;
+
+                    if (rp.IsSelected)
+                    {
+                        for (var i = startIdx; i < endIdx; i++)
+                        {
+                            lineSet.Colors[i] = selectionColor;
+                        }
+                    }
+
+                    if (rp.DisplayLabels)
+                    {
+                        var pt = lineSet.Positions[startIdx];
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    }
+                }
+
+                var m = rp.Mesh;
+                if (m.Positions.Any())
+                {
+                    // Pick a mesh to use to store the data. Selected geometry
+                    // goes into the selected mesh. Geometry with
+                    // colors goes into the per vertex mesh. Everything else
+                    // goes into the plain mesh.
+
+                    var meshSet = rp.IsSelected ? 
+                        parameters.SelectedMesh :
+                        rp.RequiresPerVertexColoration ? parameters.PerVertexMesh : parameters.Mesh;
+
+                    var idxCount = meshSet.Positions.Count;
+
+                    meshSet.Positions.AddRange(m.Positions);
+
+                    meshSet.Colors.AddRange(m.Colors);
+                    meshSet.Normals.AddRange(m.Normals);
+                    meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
+                    meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
+
+                    if (rp.DisplayLabels)
+                    {
+                        var pt = meshSet.Positions[idxCount];
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    }
+
+                    MeshCount++;
+                }
+            }
         }
 
-        private static PointGeometry3D InitPointGeometry()
+        private void SendGraphicsToView(GraphicsUpdateParams parameters)
         {
-            var points = new PointGeometry3D()
-            {
-                Positions = new Vector3Collection(),
-                Indices = new IntCollection(),
-                Colors = new Color4Collection()
-            };
+            Points = parameters.Points;
+            Lines = parameters.Lines;
+            LinesSelected = parameters.SelectedLines;
+            Mesh = parameters.Mesh;
+            MeshSelected = parameters.SelectedMesh;
+            PerVertexMesh = parameters.PerVertexMesh;
+            Text = parameters.Text;
 
-            return points;
-        }
-
-        private static HelixToolkit.Wpf.SharpDX.MeshGeometry3D InitMeshGeometry()
-        {
-            var mesh = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D()
-            {
-                Positions = new Vector3Collection(),
-                Indices = new IntCollection(),
-                Colors = new Color4Collection(),
-                Normals = new Vector3Collection(),
-            };
-
-            return mesh;
-        }
-
-        private static BillboardText3D InitText3D()
-        {
-            var text3D = new BillboardText3D();
-
-            return text3D;
-        }
-
-        private void SendGraphicsToView(
-            PointGeometry3D points,
-            LineGeometry3D lines,
-            MeshGeometry3D mesh,
-            BillboardText3D text)
-        {
-            Points = points;
-            Lines = lines;
-            Mesh = mesh;
-            Text = text;
-            
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
         }
 
-        private void ConvertPoints(IRenderPackage p, PointGeometry3D points, BillboardText3D text)
-        {
-            var color_idx = 0;
-
-            for (int i = 0; i < p.PointVertices.Count; i += 3)
-            {
-                var x = (float)p.PointVertices[i];
-                var y = (float)p.PointVertices[i + 1];
-                var z = (float)p.PointVertices[i + 2];
-
-                // DirectX convention - Y Up
-                var pt = new Vector3(x, z, -y);
-
-                if (i == 0 && ((RenderPackage)p).DisplayLabels)
-                {
-                    text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), pt));
-                }
-
-                // The default point color is black. If the point
-                // colors array is large enough, then we pull the 
-                // point color from that.
-                var ptColor = Color4.Black;
-                if (p.PointVertexColors.Count >= color_idx + 4)
-                {
-                    ptColor = new Color4(
-                                        (p.PointVertexColors[color_idx] / 255.0f),
-                                        (p.PointVertexColors[color_idx + 1] / 255.0f),
-                                        (p.PointVertexColors[color_idx + 2] / 255.0f), 1);
-                }
-
-                points.Positions.Add(pt);
-                points.Indices.Add(points.Positions.Count);
-
-                points.Colors.Add(((RenderPackage)p).Selected ? selectionColor : ptColor);
-
-                color_idx += 4;
-            }
-
-        }
-
-        private void ConvertLines(IRenderPackage p, LineGeometry3D geom, BillboardText3D text)
-        {
-            int color_idx = 0;
-            var idx = 0;
-            int outerCount = 0;
-
-            foreach (var count in p.LineStripVertexCounts)
-            {
-                for (int i = 0; i < count; ++i)
-                {
-                    var x1 = (float)p.LineStripVertices[idx];
-                    var y1 = (float)p.LineStripVertices[idx + 1];
-                    var z1 = (float)p.LineStripVertices[idx + 2];
-
-                    // DirectX convention - Y Up
-                    var point = new Vector3(x1, z1, -y1);
-
-                    if (i == 0 && outerCount == 0 && ((RenderPackage)p).DisplayLabels)
-                    {
-                        text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), point));
-                    }
-
-                    SharpDX.Color4 startColor = SharpDX.Color.Black;
-
-                    if (p.LineStripVertexColors.Count >= color_idx + 2)
-                    {
-                        startColor = new SharpDX.Color4(
-                            (p.LineStripVertexColors[color_idx] / 255.0f),
-                            (p.LineStripVertexColors[color_idx + 1] / 255.0f),
-                            (p.LineStripVertexColors[color_idx + 2] / 255.0f),
-                            1);
-                    }
-
-                    if (startColor == SharpDX.Color.White)
-                    {
-                        startColor = SharpDX.Color.Black;
-                    }
-
-                    // Line segments are represented as a 
-                    // start point and an end point. Except
-                    // where we are starting the curve or ending it,
-                    // we duplicate the point.
-                    if (i != 0 && i != count - 1)
-                    {
-                        geom.Indices.Add(geom.Indices.Count);
-                        geom.Positions.Add(point);
-                        geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
-                    }
-
-                    geom.Indices.Add(geom.Indices.Count);
-                    geom.Positions.Add(point);
-                    geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
-
-                    idx += 3;
-                    color_idx += 4;
-                }
-
-                outerCount++;
-            }
-        }
-
-        private void ConvertMeshes(IRenderPackage p, HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh)
-        {
-            // DirectX has a different winding than we store in
-            // render packages. Re-wind triangles here...
-            var color_idx = 0;
-            var pt_idx = mesh.Positions.Count;
-
-            for (int i = 0; i < p.TriangleVertices.Count; i += 9)
-            {
-                var a = GetVertex(p.TriangleVertices, i);
-                var b = GetVertex(p.TriangleVertices, i + 3);
-                var c = GetVertex(p.TriangleVertices, i + 6);
-
-                var an = GetVertex(p.TriangleNormals, i);
-                var bn = GetVertex(p.TriangleNormals, i + 3);
-                var cn = GetVertex(p.TriangleNormals, i + 6);
-
-                var ca = GetColor(p, color_idx);
-                var cb = GetColor(p, color_idx + 4);
-                var cc = GetColor(p, color_idx + 8);
-
-                mesh.Positions.Add(a);
-                mesh.Positions.Add(c);
-                mesh.Positions.Add(b);
-
-                mesh.Indices.Add(pt_idx);
-                mesh.Indices.Add(pt_idx + 1);
-                mesh.Indices.Add(pt_idx + 2);
-
-                mesh.Normals.Add(an);
-                mesh.Normals.Add(cn);
-                mesh.Normals.Add(bn);
-
-                if (((RenderPackage)p).Selected)
-                {
-                    mesh.Colors.Add(selectionColor);
-                    mesh.Colors.Add(selectionColor);
-                    mesh.Colors.Add(selectionColor);
-                }
-                else
-                {
-                    mesh.Colors.Add(ca);
-                    mesh.Colors.Add(cc);
-                    mesh.Colors.Add(cb); 
-                }
-
-                color_idx += 12;
-                pt_idx += 3;
-            }
-
-            if (mesh.Indices.Count > 0)
-            {
-                MeshCount++;
-            }
-        }
-
-        private static Color4 GetColor(IRenderPackage p, int color_idx)
-        {
-            var color = new Color4(1,1,1,1);
-
-            if (color_idx <= p.TriangleVertexColors.Count-3)
-            {
-                color = new Color4(
-                (float)(p.TriangleVertexColors[color_idx] / 255.0),
-                (float)(p.TriangleVertexColors[color_idx + 1] / 255.0),
-                (float)(p.TriangleVertexColors[color_idx + 2] / 255.0),
-                (float)(p.TriangleVertexColors[color_idx + 3] / 255.0));
-            }
-           
-            return color;
-        }
-
-        private static Vector3 GetVertex(List<double> p, int i)
-        {
-            var x = (float)p[i];
-            var y = (float)p[i + 1];
-            var z = (float)p[i + 2];
-
-            // DirectX convention - Y Up
-            var new_point = new Vector3(x, z, -y);
-            return new_point;
-        }
-
-        private string CleanTag(string tag)
-        {
-            var splits = tag.Split(':');
-            if (splits.Count() <= 1) return tag;
-
-            var sb = new StringBuilder();
-            for (int i = 1; i < splits.Count(); i++)
-            {
-                sb.AppendFormat("[{0}]", splits[i]);
-            }
-            return sb.ToString();
-        }
-
         #endregion
+    }
+
+    internal class GraphicsUpdateParams
+    {
+        public PointGeometry3D Points { get; set; }
+        public LineGeometry3D Lines { get; set; }
+        public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D Mesh { get; set; }
+        public MeshGeometry3D SelectedMesh { get; set; }
+        public MeshGeometry3D PerVertexMesh { get; set; }
+        public BillboardText3D Text { get; set; }
+    }
+
+    internal class PackageAggregationParams
+    {
+        public IEnumerable<HelixRenderPackage> Packages { get; set; } 
+        public PointGeometry3D Points { get; set; }
+        public LineGeometry3D Lines { get; set; }
+        public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D Mesh { get; set; }
+        public MeshGeometry3D PerVertexMesh { get; set; }
+        public MeshGeometry3D SelectedMesh { get; set; }
+        public BillboardText3D Text { get; set; }
     }
 }

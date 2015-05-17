@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -83,6 +85,14 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+        }
+
+        private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            CreateGroupCommand.RaiseCanExecuteChanged();
+            AddToGroupCommand.RaiseCanExecuteChanged();
+            UngroupCommand.RaiseCanExecuteChanged();
         }
 
         private void Select(object parameter)
@@ -92,8 +102,7 @@ namespace Dynamo.ViewModels
 
         public void UpdateSizeFromView(double w, double h)
         {
-            this._model.Width = w;
-            this._model.Height = h;
+            this._model.SetSize(w,h);     
         }
 
         private bool CanSelect(object parameter)
@@ -133,7 +142,57 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateGroup(object parameters)
         {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            //Create Group should be disabled when a group is selected
+            if (groups != null && groups.Any(x => x.IsSelected))
+            {
+                return false;
+            }
+
+            //Create Group should be disabled when a node selected is already in a group
+            if (!groups.Any(x => x.IsSelected))
+            {
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                foreach (var model in modelSelected)
+                {
+                    if (groups.ContainsModel(model.GUID))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
+        }
+
+        private void UngroupNote(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+        }
+
+        private bool CanUngroupNote(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            if (!groups.Any(x => x.IsSelected))
+            {
+                return (groups.ContainsModel(Model.GUID));
+            }
+            return false;
+        }
+
+        private void AddToGroup(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+        }
+
+        private bool CanAddToGroup(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            if (groups.Any(x => x.IsSelected))
+            {
+                return !(groups.ContainsModel(Model.GUID));
+            }
+            return false;
         }
     }
 }

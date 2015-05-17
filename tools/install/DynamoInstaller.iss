@@ -104,6 +104,12 @@ Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\samp
 ;Other Custom Nodes
 Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
+;DirectX
+Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
+
+;Gallery
+Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
 [Registry]
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dword; ValueName: "installed"; ValueData: "1"
@@ -130,6 +136,7 @@ Type: filesandordirs; Name: {app}\libg_locale
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
+Filename: "{tmp}\DirectX\dxsetup.exe"; Parameters: "/silent"
 
 [UninstallRun]
 Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: "/uninstall ""{app}"""; Flags: runhidden;

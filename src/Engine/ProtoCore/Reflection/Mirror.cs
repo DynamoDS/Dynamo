@@ -956,16 +956,16 @@ namespace ProtoCore
                 StringBuilder sb = new StringBuilder();
                 // TODO: Dropping access specifier and static from function signature
                 // until it is required to be displayed to users later
-                //Func<Compiler.AccessSpecifier, string> func =
+                //Func<Compiler.AccessModifier, string> func =
                 //    (x) =>
                 //    {
                 //        switch (x)
                 //        {
-                //            case Compiler.AccessSpecifier.kPrivate:
+                //            case Compiler.AccessModifier.kPrivate:
                 //                return "private ";
-                //            case Compiler.AccessSpecifier.kProtected:
+                //            case Compiler.AccessModifier.kProtected:
                 //                return "protected ";
-                //            case Compiler.AccessSpecifier.kPublic:
+                //            case Compiler.AccessModifier.kPublic:
                 //                return "public ";
                 //            default:
                 //                return string.Empty;

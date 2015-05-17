@@ -11,13 +11,23 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
-
     /// <summary>
     /// A search element representing an element from the package manager </summary>
     public class PackageManagerSearchElement : SearchElementBase
     {
-
         #region Properties
+
+        /// <summary>
+        ///     An event that's invoked when the user has attempted to upvote this
+        ///     package.
+        /// </summary>
+        public event Func<string, bool> UpvoteRequested;
+
+        /// <summary>
+        ///     An event that's invoked when the user has attempted to downvote this
+        ///     package.
+        /// </summary>
+        public event Func<string, bool> DownvoteRequested;
 
         public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
         private int _votes;
@@ -37,7 +47,7 @@ namespace Dynamo.PackageManager
         /// Header property </summary>
         /// <value>
         /// The PackageHeader used to instantiate this object </value>
-        public Greg.Responses.PackageHeader Header { get; internal set; }
+        public PackageHeader Header { get; private set; }
 
         /// <summary>
         /// Type property </summary>
@@ -85,15 +95,12 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        private readonly PackageManagerClient client;
-
         /// <summary>
-        /// The class constructor. </summary>
+        ///     The class constructor
+        /// </summary>
         /// <param name="header">The PackageHeader object describing the element</param>
-        public PackageManagerSearchElement(PackageManagerClient client, Greg.Responses.PackageHeader header)
+        public PackageManagerSearchElement(PackageHeader header)
         {
-            this.client = client;
-
             this.IsExpanded = false;
             this.Header = header;
             this.Weight = header.deprecated ? 0.1 : 1;
@@ -111,7 +118,9 @@ namespace Dynamo.PackageManager
 
         public void Upvote()
         {
-            Task<bool>.Factory.StartNew(() => client.Upvote(this.Id))
+            if (UpvoteRequested == null) return;
+
+            Task<bool>.Factory.StartNew(() => UpvoteRequested(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
@@ -120,17 +129,11 @@ namespace Dynamo.PackageManager
                     }
                 }
                 , TaskScheduler.FromCurrentSynchronizationContext());
-
-        }
-
-        public bool CanUpvote()
-        {
-            return client != null && client.HasAuthProvider;
         }
 
         public void Downvote()
         {
-            Task<bool>.Factory.StartNew(() => client.Downvote(this.Id))
+            Task<bool>.Factory.StartNew(() => DownvoteRequested(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
@@ -138,11 +141,6 @@ namespace Dynamo.PackageManager
                         this.Votes -= 1;
                     }
                 }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        public bool CanDownvote()
-        {
-            return client != null && client.HasAuthProvider;
         }
 
         public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
@@ -157,9 +155,5 @@ namespace Dynamo.PackageManager
                         pair.Item1,
                         pair.Item1.versions.First(x => x.version == pair.Item2)));
         }
-
-       
-
     }
-
 }

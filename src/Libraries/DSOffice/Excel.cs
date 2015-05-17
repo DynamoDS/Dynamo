@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
-
+using DynamoServices;
 using Autodesk.DesignScript.Runtime;
+using ProtoCore.DSASM;
+using ProtoCore.Properties;
 
 namespace DSOffice
 {
@@ -20,7 +23,7 @@ namespace DSOffice
         public bool SaveWorkbooks { get; private set; }
     }
 
-    internal static class ExcelInterop
+    internal static class ExcelInterop 
     {
         private static Microsoft.Office.Interop.Excel.Application _app;
         public static Microsoft.Office.Interop.Excel.Application App
@@ -31,7 +34,9 @@ namespace DSOffice
                 {
                     _app = RegisterAndGetApp();
                 }
-                if (_showOnStartup) _app.Visible = true;
+                if (_showOnStartup) 
+                    _app.Visible = true;
+
                 return _app;
             }
         }
@@ -82,10 +87,6 @@ namespace DSOffice
             if (excel == null)
             {
                 excel = new Microsoft.Office.Interop.Excel.Application();
-                if (excel == null)
-                {
-                    throw new Exception("Excel could not be opened.");
-                }
             }
 
             // KILLDYNSETTINGS - is this safe
@@ -334,10 +335,19 @@ namespace DSOffice
 
         private static object[,] ConvertToDimensionalArray(object[][] input, out int rows, out int cols)
         {
+            if (input == null)
+            {
+                rows = cols = 1;
+                return new object[,]{{""}};
+            }
+
             rows = input.GetUpperBound(0) + 1;
             cols = 0;
             for (int i = 0; i < rows; i++)
-                cols = Math.Max(cols, input[i].GetUpperBound(0) + 1);
+            {
+                if(input[i] != null)
+                    cols = Math.Max(cols, input[i].GetUpperBound(0) + 1);
+            }
 
             object[,] output = new object[rows, cols];
 
@@ -345,12 +355,12 @@ namespace DSOffice
             {
                 for (int j = 0; j < cols; j++)
                 {
-                    var item = input[i][j];
-
-                    if (j > input[i].GetUpperBound(0))
+                    if (input[i] == null || j > input[i].GetUpperBound(0))
                         output[i, j] = "";
                     else
                     {
+                        var item = input[i][j];
+
                         if (item is double)
                         {
                             output[i, j] = ((double)item).ToString(CultureInfo.InvariantCulture);
@@ -362,6 +372,22 @@ namespace DSOffice
                         else if (item is DateTime)
                         {
                             output[i, j] = ((DateTime)item).ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (item == null)
+                        {
+                            output[i, j] = "";
+                        }
+                        else if (item is StackValue)
+                        {
+                            if (((StackValue) item).IsPointer)
+                            {
+                                string message = string.Format(Resources.kMethodResolutionFailureWithTypes, 
+                                    "Excel.WriteToFile", "_SingleFunctionObject");
+                                LogWarningMessageEvents.OnLogWarningMessage(message);
+                                return null;
+                            }
+
+                            output[i, j] = item.ToString();
                         }
                         else
                         {
@@ -447,9 +473,12 @@ namespace DSOffice
 
             object[,] rangeData = ConvertToDimensionalArray(data, out numRows, out numColumns);
 
+            if (rangeData == null)
+                return this;
+
             var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
             var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
-            var range = ws.get_Range(c1, c2);
+            var range = ws.Range[c1, c2];
             range.Value = rangeData;
 
             wb.Save();

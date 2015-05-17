@@ -92,7 +92,9 @@ namespace ProtoCore.Utils
 
             int myself = classNode.typeSystem.classTable.IndexOf(classNode.name);
             bool isInMemberFunctionContext = (classScope == myself) && (functionScope != ProtoCore.DSASM.Constants.kInvalidIndex);
-            bool isInStaticFunction = isInMemberFunctionContext && (classNode.vtable.procList[functionScope].isStatic);
+            bool isInStaticFunction = isInMemberFunctionContext && 
+                classNode.vtable.procList.Count > functionScope &&
+                classNode.vtable.procList[functionScope].isStatic;
 
             // Try for member function variables
             var blocks = GetAncestorBlockIdsOfBlock(blockId, codeblockList);
@@ -138,13 +140,13 @@ namespace ProtoCore.Utils
                 bool isAccessible = false;
                 if (isInMemberFunctionContext)
                 {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate);
+                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessModifier.kPrivate);
                     if (isInStaticFunction)
                         isAccessible = isAccessible && symbol.isStatic;
                 }
                 else
                 {
-                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
                 }
 
                 if (isAccessible)

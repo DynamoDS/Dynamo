@@ -107,11 +107,18 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+    <ItemGroup>
+      <Dlls Include="$(OutDir)*.dll"/>
+      <Pdbs Include="$(OutDir)*.pdb"/>
+      <Xmls Include="$(OutDir)*.xml"/>
+      <Res Include="$(OutDir)en-US\*.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
+    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
+    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
+    <Copy SourceFiles="@(Res)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\en-US\"/>
   </Target>
-  -->
 </Project>

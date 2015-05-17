@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
@@ -294,10 +295,10 @@ namespace Dynamo.Models
         [DataContract]
         public abstract class NodeSpecificRecordableCommand : RecordableCommand
         {
-            internal Guid NodeId { get; private set; }
+            public Guid NodeId { get; private set; }
 
             [DataMember]
-            internal string NodeIdAsString
+            public string NodeIdAsString
             {
                 get { return NodeId.ToString(); }
                 private set
@@ -638,7 +639,8 @@ namespace Dynamo.Models
 
             [DataMember]
             internal bool TransformCoordinates { get; private set; }
-
+            
+            [DataMember]
             //Legacy properties
             internal string Name { get; private set; }
 
@@ -1026,13 +1028,13 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             [DataMember]
-            internal int PortIndex { get; private set; }
+            public int PortIndex { get; private set; }
 
             [DataMember]
             internal PortType Type { get; private set; }
 
             [DataMember]
-            internal Mode ConnectionMode { get; private set; }
+            public Mode ConnectionMode { get; private set; }
 
             #endregion
 
@@ -1165,7 +1167,7 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             [DataMember]
-            internal string EventName { get; private set; }
+            public string EventName { get; private set; }
 
             #endregion
 
@@ -1270,13 +1272,13 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
+            public IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
 
             [DataMember]
             public string Name { get; private set; }
 
             [DataMember]
-            internal string Value { get; private set; }
+            public string Value { get; private set; }
             internal Guid WorkspaceGuid { get; private set; } 
 
             #endregion
@@ -1314,21 +1316,17 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        [Obsolete("Node to Code not enabled, API subject to change.")]
-        public class ConvertNodesToCodeCommand : NodeSpecificRecordableCommand
+        public class ConvertNodesToCodeCommand : RecordableCommand
         {
             #region Public Class Methods
 
             [JsonConstructor]
-            internal ConvertNodesToCodeCommand(string nodeId) : base(nodeId) { }
-
-            internal ConvertNodesToCodeCommand(Guid nodeId) : base(nodeId) { }
+            internal ConvertNodesToCodeCommand() { }
 
             internal static ConvertNodesToCodeCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                Guid nodeId = helper.ReadGuid("NodeId");
-                return new ConvertNodesToCodeCommand(nodeId);
+                return new ConvertNodesToCodeCommand();
             }
 
             #endregion
@@ -1342,8 +1340,6 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("NodeId", NodeId);
             }
 
             #endregion
@@ -1480,7 +1476,7 @@ namespace Dynamo.Models
                 double x, double y, bool defaultPosition)
             {
                 if (string.IsNullOrEmpty(annotationText))
-                    annotationText = string.Empty;
+                    annotationText = Resources.GroupDefaultText;
 
                 AnnotationId = nodeId;
                 AnnotationText = annotationText;
@@ -1533,7 +1529,79 @@ namespace Dynamo.Models
             #endregion
         }
 
+        
+
+		public class UngroupModelCommand : ModelSpecificRecordableCommand
+		{
+
+            public UngroupModelCommand(string modelGuid) : base(modelGuid) { }
+
+            public UngroupModelCommand(Guid modelGuid) : base(modelGuid) { }
+
+            internal static UngroupModelCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new UngroupModelCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.UngroupModelImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", ModelGuid);
+            }
+
+            #endregion
+        }
+
+
         [DataContract]
+        public class AddModelToGroupCommand : ModelSpecificRecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public AddModelToGroupCommand(string modelGuid) : base(modelGuid) { }
+
+            public AddModelToGroupCommand(Guid modelGuid) : base(modelGuid) { }
+
+            internal static AddModelToGroupCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new AddModelToGroupCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+
+                dynamoModel.AddToGroupImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", ModelGuid);
+            }
+
+            #endregion
+        }
+
+
+		[DataContract]
         public class CreatePresetStateFromSelectionCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -1576,13 +1644,15 @@ namespace Dynamo.Models
             internal string PresetStateName { get; set; }
             internal string PresetStateDescription { get; set; }
             internal List<Guid> SelectedNodesIDs { get; set; }
-            #endregion
+
+             #endregion
 
             #region Protected Overridable Methods
 
-            protected override void ExecuteCore(DynamoModel dynamoModel)
+                        protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 dynamoModel.CreatePresetStateImpl(this);
+
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -1599,8 +1669,7 @@ namespace Dynamo.Models
                 }
                
             }
-
-            #endregion
+              #endregion
         }
 
         [DataContract]

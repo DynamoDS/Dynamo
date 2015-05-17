@@ -233,7 +233,7 @@
   <data name="CannotOpenFile" xml:space="preserve">
     <value>Your file cannot be opened</value>
   </data>
-  <data name="DisplayEnigineFailureMessageDescription" xml:space="preserve">
+  <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
     <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely "having great difficulties pulling itself together. It is "recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
 
 If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
@@ -417,11 +417,6 @@ Sorry about that.</value>
   <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
     <value>Duplicate migration type registered for {0}</value>
   </data>
-  <data name="ExceptionIsNotHeapCorruptionDescription" xml:space="preserve">
-    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better.
-
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
-  </data>
   <data name="FileCannotBeOpened" xml:space="preserve">
     <value>Your file cannot be opened.</value>
   </data>
@@ -594,7 +589,7 @@ value: bool = false</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
-   </data>
+  </data>
   <data name="DefaultValue" xml:space="preserve">
     <value>Default value</value>
     <comment>Default value</comment>
@@ -602,5 +597,9 @@ value: bool = false</value>
   <data name="DefaultValueDisabled" xml:space="preserve">
     <value>(disabled)</value>
     <comment>Default value is disabled</comment>
+  </data>
+  <data name="SymbolSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+    <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
 </root>

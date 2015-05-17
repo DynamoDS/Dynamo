@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Documents;
-
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -283,7 +278,8 @@ namespace Dynamo.ViewModels
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += this.AlignSelectionCanExecuteChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += 
+                (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
@@ -523,8 +519,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynamoModel.ConvertNodesToCodeCommand(nodeID);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
             this.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -792,6 +787,51 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 1;
         }
 
+        private void ShowHideAllGeometryPreview(object parameter)
+        {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsVisible", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
+        }
+
+        private void ShowHideAllUpstreamPreview(object parameter)
+        {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsUpstreamVisible", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
+        }
+
+        private void SetArgumentLacing(object parameter)
+        {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "ArgumentLacing", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
+            RaisePropertyChanged("SelectionArgumentLacing");
+        }
+
         private void Hide(object parameters)
         {
             // Closing of custom workspaces will simply close those workspaces,
@@ -858,6 +898,7 @@ namespace Dynamo.ViewModels
         private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
+
         }
 
         private static bool CanCreateNodeFromSelection(object parameter)
@@ -1081,6 +1122,18 @@ namespace Dynamo.ViewModels
         private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
         {
             return true;
+        }
+
+        private void RefreshViewOnSelectionChange()
+        {
+            AlignSelectedCommand.RaiseCanExecuteChanged();
+            ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
+            ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged("HasSelection");
+            RaisePropertyChanged("AnyNodeVisible");
+            RaisePropertyChanged("AnyNodeUpstreamVisible");
+            RaisePropertyChanged("SelectionArgumentLacing");
         }
     }
 

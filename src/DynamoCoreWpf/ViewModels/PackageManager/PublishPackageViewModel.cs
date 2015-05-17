@@ -32,7 +32,10 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         private readonly DynamoViewModel dynamoViewModel;
-
+        public DynamoViewModel DynamoViewModel
+        {
+            get { return dynamoViewModel; }
+        }
         /// <summary>
         /// A event called when publishing was a success
         /// </summary>
@@ -891,7 +894,8 @@ namespace Dynamo.PackageManager
                     // as the existing assembly cannot be modified while Dynamo is active.
                     if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
                     {
-                        MessageBox.Show(Resources.PackageDuplicateAssemblyWarning, 
+                        MessageBox.Show(string.Format(Resources.PackageDuplicateAssemblyWarning, 
+                                        dynamoViewModel.BrandingResourceProvider.ProductName),
                                         Resources.PackageDuplicateAssemblyWarningTitle, 
                                         MessageBoxButtons.OK, 
                                         MessageBoxIcon.Stop);
@@ -950,7 +954,7 @@ namespace Dynamo.PackageManager
                 Package.AddAssemblies(Assemblies);
 
                 // begin submission
-                var handle = dynamoViewModel.Model.PackageManagerClient.Publish(Package, files, IsNewVersion, DynamoModel.IsTestMode);
+                var handle = dynamoViewModel.Model.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
 
                 // start upload
                 Uploading = true;
@@ -977,7 +981,7 @@ namespace Dynamo.PackageManager
             // be active when there is no authenticator
             if (dynamoViewModel == null || !dynamoViewModel.Model.PackageManagerClient.HasAuthProvider)
             {
-                ErrorString = Resources.CannotSubmitPackage;
+                ErrorString = string.Format(Resources.CannotSubmitPackage,dynamoViewModel.BrandingResourceProvider.ProductName);
                 return false;
             }
 

@@ -1,0 +1,34 @@
+<Workspace Version="0.7.5.3213" X="198.372217195101" Y="158.792259359159" zoom="0.658674852158215" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c1998f66-fd51-43ab-b7f1-aa350e7a9637" nickname="Point.ByCoordinates" x="512.54885366661" y="112.258965472046" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="d0d3708e-7cca-468a-95ab-8be900eed392" nickname="Code Block" x="-119.831499807656" y="166.088061908622" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..15;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="29df5b54-4e2c-4f5d-8584-bd59df05e2e8" nickname="SortByKey" x="974.405663268593" y="234.162786583348" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="SortByKey@var[]..[],_FunctionObject" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="db495c22-f1d4-4494-be41-6491df930c58" nickname="Point.Y" x="798.405663268593" y="333.362786583348" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.Y" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7c636447-6099-48ab-8a1c-758ee8feecaf" nickname="PolyCurve.ByPoints" x="956.687979744919" y="-124.027840019235" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c63e4576-fb21-41dc-a465-7860fb7ffd0a" nickname="List.Shuffle" x="337.729466220634" y="198.278676851862" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Shuffle@var[]..[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="25e4ec2a-c14e-4769-aac2-0a504af9e0ea" nickname="Math.RandomList" x="160.057630172319" y="31.4239000888683" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Math.RandomList@int" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="94ab50d8-5c69-4186-95f2-86172a3ce74f" nickname="Count" x="19.6406403665396" y="87.192349940809" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Count@var[]..[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5fa1534e-a73b-4c23-a6b3-5e1f58f33fcf" nickname="*" x="316.408462792938" y="61.2998553666937" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="*@," />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c1998f66-fd51-43ab-b7f1-aa350e7a9637" start_index="0" end="29df5b54-4e2c-4f5d-8584-bd59df05e2e8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c1998f66-fd51-43ab-b7f1-aa350e7a9637" start_index="0" end="7c636447-6099-48ab-8a1c-758ee8feecaf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0d3708e-7cca-468a-95ab-8be900eed392" start_index="0" end="c63e4576-fb21-41dc-a465-7860fb7ffd0a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0d3708e-7cca-468a-95ab-8be900eed392" start_index="0" end="94ab50d8-5c69-4186-95f2-86172a3ce74f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="db495c22-f1d4-4494-be41-6491df930c58" start_index="0" end="29df5b54-4e2c-4f5d-8584-bd59df05e2e8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c63e4576-fb21-41dc-a465-7860fb7ffd0a" start_index="0" end="c1998f66-fd51-43ab-b7f1-aa350e7a9637" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25e4ec2a-c14e-4769-aac2-0a504af9e0ea" start_index="0" end="5fa1534e-a73b-4c23-a6b3-5e1f58f33fcf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="94ab50d8-5c69-4186-95f2-86172a3ce74f" start_index="0" end="25e4ec2a-c14e-4769-aac2-0a504af9e0ea" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="94ab50d8-5c69-4186-95f2-86172a3ce74f" start_index="0" end="5fa1534e-a73b-4c23-a6b3-5e1f58f33fcf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5fa1534e-a73b-4c23-a6b3-5e1f58f33fcf" start_index="0" end="c1998f66-fd51-43ab-b7f1-aa350e7a9637" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Connect PolyCurve.ByPoints to the list of points sorted by Y-value" x="911.983536975089" y="182.58329148543" />
+    <Dynamo.Models.NoteModel text="Randomized list of points" x="495.664194459891" y="75.2419678296789" />
+  </Notes>
+</Workspace>

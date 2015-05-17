@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.Threading;
 
 using Dynamo.Wpf.Utilities;
+using Dynamo.Search.SearchElements;
 
 
 namespace Dynamo.Views
@@ -148,6 +149,9 @@ namespace Dynamo.Views
             if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.AddAnnotationCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.UngroupAnnotationCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.UngroupModelCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -699,6 +703,18 @@ namespace Dynamo.Views
 
             return HitTestResultBehavior.Continue;
         }
-        
+
+        private void OnWorkspaceDrop(object sender, DragEventArgs e)
+        {
+            var nodeInfo = e.Data.GetData(typeof(DragDropNodeSearchElementInfo)) as DragDropNodeSearchElementInfo;
+            if (nodeInfo == null)
+                return;
+
+            var nodeModel = nodeInfo.SearchElement.CreateNode();
+            var mousePosition = e.GetPosition(this.WorkspaceElements);
+            ViewModel.DynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+                nodeModel, mousePosition.X, mousePosition.Y, false, true));
+        }
+
     }
 }

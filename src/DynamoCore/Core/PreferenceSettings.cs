@@ -84,6 +84,11 @@ namespace Dynamo
         public List<string> RecentFiles { get; set; }
 
         /// <summary>
+        /// A list of backup file paths.
+        /// </summary>
+        public List<string> BackupFiles { get; set; }
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
@@ -114,6 +119,22 @@ namespace Dynamo
         /// </summary>
         public bool UseHardwareAcceleration { get; set; }
 
+        /// <summary>
+        /// This defines how long (in milliseconds) will the graph be automatically saved.
+        /// </summary>
+        public int BackupInterval { get; set; }
+
+        /// <summary>
+        /// This defines how many files will be backed up.
+        /// </summary>
+        public int BackupFilesCount { get; set; }
+
+        /// <summary>
+        /// Indicates if the user has accepted the terms of 
+        /// use for downloading packages from package manager.
+        /// </summary>
+        public bool PackageDownloadTouAccepted { get; set; }
+
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -133,6 +154,10 @@ namespace Dynamo
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
+            PackageDownloadTouAccepted = false;
+
+            BackupInterval = 60000; // 1 minute
+            BackupFilesCount = 1;
         }
 
         /// <summary>

@@ -233,7 +233,7 @@ namespace DSCore
 
         public override string ToString()
         {
-            return string.Format("Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
+            return string.Format("Color(Red = {0}, Green = {1}, Blue = {2}, Alpha = {3})", Red, Green, Blue, Alpha);
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -551,7 +551,6 @@ namespace DSCore
         /// </summary>
         /// <param name="width">The width of the color map.</param>
         /// <param name="height">The height of the color map.</param>
-        /// for interpolation.</param>
         /// <returns>A two-dimensional array of colors.</returns>
         public Color[,] CreateColorMap(int width, int height)
         {

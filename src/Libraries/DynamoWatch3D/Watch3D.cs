@@ -35,12 +35,16 @@ namespace Dynamo.Nodes
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
         private Watch3D watch3dModel;
+
         public Watch3DView View { get; private set; }
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
             model.ViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watch3dModel = model;
+            
+            var renderingTier = (RenderCapability.Tier >> 16);
+            if (renderingTier < 2) return;
 
             View = new Watch3DView(model.GUID, watch3dModel)
             {
@@ -59,7 +63,7 @@ namespace Dynamo.Nodes
             // model whenever its size is updated. 
             //Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height 
             // and width should correspond to node model and not watch3Dview
-            nodeView.SizeChanged += (sender, args) => 
+            nodeView.SizeChanged += (sender, args) =>
                 model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
@@ -97,6 +101,8 @@ namespace Dynamo.Nodes
 
         private void UpdateLatestCameraPosition()
         {
+            if (View == null) return;
+
             var pos = View.View.Camera.Position;
             var viewDir = View.View.Camera.LookDirection;
 
@@ -107,12 +113,16 @@ namespace Dynamo.Nodes
 
         private void RenderData(object data)
         {
+            if (View == null) return;
+            
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(this.watch3dModel.VisualizationManager.CreateRenderPackageFromGraphicItem), watch3dModel.GUID));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(watch3dModel.ViewModel.VisualizationManager.CreateRenderPackageFromGraphicItem), new List<IRenderPackage>(), watch3dModel.GUID));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
+            if (View == null) return;
+
             View.View.ZoomExtents();
         }
 
@@ -335,7 +345,7 @@ namespace Dynamo.Nodes
         }
 
         protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // No visualization update is required for this node type.
         }
