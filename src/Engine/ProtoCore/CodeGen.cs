@@ -91,7 +91,7 @@ namespace ProtoCore
 
 
         // Contains the list of Nodes in an identifier list
-        protected List<ProtoCore.AST.AssociativeAST.AssociativeNode> ssaPointerList;
+        protected Stack<List<ProtoCore.AST.AssociativeAST.AssociativeNode>> stackSSAPointerList;
 
         // The first graphnode of the SSA'd identifier
         protected ProtoCore.AssociativeGraph.GraphNode firstSSAGraphNode = null;
@@ -152,7 +152,7 @@ namespace ProtoCore
                 }
             }
 
-            ssaPointerList = new List<AST.AssociativeAST.AssociativeNode>();
+            stackSSAPointerList = new Stack<List<AST.AssociativeAST.AssociativeNode>>();
         }
 
 
@@ -2630,8 +2630,13 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
+            if (stackSSAPointerList.Count <= 0)
+            {
+                return;
+            }
+
             // Push all dependent pointers
-            ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerList);
+            ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(stackSSAPointerList.Peek());
 
             // Comment Jun: perhaps this can be an assert?
             if (null != identList)
@@ -2657,7 +2662,7 @@ namespace ProtoCore
                     //  This means that statement that depends on a.x can re-execute, such as:
                     //      p = a.x;
                     //
-                    string propertyName = ssaPointerList[ssaPointerList.Count - 1].Name;
+                    string propertyName = stackSSAPointerList.Peek()[stackSSAPointerList.Peek().Count - 1].Name;
                     bool isSetter = propertyName.StartsWith(Constants.kSetterPrefix);
                     if (isSetter)
                     {
@@ -2710,8 +2715,8 @@ namespace ProtoCore
                 {
                     if ((node as ProtoCore.AST.AssociativeAST.IdentifierListNode).IsLastSSAIdentListFactor)
                     {
-                        Validity.Assert(null != ssaPointerList);
-                        ssaPointerList.Clear();
+                        Validity.Assert(null != stackSSAPointerList);
+                        stackSSAPointerList.Pop();
                     }
                 }
             }

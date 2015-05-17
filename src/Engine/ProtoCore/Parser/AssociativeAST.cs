@@ -1781,13 +1781,15 @@ namespace ProtoCore.AST.AssociativeAST
         public Guid guid { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
         public bool isSSAAssignment { get; set; }
-        public bool isSSAPointerAssignment { get; set; }
         public bool isSSAFirstAssignment { get; set; }
         public bool isMultipleAssign { get; set; }
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
         public bool IsInputExpression { get; set; }
+        public bool isSSAPointerAssignment { get; set; }
+        public bool IsFirstIdentListNode { get; set; }
+        public bool IsLastIdentListNode { get; set; }
 
         // These properties are used only for the GraphUI ProtoAST
         public uint Guid { get; set; }
@@ -1808,6 +1810,9 @@ namespace ProtoCore.AST.AssociativeAST
             Optr = optr;
             RightNode = right;
             IsInputExpression = false;
+            IsFirstIdentListNode = false;
+            IsLastIdentListNode = false;
+
         }
 
         public BinaryExpressionNode(BinaryExpressionNode rhs) : base(rhs)
@@ -1829,6 +1834,8 @@ namespace ProtoCore.AST.AssociativeAST
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
             IsInputExpression = rhs.IsInputExpression;
+            IsFirstIdentListNode = rhs.IsFirstIdentListNode;
+            IsLastIdentListNode = rhs.IsLastIdentListNode;
         }
 
         /// <summary>
@@ -1853,6 +1860,8 @@ namespace ProtoCore.AST.AssociativeAST
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
              IsInputExpression = false;
+             IsFirstIdentListNode = false;
+             IsLastIdentListNode = false;
              
          }
 
