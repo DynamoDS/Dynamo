@@ -869,17 +869,4 @@ namespace Dynamo.Controls
         public MeshGeometry3D SelectedMesh { get; set; }
         public BillboardText3D Text { get; set; }
     }
-
-    internal class AngleToRadiansConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
