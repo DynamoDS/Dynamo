@@ -11,7 +11,7 @@ using DynamoUtilities;
 
 namespace Dynamo.Tests
 {
-    internal class UtilityTests : DynamoViewModelUnitTest
+    internal class UtilityTests : DynamoModelTestBase
     {
         [Test]
         [Category("UnitTests")]
@@ -116,7 +116,7 @@ namespace Dynamo.Tests
             {
                 string fqn = null;
                 Type type;
-                ViewModel.Model.NodeFactory.ResolveType(fqn, out type);
+                CurrentDynamoModel.NodeFactory.ResolveType(fqn, out type);
             });
         }
 
@@ -126,7 +126,7 @@ namespace Dynamo.Tests
         {
             string fqn = string.Empty;
             Type type;
-            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsFalse(CurrentDynamoModel.NodeFactory.ResolveType(fqn, out type));
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace Dynamo.Tests
             // Unknown type returns a 'null'.
             string fqn = "Dynamo.Connectors.ConnectorModel";
             Type type;
-            Assert.IsFalse(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsFalse(CurrentDynamoModel.NodeFactory.ResolveType(fqn, out type));
             Assert.AreEqual(null, type);
         }
 
@@ -159,7 +159,7 @@ namespace Dynamo.Tests
             // System type names should be discoverable.
             string fqn = "System.Environment";
             Type type;
-            Assert.IsTrue(ViewModel.Model.NodeFactory.ResolveType(fqn, out type));
+            Assert.IsTrue(CurrentDynamoModel.NodeFactory.ResolveType(fqn, out type));
             Assert.IsNotNull(type);
             Assert.AreEqual("System.Environment", type.FullName);
         }

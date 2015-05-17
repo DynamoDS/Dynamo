@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    public class HigherOrder : DSEvaluationViewModelUnitTest
+    public class HigherOrder : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {

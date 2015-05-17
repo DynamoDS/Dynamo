@@ -9,6 +9,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.UI.Controls;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.UI.Views
 {
@@ -285,5 +286,55 @@ namespace Dynamo.UI.Views
 
             e.Handled = true;
         }
+
+        /// <summary>
+        /// Position of mouse, when user clicks on button.
+        /// </summary>
+        private Point startPosition;
+
+        /// <summary>
+        /// Indicates whether item is dragging or not, so that there won't be more than one DoDragDrop event.
+        /// </summary>
+        private bool IsDragging;
+
+        private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            Point currentPosition = e.GetPosition(null);
+
+            // If item was dragged enough, then fire DoDragDrop. 
+            // Otherwise it means user click on item and there is no need to fire DoDragDrop.
+            if ((System.Math.Abs(currentPosition.X - startPosition.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                System.Math.Abs(currentPosition.Y - startPosition.Y) > SystemParameters.MinimumVerticalDragDistance) &&
+                !IsDragging)
+            {
+                StartDrag(e);
+            }
+
+        }
+
+        private void StartDrag(MouseEventArgs e)
+        {
+            IsDragging = true;
+            var senderButton = e.OriginalSource as FrameworkElement;
+
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (searchElementVM == null)
+            {
+                IsDragging = false;
+                return;
+            }
+
+            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
+            IsDragging = false;
+        }
+
+        private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            startPosition = e.GetPosition(null);
+        }
+
     }
 }

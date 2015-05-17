@@ -6,9 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
-
+using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
+using ProtoCore.Properties;
 
 namespace DSOffice
 {
@@ -378,8 +379,13 @@ namespace DSOffice
                         }
                         else if (item is StackValue)
                         {
-                            if(((StackValue)item).IsPointer)
+                            if (((StackValue) item).IsPointer)
+                            {
+                                string message = string.Format(Resources.kMethodResolutionFailureWithTypes, 
+                                    "Excel.WriteToFile", "_SingleFunctionObject");
+                                LogWarningMessageEvents.OnLogWarningMessage(message);
                                 return null;
+                            }
 
                             output[i, j] = item.ToString();
                         }

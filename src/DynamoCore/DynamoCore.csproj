@@ -283,6 +283,7 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
+    <EmbeddedResource Include="DynamoCoreImages.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -341,7 +342,7 @@ limitations under the License.
       <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
       <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
       <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
-      <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\*" />
+      <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\**\*.*" />
       <ExternLibG219 Include="$(SolutionDir)..\extern\LibG_219\*" />
       <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
       <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
@@ -357,12 +358,28 @@ limitations under the License.
     <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
-    <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\" />
+    <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternLibG219)" DestinationFolder="$(OutputPath)libg_219\" />
     <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220\" />
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
     <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)"/>
+  </Target>
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+
+	<!-- Get System.Drawing.dll -->
+	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      	<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+
+	<!-- Get DynamoCore -->
+	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+		<Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo"/>
+	</GetAssemblyIdentity>
+	
+	<!-- Generate customization dll for DynamoCore -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
 </Project>

@@ -15,7 +15,9 @@
              MouseMove="OnMouseMove"
              KeyDown="WorkspaceView_KeyDown"
              KeyUp="WorkspaceView_KeyUp"
-             IsHitTestVisible="{Binding IsCurrentSpace}">
+             IsHitTestVisible="{Binding IsCurrentSpace}"
+             AllowDrop="True"
+             Drop="OnWorkspaceDrop">
 
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
