@@ -10,9 +10,9 @@
             <Label Content="Key Light:"/>
             <StackPanel Orientation="Horizontal">
                 <Label Content="Azimuth:"/>
-                <TextBox Width="50" Text="{Binding KeyX, Mode=TwoWay}"/>
+                <TextBox Width="50" Text="{Binding LightAzimuthDegrees, Mode=TwoWay}"/>
                 <Label Content="Elevation:"/>
-                <TextBox Width="50" Text="{Binding KeyY, Mode=TwoWay}"/>
+                <TextBox Width="50" Text="{Binding LightElevationDegrees, Mode=TwoWay}"/>
             </StackPanel>
             
         </StackPanel>

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -20,6 +22,7 @@ using ColorConverter = System.Windows.Media.ColorConverter;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
+using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Controls
 {
@@ -56,6 +59,8 @@ namespace Dynamo.Controls
         private Color4 directionalLightColor;
         private Color4 defaultLineColor;
         private Color4 defaultPointColor;
+        private double lightAzimuthDegrees = 45.0;
+        private double lightElevationDegrees = 35.0;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -185,6 +190,18 @@ namespace Dynamo.Controls
             }
         }
 
+        public double LightAzimuthDegrees
+        {
+            get { return lightAzimuthDegrees; }
+            set { lightAzimuthDegrees = value; }
+        }
+
+        public double LightElevationDegrees
+        {
+            get { return lightElevationDegrees; }
+            set { lightElevationDegrees = value; }
+        }
+
         #endregion
 
         #region constructors
@@ -264,7 +281,7 @@ namespace Dynamo.Controls
             };
 
             Model1Transform = new TranslateTransform3D(0, -0, 0);
-
+            
             // camera setup
             Camera = new PerspectiveCamera
             {
@@ -370,10 +387,18 @@ namespace Dynamo.Controls
                 renderTimer.Reset();
             }
 #endif
-            var c = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z);
-            if (!DirectionalLightDirection.Equals(c))
+
+            var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
+            var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
+            var right = Vector3.Cross(cf, cu);
+
+            var qel = SharpDX.Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
+            var qaz = SharpDX.Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
+            var v = Vector3.Transform(cf, qaz*qel);
+
+            if (!DirectionalLightDirection.Equals(v))
             {
-                DirectionalLightDirection = c; 
+                DirectionalLightDirection = v; 
             }
         }
 
@@ -843,5 +868,18 @@ namespace Dynamo.Controls
         public MeshGeometry3D PerVertexMesh { get; set; }
         public MeshGeometry3D SelectedMesh { get; set; }
         public BillboardText3D Text { get; set; }
+    }
+
+    internal class AngleToRadiansConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
