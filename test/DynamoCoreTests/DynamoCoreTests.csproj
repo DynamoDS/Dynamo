@@ -71,7 +71,6 @@
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="PresetStatesTests.cs" />
-    <Compile Include="SearchMemberGroupTests.cs" />
     <Compile Include="PackageManager\RecordedFileSystem.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />

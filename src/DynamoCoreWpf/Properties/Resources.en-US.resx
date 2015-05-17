@@ -1647,6 +1647,7 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="DesignOptionsWindowTitle" xml:space="preserve">
     <value> Design Options Properties</value>
+    </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>What's New</value>
   </data>

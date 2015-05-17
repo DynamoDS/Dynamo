@@ -776,7 +776,6 @@ namespace Dynamo.Controls
             e.Success = true;
         }
 
-<<<<<<< HEAD
         /// <summary>
         /// Handles the request for the presentation of the design options name prompt
         /// </summary>

@@ -1530,10 +1530,12 @@ namespace Dynamo.Models
         }
 
         
-
+        [DataContract]
 		public class UngroupModelCommand : ModelSpecificRecordableCommand
-		{
+        {
+            #region Public Class Methods
 
+            [JsonConstructor]
             public UngroupModelCommand(string modelGuid) : base(modelGuid) { }
 
             public UngroupModelCommand(Guid modelGuid) : base(modelGuid) { }
