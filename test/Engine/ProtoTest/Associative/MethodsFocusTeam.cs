@@ -1286,7 +1286,7 @@ namespace ProtoTest.Associative
             thisTest.RunScriptSource(code);
             thisTest.Verify("r1", 111);
             thisTest.Verify("r2", 222);
-            thisTest.Verify("r3", 3);
+            thisTest.Verify("r3", 333); // c.fx = 333 will re-execute as it is lhs dependent
             thisTest.Verify("r4", 11);
             thisTest.Verify("r5", 22);
             thisTest.Verify("r6", 33);
