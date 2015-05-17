@@ -693,7 +693,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanAddPresetState()
         {
-            var model = ViewModel.Model;
+            var model = CurrentDynamoModel;
             //create some numbers
             var numberNode1 = new DoubleInput();
             numberNode1.Value = "1";
@@ -703,25 +703,25 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(numberNode1, false);
             model.CurrentWorkspace.AddNode(numberNode2, false);
        
-            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count, 2);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 2);
 
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            ViewModel.Model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.CreatePresetStateFromSelection(
                 "state1",
                 "a state with 2 numbers", IDS);
             //assert that the preset has been created
-            Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.Count(), 1);
-            Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.First().Nodes.Count(), 2);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 1);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.First().Nodes.Count(), 2);
         }
 
         [Test]
         [Category("UnitTests")]
         public void CanDeletePresetState()
         {
-            var model = ViewModel.Model;
+            var model = CurrentDynamoModel;
             //create some numbers
             var numberNode1 = new DoubleInput();
             numberNode1.Value = "1";
@@ -731,24 +731,24 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(numberNode1, false);
             model.CurrentWorkspace.AddNode(numberNode2, false);
 
-            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count, 2);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 2);
 
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            ViewModel.Model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.CreatePresetStateFromSelection(
                 "state1",
                 "a state with 2 numbers", IDS);
             //assert that the preset has been created
-            Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.Count(), 1);
-            Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.First().Nodes.Count(), 2);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 1);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.First().Nodes.Count(), 2);
 
             //delete state
-           var state = ViewModel.CurrentSpace.PresetsCollection.DesignStates.First();
-           ViewModel.Model.CurrentWorkspace.PresetsCollection.RemoveState(state);
+           var state = model.CurrentWorkspace.PresetsCollection.DesignStates.First();
+           model.CurrentWorkspace.PresetsCollection.RemoveState(state);
 
-           Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.Count(), 0);
+           Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 0);
 
         }
 
@@ -756,8 +756,8 @@ namespace Dynamo.Tests
           [Test]
         [Category("UnitTests")]
         public void CanAddAndRestoreState()
-        {    
-            var model = ViewModel.Model;
+        {
+            var model = CurrentDynamoModel;
             //create some numbers
             var numberNode1 = new DoubleInput();
             numberNode1.Value = "1";
@@ -774,15 +774,15 @@ namespace Dynamo.Tests
            ConnectorModel.Make(numberNode1,addNode, 0, 0);
            ConnectorModel.Make(numberNode2,addNode, 0, 1);
 
-           Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count, 3);
-           Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 2);
+           Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+           Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
             //create the first state with the numbers selected
            DynamoSelection.Instance.Selection.Add(numberNode1);
            DynamoSelection.Instance.Selection.Add(numberNode2);
            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
            //create the preset from 2 nodes
-           ViewModel.Model.CurrentWorkspace.CreatePresetStateFromSelection(
+           model.CurrentWorkspace.CreatePresetStateFromSelection(
                "state1",
                "3", IDS);
 
@@ -795,24 +795,24 @@ namespace Dynamo.Tests
            DynamoSelection.Instance.Selection.Add(numberNode2);
            IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
 
-           ViewModel.Model.CurrentWorkspace.CreatePresetStateFromSelection(
+           model.CurrentWorkspace.CreatePresetStateFromSelection(
            "state2",
            "5", IDS);
 
             //now restore state to state 1
-           ViewModel.CurrentSpace.SetWorkspaceToState(ViewModel.CurrentSpace.PresetsCollection.DesignStates.Where(
+           model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.DesignStates.Where(
                x => x.Name == "state1").First());
 
-           ViewModel.HomeSpace.Run();
+           RunCurrentModel();
            Thread.Sleep(250);
               //assert that the value of the add node is 3
            Assert.AreEqual(addNode.CachedValue.Data, 3);
 
            //now restore state to state 2
-           ViewModel.CurrentSpace.SetWorkspaceToState(ViewModel.CurrentSpace.PresetsCollection.DesignStates.Where(
+           model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.DesignStates.Where(
                x => x.Name == "state2").First());
 
-           ViewModel.HomeSpace.Run();
+           RunCurrentModel();
            Thread.Sleep(250);
            //assert that the value of the add node is 5
            Assert.AreEqual(addNode.CachedValue.Data, 5);
