@@ -1012,8 +1012,8 @@ y = 1;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
             Assert.IsTrue(mirror.GetValue("f").DsasmValue.IsNull);
-
-            Assert.IsTrue(mirror.GetValue("p").DsasmValue.IsNull);
+            
+            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 2);
             Assert.IsTrue(mirror.GetValue("q").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("y1").Payload == 3);
