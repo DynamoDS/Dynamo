@@ -6,7 +6,7 @@ using System.Text;
 namespace Dynamo.Extensions
 {
     /// <summary>
-    /// Application-level handles provided to an extension when the 
+    /// Application-level handles provided to an extension when 
     /// Dynamo has started and is ready for interaction
     /// </summary>
     public class ReadyParams
