@@ -199,8 +199,7 @@
                            FontSize="13"
                            Text="{Binding Path=Name}"
                            VerticalAlignment="Center"
-                           Name="CategoryName"
-                           Grid.Column="0">
+                           Name="CategoryName">
                     <TextBlock.Style>
                         <Style>
                             <Style.Triggers>
