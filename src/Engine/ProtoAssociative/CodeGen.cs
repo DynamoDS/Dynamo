@@ -2723,6 +2723,7 @@ namespace ProtoAssociative
                 while (indexNode is ArrayNode)
                 {
                     ArrayNode arrayNode = indexNode as ArrayNode;
+                    localStack = new Stack<AssociativeNode>();
                     DFSEmitSSA_AST(arrayNode.Expr, localStack, ref astlist);
                     tempIndexNode = localStack.Last();
                     if (tempIndexNode is BinaryExpressionNode)
