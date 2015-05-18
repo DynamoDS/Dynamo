@@ -705,18 +705,19 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Traverses the identifierlist argument until class name resolution succeeds or fails.
+        /// Inspects the input identifier list to match all class names with the class used in it
         /// </summary>
         /// <param name="classTable"></param>
-        /// <param name="identifier"></param>
-        /// <returns></returns>
-        public static string[] GetResolvedClassName(ClassTable classTable, AssociativeNode identifier)
+        /// <param name="identifierList">single identifier or identifier list</param>
+        /// <returns>list of fully resolved class names</returns>
+        public static string[] GetResolvedClassName(ClassTable classTable, AssociativeNode identifierList)
         {
-            var identList = identifier as IdentifierListNode;
-            var identifierNode = identifier as IdentifierNode;
-            Validity.Assert(identList != null || identifierNode != null);
+            var identListNode = identifierList as IdentifierListNode;
+            var identifierNode = identifierList as IdentifierNode;
+            Validity.Assert(identListNode != null || identifierNode != null);
 
-            string partialName = identList != null ? GetIdentifierStringUntilFirstParenthesis(identList) : identifier.Name;
+            string partialName = identListNode != null ? 
+                GetIdentifierStringUntilFirstParenthesis(identListNode) : identifierList.Name;
 
             string[] classNames = classTable.GetAllMatchingClasses(partialName);
 
@@ -725,11 +726,11 @@ namespace ProtoCore.Utils
             while (0 == classNames.Length)
             {
                 // Move to the left node
-                AssociativeNode leftNode = identList != null ? identList.LeftNode : identifierNode;
+                AssociativeNode leftNode = identListNode != null ? identListNode.LeftNode : identifierNode;
                 if (leftNode is IdentifierListNode)
                 {
-                    identList = leftNode as IdentifierListNode;
-                    classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identList));
+                    identListNode = leftNode as IdentifierListNode;
+                    classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identListNode));
                 }
                 if (leftNode is IdentifierNode)
                 {
