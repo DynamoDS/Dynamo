@@ -4339,13 +4339,13 @@ y2 = { y1[0].a, y1[1].a };
 {
     for ( i in y1)
     {
-        i.a = 0;        
+        i.a = 0;        // Modifying  the array y1 will re-execute y2
     }
 }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("y2", new Object[] { 1, 2 });
+            thisTest.Verify("y2", new Object[] { 0, 0 });
         }
 
         [Test]
