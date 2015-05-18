@@ -2192,6 +2192,15 @@ namespace Dynamo.Controls
                 case ElementTypes.Packaged:
                     return Resources.PackageTypeShortString;
 
+                case ElementTypes.Packaged | ElementTypes.ZeroTouch:
+                    return Resources.PackageTypeShortString;
+
+                case ElementTypes.Packaged | ElementTypes.CustomNode:
+                    return Resources.PackageTypeShortString;
+
+                case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
+                    return Resources.PackageTypeShortString;
+
                 case ElementTypes.ZeroTouch:
                     return Resources.ZeroTouchTypeShortString;
 

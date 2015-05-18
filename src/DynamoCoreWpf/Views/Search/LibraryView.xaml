@@ -301,7 +301,7 @@
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
                                                             <Setter Property="Visibility"
-                                                                    Value="Hidden" />
+                                                                    Value="Collapsed" />
                                                             <Style.Triggers>
                                                                 <MultiDataTrigger>
                                                                     <MultiDataTrigger.Conditions>
