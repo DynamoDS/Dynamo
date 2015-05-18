@@ -8,7 +8,7 @@ using Autodesk.DesignScript.Geometry;
 namespace Dynamo.Tests
 {   
     [TestFixture]
-    class GeometryDefectTests : DSEvaluationViewModelUnitTest 
+    class GeometryDefectTests : DynamoModelTestBase 
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -27,8 +27,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3996
             // PolyCurve.ByJoinedCurves should be able to accept PolyCurves as an input
             
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\\GeometryDefects\MAGN_3996_InputAsPolyCurvetoJoinCurves.dyn");
 
@@ -37,8 +35,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var polyCurveNodeID = GetPreviewValue("0d02fdfe-adda-404e-958e-e950742a8f1c") as PolyCurve;
             Assert.IsNotNull(polyCurveNodeID);
@@ -57,8 +55,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4578
             // Context CoordinateSystem is incorrect for Cuboids after a transform
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\\GeometryDefects\MAGN_4578_CCSForTransformedCuboid.dyn");
 
@@ -67,8 +63,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var cCsNodeID = GetPreviewValue("5991cebf-b559-44a9-8d93-de0800386f89") as CoordinateSystem;
             Assert.IsNotNull(cCsNodeID);
@@ -88,8 +84,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4924
             // Curves cannot be extracted from many surfaces
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\\GeometryDefects\MAGN_4924_CurveExtractionFromSurface.dyn");
 
@@ -98,8 +92,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(46, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(56, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(46, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(56, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var curvesFromSurface = "754f9095-08dc-4cde-aa68-a0605c441d9e";
             AssertPreviewCount(curvesFromSurface, 48);
@@ -121,8 +115,6 @@ namespace Dynamo.Tests
             // Cutting and pasting Curve.PointAtParameter in run automatically 
             // causes "variable has not yet been defined" warning message 
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
                 @"core\WorkflowTestFiles\\GeometryDefects\MAGN_5029_CopyPasteWarning.dyn");
 
@@ -131,26 +123,26 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             //CGet Curve.PointAtParameter node and copy paste it.
             string nodeID = "de3e5067-d7e2-4e47-aca3-7f2531614892";
-            var pointAtParameterNode = model.CurrentWorkspace.NodeFromWorkspace(nodeID);
+            var pointAtParameterNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(nodeID);
 
             // Copy and paste the PointAtParameter Node
-            model.AddToSelection(pointAtParameterNode);
-            model.Copy(); // Copy the selected node.
-            model.Paste(); // Paste the copied node.
+            CurrentDynamoModel.AddToSelection(pointAtParameterNode);
+            CurrentDynamoModel.Copy(); // Copy the selected node.
+            CurrentDynamoModel.Paste(); // Paste the copied node.
 
             RunCurrentModel();
 
             // check all the nodes and connectors are updated
-            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             // Make sure we are able to get copy pasted PointAtParameter node.
-            var newPointAtPArameterNode = model.CurrentWorkspace.Nodes[4];
+            var newPointAtPArameterNode = CurrentDynamoModel.CurrentWorkspace.Nodes[4];
             var guid = newPointAtPArameterNode.GUID.ToString();
 
             // Checking there is no Warning or Error on node after copy paste.
@@ -174,7 +166,6 @@ namespace Dynamo.Tests
             // Curve.Extend, Curve.ExtendEnd, Curve.ExtendStart returns null for 
             // distance = 0 on NurbsCurves
 
-            DynamoModel model = ViewModel.Model;
 
             string openPath = Path.Combine(TestDirectory,
                 @"core\WorkflowTestFiles\\GeometryDefects\MAGN_5041_NurbsCurveExtend.dyn");
@@ -184,8 +175,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var nurbsCurve = GetPreviewValue("0cd25749-5f49-4e2c-82f7-ac278e35ac7f") as NurbsCurve;
             Assert.IsNotNull(nurbsCurve);
@@ -228,9 +219,8 @@ namespace Dynamo.Tests
             // Unhandled Exception in Dynamo Engine on second run of recursive custom node
 
             string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ChordMarching_customNode02.dyn");
-            DynamoModel model = ViewModel.Model;
             Assert.DoesNotThrow(() => RunModel(openPath));
-            var watchVal = model.CurrentWorkspace.NodeFromWorkspace("d70522b3-b5e0-4ce4-a765-9daf1bd05b44");
+            var watchVal = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d70522b3-b5e0-4ce4-a765-9daf1bd05b44");
             Assert.IsNotNull(watchVal);
 
         }
@@ -241,8 +231,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5155
             // Crash passing polycurve to Curve.DivideByLengthFromParameter
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
     @"core\WorkflowTestFiles\GeometryDefects\MAGN_5155_CrashCurveDivideByLengthFromParameter.dyn");
 
@@ -251,8 +239,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var curves = "0503d40e-812b-47ae-8198-d4ed0ee91c91";
             AssertPreviewCount(curves, 41);
@@ -273,8 +261,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5177
             // Surface and Solid.byLoft ignores guide curve
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\GeometryDefects\MAGN_5177_LofByGuideCurvesForSurfaceAndSolid.dyn");
 
@@ -283,8 +269,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(31, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var surface = GetPreviewValue("3d0b5d5b-4100-442f-b94d-b33184e4829d") as Surface;
             Assert.IsNotNull(surface);
@@ -308,8 +294,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5323
             // List.UniqueItems will not work on lists with null values
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5323_ListUniqueNotWorkingWithNull.dyn");
 
@@ -318,8 +302,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var point = GetPreviewValueAtIndex("7f3fe860-9f4b-4bbf-848f-1a18606eb5f8", 0) as Point;
             // below count will confirm that List.Unique performed and returnd correct number.
@@ -335,12 +319,10 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5365
             // Crash with either Point.Origin or Vector.ZAxis wired to Watch node
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, 
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5365_WrongFunctionPassingToWatchCrashingDynamo.dyn");
 
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            RunCurrentModel();
 
             AssertNoDummyNodes();
 
@@ -356,8 +338,6 @@ namespace Dynamo.Tests
             // List.Scan is not working in attached example. 
             // This is a regression from last release.
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
                 @"core\WorkflowTestFiles\GeometryDefects\MAGN_5397_ListScanWithPolygon.dyn");
 
@@ -366,8 +346,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var finalSolid = GetPreviewValue("7ad36ecb-21f3-41f0-acb9-15017c48a19d") as Solid;
             Assert.IsNotNull(finalSolid);
@@ -380,8 +360,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5407
             // Crash passing polycurve to Curve.DivideByLengthFromParameter
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, 
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5407_GroupByKeyWithListOfPoints.dyn");
 
@@ -390,8 +368,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var groupedObjects = "3c2f5adb-7967-47ca-962a-a4d24aaea8a9";
             AssertPreviewCount(groupedObjects, 2);
@@ -418,8 +396,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5408
             // Few things from Defects are working and few are not, adding tests for Point and Line.
 
-            DynamoModel model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory,
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5408_ListUniqueOnGeometryObjects.dyn");
 
@@ -428,8 +404,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var groupPoints = "de1cd6bd-6afd-4fc5-aefe-ecec6be87a7c";
             AssertPreviewCount(groupPoints, 2);
@@ -458,7 +434,6 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6799
             // Flatten Does Not work With List.Map.
 
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\list\Listmap.dyn");
             RunModel(openPath);
 
@@ -471,18 +446,15 @@ namespace Dynamo.Tests
             var pointY = GetFlattenedPreviewValues("2a5daf0c-1316-4ff0-be16-74e3241eff58");
             Assert.AreEqual(pointY, new object[] { 1, 2, 3, 4, 10, 20, 30, 40 });
 
-
             //get Point.z guid
             var pointZ = GetFlattenedPreviewValues("24b75bda-4e39-48d1-98ec-de103f739567");
-            Assert.AreEqual(pointY, new object[] { 1, 2, 3, 4, 10, 20, 30, 40 });
-            
-
+            Assert.AreEqual(pointZ, new object[] { 1, 2, 3, 4, 10, 20, 30, 40 });
 
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             //get List.Map guid
             string ListMapGuid = "0af8a082-0d22-476f-bc28-e61b4ce01170";  
@@ -497,11 +469,6 @@ namespace Dynamo.Tests
             
             //check the first parameter is not null
             Assert.IsNotNull(levelList[0]);
-            
-          
-
-          
-
 
         }
 

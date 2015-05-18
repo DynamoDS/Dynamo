@@ -285,7 +285,9 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
                             <Button Command="{Binding ClickedCommand}"
-                                    PreviewMouseLeftButtonUp="OnExpanderButtonMouseLeftButtonUp">
+                                    PreviewMouseLeftButtonUp="OnExpanderButtonMouseLeftButtonUp"
+                                    PreviewMouseLeftButtonDown="OnExpanderButtonMouseLeftButtonDown"
+                                    PreviewMouseMove="OnExpanderButtonPreviewMouseMove">
                                 <Button.Focusable>False</Button.Focusable>
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
@@ -547,7 +549,6 @@
                 <TreeView ItemsSource="{Binding BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
                           ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
-                          RequestBringIntoView="OnRequestBringIntoView"
                           Name="CategoryTreeView">
                     <TreeView.Template>
                         <ControlTemplate>

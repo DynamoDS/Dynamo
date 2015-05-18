@@ -733,6 +733,18 @@ It does not contain your graph or any personal data</value>
   <data name="StartPageCode" xml:space="preserve">
     <value>CODE</value>
   </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>RECOVER FROM BACKUP</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>BACKUP</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>Backup location</value>
+  </data>
+  <data name="StartPageOpenAll" xml:space="preserve">
+    <value>Open all</value>
+  </data>
   <data name="StartPageDiscussionForum" xml:space="preserve">
     <value>Discussion forum</value>
   </data>

@@ -50,6 +50,10 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
 
+        // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
+        // called on the view model and the process is not cancelled
+        private bool isPSSCalledOnViewModelNoCancel = false;
+
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
         public DynamoView(DynamoViewModel dynamoViewModel)
@@ -769,7 +773,7 @@ namespace Dynamo.Controls
             e.Success = true;
         }
 
-        private void WindowClosing(object sender, CancelEventArgs e)
+        private bool PerformShutdownSequenceOnViewModel()
         {
             // Test cases that make use of views (e.g. recorded tests) have 
             // their own tear down logic as part of the test set-up (mainly 
@@ -777,7 +781,7 @@ namespace Dynamo.Controls
             // code to verify data much later than the window closing).
             // 
             if (DynamoModel.IsTestMode)
-                return;
+                return false;
 
             var sp = new DynamoViewModel.ShutdownParams(
                 shutdownHost: false,
@@ -789,16 +793,36 @@ namespace Dynamo.Controls
                 //Shutdown wasn't cancelled
                 SizeChanged -= DynamoView_SizeChanged;
                 LocationChanged -= DynamoView_LocationChanged;
+                return true;
             }
             else
             {
                 //Shutdown was cancelled
+                return false;
+            }
+        }
+
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            if (!PerformShutdownSequenceOnViewModel() && !DynamoModel.IsTestMode)
+            {
                 e.Cancel = true;
+            }
+            else
+            {
+                isPSSCalledOnViewModelNoCancel = true;
             }
         }
 
         private void WindowClosed(object sender, EventArgs e)
         {
+            //There will be chances that WindowsClosed is called but WindowClosing is not called.
+            //This is to ensure PerformShutdownSequence is always called on the view model.
+            if (!isPSSCalledOnViewModelNoCancel)
+            {
+                PerformShutdownSequenceOnViewModel();
+            }
+
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 

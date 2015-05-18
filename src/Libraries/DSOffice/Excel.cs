@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
-
+using DynamoServices;
 using Autodesk.DesignScript.Runtime;
+using ProtoCore.DSASM;
+using ProtoCore.Properties;
 
 namespace DSOffice
 {
@@ -374,6 +377,18 @@ namespace DSOffice
                         {
                             output[i, j] = "";
                         }
+                        else if (item is StackValue)
+                        {
+                            if (((StackValue) item).IsPointer)
+                            {
+                                string message = string.Format(Resources.kMethodResolutionFailureWithTypes, 
+                                    "Excel.WriteToFile", "_SingleFunctionObject");
+                                LogWarningMessageEvents.OnLogWarningMessage(message);
+                                return null;
+                            }
+
+                            output[i, j] = item.ToString();
+                        }
                         else
                         {
                             output[i, j] = item.ToString();
@@ -457,6 +472,9 @@ namespace DSOffice
             int numRows, numColumns;
 
             object[,] rangeData = ConvertToDimensionalArray(data, out numRows, out numColumns);
+
+            if (rangeData == null)
+                return this;
 
             var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
             var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];

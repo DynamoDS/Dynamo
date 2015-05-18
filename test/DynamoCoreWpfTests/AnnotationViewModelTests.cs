@@ -650,6 +650,41 @@ namespace DynamoCoreWpfTests
 
         }
 
+        [Test]
+        [Category("DynamoUI")]
+        public void TestCrossSelectingGroups()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+
+            //Select the node for group
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            //Create a Group around that node
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault();
+
+            //Check if the group is created
+            Assert.IsNotNull(annotation);
+
+            //Clear the selection
+            DynamoSelection.Instance.ClearSelection();
+
+            //Get the Rect for the group
+            var rect = annotation.Rect;
+            ViewModel.CurrentSpaceViewModel.SelectInRegion(rect,true);
+
+            //Check whether group is selected
+            Assert.AreEqual(true, annotation.IsSelected);
+
+            //Check whether the model is selected
+            Assert.AreEqual(true,addNode.IsSelected);
+        }
+
         #endregion
     }
 }
