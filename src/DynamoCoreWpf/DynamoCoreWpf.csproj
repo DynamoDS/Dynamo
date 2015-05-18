@@ -1146,6 +1146,7 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\drag_move.cur" />
     <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-next-prev-states.png" />

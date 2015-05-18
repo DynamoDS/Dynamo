@@ -205,6 +205,7 @@ namespace Dynamo.Models
         void BeginConnection(Guid nodeId, int portIndex, PortType portType)
         {
             bool isInPort = portType == PortType.Input;
+            activeStartPort = null;
 
             var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null)

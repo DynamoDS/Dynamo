@@ -110,6 +110,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DSCoreNodesImages.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -117,15 +118,25 @@
     <EmbeddedResource Include="Properties\Resources.en-US.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
+  
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+	<!-- Get System.Drawing.dll -->
+	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    	</GetReferenceAssemblyPaths>
+	
+	<!-- Get assembly -->
+	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
+	</GetAssemblyIdentity>
+	
+	<!-- Generate customization dll -->
+	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    	<AL TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesImages.resources" OutputAssembly="$(OutDir)DSCoreNodes.customization.dll" Version="%(AssemblyInfo.Version)" />
 
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
+

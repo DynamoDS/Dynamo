@@ -2,12 +2,14 @@
 using System.IO;
 using System.Linq;
 using Dynamo.DSEngine;
+using Dynamo.Models;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class DSLibraryTest : DSEvaluationViewModelUnitTest
+    class DSLibraryTest : DynamoModelTestBase
     {
         private LibraryServices libraryServices;
 
@@ -20,7 +22,7 @@ namespace Dynamo.Tests
         public override void Setup()
         {
             base.Setup();
-            libraryServices = ViewModel.Model.LibraryServices;
+            libraryServices = CurrentDynamoModel.LibraryServices;
         }
 
         [Test]
@@ -38,7 +40,7 @@ namespace Dynamo.Tests
             bool libraryLoaded = false;
 
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
-            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath); 
+            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
 
             string libraryPath = Path.Combine(TestDirectory, @"core\library\Dummy.ds");
             libraryServices.ImportLibrary(libraryPath);
