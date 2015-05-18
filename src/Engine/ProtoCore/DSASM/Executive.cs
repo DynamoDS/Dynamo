@@ -1491,6 +1491,7 @@ namespace ProtoCore.DSASM
                 node.isCyclic = true;
                 SetGraphNodeStackValueNull(node);
                 node.dependentList.Clear();
+                node.isActive = false;
             }
             Properties.nodeIterations = new List<AssociativeGraph.GraphNode>();
         }
@@ -1625,7 +1626,6 @@ namespace ProtoCore.DSASM
                 // Get the next pc to jump to
                 nextPC = reachableGraphNodes[0].updateBlock.startpc;
                 LX = StackValue.BuildInt(nextPC);
-                //foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes
                 for (int n = 0; n < reachableGraphNodes.Count; ++n)
                 {
                     AssociativeGraph.GraphNode gnode = reachableGraphNodes[n];
