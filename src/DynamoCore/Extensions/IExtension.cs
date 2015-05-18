@@ -16,7 +16,7 @@ namespace Dynamo.Extensions
         /// There may be multiple instances of the same type, but the application 
         /// will *not* allow two instances to coexist with the same id.
         /// </summary>
-        Guid Id { get; }
+        string UniqueId { get; }
 
         /// <summary>
         /// A name for the Extension.  This is used for more user-readable logging.
