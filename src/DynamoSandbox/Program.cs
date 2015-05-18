@@ -94,30 +94,12 @@ namespace DynamoSandbox
             //
             var locale = string.Empty;
 
-            // Running Dynamo sandbox with a dyn/dyf file:
-            // DynamoSandbox.exe "C:\file path\file.dyn"
-            //
-            var startUpDynFilePath = string.Empty;
-
             for (var i = 0; i < args.Length; ++i)
             {
                 var arg = args[i];
-
-                // Looking for '/c'
                 if (arg.Length != 2 || (arg[0] != '/'))
                 {
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(arg) && File.Exists(arg))
-                        {
-                            var extension = Path.GetExtension(arg).ToLower();
-                            if (extension.Equals(".dyn") || extension.Equals(".dyf"))
-                                startUpDynFilePath = arg;
-                        }
-                    }
-                    catch { }
-
-                    continue;
+                    continue; // Not a "/x" type of command switch.
                 }
 
                 switch (arg[1])
@@ -140,14 +122,12 @@ namespace DynamoSandbox
             return new CommandLineArguments
             {
                 Locale = locale,
-                CommandFilePath = commandFilePath,
-                StartUpDynFilePath = startUpDynFilePath
+                CommandFilePath = commandFilePath
             };
         }
 
         internal string Locale { get; set; }
         internal string CommandFilePath { get; set; }
-        internal string StartUpDynFilePath { get; set; }
     }
 
     internal class Program
