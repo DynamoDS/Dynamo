@@ -228,6 +228,7 @@ namespace Dynamo.ViewModels
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
                 RaisePropertyChanged("BrowserRootCategories");
             };
+            Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
             if (dynamoViewModel != null)
@@ -304,6 +305,17 @@ namespace Dynamo.ViewModels
 
                 DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }
+        }
+
+        internal void UpdateEntry(NodeSearchElement entry)
+        {
+            var rootNode = libraryRoot;
+            foreach (var categoryName in entry.Categories)
+            {
+                rootNode = rootNode.SubCategories.Where(item => item.Name == categoryName).FirstOrDefault();
+            }
+            var entryVM = rootNode.Entries.Where(foundEntryVM => foundEntryVM.Name == entry.Name).FirstOrDefault();
+            entryVM.Model = entry;
         }
 
         internal void RemoveEntry(NodeSearchElement entry)
