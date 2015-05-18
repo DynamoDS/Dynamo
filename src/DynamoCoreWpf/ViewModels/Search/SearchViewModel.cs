@@ -386,10 +386,6 @@ namespace Dynamo.ViewModels
                 if (parent is ClassesNodeCategoryViewModel && parent.SubCategories.Contains(target))
                     return;
 
-                // Do not continue if parent is root library tree category (i.e. Top).
-                if (!treeStack.Any())
-                    return;
-
                 // Do not continue as soon as our target is not class.
                 if (target.SubCategories.Any())
                     return;

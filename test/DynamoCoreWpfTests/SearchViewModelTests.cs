@@ -414,49 +414,6 @@ namespace Dynamo.Tests
             Assert.AreEqual("OneMore", category.Name);
 
         }
-        //                   Top
-        //                    │
-        //       ┌─────────┰─┴───────┰─────────┐
-        //    ZCategory  AMember    BMember    CMember     
-        //       │          
-        //    Classes       
-        //       │          
-        //    SubClass     
-        //       │           
-        //     Member      
-        [Test]
-        [Category("UnitTests")]
-        public void InsertEntry12SeveralMembersInAlphabeticalOrder()
-        {
-            var elementVM = CreateCustomNodeViewModel("BMember", "TopCategory");
-            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
-
-            elementVM = CreateCustomNodeViewModel("Member", "TopCategory.ZCategory.SubClass");
-            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
-
-            elementVM = CreateCustomNodeViewModel("CMember", "TopCategory");
-            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
-
-            elementVM = CreateCustomNodeViewModel("AMember", "TopCategory");
-            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
-
-            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
-                 Items.ElementAt(0);
-            Assert.AreEqual("ZCategory", category.Name);
-
-            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
-                 Items.ElementAt(1);
-            Assert.AreEqual("AMember", category.Name);
-
-            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
-                 Items.ElementAt(2);
-            Assert.AreEqual("BMember", category.Name);
-
-            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
-                 Items.ElementAt(3);
-            Assert.AreEqual("CMember", category.Name);
-
-        }
 
         [Test]
         [Category("UnitTests")]
@@ -470,14 +427,14 @@ namespace Dynamo.Tests
 
             var listOfMembers = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").Items;
 
-            var index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember", true);
+            var index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember");
 
             Assert.AreEqual(1, index);
 
             elementVM = CreateCustomNodeViewModel("BMember", "TopCategory");
             viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
 
-            index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember", true);
+            index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember");
 
             Assert.AreEqual(1, index);
         }

@@ -477,7 +477,7 @@ namespace Dynamo.Wpf.ViewModels
                 }
 
                 var list = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel));
-                var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name, entry is NodeSearchElementViewModel);
+                var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name);
 
                 // Nodecategories(i.e. namespaces) should be before members.
                 if (entry is NodeSearchElementViewModel)
@@ -522,7 +522,7 @@ namespace Dynamo.Wpf.ViewModels
         public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
         {
             var list = SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel));
-            var nextLargerItemIndex = FindInsertionPointByName(list, newSubCategory.Name, false);
+            var nextLargerItemIndex = FindInsertionPointByName(list, newSubCategory.Name);
 
             if (nextLargerItemIndex >= 0)
             {
@@ -534,45 +534,16 @@ namespace Dynamo.Wpf.ViewModels
                 SubCategories.Add(newSubCategory);
         }
 
-        internal static int FindInsertionPointByName(IEnumerable<ISearchEntryViewModel> list, string name,
-            bool IsEntry)
+        internal static int FindInsertionPointByName(IEnumerable<ISearchEntryViewModel> list, string name)
         {
             var nextLargerItemIndex = -1;
             foreach (var item in list)
             {
-                // Compare names. E.g. "B" > "A", "Point" > "Geometry"
                 if (string.Compare(item.Name, name, StringComparison.Ordinal) >= 0)
                 {
-                    // For the first time set index to the first found larger item.
-                    if (nextLargerItemIndex < 0)
-                    {
-                        nextLargerItemIndex = list.ToList().IndexOf(item);
-                        // If larger item is node, then subtract the number of categories.
-                        if(item is NodeSearchElementViewModel)
-                            nextLargerItemIndex -= list.Count(cat => cat is NodeCategoryViewModel);
-                    }
-                    // If item(for which we are looking index) is category, Then we are done here.
-                    if (!IsEntry) break;
+                    nextLargerItemIndex = list.ToList().IndexOf(item);
+                    break;
                 }
-                else 
-                    // If index was found among categories and 
-                    // if item(for which we are looking index) is node, 
-                    // we have to add +1.
-                    // E.g.
-                    //           Top
-                    //            |
-                    //     ┌──────┴─────┐
-                    // ZCategory     AMember
-                    //
-                    // We are trying to add BMember.
-                    //
-                    // ZCategory > BMember => nextLargerItemIndex = ZCategory.index (it is 0)
-                    // AMember < BMember => nextLargerItemIndex++ (it is 1 now)
-                    // After last iteration answer will be 1.
-                    // If we insert entry, we are adding number of categories (look in AddToItems).
-                    // Final index will be 2 (nextLargerItemIndex + Subcategories.Count).
-                    if (item is NodeSearchElementViewModel && nextLargerItemIndex >= 0)
-                    nextLargerItemIndex++;
             }
             return nextLargerItemIndex;
         }
