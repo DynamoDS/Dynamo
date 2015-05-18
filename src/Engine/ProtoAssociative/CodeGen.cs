@@ -8087,7 +8087,7 @@ namespace ProtoAssociative
 
                 if (core.Options.GenerateSSA)
                 {
-                    if (!graphNode.IsSSANode())
+                    if (!graphNode.IsSSANode() && !ProtoCore.AssociativeEngine.Utils.IsTempVarLHS(graphNode))
                     {
                         // This is the last expression in the SSA'd expression
                         // Backtrack and assign the this last final assignment graphnode to its associated SSA graphnodes
@@ -8860,7 +8860,7 @@ namespace ProtoAssociative
 
                     //if (core.Options.GenerateSSA)
                     {
-                        if (!graphNode.IsSSANode())
+                        if (!graphNode.IsSSANode() && !ProtoCore.AssociativeEngine.Utils.IsTempVarLHS(graphNode))
                         {
                             // This is the last expression in the SSA'd expression
                             // Backtrack and assign the this last final assignment graphnode to its associated SSA graphnodes

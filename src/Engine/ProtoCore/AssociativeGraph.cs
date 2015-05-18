@@ -83,6 +83,12 @@ namespace ProtoCore.AssociativeEngine
                             continue;
                         }
 
+                        bool nodesAreSelfModifyingIdentList = AreNodesSelfModifyingAndEqualIdentList(currentNode, gnode);
+                        if (nodesAreSelfModifyingIdentList)
+                        {
+                            continue;
+                        }
+
                         bool canUpdate = DoesExecutingNodeAffectOtherNode(currentNode, gnode);
                         if (!canUpdate)
                         {
@@ -112,8 +118,11 @@ namespace ProtoCore.AssociativeEngine
         public static bool IsTempVarLHS(AssociativeGraph.GraphNode graphNode)
         {
             Validity.Assert(graphNode != null);
-            Validity.Assert(graphNode.updateNodeRefList.Count > 0);
-            return graphNode.updateNodeRefList[0].nodeList[0].symbol.name.Equals(Constants.kTempVar);
+            if(graphNode.updateNodeRefList.Count > 0)
+            {
+                return graphNode.updateNodeRefList[0].nodeList[0].symbol.name.Equals(Constants.kTempVar);
+            }
+            return false;
         }
 
         /// <summary>
@@ -206,6 +215,31 @@ namespace ProtoCore.AssociativeEngine
 
             bool areLHSEqual = AreLHSEqual(varAssignNode, assignNode);  
             return areLHSEqual;
+        }
+
+
+        /// <summary>
+        /// Check if both nodes are self modifying and have equal lhs
+        /// Example cases:
+        ///     x.y = x.y + 1 is equal to x.y = x.y + 1
+        ///     x.y = x.y + 1 is equal to x.y = a + x.y + 1
+        /// </summary>
+        /// <param name="varAssignNode"></param>
+        /// <param name="inspectNode"></param>
+        /// <returns></returns>
+        private static bool AreNodesSelfModifyingAndEqualIdentList(AssociativeGraph.GraphNode varAssignNode, AssociativeGraph.GraphNode inspectNode)
+        {
+            AssociativeGraph.GraphNode node1 = varAssignNode.lastGraphNode;
+            AssociativeGraph.GraphNode node2 = inspectNode.lastGraphNode;
+
+            bool isUpdateable = node1 != null && node2 != null;
+            if (!isUpdateable)
+            {
+                return false;
+            }
+
+            // Check if their lhs are equal identlists
+            return AreLHSEqualIdentList(node1, node2);
         }
 
         /// <summary>
