@@ -329,7 +329,7 @@
         </StackPanel>
 
         <Popup Name="IncanvasSearch"
-               StaysOpen="False"
+               StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
                Placement="MousePoint"

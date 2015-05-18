@@ -500,6 +500,8 @@ namespace Dynamo.Views
             {
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
             }
+
+            IncanvasSearch.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
