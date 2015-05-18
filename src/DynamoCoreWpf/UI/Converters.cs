@@ -2175,4 +2175,26 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class GroupZoomToBooleanConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var zoom = System.Convert.ToDouble(values[0]);
+            var fontsize = System.Convert.ToDouble(values[1]);
+
+            var factor = zoom * fontsize;
+            if (factor < 7.0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

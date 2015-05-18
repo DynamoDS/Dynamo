@@ -85,6 +85,7 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AnnotationViewModelTests.cs" />
+    <Compile Include="AnnotationViewTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
     <Compile Include="DropDownTests.cs" />
