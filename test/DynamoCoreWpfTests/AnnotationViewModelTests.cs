@@ -51,6 +51,15 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("DynamoUI")]
+        public void CanCreateGroupIfNoModelsAreSelectedInTheCanvas()
+        {
+            //Check whether Create Group is enabled in a blank canvas.
+            Assert.AreEqual(false, ViewModel.CanAddAnnotation(null));
+        }
+
+
+        [Test]
+        [Category("DynamoUI")]
         public void CanCreateGroupIfANodeIsAlreadyInAGroup()
         {
             //Create a Node
