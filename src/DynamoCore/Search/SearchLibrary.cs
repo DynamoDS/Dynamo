@@ -32,7 +32,20 @@ namespace Dynamo.Search
         /// <param name="entry"></param>
         public void Update(TEntry entry)
         {
-            Remove(entry);
+            Dictionary<string, double> keys;
+            if (entryDictionary.TryGetValue(entry, out keys)) // Found the entry to update.
+            {
+                keys[entry.Name.ToLower()] = 1.0;
+                keys[entry.Description.ToLower()] = 0.1;
+
+                foreach (var tag in entry.SearchTags.Select(x => x.ToLower()))
+                    keys[tag] = 0.5;
+
+                OnEntryUpdated(entry);
+                return; // Entry updated.
+            }
+
+            // Entry could not be found, add it into the search collection.
             Add(entry);
         }
 
