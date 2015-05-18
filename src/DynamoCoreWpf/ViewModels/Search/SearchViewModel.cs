@@ -312,9 +312,19 @@ namespace Dynamo.ViewModels
             var rootNode = libraryRoot;
             foreach (var categoryName in entry.Categories)
             {
-                rootNode = rootNode.SubCategories.Where(item => item.Name == categoryName).FirstOrDefault();
+                var tempNode = rootNode.SubCategories.FirstOrDefault(item => item.Name == categoryName);
+                // Root node can be null, if there is classes-viewmodel between updated entry and current category.
+                if (tempNode == null)
+                {
+                    // Get classes.
+                    var classes = rootNode.SubCategories.FirstOrDefault();
+                    // Search in classes.
+                    tempNode = classes.SubCategories.FirstOrDefault(item => item.Name == categoryName);
+                }
+
+                rootNode = tempNode;
             }
-            var entryVM = rootNode.Entries.Where(foundEntryVM => foundEntryVM.Name == entry.Name).FirstOrDefault();
+            var entryVM = rootNode.Entries.FirstOrDefault(foundEntryVM => foundEntryVM.Name == entry.Name);
             entryVM.Model = entry;
         }
 
