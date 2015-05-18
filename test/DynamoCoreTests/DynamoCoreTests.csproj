@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
+    <Compile Include="AsyncTaskExtensionsTests.cs" />
     <Compile Include="CallsiteTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
     <Compile Include="DSEvaluationUnitTestBase.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="PackageManager\RecordedFileSystem.cs" />
+    <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />

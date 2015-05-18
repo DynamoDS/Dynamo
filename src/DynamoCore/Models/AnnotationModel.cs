@@ -246,7 +246,7 @@ namespace Dynamo.Models
                         {
                             if (overlap.Rect.Bottom - region.Bottom > 0)
                             {
-                                this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize;
+                                this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize + ExtendYHeight;
                             }
                             region.Height = this.Height;
                         }

@@ -1033,25 +1033,19 @@ namespace Dynamo.Tests
 
 		}
 
-        // NOTE: This test itself increases the memory consumption by 2.1 GB.
-        // Temporary disabling it so that the build server can continue...
-        [Test, Category("Failure")]
-        public void LaceLongest_ListWith10000Element()
-		{
-			string openPath = Path.Combine(TestDirectory, @"core\list\LaceLongest_ListWith10000Element.dyn");
-			RunModel(openPath);
+        [Test]
+        public void DSCore_LaceLongest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\DSCore_LaceLongest.dyn");
+            RunModel(openPath);
 
-			// check all the nodes and connectors are loaded
-			Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
-			Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-			Dictionary<int, object> validationData2 = new Dictionary<int, object>()
-			{
-				{1000,2001},
-			};
-			SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
-
-		}
+            var validationData2 = new Dictionary<int, object>() { { 10, 21 } };
+            SelectivelyAssertPreviewValues("25daa241-d8a4-4e74-aec1-6068358babf7", validationData2);
+        }
 
 		#endregion
 
