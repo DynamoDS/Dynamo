@@ -33,8 +33,11 @@
             <Style x:Key="ListBoxItemStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                             Handler="OnMouseLeftButtonDown" />
+                <Setter Property="Background"
+                        Value="{StaticResource ClassButtonClickedBackground}" />
+
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="OnMouseLeftButtonUp" />
                 <EventSetter Event="KeyDown"
                              Handler="OnMemberButtonKeyDown" />
                 <EventSetter Event="MouseEnter"

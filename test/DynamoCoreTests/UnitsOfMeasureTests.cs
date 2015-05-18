@@ -682,7 +682,7 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class ViewModelUnitsOfMeasureDynTests : DSEvaluationViewModelUnitTest
+    internal class ViewModelUnitsOfMeasureDynTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {

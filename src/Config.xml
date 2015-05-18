@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AnalyseParams>
 	<Executable><!-- Required.   -->C:\Program Files (x86)\NUnit 2.6.2\bin\nunit-console.exe</Executable>
-	<Arguments> AnalysisTests.dll DataBridgeTests.dll DSCoreNodesTests.dll DynamoServicesTests.dll DynamoPythonTests.dll DynamoMSOfficeTests.dll DynamoCoreTests.dll DynamoUtilitiesTests.dll IntegrationTests.dll   WorkflowTests.dll /noshadow /xml=nunit-result.xml</Arguments>
+	<Arguments> AnalysisTests.dll DataBridgeTests.dll DynamoCoreWpfTests.dll DSCoreNodesTests.dll DynamoServicesTests.dll DynamoPythonTests.dll DynamoMSOfficeTests.dll DynamoCoreTests.dll DynamoUtilitiesTests.dll IntegrationTests.dll   ProtoTest.dll WorkflowTests.dll --labels=On /noshadow /exclude:Failure /xml=nunit-result.xml</Arguments> 
 	<WorkingDir>..\bin\AnyCPU\Release\</WorkingDir>
 	<Output>Coverage.html</Output> <!-- Change the value to html-->
 	<ReportType>html</ReportType><!-- Change the value to html -->
+<Filters>
+<ExcludeFilters>
+<FilterEntry>
+<ModuleMask>*Test*</ModuleMask>
+</FilterEntry>
+<FilterEntry>
+<ModuleMask>*FFITarget*</ModuleMask>
+</FilterEntry>
+</ExcludeFilters>
+</Filters>
 </AnalyseParams>

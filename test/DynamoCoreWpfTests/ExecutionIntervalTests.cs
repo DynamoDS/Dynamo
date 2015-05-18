@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using Dynamo.Tests;
+﻿using System.IO;
 using NUnit.Framework;
+using Dynamo.Tests;
 
-namespace Dynamo.Tests
+namespace DynamoCoreWpfTests 
 {
     class ExecutionIntervalTests : DynamoViewModelUnitTest
     {

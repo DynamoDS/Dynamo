@@ -1,29 +1,26 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
+
+using Dynamo.Selection;
+
 using NUnit.Framework;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Models;
+
 
 namespace Dynamo.Tests
 {
     [Category("NodeToCode")]
-    class NodeToCodeTest : DynamoViewModelUnitTest
+    class NodeToCodeTest : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
             base.GetLibrariesToPreload(libraries);
-        }
-
-        public void OpenModel(string relativeFilePath)
-        {
-            string openPath = Path.Combine(TestDirectory, relativeFilePath);
-            ViewModel.OpenCommand.Execute(openPath);
         }
 
         [Test]
@@ -34,7 +31,7 @@ namespace Dynamo.Tests
             //
             // 1 -> + -> 2
             OpenModel(@"core\node2code\partition1.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>();
             var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
         }
@@ -49,7 +46,7 @@ namespace Dynamo.Tests
             // |              ^
             // +--------------+
             OpenModel(@"core\node2code\partition2.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>();
             var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
             foreach (var group in groups)
@@ -72,7 +69,7 @@ namespace Dynamo.Tests
             // |         ^
             // +--> 2----+
             OpenModel(@"core\node2code\partition3.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>();
             var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
             var group = groups.Where(g => g.Count == 2).First();
@@ -89,7 +86,7 @@ namespace Dynamo.Tests
             // ^           |
             // +-----------+
             OpenModel(@"core\node2code\partition4.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>();
             var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 1);
             var group = groups.First();
@@ -107,7 +104,7 @@ namespace Dynamo.Tests
             // 2 ----> x --> 5  
             // 3
             OpenModel(@"core\node2code\partition5.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.Where(n => n.NickName != "X");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(n => n.NickName != "X");
             var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
 
@@ -139,8 +136,8 @@ namespace Dynamo.Tests
             //
             //    a = 3;
             OpenModel(@"core\node2code\sameNames1.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             // We should get 3 ast nodes, but their order is not important. 
@@ -169,8 +166,8 @@ namespace Dynamo.Tests
             //
             //    a = 3;
             OpenModel(@"core\node2code\sameNames2.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             // We should get 3 ast nodes, but their order is not important. 
@@ -197,8 +194,8 @@ namespace Dynamo.Tests
             //
             //    a = 2;
             OpenModel(@"core\node2code\sameNames3.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.True(result != null && result.AstNodes != null && result.AstNodes.Count() == 3);
@@ -227,8 +224,8 @@ namespace Dynamo.Tests
             //    a1 = 4;
             //    a2 = a + a1;
             OpenModel(@"core\node2code\sameNames4.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.True(result != null && result.AstNodes != null && result.AstNodes.Count() == 6);
@@ -257,8 +254,8 @@ namespace Dynamo.Tests
             //  
             //   x = 1; --> a[x][x] = 2;
             OpenModel(@"core\node2code\sameName5.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.True(result != null && result.AstNodes != null && result.AstNodes.Count() == 3);
@@ -286,8 +283,8 @@ namespace Dynamo.Tests
             //    3 
             //    t2 = 4;
             OpenModel(@"core\node2code\tempVariable1.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.True(result != null && result.AstNodes != null && result.AstNodes.Count() == 4);
@@ -316,8 +313,8 @@ namespace Dynamo.Tests
             //    3;
             //    4;
             OpenModel(@"core\node2code\tempVariable2.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             Assert.True(result != null && result.AstNodes != null);
@@ -338,8 +335,8 @@ namespace Dynamo.Tests
             // 1 x 
             // 2 y
             OpenModel(@"core\node2code\tempVariable3.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -358,7 +355,7 @@ namespace Dynamo.Tests
             var ast = AstFactory.BuildBinaryExpression(lhs, functionCall, ProtoCore.DSASM.Operator.assign);
 
             NodeToCodeUtils.ReplaceWithUnqualifiedName(
-                ViewModel.Model.EngineController.LibraryServices.LibraryManagementCore, 
+                CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore, 
                 new [] { ast });
 
             Assert.IsTrue(ast.RightNode.ToString().Equals("Point.ByCoordinates(1, 2)"));
@@ -369,8 +366,8 @@ namespace Dynamo.Tests
         {
             // Point.ByCoordinates(1,2); 
             OpenModel(@"core\node2code\unqualifiedName1.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -388,8 +385,8 @@ namespace Dynamo.Tests
         {
             // 1 -> Point.ByCoordinates(x, y); 
             OpenModel(@"core\node2code\unqualifiedName2.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -407,8 +404,8 @@ namespace Dynamo.Tests
         {
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName3.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -426,8 +423,8 @@ namespace Dynamo.Tests
         {
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName4.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -448,8 +445,8 @@ namespace Dynamo.Tests
         public void TestUnqualifiedNameReplacer6()
         {
             OpenModel(@"core\node2code\unqualifiedName5.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -467,8 +464,8 @@ namespace Dynamo.Tests
         {
             // 1 -> a -> x
             OpenModel(@"core\node2code\workflow1.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -494,59 +491,56 @@ namespace Dynamo.Tests
             //                             |---------------------------+ 
             // 2 -> Point.ByCoordinates ---+
             OpenModel(@"core\node2code\workflow2.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
 
-            ViewModel.SelectAll(null);
+            SelectAll(nodes);
             var command = new DynamoModel.ConvertNodesToCodeCommand();
-            ViewModel.ExecuteCommand(command);
+            CurrentDynamoModel.ExecuteCommand(command);
 
-            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 2);
-            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 2);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 2);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 2);
 
             var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
-            ViewModel.ExecuteCommand(undo);
+            CurrentDynamoModel.ExecuteCommand(undo);
 
-            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 6);
-            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 6);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 6);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 6);
         }
 
         [Test]
         public void TestBasicNode2CodeWorkFlow3()
         {
             OpenModel(@"core\node2code\workflow3.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
 
-            ViewModel.SelectAll(null);
+            SelectAll(nodes);
             var command = new DynamoModel.ConvertNodesToCodeCommand();
-            ViewModel.ExecuteCommand(command);
+            CurrentDynamoModel.ExecuteCommand(command);
 
-            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 3);
-            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 3);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 3);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 3);
         }
 
         [Test]
         public void TestBasicNode2CodeWorkFlow4()
         {
             OpenModel(@"core\node2code\workflow4.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
 
-            ViewModel.SelectAll(null);
+            SelectAll(nodes);
             var command = new DynamoModel.ConvertNodesToCodeCommand();
-            ViewModel.ExecuteCommand(command);
+            CurrentDynamoModel.ExecuteCommand(command);
 
-            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 3);
-            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 3);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Connectors.Count() == 3);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.Count == 3);
         }
 
         [Test]
         public void TestShortName1()
         {
             OpenModel(@"core\node2code\shortName1.dyn");
-            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
-            var engine = ViewModel.Model.EngineController;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
 
             var result = engine.ConvertNodesToCode(nodes, nodes);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
@@ -557,6 +551,12 @@ namespace Dynamo.Tests
 
             Assert.IsNotNull(expr);
             Assert.IsTrue(expr.RightNode.ToString().Equals("Point.ByCoordinates(t1, 0)"));
+        }
+
+        private void SelectAll(IEnumerable<NodeModel> nodes)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele));
         }
     }
 }

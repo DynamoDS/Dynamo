@@ -233,7 +233,7 @@ namespace DSCore
 
         public override string ToString()
         {
-            return string.Format("Color: Red={0}, Green={1}, Blue={2}, Alpha={3}", Red, Green, Blue, Alpha);
+            return string.Format("Color(Red = {0}, Green = {1}, Blue = {2}, Alpha = {3})", Red, Green, Blue, Alpha);
         }
 
         [IsVisibleInDynamoLibrary(false)]
