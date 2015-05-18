@@ -77,7 +77,7 @@ namespace Dynamo.Models
 
             // legacy command, hold on to your butts
             var name = command.Name;
-            var nodeId = command.NodeId;
+            var nodeId = command.ModelGuids.First();
 
             // find nodes with of the same type with the same GUID
             var query = CurrentWorkspace.Nodes.Where(n => n.GUID.Equals(nodeId) && n.Name.Equals(name));
@@ -141,14 +141,14 @@ namespace Dynamo.Models
                 command.X,
                 command.Y,
                 command.NoteText,
-                command.NodeId);
+                command.ModelGuids.First());
 
             CurrentWorkspace.RecordCreatedModel(noteModel);
         }
 
         void CreateAnnotationImpl(CreateAnnotationCommand command)
         {
-            AnnotationModel annotationModel = currentWorkspace.AddAnnotation(command.AnnotationText, command.AnnotationId);
+            AnnotationModel annotationModel = currentWorkspace.AddAnnotation(command.AnnotationText, command.ModelGuids.First());
             
             CurrentWorkspace.RecordCreatedModel(annotationModel);
         }
@@ -156,32 +156,35 @@ namespace Dynamo.Models
         void SelectModelImpl(SelectModelCommand command)
         {
             // Empty ModelGuid means clear selection.
-            if (command.ModelGuid == Guid.Empty)
+            if (!command.ModelGuids.Any() || (command.ModelGuids.Count() == 1 && command.ModelGuids.First() == Guid.Empty))
             {
                 DynamoSelection.Instance.ClearSelection();
                 return;
             }
 
-            ModelBase model = CurrentWorkspace.GetModelInternal(command.ModelGuid);
-
-            if (false == model.IsSelected)
+            foreach (var guid in command.ModelGuids)
             {
-                if (!command.Modifiers.HasFlag(ModifierKeys.Shift))
-                    DynamoSelection.Instance.ClearSelection();
+                ModelBase model = CurrentWorkspace.GetModelInternal(guid);
 
-                if (!DynamoSelection.Instance.Selection.Contains(model))
-                    DynamoSelection.Instance.Selection.Add(model);
-            }
-            else
-            {
-                if (command.Modifiers.HasFlag(ModifierKeys.Shift))
-                    DynamoSelection.Instance.Selection.Remove(model);
+                if (!model.IsSelected)
+                {
+                    if (!command.Modifiers.HasFlag(ModifierKeys.Shift) && command.ModelGuids.Count() == 1)
+                        DynamoSelection.Instance.ClearSelection();
+
+                    if (!DynamoSelection.Instance.Selection.Contains(model))
+                        DynamoSelection.Instance.Selection.Add(model);
+                }
+                else
+                {
+                    if (command.Modifiers.HasFlag(ModifierKeys.Shift))
+                        DynamoSelection.Instance.Selection.Remove(model);
+                }
             }
         }
 
         void MakeConnectionImpl(MakeConnectionCommand command)
         {
-            Guid nodeId = command.NodeId;
+            Guid nodeId = command.ModelGuids.First();
 
             switch (command.ConnectionMode)
             {
@@ -281,14 +284,14 @@ namespace Dynamo.Models
         void DeleteModelImpl(DeleteModelCommand command)
         {
             var modelsToDelete = new List<ModelBase>();
-            if (command.ModelGuid != Guid.Empty)
-            {
-                modelsToDelete.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
-            }
-            else
+            if (!command.ModelGuids.Any() || command.ModelGuids.Count() == 1 && command.ModelGuids.First() == Guid.Empty)
             {
                 // When nothing is specified then it means all selected models.
                 modelsToDelete.AddRange(DynamoSelection.Instance.Selection.OfType<ModelBase>());
+            }
+            else
+            {
+                modelsToDelete.AddRange(command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)));
             }
 
             DeleteModelInternal(modelsToDelete);
@@ -296,27 +299,24 @@ namespace Dynamo.Models
 
         void UngroupModelImpl(UngroupModelCommand command)
         {
-            var modelsToUngroup = new List<ModelBase>();
-            if (command.ModelGuid != Guid.Empty)
-            {
-                modelsToUngroup.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
-            }
+            if (!command.ModelGuids.Any() || command.ModelGuids.Count() == 1 && command.ModelGuids.First() == Guid.Empty)
+                return;
+
+            var modelsToUngroup = command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)).ToList();
 
             UngroupModel(modelsToUngroup);
         }
 
         void AddToGroupImpl(AddModelToGroupCommand command)
         {
-            var modelsToUngroup = new List<ModelBase>();
-            if (command.ModelGuid != Guid.Empty)
-            {
-                modelsToUngroup.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
-            }
+            if (!command.ModelGuids.Any() || command.ModelGuids.Count() == 1 && command.ModelGuids.First() == Guid.Empty)
+                return;
 
-            AddToGroup(modelsToUngroup);
+            var modelsToGroup = command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)).ToList();
+
+            AddToGroup(modelsToGroup);
         }
 
-       
         void UndoRedoImpl(UndoRedoCommand command)
         {
             switch (command.CmdOperation)
@@ -332,13 +332,16 @@ namespace Dynamo.Models
 
         void SendModelEventImpl(ModelEventCommand command)
         {
-            CurrentWorkspace.SendModelEvent(command.ModelGuid, command.EventName);
+            foreach (var guid in command.ModelGuids)
+            {
+                CurrentWorkspace.SendModelEvent(guid, command.EventName);
+            }
         }
 
         void UpdateModelValueImpl(UpdateModelValueCommand command)
         {
-            WorkspaceModel targetWorkspace  = CurrentWorkspace;
-            if (!command.WorkspaceGuid.Equals(System.Guid.Empty))
+            WorkspaceModel targetWorkspace = CurrentWorkspace;
+            if (!command.WorkspaceGuid.Equals(Guid.Empty))
                 targetWorkspace = Workspaces.FirstOrDefault(w => w.Guid.Equals(command.WorkspaceGuid));
 
             targetWorkspace.UpdateModelValue(command.ModelGuids,
@@ -358,7 +361,7 @@ namespace Dynamo.Models
                 command.Name,
                 command.Category,
                 command.Description, 
-                functionId: command.NodeId);
+                command.ModelGuids.First());
 
             AddWorkspace(workspace);
             CurrentWorkspace = workspace;

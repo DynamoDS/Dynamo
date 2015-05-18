@@ -141,6 +141,11 @@ namespace Dynamo.Utilities
             return result;
         }
 
+        public bool IsAttributeExist(string attribName)
+        {
+            return internalElement.Attributes[attribName] != null;
+        }
+
         private XmlAttribute GetGuaranteedAttribute(string attribName)
         {
             XmlAttribute attrib = internalElement.Attributes[attribName];
