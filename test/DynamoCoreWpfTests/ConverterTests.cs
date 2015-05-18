@@ -499,7 +499,7 @@ namespace Dynamo.Tests
             var converter = new ElementTypeToShortConverter();
 
             Assert.Throws<NullReferenceException>(() => { converter.Convert(null, null, null, null); });
-            Assert.Throws<ArgumentException>(() => { converter.Convert("DummyType", null, null, null); });
+            Assert.Throws<InvalidCastException>(() => { converter.Convert("DummyType", null, null, null); });
 
             object result;
 

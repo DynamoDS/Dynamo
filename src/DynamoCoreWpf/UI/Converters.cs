@@ -2185,11 +2185,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stringValue = value.ToString();
-            if (String.IsNullOrEmpty(stringValue))
-                throw new ArgumentException("Unknown element type.");
-
-            var type = (ElementTypes)Enum.Parse(typeof(ElementTypes), stringValue);
+            var type = (ElementTypes)value;
 
             switch (type)
             {
