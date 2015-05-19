@@ -591,7 +591,7 @@ namespace Dynamo.Tests
         [Category("UnitTest")]
         public void TestNodeToCodeUndoRecorder()
         {
-            NodeToCodeUndoRecorder recorder = new NodeToCodeUndoRecorder();
+            NodeToCodeUndoHelper recorder = new NodeToCodeUndoHelper();
             var dummyModel = new DummyModel(1, 10);
             recorder.RecordCreation(dummyModel);
             recorder.RecordDeletion(dummyModel);

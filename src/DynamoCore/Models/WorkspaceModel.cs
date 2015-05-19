@@ -1063,7 +1063,7 @@ namespace Dynamo.Models
             var codeBlockNodes = new List<CodeBlockNodeModel>();
 
             //UndoRedo Action Group----------------------------------------------
-            NodeToCodeUndoRecorder recorder = new NodeToCodeUndoRecorder();
+            NodeToCodeUndoHelper undoHelper = new NodeToCodeUndoHelper();
 
             // using (UndoRecorder.BeginActionGroup())
             {
@@ -1115,7 +1115,7 @@ namespace Dynamo.Models
                             }
 
                             //Delete the connector
-                            recorder.RecordDeletion(connector);
+                            undoHelper.RecordDeletion(connector);
                             connector.Delete();
                         }
                         #endregion
@@ -1123,7 +1123,7 @@ namespace Dynamo.Models
                         #region Step I.B. Delete the node
                         totalX += node.X;
                         totalY += node.Y;
-                        recorder.RecordDeletion(node);
+                        undoHelper.RecordDeletion(node);
                         Nodes.Remove(node);
                         #endregion
                     }
@@ -1141,7 +1141,7 @@ namespace Dynamo.Models
                         System.Guid.NewGuid(), 
                         totalX / nodeCount,
                         totalY / nodeCount, engineController.LibraryServices);
-                    recorder.RecordCreation(codeBlockNode);
+                    undoHelper.RecordCreation(codeBlockNode);
                     Nodes.Add(codeBlockNode);
                     this.RegisterNode(codeBlockNode);
 
@@ -1152,19 +1152,19 @@ namespace Dynamo.Models
                     var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode);
                     foreach (var connector in newInputConnectors)
                     {
-                        recorder.RecordCreation(connector);
+                        undoHelper.RecordCreation(connector);
                     }
 
                     var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
                     foreach (var connector in newInputConnectors)
                     {
-                        recorder.RecordCreation(connector);
+                        undoHelper.RecordCreation(connector);
                     }
                     #endregion
                 }
             }
 
-            recorder.ApplyActions(UndoRecorder);
+            undoHelper.ApplyActions(UndoRecorder);
 
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);

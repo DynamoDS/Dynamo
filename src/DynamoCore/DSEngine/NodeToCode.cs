@@ -46,17 +46,18 @@ namespace Dynamo.DSEngine
     }
 
     /// <summary>
-    /// Undo recroder that used in node to code. It will avoid to record creation
-    /// action that followed by a deletion action, which is not allowed in 
-    /// UndoRedoRecorder. This case happens when there are multiple code block 
-    /// node will be created in node to code, therefore some connectors may be
-    /// created and later deleted.
+    /// An undo helper class that is used in node-to-code conversion. It helps to 
+    /// avoid recording redundant user actions (e.g. deletion right after creation 
+    /// will not be recorded). This typically happens when there are multiple code 
+    /// block nodes being created as part of node-to-code conversion, during which 
+    /// some connectors will be created and later on deleted all within the same 
+    /// conversion process.
     /// </summary>
-    public class NodeToCodeUndoRecorder
+    public class NodeToCodeUndoHelper
     {
         private List<Tuple<ModelBase, UndoRedoRecorder.UserAction>> recordedActions;
 
-        public NodeToCodeUndoRecorder()
+        public NodeToCodeUndoHelper()
         {
             recordedActions = new List<Tuple<ModelBase, UndoRedoRecorder.UserAction>>();
         }
