@@ -8,8 +8,7 @@
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              mc:Ignorable="d"
              d:DesignHeight="525"
-             d:DesignWidth="350"
-             GiveFeedback="OnLibraryViewGiveFeedback">
+             d:DesignWidth="350">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -266,6 +265,7 @@
                                             <Grid Background="Transparent">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
 
@@ -289,6 +289,39 @@
                                                 <ContentPresenter Grid.Column="1"
                                                                   VerticalAlignment="Center"
                                                                   ContentSource="Header" />
+
+                                                <TextBlock x:Name="ElementTypeText"
+                                                           Grid.Column="2"
+                                                           Text="{Binding Path=ElementType,Converter={StaticResource ElementTypeToShortConverter}}"
+                                                           VerticalAlignment="Center"
+                                                           HorizontalAlignment="Right"
+                                                           TextBlock.FontSize="10"
+                                                           TextBlock.Foreground="{StaticResource NestedMemberTextColor}"
+                                                           Margin="0,0,10,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="Visibility"
+                                                                    Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, 
+                                                                                              AncestorType={x:Type Grid}}}"
+                                                                                   Value="True" />
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                                   Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <MultiDataTrigger.Setters>
+                                                                        <Setter Property="Visibility"
+                                                                                Value="Visible" />
+                                                                    </MultiDataTrigger.Setters>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
 
                                                 <Grid.Style>
                                                     <Style TargetType="{x:Type Grid}">

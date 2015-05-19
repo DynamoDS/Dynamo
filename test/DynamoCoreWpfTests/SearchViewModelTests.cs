@@ -610,6 +610,25 @@ namespace Dynamo.Tests
             Assert.IsFalse(viewModel.BrowserRootCategories.Any());
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void UpdateEntry01()
+        {
+            var element = CreateCustomNode("Member", "TopCategory.SubCategory");
+            element.Description = "AAA";
+            viewModel.InsertEntry(CreateCustomNodeViewModel(element), element.Categories);
+
+            element.Description = "BBB";
+            viewModel.UpdateEntry(element);
+
+            var elementVM = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c is ClassesNodeCategoryViewModel).
+                SubCategories.First(s => s.Name == "SubCategory").
+                Entries.First(e => e.Name == "Member");
+            Assert.IsNotNull(elementVM);
+            Assert.AreEqual("BBB", elementVM.Description);
+        }
+
         #endregion
 
         #region Helpers
