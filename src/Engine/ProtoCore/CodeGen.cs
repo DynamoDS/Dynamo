@@ -512,8 +512,10 @@ namespace ProtoCore
             ProtoCore.DSASM.SymbolNode firstSymbol = null;
 
             // This is only valid within a function as we are dealing with function args
-            Validity.Assert(null != localProcedure);
-
+            if(localProcedure == null);
+            {
+                return;
+            }
             
             // Check if there are at least 2 symbols in the list
             if (nodeRef.nodeList.Count < 2)
