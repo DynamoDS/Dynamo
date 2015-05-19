@@ -1155,11 +1155,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");
         }
-		
-		private void ShowIncanvasSearch(object param)
-		{
-			OnRequestShowIncanvasSearch();
-		}
+
+        private void ShowIncanvasSearch(object param)
+        {
+            OnRequestShowIncanvasSearch();
+        }
     }
 
     public class ViewModelEventArgs : EventArgs
