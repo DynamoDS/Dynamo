@@ -7,6 +7,10 @@ using System.Linq;
 using DSOffice;
 using NUnit.Framework;
 using ProtoCore.Mirror;
+using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.Models;
+using Dynamo.Nodes;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -308,7 +312,51 @@ namespace Dynamo.Tests
             Assert.AreEqual("palabra", rowList[0].Data);
 
         }
+        [Test]
+        public void ReadOnlyFile()
+        {
+            //Read from readonly Excel file and make sure Excel node in Dynamo displays value correctly.
 
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ReadOnlyFile.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
+
+            Assert.AreEqual(5, list.Count());
+
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList[0].Data);
+
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.AreEqual("word", rowList[0].Data);
+
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual(2, rowList[0].Data);
+
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            Assert.AreEqual(3, rowList[0].Data);
+
+            Assert.IsTrue(list[4].IsCollection);
+            rowList = list[4].GetElements();
+            Assert.AreEqual("palabra", rowList[0].Data);
+
+        }
         [Test]
         public void CanReadAndWriteExcel()
         {
@@ -386,6 +434,89 @@ namespace Dynamo.Tests
             Assert.AreEqual("palabra", rowList2[0].Data);
 
         }
+        [Test]
+        public void ReadChangeFilename()
+        {
+
+            // 1.  Read from an Existing excel file and Run
+            // 2.  Modify the file name in file path to an existing file
+            //3.  Rerun the file  
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ChangeFilename.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+   
+            ViewModel.HomeSpace.Run();
+            
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+            var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("ddd5d868-7178-426d-8e87-a11fdd29af75");
+            var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("1bd2c2da-b0e9-4b88-9f9e-33bd0906c6e9");
+            
+         
+            
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list1 = watch.CachedValue.GetElements();
+
+            Assert.AreEqual(5, list1.Count());
+            
+
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list1[0].IsCollection);
+            var rowList = list1[0].GetElements();
+            Assert.AreEqual(1, rowList[0].Data);
+            
+            // change the file path 
+
+            ConnectorModel.Make(watch2, watch3, 0, 0);
+            ViewModel.HomeSpace.Run();
+            
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list2 = watch.CachedValue.GetElements();
+
+            Assert.AreEqual(5, list2.Count());
+
+
+            //  - 10, 20, 30, "test", "Dynamo"
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList1 = list2[0].GetElements();
+            Assert.AreEqual(10, rowList1[0].Data);
+            var rowList2 = list2[1].GetElements();
+            Assert.AreEqual(20, rowList2[0].Data);
+            var rowList3 = list2[2].GetElements();
+            Assert.AreEqual(30, rowList3[0].Data);
+            var rowList4 = list2[3].GetElements();
+            Assert.AreEqual("test", rowList4[0].Data);
+            var rowList5 = list2[4].GetElements();
+            Assert.AreEqual("Dynamo", rowList5[0].Data);
+
+        }
+        [Test]
+        public void ReadNonExistingFile()
+        {
+
+            // 1.  Read from a non existing excel file and Run           
+            // 2.  Rerun the file  - it must throw a warning
+            
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ReadNonExistingFile.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var newname = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
+            ViewModel.HomeSpace.Run();
+           
+            Assert.IsTrue(watch.State == Models.ElementState.Warning);
+           
+
+        }
+        
 
         #endregion
 
@@ -397,8 +528,11 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_AddMixed1DData.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(13, ViewModel.CurrentSpace.Nodes.Count);
+            
+
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
             ViewModel.HomeSpace.Run();
+
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -427,7 +561,121 @@ namespace Dynamo.Tests
             Assert.AreEqual(-90, rowList[0].Data);
 
         }
+        [Test]
+        public void Excel_MAGN6872()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6872
+            
+            
+            string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN6872.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(12, ViewModel.CurrentSpace.Nodes.Count);
+        
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
+            ViewModel.HomeSpace.Run();
 
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
+
+            Assert.AreEqual(4, list.Count());
+
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+
+            List<object> dataList0 = new List<object>();
+            foreach (MirrorData data in rowList)
+            {
+                dataList0.Add(data.Data);
+            }
+            Assert.AreEqual(new object[] { 1.00, 2.00, 3.00, null, null, null, null }, dataList0);
+
+            rowList = list[1].GetElements();
+            List<object> dataList1 = new List<object>();
+            foreach (MirrorData data in rowList)
+            {
+                dataList1.Add(data.Data);
+            }
+            Assert.AreEqual(new object[] { 1.00, 2.00, 3.00, 4.00, 5.00, null, null }, dataList1);
+
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            List<object> dataList2 = new List<object>();
+            foreach (MirrorData data in rowList)
+            {
+                dataList2.Add(data.Data);
+            }
+            Assert.AreEqual(new object[] { 1.00, 2.00, 3.00, 4.00, 5.00, 6.00, 7.00 }, dataList2);
+
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            List<object> dataList3 = new List<object>();
+            foreach (MirrorData data in rowList)
+            {
+                dataList3.Add(data.Data);
+            }
+            Assert.AreEqual(new object[] { 1.00, 2.00, 3.00, 4.00, 5.00, null, null }, dataList3);
+
+        }
+        [Test]
+        public void Excel_OverwriteWithnull_7213()
+        {
+            // Overwrite the excel sheet with null values and it must work ok.
+            string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN7213.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(6, ViewModel.CurrentSpace.Nodes.Count);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
+
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+
+            Assert.AreEqual(2.00, rowList[0].Data);
+            rowList = list[1].GetElements();
+            Assert.IsNull(rowList[0].Data);
+
+            rowList = list[2].GetElements();
+            Assert.AreEqual(3.00, rowList[0].Data);
+        }
+
+        [Test]
+        public void Excel_OverWriteEmptyList_MAGN7213()
+        {
+
+            //Overwrite an existing file with EmptyList- it msut run ok
+            string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN7213_2.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(7, ViewModel.CurrentSpace.Nodes.Count);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
+
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+
+            Assert.AreEqual(2.00, rowList[0].Data);
+            rowList = list[1].GetElements();
+            Assert.IsNull(rowList[0].Data);
+
+            rowList = list[2].GetElements();
+            Assert.AreEqual(3.00, rowList[0].Data);
+        }
         [Test]
         public void CanCreateNewWorksheetInNewWorkbook()
         {
@@ -729,6 +977,350 @@ namespace Dynamo.Tests
 
             // Empty list expected
             Assert.AreEqual(0, list.Count);
+        }
+        [Test]
+        public void WriteToNonExistingFile()
+        {
+
+            // 1.  Write data into non existing file  and Run
+            // 2.  Dynamo must create the file and write the data
+
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNonExistingFile.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("8651eeba-33a9-4704-b92c-346e6e5e4b34");
+            ViewModel.HomeSpace.Run();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list2 = watch.CachedValue.GetElements();
+            Assert.AreEqual(5, list2.Count());
+            //   1, 2, 3, 4,5
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList1 = list2[0].GetElements();
+            Assert.AreEqual(1, rowList1[0].Data);
+            var rowList2 = list2[1].GetElements();
+            Assert.AreEqual(2, rowList2[0].Data);
+            var rowList3 = list2[2].GetElements();
+            Assert.AreEqual(3, rowList3[0].Data);
+            var rowList4 = list2[3].GetElements();
+            Assert.AreEqual(4, rowList4[0].Data);
+            var rowList5 = list2[4].GetElements();
+            Assert.AreEqual(5, rowList5[0].Data);
+        }
+        [Test]
+        public void WriteNonExistingSheet()
+        {
+
+            // 1.  Open Sample ImportExport_Excel_ToDynamo.dyn and Run
+            // 2.  NonExisting Sheet
+            //3.  Rerun the file  
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNonExistingSheet.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("32dbe300-4780-4c47-b07c-63019d5285ac");
+            ViewModel.HomeSpace.Run();
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list2 = watch.CachedValue.GetElements();
+            Assert.AreEqual(5, list2.Count());
+            //   10, 20, 30, "test", "Dynamo"
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList1 = list2[0].GetElements();
+            Assert.AreEqual(1, rowList1[0].Data);
+            var rowList2 = list2[1].GetElements();
+            Assert.AreEqual(2, rowList2[0].Data);
+            var rowList3 = list2[2].GetElements();
+            Assert.AreEqual(3, rowList3[0].Data);
+            var rowList4 = list2[3].GetElements();
+            Assert.AreEqual(4, rowList4[0].Data);
+            var rowList5 = list2[4].GetElements();
+            Assert.AreEqual(5, rowList5[0].Data);
+        }
+        [Test,Category("Failure")]
+        public void WritenodeWithWarning()
+        {
+            // Write a node with warning to Excel.
+            // If there is any data in excel it must not overwrite here- currently this fails
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNodewithError.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("32dbe300-4780-4c47-b07c-63019d5285ac");
+            ViewModel.HomeSpace.Run();
+            var list = watch.CachedValue.Data;
+            Assert.IsNotNull(list);
+        }
+        [Test,Category("Failure")]
+        public void WriteToReadOnlyFile()
+        {
+
+            // asks for overwriting of file- need to find a way to ignore that.
+
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteToReadOnlyFile.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+            Assert.IsNull(watch.CachedValue.Data);
+            Assert.IsTrue(watch.State == Models.ElementState.Warning);
+           
+
+        }
+        
+        [Test]
+        public void WriteModifyFilename()
+        {
+
+            // 1.  Write into  an Existing excel file and Run
+            // 2.  Modify the file name in file path to an existing file
+            //3.  Rerun the file  
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteModifyPath.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+
+            ViewModel.HomeSpace.Run();
+
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("5e6a2a5b-7c69-4ab6-b33d-f27267fb2762");
+             Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list1 = watch.CachedValue.GetElements();
+            Assert.AreEqual(6, list1.Count());
+            Assert.IsTrue(list1[0].IsCollection);
+            var rowList = list1[0].GetElements();
+            Assert.AreEqual(5, rowList[0].Data);
+
+            // change the file path 
+
+            ConnectorModel.Make(watch2, watch, 0, 0);
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list2 = watch.CachedValue.GetElements();
+            Assert.AreEqual(6, list2.Count());
+           
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList1 = list2[0].GetElements();
+            Assert.AreEqual(5, rowList1[0].Data);
+            var rowList2 = list2[1].GetElements();
+            Assert.AreEqual(6, rowList2[0].Data);
+            var rowList3 = list2[2].GetElements();
+            Assert.AreEqual(7, rowList3[0].Data);
+            var rowList4 = list2[3].GetElements();
+            Assert.AreEqual(8, rowList4[0].Data);
+            var rowList5 = list2[4].GetElements();
+            Assert.AreEqual(9, rowList5[0].Data);
+            var rowList6 = list2[5].GetElements();
+            Assert.AreEqual(10, rowList6[0].Data);
+
+
+        }
+        [Test]
+        public void WriteModifyGraph()
+        {
+
+            // 1.  Write into  an Existing excel file and Run
+            // 2.  Modify the contents written to an excel file
+            //3.  Rerun the file  
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteModifyGraph.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            ViewModel.HomeSpace.Run();
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+            var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list1 = watch.CachedValue.GetElements();
+            Assert.AreEqual(6, list1.Count());
+            Assert.IsTrue(list1[0].IsCollection);
+            var rowList = list1[0].GetElements();
+            Assert.AreEqual(5, rowList[0].Data);
+            rowList = list1[1].GetElements();
+            Assert.AreEqual(6, rowList[0].Data);
+            rowList = list1[2].GetElements();
+            Assert.AreEqual(7, rowList[0].Data);
+            rowList = list1[3].GetElements();
+            Assert.AreEqual(8, rowList[0].Data);
+            rowList = list1[4].GetElements();
+            Assert.AreEqual(9, rowList[0].Data);
+            rowList = list1[5].GetElements();
+            Assert.AreEqual(10, rowList[0].Data);
+            
+            // change the data written into Excel
+
+            ConnectorModel.Make(watch3, watch2, 0, 4);
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch2.CachedValue.IsCollection);
+            var list2 = watch2.CachedValue.GetElements();
+            Assert.AreEqual(6, list2.Count());
+
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList1 = list2[0].GetElements();
+            Assert.AreEqual(0, rowList1[0].Data);
+            var rowList2 = list2[1].GetElements();
+            Assert.AreEqual(1, rowList2[0].Data);
+            var rowList3 = list2[2].GetElements();
+            Assert.AreEqual(2, rowList3[0].Data);
+            var rowList4 = list2[3].GetElements();
+            Assert.AreEqual(3, rowList4[0].Data);
+            var rowList5 = list2[4].GetElements();
+            Assert.AreEqual(4, rowList5[0].Data);
+            var rowList6 = list2[5].GetElements();
+            Assert.AreEqual(5, rowList6[0].Data);
+
+
+        }
+        [Test,Category("Failure")]
+        public void WriteModifyGraph_2()
+        {
+            //incomplete
+            // 1.  Write into  an Existing excel file and Run
+            // 2.  Reduce the array size written to an excel file
+            //3.  Rerun the file 
+            
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteModifyGraph_2.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            ViewModel.HomeSpace.Run();
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+            var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list1 = watch.CachedValue.GetElements();
+            Assert.AreEqual(6, list1.Count());
+            Assert.IsTrue(list1[0].IsCollection);
+            var rowList = list1[0].GetElements();
+            Assert.AreEqual(5, rowList[0].Data);
+            rowList = list1[1].GetElements();
+            Assert.AreEqual(6, rowList[0].Data);
+            rowList = list1[2].GetElements();
+            Assert.AreEqual(7, rowList[0].Data);
+            rowList = list1[3].GetElements();
+            Assert.AreEqual(8, rowList[0].Data);
+            rowList = list1[4].GetElements();
+            Assert.AreEqual(9, rowList[0].Data);
+            rowList = list1[5].GetElements();
+            Assert.AreEqual(10, rowList[0].Data);
+
+            // decrease the data written into excel
+
+            ConnectorModel.Make(watch3, watch2, 0, 4);
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch2.CachedValue.IsCollection);
+            var list2 = watch2.CachedValue.GetElements();
+            Assert.AreEqual(6, list2.Count());
+
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList1 = list2[0].GetElements();
+            Assert.AreEqual(2, rowList1[0].Data);
+            var rowList2 = list2[1].GetElements();
+            Assert.AreEqual(3, rowList2[0].Data);
+            var rowList3 = list2[2].GetElements();
+            Assert.AreEqual(4, rowList3[0].Data);
+            var rowList4 = list2[3].GetElements();
+            Assert.AreEqual(5, rowList4[0].Data);
+            var rowList5 = list2[4].GetElements();
+            Assert.IsNull(rowList5[0].Data);
+            var rowList6 = list2[5].GetElements();
+            Assert.IsNull(rowList6[0].Data);
+        }
+
+        [Test]
+        public void WriteModifyGraph_3()
+        {
+            //incomplete
+            // 1.  Write into  an Existing excel file and Run
+            // 2.  Increase the array size written to an excel file
+            //3.  Rerun the file 
+
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteModifyGraph_3.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            ViewModel.HomeSpace.Run();
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+            var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list1 = watch.CachedValue.GetElements();
+            Assert.AreEqual(6, list1.Count());
+            Assert.IsTrue(list1[0].IsCollection);
+            var rowList = list1[0].GetElements();
+            Assert.AreEqual(5, rowList[0].Data);
+            rowList = list1[1].GetElements();
+            Assert.AreEqual(6, rowList[0].Data);
+            rowList = list1[2].GetElements();
+            Assert.AreEqual(7, rowList[0].Data);
+            rowList = list1[3].GetElements();
+            Assert.AreEqual(8, rowList[0].Data);
+            rowList = list1[4].GetElements();
+            Assert.AreEqual(9, rowList[0].Data);
+            rowList = list1[5].GetElements();
+            Assert.AreEqual(10, rowList[0].Data);
+
+            // Increase the data written into excel
+
+            ConnectorModel.Make(watch3, watch2, 0, 4);
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch2.CachedValue.IsCollection);
+            var list2 = watch2.CachedValue.GetElements();
+            Assert.AreEqual(8, list2.Count());
+
+            Assert.IsTrue(list2[0].IsCollection);
+            var rowList1 = list2[0].GetElements();
+            Assert.AreEqual(0, rowList1[0].Data);
+            var rowList2 = list2[1].GetElements();
+            Assert.AreEqual(1, rowList2[0].Data);
+            var rowList3 = list2[2].GetElements();
+            Assert.AreEqual(2, rowList3[0].Data);
+            var rowList4 = list2[3].GetElements();
+            Assert.AreEqual(3, rowList4[0].Data);
+            var rowList5 = list2[4].GetElements();
+            Assert.AreEqual(4, rowList5[0].Data);
+            var rowList6 = list2[5].GetElements();
+            Assert.AreEqual(5, rowList6[0].Data);
+            var rowList7 = list2[6].GetElements();
+            Assert.AreEqual(6, rowList7[0].Data);
+            var rowList8 = list2[7].GetElements();
+            Assert.AreEqual(7, rowList8[0].Data);
         }
 
         #endregion

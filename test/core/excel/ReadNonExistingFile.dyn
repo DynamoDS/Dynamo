@@ -1,0 +1,21 @@
+<Workspace Version="0.8.1.1345" X="324.387370366471" Y="-345.884013766474" zoom="0.528455761220658" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Watch guid="33e0b5c6-ea32-4791-8358-f00c2b27ec31" type="Dynamo.Nodes.Watch" nickname="Watch" x="838.544055524946" y="1136.5397550221" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction guid="de5c9439-bc4c-408d-9484-798d8d8b8aed" type="Dynamo.Nodes.DSFunction" nickname="Excel.ReadFromFile" x="435.391592826092" y="1120.17831995657" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.ReadFromFile@var,string" />
+    <Dynamo.Nodes.StringInput guid="b3be8364-66cb-435f-a4f7-29720de64f05" type="Dynamo.Nodes.StringInput" nickname="String" x="247.94300106189" y="1194.35666656474" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>Sheet1</System.String>
+      <System.String value="Sheet1" />
+    </Dynamo.Nodes.StringInput>
+    <DSCore.File.Filename guid="4f4c23c2-99ec-4de7-997e-ada03e73b0fa" type="DSCore.File.Filename" nickname="File Path" x="46.8668436015436" y="1001.10260208424" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\excel\NonExistingFile.xlsx</System.String>
+    </DSCore.File.Filename>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="de5c9439-bc4c-408d-9484-798d8d8b8aed" start_index="0" end="33e0b5c6-ea32-4791-8358-f00c2b27ec31" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b3be8364-66cb-435f-a4f7-29720de64f05" start_index="0" end="de5c9439-bc4c-408d-9484-798d8d8b8aed" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4f4c23c2-99ec-4de7-997e-ada03e73b0fa" start_index="0" end="de5c9439-bc4c-408d-9484-798d8d8b8aed" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>
