@@ -237,6 +237,18 @@ namespace Dynamo.ViewModels
             get { return stateMachine.IsInIdleState; }
         }
 
+        public bool CanRunNodeToCode
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
         public Action FindNodesFromElements { get; set; }
 
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
