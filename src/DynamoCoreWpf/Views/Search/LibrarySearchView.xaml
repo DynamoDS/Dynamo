@@ -51,82 +51,9 @@
                 </ControlTemplate.Triggers>
             </ControlTemplate>
 
-            <!-- This data template is used to show one member. -->
-            <ControlTemplate x:Key="MemberControlTemplate">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Image HorizontalAlignment="Left"
-                           Height="32"
-                           Margin="16,0,16,0"
-                           VerticalAlignment="Center"
-                           Width="32"
-                           Source="{Binding SmallIcon}" />
-                    <Border Grid.Column="1"
-                            Margin="5,10,0,10">
-                        <Rectangle Fill="#3E464C"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Stretch">
-                            <Rectangle.Margin>
-                                <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
-                                    <Binding ElementName="memberName" />
-                                    <Binding Path="DataContext"
-                                             RelativeSource="{RelativeSource Mode=FindAncestor, 
-                                                                     AncestorType={x:Type UserControl}}" />
-                                </MultiBinding>
-                            </Rectangle.Margin>
-                        </Rectangle>
-                    </Border>
-                    <TextBlock Grid.Column="1"
-                               Name="memberName"
-                               HorizontalAlignment="Left"
-                               Text="{Binding Name}"
-                               Margin="5,10,0,0"
-                               Foreground="{StaticResource CommonSidebarTextColor}"
-                               FontSize="13" />
-                </Grid>
-            </ControlTemplate>
-
-            <!-- Region ListBoxItem -->
-
-            <!--Style for every member in found MemberGroup-->
-            <Style x:Key="ListBoxMembersStyle"
+            <Style x:Key="LibraryMemberStyle"
+                   BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Height"
-                        Value="40" />
-                <Setter Property="Background"
-                        Value="{StaticResource LibraryCommonBackground}" />
-                <Setter Property="FocusVisualStyle"
-                        Value="{x:Null}" />
-                <Setter Property="Visibility"
-                        Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource LibraryMemberOnHover}" />
-                                </Trigger>
-                                <Trigger Property="IsSelected"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource LibraryMemberOnHover}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
                 <EventSetter Event="PreviewMouseLeftButtonUp"
                              Handler="OnMouseLeftButtonUp" />
                 <EventSetter Event="PreviewMouseMove"
@@ -138,27 +65,6 @@
                 <EventSetter Event="MouseLeave"
                              Handler="OnPopupMouseLeave" />
             </Style>
-
-            <!--Style for found MemberGroup-->
-            <Style x:Key="ListBoxMemberGroupsStyle"
-                   TargetType="{x:Type ListBoxItem}">
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Background"
-                        Value="{StaticResource LibraryCommonBackground}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!--EndRegion-->
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -187,7 +93,7 @@
                     <ListBox x:Name="topResultListBox"
                              Background="Transparent"
                              BorderBrush="Transparent"
-                             ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
+                             ItemContainerStyle="{DynamicResource LibraryMemberStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
                              KeyDown="OnMemberButtonKeyDown"
@@ -264,7 +170,7 @@
                                                     </TextBlock>
                                                     <ListBox Background="Transparent"
                                                              BorderBrush="Transparent"
-                                                             ItemContainerStyle="{StaticResource ListBoxMembersStyle}"
+                                                             ItemContainerStyle="{StaticResource LibraryMemberStyle}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                                              ItemsSource="{Binding Members}"
                                                              Name="MembersListBox"
