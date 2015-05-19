@@ -494,6 +494,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
         public void ElementTypeToShortConverterTest()
         {
             var converter = new ElementTypeToShortConverter();
@@ -516,6 +517,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(String.Empty, result);
 
             result = converter.Convert(ElementTypes.None, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+
+            result = converter.Convert(ElementTypes.ZeroTouch | ElementTypes.BuiltIn, null, null, null);
             Assert.AreEqual(String.Empty, result);
         }
 

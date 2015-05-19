@@ -2209,10 +2209,8 @@ namespace Dynamo.Controls
 
                 case ElementTypes.BuiltIn:
                 case ElementTypes.None:
-                    return "";
-
                 default:
-                    throw new ArgumentException("Unknown element type.");
+                    return string.Empty;
             }
         }
 
