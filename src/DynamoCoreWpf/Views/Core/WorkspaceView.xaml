@@ -335,7 +335,7 @@
                IsOpen="False"
                Placement="MousePoint"
                Closed="OnIncanvasSearchClosed">
-            <ui:IncanvasSearchControl />
+            <ui:InCanvasSearchControl />
         </Popup>
 
     </Grid>

@@ -227,7 +227,7 @@ namespace Dynamo.Controls
             // be set to 'false') so that workspace view gets a chance of 
             // handling it.
             // 
-            if (owningWorkspace.IsSnappedToPort || Keyboard.Modifiers == ModifierKeys.Control)
+            if (owningWorkspace.IsSnappedToPort || Keyboard.Modifiers == ModifierKeys.Shift)
             {
                 e.Handled = false; // Do not handle it here!
                 return;
@@ -241,7 +241,6 @@ namespace Dynamo.Controls
                 //capture the mouse input even if the mouse is dragged outside the canvas
                 this.CaptureMouse();
                 base.OnMouseLeftButtonDown(e);               
-                //e.Handled = true;
             }
         }
 
