@@ -725,12 +725,6 @@ namespace ProtoAssociative
                 {
                     bnode.IsProcedureOwned = isProcedureOwned;
                     DfsTraverse(bnode, ref inferedType, false, null, subPass);
-
-                    //if (!isProcedureOwned)
-                    //{
-                    //    // Can this be removed completely
-                    //    SetDeltaCompilePC(node);
-                    //}
                 }
 
                 if (NodeUtils.IsReturnExpressionNode(bnode))
@@ -739,34 +733,6 @@ namespace ProtoAssociative
                 }
             }
 
-            //foreach (AssociativeNode node in codeblock.Body)
-            //{
-            //    inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
-
-            //    //
-            //    // TODO Jun:    Handle stand alone language blocks
-            //    //              Integrate the subPass into a proper pass
-            //    //              
-            //    //              **Need to take care of EmitImportNode, in which I used the same code to handle imported language block nodes - Randy
-            //    //
-
-            //    if (node is LanguageBlockNode)
-            //    {
-            //        // Build a binaryn node with a temporary lhs for every stand-alone language block
-            //        var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-            //        var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
-
-            //        DfsTraverse(langBlockNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
-            //    }
-            //    else
-            //    {
-            //        DfsTraverse(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
-            //        SetDeltaCompilePC(node);
-            //    }
-
-            //    if (NodeUtils.IsReturnExpressionNode(node))
-            //        hasReturnStatement = true;
-            //}
             return hasReturnStatement;
         }
 
@@ -3961,38 +3927,7 @@ namespace ProtoAssociative
             }
             return astList;
         }
-
-
-        /// <summary>
-        /// Converts lhs ident lists to a function call
-        /// a.x = 10 -> t = a.%set_x(10)
-        /// a.x.y = b + c -> a.x.%set_y(b + c)
-        /// </summary>
-        /// <param name="bNode"></param>
-        /// <returns></returns>
-        private BinaryExpressionNode ConvertLHSAssignmentToFunctionCall(BinaryExpressionNode bNode)
-        {
-            IdentifierNode lhsTemp = new IdentifierNode(Constants.kTempVar);
-
-            IdentifierListNode identList = bNode.LeftNode as IdentifierListNode;
-            Validity.Assert(identList != null);
-
-            List<AssociativeNode> args = new List<AssociativeNode>();
-            args.Add(bNode.RightNode);
-
-            //AssociativeNode fcall = nodeBuilder.BuildFunctionCall(Constants.kSetterPrefix + identList.RightNode.Name, args);
-
-            ProtoCore.AST.AssociativeAST.FunctionCallNode fcall = new ProtoCore.AST.AssociativeAST.FunctionCallNode();
-            fcall.Function = new IdentifierNode(identList.RightNode.Name);
-            fcall.Function.Name = ProtoCore.DSASM.Constants.kSetterPrefix + identList.RightNode.Name;
-            fcall.FormalArguments = args;
-
-            identList.RightNode = fcall;
-
-            BinaryExpressionNode converetdAssignNode = new BinaryExpressionNode(lhsTemp, identList);
-            return converetdAssignNode;
-        }
-
+      
         private List<AssociativeNode> SplitMulitpleAssignment(List<AssociativeNode> astList)
         {
             if (null != astList && astList.Count > 0)
