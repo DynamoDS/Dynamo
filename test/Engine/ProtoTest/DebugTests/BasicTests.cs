@@ -2657,7 +2657,7 @@ c2 = [Associative]
 
         [Test]
         [Category("Debugger")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void TestModifierBlockDebugging1()
         {
 
@@ -2766,7 +2766,7 @@ c = 90;
 
         [Test]
         [Category("Debugger")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void TestModifierBlockDebugging2()
         {
 
@@ -2871,7 +2871,7 @@ c = 90;
 
         [Test]
         [Category("Debugger")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void TestModifierBlockDebugging3()
         {
 

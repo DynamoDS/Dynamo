@@ -11315,7 +11315,7 @@ x3 = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch434_T028_Modifier_Stack_Simple()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43716,7 +43716,7 @@ e;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1610_T27_Modifier_Stack_Cross_Reference()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43736,7 +43736,7 @@ b = {
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1611_T27_Modifier_Stack_Inside_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43786,7 +43786,7 @@ y = a1.a;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1612_T27_Modifier_Stack_Inside_Class_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43935,7 +43935,7 @@ xa9 = ax.a9;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1614_T27_Modifier_Stack_Inside_Class_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44001,7 +44001,7 @@ res = ax.foo(1);
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1615_T27_Modifier_Stack_Inside_Function()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44038,7 +44038,7 @@ x = foo ();
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1616_T27_Modifier_Stack_Update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44062,7 +44062,7 @@ dummy = 1;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1617_T27_Modifier_Stack_Update_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44081,7 +44081,7 @@ b1 = 2;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1618_T27_Modifier_Stack_Update_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44135,7 +44135,7 @@ z = a.x;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1619_T27_Modifier_Stack_Update_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44155,7 +44155,7 @@ y = 4;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1620_T27_Modifier_Stack_Update_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44177,7 +44177,7 @@ y = 2;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1621_T27_Modifier_Stack_Update_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44208,7 +44208,7 @@ y = 2;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1622_T27_Modifier_Stack_With_Array()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44226,7 +44226,7 @@ b2 = a;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1623_T27_Modifier_Stack_With_Array_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44245,7 +44245,7 @@ a = 4;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1624_T27_Modifier_Stack_With_Array_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44269,7 +44269,7 @@ x = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1625_T27_Modifier_Stack_With_Array_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44297,7 +44297,7 @@ b = a;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1626_T27_Modifier_Stack_With_Different_Types()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44328,7 +44328,7 @@ b = a;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1627_T27_Modifier_Stack_With_Different_Types_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44359,7 +44359,7 @@ b = a;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1628_T27_Modifier_Stack_With_Function_Call()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44385,7 +44385,7 @@ f = a3 + 1;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1629_T27_Modifier_Stack_With_Function_Call_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44415,7 +44415,7 @@ x = [Associative]
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1630_T27_Modifier_Stack_With_Inline_Condition()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44455,7 +44455,7 @@ x = a == 2 ? true : false;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1631_T27_Modifier_Stack_With_Range_Expr()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44493,7 +44493,7 @@ b = 0.0..a[0]..0.5;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1632_T27_Modifier_Stack_With_Right_Assignment()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44514,7 +44514,7 @@ f = a3 + 1;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1633_T27_Modifier_Stack_With_Self_Updates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45142,7 +45142,7 @@ t3 = t1;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1658_T36_Modifier_Block_Multiple_Updates()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45159,7 +45159,7 @@ a = { 2 => a1;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1659_T36_Modifier_Block_Multiple_Updates_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45193,7 +45193,7 @@ testArrayMember2 = c2;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1661_T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45209,7 +45209,7 @@ b1 = 2;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1662_T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45229,7 +45229,7 @@ b1 = 2;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1663_T39_Defect_1465319_Modifier_Stack_Update_Issue()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45250,7 +45250,7 @@ y1 = 5;";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1664_T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45267,7 +45267,7 @@ b = {
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1665_T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45284,7 +45284,7 @@ b = {
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1666_T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45301,7 +45301,7 @@ b = {
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1667_T40_Defect_1467057_Modifier_Stack_Update_Issue()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45318,7 +45318,7 @@ b = {
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1668_T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45336,7 +45336,7 @@ b = {
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1670_T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45553,7 +45553,7 @@ x = c1.Pt;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1679_T54_Defect_1467185_Modifier_Stack()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45603,7 +45603,7 @@ a =
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1680_T54_Defect_1467185_Modifier_Stack_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45641,7 +45641,7 @@ a8 = B.B(a1).bfoo(foo ( a1[a3] ) ); // works fine";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1681_T54_Defect_1467185_Modifier_Stack_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46108,7 +46108,7 @@ a  = a2 + b;    // 6";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1691_T005_modifiers_with_right_assignments_Robert()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
