@@ -28,6 +28,7 @@ namespace Dynamo.Controls
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
+        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -2176,15 +2177,16 @@ namespace Dynamo.Controls
         }
     }
 
-    public class GroupZoomToBooleanConverter : IMultiValueConverter
+    public class GroupFontSizeToEditorEnabledConverter : IMultiValueConverter
     {
+        private const double MinFontFactor = 7.0;
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var zoom = System.Convert.ToDouble(values[0]);
             var fontsize = System.Convert.ToDouble(values[1]);
 
             var factor = zoom * fontsize;
-            if (factor < 7.0)
+            if (factor < MinFontFactor)
             {
                 return false;
             }

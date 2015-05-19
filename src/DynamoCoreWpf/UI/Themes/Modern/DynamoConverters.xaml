@@ -146,5 +146,5 @@
     <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
                                       TrueBrush="#cccccc"
                                       FalseBrush="#666666" />
-    <controls:GroupZoomToBooleanConverter x:Key="GroupZoomToBooleanConverter"/>
+    <controls:GroupFontSizeToEditorEnabledConverter x:Key="GroupFontSizeToEditorEnabledConverter"/>
 </ResourceDictionary>
