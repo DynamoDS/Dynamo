@@ -106,6 +106,7 @@ namespace Dynamo.Nodes
             if (GroupTextBlock.IsVisible && e.ClickCount >= 2)
             {
                 DynamoSelection.Instance.ClearSelection();
+                e.Handled = true;
             }
         }
      
