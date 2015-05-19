@@ -33,7 +33,6 @@ namespace Dynamo.Tests
         #region Dynamo Text Package Tests
 
         [Test]
-        [Category("Failure")]
         public void TestTextFromDynamoText()
         {
             var testFilePath = Path.Combine(TestDirectory, @"core\userdata\BasicTextTest.dyn");
