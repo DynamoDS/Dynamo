@@ -408,18 +408,14 @@ namespace ProtoCore.DSASM
         public const string kTempArg = "%targ";
         public const string kTempVar = "%tvar";
         public const string kTempPropertyVar = "%tvar_property";
-        public const string kTempExceptionVar = "%texp";
         public const string kTempLangBlock = "%tempLangBlock";
         public const string kForLoopExpression = "%forloop_expr_";
         public const string kForLoopKey = "%forloop_key_";
-        public const string kStartOfAutogenForloopIteration = "%autogen_forloop_iteration_";
-        public const string kStartOfAutogenForloopCount = "%autogen_forloop_count_";
         public const string kFunctionPointerCall = "%FunctionPointerCall";
         public const string kFunctionRangeExpression = "%generate_range";
         public const string kDotMethodName = "%dot";
         public const string kDotArgMethodName = "%dotarg";
         public const string kInlineConditionalMethodName = "%inlineconditional";
-        public const string kInlineCondition = "%InlineCondition";
         public const string kGetTypeMethodName = "%get_type";
         public const string kNodeAstFailed = "%nodeAstFailed";
         public const string kWatchResultVar = "watch_result_var";
@@ -427,7 +423,6 @@ namespace ProtoCore.DSASM
         public const string kGlobalInstanceNamePrefix = "%globalInstanceFunction_";
         public const string kGlobalInstanceFunctionPrefix = "%proc";
         public const string kThisPointerArgName = "%thisPtrArg";
-        public const string kMangledFunctionPlaceholderName = "%Placeholder";
         public const string kTempModifierStateNamePrefix = "%tmp_modifierState_";
         public const string kTempProcConstant = "temp_proc_var_";
         public const string kTempProcLeftVar = "%" + kTempProcConstant;
