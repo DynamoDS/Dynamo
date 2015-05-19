@@ -1,0 +1,1 @@
+The "Localized" folder is meant to keep all localized assemblies coming from WWL team. For a start, it is empty (we need this folder to make sure build scripts work fine). Once the actual localized binaries are added, this file should be removed.

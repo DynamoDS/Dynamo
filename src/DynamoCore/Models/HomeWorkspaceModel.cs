@@ -48,7 +48,7 @@ namespace Dynamo.Models
    
         public readonly bool VerboseLogging;
 
-        internal readonly RunSettings RunSettings;
+        public readonly RunSettings RunSettings;
 
         /// <summary>
         /// Evaluation count is incremented whenever the graph is evaluated. 

@@ -748,8 +748,9 @@ namespace Dynamo.Models
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
                         searchElement.SyncWithCustomNodeInfo(newInfo);
-                        SearchModel.Update(searchElement);
+                        SearchModel.Update(searchElement, isCategoryChanged);
                     }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
@@ -1111,7 +1112,7 @@ namespace Dynamo.Models
                         // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
                         // as it causes an immediate crash due to the above ResetEngine call.
                         var hws = ws as HomeWorkspaceModel;
-                        if (ws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
                         {
                             hws.StartPeriodicEvaluation();
                         }
@@ -1227,7 +1228,7 @@ namespace Dynamo.Models
         {
             // When running test cases, the dispatcher may be null which will cause the timer to
             // introduce a lot of threads. So the timer will not be started if test cases are running.
-            if (!IsTestMode)
+            if (IsTestMode)
                 return;
 
             if (backupFilesTimer != null)
@@ -1628,6 +1629,7 @@ namespace Dynamo.Models
                     Background = annotation.Background,
                     FontSize = annotation.FontSize
                 };
+              
                 newAnnotations.Add(annotationModel);
             }
 

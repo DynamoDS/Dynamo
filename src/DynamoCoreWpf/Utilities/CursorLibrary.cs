@@ -23,7 +23,8 @@ namespace Dynamo.Wpf.Utilities
         RectangularSelection,
         ResizeHorizontal,
         ResizeVertical,
-        ResizeDiagonal
+        ResizeDiagonal,
+        DragMove
     }
 
     internal class CursorLibrary
@@ -55,6 +56,7 @@ namespace Dynamo.Wpf.Utilities
             resources.Add(CursorSet.ResizeHorizontal,       "resize_horizontal.cur");
             resources.Add(CursorSet.ResizeVertical,         "resize_vertical.cur");
             resources.Add(CursorSet.ResizeDiagonal,         "resize_diagonal.cur");
+            resources.Add(CursorSet.DragMove,               "drag_move.cur");
 
             List<Cursor> cursors = new List<Cursor>();
 

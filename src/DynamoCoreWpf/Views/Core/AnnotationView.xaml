@@ -6,12 +6,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:views="clr-namespace:Dynamo.Views"
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
              MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">   
+    
     <UserControl.Resources>
         <Style x:Key="ColorSelectorListBox"
            TargetType="ListBox">
@@ -143,8 +146,8 @@
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=14}"></MenuItem>
                     <MenuItem Header ="18" Name="FontSize1" Command="{Binding ChangeFontSize}" CommandParameter="18"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=18}"></MenuItem>
-                    <MenuItem Header ="20" Name="FontSize2" Command="{Binding ChangeFontSize}" CommandParameter="20"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=20}"></MenuItem>
+                    <MenuItem Header ="24" Name="FontSize2" Command="{Binding ChangeFontSize}" CommandParameter="24"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=24}"></MenuItem>
                     <MenuItem Header ="30" Name="FontSize3" Command="{Binding ChangeFontSize}" CommandParameter="30"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=30}"></MenuItem>
                     <MenuItem Header ="36" Name="FontSize4" Command="{Binding ChangeFontSize}" CommandParameter="36"
@@ -239,7 +242,27 @@
                     AcceptsTab="True"
                     Style="{StaticResource SZoomFadeTextBox}">                  
             </TextBox>
-            
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True">
+                                    <Condition.Binding>
+                                        <MultiBinding Converter="{StaticResource GroupFontSizeToEditorEnabledConverter }">
+                                            <Binding Path ="DataContext.Zoom" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}"></Binding>
+                                            <Binding ElementName="GroupTextBlock" Path="FontSize"/>
+                                            <Binding ElementName="GroupTextBlock" Path="Visibility"/>
+                                        </MultiBinding>
+                                    </Condition.Binding>
+                                </Condition>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.Triggers>                           
                 <EventTrigger  SourceName="GroupTextBox" RoutedEvent="TextBox.LostKeyboardFocus">
                     <BeginStoryboard>
