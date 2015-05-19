@@ -742,8 +742,9 @@ namespace Dynamo.Models
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
                         searchElement.SyncWithCustomNodeInfo(newInfo);
-                        SearchModel.Update(searchElement);
+                        SearchModel.Update(searchElement, isCategoryChanged);
                     }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
