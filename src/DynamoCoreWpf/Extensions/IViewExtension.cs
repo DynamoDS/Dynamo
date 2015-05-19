@@ -17,7 +17,7 @@ namespace Dynamo.Wpf.Extensions
         /// There may be multiple instances of the same type, but the application 
         /// will *not* allow two instances to coexist with the same id.
         /// </summary>
-        Guid Id { get; }
+        string UniqueId { get; }
 
         /// <summary>
         /// A name for the extension instance.  This is used for more user-readable logging.
@@ -31,7 +31,7 @@ namespace Dynamo.Wpf.Extensions
         /// This method is *not* guaranteed to be invoked unless the extension is present
         /// at startup.
         /// 
-        /// Exceptions thrown from this method should be caught by Dynamo and 
+        /// Exceptions thrown from this method will be caught by Dynamo and 
         /// displayed.
         /// </summary>
         void Startup(ViewStartupParams p);
@@ -42,7 +42,7 @@ namespace Dynamo.Wpf.Extensions
         /// This action is guaranteed to be invoked, even if the extension is not present 
         /// at startup.
         /// 
-        /// Exceptions thrown from this method should be caught by Dynamo and 
+        /// Exceptions thrown from this method will be caught by Dynamo and 
         /// displayed.
         /// </summary>
         void Loaded(ViewLoadedParams p);

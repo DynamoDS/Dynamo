@@ -29,7 +29,7 @@ namespace Dynamo.Extensions
         /// This action is *not* guaranteed to be invoked unless the extension is 
         /// already installed at startup. 
         /// 
-        /// Exceptions thrown from this method should be caught by Dynamo and 
+        /// Exceptions thrown from this method will be caught by Dynamo and 
         /// logged.
         /// </summary>
         void Startup(StartupParams sp);
@@ -41,7 +41,7 @@ namespace Dynamo.Extensions
         /// This action is guaranteed to be called even if the extension is installed
         /// after startup.  
         /// 
-        /// Exceptions thrown from this method should be caught by Dynamo and 
+        /// Exceptions thrown from this method will be caught by Dynamo and 
         /// logged.
         /// </summary>
         void Ready(ReadyParams sp);
