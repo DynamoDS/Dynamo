@@ -1789,7 +1789,6 @@ namespace ProtoCore.AST.AssociativeAST
         public bool IsInputExpression { get; set; }
         public bool isSSAPointerAssignment { get; set; }
         public bool IsFirstIdentListNode { get; set; }
-        public bool IsLastIdentListNode { get; set; }
 
         // These properties are used only for the GraphUI ProtoAST
         public uint Guid { get; set; }
@@ -1811,8 +1810,6 @@ namespace ProtoCore.AST.AssociativeAST
             RightNode = right;
             IsInputExpression = false;
             IsFirstIdentListNode = false;
-            IsLastIdentListNode = false;
-
         }
 
         public BinaryExpressionNode(BinaryExpressionNode rhs) : base(rhs)
@@ -1835,7 +1832,6 @@ namespace ProtoCore.AST.AssociativeAST
             }
             IsInputExpression = rhs.IsInputExpression;
             IsFirstIdentListNode = rhs.IsFirstIdentListNode;
-            IsLastIdentListNode = rhs.IsLastIdentListNode;
         }
 
         /// <summary>
@@ -1861,7 +1857,6 @@ namespace ProtoCore.AST.AssociativeAST
              RightNode = NodeUtils.Clone(rhs);
              IsInputExpression = false;
              IsFirstIdentListNode = false;
-             IsLastIdentListNode = false;
              
          }
 

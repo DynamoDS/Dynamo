@@ -2630,7 +2630,7 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
-            if (stackSSAPointerList.Count <= 0)
+            if (stackSSAPointerList.Count == 0)
             {
                 return;
             }
@@ -2662,7 +2662,8 @@ namespace ProtoCore
                     //  This means that statement that depends on a.x can re-execute, such as:
                     //      p = a.x;
                     //
-                    string propertyName = stackSSAPointerList.Peek()[stackSSAPointerList.Peek().Count - 1].Name;
+                    List<ProtoCore.AST.AssociativeAST.AssociativeNode> topList = stackSSAPointerList.Peek();
+                    string propertyName = topList[topList.Count - 1].Name;
                     bool isSetter = propertyName.StartsWith(Constants.kSetterPrefix);
                     if (isSetter)
                     {

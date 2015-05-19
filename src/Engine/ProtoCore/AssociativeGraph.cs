@@ -151,14 +151,9 @@ namespace ProtoCore.AssociativeEngine
                 }
             }
 
-            if (!doesOtherNodeDependOnExecNode)
-            {
-                return false;
-            }
-
             // Other conditions can go here
 
-            return true;
+            return doesOtherNodeDependOnExecNode;
         }
 
 

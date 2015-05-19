@@ -1,6 +1,4 @@
 ﻿
-//#define __EXECUTE_DATAFLOW_DIRECT_JUMP
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6399,26 +6397,7 @@ namespace ProtoCore.DSASM
                 fi = functionIndex;
             }
 
-#if __EXECUTE_DATAFLOW_DIRECT_JUMP
-            // Data flow execution prototype
-            // If the VM wrote the next pc to the LX register, jump to that PC
-            if (LX.optype == AddressType.Int && LX.opdata != Constants.kInvalidPC)
-            {
-                Properties.executingGraphNode = GetNextGraphNodeToExecute((int)LX.opdata, ci, fi);
-                if (Properties.executingGraphNode != null)
-                {
-                    Properties.executingGraphNode.isDirty = false;
-                    pc = Properties.executingGraphNode.updateBlock.startpc;
-                }
-                LX = StackValue.BuildInt(Constants.kInvalidPC);
-            }
-            else
-            {
-                SetupNextExecutableGraph(fi, ci);
-            }
-#else
             SetupNextExecutableGraph(fi, ci);
-#endif
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
