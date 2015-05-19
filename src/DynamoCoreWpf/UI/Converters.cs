@@ -29,6 +29,7 @@ namespace Dynamo.Controls
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
+        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -2177,46 +2178,70 @@ namespace Dynamo.Controls
         }
     }
 
-    /// <summary>
-    /// Converts element type of node search element in short string.
-    /// E.g. ElementTypes.Packaged => PKG.
-    /// </summary>
-    public class ElementTypeToShortConverter : IValueConverter
+    public class GroupFontSizeToEditorEnabledConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        private const double MinFontFactor = 7.0;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var type = (ElementTypes)value;
+            var zoom = System.Convert.ToDouble(values[0]);
+            var fontsize = System.Convert.ToDouble(values[1]);
 
-            switch (type)
+            var factor = zoom*fontsize;
+            if (factor < MinFontFactor)
             {
-                case ElementTypes.Packaged:
-                    return Resources.PackageTypeShortString;
-
-                case ElementTypes.Packaged | ElementTypes.ZeroTouch:
-                    return Resources.PackageTypeShortString;
-
-                case ElementTypes.Packaged | ElementTypes.CustomNode:
-                    return Resources.PackageTypeShortString;
-
-                case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
-                    return Resources.PackageTypeShortString;
-
-                case ElementTypes.ZeroTouch:
-                    return Resources.ZeroTouchTypeShortString;
-
-                case ElementTypes.CustomNode:
-                    return Resources.CustomNodeTypeShortString;
-
-                case ElementTypes.BuiltIn:
-                case ElementTypes.None:
-                default:
-                    return string.Empty;
+                return false;
             }
+
+            return true;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+        /// Converts element type of node search element in short string.
+        /// E.g. ElementTypes.Packaged => PKG.
+        /// </summary>
+        public class ElementTypeToShortConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var type = (ElementTypes) value;
+
+                switch (type)
+                {
+                    case ElementTypes.Packaged:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.ZeroTouch:
+                        return Resources.ZeroTouchTypeShortString;
+
+                    case ElementTypes.CustomNode:
+                        return Resources.CustomNodeTypeShortString;
+
+                    case ElementTypes.BuiltIn:
+                    case ElementTypes.None:
+                    default:
+                        return string.Empty;
+                }
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }    
 }
