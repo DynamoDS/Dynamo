@@ -604,64 +604,6 @@ namespace ProtoCore.AssociativeEngine
             return reachableGraphNodes;
         }
 
-
-
-        /// <summary>
-        /// Find and return all graphnodes that can be reached by executingGraphNode
-        /// </summary>
-        /// <param name="executingGraphNode"></param>
-        /// <param name="executive"></param>
-        /// <param name="exprUID"></param>
-        /// <param name="modBlkId"></param>
-        /// <param name="isSSAAssign"></param>
-        /// <param name="executeSSA"></param>
-        /// <param name="languageBlockID"></param>
-        /// <param name="propertyChanged"></param>
-        /// <returns></returns>
-        public static List<AssociativeGraph.GraphNode> UpdateDependencyGraph2(
-            AssociativeGraph.GraphNode executingGraphNode,
-            DSASM.Executive executive,
-            int exprUID,
-            int modBlkId,
-            bool isSSAAssign,
-            bool executeSSA,
-            int languageBlockID,
-            bool recursiveSearch,
-            bool propertyChanged = false)
-        {
-            AssociativeGraph.DependencyGraph dependencyGraph = executive.exe.instrStreamList[languageBlockID].dependencyGraph;
-            List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>();
-
-            if (executingGraphNode == null)
-            {
-                return reachableGraphNodes;
-            }
-
-            int classIndex = executingGraphNode.classIndex;
-            int procIndex = executingGraphNode.procIndex;
-
-            var graph = dependencyGraph;
-            var graphNodes = graph.GetGraphNodesAtScope(classIndex, procIndex);
-            if (graphNodes == null)
-            {
-                return reachableGraphNodes;
-            }
-
-            for (int i = 0; i < graphNodes.Count; ++i)
-            {
-                var graphNode = graphNodes[i];
-
-                // If the graphnode is inactive then it is no longer executed
-                if (!graphNode.isActive)
-                {
-                    continue;
-                }
-            }
-            return reachableGraphNodes;
-        }
-
-
-
         //
         // Comment Jun: Revised 
         //
