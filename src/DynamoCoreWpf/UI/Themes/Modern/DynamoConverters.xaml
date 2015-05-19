@@ -147,4 +147,5 @@
                                       TrueBrush="#cccccc"
                                       FalseBrush="#666666" />
     <controls:GroupFontSizeToEditorEnabledConverter x:Key="GroupFontSizeToEditorEnabledConverter"/>
+    <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
 </ResourceDictionary>

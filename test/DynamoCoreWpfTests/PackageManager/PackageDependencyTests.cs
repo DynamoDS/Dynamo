@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -7,7 +6,7 @@ using Dynamo.PackageManager.UI;
 using Dynamo.Tests;
 using NUnit.Framework;
 
-namespace Dynamo.PackageManager.Tests
+namespace Dynamo.PackageManager.Wpf.Tests
 {
     internal class PackageDependencyTests : DynamoModelTestBase
     {

@@ -80,6 +80,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
+      <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -330,6 +333,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\InCanvasSearchControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1146,6 +1153,7 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\drag_move.cur" />
     <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-next-prev-states.png" />

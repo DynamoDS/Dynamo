@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -490,6 +491,90 @@ namespace Dynamo.Tests
             array = new object[] { "string", "string" };
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(converter.ActiveColor, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ElementTypeToShortConverterTest()
+        {
+            var converter = new ElementTypeToShortConverter();
+
+            Assert.Throws<NullReferenceException>(() => { converter.Convert(null, null, null, null); });
+            Assert.Throws<InvalidCastException>(() => { converter.Convert("DummyType", null, null, null); });
+
+            object result;
+
+            result = converter.Convert(ElementTypes.Packaged, null, null, null);
+            Assert.AreEqual("PKG", result);
+
+            result = converter.Convert(ElementTypes.ZeroTouch, null, null, null);
+            Assert.AreEqual("DLL", result);
+
+            result = converter.Convert(ElementTypes.CustomNode, null, null, null);
+            Assert.AreEqual("DS", result);
+
+            result = converter.Convert(ElementTypes.BuiltIn, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+
+            result = converter.Convert(ElementTypes.None, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+
+            result = converter.Convert(ElementTypes.ZeroTouch | ElementTypes.BuiltIn, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+        }
+
+        [Category("UnitTests")]
+        public void AngleConverter()
+        {
+            var converter = new RadianToDegreesConverter();
+            double radians = Convert.ToDouble(converter.ConvertBack("90.0", typeof(string), null, new CultureInfo("en-US")));
+            Assert.AreEqual(1.57, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("180.0", typeof(string), null, new CultureInfo("en-US")));
+            Assert.AreEqual(3.14, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("360.0", typeof(string), null, new CultureInfo("en-US")));
+            Assert.AreEqual(6.28, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("-90.0", typeof(string), null, new CultureInfo("en-US")));
+            Assert.AreEqual(-1.57, radians, 0.01);
+
+            double degrees = Convert.ToDouble(converter.Convert("-1.570795", typeof(string), null, new CultureInfo("en-US")));
+            Assert.AreEqual(-90.0, degrees, 0.01);
+
+            degrees = Convert.ToDouble(converter.Convert("6.28318", typeof(string), null, new CultureInfo("en-US")));
+            Assert.AreEqual(360.0, degrees, 0.01);
+
+            degrees = Convert.ToDouble(converter.Convert("3.14159", typeof(string), null, new CultureInfo("en-US")));
+            Assert.AreEqual(180.0, degrees, 0.01);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void AngleConverterGerman()
+        {
+            RadianToDegreesConverter converter = new RadianToDegreesConverter();
+            double radians = Convert.ToDouble(converter.ConvertBack("90,0", typeof(string), null, new CultureInfo("de-DE")));
+            Assert.AreEqual(1.57, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("180,0", typeof(string), null, new CultureInfo("de-DE")));
+            Assert.AreEqual(3.14, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("360,0", typeof(string), null, new CultureInfo("de-DE")));
+
+            Assert.AreEqual(6.28, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("-90,0", typeof(string), null, new CultureInfo("de-DE")));
+            Assert.AreEqual(-1.57, radians, 0.01);
+
+            double degrees = Convert.ToDouble(converter.Convert("-1,570795", typeof(string), null, new CultureInfo("de-DE")));
+            Assert.AreEqual(-90.0, degrees, 0.01);
+
+            degrees = Convert.ToDouble(converter.Convert("6,28318", typeof(string), null, new CultureInfo("de-DE")));
+            Assert.AreEqual(360.0, degrees, 0.01);
+
+            degrees = Convert.ToDouble(converter.Convert("3,14159", typeof(string), null, new CultureInfo("de-DE")));
+            Assert.AreEqual(180.0, degrees, 0.01);
         }
     }
 }

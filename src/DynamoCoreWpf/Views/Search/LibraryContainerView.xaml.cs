@@ -349,5 +349,19 @@ namespace Dynamo.Search
             if (e.Key != Key.Escape) return;
             SearchTextBox.Text = "";
         }
+
+
+        /// <summary>
+        /// On drag&drop starts change cursor to cursor, that is shown when the user is hovering over the workspace.
+        /// </summary>
+        private void OnLibraryContainerViewGiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            e.UseDefaultCursors = e.Effects.HasFlag(DragDropEffects.Copy) || e.Effects.HasFlag(DragDropEffects.Move);
+
+            if (!e.UseDefaultCursors)
+                Mouse.SetCursor(CursorLibrary.GetCursor(CursorSet.DragMove));
+
+            e.Handled = true;
+        }
     }
 }

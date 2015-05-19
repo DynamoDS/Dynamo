@@ -15,7 +15,9 @@
              MouseMove="OnMouseMove"
              KeyDown="WorkspaceView_KeyDown"
              KeyUp="WorkspaceView_KeyUp"
-             IsHitTestVisible="{Binding IsCurrentSpace}">
+             IsHitTestVisible="{Binding IsCurrentSpace}"
+             AllowDrop="True"
+             Drop="OnWorkspaceDrop">
 
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
@@ -186,8 +188,9 @@
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
 
-                    <!--<MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
-                               Command="{Binding NodeToCodeCommand}" /> -->
+                    <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
+                               Command="{Binding NodeToCodeCommand}" 
+                               Visibility="{Binding Path=CanRunNodeToCode, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
 
                     <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
                                Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
