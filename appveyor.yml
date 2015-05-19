@@ -8,4 +8,6 @@ build:
   project: src/Dynamo.All.2013.sln
   verbosity: normal
   
-test: off
+test:
+  assemblies:
+    - bin/AnyCPU/Release/ProtoTest.dll
