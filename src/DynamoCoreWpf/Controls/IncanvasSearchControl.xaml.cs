@@ -19,14 +19,14 @@ namespace Dynamo.UI.Controls
     /// <summary>
     /// Interaction logic for IncanvasLibrarySearchControl.xaml
     /// </summary>
-    public partial class IncanvasSearchControl : UserControl
+    public partial class InCanvasSearchControl : UserControl
     {
-        public IncanvasSearchControl()
+        public InCanvasSearchControl()
         {
             InitializeComponent();
         }
 
-        private SearchViewModel viewModel
+        private SearchViewModel ViewModel
         {
             get { return DataContext as SearchViewModel; }
         }
@@ -37,8 +37,8 @@ namespace Dynamo.UI.Controls
             if (binding != null)
                 binding.UpdateSource();
 
-            if (viewModel != null)
-                viewModel.SearchCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.SearchCommand.Execute(null);
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

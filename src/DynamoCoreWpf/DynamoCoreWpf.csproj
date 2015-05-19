@@ -80,8 +80,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\IncanvasSearchControl.xaml.cs">
-      <DependentUpon>IncanvasSearchControl.xaml</DependentUpon>
+    <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
+      <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -333,7 +333,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\IncanvasSearchControl.xaml">
+    <Page Include="Controls\InCanvasSearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
