@@ -127,6 +127,30 @@ namespace ProtoTest.FFITests
         }
 
         [Test]
+        public void LookupResolvedName_ForTypedIdentifierFromCompiler_RewriteAst()
+        {
+
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            var testCore = thisTest.GetTestCore();
+            var astNodes = CoreUtils.BuildASTList(testCore, "d : ElementResolverTarget;");
+
+            var elementResolver = new ElementResolver();
+
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
+
+            Assert.AreEqual("d : FFITarget.ElementResolverTarget", newNodes.ElementAt(0).ToString());
+
+            // Add verification for contents of element resolver resolution map
+            var assembly = elementResolver.LookupAssemblyName("ElementResolverTarget");
+            var resolvedName = elementResolver.LookupResolvedName("ElementResolverTarget");
+
+            Assert.AreEqual("FFITarget.dll", assembly);
+            Assert.AreEqual("FFITarget.ElementResolverTarget", resolvedName);
+        }
+
+        [Test]
         public void LookupResolvedName_ForComplexExpression_RewriteAst()
         {
             var astNodes = CoreUtils.BuildASTList(core, "p = Point.ByCoordinates(x, y, z).X;");
