@@ -329,13 +329,5 @@
             </ui:ImageCheckBox>
         </StackPanel>
 
-        <Popup Name="InCanvasSearchBar"
-               StaysOpen="True"
-               AllowsTransparency="True"
-               IsOpen="False"
-               Placement="MousePoint">
-            <ui:InCanvasSearchControl />
-        </Popup>
-
     </Grid>
 </UserControl>

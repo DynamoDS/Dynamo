@@ -162,8 +162,6 @@
         <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                     CommandParameter="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-        <MouseBinding Gesture="Shift+LeftDoubleClick"
-                      Command="{Binding Path=DataContext.HomeSpaceViewModel.ShowInCanvasSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
