@@ -465,7 +465,47 @@ r3 = TestData.GetValueFromDictionary(arr, 3);
             Type dummy = typeof(FFITarget.TestData);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             ExecuteAndVerify(code, data);
- 
+        }
+
+        [Test]
+        public void Test_UnMarshalHashTable()
+        {
+            string code =
+                @"
+table = TestData.GetHashTable();
+r1 = TestData.GetValueFromHashTable(table, ""color"");
+r2 = TestData.GetValueFromHashTable(table, ""weight"");
+r3 = TestData.GetValueFromHashTable(table, 37);
+r4 = TestData.GetValueFromHashTable(table, 1024);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = "green", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = "thirty-seven", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_UnMarshalArrayToHashTable()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+arr[""foo""] = ""xyz"";
+r1 = TestData.GetValueFromHashTable(arr, 1);
+r2 = TestData.GetValueFromHashTable(arr, ""foo"");
+r3 = TestData.GetValueFromHashTable(arr, 100);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = "xyz", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
         }
 
         [Test]

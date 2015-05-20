@@ -423,6 +423,24 @@ namespace FFITarget
             };
         }
 
+        public static Hashtable GetHashTable()
+        {
+            var hashTable = new Hashtable();
+            hashTable.Add("color", "green");
+            hashTable.Add("weight", 42);
+            hashTable.Add(37, "thirty-seven");
+
+            return hashTable;
+        }
+
+        public static object GetValueFromHashTable(Hashtable table, object key)
+        {
+            if (table.Contains(key))
+                return table[key];
+            else
+                return 1024;
+        }
+
         public static object GetValueFromDictionary(Dictionary<object, object> dict, object key)
         {
             if (dict.ContainsKey(key))

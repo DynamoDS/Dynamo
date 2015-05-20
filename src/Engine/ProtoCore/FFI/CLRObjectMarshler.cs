@@ -262,17 +262,20 @@ namespace ProtoFFI
 
             if (expectedCLRType.IsGenericType)
             {
-                elementType = expectedCLRType.GetGenericArguments().First();
-                arrayType = elementType.MakeArrayType();
-
-                bool isGenericDictionary = expectedCLRType.GetGenericTypeDefinition() == typeof(Dictionary<,>);
-                if (isGenericDictionary)
+                var argumentTypes = expectedCLRType.GetGenericArguments();
+                if (expectedCLRType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
                 {
-                    var argTypes = expectedCLRType.GetGenericArguments();
-                    var keyType = argTypes[0];
-                    var valueType = argTypes[1];
-                    return ToDictionary(dsObject, context, dsi, keyType, valueType);
+                    var keyType = argumentTypes[0];
+                    var valueType = argumentTypes[1];
+                    return ToGenericDictionary(dsObject, context, dsi, keyType, valueType);
                 }
+
+                elementType = argumentTypes.First();
+                arrayType = elementType.MakeArrayType();
+            }
+            else if (typeof(IDictionary).IsAssignableFrom(expectedCLRType))
+            {
+                return ToIDictionary(dsObject, context, dsi, expectedCLRType);
             }
 
             ICollection collection = null;
@@ -318,17 +321,19 @@ namespace ProtoFFI
 
         #region DS_ARRAY_TO_CS_DICTIONARY
 
-        protected object ToDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type keyType, System.Type valueType)
+        private object AddToDictionary(ProtoCore.Runtime.Context context,
+            Interpreter dsi,
+            IDictionary dict,
+            IEnumerable<KeyValuePair<StackValue, StackValue>> keyValues,
+            System.Type keyType, System.Type valueType)
         {
-            if (!dsObject.IsArray)
-            {
-                return null;
-            }
+            if (dict == null)
+                throw new ArgumentNullException("dict");
 
-            var dict = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(keyType, valueType)); 
-            var dsKeyValues = ArrayUtils.GetKeyValuePairs(dsObject, dsi.runtime.RuntimeCore);
+            if (keyValues == null)
+                throw new ArgumentNullException("keyValues");
 
-            foreach (var pair in dsKeyValues)
+            foreach (var pair in keyValues)
             {
                 var key = primitiveMarshaler.UnMarshal(pair.Key, context, dsi, keyType);
                 if (key == null || !keyType.IsAssignableFrom(key.GetType()))
@@ -342,6 +347,26 @@ namespace ProtoFFI
             }
 
             return dict;
+        }
+
+        private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
+        {
+            if (!dsObject.IsArray)
+                return null;
+
+            var dict = (IDictionary)Activator.CreateInstance(expectedType);
+            var keyValues = ArrayUtils.GetKeyValuePairs(dsObject, dsi.runtime.RuntimeCore);
+            return AddToDictionary(context, dsi, dict, keyValues, typeof(object), typeof(object));
+        }
+
+        protected object ToGenericDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type keyType, System.Type valueType)
+        {
+            if (!dsObject.IsArray)
+                return null;
+
+            var dict = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(keyType, valueType)); 
+            var keyValues = ArrayUtils.GetKeyValuePairs(dsObject, dsi.runtime.RuntimeCore);
+            return AddToDictionary(context, dsi, dict, keyValues, keyType, valueType);
         }
 
         #endregion
