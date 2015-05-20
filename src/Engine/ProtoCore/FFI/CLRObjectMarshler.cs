@@ -326,17 +326,15 @@ namespace ProtoFFI
             }
 
             var dict = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(keyType, valueType)); 
-            var dsKeys = ArrayUtils.GetKeys(dsObject, dsi.runtime.RuntimeCore);
+            var dsKeyValues = ArrayUtils.GetKeyValuePairs(dsObject, dsi.runtime.RuntimeCore);
 
-            foreach (var dsKey in dsKeys)
+            foreach (var pair in dsKeyValues)
             {
-                var key = primitiveMarshaler.UnMarshal(dsKey, context, dsi, keyType);
+                var key = primitiveMarshaler.UnMarshal(pair.Key, context, dsi, keyType);
                 if (key == null || !keyType.IsAssignableFrom(key.GetType()))
                     continue;
 
-                var dsValue = ArrayUtils.GetValueFromIndex(dsObject, dsKey, dsi.runtime.RuntimeCore);
-                var value = primitiveMarshaler.UnMarshal(dsValue, context, dsi, valueType);
-
+                var value = primitiveMarshaler.UnMarshal(pair.Value, context, dsi, valueType);
                 if (value != null && valueType.IsAssignableFrom(value.GetType()))
                     dict.Add(key, value);
                 else
