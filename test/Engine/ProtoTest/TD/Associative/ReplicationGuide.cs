@@ -1605,7 +1605,7 @@ namespace ProtoTest.TD.Associative
 @" class A{    static def foo1(x,y)    {        return = x + y;    }    static def foo2()    {        return = {1, 2};    }    static def foo3()    {        return = {3, 4};    }    static def foo ( x )    {        return = x;    }}def foo( x){    return = x;}x = 2;t1 = A.foo ( x > 1 ? A.foo1(A.foo2()<1>,A.foo3()<2>) : 0);";
             string errmsg = "DNL-1467591 replication guides in class instantiation is not giving expected output";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new [] { 4,  6 });
+            thisTest.Verify("t1", new [] { new object[] {4, 5}, new object[]{5, 6} });
         }
 
         [Test]
@@ -1615,7 +1615,7 @@ namespace ProtoTest.TD.Associative
 @" class A{    static def foo1(x,y)    {        return = x + y;    }    static def foo2()    {        return = {1, 2};    }    static def foo3()    {        return = {3, 4};    }    static def fooo ( x )    {        return = x;    }    static def foo ( x )    {        return = A.fooo ( x > 1 ? A.foo1(A.foo2()<1>,A.foo3()<2>) : 0);    }}x = 2;t1 = A.foo ( x );";
             string errmsg = "DNL-1467591 replication guides in class instantiation is not giving expected output";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("t1", new Object[] { 4, 6});
+            thisTest.Verify("t1", new Object[] { new object[]{4, 5}, new object[] {5, 6}});
         }
 
         [Test]
