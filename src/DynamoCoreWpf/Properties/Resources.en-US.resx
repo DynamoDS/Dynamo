@@ -1542,6 +1542,18 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
+  <data name="DesignOptionsWindowDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DesignOptionsWindowDescriptionHint" xml:space="preserve">
+    <value>Enter a description of this design options state</value>
+  </data>
+  <data name="DesignOptionsWindowName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DesignOptionsWindowTitle" xml:space="preserve">
+    <value> Design Options Properties</value>
+  </data>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
     <value>Run is not available when running Automatically or Periodically.</value>
   </data>
@@ -1636,18 +1648,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackage" xml:space="preserve">
     <value>Publish Package !</value>
   </data>
-  <data name="DesignOptionsWindowDescription" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="DesignOptionsWindowDescriptionHint" xml:space="preserve">
-    <value>Enter a description of this design options state</value>
-  </data>
-  <data name="DesignOptionsWindowName" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="DesignOptionsWindowTitle" xml:space="preserve">
-    <value> Design Options Properties</value>
-    </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>What's New</value>
   </data>
@@ -1689,5 +1689,17 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="ZeroTouchTypeShortString" xml:space="preserve">
     <value>DLL</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateState" xml:space="preserve">
+    <value>Create State From Selection</value>
+  </data>
+  <data name="DynamoViewEditMenuDeleteState" xml:space="preserve">
+    <value>Delete State</value>
+  </data>
+  <data name="DynamoViewEditMenuRestoreState" xml:space="preserve">
+    <value>Restore State</value>
+  </data>
+  <data name="DynamoViewEditMenuStatesMenu" xml:space="preserve">
+    <value>States</value>
   </data>
 </root>

@@ -1690,4 +1690,16 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ZeroTouchTypeShortString" xml:space="preserve">
     <value>DLL</value>
   </data>
+  <data name="DynamoViewEditMenuCreateState" xml:space="preserve">
+    <value>Create State From Selection</value>
+  </data>
+  <data name="DynamoViewEditMenuDeleteState" xml:space="preserve">
+    <value>Delete State</value>
+  </data>
+  <data name="DynamoViewEditMenuRestoreState" xml:space="preserve">
+    <value>Restore State</value>
+  </data>
+  <data name="DynamoViewEditMenuStatesMenu" xml:space="preserve">
+    <value>States</value>
+  </data>
 </root>

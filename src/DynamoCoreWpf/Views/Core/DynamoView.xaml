@@ -341,21 +341,21 @@
                                   InputGestureText="Ctrl + V" />
                         <Separator />
 
-                        <!--TODO replace states with string-->
-                        <MenuItem Header ="States"
+                       
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuStatesMenu}"
                               Name = "StatesMenu"
                               Focusable= "False"
                               IsEnabled="True">
-                            <MenuItem Header="Create State From Selection"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreateState}"
                                       Command="{Binding ShowNewDesignOptionDialogCommand}"
                                       Name="newDesignOptions"
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
-                            <MenuItem Header="Restore State"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestoreState}"
                                     MouseEnter="LoadStateMenus"
                                       Name="RestoreStateMenu"
                                       Focusable="False" />
-                            <MenuItem Header="Delete State"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeleteState}"
                                     MouseEnter="LoadStateMenus"
                                       Name="DeleteStateMenu"
                                       Focusable="False" />
