@@ -367,5 +367,22 @@ namespace DynamoCoreWpfTests
 
             Assert.Pass(); // We should reach here safely without exception.
         }
+
+        [Test]
+        public void InvalidValueShouldNotCrashColorRangeNode()
+        {
+            var guid0 = System.Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
+            var guid1 = System.Guid.Parse("cece298a-22de-4f4a-a323-fdb04af406a4");
+
+            OpenAndRun(@"UI\InvalidValueShouldNotCrashColorRangeNode.dyn");
+            var nodes0 = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid0);
+            var nodes1 = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid0);
+            var node0 = nodes0.ElementAt(0) as CodeBlockNodeModel;
+            var node1 = nodes0.ElementAt(0) as CodeBlockNodeModel;
+            node0.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+            node1.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+
+            Assert.Pass(); // We should reach here safely without exception.
+        }
     }
 }
