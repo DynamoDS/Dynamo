@@ -114,16 +114,18 @@ namespace Dynamo.Models.NodeLoaders
             result.Deserialize(nodeElement, context);
 
             // In case of input parameters mismatch, use default arguments for parameters that have one
-            if (descriptor.MangledName != function)
+            if (!descriptor.MangledName.EndsWith(function))
             {
-                string[] inputTypes = function.Split('@')[1].Split(',');
-                var i = 0;
-                foreach (var param in descriptor.Parameters.Select((p, j) => new { p.Type, j }))
+                string[] oldSignature = function.Split('@');
+                string[] inputTypes = oldSignature.Length > 1 ? oldSignature[1].Split(',') : new string[]{};
+                int i = 0, j = 0;
+                foreach (var param in descriptor.Parameters)
                 {
                     if (i >= inputTypes.Length || param.Type.ToString() != inputTypes[i])
-                        result.InPorts[param.j].UsingDefaultValue = result.InPortData[param.j].DefaultValue != null;
+                        result.InPorts[j].UsingDefaultValue = result.InPortData[j].DefaultValue != null;
                     else
                         i++;
+                    j++;
                 }
             }
 
