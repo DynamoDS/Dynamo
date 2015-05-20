@@ -4122,6 +4122,13 @@ namespace DynamoCoreWpfTests
         [Test]
         public void MAGN_7348_Math()
         {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) reconnect inputs
+            //  c)check nodes preview value
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
             preloadGeometry = true;
              RunCommandsFromFile("MAGN_7348_Math.xml", (commandTag) =>
             {
@@ -4269,6 +4276,53 @@ namespace DynamoCoreWpfTests
                      Assert.IsNotNull(GetPreviewValue("3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4"));//check write to excel node
                      AssertPreviewCount("3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4", 65);
                 }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_Core_Python()
+        {
+            // Check Python nodes
+            // Scenario
+            //  a) By connecting node
+            //  b) change python script
+            //  c) reconnect/invalid input
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Core_Python.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3");// check list.GetItemAtIndex 
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3");// check list.GetItemAtIndex 
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3", 11);
+                    for (int i = 0; i < 11; i++)
+                    {
+                        Assert.IsNotNull(GetPreviewValueAtIndex("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3", i));
+                    }
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3");// check list.GetItemAtIndex 
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                     NodeModel python = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("3617330e-a33d-4fd6-b13d-b3eee9da5f18");// check python script
+                    Assert.AreEqual(ElementState.Warning, python.State);
+                    
+                }
+
             });
         }
         #endregion

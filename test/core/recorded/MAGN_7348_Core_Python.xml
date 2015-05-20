@@ -1,0 +1,131 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="132" Y="107" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="132" Y="107" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="ce6a66f4-05e4-418b-943a-30c7a804201d" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="40" y="76" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="7ffd464e-86d5-4b6b-8500-26b8cebdf618">
+    <ModelGuid>ce6a66f4-05e4-418b-943a-30c7a804201d</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="61" Y="193" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="38c0a969-27ff-41b1-86a4-a9b9fe2f1205" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-31" y="162" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..10;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <UpdateModelValueCommand Name="Code" Value="0..10" WorkspaceGuid="7ffd464e-86d5-4b6b-8500-26b8cebdf618">
+    <ModelGuid>38c0a969-27ff-41b1-86a4-a9b9fe2f1205</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <DSIronPythonNode.PythonNode guid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="182.5" y="89.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
+      <Script>import clr
+clr.AddReference('ProtoGeometry')
+from Autodesk.DesignScript.Geometry import *
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+OUT = 0</Script>
+    </DSIronPythonNode.PythonNode>
+  </CreateNodeCommand>
+  <ModelEventCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" EventName="AddInPort" />
+  <SelectModelCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" Modifiers="0" />
+  <DragSelectionCommand X="300" Y="198" DragOperation="0" />
+  <DragSelectionCommand X="218" Y="107" DragOperation="1" />
+  <MakeConnectionCommand NodeId="ce6a66f4-05e4-418b-943a-30c7a804201d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="30c44e0a-dae2-4cb2-b871-ca13954fc41b" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="38c0a969-27ff-41b1-86a4-a9b9fe2f1205" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="30c44e0a-dae2-4cb2-b871-ca13954fc41b" PortIndex="1" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="256" Y="258" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="256" Y="258" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="f7a37771-e4f0-466e-b17a-3cf1a1a5357f" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="164" y="227" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="7ffd464e-86d5-4b6b-8500-26b8cebdf618">
+    <ModelGuid>f7a37771-e4f0-466e-b17a-3cf1a1a5357f</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="363.5" y="77.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" Modifiers="0" />
+  <DragSelectionCommand X="368" Y="239" DragOperation="0" />
+  <DragSelectionCommand X="443" Y="112" DragOperation="1" />
+  <MakeConnectionCommand NodeId="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" PortIndex="0" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="30c44e0a-dae2-4cb2-b871-ca13954fc41b" PortIndex="0" Type="1" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="f7a37771-e4f0-466e-b17a-3cf1a1a5357f" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" PortIndex="1" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" Modifiers="0" />
+  <DragSelectionCommand X="289" Y="190" DragOperation="0" />
+  <DragSelectionCommand X="289" Y="190" DragOperation="1" />
+  <SelectModelCommand ModelGuid="38c0a969-27ff-41b1-86a4-a9b9fe2f1205" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="-21.0151394282527" Y="240.576492614733" Width="1.07317839436001" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="-22.0883178226127" Y="379.016505487176" Width="1.07317839436001" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" Modifiers="0" />
+  <DragSelectionCommand X="240.840388795594" Y="111.79508529153" DragOperation="0" />
+  <DragSelectionCommand X="240.840388795594" Y="111.79508529153" DragOperation="1" />
+  <SelectModelCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" Modifiers="0" />
+  <SelectModelCommand ModelGuid="30c44e0a-dae2-4cb2-b871-ca13954fc41b" Modifiers="0" />
+  <DragSelectionCommand X="224.742712880193" Y="108.57555010845" DragOperation="0" />
+  <DragSelectionCommand X="224.742712880193" Y="108.57555010845" DragOperation="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <DSIronPythonNode.PythonNode guid="3617330e-a33d-4fd6-b13d-b3eee9da5f18" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="131.718372443533" y="396.529539669599" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
+      <Script># Python script to find add or subtract a series of numbers. 
+
+# Boiler-plate import statments included out-of-the-box
+import clr
+clr.AddReference('ProtoGeometry')
+from Autodesk.DesignScript.Geometry import *
+
+# The inputs to this node will be stored as a list in the IN variable.
+sign = IN[0]  # -1 for subtract all, 0 for do nothing, 1 for add all
+nums = IN[1]  # List of numbers to subtract or add
+
+partials = [] # Empty array to contain partial sums or differences
+result = 0    # Initialize the sum or difference to 0
+
+# Loop through each item and add it or subtract it from the result.
+for index in range(len(nums)):
+	if sign &gt; 0:
+		result = result + nums[index]
+		partials.append(result)
+	elif sign == 0:
+		partials.append(result)
+		continue
+	else:
+		result = result - nums[index]
+		partials.append(result)
+
+# Assign the output to the OUT variable
+#OUT = results  # Use this to output only the result.
+OUT = []
+OUT.append(result)
+OUT.append(partials)</Script>
+    </DSIronPythonNode.PythonNode>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="3617330e-a33d-4fd6-b13d-b3eee9da5f18" Modifiers="0" />
+  <DragSelectionCommand X="195.766896232472" Y="296.381769121454" DragOperation="0" />
+  <DragSelectionCommand X="193.620539443752" Y="412.285035712337" DragOperation="1" />
+  <SelectModelCommand ModelGuid="3617330e-a33d-4fd6-b13d-b3eee9da5f18" Modifiers="0" />
+  <UpdateModelValueCommand Name="ScriptContent" Value="# Python script to find add or subtract a series of numbers. &#xA;&#xA;# Boiler-plate import statments included out-of-the-box&#xA;import clr&#xA;clr.AddReference('ProtoGeometry')&#xA;from Autodesk.DesignScript.Geometry import *&#xA;&#xA;# The inputs to this node will be stored as a list in the IN variable.&#xA;sign = IN[0]  # -1 for subtract all, 0 for do nothing, 1 for add all&#xA;nums = IN[1]  # List of numbers to subtract or add&#xA;&#xA;partials = [] # Empty array to contain partial sums or differences&#xA;result = 0    # Initialize the sum or difference to 0&#xA;&#xA;# Loop through each item and add it or subtract it from the result.&#xA;for index in range(len(nums)):&#xA;	if sign &gt; 0:&#xA;		result = result + nums[index]&#xA;		partials.append(result)&#xA;	elif sign == 0:&#xA;		partials.append(result)&#xA;		continue&#xA;	else:&#xA;		result = result - nums[index]&#xA;		partials.append(result)&#xA;&#xA;# Assign the output to the OUT variable&#xA;#OUT = results  # Use this to output only the result.&#xA;OUT = []&#xA;OUT.append(result)&#xA;OUT.append(partials)" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>3617330e-a33d-4fd6-b13d-b3eee9da5f18</ModelGuid>
+  </UpdateModelValueCommand>
+  <ModelEventCommand ModelGuid="3617330e-a33d-4fd6-b13d-b3eee9da5f18" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="ce6a66f4-05e4-418b-943a-30c7a804201d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3617330e-a33d-4fd6-b13d-b3eee9da5f18" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="38c0a969-27ff-41b1-86a4-a9b9fe2f1205" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3617330e-a33d-4fd6-b13d-b3eee9da5f18" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="3617330e-a33d-4fd6-b13d-b3eee9da5f18" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="384.646293639837" Y="355.406580811255" Width="0" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3" Modifiers="0" />
+  <DragSelectionCommand X="476.939635554799" Y="176.185788953131" DragOperation="0" />
+  <DragSelectionCommand X="476.939635554799" Y="176.185788953131" DragOperation="1" />
+  <MakeConnectionCommand NodeId="38c0a969-27ff-41b1-86a4-a9b9fe2f1205" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3617330e-a33d-4fd6-b13d-b3eee9da5f18" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="ce6a66f4-05e4-418b-943a-30c7a804201d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3617330e-a33d-4fd6-b13d-b3eee9da5f18" PortIndex="1" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="ThirdRun" PauseDurationInMs="20" />
+</Commands>
