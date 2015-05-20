@@ -93,7 +93,7 @@ namespace Dynamo.Views
 
             var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
             searchViewModel.Visible = true;
-            InCanvasSearch.DataContext = searchViewModel;
+            InCanvasSearchBar.DataContext = searchViewModel;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -501,7 +501,7 @@ namespace Dynamo.Views
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
             }
 
-            InCanvasSearch.IsOpen = false;
+            InCanvasSearchBar.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -718,10 +718,10 @@ namespace Dynamo.Views
             if (!this.IsMouseOver)
                 return;
 
-            InCanvasSearch.IsOpen = true;
+            InCanvasSearchBar.IsOpen = true;
         }
 
-        private void OnInCanvasSearchClosed(object sender, EventArgs e)
+        private void OnInCanvasSearchBarClosed(object sender, EventArgs e)
         {
             var searchVM = (sender as FrameworkElement).DataContext as SearchViewModel;
         }
