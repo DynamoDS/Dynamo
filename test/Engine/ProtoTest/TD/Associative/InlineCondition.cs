@@ -134,15 +134,9 @@ namespace ProtoTest.TD.Associative
 	b3 = a1>3?c1:c2;   // expected : {1, 2}
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Object[] b = new Object[] { 1, 2, 3, 4 };
-            Object[] c = new Object[] { 1, 2, 3 };
-            Object[] d = new Object[] { 1, 2 };
-            Object[] b1 = new Object[] { b, b, b, true };
-            Object[] b2 = new Object[] { c, c, c, true };
-            Object[] b3 = new Object[] { d, d, d, c };
-            thisTest.Verify("b1", b1);
-            thisTest.Verify("b2", b2);
-            thisTest.Verify("b3", b3);
+            thisTest.Verify("b1", new object[] {1, 2, 3,true});
+            thisTest.Verify("b2", new object[] {1, 2, 3});
+            thisTest.Verify("b3", new object[] {1, 2});
         }
 
 
@@ -163,17 +157,11 @@ namespace ProtoTest.TD.Associative
 	e1 = (a[-2] == d[9])? 9 : a[1..2]; // { 2, 3 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            // following verification might need to be updated for current implementation, once the defect above is fixed
-            // b = ((a[i] % 2) > 0)? even(a[i]) : a; 
-            // replication only is supported on condition, not the overall expression.
-            // List<Object> b = new List<object>() { 1, 6, 3, 10, 5 };
-            // Assert.IsTrue(mirror.CompareArrays("b", b, typeof(System.Int64)));
-            List<Object> c = new List<object>() { 4, 6, 8, 10, 12 };
             List<Object> d = new List<object>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            List<Object> e1 = new List<object>() { 2, 3 };
-            Assert.IsTrue(mirror.CompareArrays("c", c, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("d", d, typeof(System.Int64)));
-            Assert.IsTrue(mirror.CompareArrays("e1", e1, typeof(System.Int64)));
+            thisTest.Verify("c", new object[] { 4, 6, 8, 10, 12 });
+            thisTest.Verify("d", new object[] { 1, 2, 3, 4, 5 });
+            thisTest.Verify("e1", new object[] { 2, 3});
+
         }
 
 
@@ -189,8 +177,7 @@ namespace ProtoTest.TD.Associative
 	x_1 = x[1];
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Object[] b1 = new Object[] { new Object[] { 1, 1 }, new Object[] { 1, 1 }, 0, 0 };
-            thisTest.Verify("x", b1);
+            thisTest.Verify("x", new object[] {1, 1});
         }
 
 
@@ -241,7 +228,7 @@ number = { 3, -3 };
 ";
             thisTest.VerifyRunScriptSource(src, errmsg);
             Object n1 = null;
-            thisTest.Verify("b", new object[] { new object[] { 2, 4, 6 }, new object[] { 2, 4, 6 }, new object[] { 2, 4, 6 } });
+            thisTest.Verify("b", new object[] {2, 4, 6});
             thisTest.Verify("a", 10);
             thisTest.Verify("c", 13);
             thisTest.Verify("d", 53);
@@ -343,8 +330,8 @@ x = 1 > 2 ? foo() + 1 : foo() + 2;
 ";
             string err = "MAGN-4026 Execution of both true and false statements in Associative inline condition";
             ExecutionMirror mirror = thisTest.RunScriptSource(src, err);
-            thisTest.Verify("x", 3);
-            thisTest.Verify("a", 1);
+            thisTest.Verify("x", 4);
+            thisTest.Verify("a", 2);
         }
 
 
@@ -552,7 +539,7 @@ x = c > 1 ? a : b;
 test = x;";
             string errmsg = "";//1467290 sprint25: rev 3731 : REGRESSION : Update with inline condition across multiple language blocks is not working as expected";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("x", 2);
+            thisTest.Verify("x", new object[] {2, 2});
         }
 
 
