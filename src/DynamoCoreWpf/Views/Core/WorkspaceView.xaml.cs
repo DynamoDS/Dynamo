@@ -93,6 +93,8 @@ namespace Dynamo.Views
 
             var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
             searchViewModel.Visible = true;
+            searchViewModel.RequestCloseInCanvasSearch += () => { InCanvasSearchBar.IsOpen = false; };
+
             InCanvasSearchBar.DataContext = searchViewModel;
         }
 
