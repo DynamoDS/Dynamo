@@ -815,5 +815,55 @@ namespace Dynamo.Tests
             Assert.AreEqual("x", customInstance.InPorts.First().PortName);
             Assert.AreEqual("bool", customInstance.InPorts.First().ToolTipContent);
         }
+
+        [Test]
+        public void TestGroupsOnCustomNodes()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse.dyn");
+            OpenModel(openPath);
+
+            var nodesToCollapse = new[]
+            {
+                "1da395b9-2539-4705-a479-1f6e575df01d", 
+                "b8130bf5-dd14-4784-946d-9f4705df604e",
+                "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
+            };
+
+            foreach (
+                var node in
+                    nodesToCollapse.Select(CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace))
+            {
+                CurrentDynamoModel.AddToSelection(node);
+            }
+
+            //create the group around selected nodes
+            Guid groupid = Guid.NewGuid();
+            var annotation = CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Annotations.First().SelectedModels.Count(), 3);
+
+            CurrentDynamoModel.AddToSelection(annotation);
+
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest2__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+
+            SelectTabByGuid(ws.CustomNodeId);
+
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+
+            //Check whether the group is copied to custom workspace
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Annotations.Count); 
+        }
     }
 }
