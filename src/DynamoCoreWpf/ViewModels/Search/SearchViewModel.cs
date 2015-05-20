@@ -44,13 +44,6 @@ namespace Dynamo.ViewModels
                 RequestCloseSearchToolTip(this, e);
         }
 
-        public event Action RequestCloseInCanvasSearch;
-        public void OnRequestCloseInCanvasSearch()
-        {
-            if (RequestCloseInCanvasSearch != null)
-                RequestCloseInCanvasSearch();
-        }
-
         public event EventHandler SearchTextChanged;
         public void OnSearchTextChanged(object sender, EventArgs e)
         {
@@ -254,8 +247,6 @@ namespace Dynamo.ViewModels
             {
                 case "CurrentSpace":
                     OnRequestCloseSearchToolTip(sender, e);
-                    // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
-                    OnRequestCloseInCanvasSearch();
                     break;
             }
         }
