@@ -14,6 +14,7 @@ using System.Windows.Media.Media3D;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Rendering;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;

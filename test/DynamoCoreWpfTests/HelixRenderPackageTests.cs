@@ -3,7 +3,7 @@
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Rendering;
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
