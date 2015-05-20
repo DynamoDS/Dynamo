@@ -866,7 +866,6 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_5()
         {
@@ -874,7 +873,7 @@ namespace ProtoTest.TD.Associative
 @"class A{    x: int;    constructor A ( a, b, c)    {        x = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = Count ( A.A(1, { 1, 2}<1>, y<2>).x ) > 1 ? A.A(1, { 1, 2}<1>, y<2>).x : 0;}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new object[] { 5, 7});
+            thisTest.Verify("test", new object[] { new object[] { 5, 6 }, new object[] { 6, 7 } });
         }
 
         [Test]
@@ -911,7 +910,6 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
-        [Category("Failure")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_9()
         {
@@ -919,11 +917,10 @@ namespace ProtoTest.TD.Associative
 @"class A{    x: int;    constructor A ( a, b, c)    {        x = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = Count ( A.A(1, (1..2..1)<1>, y<2>).x ) > 1 ? A.A(1, (1..2)<1>, y<2>).x : 0;}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new object[] { 5, 7});
+            thisTest.Verify("test", new object[] { new object[]{5, 6}, new object[] {6, 7}});
         }
 
         [Test]
-        [Category("Failure")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_10()
         {
@@ -931,7 +928,7 @@ namespace ProtoTest.TD.Associative
 @"class A{    x: int;    constructor A ( a, b, c)    {        x = a + b + c ;    }}test;[Associative]{    y = 3..4;    test = Count ( A.A(1, (1..2..1)<1>, y<2>).x ) > 1 ? A.A(1, (1..2..#2)<1>, y<2>).x : 0;}";
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new object[] { 5, 7 } );
+            thisTest.Verify("test", new object[] { new object[] {5, 6}, new object[]{6, 7} } );
         }
 
         [Test]
