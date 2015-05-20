@@ -13,6 +13,7 @@ using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
@@ -178,6 +179,11 @@ namespace Dynamo.Models
         ///     The context that Dynamo is running under.
         /// </summary>
         public readonly string Context;
+
+        /// <summary>
+        ///     Manages all extensions for Dynamo
+        /// </summary>
+        //public readonly IExtensionManager ExtensionManager; // MAGN-7366
 
         /// <summary>
         ///     Manages all loaded NodeModel libraries.
@@ -742,8 +748,9 @@ namespace Dynamo.Models
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
                         searchElement.SyncWithCustomNodeInfo(newInfo);
-                        SearchModel.Update(searchElement);
+                        SearchModel.Update(searchElement, isCategoryChanged);
                     }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>

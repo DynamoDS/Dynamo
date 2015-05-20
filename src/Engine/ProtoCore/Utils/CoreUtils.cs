@@ -1,4 +1,5 @@
 ﻿
+using System.Linq;
 using ProtoCore.DSASM;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
@@ -122,47 +123,6 @@ namespace ProtoCore.Utils
         ProtoCore.AST.AssociativeAST.IdentifierNode _return = BuildAssocIdentifier(core, ProtoCore.DSDefinitions.Keyword.Return, ProtoCore.PrimitiveType.kTypeReturn);
         ProtoCore.AST.AssociativeAST.IdentifierNode param = BuildAssocIdentifier(core, "%param");
         body.Body.Add(new ProtoCore.AST.AssociativeAST.BinaryExpressionNode() { LeftNode = _return, Optr = ProtoCore.DSASM.Operator.assign, RightNode = new ProtoCore.AST.AssociativeAST.UnaryExpressionNode() { Expression = param, Operator = op } });
-        funcDefNode.FunctionBody = body;
-        (root as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(funcDefNode);
-    }
-
-	private static void InsertInlineConditionOperationMethod(Core core, ProtoCore.AST.Node root, PrimitiveType condition, PrimitiveType r)
-    {
-        ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
-        funcDefNode.Name = ProtoCore.DSASM.Constants.kInlineCondition; 
-        funcDefNode.ReturnType = new ProtoCore.Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r };
-        ProtoCore.AST.AssociativeAST.ArgumentSignatureNode args = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
-        args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
-        {
-            memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, "%condition"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)condition), UID = (int)condition }
-        });
-        args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
-        {
-            memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, "%trueExp"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
-        });
-        args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
-        {
-            memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, "%falseExp"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
-        });
-        funcDefNode.Signature = args;
-
-        ProtoCore.AST.AssociativeAST.CodeBlockNode body = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
-        ProtoCore.AST.AssociativeAST.IdentifierNode _return = BuildAssocIdentifier(core, ProtoCore.DSDefinitions.Keyword.Return, ProtoCore.PrimitiveType.kTypeReturn);
-        ProtoCore.AST.AssociativeAST.IdentifierNode con = BuildAssocIdentifier(core, "%condition");
-        ProtoCore.AST.AssociativeAST.IdentifierNode t = BuildAssocIdentifier(core, "%trueExp");
-        ProtoCore.AST.AssociativeAST.IdentifierNode f = BuildAssocIdentifier(core, "%falseExp");
-
-        body.Body.Add(new ProtoCore.AST.AssociativeAST.BinaryExpressionNode() { LeftNode = _return, Optr = Operator.assign, RightNode = new ProtoCore.AST.AssociativeAST.InlineConditionalNode() { ConditionExpression = con, TrueExpression = t, FalseExpression = f } });
         funcDefNode.FunctionBody = body;
         (root as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(funcDefNode);
     }
@@ -704,18 +664,19 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Traverses the identifierlist argument until class name resolution succeeds or fails.
+        /// Inspects the input identifier list to match all class names with the class used in it
         /// </summary>
         /// <param name="classTable"></param>
-        /// <param name="identifier"></param>
-        /// <returns></returns>
-        public static string[] GetResolvedClassName(ClassTable classTable, AssociativeNode identifier)
+        /// <param name="identifierList">single identifier or identifier list</param>
+        /// <returns>list of fully resolved class names</returns>
+        public static string[] GetResolvedClassName(ClassTable classTable, AssociativeNode identifierList)
         {
-            var identList = identifier as IdentifierListNode;
-            var identifierNode = identifier as IdentifierNode;
-            Validity.Assert(identList != null || identifierNode != null);
+            var identListNode = identifierList as IdentifierListNode;
+            var identifierNode = identifierList as IdentifierNode;
+            Validity.Assert(identListNode != null || identifierNode != null);
 
-            string partialName = identList != null ? GetIdentifierStringUntilFirstParenthesis(identList) : identifier.Name;
+            string partialName = identListNode != null ? 
+                GetIdentifierStringUntilFirstParenthesis(identListNode) : identifierList.Name;
 
             string[] classNames = classTable.GetAllMatchingClasses(partialName);
 
@@ -724,11 +685,11 @@ namespace ProtoCore.Utils
             while (0 == classNames.Length)
             {
                 // Move to the left node
-                AssociativeNode leftNode = identList != null ? identList.LeftNode : identifierNode;
+                AssociativeNode leftNode = identListNode != null ? identListNode.LeftNode : identifierNode;
                 if (leftNode is IdentifierListNode)
                 {
-                    identList = leftNode as IdentifierListNode;
-                    classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identList));
+                    identListNode = leftNode as IdentifierListNode;
+                    classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identListNode));
                 }
                 if (leftNode is IdentifierNode)
                 {
@@ -788,6 +749,38 @@ namespace ProtoCore.Utils
                 {
                     LeftNode = newIdentList,
                     RightNode = new IdentifierNode(strIdentList[n]),
+                    Optr = Operator.dot
+                };
+                newIdentList = subIdentList;
+            }
+
+            return newIdentList;
+        }
+
+        public static AssociativeNode CreateNodeByCombiningIdentifiers(IList<AssociativeNode> nodeList)
+        {
+            int count = nodeList.Count;
+            if(count == 0)
+                return null;
+
+            if (count == 1)
+            {
+                return nodeList[0];
+            }
+
+            var newIdentList = new IdentifierListNode
+            {
+                LeftNode = nodeList[0],
+                RightNode = nodeList[1],
+                Optr = Operator.dot
+            };
+
+            for (var n = 2; n < count; ++n)
+            {
+                var subIdentList = new IdentifierListNode
+                {
+                    LeftNode = newIdentList,
+                    RightNode = nodeList[n],
                     Optr = Operator.dot
                 };
                 newIdentList = subIdentList;
