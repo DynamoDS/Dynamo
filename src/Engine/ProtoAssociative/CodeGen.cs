@@ -3348,8 +3348,17 @@ namespace ProtoAssociative
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
 
+                DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
+                cexpr = ssaStack.Pop();
+                ilnode.TrueExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                astlist.AddRange(inlineExpressionASTList);
+                inlineExpressionASTList.Clear();
 
-                // SSA for true and false body are handled by EmitInlineConditionalNode
+                DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
+                cexpr = ssaStack.Pop();
+                ilnode.FalseExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                astlist.AddRange(inlineExpressionASTList);
+                inlineExpressionASTList.Clear();
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode();
                 bnode.Optr = ProtoCore.DSASM.Operator.assign;
