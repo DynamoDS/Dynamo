@@ -118,6 +118,12 @@ limitations under the License.
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="DefaultRenderPackageFactory.cs" />
+    <Compile Include="Extensions\ExtensionDefinition.cs" />
+    <Compile Include="Extensions\IExtensionLoader.cs" />
+    <Compile Include="Extensions\IExtensionManager.cs" />
+    <Compile Include="Extensions\IExtension.cs" />
+    <Compile Include="Extensions\ReadyParams.cs" />
+    <Compile Include="Extensions\StartupParams.cs" />
     <Compile Include="Interfaces\IRenderPackageFactory.cs" />
     <Compile Include="Models\AnnotationModel.cs" />
     <Compile Include="Core\PathManager.cs" />
@@ -349,6 +355,7 @@ limitations under the License.
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
+      <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
@@ -364,7 +371,9 @@ limitations under the License.
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
+    <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)" />
     <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)"/>
+    <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)"/>
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
 

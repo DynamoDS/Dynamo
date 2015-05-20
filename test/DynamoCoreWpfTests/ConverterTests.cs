@@ -495,6 +495,35 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void ElementTypeToShortConverterTest()
+        {
+            var converter = new ElementTypeToShortConverter();
+
+            Assert.Throws<NullReferenceException>(() => { converter.Convert(null, null, null, null); });
+            Assert.Throws<InvalidCastException>(() => { converter.Convert("DummyType", null, null, null); });
+
+            object result;
+
+            result = converter.Convert(ElementTypes.Packaged, null, null, null);
+            Assert.AreEqual("PKG", result);
+
+            result = converter.Convert(ElementTypes.ZeroTouch, null, null, null);
+            Assert.AreEqual("DLL", result);
+
+            result = converter.Convert(ElementTypes.CustomNode, null, null, null);
+            Assert.AreEqual("DS", result);
+
+            result = converter.Convert(ElementTypes.BuiltIn, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+
+            result = converter.Convert(ElementTypes.None, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+
+            result = converter.Convert(ElementTypes.ZeroTouch | ElementTypes.BuiltIn, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+        }
+
+        [Category("UnitTests")]
         public void AngleConverter()
         {
             var converter = new RadianToDegreesConverter();

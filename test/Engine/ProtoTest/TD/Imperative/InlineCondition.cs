@@ -517,7 +517,6 @@ f = a <= b || c <= d ? 1 : 0;
 g = foo({ 1, 2 }) > 3+ foo({4,5,6}) ?  1 : 3+ foo({4,5,6});
 i = {1,3} > 2 ? 1: 0;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[][] array = { new Object[] { 7, 8, 9 }, new Object[] { 7, 8, 9 } };
             Object[] array2 = { 0, 1 };
             thisTest.Verify("a", 5.0, 0);
             thisTest.Verify("b", 1, 0);
@@ -525,7 +524,7 @@ i = {1,3} > 2 ? 1: 0;";
             thisTest.Verify("d", 1, 0);
             thisTest.Verify("e1", 0, 0);
             thisTest.Verify("f", 1, 0);
-            thisTest.Verify("g", array, 0);
+            thisTest.Verify("g", new [] {7, 8}, 0);
             thisTest.Verify("i", array2, 0);
         }
 

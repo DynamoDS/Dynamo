@@ -47,7 +47,7 @@
   <Import Project="$(WixTargetsPath)" />
   <PropertyGroup>
     <PreBuildEvent>rd /s /q $(DYNAMO_HARVEST_PATH)
-robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD samples
+robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD samples -XD gallery -XD 0.8
 copy $(DYNAMO_BASE_PATH)\tools\install\Extra\DynamoAddinGenerator.exe $(DYNAMO_HARVEST_PATH)\DynamoAddinGenerator.exe
 copy $(DYNAMO_BASE_PATH)\tools\install\Extra\RevitAddinUtility.dll $(DYNAMO_HARVEST_PATH)\RevitAddinUtility.dll
 
