@@ -202,6 +202,8 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
+        public Dynamo.UI.Commands.DelegateCommand TestSelectionCommand { get; set; }
+
         #endregion
 
         #region constructors
@@ -365,6 +367,8 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -846,6 +850,23 @@ namespace Dynamo.Controls
         }
 
         #endregion
+
+        private bool CanTestSelection(object parameters)
+        {
+            return true;
+        }
+
+        private void TestSelection(object parameters)
+        {
+            foreach (var item in watch_view.Items)
+            {
+                var geom = item as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                if (geom != null)
+                {
+                    geom.IsSelected = !geom.IsSelected;
+                }
+            }
+        }
     }
 
     internal class GraphicsUpdateParams

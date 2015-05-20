@@ -13,6 +13,7 @@
                 <TextBox Width="50" Text="{Binding LightAzimuthDegrees, Mode=TwoWay}"/>
                 <Label Content="Elevation:"/>
                 <TextBox Width="50" Text="{Binding LightElevationDegrees, Mode=TwoWay}"/>
+                <Button Content="Select" Command="{Binding TestSelectionCommand}"></Button>
             </StackPanel>
             
         </StackPanel>
