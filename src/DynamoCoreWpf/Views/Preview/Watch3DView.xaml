@@ -125,7 +125,7 @@
             <hx:DirectionalLight3D Name="key" Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
             <hx:LineGeometryModel3D x:Name="linesView"  Geometry="{Binding Lines}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.5" IsHitTestVisible="False" />
             <hx:LineGeometryModel3D x:Name="linesSelectedView"  Geometry="{Binding LinesSelected}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="1.0" IsHitTestVisible="False" />
-            <hx:PointGeometryModel3D x:Name="pointsView" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.White}"/>
+            <hx:PointGeometryModel3D x:Name="pointsView" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Size="8 8" Figure="Ellipse"/>
             <hx:MeshGeometryModel3D x:Name="meshView" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False" />
             <hx:MeshGeometryModel3D x:Name="meshSelectedView" Geometry="{Binding MeshSelected}" Transform = "{Binding Model1Transform}" Material="{Binding SelectedMaterial}" IsHitTestVisible="False" />
             <wpf:PerVertexMeshGeometryModel3D x:Name="perVertexMeshView" Geometry="{Binding PerVertexMesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False"/>
