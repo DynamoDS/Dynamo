@@ -423,6 +423,14 @@ namespace FFITarget
             };
         }
 
+        public static object GetValueFromDictionary(Dictionary<object, object> dict, object key)
+        {
+            if (dict.ContainsKey(key))
+                return dict[key];
+            else
+                return 1024;
+        }
+
         public static object GetObjectValue( Dictionary<String, object> result, String key)
         {
             if (result.ContainsKey(key))

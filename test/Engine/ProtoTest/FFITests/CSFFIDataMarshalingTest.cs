@@ -447,6 +447,26 @@ namespace ProtoFFITests
             ExecuteAndVerify(code, data);
         }
 
+        [Test]
+        public void Test_UnMarshalHybridDictionary()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+arr[""foo""] = ""xyz"";
+r1 = TestData.GetValueFromDictionary(arr, ""foo"");
+r2 = TestData.GetValueFromDictionary(arr, 1);
+r3 = TestData.GetValueFromDictionary(arr, 3);
+";            
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = "xyz", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+ 
+        }
 
         [Test]
         public void Test_DefaultArgument()
