@@ -10,8 +10,7 @@
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
              MaxHeight="350"
-             Width="250"
-             IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
+             Width="250">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

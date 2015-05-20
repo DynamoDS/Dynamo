@@ -89,19 +89,11 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-            ViewModel.RequestShowInCanvasSearch += ShowInCanvasControl;
-
-            var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
-            searchViewModel.Visible = true;
-            searchViewModel.RequestCloseInCanvasSearch += () => { InCanvasSearchBar.IsOpen = false; };
-
-            InCanvasSearchBar.DataContext = searchViewModel;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-            ViewModel.RequestShowInCanvasSearch -= ShowInCanvasControl;
         }
 
         /// <summary>
@@ -502,8 +494,6 @@ namespace Dynamo.Views
             {
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
             }
-
-            InCanvasSearchBar.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -714,15 +704,6 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
-        private void ShowInCanvasControl()
-        {
-            // Show InCanvas search just in case, when mouse is over workspace.
-            if (!this.IsMouseOver)
-                return;
-
-            InCanvasSearchBar.IsOpen = true;
-        }
-        
         private void OnWorkspaceDrop(object sender, DragEventArgs e)
         {
             var nodeInfo = e.Data.GetData(typeof(DragDropNodeSearchElementInfo)) as DragDropNodeSearchElementInfo;
