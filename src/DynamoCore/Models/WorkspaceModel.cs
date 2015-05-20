@@ -795,7 +795,13 @@ namespace Dynamo.Models
         }
 
         internal void SetWorkspaceToState(PresetState state)
-        {   //start an undoBeginGroup
+        {
+            if (state == null)
+            {
+                Log("that state cannot be found");
+                return;
+            }
+            //start an undoBeginGroup
             using (var undoGroup = this.undoRecorder.BeginActionGroup())
             {
                //reload each node, and record each each modification in the undogroup

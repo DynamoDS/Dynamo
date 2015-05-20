@@ -87,7 +87,7 @@ namespace Dynamo.Models
         //this overload is used for loading
         public PresetState(string name, string description, List<NodeModel> nodes, List<XmlElement> serializedNodes, Guid id)
         {
-            //TODO null checks
+            
             Name = name;
             Description = description;
             this.nodes = nodes;

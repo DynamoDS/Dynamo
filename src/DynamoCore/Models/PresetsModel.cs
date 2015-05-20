@@ -105,7 +105,6 @@ namespace Dynamo.Models
                         var deserialzedNodes = new List<XmlElement>();
                         //now find the nodes we're looking for by their guids in the loaded nodegraph
                         //it's possible they may no longer be present, and we must not fail to set the
-                        //TODO//rest of the nodes but log this to the console.
 
                         //iterate each actual saved nodemodel in each state
                         foreach (XmlElement node in stateNode.ChildNodes)

@@ -2184,7 +2184,7 @@ namespace Dynamo.ViewModels
         }
         private bool CanShowNewDesignOptionDialog(object parameter)
         {
-            //TODO return false if we're in a custom node
+            //TODO(mike) in future may want to return false if we're in a custom node, currently returns true. 
             return DynamoSelection.Instance.Selection.Count > 0;
         }
         

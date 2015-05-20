@@ -1024,7 +1024,6 @@ namespace Dynamo.Controls
             PresetState state = ((MenuItem)sender).Tag as PresetState;
             var workspace = dynamoViewModel.HomeSpace;
             workspace.HasUnsavedChanges = true;
-            //TODO wrap this in a recordable command
             dynamoViewModel.Model.CurrentWorkspace.PresetsCollection.RemoveState(state);
             
         }

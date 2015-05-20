@@ -120,11 +120,9 @@ namespace Dynamo.Tests
 
         }
 
-          [Test]
-          [Category("Failure")]
-        //TODO fix implementaion in loader
-        //this attempts to load some good states and some states with bad GUIDS, currently Dynamo just refuses to load
-        // the entire graph when one GUID is bad in a state, should just load anyway...
+      
+        //this attempts to load some good states and some states with bad GUIDS, 
+        [Test]
         public void CanLoadFileWithMalformedPresetsObject()
         {
             var model = CurrentDynamoModel;
