@@ -203,6 +203,11 @@ namespace Dynamo.Controls
         }
 
 #if DEBUG
+        /// <summary>
+        /// The TestSelectionCommand is used in the WatchSettingsControl
+        /// to test the ability to toggle a boolean effect variable
+        /// representing the selection state.
+        /// </summary>
         public Dynamo.UI.Commands.DelegateCommand TestSelectionCommand { get; set; }
 #endif
 
