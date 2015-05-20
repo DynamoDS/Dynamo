@@ -779,7 +779,7 @@ namespace Dynamo.Controls
 
                     lineSet.Positions.AddRange(l.Positions);
                     lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
-                    lineSet.Indices.AddRange(l.Indices.Select(i=>i + startIdx));
+                    lineSet.Indices.AddRange(l.Indices.Any()? l.Indices.Select(i=>i + startIdx) : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
 
                     var endIdx = lineSet.Positions.Count;
 
