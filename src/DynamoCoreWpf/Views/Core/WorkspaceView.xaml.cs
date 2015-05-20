@@ -720,11 +720,6 @@ namespace Dynamo.Views
 
             InCanvasSearchBar.IsOpen = true;
         }
-
-        private void OnInCanvasSearchBarClosed(object sender, EventArgs e)
-        {
-            var searchVM = (sender as FrameworkElement).DataContext as SearchViewModel;
-        }
         
         private void OnWorkspaceDrop(object sender, DragEventArgs e)
         {

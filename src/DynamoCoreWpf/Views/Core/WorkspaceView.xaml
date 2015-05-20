@@ -333,8 +333,7 @@
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
-               Placement="MousePoint"
-               Closed="OnInCanvasSearchBarClosed">
+               Placement="MousePoint">
             <ui:InCanvasSearchControl />
         </Popup>
 
