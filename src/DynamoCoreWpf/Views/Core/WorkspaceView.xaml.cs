@@ -89,17 +89,17 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-            ViewModel.RequestShowIncanvasSearch += ShowIncanvasControl;
+            ViewModel.RequestShowInCanvasSearch += ShowInCanvasControl;
 
             var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
             searchViewModel.Visible = true;
-            IncanvasSearch.DataContext = searchViewModel;
+            InCanvasSearch.DataContext = searchViewModel;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-            ViewModel.RequestShowIncanvasSearch -= ShowIncanvasControl;
+            ViewModel.RequestShowInCanvasSearch -= ShowInCanvasControl;
         }
 
         /// <summary>
@@ -501,7 +501,7 @@ namespace Dynamo.Views
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
             }
 
-            IncanvasSearch.IsOpen = false;
+            InCanvasSearch.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -712,16 +712,16 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
-        private void ShowIncanvasControl()
+        private void ShowInCanvasControl()
         {
-            // Show incanvas search just in case, when mouse is over workspace.
+            // Show InCanvas search just in case, when mouse is over workspace.
             if (!this.IsMouseOver)
                 return;
 
-            IncanvasSearch.IsOpen = true;
+            InCanvasSearch.IsOpen = true;
         }
 
-        private void OnIncanvasSearchClosed(object sender, EventArgs e)
+        private void OnInCanvasSearchClosed(object sender, EventArgs e)
         {
             var searchVM = (sender as FrameworkElement).DataContext as SearchViewModel;
         }

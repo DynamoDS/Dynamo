@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for IncanvasLibrarySearchControl.xaml
+    /// Interaction logic for InCanvasLibrarySearchControl.xaml
     /// </summary>
     public partial class InCanvasSearchControl : UserControl
     {

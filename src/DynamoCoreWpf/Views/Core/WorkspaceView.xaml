@@ -329,12 +329,12 @@
             </ui:ImageCheckBox>
         </StackPanel>
 
-        <Popup Name="IncanvasSearch"
+        <Popup Name="InCanvasSearch"
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
                Placement="MousePoint"
-               Closed="OnIncanvasSearchClosed">
+               Closed="OnInCanvasSearchClosed">
             <ui:InCanvasSearchControl />
         </Popup>
 

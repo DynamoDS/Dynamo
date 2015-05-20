@@ -41,7 +41,7 @@ namespace Dynamo.ViewModels
 
         public event NodeEventHandler RequestCenterViewOnElement;
 
-        public event Action RequestShowIncanvasSearch;
+        public event Action RequestShowInCanvasSearch;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
@@ -112,10 +112,10 @@ namespace Dynamo.ViewModels
                 WorkspacePropertyEditRequested(Model);
         }
 
-        public virtual void OnRequestShowIncanvasSearch()
+        public virtual void OnRequestShowInCanvasSearch()
         {
-            if (RequestShowIncanvasSearch != null)
-                RequestShowIncanvasSearch();
+            if (RequestShowInCanvasSearch != null)
+                RequestShowInCanvasSearch();
         }
 
         /// <summary>
@@ -1155,9 +1155,9 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("SelectionArgumentLacing");
         }
 
-        private void ShowIncanvasSearch(object param)
+        private void ShowInCanvasSearch(object param)
         {
-            OnRequestShowIncanvasSearch();
+            OnRequestShowInCanvasSearch();
         }
     }
 
