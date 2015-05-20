@@ -202,7 +202,9 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
+#if DEBUG
         public Dynamo.UI.Commands.DelegateCommand TestSelectionCommand { get; set; }
+#endif
 
         #endregion
 
@@ -851,6 +853,7 @@ namespace Dynamo.Controls
 
         #endregion
 
+#if DEBUG
         private bool CanTestSelection(object parameters)
         {
             return true;
@@ -867,6 +870,8 @@ namespace Dynamo.Controls
                 }
             }
         }
+#endif
+
     }
 
     internal class GraphicsUpdateParams
