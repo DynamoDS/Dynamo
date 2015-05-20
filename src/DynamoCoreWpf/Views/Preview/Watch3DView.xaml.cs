@@ -375,7 +375,9 @@ namespace Dynamo.Controls
 
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
+#if DEBUG
             TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
+#endif
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
