@@ -79,6 +79,10 @@ namespace ProtoCore.Namespace
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            IdentifierListNode newIdentifierListNode = null;
+            if (IsMatchingResolvedName(node, out newIdentifierListNode))
+                return newIdentifierListNode;
+
             var rightNode = node.RightNode;
             var leftNode = node.LeftNode;
 
@@ -97,6 +101,35 @@ namespace ProtoCore.Namespace
         #endregion
 
         #region private helper methods
+
+        private bool IsMatchingResolvedName(IdentifierListNode identifierList, out IdentifierListNode newIdentList)
+        {
+            newIdentList = null;
+            string partialName = CoreUtils.GetIdentifierExceptMethodName(identifierList);
+            var resolvedName = elementResolver.LookupResolvedName(partialName);
+            if (string.IsNullOrEmpty(resolvedName))
+            {
+                // If namespace resolution map does not contain entry for partial name, 
+                // back up on compiler to resolve the namespace from partial name
+                var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifierList);
+
+                if (matchingClasses.Length == 1)
+                {
+                    resolvedName = matchingClasses[0];
+                    var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
+
+                    elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
+                }
+            }
+            if (string.IsNullOrEmpty(resolvedName)) 
+                return false;
+
+            newIdentList = (IdentifierListNode)CoreUtils.CreateNodeFromString(resolvedName);
+            
+            //return resolvedName == partialName;
+            var symbol = new Symbol(resolvedName);
+            return symbol.Matches(identifierList.ToString());
+        }
 
         private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
         {
