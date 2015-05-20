@@ -4044,11 +4044,7 @@ namespace DynamoCoreWpfTests
 
             // Check Number Range
             // Scenario
-            //  a) By connecting nodes
-            //  b) Reconnecting nodes
-            //  c) Negative Inputs 
-            //  d) Incomplete Nodes  
-   
+            // check nurbscurve value
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
 
             RunCommandsFromFile("MAGN_7348_ReadFromCSV.xml", (commandTag) =>
@@ -4073,7 +4069,7 @@ namespace DynamoCoreWpfTests
             //  a) By connecting node
             //  b) reconnect node
             //  c) give negative input
-            //   d) No input is given 
+            //  d) No input is given 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
 
             RunCommandsFromFile("MAGN_7348_PassingFuntion.xml", (commandTag) =>
@@ -4121,7 +4117,160 @@ namespace DynamoCoreWpfTests
             });
         }
 
- 
+
+  
+        [Test]
+        public void MAGN_7348_Math()
+        {
+            preloadGeometry = true;
+             RunCommandsFromFile("MAGN_7348_Math.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // check minus and fomular
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("93d9bb4d-4da0-422e-add0-3b6d71cee598", 3);//minus node
+                    AssertPreviewValue("9b00f9cf-9590-468f-9579-89e76a0d1ab5", 3);//cbn node
+                    AssertPreviewValue("013c4b13-2b50-4385-adb2-39861ca5fa1d", 3);//formula node
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("93d9bb4d-4da0-422e-add0-3b6d71cee598", -3);//minus node
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("fc7308e1-546b-4f60-8342-d607692db435", 1);//formula node
+                    AssertPreviewValue("3507e4b6-209f-46d1-9ebd-cf9b66088c65", 1);//remainder node
+                    AssertPreviewValue("37592d1c-992e-4101-8bad-f1f4c031634c", 1);//cbn node
+                }
+                else if (commandTag == "ForthRun")
+                {
+                    AssertPreviewValue("f260729d-842a-45c5-b50a-6e2ddafd1344", true);// > node
+                }
+                else if (commandTag == "FifthRun")
+                {
+                    AssertPreviewValue("389b90e5-83ea-4f38-966a-fbce6d5cb550", false);// <= node
+                    AssertPreviewValue("fd2c046b-5b3a-46e1-972c-b4deabb7d72f", false);//cbn node
+                    AssertPreviewValue("d9cc11a5-58a0-43c3-939b-30e5e238e37d", false);//formula node         
+                }
+                else if (commandTag == "SixthRun")
+                {
+                    AssertPreviewValue("194b2c6c-226d-42a0-acab-db55c5cc74ea", false); //== node
+                    AssertPreviewValue("48c497fb-376e-473b-b31c-f7865b7c2229", false);//formula node
+                    AssertPreviewValue("23ee05b2-1e02-4537-83f0-1ac8a65bc87a", false);//cbn 
+                }
+                else if (commandTag == "SeventhRun")
+                {
+                    AssertPreviewValue("56064d57-1bae-4cd7-a8ca-d7dab89f22a1", 3);//math.floor
+                    AssertPreviewValue("f05d5e47-4ee9-4b9e-8dde-c06509167709", 3);//Math.Round
+                    AssertPreviewValue("c66cb574-116c-4acc-93a8-5774fa02f0da", 4);//match.celling
+                }                        
+              
+            });
+        }
+
+
+
+        [Test]
+        public void MAGN_7348_Math_Point()
+        {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) check two lines' values 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Math_Point.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+               
+                if (commandTag == "FirstRun")
+                {
+                    var line = GetPreviewValue("e615f564-b830-48cd-adfa-06c846b6c91b");
+                    Assert.IsNotNull(line);
+                    AssertPreviewValue("5a28bff1-af6f-4236-b924-ff43a4e5efb4", 247.821);
+                    var line2 = GetPreviewValue("cfb83855-b371-4ceb-b816-31109afd708f");
+                    Assert.IsNotNull(line2);
+                    Assert.AreEqual(line.ToString(), line2.ToString());                  
+                }                           
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_Math_Point_Formula()
+        {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) change point lacing from cross product to shortest 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Math_Point_Formula.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+               
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewCount("eb39e7be-b421-4083-9e50-b628a78fe02e", 20);//check nurbscurve
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("54648e79-9127-445c-a3c9-7c59b0453880");// check surface.byloft
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    Assert.AreEqual(GetPreviewValue("54648e79-9127-445c-a3c9-7c59b0453880").ToString(),"Surface");
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                      ("54648e79-9127-445c-a3c9-7c59b0453880");// check surface.byloft
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }     
+            });
+        }
+
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_WriteToExcel()
+        {
+            // Check WriteToExcel
+            // Scenario
+            //  a) By connecting node, check cbns
+            //  b) complete inputs
+            //  c) check values of CBN
+            //  d) give new input value and test write to excel node
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_WriteToExcel.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                   
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("67ef5890-7aa6-4db6-ae82-c4532efc0c01");// check cbn 
+                    Assert.AreEqual(ElementState.Warning, node.State);               
+                    NodeModel cbn = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                      ("a4667733-11ec-44f9-bcd7-d8695dad09af");// check CBN
+                    Assert.AreEqual(ElementState.Active, cbn.State);
+                    AssertPreviewCount("a4667733-11ec-44f9-bcd7-d8695dad09af", 65);
+                  
+                }
+               else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("67ef5890-7aa6-4db6-ae82-c4532efc0c01");// check cbn 
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("67ef5890-7aa6-4db6-ae82-c4532efc0c01", 3);
+                   
+                }
+                else if (commandTag == "Tag-ca842c63")
+                {
+                  
+                     Assert.IsNotNull(GetPreviewValue("3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4"));//check write to excel node
+                     AssertPreviewCount("3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4", 65);
+                }
+            });
+        }
         #endregion
 
 

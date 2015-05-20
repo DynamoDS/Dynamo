@@ -1,0 +1,183 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="38" Y="64" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="38" Y="64" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="112" y="34" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{pt.X,pt.Y,pt.Z};" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" Modifiers="0" />
+  <DragSelectionCommand X="45" Y="51" DragOperation="0" />
+  <DragSelectionCommand X="211" Y="52" DragOperation="1" />
+  <UpdateModelValueCommand Name="Code" Value="{pt.X,pt.Y,pt.Z}" WorkspaceGuid="65e1804f-c8ff-4dbc-b227-26c102eb359b">
+    <ModelGuid>67ef5890-7aa6-4db6-ae82-c4532efc0c01</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <DSCoreNodesUI.Input.DoubleSlider guid="d0980cec-72d9-4328-a6b1-cc553d63c50b" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="19.5" y="130.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>1.793</System.Double>
+      <Range min="0" max="100" step="0.1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+  </CreateNodeCommand>
+  <UpdateModelValueCommand Name="ValueText" Value="1.793" WorkspaceGuid="65e1804f-c8ff-4dbc-b227-26c102eb359b">
+    <ModelGuid>d0980cec-72d9-4328-a6b1-cc553d63c50b</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand ModelGuid="d0980cec-72d9-4328-a6b1-cc553d63c50b" Modifiers="0" />
+  <DragSelectionCommand X="413" Y="116" DragOperation="0" />
+  <DragSelectionCommand X="168" Y="149" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="140" Y="233" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="140" Y="233" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a4667733-11ec-44f9-bcd7-d8695dad09af" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="48" y="202" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..(360*numCircles)..10;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="0..(360*numCircles)..10;" WorkspaceGuid="65e1804f-c8ff-4dbc-b227-26c102eb359b">
+    <ModelGuid>a4667733-11ec-44f9-bcd7-d8695dad09af</ModelGuid>
+  </UpdateModelValueCommand>
+  <MakeConnectionCommand NodeId="d0980cec-72d9-4328-a6b1-cc553d63c50b" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="a4667733-11ec-44f9-bcd7-d8695dad09af" PortIndex="0" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+   <SelectModelCommand ModelGuid="a4667733-11ec-44f9-bcd7-d8695dad09af" Modifiers="0" />
+  <DragSelectionCommand X="357" Y="276" DragOperation="0" />
+  <DragSelectionCommand X="357" Y="276" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="619.80947692806" Y="383.32505832672" Width="0" Height="1.58398968336974" IsCrossSelection="false" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="0db9a024-3c70-497a-a068-1782df915426" type="Dynamo.Nodes.DSFunction" nickname="Math.Cos" x="453.24363128114" y="-1.76705428690721" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Math.Cos@double" />
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="b929e733-0e0a-4728-8b91-2385bc682f29" type="Dynamo.Nodes.DSFunction" nickname="Math.Sin" x="453.134918721201" y="101.604923761077" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Math.Sin@double" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="0db9a024-3c70-497a-a068-1782df915426" Modifiers="0" />
+  <DragSelectionCommand X="583.26402512144" Y="205.57714652196" DragOperation="0" />
+  <DragSelectionCommand X="530.162091783163" Y="16.316409752204" DragOperation="1" />
+  <SelectModelCommand ModelGuid="b929e733-0e0a-4728-8b91-2385bc682f29" Modifiers="0" />
+  <DragSelectionCommand X="617.30372597931" Y="247.786375585719" DragOperation="0" />
+  <DragSelectionCommand X="526.077327680219" Y="123.881864463073" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="519.269387508645" Y="253.232727722978" Width="1.36158803431476" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="520.63097554296" Y="253.232727722978" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="cab232eb-b9eb-4831-b74f-a429268233c7" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="472.932405132388" y="220.638411965685" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x/100;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="x/100" WorkspaceGuid="65e1804f-c8ff-4dbc-b227-26c102eb359b">
+    <ModelGuid>cab232eb-b9eb-4831-b74f-a429268233c7</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand ModelGuid="cab232eb-b9eb-4831-b74f-a429268233c7" Modifiers="0" />
+  <DragSelectionCommand X="492.037626822349" Y="240.978435414145" DragOperation="0" />
+  <DragSelectionCommand X="536.970031954737" Y="239.61684737983" DragOperation="1" />
+  <MakeConnectionCommand NodeId="a4667733-11ec-44f9-bcd7-d8695dad09af" PortIndex="0" Type="1" ConnectionMode="0" />
+  <SelectModelCommand ModelGuid="0db9a024-3c70-497a-a068-1782df915426" Modifiers="0" />
+  <MakeConnectionCommand NodeId="00000000-0000-0000-0000-000000000000" PortIndex="-1" Type="0" ConnectionMode="2" />
+  <MakeConnectionCommand NodeId="a4667733-11ec-44f9-bcd7-d8695dad09af" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="0db9a024-3c70-497a-a068-1782df915426" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="a4667733-11ec-44f9-bcd7-d8695dad09af" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="b929e733-0e0a-4728-8b91-2385bc682f29" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="a4667733-11ec-44f9-bcd7-d8695dad09af" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="cab232eb-b9eb-4831-b74f-a429268233c7" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" Modifiers="0" />
+  <DragSelectionCommand X="241.505428508427" Y="46.2713465071294" DragOperation="0" />
+  <DragSelectionCommand X="748.01617727353" Y="69.4183430904809" DragOperation="1" />
+  <MakeConnectionCommand NodeId="0db9a024-3c70-497a-a068-1782df915426" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="00000000-0000-0000-0000-000000000000" PortIndex="-1" Type="0" ConnectionMode="2" />
+  <SelectModelCommand ModelGuid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" Modifiers="0" />
+  <DragSelectionCommand X="713.976476415661" Y="81.6726353993141" DragOperation="0" />
+  <DragSelectionCommand X="856.943220018714" Y="168.814269595461" DragOperation="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="7277ee1b-1f5f-4a4e-a0d4-f8617ebb01a8" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="622.826798638707" y="21.8394824116005" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="7277ee1b-1f5f-4a4e-a0d4-f8617ebb01a8" Modifiers="0" />
+  <DragSelectionCommand X="654.06660290581" Y="238.255259345515" DragOperation="0" />
+  <DragSelectionCommand X="713.976476415661" Y="35.3786422326111" DragOperation="1" />
+  <MakeConnectionCommand NodeId="0db9a024-3c70-497a-a068-1782df915426" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="7277ee1b-1f5f-4a4e-a0d4-f8617ebb01a8" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="b929e733-0e0a-4728-8b91-2385bc682f29" Modifiers="0" />
+  <DragSelectionCommand X="566.924968709663" Y="133.412980703276" DragOperation="0" />
+  <DragSelectionCommand X="566.924968709663" Y="133.412980703276" DragOperation="1" />
+  <MakeConnectionCommand NodeId="b929e733-0e0a-4728-8b91-2385bc682f29" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="7277ee1b-1f5f-4a4e-a0d4-f8617ebb01a8" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="7277ee1b-1f5f-4a4e-a0d4-f8617ebb01a8" PortIndex="2" Type="0" ConnectionMode="0" />
+  <SelectModelCommand ModelGuid="cab232eb-b9eb-4831-b74f-a429268233c7" Modifiers="0" />
+  <MakeConnectionCommand NodeId="00000000-0000-0000-0000-000000000000" PortIndex="-1" Type="0" ConnectionMode="2" />
+  <MakeConnectionCommand NodeId="cab232eb-b9eb-4831-b74f-a429268233c7" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="7277ee1b-1f5f-4a4e-a0d4-f8617ebb01a8" PortIndex="2" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="7277ee1b-1f5f-4a4e-a0d4-f8617ebb01a8" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="67ef5890-7aa6-4db6-ae82-c4532efc0c01" PortIndex="0" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" Modifiers="0" />
+  <DragSelectionCommand X="950.892794386435" Y="208.30032259059" DragOperation="0" />
+  <DragSelectionCommand X="950.892794386435" Y="208.30032259059" DragOperation="1" />
+  <SelectModelCommand ModelGuid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" Modifiers="0" />
+  <DragSelectionCommand X="950.892794386435" Y="208.30032259059" DragOperation="0" />
+  <DragSelectionCommand X="950.892794386435" Y="208.30032259059" DragOperation="1" />
+  <SelectModelCommand ModelGuid="67ef5890-7aa6-4db6-ae82-c4532efc0c01" Modifiers="0" />
+  <DragSelectionCommand X="950.892794386435" Y="208.30032259059" DragOperation="0" />
+  <DragSelectionCommand X="950.892794386435" Y="208.30032259059" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="2b0523f6-5fc3-4cdf-9c02-7dfec20f9596" type="Dynamo.Nodes.DSFunction" nickname="List.Transpose" x="987.132299255668" y="152.559597582421" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="2b0523f6-5fc3-4cdf-9c02-7dfec20f9596" Modifiers="0" />
+  <DragSelectionCommand X="1019.62729167421" Y="325.66363831722" DragOperation="0" />
+  <DragSelectionCommand X="1049.64139218271" Y="176.704769126907" DragOperation="1" />
+  <MakeConnectionCommand NodeId="67ef5890-7aa6-4db6-ae82-c4532efc0c01" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2b0523f6-5fc3-4cdf-9c02-7dfec20f9596" PortIndex="0" Type="0" ConnectionMode="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <DSCore.File.Filename guid="9c1ceba0-d2a9-4cc8-ae3b-9c62cd3c38b2" type="DSCore.File.Filename" nickname="File Path" x="975.764775958621" y="65.0326189291582" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>No file selected.</System.String>
+    </DSCore.File.Filename>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="9c1ceba0-d2a9-4cc8-ae3b-9c62cd3c38b2" Modifiers="0" />
+  <DragSelectionCommand X="886.23128941423" Y="187.821102648572" DragOperation="0" />
+  <DragSelectionCommand X="1034.07852525238" Y="84.4392008970858" DragOperation="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.StringInput guid="2f424c01-02b6-487d-9b48-0777f96fdea7" type="Dynamo.Nodes.StringInput" nickname="String" x="1051.35584390594" y="260.680088910465" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>123</System.String>
+      <System.String value="123" />
+    </Dynamo.Nodes.StringInput>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="2f424c01-02b6-487d-9b48-0777f96fdea7" Modifiers="0" />
+  <DragSelectionCommand X="876.226589244732" Y="216.723569804901" DragOperation="0" />
+  <DragSelectionCommand X="1072.9856925782" Y="282.309937582726" DragOperation="1" />
+  <UpdateModelValueCommand Name="Value" Value="123" WorkspaceGuid="65e1804f-c8ff-4dbc-b227-26c102eb359b">
+    <ModelGuid>2f424c01-02b6-487d-9b48-0777f96fdea7</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DoubleInput guid="9378c29b-9081-404f-aa0b-0e9172340ca2" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="1023.56501010178" y="354.057290492452" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="9378c29b-9081-404f-aa0b-0e9172340ca2" Modifiers="0" />
+  <DragSelectionCommand X="899.570889640228" Y="246.737670313397" DragOperation="0" />
+  <DragSelectionCommand X="1041.85995871754" Y="379.022039221212" DragOperation="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" type="Dynamo.Nodes.DSFunction" nickname="Excel.WriteToFile" x="1143.62141213576" y="97.2699861419871" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.WriteToFile@string,string,int,int,var[][]" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" Modifiers="0" />
+  <DragSelectionCommand X="985.16665775705" Y="271.19360406106" DragOperation="0" />
+  <DragSelectionCommand X="1220.83292841635" Y="120.011468166414" DragOperation="1" />
+  <MakeConnectionCommand NodeId="2b0523f6-5fc3-4cdf-9c02-7dfec20f9596" PortIndex="0" Type="1" ConnectionMode="0" />
+  <SelectModelCommand ModelGuid="2b0523f6-5fc3-4cdf-9c02-7dfec20f9596" Modifiers="0" />
+  <MakeConnectionCommand NodeId="00000000-0000-0000-0000-000000000000" PortIndex="-1" Type="0" ConnectionMode="2" />
+  <MakeConnectionCommand NodeId="2f424c01-02b6-487d-9b48-0777f96fdea7" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="9378c29b-9081-404f-aa0b-0e9172340ca2" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" PortIndex="2" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="9378c29b-9081-404f-aa0b-0e9172340ca2" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" PortIndex="3" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="9c1ceba0-d2a9-4cc8-ae3b-9c62cd3c38b2" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="2b0523f6-5fc3-4cdf-9c02-7dfec20f9596" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" PortIndex="4" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="ThirdRun" PauseDurationInMs="20" />
+   <SelectModelCommand ModelGuid="3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4" Modifiers="0" />
+  <DragSelectionCommand X="1287.53092954634" Y="268.970337356727" DragOperation="0" />
+  <DragSelectionCommand X="1287.53092954634" Y="268.970337356727" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="1424.31215812479" Y="403.404734426604" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="1458.28453745677" Y="293.251868107739" Width="0" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="Tag-ca842c63" PauseDurationInMs="20" />
+</Commands>
