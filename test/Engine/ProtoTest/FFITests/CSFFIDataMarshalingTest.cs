@@ -432,6 +432,23 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void Test_UnMarshalDictionary()
+        {
+            string code =
+                @" t = TestData.TestData();                   d = t.GetDictionary();                     r1 = TestData.GetStringValue(d, ""color"");                   r2 = TestData.GetStringValue(d, ""weight"");                   r3 = TestData.GetObjectValue(d, ""weight"");                   r4 = TestData.GetObjectValue(d, ""invalidkey"");
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = "green", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = null, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 37, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+
+        [Test]
         public void Test_DefaultArgument()
         {
             string code =

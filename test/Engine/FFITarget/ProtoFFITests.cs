@@ -423,6 +423,30 @@ namespace FFITarget
             };
         }
 
+        public static object GetObjectValue( Dictionary<String, object> result, String key)
+        {
+            if (result.ContainsKey(key))
+            {
+                return result[key];
+            }
+            else
+            {
+                return 37;
+            }
+        }
+
+        public static String GetStringValue(Dictionary<String, String> result, String key)
+        {
+            if (result.ContainsKey(key))
+            {
+                return result[key];
+            }
+            else
+            {
+                return "novalue";
+            }
+        }
+
         public static object ReturnObject(object x)
         {
             return x;
