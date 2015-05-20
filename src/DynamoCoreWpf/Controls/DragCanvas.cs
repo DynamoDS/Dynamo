@@ -227,6 +227,8 @@ namespace Dynamo.Controls
             // be set to 'false') so that workspace view gets a chance of 
             // handling it.
             // 
+            // Or if Shift is pressed, Workspace also handles event.
+            // Shift modifier is used to show InCanvasSearch.
             if (owningWorkspace.IsSnappedToPort || Keyboard.Modifiers == ModifierKeys.Shift)
             {
                 e.Handled = false; // Do not handle it here!
