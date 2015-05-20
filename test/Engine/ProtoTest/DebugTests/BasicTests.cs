@@ -13101,10 +13101,13 @@ a = x > foo(22) ? foo(1) : A.foo(4);
 
             // It should not be available.
             Assert.AreNotEqual(null, objExecVal);
-            Assert.AreEqual(4, objExecVal.Payload);
+            Assert.AreEqual(1, objExecVal.Payload);
 
             vms = fsr.Step();
             vms = fsr.Step();    // a = x > foo(22) ? foo(1) : A.foo(4);
+            vms = fsr.Step();
+            vms = fsr.Step();
+            vms = fsr.Step();
             vms = fsr.Step();
             TestFrameWork.Verify(mirror, "a", 8, 0);
         }

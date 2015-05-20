@@ -127,47 +127,6 @@ namespace ProtoCore.Utils
         (root as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(funcDefNode);
     }
 
-	private static void InsertInlineConditionOperationMethod(Core core, ProtoCore.AST.Node root, PrimitiveType condition, PrimitiveType r)
-    {
-        ProtoCore.AST.AssociativeAST.FunctionDefinitionNode funcDefNode = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-        funcDefNode.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
-        funcDefNode.Name = ProtoCore.DSASM.Constants.kInlineCondition; 
-        funcDefNode.ReturnType = new ProtoCore.Type() { Name = core.TypeSystem.GetType((int)r), UID = (int)r };
-        ProtoCore.AST.AssociativeAST.ArgumentSignatureNode args = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
-        args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
-        {
-            memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, "%condition"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)condition), UID = (int)condition }
-        });
-        args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
-        {
-            memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, "%trueExp"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
-        });
-        args.AddArgument(new ProtoCore.AST.AssociativeAST.VarDeclNode()
-        {
-            memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-            access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
-            NameNode = BuildAssocIdentifier(core, "%falseExp"),
-            ArgumentType = new ProtoCore.Type { Name = core.TypeSystem.GetType((int)r), UID = (int)r }
-        });
-        funcDefNode.Signature = args;
-
-        ProtoCore.AST.AssociativeAST.CodeBlockNode body = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
-        ProtoCore.AST.AssociativeAST.IdentifierNode _return = BuildAssocIdentifier(core, ProtoCore.DSDefinitions.Keyword.Return, ProtoCore.PrimitiveType.kTypeReturn);
-        ProtoCore.AST.AssociativeAST.IdentifierNode con = BuildAssocIdentifier(core, "%condition");
-        ProtoCore.AST.AssociativeAST.IdentifierNode t = BuildAssocIdentifier(core, "%trueExp");
-        ProtoCore.AST.AssociativeAST.IdentifierNode f = BuildAssocIdentifier(core, "%falseExp");
-
-        body.Body.Add(new ProtoCore.AST.AssociativeAST.BinaryExpressionNode() { LeftNode = _return, Optr = Operator.assign, RightNode = new ProtoCore.AST.AssociativeAST.InlineConditionalNode() { ConditionExpression = con, TrueExpression = t, FalseExpression = f } });
-        funcDefNode.FunctionBody = body;
-        (root as ProtoCore.AST.AssociativeAST.CodeBlockNode).Body.Add(funcDefNode);
-    }
-
     private static void InsertPredefinedMethod(Core core, ProtoCore.AST.Node root, bool builtinMethodsLoaded)
     {
         if (!builtinMethodsLoaded)

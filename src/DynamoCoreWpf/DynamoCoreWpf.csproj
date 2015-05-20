@@ -70,6 +70,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity">
       <HintPath>..\..\extern\System.Windows.Interactivity\System.Windows.Interactivity.dll</HintPath>
@@ -101,6 +102,11 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Extensions\IViewExtension.cs" />
+    <Compile Include="Extensions\IViewExtensionManager.cs" />
+    <Compile Include="Extensions\ViewLoadedParams.cs" />
+    <Compile Include="Extensions\ViewExtensionDefinition.cs" />
+    <Compile Include="Extensions\ViewStartupParams.cs" />
     <Compile Include="HelixRenderPackage.cs" />
     <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
