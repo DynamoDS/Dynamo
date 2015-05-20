@@ -133,39 +133,51 @@
                              SelectionChanged="OnItemSelectionChanged">
                     </ListBox>
 
+
+
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
-                        <TextBlock Text="{x:Static p:Resources.StartPageSamples}"
+                        <TextBlock Text="{Binding Path=BackupTitle}"
                                    FontSize="13"
                                    FontFamily="{StaticResource OpenSansRegular}"
-                                   Foreground="#5e8f80"
+                                   Foreground="#ad5446"
                                    Margin="0,0,12,0"
                                    HorizontalAlignment="Right" />
                     </Border>
 
-                    <TreeView x:Name="sampleFileTreeView"
-                              Background="#FFFFFF"
-                              Grid.Row="3"
-                              Grid.ColumnSpan="2"
-                              BorderThickness="0"
-                              FontSize="15"
-                              ItemContainerStyle="{StaticResource StartPageTreeViewItem}"
-                              Style="{StaticResource StartPageTreeView}">
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type l:SampleFileEntry}"
-                                                      ItemsSource="{Binding Path=Children}">
-                                <TextBlock Text="{Binding Path=FileName}"
-                                           MouseLeftButtonUp="OnSampleFileSelected"
-                                           Cursor="Hand" />
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
+                    <ListBox Name="backupFilesList"
+                             ItemContainerStyle="{StaticResource StartPageListBoxItem}"
+                             Style="{StaticResource StartPageListBox}"
+                             SelectionChanged="OnItemSelectionChanged"
+                             Margin="0,0,12,0">
+                    </ListBox>
 
-                    <Label FontFamily="{StaticResource OpenSansRegular}"
-                           Margin="0,0,12,0"
+                    <Grid Name="backupButtons"
+                          Background="White"
+                          HorizontalAlignment="Stretch">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0"
+                           Name ="openAll"
+                           FontFamily="{StaticResource OpenSansRegular}"
+                           Margin="0,0,0,0"
                            HorizontalAlignment="Left"
                            Style="{StaticResource StartPageLabel}"
-                           MouseLeftButtonUp="ShowSamplesInFolder" />
+                           Content="{x:Static p:Resources.StartPageOpenAll}"
+                           MouseLeftButtonUp="OpenAllFilesOnCrash" />
+                        <Label Grid.Column="1"
+                           Name ="backupLocation"
+                           FontFamily="{StaticResource OpenSansRegular}"
+                           Margin="0,0,0,0"
+                           HorizontalAlignment="Right"
+                           Style="{StaticResource StartPageLabel}"
+                           Content="{x:Static p:Resources.StartPageBackupLocation}"
+                           MouseLeftButtonUp="ShowBackupFilesInFolder" />
+                    </Grid>
 
                 </StackPanel>
 
@@ -223,6 +235,41 @@
                              SelectionChanged="OnItemSelectionChanged">
                     </ListBox>
 
+                    <Border BorderThickness="0,0,0,1"
+                            BorderBrush="#dfd8cf">
+                        <TextBlock Text="{x:Static p:Resources.StartPageSamples}"
+                                   FontSize="13"
+                                   FontFamily="{StaticResource OpenSansRegular}"
+                                   Foreground="#5e8f80"
+                                   Margin="0,0,12,0"
+                                   HorizontalAlignment="Right" />
+                    </Border>
+
+                    <TreeView x:Name="sampleFileTreeView"
+                              Background="#FFFFFF"
+                              Grid.Row="3"
+                              Grid.ColumnSpan="2"
+                              BorderThickness="0"
+                              FontSize="15"
+                              ItemContainerStyle="{StaticResource StartPageTreeViewItem}"
+                              Style="{StaticResource StartPageTreeView}">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type l:SampleFileEntry}"
+                                                      ItemsSource="{Binding Path=Children}">
+                                <TextBlock Text="{Binding Path=FileName}"
+                                           MouseLeftButtonUp="OnSampleFileSelected"
+                                           Cursor="Hand" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+
+                    <Label FontFamily="{StaticResource OpenSansRegular}"
+                           Margin="0,0,12,0"
+                           HorizontalAlignment="Left"
+                           Style="{StaticResource StartPageLabel}"
+                           Content="{x:Static p:Resources.StartPageShowSamples}"
+                           MouseLeftButtonUp="ShowSamplesInFolder" />
+                    
                 </StackPanel>
 
             </Grid>

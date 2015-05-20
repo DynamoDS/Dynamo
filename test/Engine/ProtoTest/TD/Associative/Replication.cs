@@ -1513,7 +1513,7 @@ list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
             thisTest.Verify("list2", new object[] { 1, 0, 1, 0, 1 });
-            thisTest.Verify("list3", 10);
+            thisTest.Verify("list3", new object[] {10, 10, 10, 10, 10});
             thisTest.Verify("list4", new object[] { 1, 0, 1, 0, 1 });
             thisTest.Verify("list5", new object[] { 0, 0, 0, 1, 1 });
             thisTest.Verify("list6", new object[] { 1, 1, 0, 0 });
@@ -1539,12 +1539,12 @@ c = { 1, 4, 7 };
 list8 = a >= b ? a + c : 10; // { 10, 10, 10 }
 list9 = a < b ? 10 : a + c; // { 10, 10, 10 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("list3", new object[] { a1, 0, a1, 0 });
-            thisTest.Verify("list4", new object[] { 0, a1, 0, a1 });
+            thisTest.Verify("list3", new object[] { 1, 0, 3, 0});
+            thisTest.Verify("list4", new object[] { 0, 2, 0, 4 });
             thisTest.Verify("list6", a1);
-            thisTest.Verify("list7", new object[] { -1, -2, -3, -4, -5, -6 });
-            thisTest.Verify("list8", new object[] { 10, 10, a2, a2 });
-            thisTest.Verify("list9", new object[] { 10, 10, a2, a2 });
+            thisTest.Verify("list7", new object[] { -1, -2, -3, -4, -5});
+            thisTest.Verify("list8", new object[] { 10, 10, 10 });
+            thisTest.Verify("list9", new object[] { 10, 10, 10 });
         }
 
         [Test]
@@ -1558,8 +1558,7 @@ c = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
 list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
-            Object[] b1 = new Object[] { new Object[] { new Object[] { new Object[] { 2, 4, 6 }, new Object[] { 9, 11, 13 } }, new Object[] { new Object[] { 2, 4, 6 }, new Object[] { 9, 11, 13 } } }, new Object[] { new Object[] { new Object[] { 2, 4 }, new Object[] { 8, 10 }, new Object[] { 14, 16 } }, new Object[] { new Object[] { 2, 4 }, new Object[] { 8, 10 }, new Object[] { 14, 16 } } } };
-            thisTest.Verify("list", b1);
+            thisTest.Verify("list", new [] { new [] {2, 4}, new [] {8, 10}});
         }
 
         [Test]
@@ -1568,11 +1567,11 @@ list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
         {
             Object[] list2 = { 1, 2, 3, 4 };
             Object[] list3 = { -1, -2, -3, -4, -5, -6 };
-            Object[] list4 = new Object[] { list2, list3, list2, list2, list3 };
-            Object[] list5 = new Object[] { list4, list2, list4, list4, list2 };
+            Object[] list4 = new Object[] { 1, -2, 3, 4 };
+            Object[] list5 = new Object[] { 1, 2, 3, 4 };
             Object[] list6 = { -1, -2, -3, -4, -5 };
-            Object[] list7 = new Object[] { list2, list6, list2, list2, list6 };
-            Object[] list8 = new Object[] { new Object[] { 1, 4, 0 }, new Object[] { 0, 5, 1, 5 }, new Object[] { 0, 5, 1, 5 } };
+            Object[] list7 = new Object[] { 1, -2, 3, 4 };
+            Object[] list8 = new Object[] { 1, 5, 1};
             string code = @"
 list1 = { true, false, true, true, false };
 list2 = { 1, 2, 3, 4 };
@@ -1584,7 +1583,7 @@ list7 = list1 ? list2 : list6; // { 1, -2, 3, 4 }
 a = { 3, 0, -1 };
 b = { 2, 1, 0, 3 };
 c = { -2, 4, 1, 2, 0 };
-list8 = a < c ? b + c : a + c; // { 1, 4, 1 }";
+list8 = a < c ? b + c : a + c; // { 1, 5, 1 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
             thisTest.Verify("list4", list4);
@@ -1599,9 +1598,9 @@ list8 = a < c ? b + c : a + c; // { 1, 4, 1 }";
         {
             Object[] list2 = { 1, 2, 3, 4 };
             Object[] list3 = { -1, -2, -3, -4 };
-            Object[] list6 = new Object[] { new Object[] { -4, -1, 2 }, new Object[] { -4, -1, 2 }, new Object[] { 8, 17, 8 } };
-            Object[] list5 = new Object[] { list3, list2, list2, list3 };
-            Object[] list4 = new Object[] { list2, list3, list3, list2 };
+            Object[] list6 = new Object[] { -4, -1, 8};
+            Object[] list5 = new Object[] { -1, 2, 3, -4 };
+            Object[] list4 = new Object[] { 1, -2, -3, 4};
             string code = @"
 list1 = { true, false, false, true };
 list2 = { 1, 2, 3, 4 };
@@ -3826,7 +3825,7 @@ test = b.a;
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } });
+            thisTest.Verify("test", new [] {0, 1});
         }
 
         [Test]
@@ -6199,7 +6198,7 @@ d2;f2;
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
-            thisTest.Verify("d2", new Object[] { v1, v1 });
+            thisTest.Verify("d2", v1);
             thisTest.Verify("f2", v1);
 
         }
@@ -6225,7 +6224,7 @@ d2 = [Imperative]
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
-            thisTest.Verify("d2", new Object[] { v1, v1 });
+            thisTest.Verify("d2", v1);
         }
 
         [Test]
@@ -6253,7 +6252,7 @@ test2 = a.f2;
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, true };
-            thisTest.Verify("test1", new Object[] { new Object[] { 0, 0 }, 1 });
+            thisTest.Verify("test1", new Object[] { 0, 1 });
             thisTest.Verify("test2", v1);
         }
 

@@ -12,6 +12,7 @@ using System.Windows.Media;
 
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Search;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
@@ -20,12 +21,15 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
+using System.Text;
+using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Controls
 {
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
+        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -76,19 +80,19 @@ namespace Dynamo.Controls
             {
                 var st = (PackageManagerSearchViewModel.PackageSearchState)value;
 
-                if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
+                if (st == PackageManagerSearchViewModel.PackageSearchState.NoResults)
                 {
                     return Resources.PackageSearchStateNoResult;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Results)
                 {
                     return "";
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Searching)
                 {
                     return Resources.PackageSearchStateSearching;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Syncing)
                 {
                     return Resources.PackageSearchStateSyncingWithServer;
                 }
@@ -1797,16 +1801,17 @@ namespace Dynamo.Controls
                         return text.Insert(text.LastIndexOf(".") + 1, "\n");
                     return text;
                 case "ClassButton":
-                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
-                    if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
-                    {
-                        if (text.IndexOf(" ") != -1)
-                            text = text.Insert(text.IndexOf(" ") + 1, "\n");
-                        if (text.Length > Configurations.MaxLengthClassButtonTitle)
-                            // If title is too long, we can cat it.
-                            text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
-                                Configurations.TwoDots;
-                    }
+
+                    int maxRowLength = Configurations.MaxLengthRowClassButtonTitle;
+                    int maxRowNumbers = Configurations.MaxRowNumber;
+
+                    var words = Dynamo.Nodes.Utilities.WrapText(text, maxRowLength);
+                    if (words.Count() > maxRowNumbers)
+                        words = Dynamo.Nodes.Utilities.ReduceRowCount(words.ToList(), maxRowNumbers);
+
+                    words = Dynamo.Nodes.Utilities.TruncateRows(words, maxRowLength);
+                    text = String.Join("\n", words);
+
                     return text;
 
                 // Maybe, later we need more string converters.
@@ -2149,5 +2154,94 @@ namespace Dynamo.Controls
         }
     }
 
-    
+    internal class Watch3DBackgroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var homeColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+            var customColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
+
+            //parameter will contain a true or false
+            //whether this is the home space
+            if ((bool)value)
+            {
+                return homeColor.ToColor4();
+            }
+
+            return customColor.ToColor4();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class GroupFontSizeToEditorEnabledConverter : IMultiValueConverter
+    {
+        private const double MinFontFactor = 7.0;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var zoom = System.Convert.ToDouble(values[0]);
+            var fontsize = System.Convert.ToDouble(values[1]);
+
+            var factor = zoom*fontsize;
+            if (factor < MinFontFactor)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+        /// Converts element type of node search element in short string.
+        /// E.g. ElementTypes.Packaged => PKG.
+        /// </summary>
+        public class ElementTypeToShortConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var type = (ElementTypes) value;
+
+                switch (type)
+                {
+                    case ElementTypes.Packaged:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.ZeroTouch:
+                        return Resources.ZeroTouchTypeShortString;
+
+                    case ElementTypes.CustomNode:
+                        return Resources.CustomNodeTypeShortString;
+
+                    case ElementTypes.BuiltIn:
+                    case ElementTypes.None:
+                    default:
+                        return string.Empty;
+                }
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }    
 }

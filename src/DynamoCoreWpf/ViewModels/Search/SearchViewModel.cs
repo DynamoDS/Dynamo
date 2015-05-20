@@ -44,6 +44,13 @@ namespace Dynamo.ViewModels
                 RequestCloseSearchToolTip(this, e);
         }
 
+        public event Action RequestCloseInCanvasSearch;
+        public void OnRequestCloseInCanvasSearch()
+        {
+            if (RequestCloseInCanvasSearch != null)
+                RequestCloseInCanvasSearch();
+        }
+
         public event EventHandler SearchTextChanged;
         public void OnSearchTextChanged(object sender, EventArgs e)
         {
@@ -228,6 +235,7 @@ namespace Dynamo.ViewModels
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
                 RaisePropertyChanged("BrowserRootCategories");
             };
+            Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
             if (dynamoViewModel != null)
@@ -246,6 +254,8 @@ namespace Dynamo.ViewModels
             {
                 case "CurrentSpace":
                     OnRequestCloseSearchToolTip(sender, e);
+                    // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
+                    OnRequestCloseInCanvasSearch();
                     break;
             }
         }
@@ -304,6 +314,27 @@ namespace Dynamo.ViewModels
 
                 DefineFullCategoryNames(item.SubCategories, item.FullCategoryName);
             }
+        }
+
+        internal void UpdateEntry(NodeSearchElement entry)
+        {
+            var rootNode = libraryRoot;
+            foreach (var categoryName in entry.Categories)
+            {
+                var tempNode = rootNode.SubCategories.FirstOrDefault(item => item.Name == categoryName);
+                // Root node can be null, if there is classes-viewmodel between updated entry and current category.
+                if (tempNode == null)
+                {
+                    // Get classes.
+                    var classes = rootNode.SubCategories.FirstOrDefault();
+                    // Search in classes.
+                    tempNode = classes.SubCategories.FirstOrDefault(item => item.Name == categoryName);
+                }
+
+                rootNode = tempNode;
+            }
+            var entryVM = rootNode.Entries.FirstOrDefault(foundEntryVM => foundEntryVM.Name == entry.Name);
+            entryVM.Model = entry;
         }
 
         internal void RemoveEntry(NodeSearchElement entry)
@@ -601,7 +632,7 @@ namespace Dynamo.ViewModels
 
         private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
-            var warehouse = iconServices.GetForAssembly(e.IconAssembly);
+            var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
             ImageSource icon = null;
             if (warehouse != null)
                 icon = warehouse.LoadIconInternal(e.IconFullPath);

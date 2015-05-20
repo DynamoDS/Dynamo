@@ -17,23 +17,11 @@
              Visibility="Visible"
              d:DesignWidth="300"
              d:DesignHeight="300"
-             x:Name="SearchControl">
-    <UserControl.MaxHeight>
-        <Binding Path="ActualHeight"
-                 RelativeSource="{RelativeSource FindAncestor, 
-                                                 AncestorLevel=1, 
-                                                 AncestorType={x:Type Grid}}" />
-    </UserControl.MaxHeight>
-    <UserControl.Width>
-        <Binding Path="ActualWidth"
-                 RelativeSource="{RelativeSource FindAncestor, 
-                                                 AncestorLevel=1, 
-                                                 AncestorType={x:Type Grid}}" />
-    </UserControl.Width>
+             x:Name="SearchControl"
+             GiveFeedback="OnLibraryContainerViewGiveFeedback">
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -48,7 +36,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid Name="buttonGrid"
@@ -57,12 +44,9 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+
             <Label Grid.Column="0"
                    FontWeight="Normal"
-                   Margin="0"
                    Padding="16,0,0,0"
                    Foreground="{StaticResource MemberButtonText}"
                    VerticalAlignment="Center"
@@ -112,14 +96,11 @@
                   Background="#444444">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Name="SearchIconAndTextBlockGrid"
-                            Grid.ColumnSpan="2"
                             Width="Auto"
                             Orientation="Horizontal">
                     <StackPanel.HorizontalAlignment>
@@ -144,7 +125,7 @@
                                HorizontalAlignment="Center"
                                Height="18"
                                Margin="3,0,0,0">
-                        
+
                     </TextBlock>
                 </StackPanel>
 
@@ -163,10 +144,10 @@
                          MinWidth="280"
                          CaretBrush="{StaticResource CommonSidebarTextColor}"
                          Margin="26,0,0,-1"
-                         Grid.ColumnSpan="3" />
+                         Grid.ColumnSpan="2" />
 
                 <Button Name="SearchCancelButton"
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Click="OnSearchCancelButtonClick"
                         VerticalAlignment="Center">
                     <Button.Visibility>

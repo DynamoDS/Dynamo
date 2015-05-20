@@ -18,9 +18,9 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
-        <ControlTemplate x:Key="CategoryExpanderTemplate"
-                         TargetType="{x:Type Expander}">
-            <DockPanel>
+            <ControlTemplate x:Key="CategoryExpanderTemplate"
+                             TargetType="{x:Type Expander}">
+                <DockPanel>
                     <Border DockPanel.Dock="Top"
                             Height="27">
                         <ToggleButton x:Name="ExpanderButton"
@@ -33,37 +33,38 @@
                     </Border>
 
                     <ContentPresenter x:Name="ExpanderContent"
-                                  Visibility="Collapsed"
-                                  DockPanel.Dock="Bottom">
-                    <ContentPresenter.Width>
-                        <Binding Path="ActualWidth"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
-                    </ContentPresenter.Width>
-                </ContentPresenter>
-            </DockPanel>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsExpanded"
-                         Value="True">
-                    <Setter TargetName="ExpanderContent"
-                            Property="Visibility"
-                            Value="Visible" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
+                                      Visibility="Collapsed"
+                                      DockPanel.Dock="Bottom">
+                        <ContentPresenter.Width>
+                            <Binding Path="ActualWidth"
+                                     RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
+                        </ContentPresenter.Width>
+                    </ContentPresenter>
+                </DockPanel>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsExpanded"
+                             Value="True">
+                        <Setter TargetName="ExpanderContent"
+                                Property="Visibility"
+                                Value="Visible" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
 
-        <Style x:Key="LibraryMemberStyle"
-               BasedOn="{StaticResource MemberGroupMemberStyle}"
-               TargetType="{x:Type ListBoxItem}">
-            <EventSetter Event="PreviewMouseLeftButtonDown"
-                         Handler="OnMouseLeftButtonDown" />
-            <EventSetter Event="KeyDown"
-                         Handler="OnMemberButtonKeyDown" />
-            <EventSetter Event="MouseEnter"
-                         Handler="OnListBoxItemMouseEnter" />
-            <EventSetter Event="MouseLeave"
-                         Handler="OnPopupMouseLeave" />
-        </Style>
-
+            <Style x:Key="LibraryMemberStyle"
+                   BasedOn="{StaticResource MemberGroupMemberStyle}"
+                   TargetType="{x:Type ListBoxItem}">
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="OnMouseLeftButtonUp" />
+                <EventSetter Event="PreviewMouseMove"
+                             Handler="OnPreviewMouseMove" />
+                <EventSetter Event="KeyDown"
+                             Handler="OnMemberButtonKeyDown" />
+                <EventSetter Event="MouseEnter"
+                             Handler="OnListBoxItemMouseEnter" />
+                <EventSetter Event="MouseLeave"
+                             Handler="OnPopupMouseLeave" />
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>

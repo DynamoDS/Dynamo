@@ -81,7 +81,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "..\test\
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreUITests", "..\test\DynamoCoreUITests\DynamoCoreUITests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpfTests", "..\test\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\DynamoPythonTests\IronPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
@@ -131,7 +131,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLayout", "Engine\Graph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilitiesTests", "DynamoUtilitiesTests\DynamoUtilitiesTests.csproj", "{AB735028-22B0-4083-9CC5-805C582818EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowTests", "..\test\Libraries\WorlflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowTests", "..\test\Libraries\WorkflowTests\WorkflowTests.csproj", "{CEA31792-BA09-431B-8ECE-E2F0354B2150}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMDataBridge", "Libraries\VMDataBridge\VMDataBridge.csproj", "{CCB6E56B-2DA1-4EBA-A1F9-E8510E129D12}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -157,8 +157,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitUtility", "Tools\NUnit
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoIcons", "DynamoIcons\DynamoIcons.csproj", "{64E226D7-2AB6-4DC2-9648-D4C34DBE2585}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyInfoGenerator", "AssemblySharedInfoGenerator\AssemblyInfoGenerator.csproj", "{133FC760-5699-46D9-BEA6-E816B5F01016}"
 EndProject
@@ -373,10 +371,6 @@ Global
 		{D0DC5724-DE00-4201-A659-A9A6CF81290D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0DC5724-DE00-4201-A659-A9A6CF81290D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0DC5724-DE00-4201-A659-A9A6CF81290D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64E226D7-2AB6-4DC2-9648-D4C34DBE2585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64E226D7-2AB6-4DC2-9648-D4C34DBE2585}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64E226D7-2AB6-4DC2-9648-D4C34DBE2585}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64E226D7-2AB6-4DC2-9648-D4C34DBE2585}.Release|Any CPU.Build.0 = Release|Any CPU
 		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{133FC760-5699-46D9-BEA6-E816B5F01016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{133FC760-5699-46D9-BEA6-E816B5F01016}.Release|Any CPU.ActiveCfg = Release|Any CPU

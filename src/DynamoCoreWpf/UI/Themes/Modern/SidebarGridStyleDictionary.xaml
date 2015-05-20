@@ -285,6 +285,8 @@
                 Value="{x:Null}" />
         <Setter Property="Visibility"
                 Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+        <Setter Property="Focusable"
+                Value="False" />
 
         <Setter Property="Template">
             <Setter.Value>

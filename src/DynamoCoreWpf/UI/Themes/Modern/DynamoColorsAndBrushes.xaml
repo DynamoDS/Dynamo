@@ -61,6 +61,12 @@
     <!--Update Manager-->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
     <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>
+    
+    <!--3D-->
+    <Color x:Key="EdgeColor">#655682</Color>
+    <Color x:Key="PointColor">#655682</Color>
+    <Color x:Key="SelectionColor">#009EFF</Color>
+    <Color x:Key="MaterialColor">#efede4</Color>
 
     <!--Sidebar-->
     

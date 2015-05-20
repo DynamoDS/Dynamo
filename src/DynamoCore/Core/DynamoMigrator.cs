@@ -182,6 +182,9 @@ namespace Dynamo.Core
             if (versions.Count() < 2)
                 return null; // No need for migration
 
+            DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
+
             var previousVersion = versions[1];
             var currentVersion = versions[0];
             Debug.Assert(currentVersion.MajorPart == pathManager.MajorFileVersion

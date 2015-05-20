@@ -15,7 +15,9 @@
              MouseMove="OnMouseMove"
              KeyDown="WorkspaceView_KeyDown"
              KeyUp="WorkspaceView_KeyUp"
-             IsHitTestVisible="{Binding IsCurrentSpace}">
+             IsHitTestVisible="{Binding IsCurrentSpace}"
+             AllowDrop="True"
+             Drop="OnWorkspaceDrop">
     <UserControl.Resources>
         <Style TargetType="{x:Type ContextMenu}"
                x:Key="WorkspaceContextMenuStyle">
@@ -31,7 +33,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
                         <StackPanel Margin="8,0,8,8">
-                            <ui:IncanvasSearchControl />
+                            <ui:InCanvasSearchControl />
                             <Border x:Name="Border"
                                     Background="White"
                                     BorderBrush="#bbbbbb">
@@ -138,8 +140,7 @@
 
             <Canvas.ContextMenu>
                 <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}"
-                             Name="workspaceContextMenu"
-                             Closed="OnIncanvasSearchClosed">
+                             Name="workspaceContextMenu">
                     <MenuItem Name="WorkspaceLacingMenu"
                               Header="{x:Static p:Resources.ContextMenuLacing}">
                         <MenuItem IsCheckable="True"
@@ -232,10 +233,11 @@
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
-                    <!--
+
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
-                               Command="{Binding NodeToCodeCommand}" />
-                    -->
+                               Command="{Binding NodeToCodeCommand}" 
+                               Visibility="{Binding Path=CanRunNodeToCode, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+
                     <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
                                Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
                     
@@ -373,13 +375,12 @@
             </ui:ImageCheckBox>
         </StackPanel>
 
-        <Popup Name="IncanvasSearch"
-               StaysOpen="False"
+        <Popup Name="InCanvasSearchBar"
+               StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
-               Placement="MousePoint"
-               Closed="OnIncanvasSearchClosed">
-            <ui:IncanvasSearchControl />
+               Placement="MousePoint">
+            <ui:InCanvasSearchControl />
         </Popup>
 
     </Grid>

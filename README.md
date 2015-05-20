@@ -1,4 +1,4 @@
-![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
+![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png)
 Dynamo is a visual programming tool that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
 
@@ -9,12 +9,20 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 
 ## Build ###
 
-You'll need Visual Studio and a git client to build Dynamo.  Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
+You will need the following to build Dynamo:
+
+- Microsoft Visual Studio 2013
+- [GitHub for Windows](https://windows.github.com/)
+- [Microsoft .NET Framework 3.5 with SP1](http://www.microsoft.com/en-sg/download/details.aspx?id=25150)
+- Microsoft .NET Framework 4.0 and above (included with Visual Studio 2013)
+- Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
+
+Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
 
 
 ## Contribute ##
 
-Dynamo is an open-source project and would be nothing without its community.  You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues).  You can submit your own code to the Dynamo project via a Github [pull request](https://help.github.com/articles/using-pull-requests).  
+Dynamo is an open-source project and would be nothing without its community.  You can make suggestions or track and submit bugs via [Github issues](https://github.com/DynamoDS/Dynamo/issues).  You can submit your own code to the Dynamo project via a Github [pull request](https://help.github.com/articles/using-pull-requests).
 
 
 ## Releases ##
@@ -22,12 +30,12 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 ### 0.8.0 ###
 
 #### New Features
-User interface:  
+User interface:
 - More visually understandable and scannable node functionality with icons in the node library
 - Expanded tooltip information in the node browser
 - Improved keyword search capabilities
 
-Custom Nodes: 
+Custom Nodes:
 - Lacing for Custom Nodes
 - Default Values for Custom Nodes
 - Type input tooltips for Custom Nodes
@@ -48,11 +56,11 @@ Run Auto
 
 Development
 - Revit libraries have been seperated out and now live in their own repository: https://github.com/DynamoDS/DynamoRevit
-- Refactoring to provide a strong separation between what a Dynamo graph is and how it is displayed. This makes it easier for users to write powerful nodes, and for us to move the Dynamo platform forwards. https://github.com/DynamoDS/Dynamo/pull/3449 
+- Refactoring to provide a strong separation between what a Dynamo graph is and how it is displayed. This makes it easier for users to write powerful nodes, and for us to move the Dynamo platform forwards. https://github.com/DynamoDS/Dynamo/pull/3449
 
 #### Fixes:
 Namespace Collisions:
-- Existing Code Block Nodes no longer affected by name collisions with functions that come from installed packages. For instance, Point.ByCoordinates in a Code Block Node was affected by a collision with a Point. operation in the popular Rhynamo package and would throw an error saying “Warning: Dereferencing a non-pointer. Dereferencing a non-pointer.” 
+- Existing Code Block Nodes no longer affected by name collisions with functions that come from installed packages. For instance, Point.ByCoordinates in a Code Block Node was affected by a collision with a Point. operation in the popular Rhynamo package and would throw an error saying “Warning: Dereferencing a non-pointer. Dereferencing a non-pointer.”
 
 Hardware Acceleration in Revit 2015
 - Hardware Acceleration was turned off when running in Revit 2015.  Graphic speed and clarity is greatly improved
@@ -75,7 +83,7 @@ Hardware Acceleration in Revit 2015
 - Upgraded Excel.Write nodes no longer show as “Unresolved”.
 - View.ExportAsImage will now export views other than default {3d}
 - Dynamo does not conflict with other addins.  Previously, Dynamo would fail to launch in Revit when Unifi, Maxwell, Enum, or Kiwi Bonus Tools or a few other add-in were installed on Revit 2015.
-- Users can now run Dynamo as an external program for debugging libraries in Visual Studio 
+- Users can now run Dynamo as an external program for debugging libraries in Visual Studio
 - Better error messaging in Code Block Nodes
 - modelcurve.bycurve no longer creates duplicate elements when adding to an array
 - Copy/Paste of nodes now maintains lacing setting
@@ -90,10 +98,10 @@ Hardware Acceleration in Revit 2015
 - Automatic update of Dynamo from changes to files on disk.  Use File.FromPath nodes to drive changes from external files like Excel, images, and text files.  Files being read from disk are not locked, so you can edit them on the fly.
 - Added hooks to allow for Dynamo for Structural Analysis (additional Package) workflows with Autodesk Robot.
 - LoopWhile node for iterative workflows
-- Package Manager sync and display improvements 
+- Package Manager sync and display improvements
 - Easier to use Structural Framing nodes
 - List.UniqueItems now works on Revit elements, strings, numbers, and geometry and also handles null values.
-- Migration tools for 3rd party Library loading 
+- Migration tools for 3rd party Library loading
 - View selection via a dropdown
 
 #### Bug fixes
@@ -102,7 +110,7 @@ Hardware Acceleration in Revit 2015
 - Libraries loaded from disk or packages now only exposed needed nodes
 - Changing Lacing triggers re-execcution of the graph
 - Consistent notation for booleans (true/false)
-- Import instance does not create multiple instances when regenerated 
+- Import instance does not create multiple instances when regenerated
 - Code Block Node output port positioning improvements
 - GroupByKeys, List.Map, List.Scan fixes
 - Surface.byLoft and Solid.byLoft fixes
@@ -116,13 +124,13 @@ Hardware Acceleration in Revit 2015
 
 #### New features
 - Autocomplete in Code Block Nodes
-- Share user-created binaries (.dll files) through the Package Manager 
-- Share sample content (.rvt, .rfa, .dyn files and more) through the Package Manager 
+- Share user-created binaries (.dll files) through the Package Manager
+- Share sample content (.rvt, .rfa, .dyn files and more) through the Package Manager
 
 #### Bug fixes
 - Improvements to the core threading model (Scheduler)
 - Reduced incidence of unresponsive graph
-- Better error messages 
+- Better error messages
 - clearing and updating error messages
 - Many small geometry improvements/fixes
 
@@ -175,7 +183,7 @@ Hardware Acceleration in Revit 2015
 
 ####Back office Improvements:####
 - Installer can now run silently for custom deployments
-- MVVM refactoring: Standard Code separation and formatting for greater legibility and code reusability  
+- MVVM refactoring: Standard Code separation and formatting for greater legibility and code reusability
 - Separation from Revit dependencies for easier porting of Dynamo to new applications
 - Recursion:  ScopeIf node for use in recursive custom node workflows (experimental)
 
@@ -214,7 +222,7 @@ An example of the data communicated is:
 
 "DateTime: 2013-08-22 19:17:21, AppIdent: Dynamo, Tag: Heartbeat-Uptime-s, Data: MTMxMjQxLjY3MzAyMDg=, Priority: Info, SessionID: 3fd39f21-1c3f-4cf3-8cdd-f46ca5dde636, UserID: 2ac95f29-a912-49a8-8fb5-e2d287683d94"
 
-The Data is Base64 encoded. For example, the data field above ('MTMxMjQxLjY3MzAyMDg=') decodes to: '131241.6730208' This represents the number of seconds that the instance of Dynamo has been running. 
+The Data is Base64 encoded. For example, the data field above ('MTMxMjQxLjY3MzAyMDg=') decodes to: '131241.6730208' This represents the number of seconds that the instance of Dynamo has been running.
 
 The UserID is randomly generated when the application is first run. The SessionID is randomly generated each time Dynamo is opened.
 
@@ -222,11 +230,11 @@ The UserID is randomly generated when the application is first run. The SessionI
 ## Third Party Licenses ##
 
 ###Avalon Edit###
-http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor  
-http://opensource.org/licenses/lgpl-3.0.html  
+http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
+http://opensource.org/licenses/lgpl-3.0.html
 
 ###CSharpAnalytics###
-https://github.com/AttackPattern/CSharpAnalytics  
+https://github.com/AttackPattern/CSharpAnalytics
 http://www.apache.org/licenses/LICENSE-2.0
 
 ###GNU gettext (libintl)###
@@ -234,16 +242,16 @@ https://www.gnu.org/software/gettext/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
 
 ###Helix3D###
-https://helixtoolkit.codeplex.com/  
-https://helixtoolkit.codeplex.com/license  
+https://helixtoolkit.codeplex.com/
+https://helixtoolkit.codeplex.com/license
 
 ###Iron Python###
-http://ironpython.net/  
-http://opensource.org/licenses/apache2.0.php  
+http://ironpython.net/
+http://opensource.org/licenses/apache2.0.php
 
 ###Kinect for Windows###
-http://www.microsoft.com/en-us/kinectforwindows/  
-http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx 
+http://www.microsoft.com/en-us/kinectforwindows/
+http://www.microsoft.com/en-us/kinectforwindows/develop/sdk-eula.aspx
 
 ###libiconv###
 https://www.gnu.org/software/libiconv/
@@ -259,38 +267,38 @@ http://www.gnu.org/licenses/gcc-exception.html
 http://msdn.microsoft.com/en-us/vstudio/dn501987
 
 ###Moq###
-http://www.nuget.org/packages/Moq/  
+http://www.nuget.org/packages/Moq/
 http://opensource.org/licenses/bsd-license.php
 
 ###MiConvexHull###
-http://miconvexhull.codeplex.com/  
-http://miconvexhull.codeplex.com/license  
+http://miconvexhull.codeplex.com/
+http://miconvexhull.codeplex.com/license
 
 ###NCalc###
-http://ncalc.codeplex.com/  
-http://ncalc.codeplex.com/license  
+http://ncalc.codeplex.com/
+http://ncalc.codeplex.com/license
 
 ###NDesk Options###
 http://ndesk.org/Options#License
 
 ###Newtonsoft JSON###
-https://github.com/JamesNK/Newtonsoft.Json  
+https://github.com/JamesNK/Newtonsoft.Json
 https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
 
 ###NUnit####
-http://www.nunit.org/  
-http://www.nunit.org/index.php?p=license&r=2.6.2  
+http://www.nunit.org/
+http://www.nunit.org/index.php?p=license&r=2.6.2
 
 ###OpenSans font from Google###
-http://www.google.com/fonts/specimen/Open+Sans  
+http://www.google.com/fonts/specimen/Open+Sans
 http://www.apache.org/licenses/LICENSE-2.0.html
 
 ###Prism###
-http://msdn.microsoft.com/en-us/library/gg406140.aspx  
-http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
+http://msdn.microsoft.com/en-us/library/gg406140.aspx
+http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
 
 ###Revit Test Framework###
-https://github.com/DynamoDS/RevitTestFramework  
+https://github.com/DynamoDS/RevitTestFramework
 http://opensource.org/licenses/MIT
 
 ###Lucene.Net###

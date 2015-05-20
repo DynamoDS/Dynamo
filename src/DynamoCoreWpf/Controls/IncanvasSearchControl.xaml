@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.IncanvasSearchControl"
+﻿<UserControl x:Class="Dynamo.UI.Controls.InCanvasSearchControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,7 +10,8 @@
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
              MaxHeight="350"
-             Width="250">
+             Width="250"
+             IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -11,7 +11,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
-
+using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -367,6 +368,14 @@ namespace Dynamo.ViewModels
             }
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+        }
+
+        private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+           CreateGroupCommand.RaiseCanExecuteChanged();
+           AddToGroupCommand.RaiseCanExecuteChanged();
+           UngroupCommand.RaiseCanExecuteChanged();
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -475,7 +484,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
-                    RaisePropertyChanged("PreviewState");
+                    RaisePropertyChanged("PreviewState");                    
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -892,7 +901,57 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateGroup(object parameters)
         {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            //Create Group should be disabled when a group is selected
+            if (groups.Any(x => x.IsSelected))
+            {
+                return false;
+            }
+
+            //Create Group should be disabled when a node selected is already in a group
+            if (!groups.Any(x => x.IsSelected))
+            {
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                foreach (var model in modelSelected)
+                {
+                    if (groups.ContainsModel(model.GUID))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
+        }
+
+        private void UngroupNode(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+        }
+
+        private bool CanUngroupNode(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            if (!groups.Any(x => x.IsSelected))
+            {
+                return (groups.ContainsModel(NodeLogic.GUID));
+            }
+            return false;
+        }
+
+        private void AddToGroup(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+        }
+
+        private bool CanAddToGroup(object parameters)
+        {          
+            var groups = WorkspaceViewModel.Model.Annotations;
+            if (groups.Any(x => x.IsSelected))
+            {
+                return !(groups.ContainsModel(NodeLogic.GUID));
+            }
+            return false;
         }
 
 
@@ -918,6 +977,6 @@ namespace Dynamo.ViewModels
             Model = model;
             Handled = false;
         }
-    }
+    }   
 }
 

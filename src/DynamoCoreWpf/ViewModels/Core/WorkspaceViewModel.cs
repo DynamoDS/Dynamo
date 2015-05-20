@@ -25,7 +25,6 @@ namespace Dynamo.ViewModels
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
-    public delegate void ShowIncanvasSearchHandler();
     
     public partial class WorkspaceViewModel : ViewModelBase
     {
@@ -42,7 +41,7 @@ namespace Dynamo.ViewModels
 
         public event NodeEventHandler RequestCenterViewOnElement;
 
-        public event ShowIncanvasSearchHandler RequestShowIncanvasSearch;
+        public event Action RequestShowInCanvasSearch;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
@@ -113,10 +112,10 @@ namespace Dynamo.ViewModels
                 WorkspacePropertyEditRequested(Model);
         }
 
-        public virtual void OnRequestShowIncanvasSearch()
+        public virtual void OnRequestShowInCanvasSearch()
         {
-            if (RequestShowIncanvasSearch != null)
-                RequestShowIncanvasSearch();
+            if (RequestShowInCanvasSearch != null)
+                RequestShowInCanvasSearch();
         }
 
         /// <summary>
@@ -243,6 +242,18 @@ namespace Dynamo.ViewModels
         public bool CanShowInfoBubble
         {
             get { return stateMachine.IsInIdleState; }
+        }
+
+        public bool CanRunNodeToCode
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
         }
 
         public Action FindNodesFromElements { get; set; }
@@ -527,8 +538,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynamoModel.ConvertNodesToCodeCommand(nodeID);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
             this.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -904,6 +914,12 @@ namespace Dynamo.ViewModels
         //    NodeFromSelectionCommand.RaiseCanExecuteChanged();
         //}
 
+        private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            AlignSelectedCommand.RaiseCanExecuteChanged();
+
+        }
+
         private static bool CanCreateNodeFromSelection(object parameter)
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
@@ -1138,11 +1154,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");
         }
-		
-		private void ShowIncanvasSearch(object param)
-		{
-			OnRequestShowIncanvasSearch();
-		}
+
+        private void ShowInCanvasSearch(object param)
+        {
+            OnRequestShowInCanvasSearch();
+        }
     }
 
     public class ViewModelEventArgs : EventArgs

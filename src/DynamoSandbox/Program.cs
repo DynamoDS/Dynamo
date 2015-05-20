@@ -15,6 +15,8 @@ using Dynamo.Services;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using DynamoUtilities;
+using System.Threading;
+using System.Globalization;
 
 namespace DynamoSandbox
 {
@@ -26,10 +28,14 @@ namespace DynamoSandbox
 
         internal PathResolver(string preloaderLocation)
         {
-            additionalResolutionPaths = new List<string>
-            {
-                preloaderLocation
-            };
+            // If a suitable preloader cannot be found on the system, then do 
+            // not add invalid path into additional resolution. The default 
+            // implementation of IPathManager in Dynamo insists on having valid 
+            // paths specified through "IPathResolver" implementation.
+            // 
+            additionalResolutionPaths = new List<string>();
+            if (Directory.Exists(preloaderLocation))
+                additionalResolutionPaths.Add(preloaderLocation);
 
             additionalNodeDirectories = new List<string>();
             preloadedLibraryPaths = new List<string>
@@ -74,6 +80,56 @@ namespace DynamoSandbox
         }
     }
 
+    struct CommandLineArguments
+    {
+        internal static CommandLineArguments FromArguments(string[] args)
+        {
+            // Running Dynamo sandbox with a command file:
+            // DynamoSandbox.exe /c "C:\file path\file.xml"
+            // 
+            var commandFilePath = string.Empty;
+
+            // Running Dynamo under a different locale setting:
+            // DynamoSandbox.exe /l "ja-JP"
+            //
+            var locale = string.Empty;
+
+            for (var i = 0; i < args.Length; ++i)
+            {
+                var arg = args[i];
+                if (arg.Length != 2 || (arg[0] != '/'))
+                {
+                    continue; // Not a "/x" type of command switch.
+                }
+
+                switch (arg[1])
+                {
+                    case 'c':
+                    case 'C':
+                        // If there's at least one more argument...
+                        if (i < args.Length - 1)
+                            commandFilePath = args[++i];
+                        break;
+
+                    case 'l':
+                    case 'L':
+                        if (i < args.Length - 1)
+                            locale = args[++i];
+                        break;
+                }
+            }
+
+            return new CommandLineArguments
+            {
+                Locale = locale,
+                CommandFilePath = commandFilePath
+            };
+        }
+
+        internal string Locale { get; set; }
+        internal string CommandFilePath { get; set; }
+    }
+
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
@@ -84,20 +140,14 @@ namespace DynamoSandbox
             var preloaderLocation = string.Empty;
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
-            // TODO(PATHMANAGER): Do we really libg_xxx folder on resolution path?
-            // If not, PathResolver will be completely redundant so please remove it.
-            var pathResolver = new PathResolver(preloaderLocation);
-
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
 
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
-                    PathResolver = pathResolver,
+                    PathResolver = new PathResolver(preloaderLocation),
                     GeometryFactoryPath = geometryFactoryPath
                 });
-
-            
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -162,28 +212,16 @@ namespace DynamoSandbox
 
             try
             {
-                // Running Dynamo sandbox with a command file:
-                // DynamoSandbox.exe /c "C:\file path\file.xml"
-                // 
-                var commandFilePath = string.Empty;
+                var cmdLineArgs = CommandLineArguments.FromArguments(args);
 
-                for (var i = 0; i < args.Length; ++i)
+                if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
                 {
-                    var arg = args[i];
-
-                    // Looking for '/c'
-                    if (arg.Length != 2 || (arg[0] != '/'))
-                        continue;
-
-                    if (arg[1] == 'c' || (arg[1] == 'C'))
-                    {
-                        // If there's at least one more argument...
-                        if (i < args.Length - 1)
-                            commandFilePath = args[i + 1];
-                    }
+                    // Change the application locale, if a locale information is supplied.
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
                 }
 
-                MakeStandaloneAndRun(commandFilePath, out viewModel);
+                MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
             }
             catch (Exception e)
             {

@@ -1,0 +1,32 @@
+<Workspace Version="0.7.5.3327" X="212.207887622912" Y="128.991272405744" zoom="1.68584109577117" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ae5777b7-5fb5-4d53-9fd4-723f508ce673" nickname="Point.ByCoordinates" x="169" y="164" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="2ae27496-c960-4802-b337-41d825c4d840" nickname="Point.ByCoordinates" x="169" y="30" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ca864591-5100-4a58-a51d-ebf3a5176712" nickname="Number" x="0" y="167" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b1f09ac1-71ac-4131-b394-fff3554a6c35" nickname="Number" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a6193e4e-2c18-44e2-b526-26fd0e8f8dd3" nickname="Number" x="0" y="83" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5c02325a-f5fc-403c-b46f-0a492cbce5cf" nickname="Line.ByStartPointEndPoint" x="407" y="84" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ae5777b7-5fb5-4d53-9fd4-723f508ce673" start_index="0" end="5c02325a-f5fc-403c-b46f-0a492cbce5cf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2ae27496-c960-4802-b337-41d825c4d840" start_index="0" end="5c02325a-f5fc-403c-b46f-0a492cbce5cf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca864591-5100-4a58-a51d-ebf3a5176712" start_index="0" end="ae5777b7-5fb5-4d53-9fd4-723f508ce673" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1f09ac1-71ac-4131-b394-fff3554a6c35" start_index="0" end="2ae27496-c960-4802-b337-41d825c4d840" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6193e4e-2c18-44e2-b526-26fd0e8f8dd3" start_index="0" end="2ae27496-c960-4802-b337-41d825c4d840" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Lacing allows you to specify how the inputs to a node will be handled. Right click on the Line.ByStartPointEndPoint node and change the lacing. Notice what happens to the number of lines." x="347.939522044618" y="-11.0799757043702" />
+  </Notes>
+</Workspace>

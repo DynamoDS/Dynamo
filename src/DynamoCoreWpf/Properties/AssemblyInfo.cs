@@ -26,7 +26,7 @@ using System.Windows;
 )]
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
-[assembly: InternalsVisibleTo("DynamoCoreUITests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 [assembly: InternalsVisibleTo("DynamoSandbox")]

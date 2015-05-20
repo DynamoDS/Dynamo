@@ -293,10 +293,8 @@ namespace ProtoCore.Lang
                         // If run in delta execution environment, we don't 
                         // create language blocks for true and false branch, 
                         // so directly return the value.
-                        if (runtimeCore.Options.IsDeltaExecution)
-                        {
+                        if (runtimeCore.Options.GenerateSSA)
                             return svCondition.RawBooleanValue ? svTrue : svFalse;
-                        }
 
                         Validity.Assert(svTrue.IsInteger);
                         Validity.Assert(svFalse.IsInteger);
@@ -314,8 +312,9 @@ namespace ProtoCore.Lang
                             ci = stackFrame.ClassScope;
                             fi = stackFrame.FunctionScope;
                         }
-                        StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
-                        // TODO: Need to verify that inline condition dynamic blocks are always created in the global scope - pratapa
+
+                        // The class scope does not change for inline conditional calls
+                        StackValue svThisPtr = stackFrame.ThisPtr;
 
 
                         int blockDecl = 0;
@@ -495,7 +494,7 @@ namespace ProtoCore.Lang
         {
             var runtimeCore = runtime.RuntimeCore;
             var rmem = runtime.rmem;
-            var runtimeData = runtime.exe.RuntimeData;
+            var runtimeData = runtimeCore.RuntimeData;
 
             bool isValidThisPointer = true;
             StackValue thisObject = lhs;

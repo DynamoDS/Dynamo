@@ -2,9 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-
+using System.Threading;
 using Autodesk.DesignScript.Runtime;
 
 #endregion
@@ -659,7 +660,10 @@ namespace DSCore
 
 
         /// <summary>
-        ///     Swaps rows and columns in a list of lists.
+        ///     Swaps rows and columns in a list of lists. 
+        ///     If there are some rows that are shorter than others,
+        ///     null values are inserted as place holders in the resultant 
+        ///     array such that it is always rectangular.
         /// </summary>
         /// <param name="lists">A list of lists to be transposed.</param>
         /// <returns name="lists">A list of transposed lists.</returns>
@@ -676,11 +680,77 @@ namespace DSCore
 
             foreach (IList sublist in ilists)
             {
-                for (int i = 0; i < sublist.Count; i++)
-                    transposedList[i].Add(sublist[i]);
+                for (int i = 0; i < transposedList.Count; i++)
+                {
+                    transposedList[i].Add(i < sublist.Count ? sublist[i] : null);
+                }
             }
 
             return transposedList;
+        }
+
+        /// <summary>
+        /// Cleans data of nulls and empty lists from a given list of arbitrary dimension
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="preserveIndices">Provide an option to preserve the indices of the data
+        /// such that non-trailing nulls may not be filtered out</param>
+        /// <returns>A list cleaned of nulls and empty lists</returns>
+        public static IList Clean(IList list, bool preserveIndices = true)
+        {
+            if (list == null)
+                return null;
+
+            if (list.Count == 0)
+                return list;
+
+            var culledList = new List<object>();
+            if (preserveIndices)
+            {
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
+                    return null;
+
+                int j = list.Count - 1;
+                while (j >= 0 && list[j] == null)
+                    j--;
+
+                for (int i = 0; i <= j; i++)
+                {
+                    var subList = list[i] as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList);
+                        culledList.Add(val);
+                    }
+                    else
+                    {
+                        culledList.Add(list[i]);    
+                    }
+                }
+            }
+            else
+            {
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
+                    return new List<object>();
+
+                foreach (var el in list)
+                {
+                    var subList = el as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList, false);
+                        if (!List.IsEmpty(val))
+                            culledList.Add(val);
+                    }
+                    else if (el != null)
+                    {
+                        culledList.Add(el);
+                    }
+                }
+            }
+            return culledList;
         }
 
 
@@ -780,6 +850,44 @@ namespace DSCore
                 GetCombinations(list.Cast<object>(), length, replace)
                     .Select(x => x.ToList())
                     .ToList();
+        }
+
+        /// <summary>
+        ///     Given an item, returns the zero-based index of its first occurrence 
+        ///     in the list. If the item cannot be found in the list, -1 is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, -1 is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>Zero-based index of the item in the list, or -1 if it is not found.
+        /// </returns>
+        public static int FirstIndexOf(IList list, object item)
+        {
+            if (list == null)
+                return -1;
+
+            int index = list.IndexOf(item);
+            return index;
+        }
+
+        /// <summary>
+        ///     Given an item, returns the zero-based indices of all its occurrences
+        ///     in the list. If the item cannot be found, an empty list is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, an empty list is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>A list of zero-based indices of all occurrences of the item if 
+        /// found, or an empty list if the item does not exist in the list.</returns>
+        public static IList AllIndicesOf(IList list, object item)
+        {
+            if (list == null)
+                return new List<int> { }; 
+
+            var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
+            return indices;
         }
 
         #region Combinatorics Helpers

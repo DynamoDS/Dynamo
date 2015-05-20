@@ -88,8 +88,8 @@ namespace Analysis
                 var pt = d.Item1;
 
                 var color = colorRange.GetColorAtParameter(d.Item2);
-                package.PushPointVertex(pt.X, pt.Y, pt.Z);
-                package.PushPointVertexColor(color.Red, color.Green, color.Blue, color.Alpha);
+                package.AddPointVertex(pt.X, pt.Y, pt.Z);
+                package.AddPointVertexColor(color.Red, color.Green, color.Blue, color.Alpha);
             }
         }
     }

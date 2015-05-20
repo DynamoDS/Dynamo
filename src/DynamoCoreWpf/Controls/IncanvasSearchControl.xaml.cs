@@ -13,20 +13,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for IncanvasLibrarySearchControl.xaml
+    /// Interaction logic for InCanvasLibrarySearchControl.xaml
     /// </summary>
-    public partial class IncanvasSearchControl : UserControl
+    public partial class InCanvasSearchControl : UserControl
     {
-        public IncanvasSearchControl()
+        public InCanvasSearchControl()
         {
             InitializeComponent();
         }
 
-        private SearchViewModel viewModel
+        private SearchViewModel ViewModel
         {
             get { return DataContext as SearchViewModel; }
         }
@@ -37,8 +38,8 @@ namespace Dynamo.UI.Controls
             if (binding != null)
                 binding.UpdateSource();
 
-            if (viewModel != null)
-                viewModel.SearchCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.SearchCommand.Execute(null);
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -56,6 +57,23 @@ namespace Dynamo.UI.Controls
             {
                 searchElement.ClickedCommand.Execute(null);
             }
+        }
+
+        private void OnInCanvasSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // If visibility  is false, then stop processing it.
+            if (!(bool)e.NewValue)
+                return;
+
+            // Select text in text box.
+            SearchTextBox.SelectAll();
+
+            // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
+            // Call asynchronously focus, when textbox will be ready.
+            Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        SearchTextBox.Focus();
+                    }), DispatcherPriority.Loaded);
         }
 
     }

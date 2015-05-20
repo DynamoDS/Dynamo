@@ -244,7 +244,9 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
                             <Button Command="{Binding ClickedCommand}"
-                                    PreviewMouseLeftButtonUp="OnExpanderButtonMouseLeftButtonUp">
+                                    PreviewMouseLeftButtonUp="OnExpanderButtonMouseLeftButtonUp"
+                                    PreviewMouseLeftButtonDown="OnExpanderButtonMouseLeftButtonDown"
+                                    PreviewMouseMove="OnExpanderButtonPreviewMouseMove">
                                 <Button.Focusable>False</Button.Focusable>
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
@@ -263,6 +265,7 @@
                                             <Grid Background="Transparent">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
 
@@ -284,9 +287,41 @@
                                                 </ToggleButton>
 
                                                 <ContentPresenter Grid.Column="1"
-                                                                  Grid.ColumnSpan="2"
                                                                   VerticalAlignment="Center"
                                                                   ContentSource="Header" />
+
+                                                <TextBlock x:Name="ElementTypeText"
+                                                           Grid.Column="2"
+                                                           Text="{Binding Path=ElementType,Converter={StaticResource ElementTypeToShortConverter}}"
+                                                           VerticalAlignment="Center"
+                                                           HorizontalAlignment="Right"
+                                                           TextBlock.FontSize="10"
+                                                           TextBlock.Foreground="{StaticResource NestedMemberTextColor}"
+                                                           Margin="0,0,10,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="Visibility"
+                                                                    Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, 
+                                                                                              AncestorType={x:Type Grid}}}"
+                                                                                   Value="True" />
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                                   Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <MultiDataTrigger.Setters>
+                                                                        <Setter Property="Visibility"
+                                                                                Value="Visible" />
+                                                                    </MultiDataTrigger.Setters>
+                                                                </MultiDataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
 
                                                 <Grid.Style>
                                                     <Style TargetType="{x:Type Grid}">
@@ -446,15 +481,10 @@
 
             <Style x:Key="LibraryTreeView"
                    TargetType="{x:Type TreeView}">
-                <Setter Property="Focusable"
-                        Value="False" />
-                <Setter Property="VerticalContentAlignment"
-                        Value="Center" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeView}">
-                            <Border SnapsToDevicePixels="True"
-                                    Background="{TemplateBinding Background}"
+                            <Border Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}">
                                 <ItemsPresenter />
@@ -512,7 +542,6 @@
                 <TreeView ItemsSource="{Binding BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
                           ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
-                          RequestBringIntoView="OnRequestBringIntoView"
                           Name="CategoryTreeView">
                     <TreeView.Template>
                         <ControlTemplate>

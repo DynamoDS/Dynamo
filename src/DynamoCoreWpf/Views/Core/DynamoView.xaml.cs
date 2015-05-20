@@ -30,7 +30,11 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
+using Dynamo.Wpf.Utilities;
+
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views.Gallery;
 
 namespace Dynamo.Controls
 {
@@ -44,6 +48,11 @@ namespace Dynamo.Controls
         private Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
+        private GalleryView galleryView;
+
+        // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
+        // called on the view model and the process is not cancelled
+        private bool isPSSCalledOnViewModelNoCancel = false;
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
@@ -272,8 +281,11 @@ namespace Dynamo.Controls
         /// page is incurred, when user opts to not display start page at start 
         /// up, then this method will not be called (therefore incurring no cost).
         /// </summary>
-        /// 
-        private void InitializeStartPage()
+        /// <param name="isFirstRun">
+        /// Indicates if it is the first time new Dynamo version runs.
+        /// It is used to decide whether the Gallery need to be shown on the StartPage.
+        /// </param>
+        private void InitializeStartPage(bool isFirstRun)
         {
             if (DynamoModel.IsTestMode) // No start screen in unit testing.
                 return;
@@ -286,7 +298,7 @@ namespace Dynamo.Controls
                     throw new InvalidOperationException(message);
                 }
 
-                startPage = new StartPageViewModel(dynamoViewModel);
+                startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
             }
         }
@@ -321,7 +333,11 @@ namespace Dynamo.Controls
 
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
+            // Do an initial load of the cursor collection
+            CursorLibrary.GetCursor(CursorSet.ArcSelect);
 
+            //Backing up IsFirstRun to determine whether to show Gallery
+            var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
@@ -336,7 +352,7 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeLogin();
             InitializeShortcutBar();
-            InitializeStartPage();
+            InitializeStartPage(isFirstRun);
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
@@ -386,6 +402,9 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
+            //SHOW or HIDE GALLERY
+            dynamoViewModel.RequestShowHideGallery += DynamoViewModelRequestShowHideGallery;
+
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
@@ -393,6 +412,28 @@ namespace Dynamo.Controls
             dynamoViewModel.BeginCommandPlayback(this);
 
             watchSettingsControl.DataContext = background_preview;
+        }
+
+        /// <summary>
+        /// Call this method to optionally bring up terms of use dialog. User 
+        /// needs to accept terms of use before any packages can be downloaded 
+        /// from package manager.
+        /// </summary>
+        /// <returns>Returns true if the terms of use for downloading a package 
+        /// is accepted by the user, or false otherwise. If this method returns 
+        /// false, then download of package should be terminated.</returns>
+        /// 
+        bool DisplayTermsOfUseForAcceptance()
+        {
+            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
+            if (prefSettings.PackageDownloadTouAccepted)
+                return true; // User accepts the terms of use.
+
+            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
+
+            // User may or may not accept the terms.
+            return prefSettings.PackageDownloadTouAccepted;
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -406,6 +447,46 @@ namespace Dynamo.Controls
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             aboutWindow.ShowDialog();
+        }
+
+        private void OnGalleryBackgroundMouseClick(object sender, MouseButtonEventArgs e)
+        {
+            dynamoViewModel.CloseGalleryCommand.Execute(null);
+            e.Handled = true;
+        }
+
+        void DynamoViewModelRequestShowHideGallery(bool showGallery)
+        {
+            //Disable for now
+            return;
+
+            if (showGallery)
+            {
+                if (galleryView == null) //On-demand instantiation
+                {
+                    galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
+                    Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
+                    Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
+                }
+
+                if (galleryView.ViewModel.HasContents)
+                {
+                    galleryBackground.Children.Add(galleryView);
+                    galleryBackground.Visibility = Visibility.Visible;
+                    galleryView.Focus(); //get keyboard focus
+                }
+            }
+            //hide gallery
+            else
+            {
+                if (galleryBackground != null)
+                {
+                    if (galleryView != null && galleryBackground.Children.Contains(galleryView))
+                        galleryBackground.Children.Remove(galleryView);
+
+                    galleryBackground.Visibility = Visibility.Hidden;
+                }
+            }
         }
 
         private PublishPackageView _pubPkgView;
@@ -431,6 +512,9 @@ namespace Dynamo.Controls
         private PackageManagerSearchViewModel _pkgSearchVM;
         void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -689,7 +773,7 @@ namespace Dynamo.Controls
             e.Success = true;
         }
 
-        private void WindowClosing(object sender, CancelEventArgs e)
+        private bool PerformShutdownSequenceOnViewModel()
         {
             // Test cases that make use of views (e.g. recorded tests) have 
             // their own tear down logic as part of the test set-up (mainly 
@@ -697,7 +781,7 @@ namespace Dynamo.Controls
             // code to verify data much later than the window closing).
             // 
             if (DynamoModel.IsTestMode)
-                return;
+                return false;
 
             var sp = new DynamoViewModel.ShutdownParams(
                 shutdownHost: false,
@@ -709,16 +793,36 @@ namespace Dynamo.Controls
                 //Shutdown wasn't cancelled
                 SizeChanged -= DynamoView_SizeChanged;
                 LocationChanged -= DynamoView_LocationChanged;
+                return true;
             }
             else
             {
                 //Shutdown was cancelled
+                return false;
+            }
+        }
+
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+            if (!PerformShutdownSequenceOnViewModel() && !DynamoModel.IsTestMode)
+            {
                 e.Cancel = true;
+            }
+            else
+            {
+                isPSSCalledOnViewModelNoCancel = true;
             }
         }
 
         private void WindowClosed(object sender, EventArgs e)
         {
+            //There will be chances that WindowsClosed is called but WindowClosing is not called.
+            //This is to ensure PerformShutdownSequence is always called on the view model.
+            if (!isPSSCalledOnViewModelNoCancel)
+            {
+                PerformShutdownSequenceOnViewModel();
+            }
+
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
@@ -747,6 +851,9 @@ namespace Dynamo.Controls
 
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
+
+            //SHOW or HIDE GALLERY
+            dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
         }
 
         // the key press event is being intercepted before it can get to
