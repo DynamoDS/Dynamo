@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -13,21 +11,13 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-
-using Autodesk.DesignScript.Interfaces;
-
-using Dynamo.ViewModels;
-using Dynamo.DSEngine;
 using Dynamo.UI;
+using Dynamo.ViewModels;
 using Dynamo.Wpf;
-
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
-
 using SharpDX;
-
-using Camera = HelixToolkit.Wpf.SharpDX.Camera;
-using Color = SharpDX.Color;
+using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
@@ -67,11 +57,10 @@ namespace Dynamo.Controls
         private bool showShadows;
         private Vector3 directionalLightDirection;
         private Color4 directionalLightColor;
-        private Vector3 fillLightDirection;
-        private Color4 fillLightColor;
-        private Color4 ambientLightColor;
         private Color4 defaultLineColor;
         private Color4 defaultPointColor;
+        private double lightAzimuthDegrees = 45.0;
+        private double lightElevationDegrees = 35.0;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -172,36 +161,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public Vector3 FillLightDirection
-        {
-            get { return fillLightDirection; }
-            private set
-            {
-                fillLightDirection = value; 
-                NotifyPropertyChanged("FillLightDirection");
-            }
-        }
-
-        public Color4 FillLightColor
-        {
-            get { return fillLightColor; }
-            private set
-            {
-                fillLightColor = value; 
-                NotifyPropertyChanged("FillLightColor");
-            }
-        }
-
-        public Color4 AmbientLightColor
-        {
-            get { return ambientLightColor; }
-            private set
-            {
-                ambientLightColor = value;
-                NotifyPropertyChanged("AmbientLightColor");
-            }
-        }
-
         public Transform3D Model1Transform { get; private set; }
         
         public RenderTechnique RenderTechnique
@@ -230,167 +189,17 @@ namespace Dynamo.Controls
                 NotifyPropertyChanged("Camera");
             }
         }
-        
-        public Vector2 ShadowMapResolution { get; private set; }
 
-        public bool ShowShadows
+        public double LightAzimuthDegrees
         {
-            get { return showShadows; }
-            set
-            {
-                showShadows = value;
-                NotifyPropertyChanged("ShowShadows");
-            }
+            get { return lightAzimuthDegrees; }
+            set { lightAzimuthDegrees = value; }
         }
 
-        public string KeyX
+        public double LightElevationDegrees
         {
-            get { return DirectionalLightDirection.X.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                DirectionalLightDirection = new Vector3(float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightDirection.Y, DirectionalLightDirection.Z);
-                NotifyPropertyChanged("KeyX");
-            }
-        }
-
-        public string KeyY
-        {
-            get { return DirectionalLightDirection.Y.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                DirectionalLightDirection = new Vector3(DirectionalLightDirection.X, float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightDirection.Z);
-                NotifyPropertyChanged("KeyY");
-            }
-        }
-
-        public string KeyZ
-        {
-            get { return DirectionalLightDirection.Z.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                DirectionalLightDirection = new Vector3(DirectionalLightDirection.X, DirectionalLightDirection.Y, float.Parse(value, CultureInfo.InvariantCulture));
-                NotifyPropertyChanged("KeyZ");
-            }
-        }
-
-        public string KeyR
-        {
-            get { return DirectionalLightColor.Red.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                DirectionalLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightColor.Green, DirectionalLightColor.Blue, 1.0f);
-                NotifyPropertyChanged("KeyR");
-            }
-        }
-
-        public string KeyG
-        {
-            get { return DirectionalLightColor.Green.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                DirectionalLightColor = new Color4(DirectionalLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightColor.Blue, 1.0f);
-                NotifyPropertyChanged("KeyG");
-            }
-        }
-
-        public string KeyB
-        {
-            get { return DirectionalLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                DirectionalLightColor = new Color4(DirectionalLightColor.Red, DirectionalLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
-                NotifyPropertyChanged("KeyB");
-            }
-        }
-
-        public string FillX
-        {
-            get { return FillLightDirection.X.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                FillLightDirection = new Vector3(float.Parse(value, CultureInfo.InvariantCulture), FillLightDirection.Y, FillLightDirection.Z);
-                NotifyPropertyChanged("FillX");
-            }
-        }
-
-        public string FillY
-        {
-            get { return FillLightDirection.Y.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                FillLightDirection = new Vector3(FillLightDirection.X, float.Parse(value, CultureInfo.InvariantCulture), FillLightDirection.Z);
-                NotifyPropertyChanged("FillY");
-            }
-        }
-
-        public string FillZ
-        {
-            get { return FillLightDirection.Z.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                FillLightDirection = new Vector3(FillLightDirection.X, FillLightDirection.Y, float.Parse(value, CultureInfo.InvariantCulture));
-                NotifyPropertyChanged("FillZ");
-            }
-        }
-
-        public string FillR
-        {
-            get { return FillLightColor.Red.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                FillLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), FillLightColor.Green, FillLightColor.Blue, 1.0f);
-                NotifyPropertyChanged("FillR");
-            }
-        }
-
-        public string FillG
-        {
-            get { return FillLightColor.Green.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                FillLightColor = new Color4(FillLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), FillLightColor.Blue, 1.0f);
-                NotifyPropertyChanged("FillG");
-            }
-        }
-
-        public string FillB
-        {
-            get { return FillLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                FillLightColor = new Color4(FillLightColor.Red, FillLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
-                NotifyPropertyChanged("FillB");
-            }
-        }
-
-        public string AmbientR
-        {
-            get { return AmbientLightColor.Red.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                AmbientLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), AmbientLightColor.Green, AmbientLightColor.Blue, 1.0f);
-                NotifyPropertyChanged("AmbientR");
-            }
-        }
-
-        public string AmbientG
-        {
-            get { return AmbientLightColor.Green.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                AmbientLightColor = new Color4(AmbientLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), AmbientLightColor.Blue, 1.0f);
-                NotifyPropertyChanged("AmbientG");
-            }
-        }
-
-        public string AmbientB
-        {
-            get { return AmbientLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
-            set
-            {
-                AmbientLightColor = new Color4(AmbientLightColor.Red, AmbientLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
-                NotifyPropertyChanged("AmbientB");
-            }
+            get { return lightElevationDegrees; }
+            set { lightElevationDegrees = value; }
         }
 
         #endregion
@@ -437,25 +246,16 @@ namespace Dynamo.Controls
 
         private void SetupScene()
         {
-            var ptColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PointColor"];
+            var ptColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PointColor"];
             defaultPointColor = new Color4(ptColor.R/255.0f, ptColor.G/255.0f, ptColor.B/255.0f, ptColor.A/255.0f);
 
-            var lineColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
+            var lineColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
             defaultLineColor = new Color4(lineColor.R/255.0f, lineColor.G/255.0f, lineColor.B/255.0f, lineColor.A/255.0f);
-
-            ShadowMapResolution = new Vector2(2048, 2048);
-            ShowShadows = false;
-            
-            // setup lighting            
-            AmbientLightColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
 
             DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
             DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
-            
-            FillLightColor = new Color4(new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
-            FillLightDirection = new Vector3(0.5f, 1.0f, 0f);
 
-            var matColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
+            var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
             RenderTechnique = Techniques.RenderPhong;
             WhiteMaterial = new PhongMaterial
@@ -468,7 +268,7 @@ namespace Dynamo.Controls
                 SpecularShininess = 12.8f,
             };
 
-            var selColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["SelectionColor"];
+            var selColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["SelectionColor"];
             selectionColor = new Color4(selColor.R/255.0f, selColor.G/255.0f, selColor.B/255.0f, selColor.A/255.0f);
             SelectedMaterial = new PhongMaterial
             {
@@ -481,7 +281,7 @@ namespace Dynamo.Controls
             };
 
             Model1Transform = new TranslateTransform3D(0, -0, 0);
-
+            
             // camera setup
             Camera = new PerspectiveCamera
             {
@@ -587,10 +387,18 @@ namespace Dynamo.Controls
                 renderTimer.Reset();
             }
 #endif
-            var c = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z);
-            if (!DirectionalLightDirection.Equals(c))
+
+            var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
+            var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
+            var right = Vector3.Cross(cf, cu);
+
+            var qel = SharpDX.Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
+            var qaz = SharpDX.Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
+            var v = Vector3.Transform(cf, qaz*qel);
+
+            if (!DirectionalLightDirection.Equals(v))
             {
-                DirectionalLightDirection = c; 
+                DirectionalLightDirection = v; 
             }
         }
 
@@ -750,22 +558,22 @@ namespace Dynamo.Controls
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(50, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Red);
-            axesColors.Add(Color.Red);
+            axesColors.Add(SharpDX.Color.Red);
+            axesColors.Add(SharpDX.Color.Red);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 5, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Blue);
-            axesColors.Add(Color.Blue);
+            axesColors.Add(SharpDX.Color.Blue);
+            axesColors.Add(SharpDX.Color.Blue);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 0, -50));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(Color.Green);
-            axesColors.Add(Color.Green);
+            axesColors.Add(SharpDX.Color.Green);
+            axesColors.Add(SharpDX.Color.Green);
 
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
@@ -776,9 +584,9 @@ namespace Dynamo.Controls
         private static void DrawGridPatch(
             Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
         {
-            var c1 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#c5d1d8");
+            var c1 = (Color)ColorConverter.ConvertFromString("#c5d1d8");
             c1.Clamp();
-            var c2 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#ddeaf2");
+            var c2 = (Color)ColorConverter.ConvertFromString("#ddeaf2");
             c2.Clamp();
 
             var darkGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));

@@ -1110,7 +1110,9 @@ namespace Dynamo.Models
             var codeBlockNodes = new List<CodeBlockNodeModel>();
 
             //UndoRedo Action Group----------------------------------------------
-            using (UndoRecorder.BeginActionGroup())
+            NodeToCodeUndoHelper undoHelper = new NodeToCodeUndoHelper();
+
+            // using (UndoRecorder.BeginActionGroup())
             {
                 foreach (var nodeList in cliques)
                 {
@@ -1160,7 +1162,7 @@ namespace Dynamo.Models
                             }
 
                             //Delete the connector
-                            UndoRecorder.RecordDeletionForUndo(connector);
+                            undoHelper.RecordDeletion(connector);
                             connector.Delete();
                         }
                         #endregion
@@ -1168,7 +1170,7 @@ namespace Dynamo.Models
                         #region Step I.B. Delete the node
                         totalX += node.X;
                         totalY += node.Y;
-                        UndoRecorder.RecordDeletionForUndo(node);
+                        undoHelper.RecordDeletion(node);
                         Nodes.Remove(node);
                         #endregion
                     }
@@ -1186,7 +1188,7 @@ namespace Dynamo.Models
                         System.Guid.NewGuid(), 
                         totalX / nodeCount,
                         totalY / nodeCount, engineController.LibraryServices);
-                    UndoRecorder.RecordCreationForUndo(codeBlockNode);
+                    undoHelper.RecordCreation(codeBlockNode);
                     Nodes.Add(codeBlockNode);
                     this.RegisterNode(codeBlockNode);
 
@@ -1194,12 +1196,22 @@ namespace Dynamo.Models
                     #endregion
 
                     #region Step III. Recreate the necessary connections
-                    ReConnectInputConnections(externalInputConnections, codeBlockNode);
-                    ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+                    var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode);
+                    foreach (var connector in newInputConnectors)
+                    {
+                        undoHelper.RecordCreation(connector);
+                    }
+
+                    var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+                    foreach (var connector in newInputConnectors)
+                    {
+                        undoHelper.RecordCreation(connector);
+                    }
                     #endregion
                 }
             }
-            //End UndoRedo Action Group------------------------------------------
+
+            undoHelper.ApplyActions(UndoRecorder);
 
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);
@@ -1596,8 +1608,9 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="cbn">The new Node To Code created Code Block Node</param>
-        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel cbn)
+        private List<ConnectorModel> ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel cbn)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
             foreach (var kvp in externalOutputConnections)
             {
                 var connector = kvp.Key;
@@ -1617,8 +1630,9 @@ namespace Dynamo.Models
                     portModel.Index,
                     connector.End.Index);
 
-                UndoRecorder.RecordCreationForUndo(newConnector);
+                newConnectors.Add(newConnector);
             }
+            return newConnectors;
         }
 
         /// <summary>
@@ -1627,9 +1641,11 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="cbn">The new Node To Code created Code Block Node</param>
-        private void ReConnectInputConnections(
+        private List<ConnectorModel> ReConnectInputConnections(
             Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel cbn)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
             foreach (var kvp in externalInputConnections)
             {
                 var connector = kvp.Key;
@@ -1648,9 +1664,10 @@ namespace Dynamo.Models
                     connector.Start.Index,
                     endPortIndex);
 
-                UndoRecorder.RecordCreationForUndo(newConnector);
-
+                newConnectors.Add(newConnector);
             }
+
+            return newConnectors;
         }
 
         #endregion

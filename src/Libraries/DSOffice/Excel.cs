@@ -93,6 +93,7 @@ namespace DSOffice
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             excel.Visible = ShowOnStartup;
+            excel.DisplayAlerts = false;
 
             return excel;
         }

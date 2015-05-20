@@ -187,13 +187,13 @@
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
-                               
+
                     <MenuItem Header="Create State From Selection"
                               Command="{Binding DynamoViewModel.ShowNewDesignOptionDialogCommand}" />
-                    <!--
+
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
-                               Command="{Binding NodeToCodeCommand}" />
-                    -->
+                               Command="{Binding NodeToCodeCommand}" 
+                               Visibility="{Binding Path=CanRunNodeToCode, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
 
                     <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
                                Command="{Binding DynamoViewModel.AddAnnotationCommand}" />

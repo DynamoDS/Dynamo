@@ -536,7 +536,7 @@ namespace Dynamo.Wpf.ViewModels
 
         internal static int FindInsertionPointByName(IEnumerable<ISearchEntryViewModel> list, string name)
         {
-            var nextLargerItemIndex = -1; ;
+            var nextLargerItemIndex = -1;
             foreach (var item in list)
             {
                 if (string.Compare(item.Name, name, StringComparison.Ordinal) >= 0)
