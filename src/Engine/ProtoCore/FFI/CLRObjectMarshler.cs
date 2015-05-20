@@ -259,10 +259,20 @@ namespace ProtoFFI
         {
             Type arrayType = expectedCLRType;
             Type elementType = GetElementType(expectedCLRType);
+
             if (expectedCLRType.IsGenericType)
             {
-                elementType = expectedCLRType.GetGenericArguments()[0];
+                elementType = expectedCLRType.GetGenericArguments().First();
                 arrayType = elementType.MakeArrayType();
+
+                bool isGenericDictionary = expectedCLRType.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+                if (isGenericDictionary)
+                {
+                    var argTypes = expectedCLRType.GetGenericArguments();
+                    var keyType = argTypes[0];
+                    var valueType = argTypes[1];
+                    return ToDictionary(dsObject, context, dsi, keyType, valueType);
+                }
             }
 
             ICollection collection = null;
@@ -274,7 +284,9 @@ namespace ProtoFFI
                 collection = new ArrayList(new object[] { obj });
             }
             else //Convert DS Array to CS Collection
+            {
                 collection = ToICollection(dsObject, context, dsi, arrayType);
+            }
 
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
@@ -303,6 +315,38 @@ namespace ProtoFFI
                 elementType = typeof(object);
             return elementType;
         }
+
+        #region DS_ARRAY_TO_CS_DICTIONARY
+
+        protected object ToDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type keyType, System.Type valueType)
+        {
+            if (!dsObject.IsArray)
+            {
+                return null;
+            }
+
+            var dict = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(keyType, valueType)); 
+            var dsKeys = ArrayUtils.GetKeys(dsObject, dsi.runtime.RuntimeCore);
+
+            foreach (var dsKey in dsKeys)
+            {
+                var key = primitiveMarshaler.UnMarshal(dsKey, context, dsi, keyType);
+                if (key == null || !keyType.IsAssignableFrom(key.GetType()))
+                    continue;
+
+                var dsValue = ArrayUtils.GetValueFromIndex(dsObject, dsKey, dsi.runtime.RuntimeCore);
+                var value = primitiveMarshaler.UnMarshal(dsValue, context, dsi, valueType);
+
+                if (value != null && valueType.IsAssignableFrom(value.GetType()))
+                    dict.Add(key, value);
+                else
+                    dict.Add(key, null);
+            }
+
+            return dict;
+        }
+
+        #endregion
 
         #region CS_ARRAY_TO_DS_ARRAY
 
