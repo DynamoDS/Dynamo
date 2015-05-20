@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI.Controls"
              xmlns:views="clr-namespace:Dynamo.Views"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300"
@@ -45,6 +46,25 @@
                                                       ShadowDepth="0"
                                                       Opacity="0.7" />
                                 </Border.Effect>
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=SearchRootCategories.Count}"
+                                                         Value="0">
+                                                <Setter Property="Visibility"
+                                                        Value="Visible" />
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding Path=CurrentMode}"
+                                                         Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
+                                                <Setter Property="Visibility"
+                                                        Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                             </Border>
                         </StackPanel>
                         <ControlTemplate.Triggers>
