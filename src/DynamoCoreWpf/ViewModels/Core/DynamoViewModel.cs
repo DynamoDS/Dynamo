@@ -459,7 +459,7 @@ namespace Dynamo.ViewModels
 
         public bool ShowWatchSettingsControl
         {
-            get { return showWatchSettingsControl; }
+            get { return showWatchSettingsControl && !ShowStartPage; }
             set
             {
                 showWatchSettingsControl = value;
