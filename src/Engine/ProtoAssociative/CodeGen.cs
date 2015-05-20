@@ -6863,7 +6863,7 @@ namespace ProtoAssociative
                 // As SSA conversion is enabled, we have got the values of
                 // true and false branch, so it isn't necessary to create 
                 // language blocks.
-                if (core.Options.IsDeltaExecution && core.Options.GenerateSSA)
+                if (core.Options.GenerateSSA)
                 {
                     inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
                     inlineCall.FormalArguments.Add(inlineConditionalNode.TrueExpression);
