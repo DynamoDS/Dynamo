@@ -724,7 +724,6 @@ namespace Dynamo.Views
         private void OnIncanvasSearchClosed(object sender, EventArgs e)
         {
             var searchVM = (sender as FrameworkElement).DataContext as SearchViewModel;
-            searchVM.SearchText = String.Empty;
         }
         
         private void OnWorkspaceDrop(object sender, DragEventArgs e)

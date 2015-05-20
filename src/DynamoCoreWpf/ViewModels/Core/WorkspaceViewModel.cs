@@ -25,7 +25,6 @@ namespace Dynamo.ViewModels
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
-    public delegate void ShowIncanvasSearchHandler();
     
     public partial class WorkspaceViewModel : ViewModelBase
     {
@@ -42,7 +41,7 @@ namespace Dynamo.ViewModels
 
         public event NodeEventHandler RequestCenterViewOnElement;
 
-        public event ShowIncanvasSearchHandler RequestShowIncanvasSearch;
+        public event Action RequestShowIncanvasSearch;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
