@@ -129,7 +129,10 @@ namespace ProtoScript.Runners
                 {
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
-
+                    
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    
                     StackValue sv = runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.watchStartPC, stackFrame, locals);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing

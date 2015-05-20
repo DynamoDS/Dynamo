@@ -186,9 +186,6 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="core"></param>
         /// <param name="runtimeCore"></param>
-        /// <param name="runningBlock"></param>
-        /// <param name="staticContext"></param>
-        /// <param name="runtimeContext"></param>
         /// <returns></returns>
         public ProtoCore.RuntimeCore ExecuteLive(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
@@ -218,8 +215,7 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
 
-                runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec, 
+                runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                     codeBlock.codeBlockId,
                     runtimeCore.StartPC, 
                     stackFrame,
