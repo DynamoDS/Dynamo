@@ -337,7 +337,7 @@ namespace ProtoCore.Lang
                         blockCaller = runtimeCore.DebugProps.CurrentBlockId;
                         StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
 
-                        ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
+                        ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
                         runtimeCore.RunningBlock = oldRunningBlockId;
                         break;

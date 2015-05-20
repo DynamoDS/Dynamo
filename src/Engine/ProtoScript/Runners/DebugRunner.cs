@@ -553,12 +553,12 @@ namespace ProtoScript.Runners
             int locals = 0; // This is the global scope, there are no locals
             ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
             runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+
             runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                 resumeBlockID, 
                 programCounterToExecuteFrom,
                 runtimeCore.DebugProps.FirstStackFrame, 
                 locals, 
-                fepRun,
                 null,
                 breakpoints);
 

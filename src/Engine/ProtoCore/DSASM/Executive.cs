@@ -153,7 +153,6 @@ namespace ProtoCore.DSASM
         /// <param name="stackFrame"></param>
         /// <param name="locals"></param>
         /// <param name="exec"></param>
-        /// <param name="fepRun"></param>
         /// <param name="breakpoints"></param>
         /// <returns></returns>
         public StackValue Bounce(
@@ -161,7 +160,6 @@ namespace ProtoCore.DSASM
             int entry, 
             StackFrame stackFrame, 
             int locals = 0,
-            bool fepRun = false,
             DSASM.Executive exec = null,
             List<Instruction> breakpoints = null)
         {
