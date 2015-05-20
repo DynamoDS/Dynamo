@@ -341,6 +341,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(image.Source);
         }
 
+        [Test]
         public void InvalidInputShouldNotCrashColorRangeNode()
         {
             Open(@"UI\ColorRangeInvalidInputCrash.dyn");
@@ -352,6 +353,19 @@ namespace DynamoCoreWpfTests
             var guid = System.Guid.Parse("c1d3a92a-e4d4-47a8-8533-bf19e63e0bf9");
             Model.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
                 Model.CurrentWorkspace.Guid, guid, "Code", "5.6"));
+        }
+
+        [Test]
+        public void ArrayExprShouldNotCrashColorRangeNode()
+        {
+            var guid = System.Guid.Parse("c90f5c20-8c63-4708-bd1a-289647bae471");
+
+            OpenAndRun(@"UI\ArrayExprShouldNotCrashColorRangeNode.dyn");
+            var nodes = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid);
+            var node = nodes.ElementAt(0) as CodeBlockNodeModel;
+            node.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+
+            Assert.Pass(); // We should reach here safely without exception.
         }
     }
 }
