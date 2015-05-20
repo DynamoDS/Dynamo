@@ -34,11 +34,13 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
                         <StackPanel Margin="8,0,8,8">
-                            <ui:InCanvasSearchControl />
-                            <Border x:Name="Border"
+                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" />
+                            <Border BorderThickness="1"
+                                    Name="Border"
                                     Background="White"
-                                    BorderBrush="#bbbbbb">
-
+                                    BorderBrush="#bbbbbb"
+                                    Padding="0,3,0,3"
+                                    CornerRadius="4">
                                 <StackPanel IsItemsHost="True"
                                             KeyboardNavigation.DirectionalNavigation="Cycle" />
                                 <Border.Effect>
@@ -51,13 +53,13 @@
                                         <Setter Property="Visibility"
                                                 Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=SearchRootCategories.Count}"
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}"
                                                          Value="0">
                                                 <Setter Property="Visibility"
                                                         Value="Visible" />
                                             </DataTrigger>
-                                            
-                                            <DataTrigger Binding="{Binding Path=CurrentMode}"
+
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.CurrentMode}"
                                                          Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
                                                 <Setter Property="Visibility"
                                                         Value="Visible" />
@@ -67,17 +69,6 @@
                                 </Border.Style>
                             </Border>
                         </StackPanel>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="HasDropShadow"
-                                     Value="true">
-                                <Setter TargetName="Border"
-                                        Property="Padding"
-                                        Value="0,3,0,3" />
-                                <Setter TargetName="Border"
-                                        Property="CornerRadius"
-                                        Value="4" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

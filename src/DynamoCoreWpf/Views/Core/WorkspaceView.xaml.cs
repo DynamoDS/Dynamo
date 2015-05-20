@@ -95,7 +95,6 @@ namespace Dynamo.Views
             searchViewModel.Visible = true;
 
             InCanvasSearchBar.DataContext = searchViewModel;
-            workspaceContextMenu.DataContext = searchViewModel;
 
             searchViewModel.RequestCloseInCanvasSearch += () => { InCanvasSearchBar.IsOpen = false; };
 
