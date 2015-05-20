@@ -866,6 +866,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_5()
         {
@@ -910,6 +911,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_9()
         {
@@ -921,6 +923,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_10()
         {
