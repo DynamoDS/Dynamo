@@ -1,0 +1,40 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="77" Y="120" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="77" Y="120" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="eb2264af-3a35-4dee-9034-814c0c6400e7" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="68" y="74" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;da&quot;,&quot;cadd&quot;,&quot;Cda&quot;,-2,42.0};" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="eb2264af-3a35-4dee-9034-814c0c6400e7" Modifiers="0" />
+  <DragSelectionCommand X="85" Y="103" DragOperation="0" />
+  <DragSelectionCommand X="168" Y="88" DragOperation="1" />
+  <UpdateModelValueCommand Name="Code" Value="{&quot;da&quot;,&quot;cadd&quot;,&quot;Cda&quot;,-2,42.0}" WorkspaceGuid="7c5bdd58-fe71-482c-a012-ed3781a47f31">
+    <ModelGuid>eb2264af-3a35-4dee-9034-814c0c6400e7</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="d3682b84-d365-437e-a1e5-e570123e7b2c" type="Dynamo.Nodes.DSFunction" nickname="List.Sort" x="373.5" y="77" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Sort@var[]" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="d3682b84-d365-437e-a1e5-e570123e7b2c" Modifiers="0" />
+  <DragSelectionCommand X="354" Y="115" DragOperation="0" />
+  <DragSelectionCommand X="448" Y="91" DragOperation="1" />
+  <MakeConnectionCommand NodeId="eb2264af-3a35-4dee-9034-814c0c6400e7" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d3682b84-d365-437e-a1e5-e570123e7b2c" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="d3682b84-d365-437e-a1e5-e570123e7b2c" Modifiers="0" />
+  <DragSelectionCommand X="409" Y="96" DragOperation="0" />
+  <DragSelectionCommand X="424" Y="101" DragOperation="1" />
+  <SelectModelCommand ModelGuid="d3682b84-d365-437e-a1e5-e570123e7b2c" Modifiers="0" />
+  <DragSelectionCommand X="471" Y="146" DragOperation="0" />
+  <DragSelectionCommand X="471" Y="146" DragOperation="1" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="114" Y="270" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="114" Y="270" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="467215fb-2511-4660-9a86-5bc4bc6bd3f3" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="22" y="239" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&quot;dsfdd&quot;,1..3};" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="{&quot;dsfdd&quot;,1..3}" WorkspaceGuid="7c5bdd58-fe71-482c-a012-ed3781a47f31">
+    <ModelGuid>467215fb-2511-4660-9a86-5bc4bc6bd3f3</ModelGuid>
+  </UpdateModelValueCommand>
+  <MakeConnectionCommand NodeId="467215fb-2511-4660-9a86-5bc4bc6bd3f3" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d3682b84-d365-437e-a1e5-e570123e7b2c" PortIndex="0" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+</Commands>

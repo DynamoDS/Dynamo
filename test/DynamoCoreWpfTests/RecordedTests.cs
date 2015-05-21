@@ -4118,7 +4118,7 @@ namespace DynamoCoreWpfTests
 
 
         [Test]
-        public void MAGN_7348_PassingFuntion()
+        public void MAGN_7348_PassingFunction()
         {
             preloadGeometry = true;
             // Check Number Range
@@ -4407,8 +4407,404 @@ namespace DynamoCoreWpfTests
         }
 
 
+        [Test,Category("Failure")]
+        public void MAGN_7348_Combine()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) change surface.pointAtParameter to cross product
+            //  c) check the value of List and surface
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
 
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Combin.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("85feef2b-8bc6-4546-bc3d-54fe03303859");// check surface.byloft
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("85feef2b-8bc6-4546-bc3d-54fe03303859", 15);
+
+                    //Check List.combine
+                    AssertPreviewCount("75f2f348-ac18-47cf-85b2-2d64469c232d", 15);
+                    var flatCombine = GetFlattenedPreviewValues("75f2f348-ac18-47cf-85b2-2d64469c232d");
+                    foreach (var ele in flatCombine)
+                    {
+                        Assert.IsNotNull(ele);
+                    }
+                }       
+            });
+        }
+
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_CreateList()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check List.Create
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_CreateList.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("c9bcb187-5eb7-4931-9a88-aee2ae40293b");// check List.Create
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("c9bcb187-5eb7-4931-9a88-aee2ae40293b", 3);
+                    var list = GetFlattenedPreviewValues("c9bcb187-5eb7-4931-9a88-aee2ae40293b");
+
+                    Assert.AreEqual(list, new object[] { 42, "The answer to everything", "foo", "bar" });
+
+                    
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_Count()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check List.Combine
+            //  c) change inputs and check new result
+            //  d) incomplete input 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Count.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("923d1dbb-9009-41af-94bf-d100fa76b9cd");// check List.Combine
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("923d1dbb-9009-41af-94bf-d100fa76b9cd", 43);                 
+                   for (int i = 0; i < 43; i++)
+                    {
+                        string temp = "foo"+i.ToString();
+                        var list = GetPreviewValueAtIndex("923d1dbb-9009-41af-94bf-d100fa76b9cd", i);
+                        Assert.AreEqual(list.ToString(), temp);
+                    }
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewCount("923d1dbb-9009-41af-94bf-d100fa76b9cd", 4);// check List.Combine
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    Assert.IsNull(GetPreviewValue("923d1dbb-9009-41af-94bf-d100fa76b9cd"));// check List.Combine           
+                }
+            });
+        }
+
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_Flatten()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check Flatten and List.Flatten
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Flatten.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    //check flatten
+                    var flatten = GetPreviewValue("b3dc4fee-c451-42ff-bb3d-24a299dd85f0");
+                    AssertPreviewCount("b3dc4fee-c451-42ff-bb3d-24a299dd85f0", 18);
+
+                    //check List.Flatten
+                    var listFlatten = GetPreviewValue("bb2adfac-3aaf-44ce-89cf-745f3aa5e58d");
+                    AssertPreviewCount("bb2adfac-3aaf-44ce-89cf-745f3aa5e58d", 9);
+                    var flatListFlatten = GetFlattenedPreviewValues("bb2adfac-3aaf-44ce-89cf-745f3aa5e58d");
+                    Assert.AreEqual(flatListFlatten.Count, 54);                  
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_MinMax()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check minimum and maximum item in a list
+            //  c) change nodes with incomplete nodes
+            //  d) change nodes with valid input, and reconnect them
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_MinMax.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        
+                            var max = GetPreviewValue("b80b5001-efa7-4831-9161-ebcfa65d5505");
+                            Assert.AreEqual(max, "Tyrian");
+                            var min = GetPreviewValue("f323299b-e841-4d47-b8bd-f6596034814f");
+                            Assert.AreEqual(min, "a");
+
+                            //check List.MaximumItem
+                            //check number in  List.MinimumItem, List.MaximumItem
+                            var max1 = GetPreviewValue("adbce23a-f2ce-46a7-be2d-146762033571");
+                            Assert.AreEqual(max1, 42);
+                            var min1 = GetPreviewValue("64616918-bdcf-47e7-b093-8c4b4c8ed62c");
+                            Assert.AreEqual(min1, 0);
+                            break;
+                    case "SecondRun":
+                            NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("b80b5001-efa7-4831-9161-ebcfa65d5505");// check List.Create
+                            Assert.AreEqual(ElementState.Dead, node.State);
+                            var max2 = GetPreviewValue("adbce23a-f2ce-46a7-be2d-146762033571");
+                            Assert.AreEqual(max2, 1);  
+                            break;  
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_Reverse()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node,
+            //  b) check List.Reverse
+            //  c) combine new list using List.Create
+            //  d) check new values of Curve.Extrude with valid inputs
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Reverse.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check List.Reverse
+                        AssertPreviewCount("c6aba751-6d0c-4326-b4df-affe3f40e64f", 6);
+                        var list = GetFlattenedPreviewValues("c6aba751-6d0c-4326-b4df-affe3f40e64f");
+                        Assert.AreEqual(list, new int[] { 5, 4, 3, 2, 1, 0 });
+
+                        break;
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_Sort()
+        {
+            // Check Sort function
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check List.Sort
+            //  c) change inputs 
+            //  d) check new values
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Sort.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check List.Sort
+                        AssertPreviewCount("d3682b84-d365-437e-a1e5-e570123e7b2c", 5);
+                        var list = GetFlattenedPreviewValues("d3682b84-d365-437e-a1e5-e570123e7b2c");
+                        Assert.AreEqual(list, new object[] { -2,42.000,"cadd","Cda","da" });
+                        break;
+                    case "SecondRun":
+                        //Check List.Sort
+                        AssertPreviewCount("d3682b84-d365-437e-a1e5-e570123e7b2c", 2);
+                        var newlist = GetFlattenedPreviewValues("d3682b84-d365-437e-a1e5-e570123e7b2c");
+                        Assert.AreEqual(newlist, new object[] { "dsfdd", 1, 2, 3 });
+                        break;
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_SortGeometry()
+        {
+            // Check Sort function
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check List.Sort
+            //  c) change inputs 
+            //  d) check new values
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_SortGeometry.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check SortByKey
+                        AssertPreviewCount("63896361-9e41-4cbe-8b5f-8a93d81705a5", 16);
+                        var list = GetPreviewValue("63896361-9e41-4cbe-8b5f-8a93d81705a5");
+                        for (int i = 0; i < 16; i++)
+                        {
+                            var point = GetPreviewValueAtIndex("63896361-9e41-4cbe-8b5f-8a93d81705a5", i);
+                            Assert.IsNotNull(point);
+                        }
+                            break;
+                    case "SecondRun":
+                        //Check PolyCurve.ByPoints
+                        Assert.AreEqual(GetPreviewValue("61429b13-5af6-48c5-8fea-eab94ba69f62").ToString(),"PolyCurve(NumberOfCurves = 16)");
+                        break;
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_Surface()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check Surface.ByLoft and CBN
+            //  c) change inputs and disconnect the input of CBN, check the state of nodes
+            //  d) reconnect nodes and give new input value and check the result
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Surface.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check Surface.ByLoft
+                        Assert.AreEqual(GetPreviewValue("74e69db3-82c3-4b6e-827b-fd29ced48a67").ToString(), "Surface");
+
+                        //check CBN with a list of nurbsCurve
+                        AssertPreviewCount("f3cbd915-8b15-40be-9cfe-0070b56861c1", 3);
+                       
+                        for (int i = 0; i < 3; i++)
+                        {
+                            var curve = GetPreviewValueAtIndex("f3cbd915-8b15-40be-9cfe-0070b56861c1", i);
+                            Assert.IsNotNull(curve);
+                        }
+                        break;
+                    case "SecondRun":
+                        //Check the state of Surface.ByLoft
+                        NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("74e69db3-82c3-4b6e-827b-fd29ced48a67");
+                        Assert.AreEqual(ElementState.Warning, node.State);
+                        //check CBN
+                        var nullvalue = GetPreviewValueAtIndex("f3cbd915-8b15-40be-9cfe-0070b56861c1", 2);
+                        Assert.IsNull(nullvalue);
+                        break;
+
+                    case "ThirdRun":
+                        //check the state of Surface.ByLoft
+                        NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("74e69db3-82c3-4b6e-827b-fd29ced48a67");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+                        Assert.AreEqual(GetPreviewValue("74e69db3-82c3-4b6e-827b-fd29ced48a67").ToString(), "Surface");
+
+                        //Check the * node
+                        AssertPreviewCount("ba4a6597-e4ce-40d1-9de4-6bfe51a37135", 16);
+                        for (int i = 0; i < 16; i++)
+                        {
+                            Assert.IsNotNull(GetPreviewValueAtIndex("ba4a6597-e4ce-40d1-9de4-6bfe51a37135", i));
+                        }
+                            break;
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7348_Transpose()
+        {
+            // Check Transpose function
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check List.Transpose
+            //  c) change lacing to cross product 
+            //  d) check new result of List.Transpose
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Transpose.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check List.Transpose
+                        AssertPreviewCount("6e6ef08e-e743-493d-9941-293e3eee00e9", 10);
+                       
+                        for (int i = 0; i < 10; i++)
+                        {
+                            var point = GetPreviewValueAtIndex("6e6ef08e-e743-493d-9941-293e3eee00e9", i);
+                            Assert.IsNotNull(point);
+                        }
+
+                        //compare Points and list.Transpose
+                        var points = GetPreviewValue("8d8be654-f5ba-4cac-87a8-0f795a22a483");
+                        var transpose = GetPreviewValue("6e6ef08e-e743-493d-9941-293e3eee00e9");
+                        Assert.AreEqual(points,transpose);
+                        break;
+                    case "SecondRun":
+                        //change to croose product ; and check new result of Transpose and nurbscurve
+                        AssertPreviewCount("f4d5ef15-fb8f-49c4-a606-702286cc3d0c", 10);
+                        for (int i = 0; i < 10; i++)
+                        {
+                            var nurbCurve = GetPreviewValueAtIndex("f4d5ef15-fb8f-49c4-a606-702286cc3d0c", i);
+                            Assert.AreEqual(nurbCurve.ToString(), "NurbsCurve(Degree = 3)");
+                        }
+
+                        var flatPoints = GetFlattenedPreviewValues("8d8be654-f5ba-4cac-87a8-0f795a22a483");
+                        var flatTranspose = GetFlattenedPreviewValues("6e6ef08e-e743-493d-9941-293e3eee00e9");
+                        for (int i = 0; i < 10; i++)
+                        {
+                            for (int j = 0; j < 10; j++)
+                            {
+                                Assert.AreEqual(flatPoints[i * 10 + j], flatTranspose[j * 10 + i]);
+                            }
+                        }                       
+                        break;
+                }
+            });
+        }
         #endregion
+
 
 
 
