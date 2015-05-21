@@ -93,7 +93,6 @@ namespace Dynamo.Views
 
             var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
             searchViewModel.Visible = true;
-            searchViewModel.RequestCloseInCanvasSearch += () => { InCanvasSearchBar.IsOpen = false; };
 
             InCanvasSearchBar.DataContext = searchViewModel;
         }
@@ -716,13 +715,21 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
-        private void ShowInCanvasControl()
+        private void ShowInCanvasControl(ShowHideFlags flag)
         {
             // Show InCanvas search just in case, when mouse is over workspace.
             if (!this.IsMouseOver)
                 return;
 
-            InCanvasSearchBar.IsOpen = true;
+            switch (flag)
+            {
+                case ShowHideFlags.Hide:
+                    InCanvasSearchBar.IsOpen = true;
+                    break;
+                case ShowHideFlags.Show:
+                    InCanvasSearchBar.IsOpen = true;
+                    break;
+            }
         }
         
         private void OnWorkspaceDrop(object sender, DragEventArgs e)
