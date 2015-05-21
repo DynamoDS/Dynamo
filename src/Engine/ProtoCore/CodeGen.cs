@@ -91,7 +91,7 @@ namespace ProtoCore
 
 
         // Contains the list of Nodes in an identifier list
-        protected Stack<List<ProtoCore.AST.AssociativeAST.AssociativeNode>> stackSSAPointerList;
+        protected Stack<List<ProtoCore.AST.AssociativeAST.AssociativeNode>> ssaPointerStack;
 
         // The first graphnode of the SSA'd identifier
         protected ProtoCore.AssociativeGraph.GraphNode firstSSAGraphNode = null;
@@ -152,7 +152,7 @@ namespace ProtoCore
                 }
             }
 
-            stackSSAPointerList = new Stack<List<AST.AssociativeAST.AssociativeNode>>();
+            ssaPointerStack = new Stack<List<AST.AssociativeAST.AssociativeNode>>();
         }
 
 
@@ -496,15 +496,12 @@ namespace ProtoCore
             ProtoCore.AST.Node setterArgument = null
             );
 
-        //
-        //  proc AutoGenerateUpdateArgumentReference(node)
-        //      def proplist = dfsGetSymbolList(node)
-        //      if lhs[0] is an argument
-        //          proplist = getExceptFirst(lhs)
-        //      end
-        //      fnode.updatedArgProps.push(proplist)
-        //  end
-        //
+        /// <summary>
+        /// Assigns the modified pointers in a function argument to the graphNode
+        /// This enables associative update when a pointer that is an argument is modified within a function
+        /// </summary>
+        /// <param name="nodeRef"></param>
+        /// <param name="graphNode"></param>
         protected void AutoGenerateUpdateArgumentReference(
             ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef, ProtoCore.AssociativeGraph.GraphNode graphNode)
         {
@@ -2636,13 +2633,13 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
-            if (stackSSAPointerList.Count == 0)
+            if (ssaPointerStack.Count == 0)
             {
                 return;
             }
 
             // Push all dependent pointers
-            ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(stackSSAPointerList.Peek());
+            ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerStack.Peek());
 
             // Comment Jun: perhaps this can be an assert?
             if (null != identList)
@@ -2668,7 +2665,7 @@ namespace ProtoCore
                     //  This means that statement that depends on a.x can re-execute, such as:
                     //      p = a.x;
                     //
-                    List<ProtoCore.AST.AssociativeAST.AssociativeNode> topList = stackSSAPointerList.Peek();
+                    List<ProtoCore.AST.AssociativeAST.AssociativeNode> topList = ssaPointerStack.Peek();
                     string propertyName = topList[topList.Count - 1].Name;
                     bool isSetter = propertyName.StartsWith(Constants.kSetterPrefix);
                     if (isSetter)
@@ -2721,8 +2718,8 @@ namespace ProtoCore
                 {
                     if ((node as ProtoCore.AST.AssociativeAST.IdentifierListNode).IsLastSSAIdentListFactor)
                     {
-                        Validity.Assert(null != stackSSAPointerList);
-                        stackSSAPointerList.Pop();
+                        Validity.Assert(null != ssaPointerStack);
+                        ssaPointerStack.Pop();
                     }
                 }
             }

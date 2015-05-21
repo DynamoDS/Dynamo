@@ -285,14 +285,7 @@ namespace ProtoCore.AssociativeEngine
                 return false;
             }
 
-            for (int n = 0; n < node.updateNodeRefList.Count; ++n)
-            {
-                if (!node.updateNodeRefList[n].Equals(otherNode.updateNodeRefList[n]))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return node.updateNodeRefList.SequenceEqual(otherNode.updateNodeRefList);
         }
 
         /// <summary>

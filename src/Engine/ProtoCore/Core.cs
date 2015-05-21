@@ -56,7 +56,7 @@ namespace ProtoCore
         {
             // Execute using new graphnode dependency
             DirectDependencyExecution = true;
-            LHSGraphNodeUpdate = !DirectDependencyExecution;
+            LHSGraphNodeUpdate = false;
 
             ApplyUpdate = false;
 

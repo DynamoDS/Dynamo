@@ -6462,8 +6462,8 @@ namespace ProtoAssociative
                 {
                     if (fcall.isLastSSAIdentListFactor)
                     {
-                        Validity.Assert(null != stackSSAPointerList);
-                        stackSSAPointerList.Pop();
+                        Validity.Assert(null != ssaPointerStack);
+                        ssaPointerStack.Pop();
                     }
                 }
             }
@@ -7742,15 +7742,6 @@ namespace ProtoAssociative
         //  end
         //  
 
-        //
-        //  proc AutoGenerateUpdateArgumentReference(node)
-        //      def proplist = dfsGetSymbolList(node)
-        //      if lhs[0] is an argument
-        //          proplist = getExceptFirst(lhs)
-        //      end
-        //      fnode.updatedArgProps.push(proplist)
-        //  end
-        //
         private ProtoCore.AssociativeGraph.UpdateNodeRef __To__Deprecate__AutoGenerateUpdateArgumentReference(AssociativeNode node, ProtoCore.AssociativeGraph.GraphNode graphNode)
         {
             // Get the lhs symbol list
@@ -8101,20 +8092,20 @@ namespace ProtoAssociative
             // These identifiers will be used to populate the real graph nodes dependencies
             if (bnode.isSSAPointerAssignment)
             {
-                Validity.Assert(null != stackSSAPointerList);
+                Validity.Assert(null != ssaPointerStack);
 
                 if (bnode.IsFirstIdentListNode)
                 {
-                    stackSSAPointerList.Push(new List<AssociativeNode>());
+                    ssaPointerStack.Push(new List<AssociativeNode>());
                 }
 
                 if (bnode.RightNode is IdentifierNode)
                 {
-                    stackSSAPointerList.Peek().Add(bnode.RightNode);
+                    ssaPointerStack.Peek().Add(bnode.RightNode);
                 }
                 else if (bnode.RightNode is IdentifierListNode)
                 {
-                    stackSSAPointerList.Peek().Add((bnode.RightNode as IdentifierListNode).RightNode);
+                    ssaPointerStack.Peek().Add((bnode.RightNode as IdentifierListNode).RightNode);
                 }
                 else if (bnode.RightNode is FunctionDotCallNode)
                 {
@@ -8130,11 +8121,11 @@ namespace ProtoAssociative
                         //string className = dotcall.DotCall.FormalArguments[0].Name;
                         if (isClassName)
                         {
-                            stackSSAPointerList.Peek().Add(dotcall.DotCall.FormalArguments[0]);
+                            ssaPointerStack.Peek().Add(dotcall.DotCall.FormalArguments[0]);
                         }
 
                         // This function is an internal getter or setter, store the identifier node
-                        stackSSAPointerList.Peek().Add(dotcall.FunctionCall.Function);
+                        ssaPointerStack.Peek().Add(dotcall.FunctionCall.Function);
                     }
                     else
                     {
@@ -8142,7 +8133,7 @@ namespace ProtoAssociative
                         if (!isConstructorCall)
                         {
                             // This function is a member function, store the functioncall node
-                            stackSSAPointerList.Peek().Add(dotcall.FunctionCall);
+                            ssaPointerStack.Peek().Add(dotcall.FunctionCall);
                         }
                     }
                 }
@@ -8150,7 +8141,7 @@ namespace ProtoAssociative
                 {
                     FunctionCallNode fcall = bnode.RightNode as FunctionCallNode;
                     Validity.Assert(fcall.Function is IdentifierNode);
-                    stackSSAPointerList.Peek().Add(fcall.Function);
+                    ssaPointerStack.Peek().Add(fcall.Function);
                 }
                 else
                 {
