@@ -281,7 +281,7 @@ namespace ProtoCore.DSASM
             Validity.Assert(svExecutingBlock.IsBlockIndex);
 
             executingBlock = (int)svExecutingBlock.opdata;
-            istream = exe.instrStreamList[executingBlock];
+            istream = exe.GetInstructionStream(executingBlock);
 
             fepRun = false;
 
@@ -316,7 +316,7 @@ namespace ProtoCore.DSASM
         {
             // Jun Comment: the stackframe mpof the current language must still be present for this this method to restore the executuve
             // It must be popped off after this call
-            executingLanguage = exe.instrStreamList[exeblock].language;
+            executingLanguage = exe.GetInstructionStream(exeblock).language;
 
 
             // TODO Jun: Remove this check once the global bounce stackframe is pushed
@@ -330,7 +330,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            istream = exe.instrStreamList[exeblock];
+            istream = exe.GetInstructionStream(exeblock);
             Validity.Assert(null != istream);
             Validity.Assert(null != istream.instrList);
 
@@ -409,7 +409,7 @@ namespace ProtoCore.DSASM
 
             executingBlock = exeblock;
 
-            istream = exe.instrStreamList[exeblock];
+            istream = exe.GetInstructionStream(exeblock);
             Validity.Assert(null != istream);
 
             Validity.Assert(null != istream.instrList);
@@ -427,7 +427,7 @@ namespace ProtoCore.DSASM
                 pc = entry;
             }
 
-            executingLanguage = exe.instrStreamList[exeblock].language;
+            executingLanguage = exe.GetInstructionStream(exeblock).language;
 
             if (Language.kAssociative == executingLanguage)
             {
@@ -464,13 +464,13 @@ namespace ProtoCore.DSASM
             executingBlock = exeblock;
 
 
-            istream = exe.instrStreamList[exeblock];
+            istream = exe.GetInstructionStream(exeblock);
             Validity.Assert(null != istream);
             Validity.Assert(null != istream.instrList);
 
             pc = entry;
 
-            executingLanguage = exe.instrStreamList[exeblock].language;
+            executingLanguage = exe.GetInstructionStream(exeblock).language;
 
             if (Language.kAssociative == executingLanguage)
             {
@@ -1734,7 +1734,8 @@ namespace ProtoCore.DSASM
         {
             bool isUpdated = false;
 
-            foreach (InstructionStream instrStream in exe.instrStreamList)
+            InstructionStream[] iStreamList = exe.GetInstructionStreamList();
+            foreach (InstructionStream instrStream in iStreamList)
             {
                 if (Language.kAssociative == instrStream.language && instrStream.dependencyGraph.GraphList.Count > 0)
                 {
@@ -1779,7 +1780,8 @@ namespace ProtoCore.DSASM
             List<AssociativeGraph.UpdateNodeRef> upadatedList = new List<AssociativeGraph.UpdateNodeRef>();
 
             // For every instruction list in the executable
-            foreach (InstructionStream xInstrStream in exe.instrStreamList)
+            InstructionStream[] iStreamList = exe.GetInstructionStreamList();
+            foreach (InstructionStream xInstrStream in iStreamList)
             {
                 // If the instruction list is valid, is associative and has more than 1 graph node
                 if (null != xInstrStream && Language.kAssociative == xInstrStream.language && xInstrStream.dependencyGraph.GraphList.Count > 0)
@@ -2143,7 +2145,7 @@ namespace ProtoCore.DSASM
             pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
             exeblock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
 
-            istream = exe.instrStreamList[exeblock];
+            istream = exe.GetInstructionStream(exeblock);
             instructions = istream.instrList;
             executingLanguage = istream.language;
 
@@ -2208,7 +2210,7 @@ namespace ProtoCore.DSASM
                 pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
                 exeblock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionCallerBlock).opdata;
 
-                istream = exe.instrStreamList[exeblock];
+                istream = exe.GetInstructionStream(exeblock);
                 instructions = istream.instrList;
                 executingLanguage = istream.language;
 
@@ -2328,7 +2330,7 @@ namespace ProtoCore.DSASM
 
             runtimeCore.DebugProps.CurrentBlockId = exeblock;
 
-            istream = exe.instrStreamList[exeblock];
+            istream = exe.GetInstructionStream(exeblock);
             Validity.Assert(null != istream);
             runtimeCore.DebugProps.DebugEntryPC = entry;
 
@@ -2382,7 +2384,7 @@ namespace ProtoCore.DSASM
             {
                 pc = entry;
             }
-            executingLanguage = exe.instrStreamList[exeblock].language;
+            executingLanguage = exe.GetInstructionStream(exeblock).language;
 
             if (Language.kAssociative == executingLanguage && !runtimeCore.DebugProps.isResume)
             {
@@ -3884,7 +3886,7 @@ namespace ProtoCore.DSASM
 
         public void Modify_istream_instrList_FromSetValue(int blockId, int pc, StackValue op)
         {
-            exe.instrStreamList[blockId].instrList[pc].op1 = op;
+            exe.GetInstructionStream(blockId).instrList[pc].op1 = op;
         }
 
         public void Modify_istream_entrypoint_FromSetValue(int pc)
@@ -3894,7 +3896,7 @@ namespace ProtoCore.DSASM
 
         public void Modify_istream_entrypoint_FromSetValue(int blockId, int pc)
         {
-            exe.instrStreamList[blockId].entrypoint = pc;
+            exe.GetInstructionStream(blockId).entrypoint = pc;
         }
 
         public AssociativeGraph.GraphNode GetLastGraphNode(string varName)
@@ -3909,9 +3911,10 @@ namespace ProtoCore.DSASM
         public AssociativeGraph.GraphNode GetFirstGraphNode(string varName, out int blockId)
         {
             blockId = 0;
-            for (int n = 0; n < exe.instrStreamList.Length; ++n)
+            InstructionStream[] iStreamList = exe.GetInstructionStreamList();
+            for (int n = 0; n < iStreamList.Length; ++n)
             {
-                InstructionStream stream = exe.instrStreamList[n];
+                InstructionStream stream = iStreamList[n];
                 for (int i = 0; i < stream.dependencyGraph.GraphList.Count; ++i)
                 {
                     AssociativeGraph.GraphNode node = stream.dependencyGraph.GraphList[i];
@@ -5459,25 +5462,19 @@ namespace ProtoCore.DSASM
             StackFrameType callerType = (fepRun) ? StackFrameType.kTypeFunction : StackFrameType.kTypeLanguage;
 
 
+            InstructionStream iStream = exe.GetInstructionStream(blockId);
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                // Comment Jun: Temporarily disable debug mode on bounce
-                //Validity.Assert(false); 
-
-                //Validity.Assert(runtimeCore.Breakpoints != null);
-                //blockDecl = blockCaller = runtimeCore.DebugProps.CurrentBlockId;
-
                 runtimeCore.DebugProps.SetUpBounce(this, blockCaller, returnAddr);
-
                 StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, null);
-                Language bounceLangauge = exe.instrStreamList[blockId].language;
+                Language bounceLangauge = iStream.language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame, runtimeCore.Breakpoints);
             }
             else //if (runtimeCore.Breakpoints == null)
             {
                 StackFrame stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth + 1, framePointer, registers, null);
 
-                Language bounceLangauge = exe.instrStreamList[blockId].language;
+                Language bounceLangauge = iStream.language;
                 BounceExplicit(blockId, 0, bounceLangauge, stackFrame);
             }
         }
@@ -5844,7 +5841,7 @@ namespace ProtoCore.DSASM
                     if (CallingConvention.CallType.kExplicit == callType)
                     {
                         int callerblock = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunctionBlock).opdata;
-                        istream = exe.instrStreamList[callerblock];
+                        istream = exe.GetInstructionStream(callerblock);
                     }
                 }
             }

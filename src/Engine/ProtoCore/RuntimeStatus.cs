@@ -278,9 +278,10 @@ namespace ProtoCore
                 // Determine if the current executing graph node is in an imported file scope
                 // If so, continue searching in the outer graph nodes for the line and col in the outer-most context - pratapa
 
+                InstructionStream iStream = runtimeCore.DSExecutable.GetInstructionStream(block);
                 for (int i = startpc; i <= endpc; ++i)
                 {
-                    var instruction = runtimeCore.DSExecutable.instrStreamList[block].instrList[i];
+                    var instruction = iStream.instrList[i];
                     if (instruction.debug != null)
                     {
                         if (instruction.debug.Location.StartInclusive.SourceLocation.FilePath != null)

@@ -449,7 +449,7 @@ namespace ProtoCore
             if(fNode.name.Equals(Constants.kInlineConditionalMethodName))
             {
                 // The inline conditional built-in is created only for associative blocks and needs to be handled separately as below
-                InstructionStream istream = runtimeCore.DSExecutable.instrStreamList[CurrentBlockId];
+                InstructionStream istream = runtimeCore.DSExecutable.GetInstructionStream(CurrentBlockId);
                 Validity.Assert(istream.language == Language.kAssociative);
                 {
                     runtimeCore.DebugProps.InlineConditionOptions.isInlineConditional = true;
@@ -607,12 +607,12 @@ namespace ProtoCore
             {
                 tempPC = InlineConditionOptions.startPc;
                 limit = InlineConditionOptions.endPc;
-                istream = runtimeCore.DSExecutable.instrStreamList[InlineConditionOptions.instructionStream];
+                istream = runtimeCore.DSExecutable.GetInstructionStream(InlineConditionOptions.instructionStream);
             }
             else
             {
                 pc = tempPC;
-                istream = runtimeCore.DSExecutable.instrStreamList[runtimeCore.RunningBlock];
+                istream = runtimeCore.DSExecutable.GetInstructionStream(runtimeCore.RunningBlock);
                 if (istream.language == Language.kAssociative)
                 {
                     limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, runtimeCore.Options.ExecuteSSA);

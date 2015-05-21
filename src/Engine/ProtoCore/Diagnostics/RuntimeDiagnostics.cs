@@ -24,12 +24,13 @@ namespace ProtoCore.Diagnostics
         /// the returned instruction count includes all instructions whether they are reachable or not
         /// </summary>
         /// <returns></returns>
-        public int GetExecutableInstructionCount()
+        public int GetExecutableInstructionCount(int macroBlockId = 0)
         {
             Validity.Assert(runtimeCore != null);
             Executable exe = runtimeCore.DSExecutable;
             int cnt = 0;
-            foreach (InstructionStream istream in exe.instrStreamList)
+            InstructionStream[] istreamList = exe.GetInstructionStreamList(macroBlockId);
+            foreach (InstructionStream istream in istreamList)
             {
                 cnt += istream.instrList.Count;
             }

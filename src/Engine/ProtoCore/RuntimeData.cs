@@ -88,7 +88,7 @@ namespace ProtoCore
             // attempting to cache internal functions. This may require a 
             // secondary callsite cache for internal functions so they dont 
             // clash with the graphNode UID key
-            var language = executable.instrStreamList[runningBlock].language;
+            var language = executable.GetInstructionStream(runningBlock).language;
             bool isImperative = language == Language.kImperative;
             bool isInternalFunction = CoreUtils.IsInternalFunction(methodName);
 
@@ -156,7 +156,7 @@ namespace ProtoCore
             {
                 if (executable != null)
                 {
-                    var stream = executable.instrStreamList;
+                    var stream = executable.GetInstructionStreamList();
                     if (stream != null && (stream.Length > 0))
                     {
                         var graph = stream[0].dependencyGraph;
@@ -215,7 +215,7 @@ namespace ProtoCore
             {
                 if (executable != null)
                 {
-                    var stream = executable.instrStreamList;
+                    var stream = executable.GetInstructionStreamList();
                     if (stream != null && (stream.Length > 0))
                     {
                         var graph = stream[0].dependencyGraph;

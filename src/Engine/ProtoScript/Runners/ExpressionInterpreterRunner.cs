@@ -105,7 +105,7 @@ namespace ProtoScript.Runners
             {
 
                 //a2. Record the old start PC for restore instructions
-                Core.watchStartPC = runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.Count;
+                Core.watchStartPC = runtimeCore.ExprInterpreterExe.GetInstructionStream(blockId).instrList.Count;
                 Core.GenerateExprExeInstructions(blockId);
                 
                 //a3. Record the old running block
@@ -154,7 +154,7 @@ namespace ProtoScript.Runners
                 //r2. Restore the instructions in Core.ExprInterpreterExe
                 int from = Core.watchStartPC;
                 int elems = runtimeCore.ExprInterpreterExe.iStreamCanvas.instrList.Count;
-                runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.RemoveRange(from, elems);
+                runtimeCore.ExprInterpreterExe.GetInstructionStream(blockId).instrList.RemoveRange(from, elems);
 
                 //Restore the start PC
                 Core.watchStartPC = oldStartPC;

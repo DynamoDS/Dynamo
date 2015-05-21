@@ -935,19 +935,20 @@ namespace ProtoCore
             
             // Copy all instruction streams
             // TODO Jun: What method to copy all? Use that
-            ExprInterpreterExe.instrStreamList = new InstructionStream[DSExecutable.instrStreamList.Length];
-            for (int i = 0; i < DSExecutable.instrStreamList.Length; ++i)
+            InstructionStream[] exeInstrStream = DSExecutable.GetInstructionStreamList();
+            InstructionStream[] instrStream = new InstructionStream[exeInstrStream.Length];
+            for (int i = 0; i < exeInstrStream.Length; ++i)
             {
-                if (null != DSExecutable.instrStreamList[i])
+                if (null != exeInstrStream[i])
                 {
-                    ExprInterpreterExe.instrStreamList[i] = new InstructionStream(DSExecutable.instrStreamList[i].language, this);
-                    //ExprInterpreterExe.instrStreamList[i] = new InstructionStream(DSExecutable.instrStreamList[i].language, DSExecutable.instrStreamList[i].dependencyGraph, this);
-                    for (int j = 0; j < DSExecutable.instrStreamList[i].instrList.Count; ++j)
+                    instrStream[i] = new InstructionStream(exeInstrStream[i].language, this);
+                    for (int j = 0; j < exeInstrStream[i].instrList.Count; ++j)
                     {
-                        ExprInterpreterExe.instrStreamList[i].instrList.Add(DSExecutable.instrStreamList[i].instrList[j]);
+                        instrStream[i].instrList.Add(exeInstrStream[i].instrList[j]);
                     }
                 }
             }
+            ExprInterpreterExe.AppendInstructionStreamList(instrStream);
         }
 
 
@@ -956,7 +957,7 @@ namespace ProtoCore
             // Append the expression instruction at the end of the current block
             for (int n = 0; n < ExprInterpreterExe.iStreamCanvas.instrList.Count; ++n)
             {
-                ExprInterpreterExe.instrStreamList[blockScope].instrList.Add(ExprInterpreterExe.iStreamCanvas.instrList[n]);
+                ExprInterpreterExe.GetInstructionStream(blockScope).instrList.Add(ExprInterpreterExe.iStreamCanvas.instrList[n]);
             }
         }
 
@@ -996,11 +997,12 @@ namespace ProtoCore
             }
 
             // Build the executable instruction streams
-            DSExecutable.instrStreamList = new InstructionStream[RuntimeTableIndex];
+            InstructionStream[] istream = new InstructionStream[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
-                BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
+                BfsBuildInstructionStreams(CodeBlockList[n], istream);
             }
+            DSExecutable.AppendInstructionStreamList(istream);
 
             GenerateExprExe();
             DSExecutable.FunctionTable = FunctionTable;

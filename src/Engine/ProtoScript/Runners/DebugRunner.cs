@@ -275,7 +275,7 @@ namespace ProtoScript.Runners
 
         private Instruction GetCurrentInstruction()
         {
-            return core.DSExecutable.instrStreamList[runtimeCore.RunningBlock].instrList[runtimeCore.DebugProps.DebugEntryPC];
+            return core.DSExecutable.GetInstructionStream(runtimeCore.RunningBlock).instrList[runtimeCore.DebugProps.DebugEntryPC];
         }
 
         private ProtoCore.CodeModel.CodePoint InstructionToBeginCodePoint(Instruction instr)
@@ -465,9 +465,10 @@ namespace ProtoScript.Runners
         private void FirstExec()
         {
             List<Instruction> bps = new List<Instruction>();
-            runtimeCore.DebugProps.DebugEntryPC = core.DSExecutable.instrStreamList[0].entrypoint;
+            InstructionStream[] iStreamList = core.DSExecutable.GetInstructionStreamList();
+            runtimeCore.DebugProps.DebugEntryPC = iStreamList[0].entrypoint;
 
-            foreach (InstructionStream instrStream in core.DSExecutable.instrStreamList)
+            foreach (InstructionStream instrStream in iStreamList)
             {
                 //Register the first initial breakpoint
                 if (null != instrStream)
@@ -500,7 +501,8 @@ namespace ProtoScript.Runners
             //List of Lines -> List of Debug Infos
             List<Dictionary<DebugInfo, Instruction>> ret = new List<Dictionary<DebugInfo, Instruction>>();
 
-            foreach (InstructionStream instrStream in core.DSExecutable.instrStreamList)
+            InstructionStream[] iStreamList = core.DSExecutable.GetInstructionStreamList();
+            foreach (InstructionStream instrStream in iStreamList)
             {
                 if (null != instrStream)
                 {
