@@ -62,6 +62,7 @@
     <Compile Include="AsyncTaskExtensionsTests.cs" />
     <Compile Include="CallsiteTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
+    <Compile Include="DefaultArgumentMigrationTests.cs" />
     <Compile Include="DSEvaluationUnitTestBase.cs" />
     <Compile Include="DynamoModelTestBase.cs" />
     <Compile Include="MessageLogTests.cs" />

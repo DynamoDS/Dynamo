@@ -1,0 +1,11 @@
+<Workspace Version="0.8.1.1402" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="17ef637c-ea48-4d40-b8e9-54bafd182708" type="Dynamo.Nodes.DSFunction" nickname="DummyLine.ByVector" x="454.5" y="463.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.DummyLine.ByVector@FFITarget.DummyVector">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+</Workspace>
