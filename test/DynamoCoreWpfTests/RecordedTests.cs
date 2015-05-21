@@ -4803,6 +4803,96 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
+
+
+        [Test]
+        public void MAGN_7348_Basket1()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check Vector.Rotate and Geometry.Rotate
+            //  c) change inputs and disconnect the input of vectror.rotate, check the state of nodes
+            //  d) reconnect nodes and give new input value and check the result
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Basket1.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        
+                        //Check Geometry.Rotate
+                        AssertPreviewCount("821f7a34-8c9b-472e-902b-7d3756742241", 12);
+                        for (int i = 0; i < 12; i++)
+                        {
+                            var ele = GetPreviewValueAtIndex("821f7a34-8c9b-472e-902b-7d3756742241", i);
+                            Assert.IsNotNull(ele);
+                            Assert.AreEqual(ele.ToString(), "Solid");
+                        }
+                        //Check Vector.Rotate
+                        AssertPreviewCount("951f7f92-117d-4bf6-bd9a-625f16d2991b", 12);
+                        for (int i = 0; i < 12; i++)
+                        {
+                            var ele = GetPreviewValueAtIndex("951f7f92-117d-4bf6-bd9a-625f16d2991b", i);
+                            Assert.IsNotNull(ele);
+                        }                      
+                        break;
+
+                    case "SecondRun":
+                        //Check the state of Geometry.Rotate
+                        NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("821f7a34-8c9b-472e-902b-7d3756742241");
+                        Assert.AreEqual(ElementState.Dead, node.State);
+                        break;
+
+                    case "ThirdRun":                 
+                        //check the state of Geometry.Rotate
+                        NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("821f7a34-8c9b-472e-902b-7d3756742241");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+
+                        // check the new value of Vecotr.Rotate. 
+                        var firstValue = GetPreviewValueAtIndex("951f7f92-117d-4bf6-bd9a-625f16d2991b", 0);
+                        Assert.AreEqual(firstValue.ToString(), "Vector(X = 2.873, Y = 1.340, Z = 0.000, Length = 3.170)");                      
+                        break;          
+                }
+            });
+        }
+
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_ListJoin()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check list.Join
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_ListJoin.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check Geometry.Rotate
+                        AssertPreviewCount("43e9707c-0c98-4925-a099-8fcc1ca33dbd", 17);
+                        for (int i = 0; i < 17; i++)
+                        {
+                            var ele = GetPreviewValueAtIndex("43e9707c-0c98-4925-a099-8fcc1ca33dbd", i);
+                            Assert.IsNotNull(ele);     
+                        }                     
+                        break;
+                }
+            });
+        }
         #endregion
 
 

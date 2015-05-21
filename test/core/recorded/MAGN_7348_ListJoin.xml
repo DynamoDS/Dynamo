@@ -1,0 +1,50 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="189" Y="168" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="189" Y="168" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="e9001507-bd37-44d0-a895-3d07d751d91b" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="97" y="137" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{1,2,3,4.5};" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="{1,2,3,4.5}" WorkspaceGuid="7ca5c886-e835-4327-9438-4313fbb6ae64">
+    <ModelGuid>e9001507-bd37-44d0-a895-3d07d751d91b</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="133" Y="255" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="133" Y="255" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="0021fd31-b205-460b-aa1e-f96e7afe29d4" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="41" y="224" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2..10;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="2..10" WorkspaceGuid="7ca5c886-e835-4327-9438-4313fbb6ae64">
+    <ModelGuid>0021fd31-b205-460b-aa1e-f96e7afe29d4</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="100" Y="372" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="100" Y="372" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="4e4ed85b-fbb6-457d-9de2-b40b430334ee" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="96" y="346" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3..9;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="3..9" WorkspaceGuid="7ca5c886-e835-4327-9438-4313fbb6ae64">
+    <ModelGuid>4e4ed85b-fbb6-457d-9de2-b40b430334ee</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand ModelGuid="4e4ed85b-fbb6-457d-9de2-b40b430334ee" Modifiers="0" />
+  <DragSelectionCommand X="69" Y="358" DragOperation="0" />
+  <DragSelectionCommand X="157" Y="363" DragOperation="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSVarArgFunction guid="43e9707c-0c98-4925-a099-8fcc1ca33dbd" type="Dynamo.Nodes.DSVarArgFunction" nickname="List.Join" x="264.5" y="193.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Join@var[]..[]" inputcount="3" />
+  </CreateNodeCommand>
+  <ModelEventCommand ModelGuid="43e9707c-0c98-4925-a099-8fcc1ca33dbd" EventName="AddInPort" />
+  <ModelEventCommand ModelGuid="43e9707c-0c98-4925-a099-8fcc1ca33dbd" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="e9001507-bd37-44d0-a895-3d07d751d91b" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="43e9707c-0c98-4925-a099-8fcc1ca33dbd" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="0021fd31-b205-460b-aa1e-f96e7afe29d4" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="43e9707c-0c98-4925-a099-8fcc1ca33dbd" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="4e4ed85b-fbb6-457d-9de2-b40b430334ee" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="43e9707c-0c98-4925-a099-8fcc1ca33dbd" PortIndex="2" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="43e9707c-0c98-4925-a099-8fcc1ca33dbd" Modifiers="0" />
+  <DragSelectionCommand X="377" Y="319" DragOperation="0" />
+  <DragSelectionCommand X="377" Y="319" DragOperation="1" />
+  <SelectModelCommand ModelGuid="43e9707c-0c98-4925-a099-8fcc1ca33dbd" Modifiers="0" />
+  <DragSelectionCommand X="377" Y="319" DragOperation="0" />
+  <DragSelectionCommand X="377" Y="319" DragOperation="1" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+</Commands>
