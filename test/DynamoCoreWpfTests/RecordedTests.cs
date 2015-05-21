@@ -3882,6 +3882,64 @@ namespace DynamoCoreWpfTests
 
 
         [Test]
+        public void MAGN_7348_Vignette_01_Wireframe_Section()
+        {
+            preloadGeometry = true;
+
+            //Create planes
+            //Scenario
+            //1. Create nodes and connect them correctly, try two create two lines with the same start and end points
+            //2. Give the valid input values and make two lines to be active, and check results
+            //3. change the input and reconnect nodes, check the result       
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_Vignette_01_Wireframe_Section.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {   
+                    Assert.AreEqual(33, workspace.Nodes.Count);
+                    //check the last two Line.BystartPointEndPoint
+                    NodeModel line1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("39699a12-ab28-45c2-a213-3feee21e482a");
+                    Assert.AreEqual(ElementState.Warning, line1.State);
+
+                    NodeModel line2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("19edfa3e-d0e3-4f7e-822a-ade06f8af58b");
+                    Assert.AreEqual(ElementState.Warning, line2.State);
+
+                }
+               else if (commandTag == "SecondRun")
+                {
+                    //check the last two Line.BystartPointEndPoint
+                    NodeModel line1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("39699a12-ab28-45c2-a213-3feee21e482a");
+                    Assert.AreEqual(ElementState.Active, line1.State);
+                    var line1Value = GetPreviewValueAtIndex("39699a12-ab28-45c2-a213-3feee21e482a", 0);
+                    Assert.AreEqual(line1Value.ToString(), "Line(StartPoint = Point(X = 7.967, Y = 0.000, Z = 18.800), EndPoint = Point(X = -7.967, Y = 0.000, Z = 18.800), Direction = Vector(X = -15.934, Y = 0.000, Z = 0.000, Length = 15.934))");
+                    NodeModel line2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("19edfa3e-d0e3-4f7e-822a-ade06f8af58b");
+                    Assert.AreEqual(ElementState.Active, line2.State);
+                    var line2Value = GetPreviewValueAtIndex("19edfa3e-d0e3-4f7e-822a-ade06f8af58b", 0);
+                    Assert.AreEqual(line2Value.ToString(), "Line(StartPoint = Point(X = 12.713, Y = 0.000, Z = 30.000), EndPoint = Point(X = -12.713, Y = 0.000, Z = 30.000), Direction = Vector(X = -25.426, Y = 0.000, Z = 0.000, Length = 25.426))");
+ 
+                }
+               else if (commandTag == "ThirdRun")
+                {
+                    var line1Value = GetPreviewValueAtIndex("39699a12-ab28-45c2-a213-3feee21e482a", 0);
+                    Assert.AreEqual(line1Value.ToString(), "Line(StartPoint = Point(X = 6.501, Y = 0.000, Z = 18.800), EndPoint = Point(X = -6.501, Y = 0.000, Z = 18.800), Direction = Vector(X = -13.002, Y = 0.000, Z = 0.000, Length = 13.002))");
+                    NodeModel line2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("19edfa3e-d0e3-4f7e-822a-ade06f8af58b");
+                    Assert.AreEqual(ElementState.Active, line2.State);
+                    var line2Value = GetPreviewValueAtIndex("19edfa3e-d0e3-4f7e-822a-ade06f8af58b", 0);
+                    Assert.AreEqual(line2Value.ToString(), "Line(StartPoint = Point(X = 10.374, Y = 0.000, Z = 30.000), EndPoint = Point(X = -10.374, Y = 0.000, Z = 30.000), Direction = Vector(X = -20.748, Y = 0.000, Z = 0.000, Length = 20.748))");
+                }
+            });
+        }
+
+
+
+        [Test]
         public void MAGN_7348_ListLacing()
         {
             preloadGeometry = true;
@@ -3934,7 +3992,6 @@ namespace DynamoCoreWpfTests
                     var line = GetFlattenedPreviewValues("6f9c4eeb-a3d6-4b97-9a36-f6af013a96de");
                     Assert.AreEqual(line.Count, 60);
                 }
- 
             });
         }
 
@@ -4177,6 +4234,29 @@ namespace DynamoCoreWpfTests
         }
 
 
+        [Test,Category("Failure")]
+        public void MAGN_7348_Math_Point_Formular_CBN()
+        {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) reconnect inputs
+            //  c)check nodes preview value
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_MAGN_7348_Math_Point_Formular_CBN.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // check minus and fomular
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(GetPreviewValue("b5b44e73-e79a-4f0b-99f7-50ac13660ca4").ToString(), "NurbsCurve(Degree = 3)");//check cbn
+                    AssertPreviewCount("016b4fbe-5a97-4308-9ab6-2950d3c36f1e", 20);//check Math.DegreesToRadians
+                    Assert.AreEqual(GetPreviewValue("f96439d0-6f79-4a30-955c-80e826a6ab69").ToString(), "Point(X = 10.000, Y = 20.000, Z = 0.000)");               
+                }
+            });
+        }
+
 
         [Test]
         public void MAGN_7348_Math_Point()
@@ -4184,7 +4264,7 @@ namespace DynamoCoreWpfTests
             // Check Math function
             // Scenario
             //  a) By connecting node
-            //  b) check two lines' values 
+            //  b) compare two lines' values 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
             preloadGeometry = true;
             RunCommandsFromFile("MAGN_7348_Math_Point.xml", (commandTag) =>
@@ -4325,6 +4405,9 @@ namespace DynamoCoreWpfTests
 
             });
         }
+
+
+
         #endregion
 
 
