@@ -79,6 +79,7 @@ namespace ProtoCore.Namespace
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            // First pass attempt to resolve the node before traversing it deeper
             IdentifierListNode newIdentifierListNode = null;
             if (IsMatchingResolvedName(node, out newIdentifierListNode))
                 return newIdentifierListNode;
@@ -105,33 +106,17 @@ namespace ProtoCore.Namespace
         private bool IsMatchingResolvedName(IdentifierListNode identifierList, out IdentifierListNode newIdentList)
         {
             newIdentList = null;
-            string partialName = CoreUtils.GetIdentifierExceptMethodName(identifierList);
-            var resolvedName = elementResolver.LookupResolvedName(partialName);
+            var resolvedName = ResolveClassName(identifierList);
             if (string.IsNullOrEmpty(resolvedName))
-            {
-                // If namespace resolution map does not contain entry for partial name, 
-                // back up on compiler to resolve the namespace from partial name
-                var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifierList);
-
-                if (matchingClasses.Length == 1)
-                {
-                    resolvedName = matchingClasses[0];
-                    var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
-
-                    elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
-                }
-            }
-            if (string.IsNullOrEmpty(resolvedName)) 
                 return false;
 
             newIdentList = (IdentifierListNode)CoreUtils.CreateNodeFromString(resolvedName);
             
-            //return resolvedName == partialName;
             var symbol = new Symbol(resolvedName);
             return symbol.Matches(identifierList.ToString());
         }
 
-        private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
+        private string ResolveClassName(AssociativeNode identifierList)
         {
             var identListNode = identifierList as IdentifierListNode;
 
@@ -153,6 +138,14 @@ namespace ProtoCore.Namespace
                     elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
                 }
             }
+            return resolvedName;
+        }
+
+        private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
+        {
+            var identListNode = identifierList as IdentifierListNode;
+            var resolvedName = ResolveClassName(identifierList);
+
             if (string.IsNullOrEmpty(resolvedName))
                 return identifierList;
 
