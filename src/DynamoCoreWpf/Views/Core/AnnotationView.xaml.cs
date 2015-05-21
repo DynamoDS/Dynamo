@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using HelixToolkit.Wpf.SharpDX;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Dynamo.UI.Prompts;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
@@ -33,7 +32,7 @@ namespace Dynamo.Nodes
 
             InitializeComponent();
             Loaded += AnnotationView_Loaded;                      
-            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;          
+            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;            
         }
      
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
@@ -96,7 +95,8 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {         
-            if (GroupTextBlock.IsVisible)
+            if (GroupTextBlock.IsVisible ||
+                (!GroupTextBlock.IsVisible && !GroupTextBox.IsVisible))
             {
                 ViewModel.Select();
             }
@@ -106,6 +106,27 @@ namespace Dynamo.Nodes
             if (GroupTextBlock.IsVisible && e.ClickCount >= 2)
             {
                 DynamoSelection.Instance.ClearSelection();
+                //Set the panning mode to false if a group is in editing mode.
+                if (ViewModel.WorkspaceViewModel.IsPanning)
+                {
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.TogglePan(null);
+                }
+                e.Handled = true;
+            }
+
+            //When the Zoom * Fontsized factor is less than 7, then
+            //show the edit window
+            if (!GroupTextBlock.IsVisible && e.ClickCount >= 2)
+            {               
+                var editWindow = new EditWindow(ViewModel.WorkspaceViewModel.DynamoViewModel, true);
+                editWindow.BindToProperty(DataContext, new Binding("AnnotationText")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = (DataContext as AnnotationViewModel),
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                });
+
+                editWindow.ShowDialog();
             }
         }
      

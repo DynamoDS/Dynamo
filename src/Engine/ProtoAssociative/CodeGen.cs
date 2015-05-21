@@ -3348,8 +3348,17 @@ namespace ProtoAssociative
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
 
+                DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
+                cexpr = ssaStack.Pop();
+                ilnode.TrueExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                astlist.AddRange(inlineExpressionASTList);
+                inlineExpressionASTList.Clear();
 
-                // SSA for true and false body are handled by EmitInlineConditionalNode
+                DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
+                cexpr = ssaStack.Pop();
+                ilnode.FalseExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                astlist.AddRange(inlineExpressionASTList);
+                inlineExpressionASTList.Clear();
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode();
                 bnode.Optr = ProtoCore.DSASM.Operator.assign;
@@ -6863,7 +6872,7 @@ namespace ProtoAssociative
                 // As SSA conversion is enabled, we have got the values of
                 // true and false branch, so it isn't necessary to create 
                 // language blocks.
-                if (core.Options.IsDeltaExecution && core.Options.GenerateSSA)
+                if (core.Options.GenerateSSA)
                 {
                     inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
                     inlineCall.FormalArguments.Add(inlineConditionalNode.TrueExpression);

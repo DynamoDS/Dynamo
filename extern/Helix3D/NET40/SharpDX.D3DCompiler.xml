@@ -78,9 +78,9 @@
             <param name="part"><dd>  <p>A <strong><see cref="T:SharpDX.D3DCompiler.ShaderBytecodePart"/></strong>-typed value that specifies the part of the buffer to retrieve.</p> </dd></param>	
             <param name="flags"><dd>  <p>Flags that indicate how to retrieve the blob part. Currently, no flags are defined.</p> </dd></param>	
             <param name="partOut"><dd>  <p>The address of a reference to the <strong>ID3DBlob</strong> interface that is used to retrieve the specified part of the buffer.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <remarks>	
-            <p><strong><see cref="M:SharpDX.D3DCompiler.D3D.GetBlobPart(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.ShaderBytecodePart,System.Int32,SharpDX.Direct3D.Blob@)"/></strong> retrieves the part of a blob (arbitrary length data buffer) that contains the type of data that the  <em>Part</em> parameter specifies.</p>	
+            <p><strong><see cref="M:SharpDX.D3DCompiler.D3D.GetBlobPart(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.ShaderBytecodePart,System.Int32,SharpDX.Direct3D.Blob@)"/></strong> retrieves the part of a blob (arbitrary length data buffer) that contains the type of data that the  <em>Part</em> parameter specifies.</p><p><strong>Windows Phone 8.1:</strong> This API is supported.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DGetBlobPart']/*"/>	
             <msdn-id>ff728674</msdn-id>	
@@ -89,7 +89,7 @@
         </member>
         <member name="M:SharpDX.D3DCompiler.D3D.DecompressShaders(System.IntPtr,SharpDX.PointerSize,System.Int32,System.Int32,System.Int32[],System.Int32,SharpDX.Direct3D.Blob[],System.Int32@)">
             <summary>	
-            <p>Decompresses one or more shaders from a compressed set. </p>	
+            <p><strong>Note</strong>??You can use this API to develop your Windows Store apps, but you can't use it in apps that you submit to the Windows Store.</p><p>Decompresses one or more shaders from a compressed set. </p>	
             </summary>	
             <param name="srcDataRef"><dd>  <p>A reference to uncompiled shader data; either ASCII HLSL code or a compiled effect.</p> </dd></param>	
             <param name="srcDataSize"><dd>  <p>Length of uncompiled shader data that <em>pSrcData</em> points to.</p> </dd></param>	
@@ -99,7 +99,7 @@
             <param name="uFlags"><dd>  <p>Flags that indicate how to decompress. Currently, no flags are defined.</p> </dd></param>	
             <param name="shadersOut"><dd>  <p>The address of a reference to the <strong>ID3DBlob</strong> interface that is used to retrieve the decompressed shader data.</p> </dd></param>	
             <param name="totalShadersRef"><dd>  <p>A reference to a variable that receives the total number of shaders that  <strong><see cref="M:SharpDX.D3DCompiler.D3D.DecompressShaders(System.IntPtr,SharpDX.PointerSize,System.Int32,System.Int32,System.Int32[],System.Int32,SharpDX.Direct3D.Blob[],System.Int32@)"/></strong> decompressed.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DDecompressShaders']/*"/>	
             <msdn-id>ff728673</msdn-id>	
             <unmanaged>HRESULT D3DDecompressShaders([In, Buffer] const void* pSrcData,[In] SIZE_T SrcDataSize,[In] unsigned int uNumShaders,[In] unsigned int uStartIndex,[In, Buffer, Optional] unsigned int* pIndices,[In] unsigned int uFlags,[Out, Buffer] ID3D10Blob** ppShaders,[Out, Optional] unsigned int* pTotalShaders)</unmanaged>	
@@ -113,8 +113,11 @@
             <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
             <param name="flags"><dd>  <p>Flags affecting the behavior of <strong><see cref="M:SharpDX.D3DCompiler.D3D.Disassemble(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.DisassemblyFlags,System.String,SharpDX.Direct3D.Blob@)"/></strong>.  <em>Flags</em> can be a combination of zero or more of the following values. </p> <table> <tr><th>Flag</th><th>Description</th></tr> <tr><td><see cref="F:SharpDX.D3DCompiler.DisassemblyFlags.EnableColorCode"/></td><td>Enable the output of color codes.</td></tr> <tr><td><see cref="F:SharpDX.D3DCompiler.DisassemblyFlags.EnableDefaultValuePrints"/></td><td>Enable the output of default values.</td></tr> <tr><td><see cref="F:SharpDX.D3DCompiler.DisassemblyFlags.EnableInstructionNumbering"/></td><td>Enable instruction numbering.</td></tr> <tr><td><see cref="F:SharpDX.D3DCompiler.DisassemblyFlags.EnableInstructionCycle"/></td><td>No effect.</td></tr> </table> <p>?</p> </dd></param>	
             <param name="szComments"><dd>  <p>The optional comment string at the top of the shader that identifies the shader constants and variables.</p> </dd></param>	
-            <param name="disassemblyOut"><dd>  <p>A reference to a buffer that receives the <see cref="T:SharpDX.Direct3D.Blob"/> interface that accesses assembly text.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <param name="disassemblyOut"><dd>  <p>A reference to a buffer that receives the <strong>ID3DBlob</strong> interface that accesses assembly text.</p> </dd></param>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
+            <remarks>	
+            <p><strong>Windows Phone 8.1:</strong> This API is supported.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DDisassemble']/*"/>	
             <msdn-id>dd607326</msdn-id>	
             <unmanaged>HRESULT D3DDisassemble([In, Buffer] const void* pSrcData,[In] SIZE_T SrcDataSize,[In] D3DCOMPILE_DISASM_FLAGS Flags,[In, Optional] const char* szComments,[Out] ID3D10Blob** ppDisassembly)</unmanaged>	
@@ -128,14 +131,17 @@
             <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
             <param name="sourceNameRef"><dd>  <p>Optional. You can use this parameter for strings that specify  error messages. If not used, set to <strong><c>null</c></strong>.</p> </dd></param>	
             <param name="definesRef"><dd>  <p>Optional. An array of <c>null</c>-terminated macro definitions (see <strong><see cref="T:SharpDX.Direct3D.ShaderMacro"/></strong>).</p> </dd></param>	
-            <param name="includeRef"><dd>  <p>Optional. A reference to an <strong><see cref="T:SharpDX.D3DCompiler.Include"/></strong> for handling include files. Setting this to <strong><c>null</c></strong> will cause a compile error if a shader contains a #include. You can pass the <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong> macro, which is a reference to a default include handler. This default include handler includes files that are relative to the current directory and files that are relative to the directory of the initial source file. When you use <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong>, you must specify the source file name in the <em>pSourceName</em> parameter; the compiler will derive the initial relative directory from <em>pSourceName</em>.</p>  <pre><code>#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((<see cref="T:SharpDX.D3DCompiler.Include"/>*)(<see cref="T:System.IntPtr"/>)1)</code></pre>  </dd></param>	
+            <param name="includeRef"><dd>  <p>Optional. A reference to an <strong><see cref="T:SharpDX.D3DCompiler.Include"/></strong> for handling include files. Setting this to <strong><c>null</c></strong> will cause a compile error if a shader contains a #include. You can pass the <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong> macro, which is a reference to a default include handler. This default include handler includes files that are relative to the current directory and files that are relative to the directory of the initial source file. When you use <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong>, you must specify the source file name in the <em>pSourceName</em> parameter; the compiler will derive the initial relative directory from <em>pSourceName</em>.</p>  <pre>#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((<see cref="T:SharpDX.D3DCompiler.Include"/>*)(<see cref="T:System.IntPtr"/>)1)</pre>  </dd></param>	
             <param name="entrypointRef"><dd>  <p>The name of the shader entry point function where shader execution begins. When you compile an effect, <strong><see cref="M:SharpDX.D3DCompiler.D3D.Compile(System.IntPtr,SharpDX.PointerSize,System.String,SharpDX.Direct3D.ShaderMacro[],System.IntPtr,System.String,System.String,SharpDX.D3DCompiler.ShaderFlags,SharpDX.D3DCompiler.EffectFlags,SharpDX.Direct3D.Blob@,SharpDX.Direct3D.Blob@)"/></strong> ignores <em>pEntrypoint</em>; we recommend that you set <em>pEntrypoint</em> to <strong><c>null</c></strong> because it is good programming practice to set a reference parameter to <strong><c>null</c></strong> if the called function will not use it.</p> </dd></param>	
-            <param name="targetRef"><dd>  <p>A string that specifies the shader target or set of shader features to compile against. The shader target can be shader model 2, shader model 3, shader model 4, or shader model 5. The target can also be an effect type (for example, fx_4_1).</p> </dd></param>	
+            <param name="targetRef"><dd>  <p>A string that specifies the shader target or set of shader features to compile against. The shader target can be shader model 2, shader model 3, shader model 4, or shader model 5. The target can also be an effect type (for example, fx_4_1). For info about the targets that various profiles support, see Specifying Compiler Targets. </p> </dd></param>	
             <param name="flags1"><dd>  <p>Shader <strong>compile options</strong>.</p> </dd></param>	
             <param name="flags2"><dd>  <p>Effect <strong>compile options</strong>. When you compile a shader and not an effect file, <strong><see cref="M:SharpDX.D3DCompiler.D3D.Compile(System.IntPtr,SharpDX.PointerSize,System.String,SharpDX.Direct3D.ShaderMacro[],System.IntPtr,System.String,System.String,SharpDX.D3DCompiler.ShaderFlags,SharpDX.D3DCompiler.EffectFlags,SharpDX.Direct3D.Blob@,SharpDX.Direct3D.Blob@)"/></strong> ignores <em>Flags2</em>; we recommend that you set <em>Flags2</em> to zero because it is good programming practice to set a nonreference parameter to zero if the called function will not use it.</p> </dd></param>	
-            <param name="codeOut"><dd>  <p>The address of a <strong>ID3DBlob</strong> that contains the compiled code.</p> </dd></param>	
-            <param name="errorMsgsOut"><dd>  <p>Optional. A reference to an <strong>ID3DBlob</strong> that contains compiler error messages, or <strong><c>null</c></strong> if there were no errors.</p> </dd></param>	
-            <returns><p>Returns one of the Direct3D 10 Return Codes.</p></returns>	
+            <param name="codeOut"><dd>  <p>A reference to a variable that receives a reference to the <strong>ID3DBlob</strong> interface that you can use to access the compiled code.</p> </dd></param>	
+            <param name="errorMsgsOut"><dd>  <p>An optional reference to a variable that receives a reference to the <strong>ID3DBlob</strong> interface that you can use to access compiler error messages, or <strong><c>null</c></strong> if there are no errors.</p> </dd></param>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
+            <remarks>	
+            <p><strong>Windows Phone 8.1:</strong> This API is supported.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCompile']/*"/>	
             <msdn-id>dd607324</msdn-id>	
             <unmanaged>HRESULT D3DCompile([In, Buffer] const void* pSrcData,[In] SIZE_T SrcDataSize,[In, Optional] const char* pSourceName,[In, Buffer, Optional] const D3D_SHADER_MACRO* pDefines,[In, Optional] ID3DInclude* pInclude,[In] const char* pEntrypoint,[In] const char* pTarget,[In] D3DCOMPILE_SHADER_FLAGS Flags1,[In] D3DCOMPILE_EFFECT_FLAGS Flags2,[Out] ID3D10Blob** ppCode,[Out, Optional] ID3D10Blob** ppErrorMsgs)</unmanaged>	
@@ -149,7 +155,10 @@
             <param name="bytecodeLength"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
             <param name="uStripFlags"><dd>  <p>Strip flag options, represented by <strong><see cref="T:SharpDX.D3DCompiler.StripFlags"/></strong>.</p> </dd></param>	
             <param name="strippedBlobOut"><dd>  <p>A reference to a variable that receives a reference to the <strong>ID3DBlob</strong> interface that you can use to access the unwanted stripped out shader code.</p> </dd></param>	
-            <returns><p>Returns one of the Direct3D 10 Return Codes.</p></returns>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
+            <remarks>	
+            <p><strong>Windows Phone 8.1:</strong> This API is supported.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DStripShader']/*"/>	
             <msdn-id>dd607335</msdn-id>	
             <unmanaged>HRESULT D3DStripShader([In, Buffer] const void* pShaderBytecode,[In] SIZE_T BytecodeLength,[In] D3DCOMPILER_STRIP_FLAGS uStripFlags,[Out] ID3D10Blob** ppStrippedBlob)</unmanaged>	
@@ -163,12 +172,12 @@
             <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
             <param name="sourceNameRef"><dd>  <p>Optional. The name of the file that contains the uncompiled HLSL code.</p> </dd></param>	
             <param name="definesRef"><dd>  <p>Optional. An array of <c>null</c>-terminated macro definitions (see <strong><see cref="T:SharpDX.Direct3D.ShaderMacro"/></strong>).</p> </dd></param>	
-            <param name="includeRef"><dd>  <p>Optional. A reference to an <strong><see cref="T:SharpDX.D3DCompiler.Include"/></strong> for handling include files. Setting this to <strong><c>null</c></strong> will cause a compile error if a shader contains a #include. You can pass the <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong> macro, which is a reference to a default include handler. This default include handler includes files that are relative to the current directory and files that are relative to the directory of the initial source file. When you use <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong>, you must specify the source file name in the <em>pSourceName</em> parameter; the compiler will derive the initial relative directory from <em>pSourceName</em>.</p>  <pre><code>#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((<see cref="T:SharpDX.D3DCompiler.Include"/>*)(<see cref="T:System.IntPtr"/>)1)</code></pre>  </dd></param>	
+            <param name="includeRef"><dd>  <p>Optional. A reference to an <strong><see cref="T:SharpDX.D3DCompiler.Include"/></strong> for handling include files. Setting this to <strong><c>null</c></strong> will cause a compile error if a shader contains a #include. You can pass the <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong> macro, which is a reference to a default include handler. This default include handler includes files that are relative to the current directory and files that are relative to the directory of the initial source file. When you use <strong>D3D_COMPILE_STANDARD_FILE_INCLUDE</strong>, you must specify the source file name in the <em>pSourceName</em> parameter; the compiler will derive the initial relative directory from <em>pSourceName</em>.</p>  <pre>#define D3D_COMPILE_STANDARD_FILE_INCLUDE ((<see cref="T:SharpDX.D3DCompiler.Include"/>*)(<see cref="T:System.IntPtr"/>)1)</pre>  </dd></param>	
             <param name="codeTextOut"><dd>  <p>The address of a <strong>ID3DBlob</strong> that contains the compiled code.</p> </dd></param>	
             <param name="errorMsgsOut"><dd>  <p>Optional. A reference to an <strong>ID3DBlob</strong> that contains compiler error messages, or <strong><c>null</c></strong> if there were no errors.</p> </dd></param>	
-            <returns><p>Returns one of the Direct3D 10 Return Codes.</p></returns>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <remarks>	
-            <p><strong><see cref="M:SharpDX.D3DCompiler.D3D.Preprocess(System.IntPtr,SharpDX.PointerSize,System.String,SharpDX.Direct3D.ShaderMacro[],System.IntPtr,SharpDX.Direct3D.Blob@,SharpDX.Direct3D.Blob@)"/></strong> outputs #line directives and preserves line numbering of source input so that output line numbering can be properly related to the input source.</p>	
+            <p><strong><see cref="M:SharpDX.D3DCompiler.D3D.Preprocess(System.IntPtr,SharpDX.PointerSize,System.String,SharpDX.Direct3D.ShaderMacro[],System.IntPtr,SharpDX.Direct3D.Blob@,SharpDX.Direct3D.Blob@)"/></strong> outputs #line directives and preserves line numbering of source input so that output line numbering can be properly related to the input source.</p><p><strong>Windows Phone 8.1:</strong> This API is supported.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DPreprocess']/*"/>	
             <msdn-id>dd607332</msdn-id>	
@@ -177,13 +186,13 @@
         </member>
         <member name="M:SharpDX.D3DCompiler.D3D.CompressShaders(System.Int32,SharpDX.D3DCompiler.ShaderData[],System.Int32,SharpDX.Direct3D.Blob@)">
             <summary>	
-            <p>Compresses a set of shaders into a more compact form. </p>	
+            <p><strong>Note</strong>??You can use this API to develop your Windows Store apps, but you can't use it in apps that you submit to the Windows Store.</p><p>Compresses a set of shaders into a more compact form. </p>	
             </summary>	
             <param name="uNumShaders"><dd>  <p>The number of shaders to compress.</p> </dd></param>	
             <param name="shaderDataRef"><dd>  <p>An array of <strong><see cref="T:SharpDX.D3DCompiler.ShaderData"/></strong> structures that describe the set of shaders to compress.</p> </dd></param>	
             <param name="uFlags"><dd>  <p>Flags that indicate how to compress the shaders. Currently, only the  D3D_COMPRESS_SHADER_KEEP_ALL_PARTS (0x00000001) flag is defined.</p> </dd></param>	
             <param name="compressedDataOut"><dd>  <p>The address of a reference to the <strong>ID3DBlob</strong> interface that is used to retrieve the compressed shader data.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCompressShaders']/*"/>	
             <msdn-id>ff728671</msdn-id>	
             <unmanaged>HRESULT D3DCompressShaders([In] unsigned int uNumShaders,[In, Buffer] D3D_SHADER_DATA* pShaderData,[In] unsigned int uFlags,[Out] ID3D10Blob** ppCompressedData)</unmanaged>	
@@ -195,13 +204,13 @@
             </summary>	
             <param name="srcDataRef"><dd>  <p>A reference to source data as compiled HLSL code.</p> </dd></param>	
             <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
-            <param name="interfaceRef"><dd>  <p>The reference <see cref="T:System.Guid"/> of the COM interface to use. For example, <strong>IID_ID3D11ShaderReflection</strong> or <strong>IID_ID3D10ShaderReflection</strong>.</p> </dd></param>	
+            <param name="interfaceRef"><dd>  <p>The reference <see cref="T:System.Guid"/> of the COM interface to use. For example, <strong>IID_ID3D11ShaderReflection</strong>.</p> </dd></param>	
             <param name="reflectorOut"><dd>  <p>A reference to a reflection interface.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <remarks>	
-            <p>Shader code contains metadata that can be inspected using the reflection APIs.</p><p>The following code illustrates retrieving a <see cref="T:SharpDX.D3DCompiler.ShaderReflection"/> Interface from a shader.</p><pre><code> pd3dDevice-&gt;CreatePixelShader( pPixelShaderBuffer-&gt;GetBufferPointer(), pPixelShaderBuffer-&gt;GetBufferSize(), g_pPSClassLinkage, &amp;g_pPixelShader ); <see cref="T:SharpDX.D3DCompiler.ShaderReflection"/>* pReflector = <c>null</c>; 	
+            <p>Shader code contains metadata that can be inspected using the reflection APIs.</p><p>The following code illustrates retrieving a <see cref="T:SharpDX.D3DCompiler.ShaderReflection"/> Interface from a shader.</p><pre> pd3dDevice-&gt;CreatePixelShader( pPixelShaderBuffer-&gt;GetBufferPointer(), pPixelShaderBuffer-&gt;GetBufferSize(), g_pPSClassLinkage, &amp;g_pPixelShader ); <see cref="T:SharpDX.D3DCompiler.ShaderReflection"/>* pReflector = <c>null</c>; 	
             <see cref="M:SharpDX.D3DCompiler.D3D.Reflect(System.IntPtr,SharpDX.PointerSize,System.Guid,System.IntPtr@)"/>( pPixelShaderBuffer-&gt;GetBufferPointer(), pPixelShaderBuffer-&gt;GetBufferSize(),  IID_ID3D11ShaderReflection, (void**) &amp;pReflector);	
-            </code></pre>	
+            </pre><p><strong>Windows Phone 8.1:</strong> This API is supported.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DReflect']/*"/>	
             <msdn-id>dd607334</msdn-id>	
@@ -210,12 +219,12 @@
         </member>
         <member name="M:SharpDX.D3DCompiler.D3D.GetInputSignatureBlob(System.IntPtr,SharpDX.PointerSize,SharpDX.Direct3D.Blob@)">
             <summary>	
-            <p>Gets the input signature from a compilation result.</p>	
+            <p><strong>Note</strong>??<strong><see cref="M:SharpDX.D3DCompiler.D3D.GetInputSignatureBlob(System.IntPtr,SharpDX.PointerSize,SharpDX.Direct3D.Blob@)"/></strong> may be altered or unavailable for releases after Windows?8.1. Instead use <strong><see cref="M:SharpDX.D3DCompiler.D3D.GetBlobPart(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.ShaderBytecodePart,System.Int32,SharpDX.Direct3D.Blob@)"/></strong> with the <strong><see cref="F:SharpDX.D3DCompiler.ShaderBytecodePart.InputSignatureBlob"/></strong> value. </p><p>Gets the input signature from a compilation result.</p>	
             </summary>	
-            <param name="srcDataRef"><dd>  <p>A reference to source data as compiled HLSL code.</p> </dd></param>	
-            <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
-            <param name="signatureBlobOut"><dd>  <p>Optional. A reference to an <see cref="T:SharpDX.Direct3D.Blob"/> that contains a compiled shader.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <param name="srcDataRef">No documentation.</param>	
+            <param name="srcDataSize">No documentation.</param>	
+            <param name="signatureBlobOut">No documentation.</param>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DGetInputSignatureBlob']/*"/>	
             <msdn-id>dd607330</msdn-id>	
             <unmanaged>HRESULT D3DGetInputSignatureBlob([In, Buffer] const void* pSrcData,[In] SIZE_T SrcDataSize,[Out] ID3D10Blob** ppSignatureBlob)</unmanaged>	
@@ -223,12 +232,12 @@
         </member>
         <member name="M:SharpDX.D3DCompiler.D3D.GetInputAndOutputSignatureBlob(System.IntPtr,SharpDX.PointerSize,SharpDX.Direct3D.Blob@)">
             <summary>	
-            <p>Gets the input and output signatures from a compilation result.</p>	
+            <p><strong>Note</strong>??<strong><see cref="M:SharpDX.D3DCompiler.D3D.GetInputAndOutputSignatureBlob(System.IntPtr,SharpDX.PointerSize,SharpDX.Direct3D.Blob@)"/></strong> may be altered or unavailable for releases after Windows?8.1. Instead use <strong><see cref="M:SharpDX.D3DCompiler.D3D.GetBlobPart(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.ShaderBytecodePart,System.Int32,SharpDX.Direct3D.Blob@)"/></strong> with the <strong><see cref="F:SharpDX.D3DCompiler.ShaderBytecodePart.InputAndOutputSignatureBlob"/></strong> value. </p><p>Gets the input and output signatures from a compilation result.</p>	
             </summary>	
-            <param name="srcDataRef"><dd>  <p>A reference to source data as compiled HLSL code.</p> </dd></param>	
-            <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
-            <param name="signatureBlobOut"><dd>  <p>Optional. A reference to an <see cref="T:SharpDX.Direct3D.Blob"/> that contains a compiled shader.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <param name="srcDataRef">No documentation.</param>	
+            <param name="srcDataSize">No documentation.</param>	
+            <param name="signatureBlobOut">No documentation.</param>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DGetInputAndOutputSignatureBlob']/*"/>	
             <msdn-id>dd607329</msdn-id>	
             <unmanaged>HRESULT D3DGetInputAndOutputSignatureBlob([In, Buffer] const void* pSrcData,[In] SIZE_T SrcDataSize,[Out] ID3D10Blob** ppSignatureBlob)</unmanaged>	
@@ -236,12 +245,12 @@
         </member>
         <member name="M:SharpDX.D3DCompiler.D3D.GetOutputSignatureBlob(System.IntPtr,SharpDX.PointerSize,SharpDX.Direct3D.Blob@)">
             <summary>	
-            <p>Gets the output signature from a compilation result.</p>	
+            <p><strong>Note</strong>??<strong><see cref="M:SharpDX.D3DCompiler.D3D.GetOutputSignatureBlob(System.IntPtr,SharpDX.PointerSize,SharpDX.Direct3D.Blob@)"/></strong> may be altered or unavailable for releases after Windows?8.1. Instead use <strong><see cref="M:SharpDX.D3DCompiler.D3D.GetBlobPart(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.ShaderBytecodePart,System.Int32,SharpDX.Direct3D.Blob@)"/></strong> with the <strong><see cref="F:SharpDX.D3DCompiler.ShaderBytecodePart.OutputSignatureBlob"/></strong> value. </p><p>Gets the output signature from a compilation result.</p>	
             </summary>	
-            <param name="srcDataRef"><dd>  <p>A reference to source data as compiled HLSL code.</p> </dd></param>	
-            <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
-            <param name="signatureBlobOut"><dd>  <p>Optional. A reference to an <see cref="T:SharpDX.Direct3D.Blob"/> that contains a compiled shader.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <param name="srcDataRef">No documentation.</param>	
+            <param name="srcDataSize">No documentation.</param>	
+            <param name="signatureBlobOut">No documentation.</param>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DGetOutputSignatureBlob']/*"/>	
             <msdn-id>dd607331</msdn-id>	
             <unmanaged>HRESULT D3DGetOutputSignatureBlob([In, Buffer] const void* pSrcData,[In] SIZE_T SrcDataSize,[Out] ID3D10Blob** ppSignatureBlob)</unmanaged>	
@@ -249,12 +258,12 @@
         </member>
         <member name="M:SharpDX.D3DCompiler.D3D.GetDebugInfo(System.IntPtr,SharpDX.PointerSize,SharpDX.Direct3D.Blob@)">
             <summary>	
-            <p>Gets shader debug information.</p>	
+            <p><strong>Note</strong>??You can use this API to develop your Windows Store apps, but you can't use it in apps that you submit to the Windows Store.</p><p>Gets shader debug information.</p>	
             </summary>	
             <param name="srcDataRef"><dd>  <p>A reference to source data; either uncompiled or compiled HLSL code.</p> </dd></param>	
             <param name="srcDataSize"><dd>  <p>Length of <em>pSrcData</em>.</p> </dd></param>	
-            <param name="debugInfoOut"><dd>  <p>Optional. A reference to an <see cref="T:SharpDX.Direct3D.Blob"/> that contains debug information.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 10 Return Codes.</p></returns>	
+            <param name="debugInfoOut"><dd>  <p>A reference to a buffer that receives the <strong>ID3DBlob</strong> interface that contains debug information.</p> </dd></param>	
+            <returns><p>Returns one of the Direct3D 11 return codes.</p></returns>	
             <remarks>	
             <p>Debug information is embedded in the body of the shader after calling <strong><see cref="M:SharpDX.D3DCompiler.D3D.Compile(System.IntPtr,SharpDX.PointerSize,System.String,SharpDX.Direct3D.ShaderMacro[],System.IntPtr,System.String,System.String,SharpDX.D3DCompiler.ShaderFlags,SharpDX.D3DCompiler.EffectFlags,SharpDX.Direct3D.Blob@,SharpDX.Direct3D.Blob@)"/></strong>.</p>	
             </remarks>	
@@ -457,317 +466,355 @@
         </member>
         <member name="T:SharpDX.D3DCompiler.InputPrimitive">
             <summary>	
-            <p>Values that indicate how the pipeline interprets vertex data that is bound to the input-assembler stage. These primitive topology values determine how the vertex data is rendered on screen.</p>	
+            <p>Values that indicate how the pipeline interprets geometry or hull shader input primitives.</p>	
             </summary>	
             <remarks>	
-            <p>Use the  <strong><see cref="!:SharpDX.Direct3D11.InputAssemblerStage.SetPrimitiveTopology"/></strong> method and a value from <strong><see cref="T:SharpDX.Direct3D.PrimitiveTopology"/></strong> to bind a primitive topology to the input-assembler stage. Use the  <strong><see cref="!:SharpDX.Direct3D11.InputAssemblerStage.GetPrimitiveTopology"/></strong> method to retrieve the primitive topology for the input-assembler stage.</p><p>The following diagram shows the various primitive types for a geometry shader object.</p>	
+            <p>The <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetGeometryShaderSInputPrimitive"/></strong> method returns a <strong><see cref="T:SharpDX.D3DCompiler.InputPrimitive"/></strong>-typed value.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE']/*"/>	
-            <msdn-id>ff728726</msdn-id>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.Undefined">
             <summary>	
-            No documentation.	
+            <dd> <p>The shader has not been initialized with an input primitive type.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_UNDEFINED']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_UNDEFINED</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_UNDEFINED</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.Point">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a point.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_POINT']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_POINT</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_POINT</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.Line">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a line. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_LINE']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_LINE</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_LINE</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.Triangle">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a triangle. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_TRIANGLE']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_TRIANGLE</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_TRIANGLE</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.LineWithAdjacency">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a line with adjacency data. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_LINE_ADJ']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_LINE_ADJ</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_LINE_ADJ</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.TriangleWithAdjacency">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a triangle with adjacency data. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_TRIANGLE_ADJ']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_TRIANGLE_ADJ</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_TRIANGLE_ADJ</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith1ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_1_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_1_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_1_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith2ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_2_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_2_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_2_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith3ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_3_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_3_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_3_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith4ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_4_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_4_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_4_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith5ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_5_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_5_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_5_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith6ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_6_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_6_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_6_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith7ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_7_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_7_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_7_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith8ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_8_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_8_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_8_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith9ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_9_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_9_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_9_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith10ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_10_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_10_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_10_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith11ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_11_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_11_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_11_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith12ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_12_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_12_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_12_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith13ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_13_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_13_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_13_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith14ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_14_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_14_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_14_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith15ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_15_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_15_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_15_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith16ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_16_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_16_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_16_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith17ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_17_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_17_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_17_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith18ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_18_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_18_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_18_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith19ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_19_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_19_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_19_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith20ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_20_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_20_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_20_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith21ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_21_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_21_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_21_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith22ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_22_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_22_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_22_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith23ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_23_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_23_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_23_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith24ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_24_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_24_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_24_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith25ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_25_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_25_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_25_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith26ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_26_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_26_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_26_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith27ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_27_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_27_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_27_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith28ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_28_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_28_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_28_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith29ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_29_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_29_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_29_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith30ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_30_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_30_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_30_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith31ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_31_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_31_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_31_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.InputPrimitive.PatchWith32ControlPoints">
             <summary>	
-            No documentation.	
+            <dd> <p>Interpret the input primitive as a control point patch.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_PRIMITIVE_32_CONTROL_POINT_PATCH']/*"/>	
+            <msdn-id>ff728725</msdn-id>	
             <unmanaged>D3D_PRIMITIVE_32_CONTROL_POINT_PATCH</unmanaged>	
             <unmanaged-short>D3D_PRIMITIVE_32_CONTROL_POINT_PATCH</unmanaged-short>	
         </member>
@@ -924,7 +971,7 @@
             <p>Values that identify parts of the content of an arbitrary length data buffer.</p>	
             </summary>	
             <remarks>	
-            <p>These values are passed to the <strong><see cref="M:SharpDX.D3DCompiler.D3D.GetBlobPart(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.ShaderBytecodePart,System.Int32,SharpDX.Direct3D.Blob@)"/></strong> function.</p>	
+            <p>These values are passed to the <strong><see cref="M:SharpDX.D3DCompiler.D3D.GetBlobPart(System.IntPtr,SharpDX.PointerSize,SharpDX.D3DCompiler.ShaderBytecodePart,System.Int32,SharpDX.Direct3D.Blob@)"/></strong> or  <strong>D3DSetBlobPart</strong> function.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_PART']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -933,7 +980,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.InputSignatureBlob">
             <summary>	
-            <dd> <p>The blob part is an input signature.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_INPUT_SIGNATURE_BLOB']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -942,7 +989,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.OutputSignatureBlob">
             <summary>	
-            <dd> <p>The blob part is an output signature.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_OUTPUT_SIGNATURE_BLOB']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -951,7 +998,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.InputAndOutputSignatureBlob">
             <summary>	
-            <dd> <p>The blob part is an input and output signature.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_INPUT_AND_OUTPUT_SIGNATURE_BLOB']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -960,7 +1007,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.PatchConstantSignatureBlob">
             <summary>	
-            <dd> <p>The blob part is a patch constant signature.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_PATCH_CONSTANT_SIGNATURE_BLOB']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -969,7 +1016,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.AllSignatureBlob">
             <summary>	
-            <dd> <p>The blob part is all signature.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_ALL_SIGNATURE_BLOB']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -978,7 +1025,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.DebugInformation">
             <summary>	
-            <dd> <p>The blob part is debug information.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_DEBUG_INFO']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -987,7 +1034,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.LegacyShader">
             <summary>	
-            <dd> <p>The blob part is a legacy shader.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_LEGACY_SHADER']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -996,7 +1043,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.XnaPrepassShader">
             <summary>	
-            <dd> <p>The blob part is an XNA prepass shader.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_XNA_PREPASS_SHADER']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -1005,7 +1052,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.XnaShader">
             <summary>	
-            <dd> <p>The blob part is an XNA shader.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_XNA_SHADER']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -1014,7 +1061,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.TestAlternateShader">
             <summary>	
-            <dd> <p>The blob part is a test alternate shader.</p> <p><strong>Note</strong>??This value identifies a test part and is only produced by special compiler versions. Therefore, this part type is typically not present in shaders.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_TEST_ALTERNATE_SHADER']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -1023,7 +1070,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.TestCompileDetails">
             <summary>	
-            <dd> <p>The blob part is test compilation details. </p> <p><strong>Note</strong>??This value identifies a test part and is only produced by special compiler versions. Therefore, this part type is typically not present in shaders.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_TEST_COMPILE_DETAILS']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -1032,7 +1079,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderBytecodePart.TestCompilePerf">
             <summary>	
-            <dd> <p>The blob part is test compilation performance. </p> <p><strong>Note</strong>??This value identifies a test part and is only produced by special compiler versions. Therefore, this part type is typically not present in shaders.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_BLOB_TEST_COMPILE_PERF']/*"/>	
             <msdn-id>ff728720</msdn-id>	
@@ -1041,177 +1088,202 @@
         </member>
         <member name="T:SharpDX.D3DCompiler.ShaderFlags">
             <summary>	
-            No documentation.	
+            <p>Describes a shader.</p>	
             </summary>	
+            <remarks>	
+            <p>A shader is written in HLSL and compiled into an intermediate language by the HLSL compiler. The shader description returns information about the compiled shader. Get a shader description by calling <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetDescription(SharpDX.D3DCompiler.ShaderDescription@)"/></strong>.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_SHADER_FLAGS']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_SHADER_FLAGS</unmanaged>	
             <unmanaged-short>D3DCOMPILE_SHADER_FLAGS</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.Debug">
             <summary>	
-            No documentation.	
+            <dd> <p>Shader version.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_DEBUG']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_DEBUG</unmanaged>	
             <unmanaged-short>D3DCOMPILE_DEBUG</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.SkipValidation">
             <summary>	
-            No documentation.	
+            <dd> <p>The name of the originator of the shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_SKIP_VALIDATION']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_SKIP_VALIDATION</unmanaged>	
             <unmanaged-short>D3DCOMPILE_SKIP_VALIDATION</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.SkipOptimization">
             <summary>	
-            No documentation.	
+            <dd> <p>Shader compilation/parse flags.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_SKIP_OPTIMIZATION']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_SKIP_OPTIMIZATION</unmanaged>	
             <unmanaged-short>D3DCOMPILE_SKIP_OPTIMIZATION</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.PackMatrixRowMajor">
             <summary>	
-            No documentation.	
+            <dd> <p>The number of shader-constant buffers.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_PACK_MATRIX_ROW_MAJOR']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_PACK_MATRIX_ROW_MAJOR</unmanaged>	
             <unmanaged-short>D3DCOMPILE_PACK_MATRIX_ROW_MAJOR</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.PackMatrixColumnMajor">
             <summary>	
-            No documentation.	
+            <dd> <p>The number of resource (textures and buffers) bound to a shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_PACK_MATRIX_COLUMN_MAJOR']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_PACK_MATRIX_COLUMN_MAJOR</unmanaged>	
             <unmanaged-short>D3DCOMPILE_PACK_MATRIX_COLUMN_MAJOR</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.PartialPrecision">
             <summary>	
-            No documentation.	
+            <dd> <p>The number of parameters in the input signature.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_PARTIAL_PRECISION']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_PARTIAL_PRECISION</unmanaged>	
             <unmanaged-short>D3DCOMPILE_PARTIAL_PRECISION</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.ForceVertexShaderSoftwareNoOptimization">
             <summary>	
-            No documentation.	
+            <dd> <p>The number of parameters in the output signature.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_FORCE_VS_SOFTWARE_NO_OPT']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_FORCE_VS_SOFTWARE_NO_OPT</unmanaged>	
             <unmanaged-short>D3DCOMPILE_FORCE_VS_SOFTWARE_NO_OPT</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.ForcePixelShaderSoftwareNoOptimization">
             <summary>	
-            No documentation.	
+            <dd> <p>The number of intermediate-language instructions in the compiled shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_FORCE_PS_SOFTWARE_NO_OPT']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_FORCE_PS_SOFTWARE_NO_OPT</unmanaged>	
             <unmanaged-short>D3DCOMPILE_FORCE_PS_SOFTWARE_NO_OPT</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.NoPreshader">
             <summary>	
-            No documentation.	
+            <dd> <p>The number of temporary registers in the compiled shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_NO_PRESHADER']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_NO_PRESHADER</unmanaged>	
             <unmanaged-short>D3DCOMPILE_NO_PRESHADER</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.AvoidFlowControl">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of temporary arrays used.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_AVOID_FLOW_CONTROL']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_AVOID_FLOW_CONTROL</unmanaged>	
             <unmanaged-short>D3DCOMPILE_AVOID_FLOW_CONTROL</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.PreferFlowControl">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of constant defines.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_PREFER_FLOW_CONTROL']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_PREFER_FLOW_CONTROL</unmanaged>	
             <unmanaged-short>D3DCOMPILE_PREFER_FLOW_CONTROL</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.EnableStrictness">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of declarations (input + output).</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_ENABLE_STRICTNESS']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_ENABLE_STRICTNESS</unmanaged>	
             <unmanaged-short>D3DCOMPILE_ENABLE_STRICTNESS</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.EnableBackwardsCompatibility">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of non-categorized texture instructions.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY</unmanaged>	
             <unmanaged-short>D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.IeeeStrictness">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of texture load instructions</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_IEEE_STRICTNESS']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_IEEE_STRICTNESS</unmanaged>	
             <unmanaged-short>D3DCOMPILE_IEEE_STRICTNESS</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.OptimizationLevel0">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of texture comparison instructions</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_OPTIMIZATION_LEVEL0']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_OPTIMIZATION_LEVEL0</unmanaged>	
             <unmanaged-short>D3DCOMPILE_OPTIMIZATION_LEVEL0</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.OptimizationLevel1">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of texture bias instructions</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_OPTIMIZATION_LEVEL1']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_OPTIMIZATION_LEVEL1</unmanaged>	
             <unmanaged-short>D3DCOMPILE_OPTIMIZATION_LEVEL1</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.OptimizationLevel2">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of texture gradient instructions.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_OPTIMIZATION_LEVEL2']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_OPTIMIZATION_LEVEL2</unmanaged>	
             <unmanaged-short>D3DCOMPILE_OPTIMIZATION_LEVEL2</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.OptimizationLevel3">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of floating point arithmetic instructions used.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_OPTIMIZATION_LEVEL3']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_OPTIMIZATION_LEVEL3</unmanaged>	
             <unmanaged-short>D3DCOMPILE_OPTIMIZATION_LEVEL3</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.Reserved16">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of signed integer arithmetic instructions used.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_RESERVED16']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_RESERVED16</unmanaged>	
             <unmanaged-short>D3DCOMPILE_RESERVED16</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.Reserved17">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of unsigned integer arithmetic instructions used.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_RESERVED17']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_RESERVED17</unmanaged>	
             <unmanaged-short>D3DCOMPILE_RESERVED17</unmanaged-short>	
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderFlags.WarningsAreErrors">
             <summary>	
-            No documentation.	
+            <dd> <p>Number of static flow control instructions used.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILE_WARNINGS_ARE_ERRORS']/*"/>	
+            <msdn-id>ff476209</msdn-id>	
             <unmanaged>D3DCOMPILE_WARNINGS_ARE_ERRORS</unmanaged>	
             <unmanaged-short>D3DCOMPILE_WARNINGS_ARE_ERRORS</unmanaged-short>	
         </member>
@@ -1553,8 +1625,8 @@
             <p>Values that identify various data, texture, and buffer types that can be assigned to a shader variable.</p>	
             </summary>	
             <remarks>	
-            <p>A call to the <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflectionType.GetDescription(SharpDX.D3DCompiler.ShaderTypeDescription@)"/></strong> method returns a <strong><see cref="T:SharpDX.D3DCompiler.ShaderVariableType"/></strong> value in the  <strong>Type</strong> member of a  <strong><see cref="T:SharpDX.D3DCompiler.ShaderTypeDescription"/></strong> structure.</p><p>The types in a structured buffer describe the structure of the elements in the buffer. The layout of these types generally match their C++ struct counterparts. The following examples show structured buffers:</p><pre><code>struct mystruct {float4 val; uint ind;}; RWStructuredBuffer&lt;mystruct&gt; rwbuf;	
-            RWStructuredBuffer&lt;float3&gt; rwbuf2;</code></pre>	
+            <p>A call to the <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflectionType.GetDescription(SharpDX.D3DCompiler.ShaderTypeDescription@)"/></strong> method returns a <strong><see cref="T:SharpDX.D3DCompiler.ShaderVariableType"/></strong> value in the  <strong>Type</strong> member of a  <strong><see cref="T:SharpDX.D3DCompiler.ShaderTypeDescription"/></strong> structure.</p><p>The types in a structured buffer describe the structure of the elements in the buffer. The layout of these types generally match their C++ struct counterparts. The following examples show structured buffers:</p><pre>struct mystruct {float4 val; uint ind;}; RWStructuredBuffer&lt;mystruct&gt; rwbuf;	
+            RWStructuredBuffer&lt;float3&gt; rwbuf2;</pre>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SHADER_VARIABLE_TYPE']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1698,7 +1770,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.PixelShader">
             <summary>	
-            <dd> <p>The variable is a geometry shader.</p> </dd>	
+            <dd> <p>The variable is a pixel shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_PIXELSHADER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1707,7 +1779,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.VertexShader">
             <summary>	
-            <dd> <p>The variable is a rasterizer-state object.</p> </dd>	
+            <dd> <p>The variable is a vertex shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_VERTEXSHADER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1734,7 +1806,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.UInt">
             <summary>	
-            <dd> <p>The variable is a buffer.</p> </dd>	
+            <dd> <p>The variable is an unsigned integer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_UINT']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1743,7 +1815,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.UInt8">
             <summary>	
-            <dd> <p>The variable is a constant buffer.</p> </dd>	
+            <dd> <p>The variable is an 8-bit unsigned integer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_UINT8']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1752,7 +1824,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.GeometryShader">
             <summary>	
-            <dd> <p>The variable is a texture buffer.</p> </dd>	
+            <dd> <p>The variable is a geometry shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_GEOMETRYSHADER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1761,7 +1833,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Rasterizer">
             <summary>	
-            <dd> <p>The variable is a 1D-texture array.</p> </dd>	
+            <dd> <p>The variable is a rasterizer-state object.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RASTERIZER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1770,7 +1842,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.DepthStencil">
             <summary>	
-            <dd> <p>The variable is a 2D-texture array.</p> </dd>	
+            <dd> <p>The variable is a depth-stencil-state object.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_DEPTHSTENCIL']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1779,7 +1851,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Blend">
             <summary>	
-            <dd> <p>The variable is a render-target view.</p> </dd>	
+            <dd> <p>The variable is a blend-state object.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_BLEND']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1788,7 +1860,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Buffer">
             <summary>	
-            <dd> <p>The variable is a depth-stencil view.</p> </dd>	
+            <dd> <p>The variable is a buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_BUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1797,7 +1869,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.ConstantBuffer">
             <summary>	
-            <dd> <p>The variable is a 2D-multisampled texture.</p> </dd>	
+            <dd> <p>The variable is a constant buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_CBUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1806,7 +1878,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.TextureBuffer">
             <summary>	
-            <dd> <p>The variable is a 2D-multisampled-texture array.</p> </dd>	
+            <dd> <p>The variable is a texture buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_TBUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1815,7 +1887,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Texture1DArray">
             <summary>	
-            <dd> <p>The variable is a texture-cube array.</p> </dd>	
+            <dd> <p>The variable is a 1D-texture array.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_TEXTURE1DARRAY']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1824,7 +1896,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Texture2DArray">
             <summary>	
-            <dd> <p>The variable holds a compiled hull-shader binary.</p> </dd>	
+            <dd> <p>The variable is a 2D-texture array.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_TEXTURE2DARRAY']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1833,7 +1905,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RenderTargetView">
             <summary>	
-            <dd> <p>The variable holds a compiled domain-shader binary.</p> </dd>	
+            <dd> <p>The variable is a render-target view.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RENDERTARGETVIEW']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1842,7 +1914,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.DepthStencilView">
             <summary>	
-            <dd> <p>The variable is an interface.</p> </dd>	
+            <dd> <p>The variable is a depth-stencil view.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_DEPTHSTENCILVIEW']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1851,7 +1923,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Texture2DMultisampled">
             <summary>	
-            <dd> <p>The variable holds a compiled compute-shader binary.</p> </dd>	
+            <dd> <p>The variable is a 2D-multisampled texture.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_TEXTURE2DMS']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1860,7 +1932,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Texture2DMultisampledArray">
             <summary>	
-            <dd> <p>The variable is a double precision (64-bit) floating-point number.</p> </dd>	
+            <dd> <p>The variable is a 2D-multisampled-texture array.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_TEXTURE2DMSARRAY']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1869,7 +1941,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.TextureCubeArray">
             <summary>	
-            <dd> <p>The variable is a 1D read-and-write texture.</p> </dd>	
+            <dd> <p>The variable is a texture-cube array.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_TEXTURECUBEARRAY']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1878,7 +1950,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.HullShader">
             <summary>	
-            <dd> <p>The variable is an array of 1D read-and-write textures.</p> </dd>	
+            <dd> <p>The variable holds a compiled hull-shader binary.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_HULLSHADER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1887,7 +1959,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.DomainShader">
             <summary>	
-            <dd> <p>The variable is a 2D read-and-write texture.</p> </dd>	
+            <dd> <p>The variable holds a compiled domain-shader binary.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_DOMAINSHADER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1896,7 +1968,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.InterfacePointer">
             <summary>	
-            <dd> <p>The variable is an array of 2D read-and-write textures.</p> </dd>	
+            <dd> <p>The variable is an interface.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_INTERFACE_POINTER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1905,7 +1977,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.ComputeShader">
             <summary>	
-            <dd> <p>The variable is a 3D read-and-write texture.</p> </dd>	
+            <dd> <p>The variable holds a compiled compute-shader binary.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_COMPUTESHADER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1914,7 +1986,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.Double">
             <summary>	
-            <dd> <p>The variable is a read-and-write buffer.</p> </dd>	
+            <dd> <p>The variable is a double precision (64-bit) floating-point number.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_DOUBLE']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1923,7 +1995,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWTexture1D">
             <summary>	
-            <dd> <p>The variable is a byte-address buffer.</p> </dd>	
+            <dd> <p>The variable is a 1D read-and-write texture.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWTEXTURE1D']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1932,7 +2004,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWTexture1DArray">
             <summary>	
-            <dd> <p>The variable is a read-and-write byte-address buffer.</p> </dd>	
+            <dd> <p>The variable is an array of 1D read-and-write textures.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWTEXTURE1DARRAY']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1941,7 +2013,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWTexture2D">
             <summary>	
-            <dd> <p>The variable is a structured buffer. </p> <p>For more information about structured buffer, see the <strong>Remarks</strong> section.</p> </dd>	
+            <dd> <p>The variable is a 2D read-and-write texture.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWTEXTURE2D']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1950,7 +2022,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWTexture2DArray">
             <summary>	
-            <dd> <p>The variable is a read-and-write structured buffer.</p> </dd>	
+            <dd> <p>The variable is an array of 2D read-and-write textures.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWTEXTURE2DARRAY']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1959,7 +2031,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWTexture3D">
             <summary>	
-            <dd> <p>The variable is an append structured buffer.</p> </dd>	
+            <dd> <p>The variable is a 3D read-and-write texture.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWTEXTURE3D']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1968,7 +2040,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWBuffer">
             <summary>	
-            <dd> <p>The variable is a consume structured buffer.</p> </dd>	
+            <dd> <p>The variable is a read-and-write buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWBUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1977,7 +2049,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.ByteAddressBuffer">
             <summary>	
-            <dd> <p>The variable is a void reference.</p> </dd>	
+            <dd> <p>The variable is a byte-address buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_BYTEADDRESS_BUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1986,7 +2058,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWByteAddressBuffer">
             <summary>	
-            <dd> <p>The variable is a boolean.</p> </dd>	
+            <dd> <p>The variable is a read-and-write byte-address buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWBYTEADDRESS_BUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -1995,7 +2067,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.StructuredBuffer">
             <summary>	
-            <dd> <p>The variable is an integer.</p> </dd>	
+            <dd> <p>The variable is a structured buffer. </p> <p>For more information about structured buffer, see the <strong>Remarks</strong> section.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_STRUCTURED_BUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -2004,7 +2076,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.RWStructuredBuffer">
             <summary>	
-            <dd> <p>The variable is a floating-point number.</p> </dd>	
+            <dd> <p>The variable is a read-and-write structured buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_RWSTRUCTURED_BUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -2013,7 +2085,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.AppendStructuredBuffer">
             <summary>	
-            <dd> <p>The variable is a string.</p> </dd>	
+            <dd> <p>The variable is an append structured buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_APPEND_STRUCTURED_BUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -2022,7 +2094,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderVariableType.ConsumeStructuredBuffer">
             <summary>	
-            <dd> <p>The variable is a texture.</p> </dd>	
+            <dd> <p>The variable is a consume structured buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D_SVT_CONSUME_STRUCTURED_BUFFER']/*"/>	
             <msdn-id>ff728735</msdn-id>	
@@ -2106,7 +2178,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.StripFlags.CompilerStripReflectionData">
             <summary>	
-            <dd> <p>Remove reflection data.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILER_STRIP_REFLECTION_DATA']/*"/>	
             <msdn-id>dd607325</msdn-id>	
@@ -2115,7 +2187,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.StripFlags.CompilerStripDebugInformation">
             <summary>	
-            <dd> <p>Remove debug information.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILER_STRIP_DEBUG_INFO']/*"/>	
             <msdn-id>dd607325</msdn-id>	
@@ -2124,7 +2196,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.StripFlags.CompilerStripTestBlobs">
             <summary>	
-            <dd> <p>Remove test blob data.</p> </dd>	
+            No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DCOMPILER_STRIP_TEST_BLOBS']/*"/>	
             <msdn-id>dd607325</msdn-id>	
@@ -2513,10 +2585,10 @@
         </member>
         <member name="T:SharpDX.D3DCompiler.ConstantBuffer">
             <summary>	
-            <p>This shader-reflection interface provides access to a constant buffer.</p>	
+            <p>This shader-reflection interface provides access to a constant buffer.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
-            <p>To create a constant-buffer interface, call <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetConstantBuffer(System.Int32)"/></strong> or <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetConstantBuffer(System.Int32)"/></strong>. This is not a COM interface; therefore, you do not need to worry about reference counts or releasing the interface when you are done with it.</p>	
+            <p>To create a constant-buffer interface, call <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetConstantBuffer(System.Int32)"/></strong> or <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetConstantBuffer(System.Int32)"/></strong>. This isn't a COM interface, so you don't need to worry about reference counts or releasing the interface when you're done with it.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3D11ShaderReflectionConstantBuffer']/*"/>	
             <msdn-id>ff476591</msdn-id>	
@@ -2630,8 +2702,8 @@
             <p>A shader-reflection interface accesses shader information.</p>	
             </summary>	
             <remarks>	
-            <p>An <strong><see cref="T:SharpDX.D3DCompiler.ShaderReflection"/></strong> interface can be retrieved for a shader by using  <strong><see cref="M:SharpDX.D3DCompiler.D3D.Reflect(System.IntPtr,SharpDX.PointerSize,System.Guid,System.IntPtr@)"/></strong>.  The following code illustrates retrieving a <strong><see cref="T:SharpDX.D3DCompiler.ShaderReflection"/></strong> from a shader.</p><pre><code> pd3dDevice-&gt;CreatePixelShader( pPixelShaderBuffer-&gt;GetBufferPointer(), pPixelShaderBuffer-&gt;GetBufferSize(), g_pPSClassLinkage, &amp;g_pPixelShader ); <see cref="T:SharpDX.D3DCompiler.ShaderReflection"/>* pReflector = <c>null</c>; 	
-            <see cref="M:SharpDX.D3DCompiler.D3D.Reflect(System.IntPtr,SharpDX.PointerSize,System.Guid,System.IntPtr@)"/>( pPixelShaderBuffer-&gt;GetBufferPointer(), pPixelShaderBuffer-&gt;GetBufferSize(),  IID_ID3D11ShaderReflection, (void**) &amp;pReflector); </code></pre>	
+            <p>An <strong><see cref="T:SharpDX.D3DCompiler.ShaderReflection"/></strong> interface can be retrieved for a shader by using  <strong><see cref="M:SharpDX.D3DCompiler.D3D.Reflect(System.IntPtr,SharpDX.PointerSize,System.Guid,System.IntPtr@)"/></strong>.  The following code illustrates retrieving a <strong><see cref="T:SharpDX.D3DCompiler.ShaderReflection"/></strong> from a shader.</p><pre> pd3dDevice-&gt;CreatePixelShader( pPixelShaderBuffer-&gt;GetBufferPointer(), pPixelShaderBuffer-&gt;GetBufferSize(), g_pPSClassLinkage, &amp;g_pPixelShader ); <see cref="T:SharpDX.D3DCompiler.ShaderReflection"/>* pReflector = <c>null</c>; 	
+            <see cref="M:SharpDX.D3DCompiler.D3D.Reflect(System.IntPtr,SharpDX.PointerSize,System.Guid,System.IntPtr@)"/>( pPixelShaderBuffer-&gt;GetBufferPointer(), pPixelShaderBuffer-&gt;GetBufferSize(),  IID_ID3D11ShaderReflection, (void**) &amp;pReflector); </pre>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3D11ShaderReflection']/*"/>	
             <msdn-id>ff476590</msdn-id>	
@@ -2891,7 +2963,7 @@
             <param name="sizeXRef"><dd>  <p>A reference to the size, in thread groups, of the x-dimension of the thread-group grid. The maximum size is 65535.</p> </dd></param>	
             <param name="sizeYRef"><dd>  <p>A reference to the size, in thread groups, of the y-dimension of the thread-group grid. The maximum size is 65535.</p> </dd></param>	
             <param name="sizeZRef"><dd>  <p>A reference to the size, in thread groups, of the z-dimension of the thread-group grid. The maximum size is 65535.</p> </dd></param>	
-            <returns><p>Returns one of the following Direct3D 11 Return Codes.</p></returns>	
+            <returns><p>Returns the total size, in thread groups, of the thread-group grid by calculating the product of the size of each dimension.</p><code> *pSizeX * *pSizeY * *pSizeZ;</code></returns>	
             <remarks>	
             <p>This method's interface is hosted in the out-of-box DLL D3DCompiler_xx.dll.</p>	
             </remarks>	
@@ -3025,10 +3097,10 @@
         </member>
         <member name="T:SharpDX.D3DCompiler.ShaderReflectionType">
             <summary>	
-            <p>This shader-reflection interface provides access to variable type.</p>	
+            <p>This shader-reflection interface provides access to variable type.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
-            <p>The get a shader-reflection-type interface, call <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflectionVariable.GetVariableType"/></strong>.</p>	
+            <p>The get a shader-reflection-type interface, call <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflectionVariable.GetVariableType"/></strong>. This isn't a COM interface, so you don't need to worry about reference counts or releasing the interface when you're done with it.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3D11ShaderReflectionType']/*"/>	
             <msdn-id>ff476595</msdn-id>	
@@ -3288,10 +3360,10 @@
         </member>
         <member name="T:SharpDX.D3DCompiler.ShaderReflectionVariable">
             <summary>	
-            <p>This shader-reflection interface provides access to a variable.</p>	
+            <p>This shader-reflection interface provides access to a variable.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
-            <p>To get a shader-reflection-variable interface, call a method like <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetVariable(System.String)"/></strong>.</p>	
+            <p>To get a shader-reflection-variable interface, call a method like <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetVariable(System.String)"/></strong>. This isn't a COM interface, so you don't need to worry about reference counts or releasing the interface when you're done with it.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3D11ShaderReflectionVariable']/*"/>	
             <msdn-id>ff476607</msdn-id>	
@@ -3500,7 +3572,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ConstantBufferDescription.Type">
             <summary>	
-            <dd> <p>The intended use of the constant data.</p> </dd>	
+            <dd> <p>A <strong><see cref="T:SharpDX.D3DCompiler.ConstantBufferType"/></strong>-typed value that indicates the intended use of the constant data.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_BUFFER_DESC::Type']/*"/>	
             <msdn-id>ff476208</msdn-id>	
@@ -3527,7 +3599,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ConstantBufferDescription.Flags">
             <summary>	
-            <dd> <p>Shader buffer properties.</p> </dd>	
+            <dd> <p>A combination of <strong><see cref="T:SharpDX.D3DCompiler.ConstantBufferFlags"/></strong>-typed values that are combined by using a bitwise OR operation. The resulting value specifies properties for the shader constant-buffer.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_BUFFER_DESC::uFlags']/*"/>	
             <msdn-id>ff476208</msdn-id>	
@@ -3557,7 +3629,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.InputBindingDescription.Type">
             <summary>	
-            <dd> <p>Identifies the type of data in the resource. See <strong>D3D10_SHADER_INPUT_TYPE</strong>.</p> </dd>	
+            <dd> <p>A <strong><see cref="T:SharpDX.D3DCompiler.ShaderInputType"/></strong>-typed value that identifies the type of data in the resource.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_INPUT_BIND_DESC::Type']/*"/>	
             <msdn-id>ff476210</msdn-id>	
@@ -3584,7 +3656,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.InputBindingDescription.Flags">
             <summary>	
-            <dd> <p>Shader input-parameter options.  See <strong>D3D10_SHADER_INPUT_FLAGS</strong>.</p> </dd>	
+            <dd> <p>A combination of <strong><see cref="T:SharpDX.D3DCompiler.ShaderInputFlags"/></strong>-typed values for shader input-parameter options.  </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_INPUT_BIND_DESC::uFlags']/*"/>	
             <msdn-id>ff476210</msdn-id>	
@@ -3593,7 +3665,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.InputBindingDescription.ReturnType">
             <summary>	
-            <dd> <p>If the input is a texture, the return type. See <strong>D3D11_RESOURCE_RETURN_TYPE</strong>.</p> </dd>	
+            <dd> <p>If the input is a texture, the <strong><see cref="T:SharpDX.D3DCompiler.ResourceReturnType"/></strong>-typed value that identifies the return type.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_INPUT_BIND_DESC::ReturnType']/*"/>	
             <msdn-id>ff476210</msdn-id>	
@@ -3602,7 +3674,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.InputBindingDescription.Dimension">
             <summary>	
-            <dd> <p>Identifies the dimensions of the bound resource. For a list of values that <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetResourceBindingDescription(System.Int32)"/></strong> or <strong><see cref="M:SharpDX.D3DCompiler.ShaderReflection.GetResourceBindingDescription(System.Int32)"/></strong> can return, see <strong>D3D11_SRV_DIMENSION</strong>.</p> </dd>	
+            <dd> <p>A <strong><see cref="T:SharpDX.Direct3D.ShaderResourceViewDimension"/></strong>-typed value that identifies the dimensions of the bound resource.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_INPUT_BIND_DESC::Dimension']/*"/>	
             <msdn-id>ff476210</msdn-id>	
@@ -3611,7 +3683,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.InputBindingDescription.NumSamples">
             <summary>	
-            <dd> <p>The number of samples for a multisampled texture; otherwise 0.</p> </dd>	
+            <dd> <p>The number of samples for a multisampled texture; when a texture isn't multisampled, the value is set to -1 (0xFFFFFFFF). </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_INPUT_BIND_DESC::NumSamples']/*"/>	
             <msdn-id>ff476210</msdn-id>	
@@ -3896,7 +3968,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderDescription.GeometryShaderOutputTopology">
             <summary>	
-            <dd> <p>The <strong>D3D10_PRIMITIVE_TOPOLOGY</strong>, which represents the shader output topology.</p> </dd>	
+            <dd> <p>The <strong><see cref="T:SharpDX.Direct3D.PrimitiveTopology"/></strong>-typed value that represents the geometry shader output topology.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_DESC::GSOutputTopology']/*"/>	
             <msdn-id>ff476209</msdn-id>	
@@ -3914,7 +3986,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderDescription.InputPrimitive">
             <summary>	
-            <dd> <p>The <strong>D3D11_PRIMITIVE</strong>-typed value that represents the input primitive for a  geometry shader or hull shader.</p> </dd>	
+            <dd> <p>The <strong><see cref="T:SharpDX.D3DCompiler.InputPrimitive"/></strong>-typed value that represents the input primitive for a  geometry shader or hull shader.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_DESC::InputPrimitive']/*"/>	
             <msdn-id>ff476209</msdn-id>	
@@ -3950,7 +4022,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderDescription.HullShaderOutputPrimitive">
             <summary>	
-            <dd> <p>The <strong>D3D11_TESSELLATOR_OUTPUT_PRIMITIVE</strong>, which represents the tessellator output-primitive type.</p> </dd>	
+            <dd> <p>The <strong><see cref="T:SharpDX.D3DCompiler.TessellatorOutputPrimitive"/></strong>-typed value that represents the tessellator output-primitive type.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_DESC::HSOutputPrimitive']/*"/>	
             <msdn-id>ff476209</msdn-id>	
@@ -3959,7 +4031,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderDescription.HullShaderPartitioning">
             <summary>	
-            <dd> <p>The <strong>D3D11_TESSELLATOR_PARTITIONING</strong>, which represents the tessellator partitioning mode.</p> </dd>	
+            <dd> <p>The <strong><see cref="T:SharpDX.D3DCompiler.TessellatorPartitioning"/></strong>-typed value that represents the tessellator partitioning mode.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_DESC::HSPartitioning']/*"/>	
             <msdn-id>ff476209</msdn-id>	
@@ -3968,7 +4040,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderDescription.TessellatorDomain">
             <summary>	
-            <dd> <p>The <strong>D3D11_TESSELLATOR_DOMAIN</strong>, which represents the tessellator domain.</p> </dd>	
+            <dd> <p>The <strong><see cref="T:SharpDX.D3DCompiler.TessellatorDomain"/></strong>-typed value that represents the tessellator domain.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_DESC::TessellatorDomain']/*"/>	
             <msdn-id>ff476209</msdn-id>	
@@ -4016,7 +4088,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderParameterDescription.SemanticName">
             <summary>	
-            <dd> <p>A per-parameter string that identifies how the data will be used. </p> </dd>	
+            <dd> <p>A per-parameter string that identifies how the data will be used. For more info, see Semantics. </p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SIGNATURE_PARAMETER_DESC::SemanticName']/*"/>	
             <msdn-id>ff476215</msdn-id>	
@@ -4043,7 +4115,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderParameterDescription.SystemValueType">
             <summary>	
-            <dd> <p>A predefined string that determines the functionality of certain pipeline stages. See <strong>D3D10_NAME</strong>.</p> </dd>	
+            <dd> <p>A <strong><see cref="T:SharpDX.D3DCompiler.SystemValueType"/></strong>-typed value that identifies a predefined string that determines the functionality of certain pipeline stages.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SIGNATURE_PARAMETER_DESC::SystemValueType']/*"/>	
             <msdn-id>ff476215</msdn-id>	
@@ -4052,7 +4124,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderParameterDescription.ComponentType">
             <summary>	
-            <dd> <p>The per-component-data type that is stored in a register.  See <strong>D3D10_REGISTER_COMPONENT_TYPE</strong>. Each register can store up to four-components of data.</p> </dd>	
+            <dd> <p>A <strong><see cref="T:SharpDX.D3DCompiler.RegisterComponentType"/></strong>-typed value that identifies the per-component-data type that is stored in a register.  Each register can store up to four-components of data.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SIGNATURE_PARAMETER_DESC::ComponentType']/*"/>	
             <msdn-id>ff476215</msdn-id>	
@@ -4100,7 +4172,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderTypeDescription.Class">
             <summary>	
-            <dd> <p>Identifies the variable class as one of scalar, vector, matrix or object.  See <strong>D3D10_SHADER_VARIABLE_CLASS</strong>.</p> </dd>	
+            <dd> <p>A <strong><see cref="T:SharpDX.D3DCompiler.ShaderVariableClass"/></strong>-typed value that identifies the variable class as one of scalar, vector, matrix, object, and so on.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_TYPE_DESC::Class']/*"/>	
             <msdn-id>ff476212</msdn-id>	
@@ -4109,7 +4181,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderTypeDescription.Type">
             <summary>	
-            <dd> <p>The variable type. See <strong>D3D10_SHADER_VARIABLE_TYPE</strong>.</p> </dd>	
+            <dd> <p>A <strong><see cref="T:SharpDX.D3DCompiler.ShaderVariableType"/></strong>-typed value that identifies the variable type.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_TYPE_DESC::Type']/*"/>	
             <msdn-id>ff476212</msdn-id>	
@@ -4154,7 +4226,7 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderTypeDescription.Offset">
             <summary>	
-            <dd> <p>Offset, in bytes, between the start of the parent structure and this variable.</p> </dd>	
+            <dd> <p>Offset, in bytes, between the start of the parent structure and this variable. Can be 0 if not a structure member.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_TYPE_DESC::Offset']/*"/>	
             <msdn-id>ff476212</msdn-id>	
@@ -4163,9 +4235,10 @@
         </member>
         <member name="F:SharpDX.D3DCompiler.ShaderTypeDescription.Name">
             <summary>	
-            No documentation.	
+            <dd> <p>Name of the shader-variable type. This member can be <strong><c>null</c></strong> if it isn't used. This member supports dynamic shader linkage interface types, which have names. For more info about dynamic shader linkage, see Dynamic Linking.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_TYPE_DESC::Name']/*"/>	
+            <msdn-id>ff476212</msdn-id>	
             <unmanaged>const char* Name</unmanaged>	
             <unmanaged-short>char Name</unmanaged-short>	
         </member>
@@ -4231,6 +4304,7 @@
             No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_VARIABLE_DESC::StartTexture']/*"/>	
+            <msdn-id>ff476213</msdn-id>	
             <unmanaged>unsigned int StartTexture</unmanaged>	
             <unmanaged-short>unsigned int StartTexture</unmanaged-short>	
         </member>
@@ -4239,6 +4313,7 @@
             No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_VARIABLE_DESC::TextureSize']/*"/>	
+            <msdn-id>ff476213</msdn-id>	
             <unmanaged>unsigned int TextureSize</unmanaged>	
             <unmanaged-short>unsigned int TextureSize</unmanaged-short>	
         </member>
@@ -4247,6 +4322,7 @@
             No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_VARIABLE_DESC::StartSampler']/*"/>	
+            <msdn-id>ff476213</msdn-id>	
             <unmanaged>unsigned int StartSampler</unmanaged>	
             <unmanaged-short>unsigned int StartSampler</unmanaged-short>	
         </member>
@@ -4255,6 +4331,7 @@
             No documentation.	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3D11_SHADER_VARIABLE_DESC::SamplerSize']/*"/>	
+            <msdn-id>ff476213</msdn-id>	
             <unmanaged>unsigned int SamplerSize</unmanaged>	
             <unmanaged-short>unsigned int SamplerSize</unmanaged-short>	
         </member>
@@ -4349,6 +4426,7 @@
             <param name = "profile">The shader target or set of shader features to compile against.</param>
             <param name = "shaderFlags">Shader compilation options.</param>
             <param name = "effectFlags">Effect compilation options.</param>
+            <param name="sourceFileName">Name of the source file.</param>
             <returns>The compiled shader bytecode, or <c>null</c> if the method fails.</returns>
         </member>
         <member name="M:SharpDX.D3DCompiler.ShaderBytecode.Compile(System.String,System.String,SharpDX.D3DCompiler.ShaderFlags,SharpDX.D3DCompiler.EffectFlags,SharpDX.Direct3D.ShaderMacro[],SharpDX.D3DCompiler.Include,System.String)">
@@ -4530,6 +4608,7 @@
             <param name = "shaderSource">A string containing the source of the shader or effect to preprocess.</param>
             <param name = "defines">A set of macros to define during preprocessing.</param>
             <param name = "include">An interface for handling include files.</param>
+            <param name="sourceFileName">Name of the source file.</param>
             <returns>The preprocessed shader source.</returns>
         </member>
         <member name="M:SharpDX.D3DCompiler.ShaderBytecode.Preprocess(System.Byte[],SharpDX.Direct3D.ShaderMacro[],SharpDX.D3DCompiler.Include,System.String)">
@@ -4539,6 +4618,7 @@
             <param name = "shaderSource">An array of bytes containing the raw source of the shader or effect to preprocess.</param>
             <param name = "defines">A set of macros to define during preprocessing.</param>
             <param name = "include">An interface for handling include files.</param>
+            <param name="sourceFileName">Name of the source file.</param>
             <returns>The preprocessed shader source.</returns>
         </member>
         <member name="M:SharpDX.D3DCompiler.ShaderBytecode.Preprocess(System.Byte[],SharpDX.Direct3D.ShaderMacro[],SharpDX.D3DCompiler.Include,System.String@,System.String)">
@@ -4549,6 +4629,7 @@
             <param name = "defines">A set of macros to define during preprocessing.</param>
             <param name = "include">An interface for handling include files.</param>
             <param name = "compilationErrors">When the method completes, contains a string of compilation errors, or an empty string if preprocessing succeeded.</param>
+            <param name="sourceFileName">Name of the source file.</param>
             <returns>The preprocessed shader source.</returns>
         </member>
         <member name="M:SharpDX.D3DCompiler.ShaderBytecode.Preprocess(System.IntPtr,System.Int32,SharpDX.Direct3D.ShaderMacro[],SharpDX.D3DCompiler.Include,System.String@,System.String)">
@@ -4560,6 +4641,7 @@
             <param name = "defines">A set of macros to define during preprocessing.</param>
             <param name = "include">An interface for handling include files.</param>
             <param name = "compilationErrors">When the method completes, contains a string of compilation errors, or an empty string if preprocessing succeeded.</param>
+            <param name="sourceFileName">Name of the source file.</param>
             <returns>The preprocessed shader source.</returns>
         </member>
         <member name="M:SharpDX.D3DCompiler.ShaderBytecode.Preprocess(System.String,SharpDX.Direct3D.ShaderMacro[],SharpDX.D3DCompiler.Include,System.String@,System.String)">
@@ -4570,6 +4652,7 @@
             <param name = "defines">A set of macros to define during preprocessing.</param>
             <param name = "include">An interface for handling include files.</param>
             <param name = "compilationErrors">When the method completes, contains a string of compilation errors, or an empty string if preprocessing succeeded.</param>
+            <param name="sourceFileName">Name of the source file.</param>
             <returns>The preprocessed shader source.</returns>
         </member>
         <member name="M:SharpDX.D3DCompiler.ShaderBytecode.PreprocessFromFile(System.String)">
@@ -4625,6 +4708,25 @@
               Read a compiled shader bytecode from a Stream and return a ShaderBytecode
             </summary>
             <param name = "fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SharpDX.D3DCompiler.ShaderBytecode.GetVersion">
+            <summary>
+            Gets the shader type and version string from the provided bytecode.
+            </summary>
+            <param name="shaderBytecode">The shader bytecode data.</param>
+            <returns>The type and version string of the provided shader bytecode.</returns>
+            <exception cref="T:System.ArgumentNullException">Is thrown when <paramref name="shaderBytecode"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">Is thrown when bytecode contains invalid data or the version could not be read.</exception>
+            <exception cref="T:System.IndexOutOfRangeException">Is thrown when bytecode contains invalid data.</exception>
+        </member>
+        <member name="M:SharpDX.D3DCompiler.ShaderBytecode.DecodeValue(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Reads the value between start and end bits from the provided token.
+            </summary>
+            <param name="token">The source of the data to read.</param>
+            <param name="start">The start bit.</param>
+            <param name="end">The end bit.</param>
             <returns></returns>
         </member>
         <member name="P:SharpDX.D3DCompiler.ShaderBytecode.Data">
@@ -4712,6 +4814,69 @@
             <summary>
               Gets the raw data of the shader signature.
             </summary>
+        </member>
+        <member name="T:SharpDX.D3DCompiler.ShaderProfile">
+            <summary>
+            Represents a profile of a shader stage - stage type and version
+            </summary>
+        </member>
+        <member name="F:SharpDX.D3DCompiler.ShaderProfile.Version">
+            <summary>
+            Gets the shader version - that is the shader stage type
+            </summary>
+            <remarks>For example, it is the "vs" part from "vs_5_0".</remarks>
+        </member>
+        <member name="F:SharpDX.D3DCompiler.ShaderProfile.Major">
+            <summary>
+            Gets the major version of the shader profile.
+            </summary>
+            <remarks>For example, it is the "5" part from "vs_5_0".</remarks>
+        </member>
+        <member name="F:SharpDX.D3DCompiler.ShaderProfile.Minor">
+            <summary>
+            Gets the minor version of the shader profile.
+            </summary>
+            <remarks>For example, it is the "0" part from "vs_5_0".</remarks>
+        </member>
+        <member name="F:SharpDX.D3DCompiler.ShaderProfile.ProfileMajor">
+            <summary>
+            Gets the major version of the shader sub-profile.
+            </summary>
+            <remarks>For example, it is the "9" part from "vs_4_0_profile_9_3".</remarks>
+        </member>
+        <member name="F:SharpDX.D3DCompiler.ShaderProfile.ProfileMinor">
+            <summary>
+            Gets the minor version of the shader sub-profile.
+            </summary>
+            <remarks>For example, it is the "3" part from "vs_4_0_profile_9_3".</remarks>
+        </member>
+        <member name="M:SharpDX.D3DCompiler.ShaderProfile.#ctor(SharpDX.D3DCompiler.ShaderVersion,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a new instance of the <see cref="T:SharpDX.D3DCompiler.ShaderProfile"/> struct.
+            </summary>
+            <param name="version">The shader stage type.</param>
+            <param name="major">The major version.</param>
+            <param name="minor">The minor version.</param>
+            <param name="profileMajor">The profile major version.</param>
+            <param name="profileMinor">The profile minor version.</param>
+        </member>
+        <member name="M:SharpDX.D3DCompiler.ShaderProfile.ToString">
+            <summary>
+            Returns the string representation of the current profile.
+            </summary>
+            <returns>The string representation, for example "ps_5_0" or "vs_4_0_profile_9_3".</returns>
+        </member>
+        <member name="M:SharpDX.D3DCompiler.ShaderProfile.GetTypePrefix">
+            <summary>
+            Gets the shader type prefix.
+            </summary>
+            <returns>Type prefix, for example "vs" or "ps".</returns>
+        </member>
+        <member name="M:SharpDX.D3DCompiler.ShaderProfile.GetFeatureLevel">
+            <summary>
+            Gets the corresponding <see cref="T:SharpDX.Direct3D.FeatureLevel"/> for this <see cref="T:SharpDX.D3DCompiler.ShaderProfile"/>.
+            </summary>
+            <returns>The minimum <see cref="T:SharpDX.Direct3D.FeatureLevel"/> that corresponds to current profile.</returns>
         </member>
     </members>
 </doc>

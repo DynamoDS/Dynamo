@@ -459,7 +459,7 @@ namespace Dynamo.ViewModels
 
         public bool ShowWatchSettingsControl
         {
-            get { return showWatchSettingsControl; }
+            get { return showWatchSettingsControl && !ShowStartPage; }
             set
             {
                 showWatchSettingsControl = value;
@@ -928,6 +928,12 @@ namespace Dynamo.ViewModels
             if (!groups.Any(x => x.IsSelected))
             {
                 var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                //If there are no nodes selected then return false
+                if (!modelSelected.Any())
+                {
+                    return false;
+                }
+
                 foreach (var model in modelSelected)
                 {
                     if (groups.ContainsModel(model.GUID))
