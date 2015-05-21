@@ -504,6 +504,8 @@ namespace Dynamo.Views
             {
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
             }
+
+            InCanvasSearchBar.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -716,17 +718,14 @@ namespace Dynamo.Views
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
         {
-            // Show InCanvas search just in case, when mouse is over workspace.
-            if (!this.IsMouseOver)
-                return;
-
             switch (flag)
             {
                 case ShowHideFlags.Hide:
                     InCanvasSearchBar.IsOpen = false;
                     break;
                 case ShowHideFlags.Show:
-                    InCanvasSearchBar.IsOpen = true;
+                    // Show InCanvas search just in case, when mouse is over workspace.
+                    InCanvasSearchBar.IsOpen = this.IsMouseOver;
                     break;
             }
         }

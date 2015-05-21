@@ -564,11 +564,7 @@ namespace Dynamo.ViewModels
                         if ((e.Source is Dynamo.Controls.EndlessGrid) == false)
                             InitiateWindowSelectionSequence();
                         else if (!MouseClickHistory.CheckIsDoubleClick(prevClick, curClick))
-                        {
                             InitiateWindowSelectionSequence();
-                            // On left click on workspace hide InCanvasSearch.
-                            owningWorkspace.OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
-                        }
                         else
                         {
                             // Double-clicking on the background grid results in 
