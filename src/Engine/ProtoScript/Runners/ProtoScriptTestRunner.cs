@@ -217,11 +217,22 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
 
-                runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
-                    codeBlock.codeBlockId,
+                ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer();
+
+                sequencer.Setup(
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec, 
+                    codeBlock.codeBlockId, 
                     runtimeCore.StartPC, 
-                    stackFrame,
+                    stackFrame, 
                     locals);
+
+                sequencer.Execute(null);
+               
+                //runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
+                //    codeBlock.codeBlockId,
+                //    runtimeCore.StartPC, 
+                //    stackFrame,
+                //    locals);
 
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
 

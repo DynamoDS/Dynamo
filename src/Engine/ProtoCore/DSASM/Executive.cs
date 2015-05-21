@@ -141,11 +141,24 @@ namespace ProtoCore.DSASM
             
         }
 
+        public void SetupBounce(
+            int exeblock,
+            int entry,
+            StackFrame stackFrame,
+            int locals = 0,
+            DSASM.Executive exec = null)
+        {
+            if (stackFrame != null)
+            {
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
+                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+            }
+        }
 
         /// <summary>
         /// Bounce instantiates a new Executive 
         /// Execution jumps to the new executive
-        /// This iverload handles debugger properties when bouncing
+        /// Handles debugger properties when bouncing
         /// </summary>
         /// <param name="exeblock"></param>
         /// <param name="entry"></param>
@@ -2478,11 +2491,11 @@ namespace ProtoCore.DSASM
                 terminate = false;
                 if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
                 {
-                    ExecuteDebug(exeblock, entry, breakpoints, language);
+                    ExecuteDebugInternal(exeblock, entry, breakpoints, language);
                 }
                 else
                 {
-                    Execute(exeblock, entry, language);
+                    ExecuteInternal(exeblock, entry, language);
                 }
             }
         }
@@ -2491,7 +2504,7 @@ namespace ProtoCore.DSASM
         // for every implicit function call (like in replication) OR 
         // for every implicit bounce (like in dynamic lang block in inline condition) OR
         // for a Debug Resume from a breakpoint
-        private void ExecuteDebug(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
+        private void ExecuteDebugInternal(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
         {
             // TODO Jun: Call RestoreFromBounce here?
             StackValue svType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
@@ -2616,7 +2629,6 @@ namespace ProtoCore.DSASM
                     runtimeCore.DebugProps.DebugEntryPC = pc;
                 }
 
-                //runtimeCore.RuntimeMemory = rmem;
                 runtimeCore.RuntimeMemory = rmem;
 
                 bool terminateExec = HandleBreakpoint(breakpoints, instructions, pc);
@@ -2632,8 +2644,16 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public void Execute(ProtoCore.Runtime.MacroBlock macroBlock)
+        {
+            exe.SetupMacroBlock(macroBlock.UID);
+            int scope = 0;
+            istream = exe.GetInstructionStream(scope);
+            int entry = istream.entrypoint;
+            Execute(scope, entry, null);
+        }
 
-        private void Execute(int exeblock, int entry, Language language = Language.kInvalid)
+        private void ExecuteInternal(int exeblock, int entry, Language language = Language.kInvalid)
         {
             SetupExecutive(exeblock, entry);
 

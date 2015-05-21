@@ -25,8 +25,8 @@ namespace ProtoCore.Runtime
             Paused
         }
 
+        public int UID { get; set; }
         public ExecuteState State { get; set; }
-        InstructionStream IStream { get; set; }
     }
 }
 

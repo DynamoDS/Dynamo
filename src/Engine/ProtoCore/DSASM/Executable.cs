@@ -57,6 +57,7 @@ namespace ProtoCore.DSASM
         public List<CodeBlock> CodeBlocks { get; set; }
         public List<CodeBlock> CompleteCodeBlocks { get; set; }
 
+        public int ExecutingMacroBlock { get; private set; }
         private List<InstructionStream[]> instrStreamList;// { get; set; } 
         public InstructionStream iStreamCanvas { get; set; }
 
@@ -107,6 +108,11 @@ namespace ProtoCore.DSASM
             Reset();
         }
 
+        public void SetupMacroBlock(int macroBlock)
+        {
+            ExecutingMacroBlock = macroBlock;
+        }
+
         public void Reset()
         {
             runtimeSymbols = null;
@@ -123,13 +129,16 @@ namespace ProtoCore.DSASM
             funcCounterTable = new List<FunctionCounter>();
             calledInFunction = false;
             UpdatedSymbols = new HashSet<SymbolNode>();
+            ExecutingMacroBlock = 0;
+            //ExecutingMacroBlock = Constants.kInvalidIndex;
         }
 
-        public InstructionStream GetInstructionStream(int scopeID, int macroBlockID = 0)
+        public InstructionStream GetInstructionStream(int scopeID)
         {
             Validity.Assert(instrStreamList != null);
             Validity.Assert(instrStreamList.Count > 0);
-            return instrStreamList[macroBlockID][scopeID];
+            Validity.Assert(ExecutingMacroBlock != Constants.kInvalidIndex);
+            return instrStreamList[ExecutingMacroBlock][scopeID];
         }
 
         public InstructionStream[] GetInstructionStreamList(int macroBlockID = 0)

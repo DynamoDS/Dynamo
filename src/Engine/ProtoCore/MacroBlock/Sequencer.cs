@@ -9,15 +9,24 @@ namespace ProtoCore.Runtime
 {
     public class MacroblockSequencer
     {
+        private ProtoCore.DSASM.Executive executive = null;
+
         public MacroblockSequencer()
         {
+        }
+
+        public void Setup(ProtoCore.DSASM.Executive exec, int exeblock, int entry, StackFrame stackFrame, int locals = 0)
+        {
+            executive = exec;
+            executive.SetupBounce(exeblock, entry, stackFrame, locals);
         }
 
         /// <summary>
         /// Begin excution of macroblocks
         /// </summary>
-        public void Execute(ProtoCore.DSASM.Executive executive, List<ProtoCore.Runtime.MacroBlock> macroBlocks)
+        public void Execute(List<ProtoCore.Runtime.MacroBlock> macroBlocks)
         {
+            Validity.Assert(executive != null);
             Validity.Assert(macroBlocks != null);
             List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlocks);
             foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
@@ -25,8 +34,7 @@ namespace ProtoCore.Runtime
                 // Assert that the executive is setup for execution
                 bool isExecutiveSetup = true;
                 Validity.Assert(isExecutiveSetup);
-
-                //executive.Execute(macroBlock.BlockID)
+                executive.Execute(macroBlock);
             }
         }
 
