@@ -566,7 +566,8 @@ namespace Dynamo.ViewModels
                         else if (!MouseClickHistory.CheckIsDoubleClick(prevClick, curClick))
                         {
                             InitiateWindowSelectionSequence();
-                            owningWorkspace.ShowHideInCanvasSearch(ShowHideFlags.Hide);
+                            // On left click on workspace hide InCanvasSearch.
+                            owningWorkspace.OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
                         }
                         else
                         {

@@ -114,8 +114,11 @@ namespace Dynamo.ViewModels
         }
 
         internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
-        private void OnRequestShowInCanvasSearch(ShowHideFlags flag)
+
+        private void OnRequestShowInCanvasSearch(object param)
         {
+            var flag = (ShowHideFlags)param;
+
             if (RequestShowInCanvasSearch != null)
                 RequestShowInCanvasSearch(flag);
         }
@@ -328,7 +331,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "CurrentSpace":
                     // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
-                    ShowHideInCanvasSearch(ShowHideFlags.Hide);
+                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
                     break;
             }
         }
@@ -1162,12 +1165,6 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");
-        }
-
-        private void ShowHideInCanvasSearch(object param)
-        {
-            var flag = (ShowHideFlags)param;
-            OnRequestShowInCanvasSearch(flag);
         }
     }
 

@@ -218,7 +218,7 @@ namespace Dynamo.ViewModels
             get
             {
                 if (_showInCanvasSearchCommand == null)
-                    _showInCanvasSearchCommand = new DelegateCommand(ShowHideInCanvasSearch);
+                    _showInCanvasSearchCommand = new DelegateCommand(OnRequestShowInCanvasSearch);
 
                 return _showInCanvasSearchCommand;
             }
