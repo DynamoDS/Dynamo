@@ -330,7 +330,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "CurrentSpace":
                     // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
-                    ShowInCanvasSearch(ShowHideFlags.Hide);
+                    ShowHideInCanvasSearch(ShowHideFlags.Hide);
                     break;
             }
         }
@@ -1166,9 +1166,10 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("SelectionArgumentLacing");
         }
 
-        private void ShowInCanvasSearch(object param)
+        private void ShowHideInCanvasSearch(object param)
         {
-            OnRequestShowInCanvasSearch(ShowHideFlags.Show);
+            var flag = (ShowHideFlags)param;
+            OnRequestShowInCanvasSearch(flag);
         }
     }
 

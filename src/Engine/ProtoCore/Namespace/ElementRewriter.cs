@@ -79,6 +79,11 @@ namespace ProtoCore.Namespace
 
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
+            // First pass attempt to resolve the node before traversing it deeper
+            IdentifierListNode newIdentifierListNode = null;
+            if (IsMatchingResolvedName(node, out newIdentifierListNode))
+                return newIdentifierListNode;
+
             var rightNode = node.RightNode;
             var leftNode = node.LeftNode;
 
@@ -98,7 +103,20 @@ namespace ProtoCore.Namespace
 
         #region private helper methods
 
-        private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
+        private bool IsMatchingResolvedName(IdentifierListNode identifierList, out IdentifierListNode newIdentList)
+        {
+            newIdentList = null;
+            var resolvedName = ResolveClassName(identifierList);
+            if (string.IsNullOrEmpty(resolvedName))
+                return false;
+
+            newIdentList = (IdentifierListNode)CoreUtils.CreateNodeFromString(resolvedName);
+            
+            var symbol = new Symbol(resolvedName);
+            return symbol.Matches(identifierList.ToString());
+        }
+
+        private string ResolveClassName(AssociativeNode identifierList)
         {
             var identListNode = identifierList as IdentifierListNode;
 
@@ -120,6 +138,14 @@ namespace ProtoCore.Namespace
                     elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
                 }
             }
+            return resolvedName;
+        }
+
+        private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
+        {
+            var identListNode = identifierList as IdentifierListNode;
+            var resolvedName = ResolveClassName(identifierList);
+
             if (string.IsNullOrEmpty(resolvedName))
                 return identifierList;
 

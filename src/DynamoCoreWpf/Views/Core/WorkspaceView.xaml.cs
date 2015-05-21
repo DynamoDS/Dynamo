@@ -89,7 +89,8 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-            ViewModel.RequestShowInCanvasSearch += ShowInCanvasControl;
+
+            ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
 
             var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
             searchViewModel.Visible = true;
@@ -102,7 +103,7 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
             
             if (ViewModel != null)
-                ViewModel.RequestShowInCanvasSearch -= ShowInCanvasControl;
+                ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
         }
 
         /// <summary>
@@ -503,8 +504,6 @@ namespace Dynamo.Views
             {
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
             }
-
-            InCanvasSearchBar.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -715,7 +714,7 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
-        private void ShowInCanvasControl(ShowHideFlags flag)
+        private void ShowHideInCanvasControl(ShowHideFlags flag)
         {
             // Show InCanvas search just in case, when mouse is over workspace.
             if (!this.IsMouseOver)
@@ -724,7 +723,7 @@ namespace Dynamo.Views
             switch (flag)
             {
                 case ShowHideFlags.Hide:
-                    InCanvasSearchBar.IsOpen = true;
+                    InCanvasSearchBar.IsOpen = false;
                     break;
                 case ShowHideFlags.Show:
                     InCanvasSearchBar.IsOpen = true;

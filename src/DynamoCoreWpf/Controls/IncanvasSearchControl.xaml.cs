@@ -18,7 +18,7 @@ using System.Windows.Threading;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for InCanvasLibrarySearchControl.xaml
+    /// Interaction logic for IncanvasLibrarySearchControl.xaml
     /// </summary>
     public partial class InCanvasSearchControl : UserControl
     {
@@ -71,9 +71,9 @@ namespace Dynamo.UI.Controls
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
             Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        SearchTextBox.Focus();
-                    }), DispatcherPriority.Loaded);
+            {
+                SearchTextBox.Focus();
+            }), DispatcherPriority.Loaded);
         }
 
     }
