@@ -101,7 +101,9 @@ namespace Dynamo.Views
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-            ViewModel.RequestShowInCanvasSearch -= ShowInCanvasControl;
+            
+            if (ViewModel != null)
+                ViewModel.RequestShowInCanvasSearch -= ShowInCanvasControl;
         }
 
         /// <summary>
