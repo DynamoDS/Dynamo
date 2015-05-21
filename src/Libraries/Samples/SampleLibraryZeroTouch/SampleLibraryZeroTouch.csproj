@@ -50,10 +50,12 @@
     <Compile Include="..\..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="HelloDynamoZeroTouch.cs" />
+    <Compile Include="Examples\ColorExample.cs" />
+    <Compile Include="Examples\BasicExample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PointField.cs" />
-    <Compile Include="TraceExample.cs" />
+    <Compile Include="Examples\PeriodicUpdateExample.cs" />
+    <Compile Include="Utils\SampleUtilities.cs" />
+    <Compile Include="Examples\TraceExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\NodeServices\DynamoServices.csproj">
@@ -75,14 +77,14 @@
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <ItemGroup>
-      <Dlls Include="$(OutDir)*.dll"/>
-      <Pdbs Include="$(OutDir)*.pdb"/>
-      <Xmls Include="$(OutDir)*.xml"/>
+      <Dlls Include="$(OutDir)*.dll" />
+      <Pdbs Include="$(OutDir)*.pdb" />
+      <Xmls Include="$(OutDir)*.xml" />
     </ItemGroup>
-    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="$(ProjectDir)..\pkg.json" DestinationFiles="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\pkg.json"/>
-    <MakeDir Directories="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\dyf"/>
+    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="$(ProjectDir)..\pkg.json" DestinationFiles="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\pkg.json" />
+    <MakeDir Directories="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\dyf" />
   </Target>
 </Project>
