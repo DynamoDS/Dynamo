@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-
 using Autodesk.DesignScript.Runtime;
-
 using DynamoServices;
 
-namespace SampleLibraryZeroTouch
+namespace SampleLibraryZeroTouch.Examples
 {
     /// <summary>
     /// This is the item that we will store in our data store.
@@ -45,6 +43,7 @@ namespace SampleLibraryZeroTouch
     /// <summary>
     /// A class which contains methods to construct TraceExampleItem objects.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public static class TraceExampleWrapper
     {
         /// <summary>

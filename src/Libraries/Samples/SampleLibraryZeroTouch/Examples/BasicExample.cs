@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 
-namespace SampleLibraryZeroTouch
+namespace SampleLibraryZeroTouch.Examples
 {
     /// <summary>
     /// The HelloDynamoZeroTouch class demonstrates
@@ -13,7 +12,7 @@ namespace SampleLibraryZeroTouch
     /// which creates geometry, and exposes public 
     /// methods and properties as nodes.
     /// </summary>
-    public class HelloDynamoZeroTouch : IGraphicItem
+    public class BasicExample : IGraphicItem
     {
          //OPTIONAL:
          //IGraphicItem is an interface which allows your
@@ -66,7 +65,7 @@ namespace SampleLibraryZeroTouch
         /// <param name="x">The x coordinate.</param>
         /// <param name="y">The y coordinate.</param>
         /// <param name="z">The z coordinate.</param>
-        private HelloDynamoZeroTouch(double x, double y, double z)
+        private BasicExample(double x, double y, double z)
         {
             point = Point.ByCoordinates(x, y, z);
         }
@@ -83,7 +82,7 @@ namespace SampleLibraryZeroTouch
         /// <param name="y">The y coordinate of the point.</param>
         /// <param name="z">The z coordinate of the point.</param>
         /// <returns>A HelloDynamoZeroTouch object.</returns>
-        public static HelloDynamoZeroTouch ByCoordinates(double x=42.0, double y=42.0, double z=42.0)
+        public static BasicExample Create(double x=42.0, double y=42.0, double z=42.0)
         {
             // Let's say in our example that the user is not allowed
             // to create an instance of this class if any of the 
@@ -109,7 +108,7 @@ namespace SampleLibraryZeroTouch
                 throw new ArgumentException("z");
             }
 
-            return new HelloDynamoZeroTouch(x, y, z);
+            return new BasicExample(x, y, z);
         }
 
         /// <summary>
