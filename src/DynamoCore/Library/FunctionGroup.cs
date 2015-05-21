@@ -59,7 +59,18 @@ namespace Dynamo.DSEngine
                 return null;
 
             FunctionDescriptor func = functions.FirstOrDefault(f => f.MangledName.EndsWith(managledName));
-            return func ?? functions.First();
+            if (func == null)
+            {
+                string[] split = managledName.Split('@');
+                string[] inputTypes = split.Length > 1 ? split[1].Split(',') : new string[]{};
+                return functions.OrderByDescending(f =>
+                {
+                    return f.Parameters.Select(p => p.Type.ToString())
+                                       .Intersect(inputTypes)
+                                       .Count();
+                }).First();
+            }
+            return func;
         }
 
         public override bool Equals(object obj)
