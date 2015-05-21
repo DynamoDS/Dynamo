@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-using Autodesk.DesignScript.Geometry;
 
-using DynamoServices;
-
-namespace SampleLibraryZeroTouch
+namespace SampleLibraryZeroTouch.Examples
 {
     // This sample demonstrates the use of the CanUpdatePeriodically
     // attribute. Placing an instance of the PeriodicUpdateExample.PointField 
@@ -76,6 +71,7 @@ namespace SampleLibraryZeroTouch
             return new PeriodicUpdateExample(t, id);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             for (var i = 0; i < width - 1; i++)
