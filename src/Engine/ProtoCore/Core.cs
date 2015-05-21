@@ -55,8 +55,11 @@ namespace ProtoCore
         public Options()
         {
             // Execute using new graphnode dependency
+            // When executing direct dependency set the following:
+            //      DirectDependencyExecution = true
+            //      LHSGraphNodeUpdate = false
             DirectDependencyExecution = true;
-            LHSGraphNodeUpdate = false;
+            LHSGraphNodeUpdate = !DirectDependencyExecution;
 
             ApplyUpdate = false;
 
