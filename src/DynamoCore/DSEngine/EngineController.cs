@@ -12,7 +12,7 @@ using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
@@ -31,6 +31,15 @@ namespace Dynamo.DSEngine
     {
         public event AstBuiltEventHandler AstBuilt;
 
+        public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
+        {
+            if (TraceReconcliationComplete != null)
+            {
+                TraceReconcliationComplete(e);
+            }
+        }
+
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
         private CodeCompletionServices codeCompletionServices;
@@ -39,57 +48,10 @@ namespace Dynamo.DSEngine
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
         public bool VerboseLogging;
+
         private readonly Object macroMutex = new Object();
 
-        public static CompilationServices CompilationServices; 
-
-        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
-        {
-            this.libraryServices = libraryServices;
-            libraryServices.LibraryLoaded += LibraryLoaded;
-            CompilationServices = new CompilationServices(libraryServices.LibraryManagementCore);
-
-            liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
-
-            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
-            libraryServices.SetLiveCore(LiveRunnerCore);
-
-            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-
-            astBuilder = new AstBuilder(this);
-            syncDataManager = new SyncDataManager();
-
-            VerboseLogging = verboseLogging;
-        }
-
-        public void Dispose()
-        {
-            libraryServices.LibraryLoaded -= LibraryLoaded;
-
-            liveRunnerServices.Dispose();
-            codeCompletionServices = null;
-        }
-
-        #region Function Groups
-
-        /// <summary>
-        /// Return all function groups.
-        /// </summary>
-        public IEnumerable<FunctionGroup> GetFunctionGroups()
-        {
-            return libraryServices.GetAllFunctionGroups();
-        }
-
-        /// <summary>
-        /// Import library.
-        /// </summary>
-        /// <param name="library"></param>
-        public void ImportLibrary(string library)
-        {
-            LibraryServices.ImportLibrary(library);
-        }
-
-        #endregion
+        public static CompilationServices CompilationServices;
 
         /// <summary>
         /// Get DesignScript core.
@@ -126,6 +88,64 @@ namespace Dynamo.DSEngine
         {
             get { return codeCompletionServices; }
         }
+
+        /// <summary>
+        /// A property defining whether the EngineController has been disposed or not.
+        /// This is a conservative field, as there should only be one owner of a valid
+        /// EngineController or not.
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
+        {
+            this.libraryServices = libraryServices;
+            libraryServices.LibraryLoaded += LibraryLoaded;
+            CompilationServices = new CompilationServices(libraryServices.LibraryManagementCore);
+
+            liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
+
+            liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+            libraryServices.SetLiveCore(LiveRunnerCore);
+
+            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+
+            astBuilder = new AstBuilder(this);
+            syncDataManager = new SyncDataManager();
+
+            VerboseLogging = verboseLogging;
+        }
+
+        public void Dispose()
+        {
+            // This flag must be set immediately
+            IsDisposed = true;
+
+            libraryServices.LibraryLoaded -= LibraryLoaded;
+
+            liveRunnerServices.Dispose();
+            codeCompletionServices = null;
+        }
+
+        #region Function Groups
+
+        /// <summary>
+        /// Return all function groups.
+        /// </summary>
+        public IEnumerable<FunctionGroup> GetFunctionGroups()
+        {
+            return libraryServices.GetAllFunctionGroups();
+        }
+
+        /// <summary>
+        /// Import library.
+        /// </summary>
+        /// <param name="library"></param>
+        public void ImportLibrary(string library)
+        {
+            LibraryServices.ImportLibrary(library);
+        }
+
+        #endregion
 
         #region Value queries
 
@@ -472,6 +492,30 @@ namespace Dynamo.DSEngine
             }
         }
 
+        internal void ReconcileTraceDataAndNotify()
+        {
+            if (this.IsDisposed)
+            {
+                throw new ObjectDisposedException("EngineController");
+            }
+
+            var callsiteToOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+            foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
+            {
+                var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
+                if (callsiteToOrphanMap.ContainsKey(cs.CallSiteID))
+                {
+                    callsiteToOrphanMap[cs.CallSiteID].AddRange(orphanedSerializables);
+                }
+                else
+                {
+                    callsiteToOrphanMap.Add(cs.CallSiteID, orphanedSerializables);
+                }
+            }
+
+            OnTraceReconciliationComplete(new TraceReconciliationEventArgs(callsiteToOrphanMap));
+        }
+
         private static void ClearWarnings(IEnumerable<NodeModel> nodes)
         {
             var warningNodes = nodes.Where(n => n.State == ElementState.Warning);
@@ -592,5 +636,23 @@ namespace Dynamo.DSEngine
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);
         }
+    }
+
+    public class TraceReconciliationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// A list of ISerializable items.
+        /// </summary>
+        public Dictionary<Guid,List<ISerializable>> CallsiteToOrphanMap { get; private set; }
+
+        public TraceReconciliationEventArgs(Dictionary<Guid, List<ISerializable>> callsiteToOrphanMap)
+        {
+            CallsiteToOrphanMap = callsiteToOrphanMap;
+        }
+    }
+
+    public interface ITraceReconciliationProcessor
+    {
+        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
     }
 }

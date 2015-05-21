@@ -612,6 +612,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DS.
+        /// </summary>
+        public static string CustomNodeTypeShortString {
+            get {
+                return ResourceManager.GetString("CustomNodeTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecating Package.
         /// </summary>
         public static string DeprecatingPackageMessageBoxTitle {
@@ -1903,6 +1912,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Version {0}.{1}.
+        /// </summary>
+        public static string GalleryDynamoVersion {
+            get {
+                return ResourceManager.GetString("GalleryDynamoVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sample Left Button.
         /// </summary>
         public static string GenericTaskDialogSampleLeftButton {
@@ -1935,6 +1953,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GroupContextMenuBackground {
             get {
                 return ResourceManager.GetString("GroupContextMenuBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Group.
+        /// </summary>
+        public static string GroupContextMenuDeleteGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuDeleteGroup", resourceCulture);
             }
         }
         
@@ -3228,6 +3255,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PKG.
+        /// </summary>
+        public static string PackageTypeShortString {
+            get {
+                return ResourceManager.GetString("PackageTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compressing....
         /// </summary>
         public static string PackageUploadStateCompressing {
@@ -3642,6 +3678,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup location.
+        /// </summary>
+        public static string StartPageBackupLocation {
+            get {
+                return ResourceManager.GetString("StartPageBackupLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BACKUP.
+        /// </summary>
+        public static string StartPageBackupNoCrash {
+            get {
+                return ResourceManager.GetString("StartPageBackupNoCrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RECOVER FROM BACKUP.
+        /// </summary>
+        public static string StartPageBackupOnCrash {
+            get {
+                return ResourceManager.GetString("StartPageBackupOnCrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CODE.
         /// </summary>
         public static string StartPageCode {
@@ -3701,6 +3764,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageNewFile {
             get {
                 return ResourceManager.GetString("StartPageNewFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open all.
+        /// </summary>
+        public static string StartPageOpenAll {
+            get {
+                return ResourceManager.GetString("StartPageOpenAll", resourceCulture);
             }
         }
         
@@ -3782,6 +3854,15 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageVisitWebsite {
             get {
                 return ResourceManager.GetString("StartPageVisitWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What&apos;s New.
+        /// </summary>
+        public static string StartPageWhatsNew {
+            get {
+                return ResourceManager.GetString("StartPageWhatsNew", resourceCulture);
             }
         }
         
@@ -3919,6 +4000,15 @@ namespace Dynamo.Wpf.Properties {
         public static string Watch3DViewContextMenuZoomToFit {
             get {
                 return ResourceManager.GetString("Watch3DViewContextMenuZoomToFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DLL.
+        /// </summary>
+        public static string ZeroTouchTypeShortString {
+            get {
+                return ResourceManager.GetString("ZeroTouchTypeShortString", resourceCulture);
             }
         }
     }

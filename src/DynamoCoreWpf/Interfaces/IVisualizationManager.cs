@@ -1,8 +1,8 @@
 ﻿using System;
 
-using Autodesk.DesignScript.Interfaces;
-
 using Dynamo.Models;
+using Dynamo.Interfaces;
+using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Interfaces
 {
@@ -58,10 +58,13 @@ namespace Dynamo.Interfaces
         void RequestBranchUpdate(NodeModel node);
 
         /// <summary>
-        /// Create an IRenderPackage object provided an IGraphicItem
+        /// An IRenderPackageFactory object.
         /// </summary>
-        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
-        /// <returns>An IRenderPackage object.</returns>
-        IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem);
+        IRenderPackageFactory RenderPackageFactory { get; }
+
+        /// <summary>
+        /// Create an IRenderPackage given an IGraphicItem
+        /// </summary>
+        IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem graphicItem);
     }
 }

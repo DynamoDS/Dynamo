@@ -12,6 +12,7 @@ using System.Windows.Media;
 
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Search;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
@@ -21,12 +22,14 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
+using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Controls
 {
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
+        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -2151,5 +2154,94 @@ namespace Dynamo.Controls
         }
     }
 
-    
+    internal class Watch3DBackgroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var homeColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+            var customColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
+
+            //parameter will contain a true or false
+            //whether this is the home space
+            if ((bool)value)
+            {
+                return homeColor.ToColor4();
+            }
+
+            return customColor.ToColor4();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class GroupFontSizeToEditorEnabledConverter : IMultiValueConverter
+    {
+        private const double MinFontFactor = 7.0;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var zoom = System.Convert.ToDouble(values[0]);
+            var fontsize = System.Convert.ToDouble(values[1]);
+
+            var factor = zoom*fontsize;
+            if (factor < MinFontFactor)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+        /// Converts element type of node search element in short string.
+        /// E.g. ElementTypes.Packaged => PKG.
+        /// </summary>
+        public class ElementTypeToShortConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var type = (ElementTypes) value;
+
+                switch (type)
+                {
+                    case ElementTypes.Packaged:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.ZeroTouch:
+                        return Resources.ZeroTouchTypeShortString;
+
+                    case ElementTypes.CustomNode:
+                        return Resources.CustomNodeTypeShortString;
+
+                    case ElementTypes.BuiltIn:
+                    case ElementTypes.None:
+                    default:
+                        return string.Empty;
+                }
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }    
 }

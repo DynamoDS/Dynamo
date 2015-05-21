@@ -72,10 +72,8 @@ namespace ProtoCore.DSASM
         CALL,
         CALLR,
         RETURN,
-        END,
         JMP,
         CJMP,
-        JZ,
         JDEP,
         AND,
         OR,
@@ -105,7 +103,6 @@ namespace ProtoCore.DSASM
         DEP,
         
         PUSHB,
-        POPB,
 
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,

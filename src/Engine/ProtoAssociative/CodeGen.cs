@@ -3283,8 +3283,17 @@ namespace ProtoAssociative
                 astlist.AddRange(inlineExpressionASTList);
                 inlineExpressionASTList.Clear();
 
+                DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
+                cexpr = ssaStack.Pop();
+                ilnode.TrueExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                astlist.AddRange(inlineExpressionASTList);
+                inlineExpressionASTList.Clear();
 
-                // SSA for true and false body are handled by EmitInlineConditionalNode
+                DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
+                cexpr = ssaStack.Pop();
+                ilnode.FalseExpression = cexpr is BinaryExpressionNode ? (cexpr as BinaryExpressionNode).LeftNode : cexpr;
+                astlist.AddRange(inlineExpressionASTList);
+                inlineExpressionASTList.Clear();
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode();
                 bnode.Optr = ProtoCore.DSASM.Operator.assign;
@@ -4000,9 +4009,7 @@ namespace ProtoAssociative
                             //Audit class table for multiple symbol definition and emit warning.
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus, graphNode);
                         }
-                        codeblock.Body = BuildSSA(codeblock.Body, context);
-                        core.DSExecutable.CachedSSANodes.Clear();
-                        core.DSExecutable.CachedSSANodes.AddRange(codeblock.Body);
+                        codeblock.Body = BuildSSA(codeblock.Body, context);              
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -4073,7 +4080,7 @@ namespace ProtoAssociative
             this.localCodeBlockNode = codeBlockNode;
 
             // Reset the callsite guids in preparation for the next compilation
-            core.DSExecutable.CallsiteGuidMap = new Dictionary<Guid, int>();
+            core.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
         }
@@ -5941,15 +5948,7 @@ namespace ProtoAssociative
                         {
                             throw new BuildHaltException("B2CB2093");
                         }
-                    });
-
-                    // TODO Jun: Remove this once agree that alltest cases assume the default assoc block is block 0
-                    // NOTE: Only affects mirror, not actual execution
-                    if (null == codeBlock.parent && pc <= 0)
-                    {
-                        // The first node in the top level block is a function
-                        core.DSExecutable.isSingleAssocBlock = false;
-                    }
+                    });                   
                 }
                 else
                 {
@@ -6491,16 +6490,13 @@ namespace ProtoAssociative
         {
             int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
             int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-            int L2 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
 
             // If-expr
             IfStatementNode ifnode = node as IfStatementNode;
             DfsTraverse(ifnode.ifExprNode, ref inferedType, false, graphNode);
-
-            L1 = pc + 1;
-            L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
+            L1 = ProtoCore.DSASM.Constants.kInvalidIndex;
             bp = pc;
-            EmitCJmp(L1, L2);
+            EmitCJmp(L1);
 
 
             // Create a new codeblock for this block
@@ -6707,7 +6703,7 @@ namespace ProtoAssociative
                 // As SSA conversion is enabled, we have got the values of
                 // true and false branch, so it isn't necessary to create 
                 // language blocks.
-                if (core.Options.IsDeltaExecution && core.Options.GenerateSSA)
+                if (core.Options.GenerateSSA)
                 {
                     inlineCall.FormalArguments.Add(inlineConditionalNode.ConditionExpression);
                     inlineCall.FormalArguments.Add(inlineConditionalNode.TrueExpression);

@@ -7,6 +7,7 @@ using System.Xml;
 
 using Dynamo.Models;
 using Dynamo.Properties;
+using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {

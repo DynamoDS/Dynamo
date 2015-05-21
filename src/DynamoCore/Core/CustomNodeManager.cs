@@ -6,6 +6,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
@@ -543,7 +544,9 @@ namespace Dynamo.Core
 
             newWorkspace.FunctionIdChanged += oldGuid =>
             {
-                Uninitialize(oldGuid);
+                loadedWorkspaceModels.Remove(oldGuid);
+                loadedCustomNodes.Remove(oldGuid);
+                loadOrder.Remove(oldGuid);
                 loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
             };
         }

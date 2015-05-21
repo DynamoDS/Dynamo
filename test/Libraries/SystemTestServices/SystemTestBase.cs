@@ -16,7 +16,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 
 using DynamoShapeManager;
-using DynamoUtilities;
 
 using NUnit.Framework;
 

@@ -554,14 +554,14 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="newPath">The path to save to</param>
         /// <param name="core"></param>
-        public virtual bool SaveAs(string newPath, ProtoCore.Core core)
+        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, core))
+                if (SaveInternal(newPath, runtimeCore))
                     OnWorkspaceSaved();
             }
             catch (Exception ex)
@@ -579,9 +579,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="centered"></param>
-        public void AddNode(NodeModel node, bool centered)
+        public void AddNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;
@@ -663,6 +661,8 @@ namespace Dynamo.Models
 
         public void AddAnnotation(AnnotationModel annotationModel)
         {
+            annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
             Annotations.Add(annotationModel);
         }
 
@@ -745,9 +745,9 @@ namespace Dynamo.Models
         /// <summary>
         /// Save assuming that the Filepath attribute is set.
         /// </summary>
-        public virtual bool Save(ProtoCore.Core core)
+        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
         {
-            return SaveAs(FileName, core);
+            return SaveAs(FileName, runtimeCore);
         }
 
         internal void ResetWorkspace()
@@ -790,7 +790,7 @@ namespace Dynamo.Models
 
         #region private/internal methods
         
-        private bool SaveInternal(string targetFilePath, ProtoCore.Core core)
+        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
         {
             // Create the xml document to write to.
             var document = new XmlDocument();
@@ -802,7 +802,7 @@ namespace Dynamo.Models
             if (!PopulateXmlDocument(document))
                 return false;
 
-            SerializeSessionData(document, core);
+            SerializeSessionData(document, runtimeCore);
 
             try
             {
@@ -915,7 +915,7 @@ namespace Dynamo.Models
 
         // TODO(Ben): Documentation to come before pull request.
         // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
+        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
         {
             if (document.DocumentElement == null)
             {
@@ -925,7 +925,7 @@ namespace Dynamo.Models
 
             try
             {
-                if (core == null) // No execution yet as of this point.
+                if (runtimeCore == null) // No execution yet as of this point.
                     return;
 
                 // Selecting all nodes that are either a DSFunction,
@@ -935,7 +935,7 @@ namespace Dynamo.Models
                         n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
                         .Select(n => n.GUID);
 
-                var nodeTraceDataList = core.DSExecutable.RuntimeData.GetTraceDataForNodes(nodeGuids, core.DSExecutable);
+                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
 
                 if (nodeTraceDataList.Any())
                     Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
@@ -1065,7 +1065,9 @@ namespace Dynamo.Models
             var codeBlockNodes = new List<CodeBlockNodeModel>();
 
             //UndoRedo Action Group----------------------------------------------
-            using (UndoRecorder.BeginActionGroup())
+            NodeToCodeUndoHelper undoHelper = new NodeToCodeUndoHelper();
+
+            // using (UndoRecorder.BeginActionGroup())
             {
                 foreach (var nodeList in cliques)
                 {
@@ -1115,7 +1117,7 @@ namespace Dynamo.Models
                             }
 
                             //Delete the connector
-                            UndoRecorder.RecordDeletionForUndo(connector);
+                            undoHelper.RecordDeletion(connector);
                             connector.Delete();
                         }
                         #endregion
@@ -1123,7 +1125,7 @@ namespace Dynamo.Models
                         #region Step I.B. Delete the node
                         totalX += node.X;
                         totalY += node.Y;
-                        UndoRecorder.RecordDeletionForUndo(node);
+                        undoHelper.RecordDeletion(node);
                         Nodes.Remove(node);
                         #endregion
                     }
@@ -1141,7 +1143,7 @@ namespace Dynamo.Models
                         System.Guid.NewGuid(), 
                         totalX / nodeCount,
                         totalY / nodeCount, engineController.LibraryServices);
-                    UndoRecorder.RecordCreationForUndo(codeBlockNode);
+                    undoHelper.RecordCreation(codeBlockNode);
                     Nodes.Add(codeBlockNode);
                     this.RegisterNode(codeBlockNode);
 
@@ -1149,12 +1151,22 @@ namespace Dynamo.Models
                     #endregion
 
                     #region Step III. Recreate the necessary connections
-                    ReConnectInputConnections(externalInputConnections, codeBlockNode);
-                    ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+                    var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode);
+                    foreach (var connector in newInputConnectors)
+                    {
+                        undoHelper.RecordCreation(connector);
+                    }
+
+                    var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+                    foreach (var connector in newInputConnectors)
+                    {
+                        undoHelper.RecordCreation(connector);
+                    }
                     #endregion
                 }
             }
-            //End UndoRedo Action Group------------------------------------------
+
+            undoHelper.ApplyActions(UndoRecorder);
 
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);
@@ -1363,19 +1375,32 @@ namespace Dynamo.Models
 
         public void DeleteModel(XmlElement modelData)
         {
+            //When there is a Redo operation, model is removed from 
+            //the workspace but the model is "not disposed" from memory.
+            //Identified this when redo operation is performed on groups
             ModelBase model = GetModelForElement(modelData);
 
             if (model is NoteModel)
-                Notes.Remove(model as NoteModel);
+            {
+                var note = model as NoteModel;
+                Notes.Remove(note);                
+                note.Dispose();
+            }
             else if (model is AnnotationModel)
-                Annotations.Remove(model as AnnotationModel);
+            {
+                var annotation = model as AnnotationModel;
+                Annotations.Remove(annotation);
+                annotation.Dispose();
+            }
             else if (model is ConnectorModel)
             {
                 var connector = model as ConnectorModel;
                 connector.Delete();
             }
             else if (model is NodeModel)
-                Nodes.Remove(model as NodeModel);
+            {
+                RemoveNode(model as NodeModel);
+            }
             else
             {
                 // If it gets here we obviously need to handle it.
@@ -1538,8 +1563,9 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="cbn">The new Node To Code created Code Block Node</param>
-        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel cbn)
+        private List<ConnectorModel> ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel cbn)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
             foreach (var kvp in externalOutputConnections)
             {
                 var connector = kvp.Key;
@@ -1559,8 +1585,9 @@ namespace Dynamo.Models
                     portModel.Index,
                     connector.End.Index);
 
-                UndoRecorder.RecordCreationForUndo(newConnector);
+                newConnectors.Add(newConnector);
             }
+            return newConnectors;
         }
 
         /// <summary>
@@ -1569,9 +1596,11 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="cbn">The new Node To Code created Code Block Node</param>
-        private void ReConnectInputConnections(
+        private List<ConnectorModel> ReConnectInputConnections(
             Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel cbn)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
             foreach (var kvp in externalInputConnections)
             {
                 var connector = kvp.Key;
@@ -1590,9 +1619,10 @@ namespace Dynamo.Models
                     connector.Start.Index,
                     endPortIndex);
 
-                UndoRecorder.RecordCreationForUndo(newConnector);
-
+                newConnectors.Add(newConnector);
             }
+
+            return newConnectors;
         }
 
         #endregion

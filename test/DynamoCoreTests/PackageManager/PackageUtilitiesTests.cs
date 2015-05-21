@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using Dynamo.Utilities;
 
 using Greg.Responses;
 
 using NUnit.Framework;
 
-namespace Dynamo.PackageManager
+namespace Dynamo.PackageManager.Tests
 {
     [TestFixture]
     class PackageUtilitiesTests

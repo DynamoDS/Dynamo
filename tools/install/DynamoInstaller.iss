@@ -107,6 +107,9 @@ Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\de
 ;DirectX
 Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
 
+;Gallery
+Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
 [Registry]
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dword; ValueName: "installed"; ValueData: "1"
@@ -196,7 +199,7 @@ begin
     begin
 	  MsgBox('Dynamo requires an installation of Revit 2014, Revit 2015 or Revit 2016 in order to proceed!', mbCriticalError, MB_OK);
       result := false;
-    end
+    end;
 
   // if old EXE version of 0.8.0 is installed, uninstall it
   sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}_is1'

@@ -6,12 +6,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:views="clr-namespace:Dynamo.Views"
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
              MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">   
+    
     <UserControl.Resources>
         <Style x:Key="ColorSelectorListBox"
            TargetType="ListBox">
@@ -131,21 +134,32 @@
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
                                Name="DeleteAnnotation"
                            Click="OnDeleteAnnotation"/>
+                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                               Name="UngroupAnnotation"
+                           Click="OnUngroupAnnotation"/>               
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
                                Name="ChangeSize">                   
                     <MenuItem Header ="14" Name="FontSize0" Command="{Binding ChangeFontSize}" CommandParameter="14"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=14}"></MenuItem>
                     <MenuItem Header ="18" Name="FontSize1" Command="{Binding ChangeFontSize}" CommandParameter="18"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=18}"></MenuItem>
-                    <MenuItem Header ="20" Name="FontSize2" Command="{Binding ChangeFontSize}" CommandParameter="20"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=20}"></MenuItem>
+                    <MenuItem Header ="24" Name="FontSize2" Command="{Binding ChangeFontSize}" CommandParameter="24"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=24}"></MenuItem>
                     <MenuItem Header ="30" Name="FontSize3" Command="{Binding ChangeFontSize}" CommandParameter="30"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=30}"></MenuItem>
-                    <MenuItem Header ="48" Name="FontSize4" Command="{Binding ChangeFontSize}" CommandParameter="48"
+                    <MenuItem Header ="36" Name="FontSize4" Command="{Binding ChangeFontSize}" CommandParameter="36"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=36}"></MenuItem>
+                    <MenuItem Header ="48" Name="FontSize5" Command="{Binding ChangeFontSize}" CommandParameter="48"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=48}"></MenuItem>
+                    <MenuItem Header ="60" Name="FontSize6" Command="{Binding ChangeFontSize}" CommandParameter="60"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=60}"></MenuItem>
+                    <MenuItem Header ="72" Name="FontSize7" Command="{Binding ChangeFontSize}" CommandParameter="72"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=72}"></MenuItem>
+                    <MenuItem Header ="96" Name="FontSize8" Command="{Binding ChangeFontSize}" CommandParameter="96"
+                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=96}"></MenuItem>
                     
                 </MenuItem>               
                 <ListBox Style="{StaticResource ColorSelectorListBox}"
@@ -200,7 +214,7 @@
             </Rectangle.Fill>
         </Rectangle>
         <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
-              Margin="5,0,0,0"
+              Margin="5,0,5,0"
               VerticalAlignment="Top">            
             <TextBlock x:Name="GroupTextBlock"                                     
                     Text ="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}}"    
@@ -223,10 +237,32 @@
                     FontSize="{Binding FontSize}"                                 
                     IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
                     GotFocus="GroupTextBox_OnGotFocus"                   
-                    TextChanged="GroupTextBox_OnTextChanged"                            
+                    TextChanged="GroupTextBox_OnTextChanged"   
+                    AcceptsReturn="True"
+                    AcceptsTab="True"
                     Style="{StaticResource SZoomFadeTextBox}">                  
             </TextBox>
-            
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True">
+                                    <Condition.Binding>
+                                        <MultiBinding Converter="{StaticResource GroupFontSizeToEditorEnabledConverter }">
+                                            <Binding Path ="DataContext.Zoom" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}"></Binding>
+                                            <Binding ElementName="GroupTextBlock" Path="FontSize"/>
+                                            <Binding ElementName="GroupTextBlock" Path="Visibility"/>
+                                        </MultiBinding>
+                                    </Condition.Binding>
+                                </Condition>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.Triggers>                           
                 <EventTrigger  SourceName="GroupTextBox" RoutedEvent="TextBox.LostKeyboardFocus">
                     <BeginStoryboard>

@@ -22,13 +22,15 @@ namespace Dynamo.Models
         private const double DoubleValue = 0.0;
         private const double MinTextHeight = 20.0;
         private const double ExtendSize = 10.0;
+        private const double ExtendYHeight = 5.0;
+        public  string GroupBackground = "#FFC1D676";
         //DeletedModelBases is used to keep track of deleted / ungrouped models. 
         //During Undo operations this is used to get those models that are deleted from the group
         public List<ModelBase> DeletedModelBases { get; set; }
         public bool loadFromXML { get; set; }
 
         private double width;
-        public new double Width
+        public override double Width
         {
             get
             {
@@ -42,7 +44,7 @@ namespace Dynamo.Models
         }
 
         private double height;
-        public new double Height
+        public override double Height
         {
             get
             {
@@ -81,7 +83,7 @@ namespace Dynamo.Models
         private string background;
         public string Background
         {
-            get { return background ?? "#ff7bac"; }
+            get { return background ?? GroupBackground; }
             set
             {
                 background = value;
@@ -244,7 +246,7 @@ namespace Dynamo.Models
                         {
                             if (overlap.Rect.Bottom - region.Bottom > 0)
                             {
-                                this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize;
+                                this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize + ExtendYHeight;
                             }
                             region.Height = this.Height;
                         }
@@ -280,8 +282,14 @@ namespace Dynamo.Models
         {           
             var xgroup = SelectedModels.OrderBy(x => x.X).ToList();
             var ygroup = SelectedModels.OrderBy(x => x.Y).ToList();
-          
-            return Tuple.Create(xgroup.Last().Width, ygroup.Last().Height);
+            double yheight = ygroup.Last().Height;
+
+            //If the last model is Node, then increase the height so that 
+            //node border does not overlap with the group
+            if (ygroup.Last() is NodeModel)
+                yheight = yheight + ExtendYHeight;
+
+            return Tuple.Create(xgroup.Last().Width, yheight);
         }
               
         #region Serialization/Deserialization Methods
@@ -407,6 +415,36 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        /// <summary>
+        /// Overriding the Select behavior
+        /// because selecting the  group should select the models
+        /// within that group
+        /// </summary>
+        public override void Select()
+        {
+            foreach (var models in SelectedModels)
+            {
+                models.IsSelected = true;
+            }
+
+            base.Select();
+        }
+
+        /// <summary>
+        /// Overriding the Deselect behavior
+        /// because deselecting the  group should deselect the models
+        /// within that group
+        /// </summary>
+        public override void Deselect()
+        {           
+            foreach (var models in SelectedModels)
+            {
+                models.IsSelected = false;
+            }   
+       
+            base.Deselect();
+        }
 
         public override void Dispose()
         {           

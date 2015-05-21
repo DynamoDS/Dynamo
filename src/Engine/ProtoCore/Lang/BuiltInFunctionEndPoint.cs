@@ -293,10 +293,8 @@ namespace ProtoCore.Lang
                         // If run in delta execution environment, we don't 
                         // create language blocks for true and false branch, 
                         // so directly return the value.
-                        if (runtimeCore.Options.IsDeltaExecution)
-                        {
+                        if (runtimeCore.Options.GenerateSSA)
                             return svCondition.RawBooleanValue ? svTrue : svFalse;
-                        }
 
                         Validity.Assert(svTrue.IsInteger);
                         Validity.Assert(svFalse.IsInteger);
@@ -496,7 +494,7 @@ namespace ProtoCore.Lang
         {
             var runtimeCore = runtime.RuntimeCore;
             var rmem = runtime.rmem;
-            var runtimeData = runtime.exe.RuntimeData;
+            var runtimeData = runtimeCore.RuntimeData;
 
             bool isValidThisPointer = true;
             StackValue thisObject = lhs;

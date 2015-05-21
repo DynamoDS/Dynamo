@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
+using Dynamo.Interfaces;
+
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
-
 
 namespace Dynamo.Nodes
 {
@@ -105,7 +107,7 @@ namespace Dynamo.Nodes
         }
 
         protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // Do nothing
         }

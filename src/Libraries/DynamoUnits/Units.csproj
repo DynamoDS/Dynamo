@@ -52,6 +52,9 @@
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DynamoUnitsImages.resx" />
+  </ItemGroup>
   <Choose>
     <!-- Visual Studio 2010: Select FSchemeInterop.dll -->
     <When Condition=" '$(VisualStudioVersion)'=='10.0' ">
@@ -71,15 +74,24 @@
     <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
   </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
+	
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+	<!-- Get System.Drawing.dll -->
+	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    	</GetReferenceAssemblyPaths>
+	
+	<!-- Get assembly -->
+	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
+	</GetAssemblyIdentity>
+	
+	<!-- Generate customization dll -->
+    	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    	<AL TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" Version="%(AssemblyInfo.Version)" />
 
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

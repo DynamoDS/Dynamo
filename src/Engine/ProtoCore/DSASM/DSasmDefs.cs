@@ -78,7 +78,6 @@ namespace ProtoCore.DSASM
     // We can then easily have a *.dsasm file containing only assembly code that the VM/Interpreter can execute
     public struct kw
     {
-        public const string mov = "mov";
         public const string call = "call";
         public const string callr = "callr";
         public const string add = "add";
@@ -92,19 +91,9 @@ namespace ProtoCore.DSASM
         public const string lt = "lt";
         public const string ge = "ge";
         public const string le = "le";
-        public const string jg = "jg";
-        public const string jl = "jl";
-        public const string jge = "jge";
-        public const string jle = "jle";
-        public const string jleq = "jleq";
-        public const string jgeq = "jgeq";
         public const string jmp = "jmp";
         public const string cjmp = "cjmp";
-        public const string jlz = "jlz";
-        public const string jgz = "jgz";
-        public const string jz = "jz";
         public const string jdep = "jdep";
-        public const string label = "label";
         public const string bounce = "bounce";
         public const string alloca = "alloca";
         public const string allocc = "allocc";
@@ -129,7 +118,6 @@ namespace ProtoCore.DSASM
         public const string dep = "dep";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
-        public const string popb = "popb";
 
         // TODO Jun: these are temporary instruction 
         public const string pushvarsize = "pushvarsize";
@@ -420,18 +408,14 @@ namespace ProtoCore.DSASM
         public const string kTempArg = "%targ";
         public const string kTempVar = "%tvar";
         public const string kTempPropertyVar = "%tvar_property";
-        public const string kTempExceptionVar = "%texp";
         public const string kTempLangBlock = "%tempLangBlock";
         public const string kForLoopExpression = "%forloop_expr_";
         public const string kForLoopKey = "%forloop_key_";
-        public const string kStartOfAutogenForloopIteration = "%autogen_forloop_iteration_";
-        public const string kStartOfAutogenForloopCount = "%autogen_forloop_count_";
         public const string kFunctionPointerCall = "%FunctionPointerCall";
         public const string kFunctionRangeExpression = "%generate_range";
         public const string kDotMethodName = "%dot";
         public const string kDotArgMethodName = "%dotarg";
         public const string kInlineConditionalMethodName = "%inlineconditional";
-        public const string kInlineCondition = "%InlineCondition";
         public const string kGetTypeMethodName = "%get_type";
         public const string kNodeAstFailed = "%nodeAstFailed";
         public const string kWatchResultVar = "watch_result_var";
@@ -439,7 +423,6 @@ namespace ProtoCore.DSASM
         public const string kGlobalInstanceNamePrefix = "%globalInstanceFunction_";
         public const string kGlobalInstanceFunctionPrefix = "%proc";
         public const string kThisPointerArgName = "%thisPtrArg";
-        public const string kMangledFunctionPlaceholderName = "%Placeholder";
         public const string kTempModifierStateNamePrefix = "%tmp_modifierState_";
         public const string kTempProcConstant = "temp_proc_var_";
         public const string kTempProcLeftVar = "%" + kTempProcConstant;

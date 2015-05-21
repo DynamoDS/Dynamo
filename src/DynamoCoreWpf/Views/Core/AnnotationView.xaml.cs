@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using HelixToolkit.Wpf.SharpDX;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Dynamo.UI.Prompts;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
@@ -33,7 +32,7 @@ namespace Dynamo.Nodes
 
             InitializeComponent();
             Loaded += AnnotationView_Loaded;                      
-            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;          
+            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;            
         }
      
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
@@ -80,7 +79,7 @@ namespace Dynamo.Nodes
             }                                
         }
 
-        private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
+        private void OnUngroupAnnotation(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
             {
@@ -96,21 +95,38 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {         
-            if (GroupTextBlock.IsVisible)
+            if (GroupTextBlock.IsVisible ||
+                (!GroupTextBlock.IsVisible && !GroupTextBox.IsVisible))
             {
-                var annotationGuid = this.ViewModel.AnnotationModel.GUID;
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+                ViewModel.Select();
+            }
 
-                //Select all the models inside the group - This avoids some performance bottleneck 
-                //with many nodes selected at the same time - which makes moving the group very slow
-                DynamoSelection.Instance.Selection.AddRange(ViewModel.AnnotationModel.SelectedModels);
-
-                foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
+            //When Textbox is visible,clear the selection. That way, models will not be added to
+            //dragged nodes one more time. Ref: MAGN-7321
+            if (GroupTextBlock.IsVisible && e.ClickCount >= 2)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                //Set the panning mode to false if a group is in editing mode.
+                if (ViewModel.WorkspaceViewModel.IsPanning)
                 {
-                    //Make sure that models have the selection border inside a group when selected
-                    models.IsSelected = true;                    
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.TogglePan(null);
                 }
+                e.Handled = true;
+            }
+
+            //When the Zoom * Fontsized factor is less than 7, then
+            //show the edit window
+            if (!GroupTextBlock.IsVisible && e.ClickCount >= 2)
+            {               
+                var editWindow = new EditWindow(ViewModel.WorkspaceViewModel.DynamoViewModel, true);
+                editWindow.BindToProperty(DataContext, new Binding("AnnotationText")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = (DataContext as AnnotationViewModel),
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                });
+
+                editWindow.ShowDialog();
             }
         }
      
@@ -189,6 +205,21 @@ namespace Dynamo.Nodes
         private void GroupTextBox_OnGotFocus(object sender, RoutedEventArgs e)
         {
             this.GroupTextBox.CaretIndex = Int32.MaxValue;
+        }
+
+        /// <summary>
+        /// This function will delete the group with modes
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
+        {
+            //Select the group and the models within that group
+            if (ViewModel != null)
+            {
+                ViewModel.Select();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+            }
         }
     }
 }

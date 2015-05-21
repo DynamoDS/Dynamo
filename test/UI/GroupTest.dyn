@@ -1,0 +1,15 @@
+<Workspace Version="0.8.1.1314" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="189b1e12-ef54-4923-9af8-79fa1fd7a523" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="292" y="185" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(1,1,1);" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations>
+    <Dynamo.Models.AnnotationModel guid="a432d63f-7a36-45ad-b30a-7924beb20e90" annotationText="&lt;Click here to edit the group title&gt;" left="282" top="155" width="279.2" height="122.6" fontSize="14" InitialTop="185" InitialHeight="161.2" TextblockHeight="20" backgrouund="#FFC1D676">
+      <Models ModelGuid="189b1e12-ef54-4923-9af8-79fa1fd7a523" />
+    </Dynamo.Models.AnnotationModel>
+  </Annotations>
+</Workspace>
