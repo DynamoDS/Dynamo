@@ -17,11 +17,9 @@ using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
 using Dynamo.UI;
-using DynamoUtilities;
 using System.Reflection;
 using TestServices;
-using Dynamo.Wpf.ViewModels.Core;
-using Microsoft.Practices.Prism.Logging;
+
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
@@ -367,7 +365,7 @@ namespace DynamoCoreWpfTests
             var cmdOne = new DynamoModel.CreateNoteCommand(nodeId, text, x, y, defaultPos);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.ModelGuids.First(), cmdTwo.ModelGuids.First());
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.NoteText, cmdTwo.NoteText);
             Assert.AreEqual(cmdOne.X, cmdTwo.X, 0.000001);
             Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
@@ -384,7 +382,7 @@ namespace DynamoCoreWpfTests
             var cmdOne = new DynamoModel.SelectModelCommand(modelGuid, modifiers);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.ModelGuids.First(), cmdTwo.ModelGuids.First());
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.Modifiers, cmdTwo.Modifiers);
         }
 
@@ -441,7 +439,7 @@ namespace DynamoCoreWpfTests
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.ModelGuids.First(), cmdTwo.ModelGuids.First());
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.PortIndex, cmdTwo.PortIndex);
             Assert.AreEqual(cmdOne.Type, cmdTwo.Type);
             Assert.AreEqual(cmdOne.ConnectionMode, cmdTwo.ConnectionMode);
@@ -453,7 +451,7 @@ namespace DynamoCoreWpfTests
             Guid modelGuid = Guid.NewGuid();
             var cmdOne = new DynamoModel.DeleteModelCommand(modelGuid);
             var cmdTwo = DuplicateAndCompare(cmdOne);
-            Assert.AreEqual(cmdOne.ModelGuids.First(), cmdTwo.ModelGuids.First());
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
         }
 
         [Test, RequiresSTA]
@@ -517,7 +515,7 @@ namespace DynamoCoreWpfTests
                 modelGuid, name, category, description, makeCurrent);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.ModelGuids.First(), cmdTwo.ModelGuids.First());
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
             Assert.AreEqual(cmdOne.Category, cmdTwo.Category);
             Assert.AreEqual(cmdOne.Description, cmdTwo.Description);

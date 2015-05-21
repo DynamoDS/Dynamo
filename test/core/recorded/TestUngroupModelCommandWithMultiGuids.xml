@@ -22,12 +22,12 @@
   </SelectModelCommand>
   <SelectInRegionCommand X="104" Y="137" Width="404" Height="286" IsCrossSelection="false" />
 
-  <CreateAnnotationCommand NoteText="&lt;Click here to edit the group title&gt;" X="0" Y="0" DefaultPosition="true">
+  <CreateAnnotationCommand AnnotationText="&lt;Click here to edit the group title&gt;" X="0" Y="0" DefaultPosition="true">
     <ModelGuid>06b0de20-0ed7-4cc4-8d4e-c15396a95a00</ModelGuid>
   </CreateAnnotationCommand>
   
   <UngroupModelCommand>
     <ModelGuid>e40824fd-9da5-4666-9c9c-0148f80b3dcc</ModelGuid>
-	<ModelGuid>2dc24d36-d5d9-4344-933c-1d61045c19c3</ModelGuid>
+    <ModelGuid>2dc24d36-d5d9-4344-933c-1d61045c19c3</ModelGuid>
   </UngroupModelCommand>
 </Commands>

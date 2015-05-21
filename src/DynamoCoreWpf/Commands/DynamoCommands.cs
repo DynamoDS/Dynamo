@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
-
-using Dynamo.Selection;
-using Microsoft.CSharp.RuntimeBinder;
 
 namespace Dynamo.ViewModels
 {
@@ -192,7 +188,7 @@ namespace Dynamo.ViewModels
 
         private void MakeConnectionImpl(DynamoModel.MakeConnectionCommand command)
         {
-            Guid nodeId = command.ModelGuids.First();
+            Guid nodeId = command.ModelGuid;
 
             switch (command.ConnectionMode)
             {

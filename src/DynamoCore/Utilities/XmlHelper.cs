@@ -141,7 +141,7 @@ namespace Dynamo.Utilities
             return result;
         }
 
-        public bool IsAttributeExist(string attribName)
+        public bool HasAttribute(string attribName)
         {
             return internalElement.Attributes[attribName] != null;
         }

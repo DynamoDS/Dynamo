@@ -301,6 +301,14 @@ namespace Dynamo.Models
         [DataContract]
         public abstract class ModelBasedRecordableCommand : RecordableCommand
         {
+            public Guid ModelGuid
+            {
+                get
+                {
+                    return ModelGuids.Any() ? ModelGuids.First() : Guid.Empty;
+                }
+            }
+
             public IEnumerable<Guid> ModelGuids { get; private set; }
 
             protected ModelBasedRecordableCommand(IEnumerable<Guid> guids)
@@ -322,13 +330,13 @@ namespace Dynamo.Models
             protected static IEnumerable<Guid> DeserializeGuid(XmlElement element, XmlElementHelper helper)
             {
                 // Deserialize old type of commands
-                if (helper.IsAttributeExist("ModelGuid"))
+                if (helper.HasAttribute("ModelGuid"))
                 {
                     Guid modelGuid = helper.ReadGuid("ModelGuid", Guid.Empty);
                     return new[] { modelGuid };
                 }
 
-                if (helper.IsAttributeExist("NodeId"))
+                if (helper.HasAttribute("NodeId"))
                 {
                     Guid modelGuid = helper.ReadGuid("NodeId", Guid.Empty);
                     return new[] { modelGuid };
@@ -1481,9 +1489,9 @@ namespace Dynamo.Models
         {
             #region Public Class Methods
 
-            public CreateAnnotationCommand(Guid nodeId, string annotationText,
+            public CreateAnnotationCommand(Guid annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
-                : base(new List<Guid> { nodeId })
+                : base(new List<Guid> { annotationId })
             {
                 if (string.IsNullOrEmpty(annotationText))
                     annotationText = Resources.GroupDefaultText;
@@ -1494,9 +1502,9 @@ namespace Dynamo.Models
                 DefaultPosition = defaultPosition;
             }
 
-            public CreateAnnotationCommand(IEnumerable<Guid> nodeId, string annotationText,
+            public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
-                : base(nodeId)
+                : base(annotationId)
             {
                 if (string.IsNullOrEmpty(annotationText))
                     annotationText = Resources.GroupDefaultText;
@@ -1511,7 +1519,7 @@ namespace Dynamo.Models
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
                 var modelGuids = DeserializeGuid(element, helper);
-                string annotationText = helper.ReadString("NoteText");
+                string annotationText = helper.ReadString("AnnotationText");
                 double x = helper.ReadDouble("X");
                 double y = helper.ReadDouble("Y");
 
@@ -1541,7 +1549,7 @@ namespace Dynamo.Models
             {
                 base.SerializeCore(element);
                 XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("NoteText", AnnotationText);
+                helper.SetAttribute("AnnotationText", AnnotationText);
                 helper.SetAttribute("X", X);
                 helper.SetAttribute("Y", Y);
                 helper.SetAttribute("DefaultPosition", DefaultPosition);
