@@ -4,9 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 
-using Dynamo.Selection;
-using Microsoft.CSharp.RuntimeBinder;
-
 namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
@@ -195,7 +192,7 @@ namespace Dynamo.ViewModels
 
         private void MakeConnectionImpl(DynamoModel.MakeConnectionCommand command)
         {
-            Guid nodeId = command.NodeId;
+            Guid nodeId = command.ModelGuid;
 
             switch (command.ConnectionMode)
             {

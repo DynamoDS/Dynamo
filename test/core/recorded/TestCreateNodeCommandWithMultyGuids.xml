@@ -1,0 +1,23 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>612e4917-9b8d-4660-906d-972bb620dd68</ModelGuid>
+	<ModelGuid>e9c9a45b-e5fb-4b16-b2ba-e5e08a7048c8</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="612e4917-9b8d-4660-906d-972bb620dd68" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="135.5" y="177" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>25409e47-e381-41b1-9dfa-d25a32807017</ModelGuid>
+	<ModelGuid>22939bf5-50bc-4aa3-9c91-0dc5b5017252</ModelGuid>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="25409e47-e381-41b1-9dfa-d25a32807017" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="341.5" y="188" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <UpdateModelValueCommand Name="Code" Value="a;" WorkspaceGuid="c0ce26d7-26f7-4fc4-903b-2073e5ed596e">
+    <ModelGuid>25409e47-e381-41b1-9dfa-d25a32807017</ModelGuid>
+  </UpdateModelValueCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>612e4917-9b8d-4660-906d-972bb620dd68</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>25409e47-e381-41b1-9dfa-d25a32807017</ModelGuid>
+  </MakeConnectionCommand>
+</Commands>

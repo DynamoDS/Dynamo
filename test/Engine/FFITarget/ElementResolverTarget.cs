@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -32,4 +33,21 @@ namespace FFITarget
         }
     }
 
+    namespace NameSpaceA
+    {
+        namespace NameSpaceB
+        {
+            namespace NameSpaceC
+            {
+                public class NestedResolverTarget
+                {
+                    public static ElementResolverTarget Property { get; set; }
+                }
+
+                public class NameSpaceC
+                {
+                }
+            }
+    }
+}
 }
