@@ -48,7 +48,6 @@ namespace Dynamo.ViewModels
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
-
         /// <summary>
         /// For requesting registered workspace to zoom in center
         /// </summary>

@@ -37,8 +37,8 @@ namespace Dynamo.ViewModels
                 RequestReturnFocusToSearch(this, e);
         }
 
-        internal event EventHandler RequestCloseSearchToolTip;
-        private void OnRequestCloseSearchToolTip(object sender, EventArgs e)
+        public event EventHandler RequestCloseSearchToolTip;
+        public void OnRequestCloseSearchToolTip(object sender, EventArgs e)
         {
             if (RequestCloseSearchToolTip != null)
                 RequestCloseSearchToolTip(this, e);
