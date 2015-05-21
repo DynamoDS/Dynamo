@@ -49,8 +49,6 @@ namespace Dynamo.ViewModels
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
 
-        internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
-
         /// <summary>
         /// For requesting registered workspace to zoom in center
         /// </summary>
@@ -116,7 +114,8 @@ namespace Dynamo.ViewModels
                 WorkspacePropertyEditRequested(Model);
         }
 
-        public virtual void OnRequestShowInCanvasSearch(ShowHideFlags flag)
+        internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
+        private void OnRequestShowInCanvasSearch(ShowHideFlags flag)
         {
             if (RequestShowInCanvasSearch != null)
                 RequestShowInCanvasSearch(flag);
