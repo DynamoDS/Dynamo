@@ -1,0 +1,9 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNoteCommand NoteText="" X="0" Y="0" DefaultPosition="true">
+    <ModelGuid>682adbae-629f-4c15-b1b4-8af22c2f850c</ModelGuid>
+	<ModelGuid>22939bf5-50bc-4aa3-9c91-0dc5b5017252</ModelGuid>
+  </CreateNoteCommand>
+  <UpdateModelValueCommand Name="Text" Value="SomeTestNote" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>682adbae-629f-4c15-b1b4-8af22c2f850c</ModelGuid>
+  </UpdateModelValueCommand>
+</Commands>
