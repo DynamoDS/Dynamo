@@ -19,9 +19,11 @@ namespace Dynamo
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences
     {
+        public const int DefaultMaxNumRecentFiles = 10;
         public static string DynamoTestPath = null;
         private string numberFormat;
         private string lastUpdateDownloadPath;
+        private int maxNumRecentFiles;
         
         // Variables of the settings that will be persistent
 
@@ -74,8 +76,19 @@ namespace Dynamo
         /// </summary>
         public int MaxNumRecentFiles
         {
-            get { return 10; }
-            set { }
+            get { return maxNumRecentFiles; }
+            set
+            {
+                if (value > 0)
+                {
+                    maxNumRecentFiles = value;
+                }
+                else
+                {
+                    maxNumRecentFiles = DefaultMaxNumRecentFiles;
+                }
+                RaisePropertyChanged("MaxNumRecentFiles");
+            }
         }
 
         /// <summary>
@@ -155,6 +168,7 @@ namespace Dynamo
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
+            maxNumRecentFiles = DefaultMaxNumRecentFiles;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
