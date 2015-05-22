@@ -442,7 +442,12 @@ namespace ProtoFFI
                 // Dispose() method in their classes, they will share a same
                 // Dispose() method from CLRModuleType.DisposeMethod. We need
                 // to manually dispose them.
+
                 var thisObject = marshaller.UnMarshal(s.Last(), c, dsi, typeof(IDisposable));
+                // Notify marshaler for dispose before this object is 
+                // dispose. 
+                marshaller.OnDispose(s.Last(), c, dsi);
+
                 if (thisObject != null && thisObject is IDisposable)
                 {
                     var disposable = thisObject as IDisposable;
@@ -452,8 +457,8 @@ namespace ProtoFFI
             else
             {
                 retVal = base.Execute(c, dsi);
+                marshaller.OnDispose(s.Last(), c, dsi); //Notify marshler for dispose.
             }
-            marshaller.OnDispose(s.Last(), c, dsi); //Notify marshler for dispose.
 
             return retVal;
         }
