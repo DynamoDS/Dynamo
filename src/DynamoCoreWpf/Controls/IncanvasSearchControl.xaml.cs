@@ -133,7 +133,7 @@ namespace Dynamo.UI.Controls
             if (key != Key.Enter)
                 return;
 
-            if (HighlightedItem != null)
+            if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
                 ExecuteSearchElement(HighlightedItem);
         }
     }

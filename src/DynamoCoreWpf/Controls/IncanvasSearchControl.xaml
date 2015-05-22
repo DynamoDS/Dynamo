@@ -137,6 +137,12 @@
                             <Setter Property="Visibility"
                                     Value="Collapsed" />
                         </DataTrigger>
+
+                        <DataTrigger Binding="{Binding Path=CurrentMode}"
+                                     Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
