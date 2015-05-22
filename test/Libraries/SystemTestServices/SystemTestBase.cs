@@ -100,7 +100,7 @@ namespace SystemTestServices
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
 
-            if (View.IsLoaded)
+            if (null != View && View.IsLoaded)
                 View.Close();
 
             if (ViewModel != null)
