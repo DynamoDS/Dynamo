@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Dynamo.Models;
 
 namespace Dynamo.UI.Controls
 {
@@ -25,14 +26,24 @@ namespace Dynamo.UI.Controls
     {
         ListBoxItem HighlightedItem;
 
+        internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
+
+        private SearchViewModel ViewModel
+        {
+            get { return DataContext as SearchViewModel; }
+        }
+
         public InCanvasSearchControl()
         {
             InitializeComponent();
         }
 
-        private SearchViewModel ViewModel
+        private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
         {
-            get { return DataContext as SearchViewModel; }
+            if (RequestShowInCanvasSearch != null)
+            {
+                RequestShowInCanvasSearch(flags);
+            }
         }
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -50,6 +61,7 @@ namespace Dynamo.UI.Controls
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;
             ExecuteSearchElement(listBoxItem);
+            OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
             e.Handled = true;
         }
 
@@ -130,11 +142,17 @@ namespace Dynamo.UI.Controls
         {
             var key = e.Key;
 
+            if (key == Key.Escape)
+                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+
             if (key != Key.Enter)
                 return;
 
             if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+            {
                 ExecuteSearchElement(HighlightedItem);
+                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+            }
         }
     }
 }
