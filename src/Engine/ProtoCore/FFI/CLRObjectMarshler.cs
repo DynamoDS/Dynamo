@@ -322,17 +322,17 @@ namespace ProtoFFI
 
         private object AddToDictionary(ProtoCore.Runtime.Context context,
             Interpreter dsi,
-            IDictionary dict,
-            IDictionary<StackValue, StackValue> dsDict,
+            IDictionary csDictionary,
+            IDictionary<StackValue, StackValue> dsDictionary,
             System.Type keyType, System.Type valueType)
         {
-            if (dict == null)
+            if (csDictionary == null)
                 throw new ArgumentNullException("dict");
 
-            if (dsDict == null)
+            if (dsDictionary == null)
                 throw new ArgumentNullException("dsDict");
 
-            foreach (var pair in dsDict)
+            foreach (var pair in dsDictionary)
             {
                 var key = primitiveMarshaler.UnMarshal(pair.Key, context, dsi, keyType);
                 if (key == null || !keyType.IsAssignableFrom(key.GetType()))
@@ -340,12 +340,12 @@ namespace ProtoFFI
 
                 var value = primitiveMarshaler.UnMarshal(pair.Value, context, dsi, valueType);
                 if (value != null && valueType.IsAssignableFrom(value.GetType()))
-                    dict.Add(key, value);
+                    csDictionary.Add(key, value);
                 else
-                    dict.Add(key, null);
+                    csDictionary.Add(key, null);
             }
 
-            return dict;
+            return csDictionary;
         }
 
         private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
@@ -359,7 +359,6 @@ namespace ProtoFFI
 
             if (expectedType.IsGenericType)
             {
-                // Create an instance of IDictionary<TKey, TValue>
                 keyType = expectedType.GetGenericArguments().First();
                 valueType = expectedType.GetGenericArguments().Last();
                 instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
