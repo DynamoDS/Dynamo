@@ -1840,6 +1840,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Group Title.
+        /// </summary>
+        public static string EditAnnotationTitle {
+            get {
+                return ResourceManager.GetString("EditAnnotationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Node Name.
         /// </summary>
         public static string EditNodeWindowTitle {

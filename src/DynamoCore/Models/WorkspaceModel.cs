@@ -1209,7 +1209,7 @@ namespace Dynamo.Models
                     }
 
                     var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-                    foreach (var connector in newInputConnectors)
+                    foreach (var connector in newOutputConnectors)
                     {
                         undoHelper.RecordCreation(connector);
                     }
@@ -1439,9 +1439,7 @@ namespace Dynamo.Models
             }
             else if (model is AnnotationModel)
             {
-                var annotation = model as AnnotationModel;
-                Annotations.Remove(annotation);
-                annotation.Dispose();
+                RemoveGroup(model);
             }
             else if (model is ConnectorModel)
             {
@@ -1458,6 +1456,13 @@ namespace Dynamo.Models
                 throw new InvalidOperationException(string.Format(
                     "Unhandled type: {0}", model.GetType()));
             }
+        }
+
+        public void RemoveGroup(ModelBase model)
+        {
+            var annotation = model as AnnotationModel;
+            Annotations.Remove(annotation);
+            annotation.Dispose();
         }
 
         public void ReloadModel(XmlElement modelData)

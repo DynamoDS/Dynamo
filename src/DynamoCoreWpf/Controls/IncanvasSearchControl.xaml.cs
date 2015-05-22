@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Dynamo.UI.Controls
 {
@@ -21,6 +23,8 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class InCanvasSearchControl : UserControl
     {
+        ListBoxItem HighlightedItem;
+
         public InCanvasSearchControl()
         {
             InitializeComponent();
@@ -58,5 +62,79 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        private void OnInCanvasSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // If visibility  is false, then stop processing it.
+            if (!(bool)e.NewValue)
+                return;
+
+            // Select text in text box.
+            SearchTextBox.SelectAll();
+
+            // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
+            // Call asynchronously focus, when textbox will be ready.
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                SearchTextBox.Focus();
+            }), DispatcherPriority.Loaded);
+        }
+
+        private void OnMembersListBoxUpdated(object sender, DataTransferEventArgs e)
+        {
+            var membersListBox = sender as ListBox;
+            // As soon as listbox renders, select first member.
+            membersListBox.ItemContainerGenerator.StatusChanged += OnMembersListBoxIcgStatusChanged;
+        }
+
+        private void OnMembersListBoxIcgStatusChanged(object sender, EventArgs e)
+        {
+            if (MembersListBox.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
+            {
+                MembersListBox.ItemContainerGenerator.StatusChanged -= OnMembersListBoxIcgStatusChanged;
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, 0));
+                }),
+                    DispatcherPriority.Loaded);
+            }
+        }
+
+        private void UpdateHighlightedItem(ListBoxItem newItem)
+        {
+            if (HighlightedItem == newItem)
+                return;
+
+            // Unselect old value.
+            if (HighlightedItem != null)
+                HighlightedItem.IsSelected = false;
+
+            HighlightedItem = newItem;
+
+            // Select new value.
+            if (HighlightedItem != null)
+                HighlightedItem.IsSelected = true;
+        }
+
+        private ListBoxItem GetListItemByIndex(ListBox parent, int index)
+        {
+            if (parent.Equals(null)) return null;
+
+            var generator = parent.ItemContainerGenerator;
+            if ((index >= 0) && (index < parent.Items.Count))
+                return generator.ContainerFromIndex(index) as ListBoxItem;
+
+            return null;
+        }
+
+        private void OnSearchTextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            var key = e.Key;
+
+            if (key != Key.Enter)
+                return;
+
+            if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                ExecuteSearchElement(HighlightedItem);
+        }
     }
 }

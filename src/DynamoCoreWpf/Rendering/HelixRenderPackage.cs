@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
-
 using Autodesk.DesignScript.Interfaces;
-
 using Dynamo.Interfaces;
-
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
-
 using SharpDX;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Rendering
 {
     /// <summary>
     /// A Helix-specific IRenderPackageFactory implementation.
