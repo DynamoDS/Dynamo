@@ -25,7 +25,9 @@ namespace Dynamo.ViewModels
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
-    
+
+    public enum ShowHideFlags { Hide, Show };
+
     public partial class WorkspaceViewModel : ViewModelBase
     {
         #region Properties and Fields
@@ -41,7 +43,6 @@ namespace Dynamo.ViewModels
 
         public event NodeEventHandler RequestCenterViewOnElement;
 
-        public event Action RequestShowInCanvasSearch;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
@@ -115,10 +116,14 @@ namespace Dynamo.ViewModels
                 WorkspacePropertyEditRequested(Model);
         }
 
-        public virtual void OnRequestShowInCanvasSearch()
+        internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
+
+        private void OnRequestShowInCanvasSearch(object param)
         {
+            var flag = (ShowHideFlags)param;
+
             if (RequestShowInCanvasSearch != null)
-                RequestShowInCanvasSearch();
+                RequestShowInCanvasSearch(flag);
         }
 
         /// <summary>
@@ -268,6 +273,7 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
+            this.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             Model = model;
             stateMachine = new StateMachine(this);
@@ -324,9 +330,15 @@ namespace Dynamo.ViewModels
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ShouldBeHitTestVisible")
+            switch (e.PropertyName)
             {
-                RaisePropertyChanged("ShouldBeHitTestVisible");
+                case "ShouldBeHitTestVisible":
+                    RaisePropertyChanged("ShouldBeHitTestVisible");
+                    break;
+                case "CurrentSpace":
+                    // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
+                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    break;
             }
         }
 
@@ -1159,11 +1171,6 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");
-        }
-
-        private void ShowInCanvasSearch(object param)
-        {
-            OnRequestShowInCanvasSearch();
         }
     }
 

@@ -17,8 +17,8 @@
             <p>An <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> interface manages a set of state objects, resources, and shaders for implementing a rendering effect.</p>	
             </summary>	
             <remarks>	
-            <p>An effect is created by calling <strong><see cref="M:SharpDX.Direct3D11.D3DX11Effects.CreateEffectFromMemory(System.IntPtr,SharpDX.PointerSize,System.Int32,SharpDX.Direct3D11.Device,SharpDX.Direct3D11.Effect)"/></strong>.</p><p>The effect system groups the information required for rendering into an effect which contains:  state objects for assigning state changes in groups, resources for supplying input data and storing output data,  and programs that control how the rendering is done called shaders.</p><p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p><p><strong>Note</strong>??</p><p>If you call <strong>QueryInterface</strong> on an <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object to retrieve the <strong><see cref="T:SharpDX.ComObject"/></strong> interface, <strong>QueryInterface</strong> returns E_NOINTERFACE. To work around this issue, use the following code:</p><pre><code> <see cref="T:SharpDX.ComObject"/>* pIUnknown = (<see cref="T:SharpDX.ComObject"/>*)pEffect; pIUnknown-&gt;AddRef();	
-            </code></pre>	
+            <p>An effect is created by calling <strong><see cref="M:SharpDX.Direct3D11.D3DX11Effects.CreateEffectFromMemory(System.IntPtr,SharpDX.PointerSize,System.Int32,SharpDX.Direct3D11.Device,SharpDX.Direct3D11.Effect)"/></strong>.</p><p>The effect system groups the information required for rendering into an effect which contains:  state objects for assigning state changes in groups, resources for supplying input data and storing output data,  and programs that control how the rendering is done called shaders.</p><p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p><p><strong>Note</strong>??</p><p>If you call <strong>QueryInterface</strong> on an <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object to retrieve the <strong><see cref="T:SharpDX.ComObject"/></strong> interface, <strong>QueryInterface</strong> returns E_NOINTERFACE. To work around this issue, use the following code:</p><pre> <see cref="T:SharpDX.ComObject"/>* pIUnknown = (<see cref="T:SharpDX.ComObject"/>*)pEffect; pIUnknown-&gt;AddRef();	
+            </pre>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3DX11Effect']/*"/>	
             <msdn-id>ff476652</msdn-id>	
@@ -348,7 +348,7 @@
         </member>
         <member name="T:SharpDX.Direct3D11.EffectVariable">
             <summary>	
-            <p>The <strong><see cref="T:SharpDX.Direct3D11.EffectVariable"/></strong> interface is the base class for all effect variables.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectVariable"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>Methods<p>The <strong><see cref="T:SharpDX.Direct3D11.EffectVariable"/></strong> interface has the following methods.</p>	
+            <p>The <strong><see cref="T:SharpDX.Direct3D11.EffectVariable"/></strong> interface is the base class for all effect variables.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectVariable"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
             <p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
@@ -1592,7 +1592,7 @@
         </member>
         <member name="T:SharpDX.Direct3D11.EffectPass">
             <summary>	
-            <p>An <strong><see cref="T:SharpDX.Direct3D11.EffectPass"/></strong> interface encapsulates state assignments within a technique.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectPass"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>Methods<p>The <strong><see cref="T:SharpDX.Direct3D11.EffectPass"/></strong> interface has the following methods.</p>	
+            <p>An <strong><see cref="T:SharpDX.Direct3D11.EffectPass"/></strong> interface encapsulates state assignments within a technique.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectPass"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
             <p>A pass is a block of code that sets render-state objects and shaders. A pass is declared within a technique.</p><p>To get an effect-pass interface, call a method like <strong><see cref="M:SharpDX.Direct3D11.EffectTechnique.GetPassByName(System.String)"/></strong>.</p><p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
@@ -1603,6 +1603,13 @@
             <unmanaged-short>ID3DX11EffectPass</unmanaged-short>	
         </member>
         <member name="M:SharpDX.Direct3D11.EffectPass.Apply(SharpDX.Direct3D11.DeviceContext)">
+            <summary>	
+            Set the state contained in a pass to the device.	
+            </summary>	
+            <returns>Returns one of the following {{Direct3D 10 Return Codes}}.</returns>
+            <unmanaged>HRESULT Apply([None] UINT Flags)</unmanaged>
+        </member>
+        <member name="M:SharpDX.Direct3D11.EffectPass.Apply(SharpDX.Direct3D11.DeviceContext,System.Int32)">
             <summary>	
             Set the state contained in a pass to the device.	
             </summary>	
@@ -1976,6 +1983,11 @@
             Returns the signature of this Effect pass.
             </summary>
         </member>
+        <member name="P:SharpDX.Direct3D11.EffectPassDescription.HasSignature">
+            <summary>
+            Returns true if this Effect pass has a Signature (eg: if a VertexShader or Geometry Shader is present), false otherwise
+            </summary>
+        </member>
         <member name="T:SharpDX.Direct3D11.EffectPassShaderDescription">
             <summary>	
             <p>Describes an effect pass.</p>	
@@ -2242,13 +2254,13 @@
         </member>
         <member name="T:SharpDX.Direct3D11.EffectSamplerVariable">
             <summary>	
-            <p>A sampler interface accesses sampler state.</p>	
+            <p>Revert a previously set sampler state.</p>	
             </summary>	
             <remarks>	
-            <p>An <strong><see cref="T:SharpDX.Direct3D11.EffectVariable"/></strong> interface is created when an effect is read into memory.</p><p>Effect variables are saved in memory in the backing store; when a technique is applied, the values in the backing store are copied to the device.  You can use either of these methods to return state.</p><p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
+            <p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3DX11EffectSamplerVariable']/*"/>	
-            <msdn-id>ff476729</msdn-id>	
+            <msdn-id>ff476733</msdn-id>	
             <unmanaged>ID3DX11EffectSamplerVariable</unmanaged>	
             <unmanaged-short>ID3DX11EffectSamplerVariable</unmanaged-short>	
         </member>
@@ -3107,37 +3119,49 @@
         </member>
         <member name="M:SharpDX.Direct3D11.EffectUnorderedAccessViewVariable.Set(SharpDX.Direct3D11.UnorderedAccessView[],System.Int32,System.Int32)">
             <summary>	
-            No documentation.	
+            <p>Set an array of unordered-access-views.</p>	
             </summary>	
-            <param name="resourcesOut">No documentation.</param>	
-            <param name="offset">No documentation.</param>	
-            <param name="count">No documentation.</param>	
-            <returns>No documentation.</returns>	
+            <param name="resourcesOut"><dd>  <p>An array of <strong><see cref="T:SharpDX.Direct3D11.UnorderedAccessView"/></strong> references.</p> </dd></param>	
+            <param name="offset"><dd>  <p>Index of the first unordered-access-view.</p> </dd></param>	
+            <param name="count"><dd>  <p>Number of elements in the array.</p> </dd></param>	
+            <returns><p>Returns one of the following Direct3D 11 Return Codes.</p></returns>	
+            <remarks>	
+            <p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3DX11EffectUnorderedAccessViewVariable::SetUnorderedAccessViewArray']/*"/>	
+            <msdn-id>ff476787</msdn-id>	
             <unmanaged>HRESULT ID3DX11EffectUnorderedAccessViewVariable::SetUnorderedAccessViewArray([In, Buffer] ID3D11UnorderedAccessView** ppResources,[In] unsigned int Offset,[In] unsigned int Count)</unmanaged>	
             <unmanaged-short>ID3DX11EffectUnorderedAccessViewVariable::SetUnorderedAccessViewArray</unmanaged-short>	
         </member>
         <member name="M:SharpDX.Direct3D11.EffectUnorderedAccessViewVariable.Set(SharpDX.ComArray{SharpDX.Direct3D11.UnorderedAccessView},System.Int32,System.Int32)">
             <summary>	
-            No documentation.	
+            <p>Set an array of unordered-access-views.</p>	
             </summary>	
-            <param name="resourcesOut">No documentation.</param>	
-            <param name="offset">No documentation.</param>	
-            <param name="count">No documentation.</param>	
-            <returns>No documentation.</returns>	
+            <param name="resourcesOut"><dd>  <p>An array of <strong><see cref="T:SharpDX.Direct3D11.UnorderedAccessView"/></strong> references.</p> </dd></param>	
+            <param name="offset"><dd>  <p>Index of the first unordered-access-view.</p> </dd></param>	
+            <param name="count"><dd>  <p>Number of elements in the array.</p> </dd></param>	
+            <returns><p>Returns one of the following Direct3D 11 Return Codes.</p></returns>	
+            <remarks>	
+            <p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3DX11EffectUnorderedAccessViewVariable::SetUnorderedAccessViewArray']/*"/>	
+            <msdn-id>ff476787</msdn-id>	
             <unmanaged>HRESULT ID3DX11EffectUnorderedAccessViewVariable::SetUnorderedAccessViewArray([In, Buffer] ID3D11UnorderedAccessView** ppResources,[In] unsigned int Offset,[In] unsigned int Count)</unmanaged>	
             <unmanaged-short>ID3DX11EffectUnorderedAccessViewVariable::SetUnorderedAccessViewArray</unmanaged-short>	
         </member>
         <member name="M:SharpDX.Direct3D11.EffectUnorderedAccessViewVariable.GetUnorderedAccessViewArray(SharpDX.Direct3D11.UnorderedAccessView[],System.Int32,System.Int32)">
             <summary>	
-            No documentation.	
+            <p>Get an array of unordered-access-views.</p>	
             </summary>	
-            <param name="resourcesOut">No documentation.</param>	
-            <param name="offset">No documentation.</param>	
-            <param name="count">No documentation.</param>	
-            <returns>No documentation.</returns>	
+            <param name="resourcesOut"><dd>  <p>Pointer to an <strong><see cref="T:SharpDX.Direct3D11.UnorderedAccessView"/></strong> reference that will be set to the UAV array on return. </p> </dd></param>	
+            <param name="offset"><dd>  <p>Index of the first interface.</p> </dd></param>	
+            <param name="count"><dd>  <p>Number of elements in the array.</p> </dd></param>	
+            <returns><p>Returns one of the following Direct3D 11 Return Codes.</p></returns>	
+            <remarks>	
+            <p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3DX11EffectUnorderedAccessViewVariable::GetUnorderedAccessViewArray']/*"/>	
+            <msdn-id>ff476785</msdn-id>	
             <unmanaged>HRESULT ID3DX11EffectUnorderedAccessViewVariable::GetUnorderedAccessViewArray([Out, Buffer] ID3D11UnorderedAccessView** ppResources,[In] unsigned int Offset,[In] unsigned int Count)</unmanaged>	
             <unmanaged-short>ID3DX11EffectUnorderedAccessViewVariable::GetUnorderedAccessViewArray</unmanaged-short>	
         </member>
@@ -3486,25 +3510,31 @@
         </member>
         <member name="T:SharpDX.Direct3D11.EffectVariableFlags">
             <summary>	
-            No documentation.	
+            <p>Describes an effect variable.</p>	
             </summary>	
+            <remarks>	
+            <p><see cref="T:SharpDX.Direct3D11.EffectVariableDescription"/> is used with <strong><see cref="M:SharpDX.Direct3D11.EffectVariable.GetDescription(SharpDX.Direct3D11.EffectVariableDescription@)"/></strong>.</p>	
+            </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DX11_EFFECT_VARIABLE_FLAGS']/*"/>	
+            <msdn-id>ff476306</msdn-id>	
             <unmanaged>D3DX11_EFFECT_VARIABLE_FLAGS</unmanaged>	
             <unmanaged-short>D3DX11_EFFECT_VARIABLE_FLAGS</unmanaged-short>	
         </member>
         <member name="F:SharpDX.Direct3D11.EffectVariableFlags.Annotation">
             <summary>	
-            No documentation.	
+            <dd> <p>Name of this variable, annotation, or structure member.</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DX11_EFFECT_VARIABLE_ANNOTATION']/*"/>	
+            <msdn-id>ff476306</msdn-id>	
             <unmanaged>D3DX11_EFFECT_VARIABLE_ANNOTATION</unmanaged>	
             <unmanaged-short>D3DX11_EFFECT_VARIABLE_ANNOTATION</unmanaged-short>	
         </member>
         <member name="F:SharpDX.Direct3D11.EffectVariableFlags.ExplicitBindPoint">
             <summary>	
-            No documentation.	
+            <dd> <p>Semantic string of this variable or structure member (<c>null</c> for annotations or if not present).</p> </dd>	
             </summary>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DX11_EFFECT_VARIABLE_EXPLICIT_BIND_POINT']/*"/>	
+            <msdn-id>ff476306</msdn-id>	
             <unmanaged>D3DX11_EFFECT_VARIABLE_EXPLICIT_BIND_POINT</unmanaged>	
             <unmanaged-short>D3DX11_EFFECT_VARIABLE_EXPLICIT_BIND_POINT</unmanaged-short>	
         </member>
@@ -3533,12 +3563,12 @@
             </summary>	
             <param name="dataRef"><dd>  <p>Blob of compiled effect data.</p> </dd></param>	
             <param name="dataLength"><dd>  <p>Length of the data blob.</p> </dd></param>	
-            <param name="fXFlags"><dd>  <p>Compilation flags pertaining to Effect compilation, honored by the Effect compiler.</p> </dd></param>	
+            <param name="fXFlags"><dd>  <p>No effect flags exist. Set to zero.</p> </dd></param>	
             <param name="deviceRef"><dd>  <p>Pointer to the <strong><see cref="T:SharpDX.Direct3D11.Device"/></strong> on which to create Effect resources.</p> </dd></param>	
             <param name="effectOut"><dd>  <p>Address of the newly created <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> interface.</p> </dd></param>	
             <returns><p>The return value is one of the values listed in Direct3D 11 Return Codes.</p></returns>	
             <remarks>	
-            <p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
+            <p><strong>Note</strong>??You must use Effects 11 source to build  your effects-type application. For more info about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='D3DX11CreateEffectFromMemory']/*"/>	
             <msdn-id>ff476273</msdn-id>	
@@ -3708,7 +3738,7 @@
         </member>
         <member name="T:SharpDX.Direct3D11.EffectGroup">
             <summary>	
-            <p>The <strong><see cref="T:SharpDX.Direct3D11.EffectGroup"/></strong> interface accesses an Effect group.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectGroup"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>Methods<p>The <strong><see cref="T:SharpDX.Direct3D11.EffectGroup"/></strong> interface has the following methods.</p>	
+            <p>The <strong><see cref="T:SharpDX.Direct3D11.EffectGroup"/></strong> interface accesses an Effect group.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectGroup"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
             <p>To get an <strong><see cref="T:SharpDX.Direct3D11.EffectGroup"/></strong> interface, call a method like <strong><see cref="M:SharpDX.Direct3D11.Effect.GetGroupByName(System.String)"/></strong>.</p><p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
@@ -4086,13 +4116,13 @@
         </member>
         <member name="T:SharpDX.Direct3D11.EffectTechnique">
             <summary>	
-            <p>Compute a state-block mask to allow/prevent state changes.</p>	
+            <p>An <strong><see cref="T:SharpDX.Direct3D11.EffectTechnique"/></strong> interface is a collection of passes.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectTechnique"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
-            <p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
+            <p>An effect contains one or more techniques; each technique contains one or more passes; each pass contains state assignments.</p><p>To get an effect-technique interface, call a method such as <strong><see cref="M:SharpDX.Direct3D11.Effect.GetTechniqueByName(System.String)"/></strong>.</p><p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
             </remarks>	
             <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='ID3DX11EffectTechnique']/*"/>	
-            <msdn-id>ff476767</msdn-id>	
+            <msdn-id>ff476766</msdn-id>	
             <unmanaged>ID3DX11EffectTechnique</unmanaged>	
             <unmanaged-short>ID3DX11EffectTechnique</unmanaged-short>	
         </member>
@@ -4236,7 +4266,7 @@
         </member>
         <member name="T:SharpDX.Direct3D11.EffectType">
             <summary>	
-            <p>The <strong><see cref="T:SharpDX.Direct3D11.EffectType"/></strong> interface accesses effect variables by type.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectType"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>Methods<p>The <strong><see cref="T:SharpDX.Direct3D11.EffectType"/></strong> interface has the following methods.</p>	
+            <p>The <strong><see cref="T:SharpDX.Direct3D11.EffectType"/></strong> interface accesses effect variables by type.</p><p>The lifetime of an <strong><see cref="T:SharpDX.Direct3D11.EffectType"/></strong> object is equal to the lifetime of its parent <strong><see cref="T:SharpDX.Direct3D11.Effect"/></strong> object.</p><ul> <li>Methods</li> </ul>	
             </summary>	
             <remarks>	
             <p>To get information about an effect type from an effect variable, call <strong><see cref="M:SharpDX.Direct3D11.EffectVariable.GetTypeInfo"/></strong>.</p><p><strong>Note</strong>??The DirectX SDK does not supply any compiled binaries for effects. You must use Effects 11 source to build  your effects-type application. For more information about using Effects 11 source, see Differences Between Effects 10 and Effects 11.</p>	
