@@ -509,6 +509,48 @@ r3 = TestData.GetValueFromHashTable(arr, 100);
         }
 
         [Test]
+        public void Test_UnMarshal1DArrayToDictionary()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+r1 = TestData.GetValueFromDictionary(arr, 0);
+r2 = TestData.GetValueFromDictionary(arr, 1);
+r3 = TestData.GetValueFromDictionary(arr, 2);
+r4 = TestData.GetValueFromDictionary(arr, 3);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = 21, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 63, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_UnMarshal1DArrayToHashtable()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+r1 = TestData.GetValueFromHashTable(arr, 0);
+r2 = TestData.GetValueFromHashTable(arr, 1);
+r3 = TestData.GetValueFromHashTable(arr, 2);
+r4 = TestData.GetValueFromHashTable(arr, 3);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = 21, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 63, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void Test_DefaultArgument()
         {
             string code =

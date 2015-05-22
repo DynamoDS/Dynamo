@@ -327,10 +327,10 @@ namespace ProtoFFI
             System.Type keyType, System.Type valueType)
         {
             if (csDictionary == null)
-                throw new ArgumentNullException("dict");
+                throw new ArgumentNullException("csDictionary");
 
             if (dsDictionary == null)
-                throw new ArgumentNullException("dsDict");
+                throw new ArgumentNullException("dsDictionary");
 
             foreach (var pair in dsDictionary)
             {
