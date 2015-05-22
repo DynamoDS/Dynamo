@@ -1056,7 +1056,7 @@ namespace ProtoCore.Utils
         /// <param name="array"></param>
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
-        public static IEnumerable<KeyValuePair<StackValue, StackValue>> GetKeyValuePairs(StackValue array, RuntimeCore runtimeCore)
+        public static IDictionary<StackValue, StackValue> ToDictionary(StackValue array, RuntimeCore runtimeCore)
         {
             Validity.Assert(array.IsArray);
             if (!array.IsArray)
@@ -1065,11 +1065,11 @@ namespace ProtoCore.Utils
             }
 
             HeapElement he = GetHeapElement(array, runtimeCore);
-            var pairs = Enumerable.Range(0, he.VisibleSize)
-                                  .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i),
-                                                                                        StackUtils.GetValue(he, i, runtimeCore)))
-                                  .Concat(he.Dict ?? Enumerable.Empty<KeyValuePair<StackValue, StackValue>>());
-            return pairs;
+            var dict = Enumerable.Range(0, he.VisibleSize)
+                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), StackUtils.GetValue(he, i, runtimeCore)))
+                                 .Concat(he.Dict ?? Enumerable.Empty<KeyValuePair<StackValue, StackValue>>())
+                                 .ToDictionary(p => p.Key, p =>p.Value);
+            return dict;
         }
 
         /// <summary>
