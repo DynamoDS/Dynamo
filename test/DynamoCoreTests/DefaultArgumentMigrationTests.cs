@@ -40,14 +40,22 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\default_values\defaultArgumentAdded1.dyn");
 
-            var dummyLineNode =
+            var dummyLineNode1 =
                 CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("17ef637c-ea48-4d40-b8e9-54bafd182708");
             // The saved node only has 1 input param but after loading the node should be migrated to the new
             // version with 2 input params.
-            Assert.AreEqual(dummyLineNode.InPorts.Count, 2);
+            Assert.AreEqual(dummyLineNode1.InPorts.Count, 2);
 
             // Since the second param has default argument, UsingDefaultArgument should be enabled.
-            Assert.IsTrue(dummyLineNode.InPorts[1].UsingDefaultValue);
+            Assert.IsTrue(dummyLineNode1.InPorts[1].UsingDefaultValue);
+
+            // Migration from @Point to @Point,Vector with Vector having default value.
+            var dummyLineNode2 = 
+                CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("1fa06b8d-84eb-4090-961f-1af0e8f6ec9d");
+
+            Assert.AreEqual(dummyLineNode2.InPorts.Count, 2);
+
+            Assert.IsTrue(dummyLineNode2.InPorts[1].UsingDefaultValue);
         }
 
         [Test]
@@ -55,15 +63,23 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\default_values\defaultArgumentAdded2.dyn");
 
-            var dummyNode =
+            var dummyNode1 =
                 CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("48339420-2ad4-490e-803d-4e3a7c708fb6");
             // The saved node only has 2 input params (Foobar@int,int) but after loading the node should be
             // migrated to the new version with 3 input params (Foobar@int,int,bool) instead of another overload
             // with 2 input params (Foobar@double,double)
-            Assert.AreEqual(dummyNode.InPorts.Count, 3);
+            Assert.AreEqual(dummyNode1.InPorts.Count, 3);
 
             // Since the 3rd param has default argument, UsingDefaultArgument should be enabled.
-            Assert.IsTrue(dummyNode.InPorts[2].UsingDefaultValue);
+            Assert.IsTrue(dummyNode1.InPorts[2].UsingDefaultValue);
+
+
+            // Migration from Barfoo@int to Barfoo@int,double,double with the last two having default values
+            var dummyNode2 = 
+                CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("cd8508ed-04ac-4009-a169-abea517650e6");
+            Assert.AreEqual(dummyNode2.InPorts.Count, 3);
+            Assert.IsTrue(dummyNode2.InPorts[1].UsingDefaultValue);
+            Assert.IsTrue(dummyNode2.InPorts[2].UsingDefaultValue);
         }
     }
 }

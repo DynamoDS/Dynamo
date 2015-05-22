@@ -26,5 +26,16 @@ namespace FFITarget
             return true;
         }
 
+        // Deprecated function for testing default argument
+        //public static bool Barfoo(int arg0)
+        //{
+        //    return true;
+        //}
+
+        public static bool Barfoo(int arg0, double arg1 = 0, double arg2 = 0)
+        {
+            return true;
+        }
+
     }
 }

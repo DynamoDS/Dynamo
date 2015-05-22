@@ -146,6 +146,24 @@ namespace FFITarget
             return ln;
         }
 
+        // Another deprecated function for testing default argument
+        //public static DummyLine ByPoint(DummyPoint p)
+        //{
+        //    DummyLine ln = new DummyLine();
+        //    ln.Start = DummyPoint.ByCoordinates(0, 0, 0);
+        //    ln.End = p;
+        //    return ln;
+        //}
+
+        public static DummyLine ByPoint(DummyPoint p,
+            [DefaultArgumentAttribute("DummyVector.ByCoordinates(1,2,3)")] DummyVector v)
+        {
+            DummyLine ln = new DummyLine();
+            ln.Start = p;
+            ln.End = DummyPoint.ByCoordinates(p.X + v.X, p.Y + v.Y, p.Z + v.Z);
+            return ln;
+        }
+
         public void Dispose()
         {
             //Don't do anything
