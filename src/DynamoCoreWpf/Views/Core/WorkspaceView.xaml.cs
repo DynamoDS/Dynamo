@@ -15,6 +15,7 @@ using System.Threading;
 
 using Dynamo.Wpf.Utilities;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI.Controls;
 
 
 namespace Dynamo.Views
@@ -96,6 +97,12 @@ namespace Dynamo.Views
             searchViewModel.Visible = true;
 
             InCanvasSearchBar.DataContext = searchViewModel;
+
+            var ctrl = InCanvasSearchBar.Child as InCanvasSearchControl;
+            if (ctrl != null)
+            {
+                ctrl.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            }
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -104,6 +111,12 @@ namespace Dynamo.Views
             
             if (ViewModel != null)
                 ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
+
+            var ctrl = InCanvasSearchBar.Child as InCanvasSearchControl;
+            if (ctrl != null)
+            {
+                ctrl.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
+            }
         }
 
         /// <summary>
