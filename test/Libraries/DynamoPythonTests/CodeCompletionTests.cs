@@ -1,8 +1,10 @@
 ﻿using System;
-
+using System.IO;
+using System.Reflection;
 using Dynamo;
 using Dynamo.Interfaces;
 using Dynamo.Python;
+using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace DynamoPythonTests
@@ -10,6 +12,8 @@ namespace DynamoPythonTests
     [TestFixture]
     internal class CodeCompletionTests
     {
+        private AssemblyHelper assemblyHelper;
+
         private class SimpleLogger : ILogger
         {
 
@@ -74,6 +78,25 @@ namespace DynamoPythonTests
         public void SetupPythonTests()
         {
             this.logger = new SimpleLogger();
+
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+
+            var resolutionPaths = new[]
+            {
+                // These tests need "DSIronPythonNode.dll" under "nodes" folder.
+                Path.Combine(moduleRootFolder, "nodes")
+            };
+
+            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
+        }
+
+        [TearDown]
+        public void RunAfterAllTests()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
+            assemblyHelper = null;
         }
 
         [Test]
