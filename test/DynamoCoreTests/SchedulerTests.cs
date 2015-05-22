@@ -1,15 +1,11 @@
 ﻿using System.IO;
 using System.Reflection;
 
-using DSCoreNodesUI;
-
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
 using DynamoShapeManager;
-using DynamoUtilities;
 
 using NUnit.Framework;
 using System;
@@ -18,8 +14,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ProtoCore.AST;
-using ProtoCore.DSASM;
 using TestServices;
 
 namespace Dynamo.Tests
@@ -404,6 +398,12 @@ namespace Dynamo.Tests
             : base(data.Scheduler, false)
         {
             this.data = data;
+        }
+
+        internal void InitializeTestData()
+        {
+            if (ModifiedNodes == null)
+                ModifiedNodes = new List<NodeModel>();
         }
 
         protected override void HandleTaskExecutionCore()
@@ -1016,6 +1016,12 @@ namespace Dynamo.Tests
                 MakeAggregateRenderPackageAsyncTask(Guid.Empty),
             };
 
+            // Due to defaulting to auto-run mode, multiple UpdateGraphAsyncTask
+            // may have been scheduled prior to this. Clear those tasks before test 
+            // starts in a predictable state.
+            // 
+            schedulerThread.GetSchedulerToProcessTasks();
+
             var scheduler = dynamoModel.Scheduler;
             foreach (var stubAsyncTask in tasksToSchedule)
             {
@@ -1026,7 +1032,6 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeUpdateGraphAsyncTask: 6",
                 "FakeUpdateGraphAsyncTask: 10",
                 "FakeQueryMirrorDataAsyncTask: 0",
                 "FakeUpdateRenderPackageAsyncTask: 1",
@@ -1303,7 +1308,9 @@ namespace Dynamo.Tests
 
         private AsyncTask MakeUpdateGraphAsyncTask()
         {
-            return new FakeUpdateGraphAsyncTask(MakeAsyncTaskData());
+            var t = new FakeUpdateGraphAsyncTask(MakeAsyncTaskData());
+            t.InitializeTestData(); // Just to initialize ModifiedNodes
+            return t;
         }
 
         private AsyncTask MakeUpdateRenderPackageAsyncTask(Guid nodeGuid)

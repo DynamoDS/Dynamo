@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class UnicodeTest : DSEvaluationViewModelUnitTest
+    internal class UnicodeTest : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {

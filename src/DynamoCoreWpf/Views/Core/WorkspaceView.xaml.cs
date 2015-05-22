@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.Threading;
 
 using Dynamo.Wpf.Utilities;
+using Dynamo.Search.SearchElements;
 
 
 namespace Dynamo.Views
@@ -88,11 +89,21 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
+
+            ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+
+            var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
+            searchViewModel.Visible = true;
+
+            InCanvasSearchBar.DataContext = searchViewModel;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
+            
+            if (ViewModel != null)
+                ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
         }
 
         /// <summary>
@@ -493,6 +504,8 @@ namespace Dynamo.Views
             {
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
             }
+
+            InCanvasSearchBar.IsOpen = false;
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -702,6 +715,32 @@ namespace Dynamo.Views
 
             return HitTestResultBehavior.Continue;
         }
+
+        private void ShowHideInCanvasControl(ShowHideFlags flag)
+        {
+            switch (flag)
+            {
+                case ShowHideFlags.Hide:
+                    InCanvasSearchBar.IsOpen = false;
+                    break;
+                case ShowHideFlags.Show:
+                    // Show InCanvas search just in case, when mouse is over workspace.
+                    InCanvasSearchBar.IsOpen = this.IsMouseOver;
+                    break;
+            }
+        }
         
+        private void OnWorkspaceDrop(object sender, DragEventArgs e)
+        {
+            var nodeInfo = e.Data.GetData(typeof(DragDropNodeSearchElementInfo)) as DragDropNodeSearchElementInfo;
+            if (nodeInfo == null)
+                return;
+
+            var nodeModel = nodeInfo.SearchElement.CreateNode();
+            var mousePosition = e.GetPosition(this.WorkspaceElements);
+            ViewModel.DynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+                nodeModel, mousePosition.X, mousePosition.Y, false, true));
+        }
+
     }
 }

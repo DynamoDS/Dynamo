@@ -84,16 +84,28 @@
   <ItemGroup>
     <Content Include="Tessellation_DynamoCustomization.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TessellationImages.resx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
+  <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)Tessellation_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
 
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+	<!-- Get System.Drawing.dll -->
+	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    	</GetReferenceAssemblyPaths>
+	
+	<!-- Get assembly -->
+	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
+	</GetAssemblyIdentity>
+	
+	<!-- Generate customization dll -->
+    	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)TessellationImages.resx" OutputResources="$(ProjectDir)TessellationImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    	<AL TargetType="library" EmbedResources="$(ProjectDir)TessellationImages.resources" OutputAssembly="$(OutDir)Tessellation.customization.dll" Version="%(AssemblyInfo.Version)" />
+
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

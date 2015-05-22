@@ -2,23 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using NUnit.Framework;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
 
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class AstBuilderTest: DynamoViewModelUnitTest
+    class AstBuilderTest : DynamoModelTestBase
     {
+        private const int shuffleCount = 10;
+
         private class ShuffleUtil<T>
         {
-            private Random random;
+            private readonly Random random;
             private List<T> list;
 
             public List<T> ShuffledList
@@ -40,13 +38,11 @@ namespace Dynamo.Tests
         [Test]
         public void TestCompileToAstNodes1()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\complex.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
-            AstBuilder builder = new AstBuilder(null);
-            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, AstBuilder.CompilationContext.None, false);
+            var builder = new AstBuilder(null);
+            var astNodes = builder.CompileToAstNodes(CurrentDynamoModel.CurrentWorkspace.Nodes, AstBuilder.CompilationContext.None, false);
             var codeGen = new ProtoCore.CodeGenDS(astNodes.SelectMany(t => t.Item2));
             string code = codeGen.GenerateCode();
             Console.WriteLine(code);
@@ -59,12 +55,10 @@ namespace Dynamo.Tests
             // 
             //  1 <----> 2
             //
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\cyclic.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
-            var sortedNodes = AstBuilder.TopologicalSort(model.CurrentWorkspace.Nodes);
+            var sortedNodes = AstBuilder.TopologicalSort(CurrentDynamoModel.CurrentWorkspace.Nodes);
             Assert.AreEqual(sortedNodes.Count(), 2);
         }
 
@@ -79,12 +73,11 @@ namespace Dynamo.Tests
             //     \    
             //      +----> 4
             // 
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\multioutputs.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -94,7 +87,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -119,12 +112,11 @@ namespace Dynamo.Tests
             //          /
             //   3 ----+
             // 
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\multiinputs.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -134,7 +126,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -158,12 +150,11 @@ namespace Dynamo.Tests
             //  |               v
             //  2 ----> 3 ----> 1
             // 
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\tri.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -173,7 +164,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -194,12 +185,11 @@ namespace Dynamo.Tests
             //   
             // 1 <---- 2 <----> 3 <---- 4
             //
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\linear.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -209,7 +199,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -237,13 +227,11 @@ namespace Dynamo.Tests
             //                   |
             //  6 <---- 4 <----> 3 <----> 5 ----> 7          8 <----> 9
             // 
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\complex.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -275,12 +263,10 @@ namespace Dynamo.Tests
             // 
             //  1 <----> 2
             //
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\cyclic.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
-            var sortedNodes = AstBuilder.TopologicalSortForGraph(model.CurrentWorkspace.Nodes);
+            var sortedNodes = AstBuilder.TopologicalSortForGraph(CurrentDynamoModel.CurrentWorkspace.Nodes);
             Assert.AreEqual(sortedNodes.Count(), 2);
         }
 
@@ -295,12 +281,11 @@ namespace Dynamo.Tests
             //     \    
             //      +----> 4
             // 
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\multioutputs.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -310,7 +295,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -335,12 +320,11 @@ namespace Dynamo.Tests
             //          /
             //   3 ----+
             // 
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\multiinputs.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -350,7 +334,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -377,12 +361,11 @@ namespace Dynamo.Tests
             //  |               v
             //  2 ----> 3 ----> 1
             // 
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\tri.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -392,7 +375,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -413,12 +396,11 @@ namespace Dynamo.Tests
             //   
             // 1 <---- 2 <----> 3 <---- 4
             //
-            var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\linear.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
+            OpenModel(openPath);
 
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -428,7 +410,7 @@ namespace Dynamo.Tests
 
                 List<int> nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
 
-                Dictionary<int, int> nodePosMap = new Dictionary<int, int>();
+                var nodePosMap = new Dictionary<int, int>();
                 for (int idx = 0; idx < nickNames.Count; ++idx)
                 {
                     nodePosMap[nickNames[idx]] = idx;
@@ -456,13 +438,11 @@ namespace Dynamo.Tests
             //                   |
             //  6 <---- 4 <----> 3 <----> 5 ----> 7          8 ----> 9
             // 
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\complex.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -505,13 +485,11 @@ namespace Dynamo.Tests
             //     7 ----> 8 ----> 9 ----+
             //                           |
             //    10 ---> 11 ---->12 ----+
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\astbuilder\multiinputs2.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
-            var nodes = model.CurrentWorkspace.Nodes.ToList();
-            int shuffleCount = 10;
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList();
+
             var shuffle = new ShuffleUtil<NodeModel>(nodes);
 
             for (int i = 0; i < shuffleCount; ++i)
@@ -522,7 +500,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(sortedNodes.Count(), 13);
 
                 var nickNames = sortedNodes.Select(node => Int32.Parse(node.NickName)).ToList();
-                Assert.IsTrue(nickNames.SequenceEqual(Enumerable.Range(1, 13))); 
+                Assert.IsTrue(nickNames.SequenceEqual(Enumerable.Range(1, 13)));
             }
         }
     }

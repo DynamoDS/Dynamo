@@ -81,7 +81,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
-                        
+
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
@@ -222,7 +222,7 @@ namespace Dynamo.Tests
 
                 for (var j = 0; j < 3; j++)
                 {
-                    Assert.AreEqual((i+1)+j, rowList[j].Data);
+                    Assert.AreEqual((i + 1) + j, rowList[j].Data);
                 }
             }
         }
@@ -638,7 +638,7 @@ namespace Dynamo.Tests
             rowList = list[2].GetElements();
             Assert.AreEqual(1, rowList.Count());
             Assert.AreEqual(3, rowList[0].Data);
-            
+
         }
 
         [Test]
@@ -716,6 +716,12 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
 
+            ProtoCore.RuntimeCore runtimeCore = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+            Assert.AreEqual(1, runtimeCore.RuntimeStatus.WarningCount);
+
+            ProtoCore.Runtime.WarningEntry warningEntry = runtimeCore.RuntimeStatus.Warnings.ElementAt(0);
+            Assert.AreEqual(ProtoCore.Runtime.WarningID.kDefault, warningEntry.ID);
+
             Assert.IsTrue(File.Exists(filePath));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
@@ -745,7 +751,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filePath));
         }
 
-       
+
         #endregion
 
         #region Defects

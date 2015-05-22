@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+
 using NUnit.Framework;
 
 namespace Dynamo
 {
     public class UnitTestBase
     {
-
         protected string ExecutingDirectory { get; set; }
         protected string TempFolder { get; private set; }
         public string SampleDirectory { get; private set; }

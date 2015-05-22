@@ -174,7 +174,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             if (hws == null)
                 return;
 
-            hws.StartPeriodicEvaluation(hws.RunSettings.RunPeriod);
+            hws.StartPeriodicEvaluation();
         }
 
         private bool CanStartPeriodicTimer(object parameter)

@@ -47,7 +47,7 @@ namespace Dynamo.UI.Controls
             e.Handled = true;
         }
 
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
             if (listBoxItem == null) return;

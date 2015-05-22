@@ -12,7 +12,7 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
-        private readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
+        protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
         /// <summary>
@@ -52,6 +52,14 @@ namespace Dynamo.Search
         protected virtual void OnEntryRemoved(V entry)
         {
             var handler = EntryRemoved;
+            if (handler != null) handler(entry);
+        }
+
+        public event Action<V> EntryUpdated;
+
+        protected virtual void OnEntryUpdated(V entry)
+        {
+            var handler = EntryUpdated;
             if (handler != null) handler(entry);
         }
 

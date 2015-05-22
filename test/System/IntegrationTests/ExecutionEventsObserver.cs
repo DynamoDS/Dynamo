@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
+using Dynamo;
 using Dynamo.Tests;
 
 using DynamoServices;
@@ -12,7 +14,7 @@ namespace IntegrationTests
     /// Tests to ensure that the execution events are being fired at the right time
     /// </summary>
     [TestFixture]
-    public class ExecutionEventsObserver : DSEvaluationViewModelUnitTest
+    public class ExecutionEventsObserver : DynamoModelTestBase
     {
         private static bool preSeen = false;
         private static bool midSeen = false;
@@ -64,9 +66,8 @@ namespace IntegrationTests
             Assert.IsFalse(postSeen);
 
             //Run the graph
-            var model = ViewModel.Model;
             var examplePath = Path.Combine(TestDirectory, @"System\IntegrationTests\dyns", "ExecutionEvents.dyn");
-            ViewModel.OpenCommand.Execute(examplePath);
+            OpenModel(examplePath);
             RunCurrentModel();
 
             //After state

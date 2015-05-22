@@ -6,9 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
-
+using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
+using ProtoCore.Properties;
 
 namespace DSOffice
 {
@@ -92,6 +93,7 @@ namespace DSOffice
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             excel.Visible = ShowOnStartup;
+            excel.DisplayAlerts = false;
 
             return excel;
         }
@@ -286,8 +288,8 @@ namespace DSOffice
         ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
         ///     with sublists to be written in successive rows. Rows and columns are
         ///     zero-indexed; for example, the value in the data list at [0,0] will
-        ///     be written to cell A1. This node requires Microsoft Excel to be
-        ///     installed.
+        ///     be written to cell A1. Null values are written to Excel as empty cells.
+        ///     This node requires Microsoft Excel to be installed. 
         /// </summary>
         /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the workseet to write data to.</param>
@@ -378,8 +380,13 @@ namespace DSOffice
                         }
                         else if (item is StackValue)
                         {
-                            if(((StackValue)item).IsPointer)
+                            if (((StackValue) item).IsPointer)
+                            {
+                                string message = string.Format(Resources.kMethodResolutionFailureWithTypes, 
+                                    "Excel.WriteToFile", "_SingleFunctionObject");
+                                LogWarningMessageEvents.OnLogWarningMessage(message);
                                 return null;
+                            }
 
                             output[i, j] = item.ToString();
                         }

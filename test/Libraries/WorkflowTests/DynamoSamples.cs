@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Dynamo.Tests
 {
-    class DynamoSamples : DSEvaluationViewModelUnitTest
+    class DynamoSamples : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -23,12 +23,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Basics_Basic03()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Basics\Basics_Basic03.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -41,12 +40,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_AttractorPoint()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_AttractorPoint.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -64,12 +62,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_01()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -90,12 +87,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_02()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -138,12 +134,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_03()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -153,7 +148,7 @@ namespace Dynamo.Tests
 
             // Multiline CBN
             string nodeID = "d71e5f04-9928-437a-863c-5bf34666370b";
-            var cbn = model.CurrentWorkspace.NodeFromWorkspace(nodeID);
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(nodeID);
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(6, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
@@ -172,12 +167,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_04()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -187,7 +181,7 @@ namespace Dynamo.Tests
 
             // Writing Function CBN
             string nodeID = "79bff081-608e-4b02-9ae0-e5197ff4a3a6";
-            var cbn = model.CurrentWorkspace.NodeFromWorkspace(nodeID);
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(nodeID);
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(0, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
@@ -203,12 +197,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_CodeBlocks_05()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(68, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -219,7 +212,7 @@ namespace Dynamo.Tests
 
             // Writing entire code in CBN to create some Geometry object.
             string nodeID = "e4a7b57e-420d-41d1-bdef-cea7956fbd3b";
-            var cbn = model.CurrentWorkspace.NodeFromWorkspace(nodeID);
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(nodeID);
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(11, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
@@ -240,12 +233,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_ListLacing()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_ListLacing.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(19, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(19, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(20, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -281,12 +273,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Math_01()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -308,12 +299,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Math_02()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -337,12 +327,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Math_03()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -364,12 +353,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Math_04()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(201, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -409,12 +397,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_PassingFunctions()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_PassingFunctions.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(16, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -430,12 +417,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Python()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_Python.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -468,12 +454,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_RangeSyntax()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_RangeSyntax.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(35, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(24, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(35, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(24, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -493,12 +478,11 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Strings()
         {
-            DynamoModel model = ViewModel.Model;
             OpenSampleModel(@"en-US\Core\Core_Strings.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(32, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(37, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(32, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(37, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             RunCurrentModel();
 
@@ -521,7 +505,7 @@ namespace Dynamo.Tests
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_CSV to Stuff.dyn");
 
-            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = SampleDirectory + "Data\\helix.csv";
             // Although old path is a hard coded but that is not going to change 
@@ -547,7 +531,7 @@ namespace Dynamo.Tests
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn");
 
-            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = Path.Combine(TempFolder, "icosohedron_points.csv");
             // Although old path is a hard coded but that is not going to change 
@@ -575,7 +559,7 @@ namespace Dynamo.Tests
         {
             OpenSampleModel(@"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn");
 
-            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var filename = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             string resultPath = SampleDirectory + "Data\\helix.xlsx";
             // Although old path is a hard coded but that is not going to change 

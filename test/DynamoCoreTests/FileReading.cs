@@ -1,14 +1,12 @@
 ﻿using System.IO;
 using System.Linq;
-using Dynamo.Models;
-using Dynamo.Tests;
-using Dynamo.Utilities;
+
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class FileReadingTests : DynamoViewModelUnitTest
+    class FileReadingTests : DynamoModelTestBase
     {
         string localDynamoStringTestFloder { get { return Path.Combine(TestDirectory, "core", "files"); } }
         string localDynamoFileTestFloder { get { return Path.Combine(TestDirectory, "core", "files", "future files"); } }
@@ -18,8 +16,7 @@ namespace Dynamo.Tests
         {
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_pre6_0.dyn");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run()); 
+            RunModel(testFilePath); 
         }
 
         [Test]
@@ -27,8 +24,7 @@ namespace Dynamo.Tests
         {
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_post6_0.dyn");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            RunModel(testFilePath); 
         }
 
         [Test]
@@ -39,8 +35,7 @@ namespace Dynamo.Tests
 
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "Defect_MAGN_781.dyf");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            RunModel(testFilePath); 
         }
 
         [Test]
@@ -52,10 +47,9 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoFileTestFloder, "future_file.dyn");
             
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            WorkspaceModel wsm = ViewModel.CurrentSpace;
-            Assert.AreEqual(wsm.Nodes.Count, 0);
-            Assert.AreEqual(wsm.Connectors.Count(), 0);
+            OpenModel(testFilePath);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count, 0);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Connectors.Count(), 0);
         }
 
         [Test]
@@ -66,10 +60,9 @@ namespace Dynamo.Tests
 
             string testFilePath = Path.Combine(localDynamoFileTestFloder, "future_file.dyf");
 
-            ViewModel.OpenCommand.Execute(testFilePath);
-            WorkspaceModel wsm = ViewModel.CurrentSpace;
-            Assert.AreEqual(wsm.Nodes.Count, 0);
-            Assert.AreEqual(wsm.Connectors.Count(), 0);
+            OpenModel(testFilePath);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count, 0);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Connectors.Count(), 0);
         }
     }
 }

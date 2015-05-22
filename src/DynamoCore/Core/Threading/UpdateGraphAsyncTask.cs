@@ -25,7 +25,7 @@ namespace Dynamo.Core.Threading
             get { return TaskPriority.AboveNormal; }
         }
 
-        internal IEnumerable<NodeModel> ModifiedNodes { get; private set; }
+        public IEnumerable<NodeModel> ModifiedNodes { get; protected set; }
 
         #endregion
 
@@ -109,9 +109,8 @@ namespace Dynamo.Core.Threading
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-
-            // Comparing to another UpdateGraphAsyncTask, verify that they are updating
-            // a similar set of nodes
+            // Comparing to another UpdateGraphAsyncTask, verify 
+            // that they are updating a similar set of nodes.
 
             // Other node is either equal or a superset of this task
             if (ModifiedNodes.All(x => theOtherTask.ModifiedNodes.Contains(x)))

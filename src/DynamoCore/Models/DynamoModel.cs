@@ -13,6 +13,7 @@ using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
@@ -178,6 +179,11 @@ namespace Dynamo.Models
         ///     The context that Dynamo is running under.
         /// </summary>
         public readonly string Context;
+
+        /// <summary>
+        ///     Manages all extensions for Dynamo
+        /// </summary>
+        //public readonly IExtensionManager ExtensionManager; // MAGN-7366
 
         /// <summary>
         ///     Manages all loaded NodeModel libraries.
@@ -742,8 +748,9 @@ namespace Dynamo.Models
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
                         searchElement.SyncWithCustomNodeInfo(newInfo);
-                        SearchModel.Update(searchElement);
+                        SearchModel.Update(searchElement, isCategoryChanged);
                     }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
@@ -1100,6 +1107,16 @@ namespace Dynamo.Models
                         // This call formerly lived in DynamoViewModel
                         ResetEngine();
 
+                        // TODO: #4258
+                        // The following logic to start periodic evaluation will need to be moved
+                        // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
+                        // as it causes an immediate crash due to the above ResetEngine call.
+                        var hws = ws as HomeWorkspaceModel;
+                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        {
+                            hws.StartPeriodicEvaluation();
+                        }
+
                         CurrentWorkspace = ws;
                         return;
                     }
@@ -1144,7 +1161,7 @@ namespace Dynamo.Models
                );
 
             RegisterHomeWorkspace(newWorkspace);
-           
+
             workspace = newWorkspace;            
             return true;
         }
@@ -1209,6 +1226,11 @@ namespace Dynamo.Models
         /// </summary>
         private void StartBackupFilesTimer()
         {
+            // When running test cases, the dispatcher may be null which will cause the timer to
+            // introduce a lot of threads. So the timer will not be started if test cases are running.
+            if (IsTestMode)
+                return;
+
             if (backupFilesTimer != null)
             {
                 throw new Exception("The timer to backup files has already been started!");
@@ -1607,6 +1629,7 @@ namespace Dynamo.Models
                     Background = annotation.Background,
                     FontSize = annotation.FontSize
                 };
+              
                 newAnnotations.Add(annotationModel);
             }
 

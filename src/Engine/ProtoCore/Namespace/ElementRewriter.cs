@@ -2,6 +2,7 @@
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,15 @@ using System.Text;
 namespace ProtoCore.Namespace
 {
 
-    public class ElementRewriter
+    public class ElementRewriter : AstReplacer
     {
         private readonly ClassTable classTable;
-        
-        internal ElementRewriter(ClassTable classTable)
+        private readonly ElementResolver elementResolver;
+
+        internal ElementRewriter(ClassTable classTable, ElementResolver resolver)
         {
             this.classTable = classTable;
+            this.elementResolver = resolver;
         }
 
         /// <summary>
@@ -29,233 +32,151 @@ namespace ProtoCore.Namespace
         /// <param name="classTable"></param>
         /// <param name="elementResolver"></param>
         /// <param name="astNodes"> parent AST node </param>
-        public static void RewriteElementNames(ClassTable classTable,
+        public static IEnumerable<Node> RewriteElementNames(ClassTable classTable,
             ElementResolver elementResolver, IEnumerable<Node> astNodes)
         {
-            var elementRewriter = new ElementRewriter(classTable);
-            foreach (var node in astNodes)
-            {
-                var astNode = node as AssociativeNode;
-                if (astNode == null)
-                    continue;
-
-                elementRewriter.LookupResolvedNameAndRewriteAst(elementResolver, ref astNode);
-            }
+            var elementRewriter = new ElementRewriter(classTable, elementResolver);
+            return astNodes.OfType<AssociativeNode>().Select(astNode => astNode.Accept(elementRewriter)).Cast<Node>().ToList();
         }
 
-        internal void LookupResolvedNameAndRewriteAst(ElementResolver elementResolver, 
-            ref AssociativeNode astNode)
+        #region overridden methods
+
+        public override AssociativeNode VisitTypedIdentifierNode(TypedIdentifierNode node)
         {
-            Debug.Assert(elementResolver != null);
+            // If type is primitive type
+            if (node.datatype.UID != (int)PrimitiveType.kInvalidType &&
+                node.datatype.UID < (int)PrimitiveType.kMaxPrimitives)
+                return node;
 
-            // Get partial class identifier/identifier lists
-            var classIdentifiers = GetClassIdentifiers(astNode);
+            var identListNode = CoreUtils.CreateNodeFromString(node.TypeAlias);
 
-            var resolvedNames = new Queue<string>();
-            foreach (var identifier in classIdentifiers)
+            // Rewrite node with resolved name
+            if (identListNode is IdentifierNode)
             {
-                string partialName = string.Empty;
-                var identifierList = identifier as IdentifierListNode;
-                if (identifierList != null)
-                {
-                    partialName = CoreUtils.GetIdentifierExceptMethodName(identifierList);    
-                }
-                else
-                {
-                    partialName = identifier.Name;
-                }
-                
-                var resolvedName = elementResolver.LookupResolvedName(partialName);
-                if (string.IsNullOrEmpty(resolvedName))
-                {
-                    // If namespace resolution map does not contain entry for partial name, 
-                    // back up on compiler to resolve the namespace from partial name
-                    var matchingClasses = CoreUtils.GetResolvedClassName(classTable, CoreUtils.CreateNodeFromString(partialName));
-
-                    if (matchingClasses.Length == 1)
-                    {
-                        resolvedName = matchingClasses[0];
-                        var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
-
-                        elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
-                    }
-                    else
-                    {
-                        // Class name could not be resolved - Possible namespace conflict 
-                        // This will be reported subsequently in the pre-compilation stage if there's a conflict
-                        // Enter an empty resolved name to the list and continue
-                        resolvedNames.Enqueue(string.Empty);
-                        continue;
-                    }
-                }
-                resolvedNames.Enqueue(resolvedName);
+                identListNode = RewriteIdentifierListNode(identListNode);
             }
-            
-            if(resolvedNames.Any())
-                RewriteAstWithResolvedName(ref astNode, resolvedNames);
+            else
+                identListNode = identListNode.Accept(this);
+
+            var identListString = identListNode.ToString();
+            var type = new Type
+            {
+                Name = identListString,
+                UID = classTable.IndexOf(identListString),
+                rank = node.datatype.rank
+            };
+
+            var typedNode = new TypedIdentifierNode
+            {
+                Name = node.Name,
+                Value = node.Name,
+                datatype = type
+            };
+
+            NodeUtils.CopyNodeLocation(typedNode, node);
+            return typedNode;
         }
 
-        internal IEnumerable<AssociativeNode> GetClassIdentifiers(AssociativeNode astNode)
+        public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
-            var classIdentifiers = new List<AssociativeNode>();
-            var resolvedNames = new Queue<string>();
-            DfsTraverse(ref astNode, classIdentifiers, resolvedNames);
-            return classIdentifiers;
+            // First pass attempt to resolve the node before traversing it deeper
+            IdentifierListNode newIdentifierListNode = null;
+            if (IsMatchingResolvedName(node, out newIdentifierListNode))
+                return newIdentifierListNode;
+
+            var rightNode = node.RightNode;
+            var leftNode = node.LeftNode;
+
+            rightNode = rightNode.Accept(this);
+            leftNode = leftNode.Accept(this);
+
+            node = new IdentifierListNode
+            {
+                LeftNode = leftNode,
+                RightNode = rightNode,
+                Optr = Operator.dot
+            };
+            return RewriteIdentifierListNode(node);
         }
 
-        /// <summary>
-        /// Replace partial identifier with fully resolved identifier list in original AST
-        /// This is the same AST that is also passed to the VM for execution
-        /// </summary>
-        /// <param name="astNode"></param>
-        /// <param name="resolvedNames"> fully qualified class identifier list </param>
-        private void RewriteAstWithResolvedName(ref AssociativeNode astNode, Queue<string> resolvedNames)
+        #endregion
+
+        #region private helper methods
+
+        private bool IsMatchingResolvedName(IdentifierListNode identifierList, out IdentifierListNode newIdentList)
         {
-            DfsTraverse(ref astNode, null, resolvedNames);
-        }
-
-        #region private utility methods
-
-        private void DfsTraverse(ref AssociativeNode astNode, ICollection<AssociativeNode> classIdentifiers, 
-            Queue<string> resolvedNames)
-        {
-            if (astNode is BinaryExpressionNode)
-            {
-                var bnode = astNode as BinaryExpressionNode;
-                AssociativeNode leftNode = bnode.LeftNode;
-                AssociativeNode rightNode = bnode.RightNode;
-                DfsTraverse(ref leftNode, classIdentifiers, resolvedNames);
-                DfsTraverse(ref rightNode, classIdentifiers, resolvedNames);
-
-                bnode.LeftNode = leftNode;
-                bnode.RightNode = rightNode;
-            }
-            else if (astNode is FunctionCallNode)
-            {
-                var fCall = astNode as FunctionCallNode;
-                for (int n = 0; n < fCall.FormalArguments.Count; ++n)
-                {
-                    AssociativeNode argNode = fCall.FormalArguments[n];
-                    DfsTraverse(ref argNode, classIdentifiers, resolvedNames);
-                    fCall.FormalArguments[n] = argNode;
-                }
-            }
-            else if (astNode is ExprListNode)
-            {
-                var exprList = astNode as ExprListNode;
-                for (int n = 0; n < exprList.list.Count; ++n)
-                {
-                    AssociativeNode exprNode = exprList.list[n];
-                    DfsTraverse(ref exprNode, classIdentifiers, resolvedNames);
-                    exprList.list[n] = exprNode;
-                }
-            }
-            else if (astNode is InlineConditionalNode)
-            {
-                var inlineNode = astNode as InlineConditionalNode;
-                AssociativeNode condition = inlineNode.ConditionExpression;
-                AssociativeNode trueBody = inlineNode.TrueExpression;
-                AssociativeNode falseBody = inlineNode.FalseExpression;
-
-                DfsTraverse(ref condition, classIdentifiers, resolvedNames);
-                DfsTraverse(ref trueBody, classIdentifiers, resolvedNames);
-                DfsTraverse(ref falseBody, classIdentifiers, resolvedNames);
-
-                inlineNode.ConditionExpression = condition;
-                inlineNode.FalseExpression = falseBody;
-                inlineNode.TrueExpression = trueBody;
-            }
-            else if (astNode is TypedIdentifierNode)
-            {
-                var typedNode = astNode as TypedIdentifierNode;
-
-                // If type is primitive type
-                if (typedNode.datatype.UID != (int)PrimitiveType.kInvalidType &&
-                    typedNode.datatype.UID < (int) PrimitiveType.kMaxPrimitives)
-                    return;
-
-                var identListNode = CoreUtils.CreateNodeFromString(typedNode.TypeAlias);
-
-                // Rewrite node with resolved name
-                if (resolvedNames.Any())
-                {
-                    if (identListNode is IdentifierNode)
-                    {
-                        identListNode = RewriteIdentifierListNode(identListNode, resolvedNames);
-                    }
-                    else
-                        DfsTraverse(ref identListNode, classIdentifiers, resolvedNames);
-
-                    var identListString = identListNode.ToString();
-                    int indx = identListString.LastIndexOf('.');
-                    string name = indx >= 0 ? identListString.Remove(indx) : identListString;
-
-                    var type = new Type
-                    {
-                        Name = name,
-                        UID = classTable.IndexOf(name),
-                        rank = typedNode.datatype.rank
-                    };
-
-                    typedNode = new TypedIdentifierNode
-                    {
-                        Name = astNode.Name,
-                        Value = astNode.Name,
-                        datatype = type
-                    };
-
-                    NodeUtils.CopyNodeLocation(typedNode, astNode);
-                    astNode = typedNode;
-                }
-                else if (identListNode is IdentifierNode)
-                {
-                    classIdentifiers.Add(identListNode);
-                }
-                else
-                {
-                    DfsTraverse(ref identListNode, classIdentifiers, resolvedNames);
-                }
-                
-            }
-            else if (astNode is IdentifierListNode)
-            {
-                var identListNode = astNode as IdentifierListNode;
-                var rightNode = identListNode.RightNode;
-
-                if (rightNode is FunctionCallNode)
-                {
-                    DfsTraverse(ref rightNode, classIdentifiers, resolvedNames);
-                }
-                if (resolvedNames.Any())
-                {
-                    astNode = RewriteIdentifierListNode(identListNode, resolvedNames);
-                }
-                else
-                {
-                    classIdentifiers.Add(identListNode);
-                }
-            }
-
-        }
-
-        private static AssociativeNode RewriteIdentifierListNode(AssociativeNode identifier, Queue<string> resolvedNames)
-        {
-            var resolvedName = resolvedNames.Dequeue();
-
-            // if resolved name is null or empty, return the identifier list node as is
+            newIdentList = null;
+            var resolvedName = ResolveClassName(identifierList);
             if (string.IsNullOrEmpty(resolvedName))
-                return identifier;
+                return false;
+
+            newIdentList = (IdentifierListNode)CoreUtils.CreateNodeFromString(resolvedName);
+            
+            var symbol = new Symbol(resolvedName);
+            return symbol.Matches(identifierList.ToString());
+        }
+
+        private string ResolveClassName(AssociativeNode identifierList)
+        {
+            var identListNode = identifierList as IdentifierListNode;
+
+            string partialName = identListNode != null ?
+                CoreUtils.GetIdentifierExceptMethodName(identListNode) : identifierList.Name;
+
+            var resolvedName = elementResolver.LookupResolvedName(partialName);
+            if (string.IsNullOrEmpty(resolvedName))
+            {
+                // If namespace resolution map does not contain entry for partial name, 
+                // back up on compiler to resolve the namespace from partial name
+                var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifierList);
+
+                if (matchingClasses.Length == 1)
+                {
+                    resolvedName = matchingClasses[0];
+                    var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
+
+                    elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
+                }
+            }
+            return resolvedName;
+        }
+
+        private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
+        {
+            var identListNode = identifierList as IdentifierListNode;
+            var resolvedName = ResolveClassName(identifierList);
+
+            if (string.IsNullOrEmpty(resolvedName))
+                return identifierList;
 
             var newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
             Validity.Assert(newIdentList is IdentifierListNode);
 
-            var identListNode = identifier as IdentifierListNode;
-            AssociativeNode rightNode = identListNode != null ? identListNode.RightNode : identifier;
+            // If the original input node matches with the resolved name, simply return 
+            // the identifier list constructed from the resolved name
+            var symbol = new Symbol(resolvedName);
+            if (symbol.Matches(identifierList.ToString()))
+                return newIdentList;
+
+            // Remove partialName from identListNode and replace with newIdentList
+            AssociativeNode leftNode = identListNode != null ? identListNode.LeftNode : identifierList;
+            AssociativeNode rightNode = identListNode != null ? identListNode.RightNode : identifierList;
+
+            var intermediateNodes = new List<AssociativeNode>();
+            while (leftNode is IdentifierListNode && !symbol.Matches(leftNode.ToString()))
+            {
+                intermediateNodes.Insert(0, ((IdentifierListNode)leftNode).RightNode);
+                leftNode = ((IdentifierListNode)leftNode).LeftNode;
+            }
+            intermediateNodes.Insert(0, newIdentList);
+
+            var lNode = CoreUtils.CreateNodeByCombiningIdentifiers(intermediateNodes);
+            Validity.Assert(lNode is IdentifierListNode);
 
             // The last ident list for the functioncall or identifier rhs
             var lastIdentList = new IdentifierListNode
             {
-                LeftNode = newIdentList,
+                LeftNode = lNode,
                 RightNode = rightNode,
                 Optr = Operator.dot
             };

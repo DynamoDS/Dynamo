@@ -52,8 +52,9 @@
     <Compile Include="Controls\HelloDynamoControl.xaml.cs">
       <DependentUpon>HelloDynamoControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Examples\DropDown.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="HelloDynamo.cs" />
+    <Compile Include="Examples\CustomNodeModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -87,6 +88,21 @@
       <Name>ProtoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
+      <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
+      <Name>CoreNodeModelsWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreNodeModels\CoreNodeModels.csproj">
+      <Project>{D8262D40-4880-41E4-91E4-AF8F480C8637}</Project>
+      <Name>CoreNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\SampleLibraryZeroTouch\SampleLibraryZeroTouch.csproj">
+      <Project>{bd13c4dc-9045-4e49-b637-b6182b0e3a7f}</Project>
+      <Name>SampleLibraryZeroTouch</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -111,14 +127,14 @@
   </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
-      <Dlls Include="$(OutDir)*.dll"/>
-      <Pdbs Include="$(OutDir)*.pdb"/>
-      <Xmls Include="$(OutDir)*.xml"/>
-      <Res Include="$(OutDir)en-US\*.*"/>
+      <Dlls Include="$(OutDir)*.dll" />
+      <Pdbs Include="$(OutDir)*.pdb" />
+      <Xmls Include="$(OutDir)*.xml" />
+      <Res Include="$(OutDir)en-US\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\"/>
-    <Copy SourceFiles="@(Res)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\en-US\"/>
+    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
+    <Copy SourceFiles="@(Res)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\en-US\" />
   </Target>
 </Project>

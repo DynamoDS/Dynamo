@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Controls;
 using Dynamo.Tests;
-using Dynamo.PackageManager.Interfaces;
 using Greg;
-using Greg.AuthProviders;
 using Greg.Requests;
 using Greg.Responses;
 using Moq;

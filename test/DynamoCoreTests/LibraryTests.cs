@@ -1,17 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using Dynamo.DSEngine;
-using Dynamo.Nodes;
-using Dynamo.Search;
-using Dynamo.Search.SearchElements;
-using NUnit.Framework;
-using TestServices;
-using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.ViewModels;
-using ProtoCore;
+
 using Dynamo.Core;
+using Dynamo.DSEngine;
+
+using NUnit.Framework;
+using ProtoCore;
+using TestServices;
 
 namespace Dynamo.Tests
 {
@@ -28,8 +24,8 @@ namespace Dynamo.Tests
             base.Setup();
 
             libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
-            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             var pathResolver = new TestPathResolver();
@@ -217,80 +213,6 @@ namespace Dynamo.Tests
             {
                 string functionName = function.FunctionName;
                 Assert.IsTrue(functionName != "MethodWithRefParameter" && functionName != "MethodWithOutParameter" && functionName != "MethodWithRefOutParameters");
-            }
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void DumpLibraryToXmlZeroTouchTest()
-        {
-            var searchViewModel = new SearchViewModel(null, new NodeSearchModel());
-
-            LibraryLoaded = false;
-
-            string libraryPath = "DSOffice.dll";
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already here, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath);
-                Assert.IsTrue(LibraryLoaded);
-            }
-
-            var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
-            foreach (var funcGroup in fgToCompare)
-            {
-                foreach (var functionDescriptor in funcGroup.Functions)
-                {
-                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
-                    {
-                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
-                    }
-                }
-            }
-
-            var document = searchViewModel.Model.ComposeXmlForLibrary();
-
-            Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
-
-            XmlNode node, subNode;
-            foreach (var functionGroup in fgToCompare)
-            {
-                foreach (var function in functionGroup.Functions)
-                {
-                    // Obsolete, not visible and "GetType" functions are not presented in UI tree.
-                    // So they are should not be presented in dump.
-                    if (function.IsObsolete || !function.IsVisibleInLibrary || function.FunctionName.Contains("GetType"))
-                        continue;
-
-                    var category = function.Category;
-                    var group = SearchElementGroup.Action;
-                    category = searchViewModel.Model.ProcessNodeCategory(category, ref group);
-
-                    node = document.SelectSingleNode(string.Format(
-                        "//{0}[FullCategoryName='{1}' and Name='{2}']",
-                        typeof(ZeroTouchSearchElement).FullName, category, function.FunctionName));
-                    Assert.IsNotNull(node);
-
-                    subNode = node.SelectSingleNode("Group");
-                    Assert.IsNotNull(subNode.FirstChild);
-                    Assert.AreEqual(group.ToString(), subNode.FirstChild.Value);
-
-                    // 'FullCategoryName' is already checked.
-                    // 'Name' is already checked.
-
-                    subNode = node.SelectSingleNode("Description");
-                    Assert.IsNotNull(subNode.FirstChild);
-
-                    // No check Description on text equality because for some reason 
-                    // function.Descriptions are different in real executing Dynamo and
-                    // Dynamo started from tests.
-                    //
-                    // For example: 
-                    // tests  function.Description: Excel.ReadFromFile (file: FileInfo, sheetName: string): var[][]
-                    // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
-                }
             }
         }
 

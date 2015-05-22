@@ -108,6 +108,10 @@
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj">
+      <Project>{7dd8077a-201e-4c56-96c5-3c901a51bdf3}</Project>
+      <Name>DynamoCoreWpfTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>

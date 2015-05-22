@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Windows;
-using Dynamo.PackageManager;
 using Dynamo.PackageManager.Interfaces;
 using Moq;
 

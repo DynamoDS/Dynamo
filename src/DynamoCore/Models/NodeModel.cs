@@ -1373,7 +1373,12 @@ namespace Dynamo.Models
                     var arr = value.Split(';');
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                        var useDef = !bool.Parse(arr[i]); 
+                        // do not set true, if default value is disabled
+                        if (!useDef || InPorts[i].DefaultValueEnabled)
+                        {
+                            InPorts[i].UsingDefaultValue = useDef;
+                        }
                     }
                     return true;
 
@@ -1578,7 +1583,7 @@ namespace Dynamo.Models
         /// called from the main/UI thread.
         /// </summary>
         /// 
-        public void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
+        internal void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
         {
             // A NodeModel should have its cachedMirrorData reset when it is 
             // requested to update its value. When the QueryMirrorDataAsyncTask 

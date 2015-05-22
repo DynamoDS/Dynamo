@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using Dynamo.Models;
+
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class DSFunctionNodeTest : DynamoViewModelUnitTest
+    class DSFunctionNodeTest : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -20,31 +23,25 @@ namespace Dynamo.Tests
         [Test]
         public void TestLoadingFunctions()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\dsfunction\dsfunctions.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-            
+            OpenModel(openPath);
+
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
         }
 
         [Test]
         public void TestAddFunction()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\dsfunction\add.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            RunModel(openPath);
 
             // get add node
-            var addNode = model.CurrentWorkspace.NodeFromWorkspace("c969ebda-d77e-4cd3-985e-187dd1dccb03");
+            var addNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("c969ebda-d77e-4cd3-985e-187dd1dccb03");
             string var = addNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
 
             Assert.AreEqual(mirror.GetData().Data, 5.0);
@@ -53,26 +50,22 @@ namespace Dynamo.Tests
         [Test]
         public void TestAbs()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\dsfunction\abs.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            RunModel(openPath);
 
             // get abs node
-            var absNode = model.CurrentWorkspace.NodeFromWorkspace("2c26388d-3d14-443a-ac41-c2bb0987a58e");
+            var absNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("2c26388d-3d14-443a-ac41-c2bb0987a58e");
             string var = absNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
 
             Assert.AreEqual(mirror.GetData().Data, 10.0);
 
-            var mulNode = model.CurrentWorkspace.NodeFromWorkspace("0c85072f-f9c5-45f3-8099-832161dfcacb");
+            var mulNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("0c85072f-f9c5-45f3-8099-832161dfcacb");
             var = mulNode.GetAstIdentifierForOutputIndex(0).Name;
             mirror = null;
-            Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
 
             Assert.AreEqual(mirror.GetData().Data, 100.0);
@@ -81,18 +74,14 @@ namespace Dynamo.Tests
         [Test]
         public void TestCount()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\dsfunction\count.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
-
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            RunModel(openPath);
 
             // get count node
-            var count = model.CurrentWorkspace.NodeFromWorkspace("007b5942-12b0-4cea-aa05-b43531b6ccb8");
+            var count = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("007b5942-12b0-4cea-aa05-b43531b6ccb8");
             string var = count.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror =  ViewModel.Model.EngineController.GetMirror(var));
+            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(var));
             Assert.IsNotNull(mirror);
 
             var value = (Int64)mirror.GetData().Data;
@@ -102,13 +91,11 @@ namespace Dynamo.Tests
         [Test, Category("RegressionTests")]
         public void TestGetKeys()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(TestDirectory, @"core\dsfunction\GetKeys.dyn");
-            ViewModel.OpenCommand.Execute(openPath);
+            OpenModel(openPath);
 
             // no crash
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
+            Assert.DoesNotThrow(BeginRun);
         }
     }
 }

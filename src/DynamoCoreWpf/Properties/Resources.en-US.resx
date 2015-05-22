@@ -1669,4 +1669,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
     <value>Delete Group</value>
   </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>PKG</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
 </root>

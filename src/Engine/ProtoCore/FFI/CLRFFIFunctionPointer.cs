@@ -68,6 +68,11 @@ namespace ProtoFFI
 
             return null;
         }
+
+        public bool IsWrapperOf(MemberInfo info)
+        {
+            return this.Info.Equals(info);
+        }
     }
 
     class FFIFieldInfo : FFIMemberInfo
@@ -427,9 +432,27 @@ namespace ProtoFFI
 
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
         {
-            Object retVal = base.Execute(c, dsi);
             List<StackValue> s = dsi.runtime.rmem.Stack;
             FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
+
+            Object retVal = null;
+            if (ReflectionInfo.IsWrapperOf(CLRModuleType.DisposeMethod))
+            {
+                // For those FFI objects that are disposable but don't provide 
+                // Dispose() method in their classes, they will share a same
+                // Dispose() method from CLRModuleType.DisposeMethod. We need
+                // to manually dispose them.
+                var thisObject = marshaller.UnMarshal(s.Last(), c, dsi, typeof(IDisposable));
+                if (thisObject != null && thisObject is IDisposable)
+                {
+                    var disposable = thisObject as IDisposable;
+                    disposable.Dispose();
+                }
+            }
+            else
+            {
+                retVal = base.Execute(c, dsi);
+            }
             marshaller.OnDispose(s.Last(), c, dsi); //Notify marshler for dispose.
 
             return retVal;

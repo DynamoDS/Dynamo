@@ -12,6 +12,7 @@ namespace DSCore
     {
         internal Geometry geometry;
         internal Color color;
+
         private bool renderEdges = false;
 
         private Display(Geometry geometry, Color color)
@@ -112,6 +113,11 @@ namespace DSCore
                 arr[i + 3] = alpha;
             }
             return arr;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, color);
         }
 
         //private static IEnumerable<double> NudgeVertexAlongVector(IList<double> vertices, IList<double> normals, int i, double amount)

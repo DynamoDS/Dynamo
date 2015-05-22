@@ -12,7 +12,7 @@ using Dynamo.Controls;
 using Dynamo.UI;
 
 using DSCoreNodesUI;
-
+using Dynamo.Models;
 using Color = DSCore.Color;
 
 namespace Dynamo.Wpf.Nodes
@@ -32,30 +32,40 @@ namespace Dynamo.Wpf.Nodes
 
             nodeView.inputGrid.Children.Add(drawPlane);
 
-            model.RequestChangeColorRange += delegate
+            model.RequestChangeColorRange += delegate { UpdateColorRange(model, dm, drawPlane); };
+
+            UpdateColorRange(model, dm, drawPlane);
+        }
+
+        private void UpdateColorRange(ColorRange model, DynamoModel dm, Image drawPlane)
+        {
+            model.DispatchOnUIThread(delegate
             {
-                model.DispatchOnUIThread(delegate
+                var colorsNode = model.InPorts[0].Connectors[0].Start.Owner;
+                var colorsIndex = model.InPorts[0].Connectors[0].Start.Index;
+                var valuesNode = model.InPorts[1].Connectors[0].Start.Owner;
+                var valuesIndex = model.InPorts[1].Connectors[0].Start.Index;
+
+                var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
+                var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
+
+                var colorsMirror = dm.EngineController.GetMirror(startId);
+                var valuesMirror = dm.EngineController.GetMirror(endId);
+
+                List<Color> colors = new List<Color>();
+                List<double> values = new List<double>();
+
+                if (colorsMirror != null && colorsMirror.GetData() != null)
                 {
-                    var colorsNode = model.InPorts[0].Connectors[0].Start.Owner;
-                    var colorsIndex = model.InPorts[0].Connectors[0].Start.Index;
-                    var valuesNode = model.InPorts[1].Connectors[0].Start.Owner;
-                    var valuesIndex = model.InPorts[1].Connectors[0].Start.Index;
-
-                    var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
-                    var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
-
-                    var colorsMirror = dm.EngineController.GetMirror(startId);
-                    var valuesMirror = dm.EngineController.GetMirror(endId);
-
-                    List<Color> colors = new List<Color>();
-                    List<double> values = new List<double>();
-
-                    if(colorsMirror != null && colorsMirror.GetData() != null)
+                    var data = colorsMirror.GetData();
+                    if (data.IsCollection)
                     {
-                        var data = colorsMirror.GetData();
+
+                        colors.AddRange(data.GetElements().Select(e => e.Data).Cast<Color>());
+                        
                         if (data.IsCollection)
                         {
-                            colors.AddRange(data.GetElements().Select(e => e.Data).Cast<Color>());
+                            colors.AddRange(data.GetElements().Select(e => e.Data).OfType<Color>());
                         }
                         else
                         {
@@ -64,29 +74,35 @@ namespace Dynamo.Wpf.Nodes
                                 colors.Add(color);
                         }
                     }
-
-                    if(valuesMirror != null && valuesMirror.GetData() != null)
+                    else
                     {
-                        var data = valuesMirror.GetData();
-                        if (data.IsCollection)
-                        {
-                            values.AddRange(data.
-                                GetElements().
-                                Select(e => e.Data).
-                                Select(d=>Convert.ToDouble((object)d,CultureInfo.InvariantCulture)));
-                        }
-                        else
-                        {
-                            var value = Convert.ToDouble(data.Data, CultureInfo.InvariantCulture);
-                            values.Add(value);
-                        }
+                        var color = data.Data as Color;
+                        if (color != null)
+                            colors.Add(color);
                     }
+                }
 
-                    var bmp = CreateColorRangeBitmap(colors, values);
-                    drawPlane.Source = bmp;
+                if (valuesMirror != null && valuesMirror.GetData() != null)
+                {
+                    var data = valuesMirror.GetData();
+                    if (data.IsCollection)
+                    {
+                        values.AddRange(data.
+                            GetElements().
+                            Select(e => e.Data).
+                            Select(d => Convert.ToDouble((object)d, CultureInfo.InvariantCulture)));
+                    }
+                    else
+                    {
+                        var value = Convert.ToDouble(data.Data, CultureInfo.InvariantCulture);
+                        values.Add(value);
+                    }
+                }
 
-                });
-            };
+                var bmp = CreateColorRangeBitmap(colors, values);
+                drawPlane.Source = bmp;
+
+            });
         }
 
         public void Dispose() {}
