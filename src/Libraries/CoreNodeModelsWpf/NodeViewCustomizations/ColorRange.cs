@@ -58,11 +58,8 @@ namespace Dynamo.Wpf.Nodes
                 if (colorsMirror != null && colorsMirror.GetData() != null)
                 {
                     var data = colorsMirror.GetData();
-                    if (data.IsCollection)
+                    if (data != null)
                     {
-
-                        colors.AddRange(data.GetElements().Select(e => e.Data).Cast<Color>());
-                        
                         if (data.IsCollection)
                         {
                             colors.AddRange(data.GetElements().Select(e => e.Data).OfType<Color>());
@@ -74,12 +71,6 @@ namespace Dynamo.Wpf.Nodes
                                 colors.Add(color);
                         }
                     }
-                    else
-                    {
-                        var color = data.Data as Color;
-                        if (color != null)
-                            colors.Add(color);
-                    }
                 }
 
                 if (valuesMirror != null && valuesMirror.GetData() != null)
@@ -87,15 +78,19 @@ namespace Dynamo.Wpf.Nodes
                     var data = valuesMirror.GetData();
                     if (data.IsCollection)
                     {
-                        values.AddRange(data.
-                            GetElements().
-                            Select(e => e.Data).
-                            Select(d => Convert.ToDouble((object)d, CultureInfo.InvariantCulture)));
+                        var elements = data.GetElements().Select(e => e.Data);
+                        foreach (var element in elements)
+                        {
+                            double parsed;
+                            if (TryConvertToDouble(element, out parsed))
+                                values.Add(parsed);
+                        }
                     }
                     else
                     {
-                        var value = Convert.ToDouble(data.Data, CultureInfo.InvariantCulture);
-                        values.Add(value);
+                        double parsed;
+                        if (TryConvertToDouble(data.Data, out parsed))
+                            values.Add(parsed);
                     }
                 }
 
@@ -128,6 +123,21 @@ namespace Dynamo.Wpf.Nodes
             bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
 
             return bitmap;
+        }
+
+        private bool TryConvertToDouble(object value, out double parsed)
+        {
+            parsed = default(double);
+
+            try
+            {
+                parsed = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

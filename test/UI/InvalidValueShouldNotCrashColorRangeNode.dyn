@@ -1,0 +1,21 @@
+<Workspace Version="0.8.1.1314" X="16.6666666666666" Y="-21.3333333333333" zoom="1" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="1a245b04-ad9e-4b9c-8301-730afbd4e6fc" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="11" y="88" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&#xA;    Color.ByARGB(255, 0, 255, 128),&#xA;    Color.ByARGB(255, 0, 128, 255)&#xA;};&#xA;&#xA;{ &quot;Value that can't be converted to double&quot;, 0.68 };" ShouldFocus="false" />
+    <DSCoreNodesUI.ColorRange guid="90cbbc86-35cf-49e8-b96d-9d3fc0ee95e4" type="DSCoreNodesUI.ColorRange" nickname="Color Range" x="541.333333333334" y="88" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="cece298a-22de-4f4a-a323-fdb04af406a4" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="11" y="254.666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{&#xA;    Color.ByARGB(255, 0, 255, 128),&#xA;    Color.ByARGB(255, 0, 128, 255)&#xA;};&#xA;&#xA;&quot;Value that can't be converted to double&quot;;" ShouldFocus="false" />
+    <DSCoreNodesUI.ColorRange guid="ba5762a2-9f93-4d74-af17-b2701ed28010" type="DSCoreNodesUI.ColorRange" nickname="Color Range" x="541.333333333334" y="254.666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1a245b04-ad9e-4b9c-8301-730afbd4e6fc" start_index="0" end="90cbbc86-35cf-49e8-b96d-9d3fc0ee95e4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1a245b04-ad9e-4b9c-8301-730afbd4e6fc" start_index="1" end="90cbbc86-35cf-49e8-b96d-9d3fc0ee95e4" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1a245b04-ad9e-4b9c-8301-730afbd4e6fc" start_index="1" end="90cbbc86-35cf-49e8-b96d-9d3fc0ee95e4" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cece298a-22de-4f4a-a323-fdb04af406a4" start_index="0" end="ba5762a2-9f93-4d74-af17-b2701ed28010" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cece298a-22de-4f4a-a323-fdb04af406a4" start_index="1" end="ba5762a2-9f93-4d74-af17-b2701ed28010" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cece298a-22de-4f4a-a323-fdb04af406a4" start_index="1" end="ba5762a2-9f93-4d74-af17-b2701ed28010" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>
