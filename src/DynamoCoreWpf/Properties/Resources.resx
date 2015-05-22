@@ -1029,6 +1029,10 @@ You will get a chance to save your work.</value>
     <value>Edit Node Name</value>
     <comment>Dialog for editing a node's name</comment>
   </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>Edit Group Title</value>
+    <comment>Dialog for editing a node's name</comment>
+  </data>
   <data name="EditWindowAcceptButton" xml:space="preserve">
     <value>Accept</value>
   </data>
