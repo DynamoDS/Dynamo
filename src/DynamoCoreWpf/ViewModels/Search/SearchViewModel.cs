@@ -678,6 +678,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("SearchRootCategories");
 
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
+            RaisePropertyChanged("SearchResults");
         }
 
 
