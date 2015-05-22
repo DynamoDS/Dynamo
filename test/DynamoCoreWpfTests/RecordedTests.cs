@@ -4895,8 +4895,42 @@ namespace DynamoCoreWpfTests
         }
         #endregion
 
+        [Test, Category("Failure")]
+        public void MAGN_7348_Basket2()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check curve.extrude, polycurve.bypoint
+            //  
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
 
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Basket2.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
 
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check polycurve.bypoints, curve.Extrude
+                        var polycurve = GetPreviewValue("0fab80eb-7096-4f96-8f31-9832ff4c2617");
+                        Assert.AreEqual(polycurve.ToString(), "PolyCurve(NumberOfCurves = 10)");
+                        // check curve.Extrude
+                        NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("45d1b208-a9de-4f75-80f1-e8088d8061c7");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+                        AssertPreviewCount("45d1b208-a9de-4f75-80f1-e8088d8061c7", 63);
+                        for (int i = 0; i < 63; i++)
+                        {
+                            var surface = GetPreviewValueAtIndex("45d1b208-a9de-4f75-80f1-e8088d8061c7", i);
+                            Assert.AreEqual(surface.ToString(), "Surface");
+                        }
+                            break;
+                }
+            });
+        }
 
     }
 
