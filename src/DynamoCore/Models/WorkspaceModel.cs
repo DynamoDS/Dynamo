@@ -1158,7 +1158,7 @@ namespace Dynamo.Models
                     }
 
                     var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-                    foreach (var connector in newInputConnectors)
+                    foreach (var connector in newOutputConnectors)
                     {
                         undoHelper.RecordCreation(connector);
                     }

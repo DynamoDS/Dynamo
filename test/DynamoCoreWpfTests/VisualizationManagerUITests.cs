@@ -18,7 +18,7 @@ using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Rendering;
 using DynamoCoreWpfTests.Utility;
 
 using NUnit.Framework;

@@ -587,6 +587,53 @@ namespace Dynamo.Tests
             Assert.AreEqual("Point.ByCoordinates(t1, 0)", expr.RightNode.ToString());
         }
 
+        private void TestNodeToCodeUndoBase(string filePath)
+        {
+            // Verify after undo all nodes and connectors should be resotored back
+            // to original state.
+            OpenModel(filePath);
+
+            var wp = CurrentDynamoModel.CurrentWorkspace;
+            var nodeGuids = wp.Nodes.Select(n => n.GUID).ToList();
+            nodeGuids.Sort();
+
+            var connectorGuids = wp.Connectors.Select(c => c.GUID).ToList();
+            connectorGuids.Sort();
+
+            SelectAll(wp.Nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            CurrentDynamoModel.ExecuteCommand(undo);
+
+            var curNodeGuids = wp.Nodes.Select(n => n.GUID).ToList();
+            curNodeGuids.Sort();
+
+            var curConnectorGuids = wp.Connectors.Select(c => c.GUID).ToList();
+            curConnectorGuids.Sort();
+
+            Assert.AreEqual(curNodeGuids.Count, nodeGuids.Count);
+            Assert.IsTrue(nodeGuids.SequenceEqual(curNodeGuids));
+
+            Assert.AreEqual(curConnectorGuids.Count, connectorGuids.Count);
+            Assert.IsTrue(connectorGuids.SequenceEqual(curConnectorGuids));
+        }
+
+        [Test]
+        public void TestNodeToCodeUndo1()
+        {
+            TestNodeToCodeUndoBase(@"core\node2code\undo1.dyn");
+        }
+
+        [Test]
+        public void TestNodeToCodeUndo2()
+        {
+            TestNodeToCodeUndoBase(@"core\node2code\undo2.dyn");
+        }
+
+
+
         [Test]
         [Category("UnitTest")]
         public void TestNodeToCodeUndoRecorder()
