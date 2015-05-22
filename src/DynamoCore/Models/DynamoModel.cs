@@ -1737,7 +1737,7 @@ namespace Dynamo.Models
 
         private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
         {
-            if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+            if (functionDescriptor.IsVisibleInLibrary)
             {
                 SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
             }

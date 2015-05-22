@@ -103,6 +103,7 @@
     <Compile Include="PackageManager\PackageDependencyTests.cs" />
     <Compile Include="PackageManager\PackageManagerSearchViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecentFileTests.cs" />
     <Compile Include="RecordedTests.cs" />
     <Compile Include="RunSettingsTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
