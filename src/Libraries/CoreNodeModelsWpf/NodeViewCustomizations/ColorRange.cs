@@ -127,7 +127,7 @@ namespace Dynamo.Wpf.Nodes
 
         private bool TryConvertToDouble(object value, out double parsed)
         {
-            parsed = 0.0;
+            parsed = default(double);
 
             try
             {
