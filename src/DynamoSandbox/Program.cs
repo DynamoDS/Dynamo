@@ -94,6 +94,16 @@ namespace DynamoSandbox
             //
             var locale = string.Empty;
 
+            // Open Dynamo headless and open file at path
+            // DynamoSandbox.exe /o "C:\file path\graph.dyn"
+            //
+            var openfilepath = string.Empty;
+
+            // set current opened graph to state by name 
+            // DynamoSandbox.exe /o "C:\file path\graph.dyn" /s "state1"
+            //
+            var presetStateid = string.Empty;
+
             for (var i = 0; i < args.Length; ++i)
             {
                 var arg = args[i];
@@ -116,18 +126,34 @@ namespace DynamoSandbox
                         if (i < args.Length - 1)
                             locale = args[++i];
                         break;
+
+                    case 'o':
+                    case 'O':
+                        if (i < args.Length - 1)
+                            openfilepath = args[++i];
+                        break;
+                    
+                    case 's':
+                    case 'S':
+                        if (i < args.Length - 1)
+                            presetStateid = args[++i];
+                        break;
                 }
             }
 
             return new CommandLineArguments
             {
                 Locale = locale,
-                CommandFilePath = commandFilePath
+                CommandFilePath = commandFilePath,
+                OpenFilePath = openfilepath,
+                PresetStateID = presetStateid,
             };
         }
 
         internal string Locale { get; set; }
         internal string CommandFilePath { get; set; }
+        internal string OpenFilePath { get; set; }
+        internal string PresetStateID { get; set; }
     }
 
     internal class Program
@@ -163,6 +189,32 @@ namespace DynamoSandbox
             app.Run(view);
 
             DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
+        }
+
+        private static void MakeModelAndSetState(CommandLineArguments cmdLineArgs)
+        {
+            var geometryFactoryPath = string.Empty;
+            var preloaderLocation = string.Empty;
+            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+
+           // DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+
+            var model = DynamoModel.Start(
+                new DynamoModel.DefaultStartConfiguration()
+                {
+                    PathResolver = new PathResolver(preloaderLocation),
+                    GeometryFactoryPath = geometryFactoryPath
+                });
+            model.OpenFileFromPath(cmdLineArgs.OpenFilePath);
+
+            Console.WriteLine("loaded file");
+            if (!string.IsNullOrEmpty(cmdLineArgs.PresetStateID))
+            {
+                model.CurrentWorkspace.SetWorkspaceToState(cmdLineArgs.PresetStateID);
+            }
+            model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
+            Thread.Sleep(250);
+           
         }
 
         private static void CloseMigrationWindow()
@@ -220,8 +272,16 @@ namespace DynamoSandbox
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
                     Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
                 }
-
-                MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
+                //if we have an openfilepath arg then open headless and attempt to set that file to a state
+                //if supplied
+                if (!string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
+                {
+                    MakeModelAndSetState(cmdLineArgs);
+                }
+                else
+                {
+                    MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
+                }
             }
             catch (Exception e)
             {

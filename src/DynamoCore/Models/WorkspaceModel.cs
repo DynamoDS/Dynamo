@@ -793,6 +793,13 @@ namespace Dynamo.Models
         {
             this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
+        internal void SetWorkspaceToState(string stateName)
+        {
+            var state =  presetsCollection.DesignStates.Where(x=>x.Name == stateName).First();
+            {
+                SetWorkspaceToState(state);
+            }
+        }
 
         internal void SetWorkspaceToState(PresetState state)
         {
