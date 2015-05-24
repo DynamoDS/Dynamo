@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
@@ -12,9 +13,12 @@ using Dynamo.DynamoSandbox;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using DynamoUtilities;
+
+using Microsoft.Win32;
 
 namespace DynamoSandbox
 {
@@ -61,6 +65,22 @@ namespace DynamoSandbox
         }
     }
 
+    internal class SandboxLookUp : IDynamoLookUp
+    {
+        public IEnumerable<string> GetDynamoInstallLocations()
+        {
+            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
+            //Open HKLM for 64bit registry
+            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            //Open Windows/CurrentVersion/Uninstall registry key
+            regKey = regKey.OpenSubKey(regKey64);
+
+            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
+            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
+                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
+        }
+    }
+
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
@@ -77,11 +97,15 @@ namespace DynamoSandbox
 
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
 
+            var umConfig = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
+            Debug.Assert(umConfig.DynamoLookUp != null);
+
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath
+                    PathResolver = new PathResolver(preloaderLocation),
+                    GeometryFactoryPath = geometryFactoryPath,
+                    UpdateManager = new UpdateManager(umConfig)
                 });
 
             
