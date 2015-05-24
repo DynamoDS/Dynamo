@@ -206,14 +206,34 @@ namespace DynamoSandbox
                     GeometryFactoryPath = geometryFactoryPath
                 });
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath);
-
             Console.WriteLine("loaded file");
+
+            //build a list of states, for now, none, a single state, or all of them
+            var stateNames = new List<String>();
             if (!string.IsNullOrEmpty(cmdLineArgs.PresetStateID))
             {
-                model.CurrentWorkspace.SetWorkspaceToState(cmdLineArgs.PresetStateID);
+                if (cmdLineArgs.PresetStateID == "all")
+                {
+                    foreach (var state in model.CurrentWorkspace.PresetsCollection.DesignStates)
+                    {
+                        stateNames.Add(state.Name);
+                    }
+                }
+                else
+                {
+                    stateNames.Add(cmdLineArgs.PresetStateID);
+                }
             }
-            model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-            Thread.Sleep(250);
+            else
+            {
+                stateNames.Add("noState");
+            }
+            foreach (var stateName in stateNames)
+            {
+                model.CurrentWorkspace.SetWorkspaceToState(stateName);
+                model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
+                Thread.Sleep(250);
+            }
            
         }
 

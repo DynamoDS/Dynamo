@@ -795,7 +795,7 @@ namespace Dynamo.Models
         }
         internal void SetWorkspaceToState(string stateName)
         {
-            var state =  presetsCollection.DesignStates.Where(x=>x.Name == stateName).First();
+            var state = presetsCollection.DesignStates.Where(x=>x.Name == stateName).FirstOrDefault();
             {
                 SetWorkspaceToState(state);
             }
