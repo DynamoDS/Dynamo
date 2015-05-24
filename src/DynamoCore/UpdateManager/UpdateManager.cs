@@ -62,6 +62,11 @@ namespace Dynamo.UpdateManager
         /// installed on this system.
         /// </summary>
         IEnumerable<string> GetDynamoInstallLocations();
+
+        /// <summary>
+        /// Gets the version of latest installed product
+        /// </summary>
+        BinaryVersion LatestProduct { get; }
     }
 
     public interface IUpdateManagerConfiguration
@@ -1087,7 +1092,7 @@ namespace Dynamo.UpdateManager
         internal static void CheckForProductUpdate(IUpdateManager manager)
         {
             //If we already have higher version installed, don't look for product update.
-            if(new DynamoLookUpHelper(manager.Configuration.DynamoLookUp).LatestProduct > manager.ProductVersion)
+            if(manager.Configuration.DynamoLookUp != null && manager.Configuration.DynamoLookUp.LatestProduct > manager.ProductVersion)
                 return;
 
             var downloadUri = new Uri(manager.Configuration.DownloadSourcePath);
@@ -1098,14 +1103,8 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// Lookup for installed products
     /// </summary>
-    public class DynamoLookUpHelper
+    public abstract class DynamoLookUp : IDynamoLookUp
     {
-        private readonly IDynamoLookUp productLookUp = null;
-        public DynamoLookUpHelper(IDynamoLookUp lookUp)
-        {
-            productLookUp = lookUp;
-        }
-
         /// <summary>
         /// Gets the version of latest product
         /// </summary>
@@ -1129,14 +1128,11 @@ namespace Dynamo.UpdateManager
         /// Gets all dynamo install path on the system by looking into the Windows registry. 
         /// </summary>
         /// <returns>List of Dynamo install path</returns>
-        public IEnumerable<string> GetDynamoInstalls()
-        {
-            return productLookUp != null ? productLookUp.GetDynamoInstallLocations() : null;
-        }
-
+        public abstract IEnumerable<string> GetDynamoInstallLocations();
+        
         private BinaryVersion GetLatestInstallVersion()
         {
-            var dynamoInstallations = GetDynamoInstalls();
+            var dynamoInstallations = GetDynamoInstallLocations();
             if(null == dynamoInstallations)
                 return null;
 

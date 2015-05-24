@@ -134,9 +134,9 @@ namespace DynamoSandbox
         internal string CommandFilePath { get; set; }
     }
 
-    internal class SandboxLookUp : IDynamoLookUp
+    internal class SandboxLookUp : DynamoLookUp
     {
-        public IEnumerable<string> GetDynamoInstallLocations()
+        public override IEnumerable<string> GetDynamoInstallLocations()
         {
             const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
             //Open HKLM for 64bit registry
