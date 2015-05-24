@@ -19,7 +19,7 @@ namespace Dynamo.Tests
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
 
-        static UpdateManagerConfiguration NewConfiguration(bool checkNewerDailyBuild =false, bool forceUpdate =false)
+        static UpdateManagerConfiguration NewConfiguration(bool checkNewerDailyBuild =false, bool forceUpdate =false, IDynamoLookUp lookup = null)
         {
             return new UpdateManagerConfiguration()
             {
@@ -27,6 +27,7 @@ namespace Dynamo.Tests
                 SignatureSourcePath = SIGNATURE_SOURCE_PATH_S,
                 CheckNewerDailyBuild = checkNewerDailyBuild,
                 ForceUpdate = forceUpdate,
+                DynamoLookUp = lookup,
             };
         }
 
@@ -296,24 +297,39 @@ namespace Dynamo.Tests
                 { "D", new Version(0, 1, 3, 3) },
             };
 
-            var lookup = new Mock<DynamoLookUp>();
-            lookup.Setup(l => l.GetDynamoInstalls()).Returns(products.Keys);
-            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+            var lookup = new Mock<IDynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstallLocations()).Returns(products.Keys);
+            
+            var dynLookup = new Mock<DynamoLookUpHelper>(lookup.Object);
+            dynLookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
                 .Returns<string>(s => products[s]);
 
-            var latest = lookup.Object.LatestProduct;
+            var latest = dynLookup.Object.LatestProduct;
             Assert.AreEqual("1.2.0.0", latest.ToString());
         }
 
         [Test, Category("UnitTests")]
         public void NoLatestProductVersion()
         {
-            var lookup = new Mock<DynamoLookUp>();
-            lookup.Setup(l => l.GetDynamoInstalls()).Returns(new[] { "A" });
-            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+            var lookup = new Mock<IDynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstallLocations()).Returns(new[] { "A" });
+            
+            var dynLookup = new Mock<DynamoLookUpHelper>(lookup.Object);
+            dynLookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
                 .Returns<string>(null);
 
-            var latest = lookup.Object.LatestProduct;
+            var latest = dynLookup.Object.LatestProduct;
+            Assert.AreEqual(null, latest);
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoLatestProductVersionNullLokkup()
+        {
+            var dynLookup = new Mock<DynamoLookUpHelper>(null);
+            dynLookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(null);
+
+            var latest = dynLookup.Object.LatestProduct;
             Assert.AreEqual(null, latest);
         }
 
@@ -328,12 +344,13 @@ namespace Dynamo.Tests
                 { "D", null },
             };
 
-            var lookup = new Mock<DynamoLookUp>();
-            lookup.Setup(l => l.GetDynamoInstalls()).Returns(products.Keys);
-            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+            var lookup = new Mock<IDynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstallLocations()).Returns(products.Keys);
+            
+            var dynLookup = new Mock<DynamoLookUpHelper>(lookup.Object);
+            dynLookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
                 .Returns<string>(s => products[s]);
-
-            var latest = lookup.Object.LatestProduct;
+            var latest = dynLookup.Object.LatestProduct;
             Assert.AreEqual("1.2.0.0", latest.ToString());
         }
     }
