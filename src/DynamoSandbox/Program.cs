@@ -65,9 +65,59 @@ namespace DynamoSandbox
         }
     }
 
-    internal class SandboxLookUp : IDynamoLookUp
+    struct CommandLineArguments
     {
-        public IEnumerable<string> GetDynamoInstallLocations()
+        internal static CommandLineArguments FromArguments(string[] args)
+        {
+            // Running Dynamo sandbox with a command file:
+            // DynamoSandbox.exe /c "C:\file path\file.xml"
+            // 
+            var commandFilePath = string.Empty;
+
+            // Running Dynamo under a different locale setting:
+            // DynamoSandbox.exe /l "ja-JP"
+            //
+            var locale = string.Empty;
+
+            for (var i = 0; i < args.Length; ++i)
+            {
+                var arg = args[i];
+                if (arg.Length != 2 || (arg[0] != '/'))
+                {
+                    continue; // Not a "/x" type of command switch.
+                }
+
+                switch (arg[1])
+                {
+                    case 'c':
+                    case 'C':
+                        // If there's at least one more argument...
+                        if (i < args.Length - 1)
+                            commandFilePath = args[++i];
+                        break;
+
+                    case 'l':
+                    case 'L':
+                        if (i < args.Length - 1)
+                            locale = args[++i];
+                        break;
+                }
+            }
+
+            return new CommandLineArguments
+            {
+                Locale = locale,
+                CommandFilePath = commandFilePath
+            };
+        }
+
+        internal string Locale { get; set; }
+        internal string CommandFilePath { get; set; }
+    }
+
+    internal class SandboxLookUp : DynamoLookUp
+    {
+        public override IEnumerable<string> GetDynamoInstallLocations()
         {
             const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
             //Open HKLM for 64bit registry
