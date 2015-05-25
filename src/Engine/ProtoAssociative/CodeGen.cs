@@ -8827,6 +8827,8 @@ namespace ProtoAssociative
                     }
 
                     PushGraphNode(graphNode);
+                    StoreGraphnodeAtMacroBlock(graphNode, bnode.MacroBlockID);
+
                     if (core.InlineConditionalBodyGraphNodes.Count > 0)
                     {
                         core.InlineConditionalBodyGraphNodes.Last().Add(graphNode);

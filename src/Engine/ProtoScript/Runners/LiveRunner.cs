@@ -1180,6 +1180,7 @@ namespace ProtoScript.Runners
 
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
+        private MacroBlockGenerator macroBlockGen;
 
         public LiveRunner()
             : this(new Configuration())
@@ -1205,6 +1206,7 @@ namespace ProtoScript.Runners
             terminating = false;
             changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             changeSetApplier = new ChangeSetApplier();
+            macroBlockGen = new MacroBlockGenerator(runnerCore);
         }
 
         public void Dispose()
@@ -1794,6 +1796,25 @@ namespace ProtoScript.Runners
             return cbnGuidList;
         }
 
+        /// <summary>
+        /// Generates the macroblock grouping
+        /// Assigns the macroblock Ids for each AST
+        /// The macroblocks are cached in the liverunner core
+        /// </summary>
+        /// <param name="syncData"></param>
+        /// <returns></returns>
+        private void GenerateMacroBlocksFromSyncData(GraphSyncData syncData)
+        {
+            List<AssociativeNode> astListToConvert = new List<AssociativeNode>();
+            foreach (Subtree subtree in syncData.AddedSubtrees)
+            {
+                astListToConvert.AddRange(subtree.AstNodes);
+            }
+
+            macroBlockGen.GenerateMacroBlockIDForAST(astListToConvert);
+            macroBlockGen.GenerateMacroBlocks(astListToConvert);
+        }
+
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
@@ -1803,6 +1824,8 @@ namespace ProtoScript.Runners
                 ResetForDeltaExecution();
                 return;
             }
+
+            GenerateMacroBlocksFromSyncData(syncData);
 
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);

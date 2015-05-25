@@ -178,6 +178,15 @@ namespace ProtoCore
             }
         }
 
+        protected void StoreGraphnodeAtMacroBlock(AssociativeGraph.GraphNode graphnode, int macroBlockID = Constants.kInvalidIndex)
+        {
+            if (macroBlockID == Constants.kInvalidIndex)
+            {
+                return;
+            }
+            core.RuntimeMacroBlockList[macroBlockID].GraphNodeList.Add(graphnode);
+        }
+
         /// <summary>
         /// Generates unique identifier for the callsite associated with the graphnode
         /// </summary>

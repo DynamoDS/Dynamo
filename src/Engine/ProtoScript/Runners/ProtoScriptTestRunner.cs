@@ -217,22 +217,22 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
 
-                //ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer();
+                ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer();
 
-                //sequencer.Setup(
-                //    runtimeCore.CurrentExecutive.CurrentDSASMExec, 
-                //    codeBlock.codeBlockId, 
-                //    runtimeCore.StartPC, 
-                //    stackFrame, 
-                //    locals);
-
-                //sequencer.Execute(null);
-
-                runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
+                sequencer.Setup(
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec,
                     codeBlock.codeBlockId,
                     runtimeCore.StartPC,
                     stackFrame,
                     locals);
+
+                sequencer.Execute();
+
+                //runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
+                //    codeBlock.codeBlockId,
+                //    runtimeCore.StartPC,
+                //    stackFrame,
+                //    locals);
 
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
 
@@ -301,6 +301,11 @@ namespace ProtoScript.Runners
         {
             ProtoCore.RuntimeCore runtimeCore = null;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
+
+            ProtoCore.MacroBlockGenerator macroBlockGen = new ProtoCore.MacroBlockGenerator(core);
+            macroBlockGen.GenerateMacroBlockIDForAST(astList);
+            macroBlockGen.GenerateMacroBlocks(astList);
+
             bool succeeded = Compile(astList, core, out blockId);
             if (succeeded)
             {

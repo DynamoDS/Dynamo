@@ -58,7 +58,8 @@ namespace ProtoCore.DSASM
         public List<CodeBlock> CompleteCodeBlocks { get; set; }
 
         public int ExecutingMacroBlock { get; private set; }
-        private List<InstructionStream[]> instrStreamList;// { get; set; } 
+        private InstructionStream[] instrStreamList;
+        public List<ProtoCore.Runtime.MacroBlock> MacroBlockList { get; set; }
         public InstructionStream iStreamCanvas { get; set; }
 
         public DebugServices.EventSink EventSink = new DebugServices.ConsoleEventSink();
@@ -118,7 +119,7 @@ namespace ProtoCore.DSASM
             runtimeSymbols = null;
             procedureTable = null;
             classTable = null;
-            instrStreamList = new List<InstructionStream[]>();
+            instrStreamList = null;
             iStreamCanvas = null;
             CodeBlocks = null;
             CompleteCodeBlocks = null;
@@ -136,21 +137,19 @@ namespace ProtoCore.DSASM
         public InstructionStream GetInstructionStream(int scopeID)
         {
             Validity.Assert(instrStreamList != null);
-            Validity.Assert(instrStreamList.Count > 0);
-            Validity.Assert(ExecutingMacroBlock != Constants.kInvalidIndex);
-            return instrStreamList[ExecutingMacroBlock][scopeID];
+            return instrStreamList[scopeID];
         }
 
-        public InstructionStream[] GetInstructionStreamList(int macroBlockID = 0)
+        public InstructionStream[] GetInstructionStreamList()
         {
             Validity.Assert(instrStreamList != null);
-            return instrStreamList[macroBlockID];
+            return instrStreamList;
         }
 
-        public void AppendInstructionStreamList(InstructionStream[] instrStream)
+        public void SetInstructionStreamList(InstructionStream[] instrStream)
         {
             Validity.Assert(instrStream != null);
-            instrStreamList.Add(instrStream);
+            instrStreamList = instrStream;
         }
     }
 

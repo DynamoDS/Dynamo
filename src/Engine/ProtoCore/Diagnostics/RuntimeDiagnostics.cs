@@ -29,7 +29,7 @@ namespace ProtoCore.Diagnostics
             Validity.Assert(runtimeCore != null);
             Executable exe = runtimeCore.DSExecutable;
             int cnt = 0;
-            InstructionStream[] istreamList = exe.GetInstructionStreamList(macroBlockId);
+            InstructionStream[] istreamList = exe.GetInstructionStreamList();
             foreach (InstructionStream istream in istreamList)
             {
                 cnt += istream.instrList.Count;

@@ -63,9 +63,9 @@ namespace ProtoCore
 
             ApplyUpdate = false;
 
-            DumpByteCode = false;
-            Verbose = false;
-            DumpIL = false;
+            DumpByteCode = true;
+            Verbose = true;
+            DumpIL = true;
 
             GenerateSSA = true;
             ExecuteSSA = true;
@@ -341,6 +341,8 @@ namespace ProtoCore
         //The dynamic string table and function table
         public DynamicVariableTable DynamicVariableTable { get; set; }
         public DynamicFunctionTable DynamicFunctionTable { get; set; }
+        public List<ProtoCore.CompileTime.MacroBlock> MacroBlockList { get; set; }
+        public List<ProtoCore.Runtime.MacroBlock> RuntimeMacroBlockList { get; set; }
 
 
         //Manages injected context data.
@@ -390,6 +392,8 @@ namespace ProtoCore
         public Stack<List<GraphNode>> InlineConditionalBodyGraphNodes { get; set; }
 
         public int newEntryPoint { get; private set; }
+
+        public int CurrentMacroBlockID { get; set; }
 
         public void SetNewEntryPoint(int pc)
         {
@@ -583,11 +587,11 @@ namespace ProtoCore
 
             Validity.AssertExpiry();
             Options = options;
-            
+
             Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
 
-            FunctionTable = new FunctionTable(); 
+            FunctionTable = new FunctionTable();
             Langverify = new LangVerify();
 
 
@@ -660,7 +664,7 @@ namespace ProtoCore
 
 
             ParsingMode = ParseMode.Normal;
-            
+
             IsParsingPreloadedAssembly = false;
             IsParsingCodeBlockNode = false;
             ImportHandler = null;
@@ -675,6 +679,8 @@ namespace ProtoCore
             InlineConditionalBodyGraphNodes = new Stack<List<GraphNode>>();
 
             newEntryPoint = Constants.kInvalidIndex;
+            CurrentMacroBlockID = Constants.kInvalidIndex;
+            RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
         }
 
         // The unique subscript for SSA temporaries
@@ -951,7 +957,7 @@ namespace ProtoCore
                     }
                 }
             }
-            ExprInterpreterExe.AppendInstructionStreamList(instrStream);
+            ExprInterpreterExe.SetInstructionStreamList(instrStream);
         }
 
 
@@ -1005,7 +1011,7 @@ namespace ProtoCore
             {
                 BfsBuildInstructionStreams(CodeBlockList[n], istream);
             }
-            DSExecutable.AppendInstructionStreamList(istream);
+            DSExecutable.SetInstructionStreamList(istream);
 
             GenerateExprExe();
             DSExecutable.FunctionTable = FunctionTable;
