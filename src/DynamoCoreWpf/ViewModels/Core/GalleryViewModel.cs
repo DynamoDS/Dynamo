@@ -86,10 +86,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             contents = GalleryContents.Load(galleryFilePath).GalleryUiContents;
 
             //Set image path relative to gallery Directory
-            foreach (GalleryContent content in contents)
-            {
-                content.ImagePath = Path.Combine(galleryDirectory, content.ImagePath);
-            }
+            SetImagePath(galleryDirectory);
 
             currentContent = contents.FirstOrDefault();
             if (currentContent != null) //if contents is not empty
@@ -101,6 +98,30 @@ namespace Dynamo.Wpf.ViewModels.Core
             MoveNextCommand = new DelegateCommand(p => MoveIndex(true), o => contents.Count > 1);
             MovePrevCommand = new DelegateCommand(p => MoveIndex(false), o => contents.Count > 1);
             CloseGalleryCommand = new DelegateCommand(p => dvm.CloseGalleryCommand.Execute(null), o => true);
+        }
+
+        /// <summary>
+        /// Set image path relative to the gallery Directory.
+        /// It looks for the images side-by-side with the gallerycontents.xml,
+        /// if it's can't be found, it looks one level up in gallery/Data
+        /// </summary>
+        /// <param name="galleryDirectory">
+        /// The directory in which the gallerycontents.xml resides
+        /// </param>
+        private void SetImagePath(string galleryDirectory)
+        {
+            foreach (GalleryContent content in contents)
+            {
+                var imagePath = Path.Combine(galleryDirectory, content.ImagePath);
+                if (File.Exists(imagePath))
+                {
+                    content.ImagePath = imagePath;
+                }
+                else
+                {
+                    content.ImagePath = Path.Combine(galleryDirectory, @"..\Data", content.ImagePath);
+                }
+            }
         }
 
         /// <summary>

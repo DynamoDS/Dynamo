@@ -457,8 +457,6 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestShowHideGallery(bool showGallery)
         {
-            //Disable for now
-            return;
 
             if (showGallery)
             {

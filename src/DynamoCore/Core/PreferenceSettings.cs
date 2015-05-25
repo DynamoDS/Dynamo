@@ -172,6 +172,7 @@ namespace Dynamo
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
+            BackupFiles = new List<string>();
         }
 
         /// <summary>
