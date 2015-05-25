@@ -16,6 +16,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Dynamo.Models;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -33,9 +36,17 @@ namespace Dynamo.UI.Controls
             get { return DataContext as SearchViewModel; }
         }
 
+        private WorkspaceView WorkspaceView;
+
         public InCanvasSearchControl()
         {
             InitializeComponent();
+
+            this.Loaded += (sender, e) =>
+            {
+                if (WorkspaceView == null)
+                    WorkspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this.Parent);
+            };
         }
 
         private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
@@ -70,6 +81,9 @@ namespace Dynamo.UI.Controls
             var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
+                Point targetLocation = this.TranslatePoint(new Point(0, 0), WorkspaceView);
+
+                searchElement.Position = targetLocation;
                 searchElement.ClickedCommand.Execute(null);
             }
         }
