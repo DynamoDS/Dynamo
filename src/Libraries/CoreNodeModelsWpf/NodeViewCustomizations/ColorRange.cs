@@ -13,6 +13,7 @@ using Dynamo.UI;
 
 using DSCoreNodesUI;
 using Dynamo.Models;
+using ProtoCore.Mirror;
 using Color = DSCore.Color;
 
 namespace Dynamo.Wpf.Nodes
@@ -41,63 +42,78 @@ namespace Dynamo.Wpf.Nodes
         {
             model.DispatchOnUIThread(delegate
             {
+                if (!model.InPorts[0].Connectors.Any() ||
+                    !model.InPorts[1].Connectors.Any())
+                {
+                    return;
+                }
+
                 var colorsNode = model.InPorts[0].Connectors[0].Start.Owner;
                 var colorsIndex = model.InPorts[0].Connectors[0].Start.Index;
+                var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
+                var colorsMirror = dm.EngineController.GetMirror(startId);
+                var colors = GetColorsFromMirrorData(colorsMirror);
+
                 var valuesNode = model.InPorts[1].Connectors[0].Start.Owner;
                 var valuesIndex = model.InPorts[1].Connectors[0].Start.Index;
-
-                var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
                 var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
-
-                var colorsMirror = dm.EngineController.GetMirror(startId);
                 var valuesMirror = dm.EngineController.GetMirror(endId);
-
-                List<Color> colors = new List<Color>();
-                List<double> values = new List<double>();
-
-                if (colorsMirror != null && colorsMirror.GetData() != null)
-                {
-                    var data = colorsMirror.GetData();
-                    if (data != null)
-                    {
-                        if (data.IsCollection)
-                        {
-                            colors.AddRange(data.GetElements().Select(e => e.Data).OfType<Color>());
-                        }
-                        else
-                        {
-                            var color = data.Data as Color;
-                            if (color != null)
-                                colors.Add(color);
-                        }
-                    }
-                }
-
-                if (valuesMirror != null && valuesMirror.GetData() != null)
-                {
-                    var data = valuesMirror.GetData();
-                    if (data.IsCollection)
-                    {
-                        var elements = data.GetElements().Select(e => e.Data);
-                        foreach (var element in elements)
-                        {
-                            double parsed;
-                            if (TryConvertToDouble(element, out parsed))
-                                values.Add(parsed);
-                        }
-                    }
-                    else
-                    {
-                        double parsed;
-                        if (TryConvertToDouble(data.Data, out parsed))
-                            values.Add(parsed);
-                    }
-                }
+                var values = GetValuesFromMirrorData(valuesMirror);
 
                 var bmp = CreateColorRangeBitmap(colors, values);
                 drawPlane.Source = bmp;
 
             });
+        }
+
+        private static List<double> GetValuesFromMirrorData(RuntimeMirror valuesMirror)
+        {
+            var values = new List<double>();
+
+            if (valuesMirror == null || valuesMirror.GetData() == null) return values;
+
+            var data = valuesMirror.GetData();
+            if (data.IsCollection)
+            {
+                var elements = data.GetElements().Select(e => e.Data);
+                foreach (var element in elements)
+                {
+                    double parsed;
+                    if (TryConvertToDouble(element, out parsed))
+                        values.Add(parsed);
+                }
+            }
+            else
+            {
+                double parsed;
+                if (TryConvertToDouble(data.Data, out parsed))
+                    values.Add(parsed);
+            }
+            return values;
+        }
+
+        private static List<Color> GetColorsFromMirrorData(RuntimeMirror colorsMirror)
+        {
+            var colors = new List<Color>();
+
+            if (colorsMirror == null || colorsMirror.GetData() == null) return colors;
+
+            var data = colorsMirror.GetData();
+            if (data != null)
+            {
+                if (data.IsCollection)
+                {
+                    colors.AddRange(data.GetElements().Select(e => e.Data).OfType<Color>());
+                }
+                else
+                {
+                    var color = data.Data as Color;
+                    if (color != null)
+                        colors.Add(color);
+                }
+            }
+
+            return colors;
         }
 
         public void Dispose() {}
@@ -125,7 +141,7 @@ namespace Dynamo.Wpf.Nodes
             return bitmap;
         }
 
-        private bool TryConvertToDouble(object value, out double parsed)
+        private static bool TryConvertToDouble(object value, out double parsed)
         {
             parsed = default(double);
 

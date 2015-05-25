@@ -268,15 +268,14 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDictionaryMarshalling_DStoCS_CStoDS()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4035
             String code =
-            @"             [Associative]              {                dummy = Dummy.Dummy();                dictionary =                 {                     dummy.CreateDictionary() => dict;                    dummy.AddData(dict, ""ABCD"", 22);                    dummy.AddData(dict, ""xyz"", 11);                    dummy.AddData(dict, ""teas"", 12);                }                sum = dummy.SumAges(dictionary);             }            ";
+            @"                dummy = Dummy.Dummy();                dictionary =                 {                     dummy.CreateDictionary() => dict;                    dummy.AddData(dict, ""ABCD"", 22) => dict;                    dummy.AddData(dict, ""xyz"", 11) => dict;                    dummy.AddData(dict, ""teas"", 12) => dict;                }                sum = dummy.SumAges(dictionary);            ";
             Type dummy = typeof (FFITarget.Dummy);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
-            ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 45, BlockIndex = 1 } };
+            ValidationData[] data = { new ValidationData { ValueName = "sum", ExpectedValue = 45, BlockIndex = 0 } };
             Assert.IsTrue(ExecuteAndVerify(code, data) == 0); //runs without any error
         }
 
