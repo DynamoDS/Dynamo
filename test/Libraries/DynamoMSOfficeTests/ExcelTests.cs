@@ -662,7 +662,7 @@ namespace Dynamo.Tests
             var list = writeNode.CachedValue.GetElements();
 
             // input array is nested empty list, {{}, {}, {}}
-            // Ensure output is {{999, 999, 999}, {999, 999, 999}, {999, "", 999}}
+            // Ensure output is {{99, 99, 99}, {99, 99, 99}, {99, "", 99}}
             Assert.AreEqual(3, list.Count);
 
             Assert.IsTrue(list[0].IsCollection);
