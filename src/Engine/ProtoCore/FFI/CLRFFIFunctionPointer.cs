@@ -246,91 +246,14 @@ namespace ProtoFFI
             return ReflectionInfo.Invoke(thisObject, parameters);
         }
 
-        private string ErrorString(System.Exception ex)
+        protected object InvokeFunctionPointerNoThrow(ProtoCore.Runtime.Context c, Interpreter dsi, object thisObject, object[] parameters)
         {
-            if (ex is System.InvalidOperationException)
-                return ex.Message;
-
-            string msg = (ex == null) ? "" : ex.Message;
-            if (string.IsNullOrEmpty(msg) || msg.Contains("operation failed"))
-                return string.Format("{0}.{1} operation failed.", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
-
-            return string.Format("{0}.{1} operation failed. \n{2}", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
-        }
-
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
-        {
-            List<Object> parameters = new List<object>();
-            List<StackValue> s = dsi.runtime.rmem.Stack;
-            Object thisObject = null;
-            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
-            if (!ReflectionInfo.IsStatic)
-            {
-                try
-                {
-                    thisObject = marshaller.UnMarshal(s.Last(), c, dsi, ReflectionInfo.DeclaringType);
-                }
-                catch (InvalidOperationException)
-                {
-                    string message = String.Format(Resources.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
-                    return null;
-                }
-
-                if (thisObject == null)
-                    return null; //Can't call a method on null object.
-            }
-
-            ParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
-            for (int i = 0; i < mArgTypes.Length; ++i)
-            {
-                // Comment Jun: FFI function stack frames do not contain locals
-                int locals = 0;
-                int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
-                StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
-                try
-                {
-                    Type paramType = paraminfos[i].ParameterType;
-                    object param = null;
-                    if (opArg.IsDefaultArgument)
-                        param = Type.Missing;
-                    else 
-                        param = marshaller.UnMarshal(opArg, c, dsi, paramType);
-
-                    //null is passed for a value type, so we must return null 
-                    //rather than interpreting any value from null. fix defect 1462014 
-                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
-                    {
-                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
-
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation,
-                            string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
-                        
-                            return null;
-                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
-                        
-                    }
-
-                    parameters.Add(param);
-                }
-                catch (System.InvalidCastException ex)
-                {
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
-                    return null;
-                }
-                catch (InvalidOperationException)
-                {
-                    string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
-                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
-                    return null;
-                }
-            }
-
             object ret = null;
-            StackValue dsRetValue = StackValue.Null; 
+            StackValue dsRetValue = StackValue.Null;
             try
             {
-                ret = InvokeFunctionPointer(thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+                FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
+                ret = InvokeFunctionPointer(thisObject, parameters);
                 //Reduce to singleton if the attribute is specified.
                 ret = ReflectionInfo.ReduceReturnedCollectionToSingleton(ret);
                 dsRetValue = marshaller.Marshal(ret, c, dsi, mReturnType);
@@ -418,6 +341,89 @@ namespace ProtoFFI
 
             return dsRetValue;
         }
+
+        private string ErrorString(System.Exception ex)
+        {
+            if (ex is System.InvalidOperationException)
+                return ex.Message;
+
+            string msg = (ex == null) ? "" : ex.Message;
+            if (string.IsNullOrEmpty(msg) || msg.Contains("operation failed"))
+                return string.Format("{0}.{1} operation failed.", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+
+            return string.Format("{0}.{1} operation failed. \n{2}", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
+        }
+
+        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
+        {
+            List<Object> parameters = new List<object>();
+            List<StackValue> s = dsi.runtime.rmem.Stack;
+            Object thisObject = null;
+            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
+            if (!ReflectionInfo.IsStatic)
+            {
+                try
+                {
+                    thisObject = marshaller.UnMarshal(s.Last(), c, dsi, ReflectionInfo.DeclaringType);
+                }
+                catch (InvalidOperationException)
+                {
+                    string message = String.Format(Resources.kFFIFailedToObtainThisObject, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
+                    return null;
+                }
+
+                if (thisObject == null)
+                    return null; //Can't call a method on null object.
+            }
+
+            ParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
+            for (int i = 0; i < mArgTypes.Length; ++i)
+            {
+                // Comment Jun: FFI function stack frames do not contain locals
+                int locals = 0;
+                int relative = 0 - ProtoCore.DSASM.StackFrame.kStackFrameSize - locals - i - 1;
+                StackValue opArg = dsi.runtime.rmem.GetAtRelative(relative);
+                try
+                {
+                    Type paramType = paraminfos[i].ParameterType;
+                    object param = null;
+                    if (opArg.IsDefaultArgument)
+                        param = Type.Missing;
+                    else 
+                        param = marshaller.UnMarshal(opArg, c, dsi, paramType);
+
+                    //null is passed for a value type, so we must return null 
+                    //rather than interpreting any value from null. fix defect 1462014 
+                    if (!paramType.IsGenericType && paramType.IsValueType && param == null)
+                    {
+                        //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
+
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation,
+                            string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                        
+                            return null;
+                        //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                        
+                    }
+
+                    parameters.Add(param);
+                }
+                catch (System.InvalidCastException ex)
+                {
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
+                    return null;
+                }
+                catch (InvalidOperationException)
+                {
+                    string message = String.Format(Resources.kFFIFailedToObtainObject, paraminfos[i].ParameterType.Name, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                    dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, message);
+                    return null;
+                }
+            }
+
+            return InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+        }
     }
 
     /// <summary>
@@ -435,6 +441,10 @@ namespace ProtoFFI
             List<StackValue> s = dsi.runtime.rmem.Stack;
             FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
 
+            var thisObject = marshaller.UnMarshal(s.Last(), c, dsi, ReflectionInfo.DeclaringType);
+            //Notify marshler for dispose.
+            marshaller.OnDispose(s.Last(), c, dsi);
+
             Object retVal = null;
             if (ReflectionInfo.IsWrapperOf(CLRModuleType.DisposeMethod))
             {
@@ -442,7 +452,7 @@ namespace ProtoFFI
                 // Dispose() method in their classes, they will share a same
                 // Dispose() method from CLRModuleType.DisposeMethod. We need
                 // to manually dispose them.
-                var thisObject = marshaller.UnMarshal(s.Last(), c, dsi, typeof(IDisposable));
+
                 if (thisObject != null && thisObject is IDisposable)
                 {
                     var disposable = thisObject as IDisposable;
@@ -451,9 +461,8 @@ namespace ProtoFFI
             }
             else
             {
-                retVal = base.Execute(c, dsi);
+                retVal = InvokeFunctionPointerNoThrow(c, dsi, thisObject, null);
             }
-            marshaller.OnDispose(s.Last(), c, dsi); //Notify marshler for dispose.
 
             return retVal;
         }

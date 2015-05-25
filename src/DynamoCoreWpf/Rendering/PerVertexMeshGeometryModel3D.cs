@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-
 using HelixToolkit.Wpf.SharpDX;
-
 using SharpDX;
 using SharpDX.Direct3D11;
-
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.Rendering
 {
     public class PerVertexMeshGeometryModel3D : MeshGeometryModel3D
     {

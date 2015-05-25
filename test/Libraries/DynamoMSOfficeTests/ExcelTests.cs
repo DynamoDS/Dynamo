@@ -626,7 +626,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, list.Count());
 
             // get data returns 1d array
-            // input array is {2, null, 3}
+            // input array is {2, {}, 3}
             var rowList = list[0].GetElements();
             Assert.AreEqual(1, rowList.Count());
             Assert.AreEqual(2, rowList[0].Data);
@@ -638,6 +638,78 @@ namespace Dynamo.Tests
             rowList = list[2].GetElements();
             Assert.AreEqual(1, rowList.Count());
             Assert.AreEqual(3, rowList[0].Data);
+
+        }
+
+        [Test]
+        public void CanWriteNestedEmptyListToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNestedEmptyListToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filename.Value));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // input array is nested empty list, {{}, {}, {}}
+            // Ensure output is {{99, 99, 99}, {99, 99, 99}, {99, "", 99}}
+            Assert.AreEqual(3, list.Count);
+
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(3, rowList.Count);
+            Assert.AreEqual(99, rowList[0].Data);
+            Assert.AreEqual(99, rowList[1].Data);
+            Assert.AreEqual(99, rowList[2].Data);
+
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.AreEqual(3, rowList.Count);
+            Assert.AreEqual(99, rowList[0].Data);
+            Assert.AreEqual(99, rowList[1].Data);
+            Assert.AreEqual(99, rowList[2].Data);
+
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual(3, rowList.Count);
+            Assert.AreEqual(99, rowList[0].Data);
+            Assert.AreEqual(null, rowList[1].Data);
+            Assert.AreEqual(99, rowList[2].Data);
+
+        }
+
+        [Test]
+        public void CanWriteEmptyListToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteEmptyListToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // input array is empty list, {}
+            // Ensure output is also empty list
+            Assert.AreEqual(0, list.Count);
 
         }
 

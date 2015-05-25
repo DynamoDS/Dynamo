@@ -388,6 +388,10 @@ namespace ProtoFFI
                 if (isStaticClass && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
                     continue;
 
+                // Mono issue: m == m.GetBaseDefinition() for methods from Object class returns True instead of False
+                if (m.DeclaringType == typeof(object) && m == m.GetBaseDefinition())
+                    continue;
+
                 //Don't include overriden methods or generic methods
                 if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
                 {

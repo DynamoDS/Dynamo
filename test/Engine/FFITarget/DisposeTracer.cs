@@ -34,15 +34,25 @@ namespace FFITarget
     public class HiddenDisposer : IDisposable
     {
         private HiddenDisposeTracer tracer = null;
+        private int? num = null; 
 
         public HiddenDisposer(HiddenDisposeTracer tracer)
         {
             this.tracer = tracer;
+            num = 123;
         }
 
         public void Dispose()
         {
+            num = null;
             tracer.DisposeCount += 1;
+        }
+
+        public override int GetHashCode()
+        {
+            if (num == null)
+                throw new Exception("num");
+            return num.GetHashCode();
         }
     }
 
