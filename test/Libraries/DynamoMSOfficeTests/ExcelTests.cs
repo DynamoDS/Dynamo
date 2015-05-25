@@ -714,6 +714,94 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanOverWriteToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\OverWriteExcelSheet.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filename.Value));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // input array is {{999, 999, 999}, {999, 999, 999}, {999, 999, 999}};
+            Assert.AreEqual(3, list.Count);
+            
+            // file is overwritten fully as "overwrite" arg to "WriteToFile" node is true
+            for (int i = 0; i < list.Count; i++)
+            {
+                Assert.IsTrue(list[i].IsCollection);
+
+                var rowList = list[i].GetElements();
+                Assert.AreEqual(3, rowList.Count);
+
+                Assert.AreEqual(999, rowList[0].Data);
+                Assert.AreEqual(999, rowList[1].Data);
+                Assert.AreEqual(999, rowList[2].Data);
+            }
+            
+        }
+
+        [Test]
+        public void CanOverWritePartiallyToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\OverWritePartialExcelSheet.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filename.Value));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // input array is {{999, 999, 999}, {999, 999, 999}, {999, 999, 999}};
+            Assert.AreEqual(5, list.Count);
+
+            // File is overwritten only partially as "overwrite" arg to "WriteToFile" node is false
+            for (int i = 0; i < list.Count; i++)
+            {
+                Assert.IsTrue(list[i].IsCollection);
+                var rowList = list[i].GetElements();
+                Assert.AreEqual(5, rowList.Count);
+
+                if (i == 0 || i == 4)
+                {
+                    Assert.AreEqual(1, rowList[0].Data);
+                    Assert.AreEqual(1, rowList[1].Data);
+                    Assert.AreEqual(1, rowList[2].Data);
+                    Assert.AreEqual(1, rowList[3].Data);
+                    Assert.AreEqual(1, rowList[4].Data);
+                }
+                else
+                {
+                    Assert.AreEqual(1, rowList[0].Data);
+                    Assert.AreEqual(999, rowList[1].Data);
+                    Assert.AreEqual(999, rowList[2].Data);
+                    Assert.AreEqual(999, rowList[3].Data);
+                    Assert.AreEqual(1, rowList[4].Data);
+                }
+            }
+
+        }
+
+        [Test]
         public void CanWriteNullValuesToExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel.dyn");
