@@ -1,0 +1,31 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>36045d03-06de-4cc2-a7a5-94f9cc6ac8ee</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="36045d03-06de-4cc2-a7a5-94f9cc6ac8ee" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="250.5" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DoubleInput guid="a2d35e78-fc1a-4c0f-ba41-c6b6e7c79985" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="274.5" y="224" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>b2e6d80a-27d6-4da6-98b0-783e7b7b976e</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="b2e6d80a-27d6-4da6-98b0-783e7b7b976e" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="298.5" y="248" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>184470e6-e4d2-47de-bfc7-2d39bdc011b4</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="184470e6-e4d2-47de-bfc7-2d39bdc011b4" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="322.5" y="272" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  
+  <DeleteModelCommand>
+    <ModelGuid>36045d03-06de-4cc2-a7a5-94f9cc6ac8ee</ModelGuid>
+	<ModelGuid>a2d35e78-fc1a-4c0f-ba41-c6b6e7c79985</ModelGuid>
+	<ModelGuid>b2e6d80a-27d6-4da6-98b0-783e7b7b976e</ModelGuid>
+  </DeleteModelCommand>
+</Commands>

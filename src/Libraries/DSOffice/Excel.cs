@@ -288,8 +288,8 @@ namespace DSOffice
         ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
         ///     with sublists to be written in successive rows. Rows and columns are
         ///     zero-indexed; for example, the value in the data list at [0,0] will
-        ///     be written to cell A1. Null values are written to Excel as empty cells.
-        ///     This node requires Microsoft Excel to be installed. 
+        ///     be written to cell A1. Null values and empty lists are written to Excel 
+        ///     as empty cells. This node requires Microsoft Excel to be installed. 
         /// </summary>
         /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
         /// <param name="sheetName">Name of the workseet to write data to.</param>
@@ -298,12 +298,13 @@ namespace DSOffice
         ///     Start column for writing data. Enter 0 for col 1, 1 for column 2, ect.
         /// </param>
         /// <param name="data">Data to write to the spreadsheet.</param>
+        /// <param name="overWrite"></param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data)
+        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
             WorkBook wb = new WorkBook(filePath);
-            WorkSheet ws = new WorkSheet (wb, sheetName);
+            WorkSheet ws = new WorkSheet(wb, sheetName, overWrite);
             ws = ws.WriteData(startRow, startCol, data);
             return ws.Data;
         }
@@ -348,6 +349,14 @@ namespace DSOffice
             {
                 if(input[i] != null)
                     cols = Math.Max(cols, input[i].GetUpperBound(0) + 1);
+            }
+
+            // if the input data is an empty list or a list of nested empty lists
+            // return an empty cell
+            if(rows == 0 || cols == 0)
+            {
+                rows = cols = 1;
+                return new object[,] { { "" } };
             }
 
             object[,] output = new object[rows, cols];
@@ -432,7 +441,8 @@ namespace DSOffice
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="sheetName"></param>
-        internal WorkSheet (WorkBook wbook, string sheetName)
+        /// <param name="overWrite"></param>
+        internal WorkSheet(WorkBook wbook, string sheetName, bool overWrite = false)
         {
             wb = wbook;
 
@@ -442,15 +452,20 @@ namespace DSOffice
             // If you find one, then use it.
             if (wSheet != null)
             {
-                ws = wSheet.ws;
+                if (overWrite)
+                {
+                    wSheet.ws.Delete();
+                }
+                else
+                {
+                    ws = wSheet.ws;
+                    return;
+                }
             }
             // If you don't find one, create one.
-            else
-            {
-                ws = (Worksheet)wb.Add();
-                ws.Name = sheetName;
-                wb.Save();
-            }
+            ws = (Worksheet)wb.Add();
+            ws.Name = sheetName;
+            wb.Save();
         }
 
         internal WorkSheet(Worksheet ws, WorkBook wb)

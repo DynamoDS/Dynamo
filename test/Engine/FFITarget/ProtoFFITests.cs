@@ -423,6 +423,56 @@ namespace FFITarget
             };
         }
 
+        public static Hashtable GetHashTable()
+        {
+            var hashTable = new Hashtable();
+            hashTable.Add("color", "green");
+            hashTable.Add("weight", 42);
+            hashTable.Add(37, "thirty-seven");
+
+            return hashTable;
+        }
+
+        public static object GetValueFromHashTable(Hashtable table, object key)
+        {
+            if (table.Contains(key))
+                return table[key];
+            else
+                return 1024;
+        }
+
+        public static object GetValueFromDictionary(Dictionary<object, object> dict, object key)
+        {
+            if (dict.ContainsKey(key))
+                return dict[key];
+            else
+                return 1024;
+        }
+
+        public static object GetObjectValue( Dictionary<String, object> result, String key)
+        {
+            if (result.ContainsKey(key))
+            {
+                return result[key];
+            }
+            else
+            {
+                return 37;
+            }
+        }
+
+        public static String GetStringValue(Dictionary<String, String> result, String key)
+        {
+            if (result.ContainsKey(key))
+            {
+                return result[key];
+            }
+            else
+            {
+                return "novalue";
+            }
+        }
+
         public static object ReturnObject(object x)
         {
             return x;

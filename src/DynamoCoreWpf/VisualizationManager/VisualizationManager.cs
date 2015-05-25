@@ -15,6 +15,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
