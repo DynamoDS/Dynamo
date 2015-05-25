@@ -1,30 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
-using System.Dynamic;
 using System.Linq;
-using System.Net.Configuration;
-using System.Text;
-using System.Threading;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-
 using DSCore;
-
 using MIConvexHull;
-
-using Tessellation;
 using Tessellation.Adapters;
+using Math = System.Math;
 
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structured surface analysis data.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
     public class SurfaceData : ISurfaceData<UV, double>, IGraphicItem
     {
         private Color[,] colorMap ;
@@ -378,7 +368,7 @@ namespace Analysis
     {
         public static bool IsAlmostEqualTo(this UV a, UV b)
         {
-            return System.Math.Abs(a.U - b.U) < 1.0e-6 && System.Math.Abs(a.V - b.V) < 1.0e-6;
+            return Math.Abs(a.U - b.U) < 1.0e-6 && Math.Abs(a.V - b.V) < 1.0e-6;
         }
     }
 }

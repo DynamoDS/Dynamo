@@ -1,0 +1,33 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>7dc3b638-284f-4296-a793-8185ef42cd71</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="7dc3b638-284f-4296-a793-8185ef42cd71" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="250.5" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>2dc24d36-d5d9-4344-933c-1d61045c19c3</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="2dc24d36-d5d9-4344-933c-1d61045c19c3" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="274.5" y="224" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>e40824fd-9da5-4666-9c9c-0148f80b3dcc</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="e40824fd-9da5-4666-9c9c-0148f80b3dcc" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="298.5" y="248" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="104" Y="137" Width="404" Height="286" IsCrossSelection="false" />
+
+  <CreateAnnotationCommand AnnotationText="&lt;Click here to edit the group title&gt;" X="0" Y="0" DefaultPosition="true">
+    <ModelGuid>06b0de20-0ed7-4cc4-8d4e-c15396a95a00</ModelGuid>
+  </CreateAnnotationCommand>
+  
+  <UngroupModelCommand>
+    <ModelGuid>e40824fd-9da5-4666-9c9c-0148f80b3dcc</ModelGuid>
+    <ModelGuid>2dc24d36-d5d9-4344-933c-1d61045c19c3</ModelGuid>
+  </UngroupModelCommand>
+</Commands>

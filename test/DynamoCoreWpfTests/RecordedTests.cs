@@ -17,11 +17,9 @@ using Dynamo.ViewModels;
 using DynamoShapeManager;
 using NUnit.Framework;
 using Dynamo.UI;
-using DynamoUtilities;
 using System.Reflection;
 using TestServices;
-using Dynamo.Wpf.ViewModels.Core;
-using Microsoft.Practices.Prism.Logging;
+
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
@@ -367,7 +365,7 @@ namespace DynamoCoreWpfTests
             var cmdOne = new DynamoModel.CreateNoteCommand(nodeId, text, x, y, defaultPos);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.NoteText, cmdTwo.NoteText);
             Assert.AreEqual(cmdOne.X, cmdTwo.X, 0.000001);
             Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
@@ -441,7 +439,7 @@ namespace DynamoCoreWpfTests
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.PortIndex, cmdTwo.PortIndex);
             Assert.AreEqual(cmdOne.Type, cmdTwo.Type);
             Assert.AreEqual(cmdOne.ConnectionMode, cmdTwo.ConnectionMode);
@@ -517,7 +515,7 @@ namespace DynamoCoreWpfTests
                 modelGuid, name, category, description, makeCurrent);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
             Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
             Assert.AreEqual(cmdOne.Category, cmdTwo.Category);
             Assert.AreEqual(cmdOne.Description, cmdTwo.Description);
@@ -664,8 +662,7 @@ namespace DynamoCoreWpfTests
             AssertPreviewValue("04f6dab5-0a0b-4563-9f20-d0e58fcae7a5", 1.0);
         }
 
-        [Test, Category("Failure")]
-        
+        [Test]
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", (commandTag) =>
@@ -718,6 +715,7 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
+
         [Test, RequiresSTA]
         public void TestRunEnabledButtonCanBeDisabled()
         {
@@ -775,6 +773,7 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
+
         [Test]
         public void Defect_MAGN_2144_CN()
         {
@@ -829,6 +828,7 @@ namespace DynamoCoreWpfTests
 
             });
         }
+
         [Test, RequiresSTA]
         public void TestSwitchTabCommand()
         {
@@ -837,11 +837,129 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(cmdOne.WorkspaceModelIndex, cmdTwo.WorkspaceModelIndex);
         }
 
+        [Test, RequiresSTA]
+        public void TestCreateNodeCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestCreateNodeCommandWithMultyGuids.xml");
+
+            // 1 Number node + 1 CodeBlock node
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            // 1 connection between them
+            Assert.AreEqual(1, workspace.Connectors.Count());
+
+            // Check if guids correct
+            var node = GetNode("612e4917-9b8d-4660-906d-972bb620dd68");
+            Assert.NotNull(node);
+            node = GetNode("25409e47-e381-41b1-9dfa-d25a32807017");
+            Assert.NotNull(node);
+        }
+
+        [Test, RequiresSTA]
+        public void TestCreateNoteCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestCreateNoteCommandWithMultiGuids.xml");
+
+            // Should be only 1 note
+            Assert.AreEqual(1, workspace.Notes.Count);
+
+            // Check if guid correct
+            var node = GetNode("682adbae-629f-4c15-b1b4-8af22c2f850c");
+            Assert.NotNull(node);
+        }
+
+        [Test, RequiresSTA]
+        public void TestSelectModelCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestSelectModelCommandWithMultiGuids.xml");
+
+            // Should be 2 selected nodes
+            Assert.AreEqual(2, Dynamo.Selection.DynamoSelection.Instance.Selection.Count);
+
+            // Check if guids correct
+            var node = GetNode("f4e3437f-7512-42dc-a5be-539ad9cfee98");
+            Assert.NotNull(node);
+            node = GetNode("cd8fe247-6caf-47df-aef8-c8a90ee03b4e");
+            Assert.NotNull(node);
+            node = GetNode("a5f66fe1-816e-497a-b422-18f60b675eac");
+            Assert.NotNull(node);
+        }
+
+        [Test, RequiresSTA]
+        public void TestMakeConnectionCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestMakeConnectionCommandWithMultiGuids.xml");
+
+            // 1 Number node + 1 CodeBlock node
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            // Should be only 1 connection
+            Assert.AreEqual(1, workspace.Connectors.Count());
+        }
+
+        [Test, RequiresSTA]
+        public void TestDeleteModelCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestDeleteModelCommandWithMultiGuids.xml");
+
+            // Only 1 node should left after multiple deletion
+            Assert.AreEqual(1, workspace.Nodes.Count);
+
+            var node = GetNode("184470e6-e4d2-47de-bfc7-2d39bdc011b4");
+            Assert.NotNull(node);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModelEventCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestModelEventCommandWithMultiGuids.xml");
+
+            // 2 nodes
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            // Sould contain  3 Input ports
+            var node = GetNode("4ac8c08a-da16-422d-a40d-ff465bac90d8") as NodeModel;
+            Assert.AreEqual(3, node.InPorts.Count);
+
+            // Sould contain  2 Input ports
+            node = GetNode("9aa1af8a-d16d-4cb8-92d9-db9dc7bd0e98") as NodeModel;
+            Assert.AreEqual(2, node.InPorts.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUpdateModelValueCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestUpdateModelValueCommandWithMultiGuids.xml");
+
+            // 3 nodes
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            // All Number nodes should contain value 5
+            Assert.AreEqual(3, workspace.Nodes.OfType<DoubleInput>().Count(node => node.Value == "5"));
+        }
+
+        [Test, RequiresSTA]
+        public void TestUngroupModelCommandWithMultiGuids()
+        {
+            RunCommandsFromFile("TestUngroupModelCommandWithMultiGuids.xml");
+
+            // 3 nodes
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            // 1 group
+            Assert.AreEqual(1, workspace.Annotations.Count());
+
+            var group = workspace.Annotations.First();
+
+            // Should contain only 1 NodeModel
+            Assert.AreEqual(1, group.SelectedModels.Count());
+            Assert.IsTrue(group.SelectedModels.Any(m => m.GUID == Guid.Parse("7dc3b638-284f-4296-a793-8185ef42cd71")));
+        }
+
         #endregion
 
         #region General Node Operations Test Cases
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void MultiPassValidationSample()
         {
             RunCommandsFromFile("MultiPassValidationSample.xml", (commandTag) =>
@@ -861,7 +979,7 @@ namespace DynamoCoreWpfTests
             });
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
@@ -875,7 +993,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestModifyPythonNodesUndo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndo.xml");
@@ -889,7 +1007,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("# Modification 2", pvarin.Script);
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void TestModifyPythonNodesUndoRedo()
         {
             RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
@@ -903,7 +1021,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void CreateAndUseCustomNode()
         {
             RunCommandsFromFile("CreateAndUseCustomNode.xml");

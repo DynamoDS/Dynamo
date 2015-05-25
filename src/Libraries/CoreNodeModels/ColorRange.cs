@@ -32,9 +32,6 @@ namespace DSCoreNodesUI
 
             RegisterAllPorts();
 
-
-            ArgumentLacing = LacingStrategy.Disabled;
-
             this.PropertyChanged += ColorRange_PropertyChanged; 
             
             ShouldDisplayPreviewCore = false;

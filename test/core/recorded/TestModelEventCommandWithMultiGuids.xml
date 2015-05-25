@@ -1,0 +1,15 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>4ac8c08a-da16-422d-a40d-ff465bac90d8</ModelGuid>
+    <DSCoreNodesUI.CreateList guid="4ac8c08a-da16-422d-a40d-ff465bac90d8" type="DSCoreNodesUI.CreateList" nickname="List.Create" x="250.5" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1" />
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>9aa1af8a-d16d-4cb8-92d9-db9dc7bd0e98</ModelGuid>
+    <DSCoreNodesUI.CreateList guid="9aa1af8a-d16d-4cb8-92d9-db9dc7bd0e98" type="DSCoreNodesUI.CreateList" nickname="List.Create" x="274.5" y="224" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1" />
+  </CreateNodeCommand>
+  <ModelEventCommand EventName="AddInPort">
+    <ModelGuid>4ac8c08a-da16-422d-a40d-ff465bac90d8</ModelGuid>
+	<ModelGuid>4ac8c08a-da16-422d-a40d-ff465bac90d8</ModelGuid>
+    <ModelGuid>9aa1af8a-d16d-4cb8-92d9-db9dc7bd0e98</ModelGuid>
+  </ModelEventCommand>
+</Commands>
