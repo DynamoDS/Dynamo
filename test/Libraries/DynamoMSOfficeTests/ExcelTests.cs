@@ -387,6 +387,51 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void CanReadExcelAsStrings()
+        {
+
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ReadExcelAsStrings.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            // watch displays the data from the Read node
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+
+           ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
+
+            Assert.AreEqual(5, list.Count());
+
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual("1", rowList[0].Data);
+
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.AreEqual("word", rowList[0].Data);
+
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual("2", rowList[0].Data);
+
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            Assert.AreEqual("3", rowList[0].Data);
+
+            Assert.IsTrue(list[4].IsCollection);
+            rowList = list[4].GetElements();
+            Assert.AreEqual("palabra", rowList[0].Data);
+
+        }
+
         #endregion
 
         #region Writing
