@@ -8,8 +8,8 @@ It is the work of many contributors. We appreciate your help!
 
 When filing an issue, make sure to answer these five questions:
 
-1. What version of Dynamo are you using (check the About box)?
-2. What operating system are you using?
+1. Which version of Dynamo are you using (check the About box)?
+2. Which operating system are you using?
 3. What did you do?
 4. What did you expect to see?
 5. What did you see instead?
