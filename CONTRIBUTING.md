@@ -21,5 +21,5 @@ General questions about using Dynamo should be submitted to [the forum at dynamo
 Please see the [Pull request template guide](https://github.com/DynamoDS/Dynamo/wiki/Choosing-a-Pull-Request-Template)
 before submitting a pull request.
 
-Unless otherwise noted, the Go source files are distributed under
-the MIT license.
+Unless otherwise noted, the Dynamo source files are distributed under
+the Apache 2.0 License.  
