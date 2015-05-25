@@ -277,7 +277,7 @@ namespace DSOffice
             WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             if (readAsStrings)
-                return ws.DataAsStrings(true);
+                return ws.GetData(true);
 
             return ws.Data;
         }
@@ -425,11 +425,11 @@ namespace DSOffice
         {
             get
             {
-                return DataAsStrings();
+                return GetData();
             }
         }
 
-        internal object[][] DataAsStrings(bool convertToString = false)
+        internal object[][] GetData(bool convertToString = false)
         {
             var vals = ws.UsedRange.get_Value();
 
