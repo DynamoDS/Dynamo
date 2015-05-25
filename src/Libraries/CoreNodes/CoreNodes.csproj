@@ -100,9 +100,7 @@
     <None Include="Optimize.ds">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Flatten.ds">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Flatten.ds" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DSCoreNodes_DynamoCustomization.xml">
