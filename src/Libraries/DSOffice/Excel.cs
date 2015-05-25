@@ -298,12 +298,13 @@ namespace DSOffice
         ///     Start column for writing data. Enter 0 for col 1, 1 for column 2, ect.
         /// </param>
         /// <param name="data">Data to write to the spreadsheet.</param>
+        /// <param name="overWrite"></param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data)
+        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
             WorkBook wb = new WorkBook(filePath);
-            WorkSheet ws = new WorkSheet (wb, sheetName);
+            WorkSheet ws = new WorkSheet(wb, sheetName, overWrite);
             ws = ws.WriteData(startRow, startCol, data);
             return ws.Data;
         }
@@ -440,7 +441,8 @@ namespace DSOffice
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="sheetName"></param>
-        internal WorkSheet (WorkBook wbook, string sheetName)
+        /// <param name="overWrite"></param>
+        internal WorkSheet(WorkBook wbook, string sheetName, bool overWrite = false)
         {
             wb = wbook;
 
@@ -450,15 +452,20 @@ namespace DSOffice
             // If you find one, then use it.
             if (wSheet != null)
             {
-                ws = wSheet.ws;
+                if (overWrite)
+                {
+                    wSheet.ws.Delete();
+                }
+                else
+                {
+                    ws = wSheet.ws;
+                    return;
+                }
             }
             // If you don't find one, create one.
-            else
-            {
-                ws = (Worksheet)wb.Add();
-                ws.Name = sheetName;
-                wb.Save();
-            }
+            ws = (Worksheet)wb.Add();
+            ws.Name = sheetName;
+            wb.Save();
         }
 
         internal WorkSheet(Worksheet ws, WorkBook wb)
