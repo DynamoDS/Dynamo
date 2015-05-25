@@ -1257,11 +1257,7 @@ namespace ProtoScript.Runners
                 BuildOptErrorAsWarning = true,
                 ExecutionMode = ExecutionMode.Serial
             };
-
-            runnerCore = new ProtoCore.Core(coreOptions);
-            runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
-            runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
-
+            runnerCore = ProtoScript.Utils.ProtoScriptUtils.CreateCore(coreOptions,runnerCore);
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
             foreach (var item in configuration.PassThroughConfiguration)

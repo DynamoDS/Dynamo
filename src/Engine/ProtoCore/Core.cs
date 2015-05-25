@@ -17,7 +17,6 @@ using ProtoCore.Lang.Replication;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
-
 using StackFrame = ProtoCore.DSASM.StackFrame;
 
 namespace ProtoCore
@@ -250,6 +249,7 @@ namespace ProtoCore
         public FunctionTable FunctionTable { get; private set; }
 
 #endregion
+     
 
         // This flag is set true when we call GraphUtilities.PreloadAssembly to load libraries in Graph UI
         public bool IsParsingPreloadedAssembly { get; set; }
@@ -709,6 +709,7 @@ namespace ProtoCore
         {
             ResetAll(options);
         }
+
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)
         {
