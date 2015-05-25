@@ -3950,7 +3950,7 @@ namespace DynamoCoreWpfTests
 
         #region writing Recording Tests for Colin Zach training files
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Vignette_01_Plane_Offset()
         {
             preloadGeometry = true;
@@ -3999,7 +3999,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Vignette_01_Wireframe_Section()
         {
             preloadGeometry = true;
@@ -4057,7 +4057,7 @@ namespace DynamoCoreWpfTests
 
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_ListLacing()
         {
             preloadGeometry = true;
@@ -4114,7 +4114,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_AttractorPoint()
         {
             preloadGeometry = true;
@@ -4165,7 +4165,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_RangeSyntax()
         {
            
@@ -4213,7 +4213,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_ReadFromCSV()
         {
 
@@ -4235,7 +4235,7 @@ namespace DynamoCoreWpfTests
 
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_PassingFunction()
         {
             preloadGeometry = true;
@@ -4293,8 +4293,8 @@ namespace DynamoCoreWpfTests
         }
 
 
-  
-        [Test]
+
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Math()
         {
             // Check Math function
@@ -4376,7 +4376,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Math_Point()
         {
             // Check Math function
@@ -4402,7 +4402,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Math_Point_Formula()
         {
             // Check Math function
@@ -4478,7 +4478,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Core_Python()
         {
             // Check Python nodes
@@ -4589,7 +4589,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Count()
         {
             // Check List
@@ -4660,7 +4660,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_MinMax()
         {
             // Check List
@@ -4704,7 +4704,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Reverse()
         {
             // Check List
@@ -4734,7 +4734,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Sort()
         {
             // Check Sort function
@@ -4769,7 +4769,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_SortGeometry()
         {
             // Check Sort function
@@ -4806,7 +4806,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Surface()
         {
             // Check surface
@@ -4866,7 +4866,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Transpose()
         {
             // Check Transpose function
@@ -4923,7 +4923,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Basket1()
         {
             // Check surface
@@ -5011,7 +5011,7 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
-        #endregion
+       
 
         [Test, Category("Failure")]
         public void MAGN_7348_Basket2()
@@ -5049,7 +5049,7 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
-
+        #endregion
     }
 
 }
