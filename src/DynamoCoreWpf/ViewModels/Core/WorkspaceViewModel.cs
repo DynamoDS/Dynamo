@@ -49,6 +49,9 @@ namespace Dynamo.ViewModels
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
 
+        /// <summary>
+        /// ViewModel that is used in InCanvasSearch in context menu.
+        /// </summary>
         public SearchViewModel InCanvasSearchViewModel { get; private set; }
 
         /// <summary>
