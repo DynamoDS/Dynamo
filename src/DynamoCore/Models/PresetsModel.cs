@@ -7,6 +7,7 @@ using Dynamo.Selection;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.Interfaces;
+using DynamoUtilities;
 
 namespace Dynamo.Models
 {
@@ -79,6 +80,22 @@ namespace Dynamo.Models
             }
         }
 
+        internal static PresetsModel LoadFromXmlPaths(string presetsPath, string dynPath,NodeFactory nodefactory)
+        {
+            var doc = XmlHelper.CreateDocument("tempworkspace");
+            doc.Load(dynPath);
+            var graph = NodeGraph.LoadGraphFromXml(doc,nodefactory);
+
+            return LoadFromXml(presetsPath, graph, nodefactory.AsLogger());
+        }
+
+        internal static PresetsModel LoadFromXml(string xmlDocPath,NodeGraph nodegraph,ILogger logger)
+        {
+           var doc = new XmlDocument();
+            doc.Load(xmlDocPath);
+            return LoadFromXml(doc, nodegraph, logger);
+        }
+
         internal static PresetsModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph,ILogger logger)
         {
             var loadedStateSet = new PresetsModel();
@@ -149,6 +166,11 @@ namespace Dynamo.Models
             var inputs = currentSelection;
             var newstate = new PresetState(name, description, inputs, id);
             designStates.Add(newstate);
+        }
+
+        public void ImportStates(PresetsModel presetsCollection)
+        {
+            designStates.AddRange(presetsCollection.DesignStates);
         }
 
         public void RemoveState(PresetState state)

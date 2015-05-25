@@ -102,6 +102,11 @@ namespace DynamoSandbox
             // set current opened graph to state by name 
             // DynamoSandbox.exe /o "C:\file path\graph.dyn" /s "state1"
             //
+            var presetFile = string.Empty;
+
+            // set current opened graph to state by name 
+            // DynamoSandbox.exe /o "C:\file path\graph.dyn" /s "state1"
+            //
             var presetStateid = string.Empty;
 
             for (var i = 0; i < args.Length; ++i)
@@ -138,6 +143,12 @@ namespace DynamoSandbox
                         if (i < args.Length - 1)
                             presetStateid = args[++i];
                         break;
+
+                    case 'p':
+                    case 'P':
+                        if (i < args.Length - 1)
+                            presetFile = args[++i];
+                        break;
                 }
             }
 
@@ -147,6 +158,7 @@ namespace DynamoSandbox
                 CommandFilePath = commandFilePath,
                 OpenFilePath = openfilepath,
                 PresetStateID = presetStateid,
+                PresetFilePath = presetFile,
             };
         }
 
@@ -154,6 +166,7 @@ namespace DynamoSandbox
         internal string CommandFilePath { get; set; }
         internal string OpenFilePath { get; set; }
         internal string PresetStateID { get; set; }
+        internal string PresetFilePath { get; set; }
     }
 
     internal class Program
@@ -208,7 +221,17 @@ namespace DynamoSandbox
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath);
             Console.WriteLine("loaded file");
 
+            if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
+            {
+                //load the states contained in this file, it should be structured so
+                //that there is a PresetsModel element containing multiple PresetStates elements
+                //load it pointing to the file we opened so that states will point to the correct nodes
+                model.CurrentWorkspace.PresetsCollection.ImportStates( 
+                    PresetsModel.LoadFromXmlPaths(cmdLineArgs.PresetFilePath,cmdLineArgs.OpenFilePath,model.NodeFactory));
+            }
+
             //build a list of states, for now, none, a single state, or all of them
+            //this must be done after potentially loading states from external file
             var stateNames = new List<String>();
             if (!string.IsNullOrEmpty(cmdLineArgs.PresetStateID))
             {
@@ -226,8 +249,10 @@ namespace DynamoSandbox
             }
             else
             {
-                stateNames.Add("noState");
+                stateNames.Add("default");
             }
+
+
             foreach (var stateName in stateNames)
             {
                 model.CurrentWorkspace.SetWorkspaceToState(stateName);
@@ -293,7 +318,7 @@ namespace DynamoSandbox
                     Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
                 }
                 //if we have an openfilepath arg then open headless and attempt to set that file to a state
-                //if supplied
+                //if supplied, if we have supplied a presetsFile, then append that as the presetsModel for our workspace
                 if (!string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
                 {
                     MakeModelAndSetState(cmdLineArgs);
