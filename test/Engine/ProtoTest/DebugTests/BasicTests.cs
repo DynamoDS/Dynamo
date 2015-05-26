@@ -12556,7 +12556,6 @@ def foo(y : int)
         }
 
         [Test]
-        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_656_6()
@@ -12660,7 +12659,6 @@ def foo(y : int)
 
         }
         [Test]
-        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
 
         public void inlineconditional_656_7()
@@ -12763,7 +12761,6 @@ def foo(y : int)
         }
 
         [Test]
-        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_9()
         {
@@ -13004,7 +13001,6 @@ a =
         }
 
         [Test]
-        [Category("Failure")]
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_10()
         {
