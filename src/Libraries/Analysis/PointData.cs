@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
-using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
@@ -63,34 +60,6 @@ namespace Analysis
             }
 
             return new PointData(points, values);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
-        {
-            if (!Values.Any() || Values == null)
-            {
-                return;
-            }
-
-            var min = Values.Min();
-            var max = Values.Max();
-            var normalizedValues = Values.Select(v => (v - min)/(max - min));
-
-            var colorRange = Utils.CreateAnalyticalColorRange();
-
-            var data = ValueLocations.Zip(
-                normalizedValues,
-                (p, v) => new Tuple<Point, double>(p, v));
-
-            foreach (var d in data)
-            {
-                var pt = d.Item1;
-
-                var color = colorRange.GetColorAtParameter(d.Item2);
-                package.AddPointVertex(pt.X, pt.Y, pt.Z);
-                package.AddPointVertexColor(color.Red, color.Green, color.Blue, color.Alpha);
-            }
         }
     }
 }
