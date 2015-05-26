@@ -148,6 +148,12 @@ namespace Dynamo
         /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
 
+        /// <summary>
+        /// Indicates whether surface and solid edges will 
+        /// be rendered.
+        /// </summary>
+        public bool ShowEdges { get; set; }
+
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -169,6 +175,7 @@ namespace Dynamo
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
+            ShowEdges = false;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
