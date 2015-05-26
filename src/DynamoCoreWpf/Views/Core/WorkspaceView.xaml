@@ -163,15 +163,11 @@
         <controls:ZoomBorder x:Name="zoomBorder"
                              ClipToBounds="True"
                              BorderThickness="0"
-                             Width="{Binding Path=ActualWidth, ElementName=outerCanvas}"
-                             Height="{Binding Path=ActualHeight, ElementName=outerCanvas}"
                              Cursor="{Binding CurrentCursor}"
                              ForceCursor="{Binding IsCursorForced}">
             <Grid>
                 <ItemsControl Name="WorkspaceElements"
                               ItemsSource="{Binding WorkspaceElements}">
-
-                    <!--Resources for the ItemsControl can now be found in DataTemplates.xml-->
 
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
