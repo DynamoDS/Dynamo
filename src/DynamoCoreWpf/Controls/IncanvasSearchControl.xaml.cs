@@ -36,7 +36,7 @@ namespace Dynamo.UI.Controls
             get { return DataContext as SearchViewModel; }
         }
 
-        private WorkspaceView WorkspaceView;
+        private WorkspaceView workspaceView;
 
         public InCanvasSearchControl()
         {
@@ -44,8 +44,8 @@ namespace Dynamo.UI.Controls
 
             this.Loaded += (sender, e) =>
             {
-                if (WorkspaceView == null)
-                    WorkspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this.Parent);
+                if (workspaceView == null)
+                    workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this.Parent);
             };
         }
 
@@ -81,9 +81,7 @@ namespace Dynamo.UI.Controls
             var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
-                Point targetLocation = this.TranslatePoint(new Point(0, 0), WorkspaceView);
-
-                searchElement.Position = targetLocation;
+                searchElement.Position = TranslatePoint(new Point(), workspaceView);
                 searchElement.ClickedCommand.Execute(null);
             }
         }

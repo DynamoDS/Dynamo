@@ -168,7 +168,7 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public Point Position;
+        internal Point Position { get; set; }
 
         public ICommand ClickedCommand { get; private set; }
 
