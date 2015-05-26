@@ -761,5 +761,10 @@ namespace Dynamo.Views
                 outerCanvas.ContextMenu.IsOpen = false;
         }
 
+        private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            outerCanvas.ContextMenu.IsOpen = false;
+        }
+
     }
 }
