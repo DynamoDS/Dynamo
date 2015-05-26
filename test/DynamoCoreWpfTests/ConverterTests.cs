@@ -439,7 +439,7 @@ namespace Dynamo.Tests
             var searchModel = new NodeSearchModel();
             # endregion
 
-            var searhViewModel = new SearchViewModel(dynamoViewModel, searchModel);
+            var searhViewModel = new SearchViewModel(dynamoViewModel);
             object[] array = { textBlock, searhViewModel };
             var thickness = new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
             object result;

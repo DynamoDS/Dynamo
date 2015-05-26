@@ -186,15 +186,21 @@ namespace Dynamo.ViewModels
             get { return LibraryRootCategories; }
         }
 
-        public NodeSearchModel Model { get; private set; }
+        public NodeSearchModel Model 
+        {
+            get
+            {
+                return dynamoViewModel.Model.SearchModel;
+            }
+        }
+
         private readonly DynamoViewModel dynamoViewModel;
         #endregion
 
         #region Initialization
 
-        internal SearchViewModel(DynamoViewModel dynamoViewModel, NodeSearchModel model)
+        internal SearchViewModel(DynamoViewModel dynamoViewModel)
         {
-            Model = model;
             this.dynamoViewModel = dynamoViewModel;
 
             IPathManager pathManager = null;
