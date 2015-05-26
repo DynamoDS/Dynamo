@@ -35,7 +35,8 @@
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
                         <StackPanel Margin="8,0,8,8"
                                     Width="250">
-                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" />
+                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}"
+                                                      KeyDown="OnInCanvasSearchContextMenuKeyDown" />
                             <Border BorderThickness="1"
                                     Name="Border"
                                     Background="White"
