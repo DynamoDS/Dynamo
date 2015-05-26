@@ -307,10 +307,6 @@ namespace ProtoScript.Runners
             ProtoCore.RuntimeCore runtimeCore = null;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
 
-            ProtoCore.MacroBlockGenerator macroBlockGen = new ProtoCore.MacroBlockGenerator(core);
-            macroBlockGen.GenerateMacroBlockIDForAST(astList);
-            macroBlockGen.GenerateMacroBlocks(astList);
-
             bool succeeded = Compile(astList, core, out blockId);
             if (succeeded)
             {
