@@ -80,7 +80,6 @@ namespace Dynamo.Views
 
             InitializeComponent();
 
-            selectionCanvas.Loaded += OnSelectionCanvasLoaded;
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
             Loaded += OnWorkspaceViewLoaded;
@@ -293,15 +292,6 @@ namespace Dynamo.Views
             {
                 vm.OnWorkspacePropertyEditRequested();
             }
-        }
-
-        void OnSelectionCanvasLoaded(object sender, RoutedEventArgs e)
-        {
-            //Stopwatch sw = new Stopwatch();
-            //sw.Start();
-            //DrawGrid();
-            //sw.Stop();
-            //dynamoModel.Logger.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
