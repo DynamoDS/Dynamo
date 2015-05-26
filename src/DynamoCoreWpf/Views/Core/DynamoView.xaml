@@ -597,11 +597,15 @@
                                 <Slider Width="100"
                                         Minimum="12"
                                         Maximum="512"
-                                        Value="{Binding MaxTessellationDivisions, Mode=TwoWay}"></Slider>
+                                        Value="{Binding VisualizationSettings.MaxTessellationDivisions, Mode=TwoWay}"></Slider>
                                 <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                            Margin="10,0,0,0"></TextBlock>
                             </StackPanel>
                         </MenuItem>
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding VisualizationSettings.ShowEdges}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
