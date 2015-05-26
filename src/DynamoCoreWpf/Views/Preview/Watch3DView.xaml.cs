@@ -14,6 +14,7 @@ using System.Windows.Media.Media3D;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Rendering;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
@@ -202,6 +203,15 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
+#if DEBUG
+        /// <summary>
+        /// The TestSelectionCommand is used in the WatchSettingsControl
+        /// to test the ability to toggle a boolean effect variable
+        /// representing the selection state.
+        /// </summary>
+        public Dynamo.UI.Commands.DelegateCommand TestSelectionCommand { get; set; }
+#endif
+
         #endregion
 
         #region constructors
@@ -288,8 +298,9 @@ namespace Dynamo.Controls
                 Position = new Point3D(10, 15, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
-                NearPlaneDistance = 1,
-                FarPlaneDistance = 2000000,
+                NearPlaneDistance = .1,
+                FarPlaneDistance = 10000000,
+                
             };
 
             DrawGrid();
@@ -364,6 +375,10 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+#if DEBUG
+            TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
+#endif
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -779,7 +794,7 @@ namespace Dynamo.Controls
 
                     lineSet.Positions.AddRange(l.Positions);
                     lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
-                    lineSet.Indices.AddRange(l.Indices.Select(i=>i + startIdx));
+                    lineSet.Indices.AddRange(l.Indices.Any()? l.Indices.Select(i=>i + startIdx) : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
 
                     var endIdx = lineSet.Positions.Count;
 
@@ -845,6 +860,26 @@ namespace Dynamo.Controls
         }
 
         #endregion
+
+#if DEBUG
+        private bool CanTestSelection(object parameters)
+        {
+            return true;
+        }
+
+        private void TestSelection(object parameters)
+        {
+            foreach (var item in watch_view.Items)
+            {
+                var geom = item as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                if (geom != null)
+                {
+                    geom.IsSelected = !geom.IsSelected;
+                }
+            }
+        }
+#endif
+
     }
 
     internal class GraphicsUpdateParams

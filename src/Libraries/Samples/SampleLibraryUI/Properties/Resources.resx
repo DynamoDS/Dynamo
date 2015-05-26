@@ -117,14 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="HelloDynamoDescription" xml:space="preserve">
+  <data name="CustomNodeModeDescription" xml:space="preserve">
     <value>A sample UI node which displays custom UI.</value>
     <comment>Description for Hello Dynamo</comment>
   </data>
-  <data name="HelloDynamoPortDataInputToolTip" xml:space="preserve">
+  <data name="CustomNodeModePortDataInputToolTip" xml:space="preserve">
     <value>Input a string.</value>
   </data>
-  <data name="HelloDynamoPortDataOutputToolTip" xml:space="preserve">
+  <data name="CustomNodeModePortDataOutputToolTip" xml:space="preserve">
     <value>A result.</value>
   </data>
 </root>

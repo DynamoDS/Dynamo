@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using ProtoCore.AST;
@@ -11,6 +12,30 @@ namespace ProtoTest.FFITests
     [TestFixture]
     class ElementRewriterTests : ProtoTestBase
     {
+        private void VerifyResult(string fullName, string partialName, string functionOrProperty, bool isProperty = false)
+        {
+            var testCore = thisTest.GetTestCore();
+
+            var astNodes = CoreUtils.BuildASTList(testCore, string.Format("d = {0}.{1};", partialName, functionOrProperty));
+
+            var elementResolver = new ElementResolver();
+
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
+
+            Assert.AreEqual(string.Format("d = {0}.{1};\n", fullName, functionOrProperty), newNodes.ElementAt(0).ToString());
+
+            if (!isProperty)
+            {
+                // Add verification for contents of element resolver resolution map
+                var assembly = elementResolver.LookupAssemblyName(partialName);
+                var resolvedName = elementResolver.LookupResolvedName(partialName);
+
+                Assert.AreEqual("FFITarget.dll", assembly);
+                Assert.AreEqual(fullName, resolvedName);
+            }
+        }
+
+
         [Test]
         public void LookupResolvedName_FromElementResolver_RewriteAst()
         {
@@ -125,6 +150,202 @@ namespace ProtoTest.FFITests
             Assert.AreEqual("FFITarget.dll", assembly);
             Assert.AreEqual("FFITarget.ElementResolverTarget", resolvedName);
         }
+
+        [Test]
+        public void LookupResolvedName_ForNestedNamespacesExpressionFromCompiler_RewriteAst()
+        {
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            var testCore = thisTest.GetTestCore();
+            string class1 = "NestedResolverTarget";
+            string class2 = "ElementResolverTarget";
+            string fullName1 = "FFITarget.NameSpaceA.NameSpaceB.NameSpaceC.NestedResolverTarget";
+            string fullName2 = "FFITarget.ElementResolverTarget";
+            var astNodes = CoreUtils.BuildASTList(testCore, string.Format("d = {0}.Property.Method({1}.Create().Property.Method({0}.Property.Property));", class1, class2));
+
+            var elementResolver = new ElementResolver();
+
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
+
+            Assert.AreEqual(
+                string.Format("d = {0}.Property.Method({1}.Create().Property.Method({0}.Property.Property));\n", fullName1, fullName2), 
+                newNodes.ElementAt(0).ToString());
+
+            // Add verification for contents of element resolver resolution map
+            var assembly = elementResolver.LookupAssemblyName(class2);
+            var resolvedName = elementResolver.LookupResolvedName(class2);
+
+            Assert.AreEqual("FFITarget.dll", assembly);
+            Assert.AreEqual(fullName2, resolvedName);
+
+            ///////////////////////////////////////////////
+            astNodes = CoreUtils.BuildASTList(testCore, string.Format("d = {0}.Property.Method({1}.Create().Property.Method({0}.Property.Property));", fullName1, fullName2));
+
+            elementResolver = new ElementResolver();
+
+            newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
+
+            Assert.AreEqual(
+                string.Format("d = {0}.Property.Method({1}.Create().Property.Method({0}.Property.Property));\n", fullName1, fullName2),
+                newNodes.ElementAt(0).ToString());
+
+            // Add verification for contents of element resolver resolution map
+            assembly = elementResolver.LookupAssemblyName(fullName2);
+            resolvedName = elementResolver.LookupResolvedName(fullName2);
+
+            Assert.AreEqual("FFITarget.dll", assembly);
+            Assert.AreEqual(fullName2, resolvedName);
+        }
+
+        [Test]
+        public void LookupResolvedName_ForNestedNamespacesFromCompiler_RewriteAst()
+        {
+
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            const string functionName = "NestedResolverTarget()";
+            const string fullName = "FFITarget.NameSpaceA.NameSpaceB.NameSpaceC.NestedResolverTarget";
+
+            var partialName = "NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            VerifyResult(fullName, fullName, functionName);
+
+            partialName = "FFITarget.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceA.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceA.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceB.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceA.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceA.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceB.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceA.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceA.NameSpaceB.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, functionName);
+
+        }
+
+        [Test]
+        public void LookupResolvedName_ForNestedNamespacesPropertyFromCompiler_RewriteAst()
+        {
+
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            const string propertyName = "Property";
+            const string fullName = "FFITarget.NameSpaceA.NameSpaceB.NameSpaceC.NestedResolverTarget";
+
+            var partialName = "NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            VerifyResult(fullName, fullName, propertyName, true);
+
+            partialName = "FFITarget.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "FFITarget.NameSpaceA.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "FFITarget.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "FFITarget.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "FFITarget.NameSpaceA.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "FFITarget.NameSpaceB.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "FFITarget.NameSpaceA.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "NameSpaceA.NameSpaceB.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "NameSpaceB.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "NameSpaceA.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+            partialName = "NameSpaceA.NameSpaceB.NameSpaceC.NestedResolverTarget";
+            VerifyResult(fullName, partialName, propertyName, true);
+
+        }
+
+        [Test]
+        public void LookupResolvedName_ForSameNamespaceClassNameFromCompiler_RewriteAst()
+        {
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            const string fullName = "FFITarget.NameSpaceA.NameSpaceB.NameSpaceC.NameSpaceC";
+            const string functionName = "NameSpaceC()";
+
+            var partialName = "NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            VerifyResult(fullName, fullName, functionName);
+
+            partialName = "FFITarget.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceA.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceB.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceC.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceA.NameSpaceB.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceB.NameSpaceC.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "FFITarget.NameSpaceA.NameSpaceB.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceA.NameSpaceB.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceB.NameSpaceC.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceA.NameSpaceC.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+
+            partialName = "NameSpaceA.NameSpaceB.NameSpaceC.NameSpaceC";
+            VerifyResult(fullName, partialName, functionName);
+        }
+
 
         [Test]
         public void LookupResolvedName_ForTypedIdentifierFromCompiler_RewriteAst()

@@ -24,11 +24,7 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             AssertPreviewValue("7d6e8c70-3abf-4fc4-864e-948f548e7ba2", 5.0);
-            AssertPreviewValue("d5f5336d-3569-4a88-9a59-5538d6914037",
-                               new object[] { 1, 1, 1, 1, 
-                                              new object[] {-3, -2, -1, 0, 1, 2, 3},
-                                              new object[] {-3, -2, -1, 0, 1, 2, 3},
-                                              new object[] {-3, -2, -1, 0, 1, 2, 3}});
+            AssertPreviewValue("d5f5336d-3569-4a88-9a59-5538d6914037", new object[] { 1.0, 1.0, 1.0, 1.0, 1, 2, 3}); 
         }
 
         [Test]

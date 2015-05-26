@@ -1,40 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
-
 using Autodesk.DesignScript.Runtime;
-
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
+using SampleLibraryZeroTouch;
 using SamplesLibraryUI.Properties;
 
-namespace SamplesLibraryUI
+namespace SamplesLibraryUI.Examples
 {
-    /// <summary>
-    /// This exmple shows how to create a UI node for Dynamo
-    /// which loads custom data-bound UI into the node's view
-    /// at run time. 
-    /// 
-    /// Nodes with custom UI follow a different loading path
-    /// than zero touch nodes. The assembly which contains
-    /// this node needs to be located in the 'nodes' folder in
-    /// Dynamo in order to be loaded at startup.
-    /// 
-    /// Dynamo uses the MVVM model of programming, 
-    /// in which the UI is data-bound to the view model, which
-    /// exposes data from the underlying model. Custom UI nodes 
-    /// are a hybrid because NodeModel objects already have an
-    /// associated NodeViewModel which you should never need to
-    /// edit. So here we will create a data binding between 
-    /// properties on our class and our custom UI.
-    /// 
-    /// </summary>
-    /// 
+     /*
+      * This exmple shows how to create a UI node for Dynamo
+      * which loads custom data-bound UI into the node's view
+      * at run time. 
+     
+      * Nodes with custom UI follow a different loading path
+      * than zero touch nodes. The assembly which contains
+      * this node needs to be located in the 'nodes' folder in
+      * Dynamo in order to be loaded at startup.
+     
+      * Dynamo uses the MVVM model of programming, 
+      * in which the UI is data-bound to the view model, which
+      * exposes data from the underlying model. Custom UI nodes 
+      * are a hybrid because NodeModel objects already have an
+      * associated NodeViewModel which you should never need to
+      * edit. So here we will create a data binding between 
+      * properties on our class and our custom UI.
+     */
+
     // The NodeName attribute is what will display on 
     // top of the node in Dynamo
-    [NodeName("Hello Dynamo")]
+    [NodeName("Custom Node Model")]
 
     // The NodeCategory attribute determines how your
     // node will be organized in the library. You can
@@ -44,10 +43,12 @@ namespace SamplesLibraryUI
 
     // The description will display in the tooltip
     // and in the help window for the node.
-    [NodeDescription("HelloDynamoDescription",typeof(SamplesLibraryUI.Properties.Resources))]
+    [NodeDescription("CustomNodeModelDescription",typeof(SamplesLibraryUI.Properties.Resources))]
 
+    // Add the IsDesignScriptCompatible attribute to ensure
+    // that it gets loaded in Dynamo.
     [IsDesignScriptCompatible]
-    public class HelloDynamo : NodeModel
+    public class CustomNodeModel : NodeModel
     {
         #region private members
 
@@ -108,18 +109,18 @@ namespace SamplesLibraryUI
         /// the input and output ports and specify the argument
         /// lacing.
         /// </summary>
-        public HelloDynamo()
+        public CustomNodeModel()
         {
             // When you create a UI node, you need to do the
             // work of setting up the ports yourself. To do this,
             // you can populate the InPortData and the OutPortData
             // collections with PortData objects describing your ports.
-            InPortData.Add(new PortData("something", Resources.HelloDynamoPortDataInputToolTip));
+            InPortData.Add(new PortData("something", Resources.CustomNodeModePortDataInputToolTip));
 
             // Nodes can have an arbitrary number of inputs and outputs.
             // If you want more ports, just create more PortData objects.
-            OutPortData.Add(new PortData("something", Resources.HelloDynamoPortDataOutputToolTip));
-            OutPortData.Add(new PortData("some awesome", Resources.HelloDynamoPortDataOutputToolTip));
+            OutPortData.Add(new PortData("something", Resources.CustomNodeModePortDataOutputToolTip));
+            OutPortData.Add(new PortData("some awesome", Resources.CustomNodeModePortDataOutputToolTip));
 
             // This call is required to ensure that your ports are
             // properly created.
@@ -167,7 +168,22 @@ namespace SamplesLibraryUI
             // Do not throw an exception during AST creation. If you
             // need to convey a failure of this node, then use
             // AstFactory.BuildNullNode to pass out null.
-            
+
+            // We create a DoubleNode to wrap the value 'awesome' that
+            // we've stored in a private member.
+
+            var doubleNode = AstFactory.BuildDoubleNode(awesome);
+
+            // A FunctionCallNode can be used to represent the calling of a 
+            // function in the AST. The method specified here must live in 
+            // a separate assembly and have been loaded by Dynamo at the time 
+            // that this AST is built. If the method can't be found, you'll get 
+            // a "De-referencing a non-pointer warning."
+
+            var funcNode = AstFactory.BuildFunctionCall(
+                new Func<double,double>(SampleUtilities.MultiplyInputByNumber), 
+                new List<AssociativeNode>(){doubleNode});
+
             // Using the AstFactory class, we can build AstNode objects
             // that assign doubles, assign function calls, build expression lists, etc.
             return new[]
@@ -179,7 +195,7 @@ namespace SamplesLibraryUI
                 // For the first node, we'll just pass through the 
                 // input provided to this node.
                 AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0), AstFactory.BuildExprList(inputAstNodes)),
+                    GetAstIdentifierForOutputIndex(0), funcNode),
 
                 // For the second node, we'll build a double node that 
                 // passes along our value for awesome.
@@ -209,9 +225,9 @@ namespace SamplesLibraryUI
     }
 
     /// <summary>
-    ///     View customizer for HelloDynamo Node Model.
+    ///     View customizer for CustomNodeModel Node Model.
     /// </summary>
-    public class HelloDynamoNodeViewCustomization : INodeViewCustomization<HelloDynamo>
+    public class CustomNodeModelNodeViewCustomization : INodeViewCustomization<CustomNodeModel>
     {
         /// <summary>
         /// At run-time, this method is called during the node 
@@ -222,7 +238,7 @@ namespace SamplesLibraryUI
         /// </summary>
         /// <param name="model">The NodeModel representing the node's core logic.</param>
         /// <param name="nodeView">The NodeView representing the node in the graph.</param>
-        public void CustomizeView(HelloDynamo model, NodeView nodeView)
+        public void CustomizeView(CustomNodeModel model, NodeView nodeView)
         {
             // The view variable is a reference to the node's view.
             // In the middle of the node is a grid called the InputGrid.

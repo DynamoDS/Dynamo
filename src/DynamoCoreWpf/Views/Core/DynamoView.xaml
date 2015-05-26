@@ -162,6 +162,9 @@
         <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                     CommandParameter="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <MouseBinding Gesture="Shift+LeftDoubleClick"
+                      Command="{Binding Path=DataContext.HomeSpaceViewModel.ShowInCanvasSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                      CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -550,154 +553,7 @@
                                   ToolTipService.ShowOnDisabled="True" 
                                   ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
                                   IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>
-                        
-                        <!--<MenuItem Focusable="False" 
-                                  Name="ShowNodeExecution" 
-                                  IsCheckable="True" 
-                                  IsChecked="{Binding ShowRunPreview}" 
-                                  Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
-                                  ToolTipService.ShowOnDisabled="True" 
-<<<<<<< HEAD
-                                  ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
-                        <MenuItem Focusable="False"
-=======
-                                  ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>-->
-                        
-                        <!--<MenuItem Focusable="False"
->>>>>>> 8ced085d0865451a474d0f033bc4d5ca2016203b
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
-                                  Name="LengthUnitsMenu">
-                            <MenuItem Focusable="False"
-                                      Name="units_inch_1"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="DecimalInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuDecimalInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_inch_2"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="FractionalInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuFractionalInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_foot_1"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="DecimalFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuDecimalFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_foot_2"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalFoot, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="FractionalFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuFractionalFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_mm"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Millimeter, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="Millimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuMillimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_cm"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="Centimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCentimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_m"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="Meter"
-                                       Header="{x:Static p:Resources.DynamoViewSettingMenuMeter}" />
-                        </MenuItem>
-                        <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuAreaUnits}"
-                                  Name="AreaUnitsMenu">
-                            <MenuItem Focusable="False"
-                                      Name="units_area_inch"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareInch, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_foot"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareFoot, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_millimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMillimeter, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareMillimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareMillimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_centimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareCentimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareCentimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_meter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareMeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareMeter}" />
-                        </MenuItem>
-                        <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuVolumeUnits}"
-                                  Name="VolumeUnitsMenu">
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_inch"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicInch, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_foot"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicFoot, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_millimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicMillimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMillimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_centimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicCentimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicCentimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_meter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="SquareMeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMeter}" />
-                        </MenuItem>-->
-                        
+
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}"
                                   Name="NumberFormat">

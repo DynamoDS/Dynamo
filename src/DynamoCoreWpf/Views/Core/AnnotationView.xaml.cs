@@ -106,13 +106,22 @@ namespace Dynamo.Nodes
             if (GroupTextBlock.IsVisible && e.ClickCount >= 2)
             {
                 DynamoSelection.Instance.ClearSelection();
+                //Set the panning mode to false if a group is in editing mode.
+                if (ViewModel.WorkspaceViewModel.IsPanning)
+                {
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.TogglePan(null);
+                }
+                e.Handled = true;
             }
 
             //When the Zoom * Fontsized factor is less than 7, then
             //show the edit window
             if (!GroupTextBlock.IsVisible && e.ClickCount >= 2)
-            {               
-                var editWindow = new EditWindow(ViewModel.WorkspaceViewModel.DynamoViewModel, true);
+            {
+                var editWindow = new EditWindow(ViewModel.WorkspaceViewModel.DynamoViewModel, true)
+                {
+                    Title = Dynamo.Wpf.Properties.Resources.EditAnnotationTitle
+                };
                 editWindow.BindToProperty(DataContext, new Binding("AnnotationText")
                 {
                     Mode = BindingMode.TwoWay,
@@ -121,6 +130,7 @@ namespace Dynamo.Nodes
                 });
 
                 editWindow.ShowDialog();
+                e.Handled = true;
             }
         }
      
@@ -156,9 +166,11 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="SizeChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ViewModel != null && e.HeightChanged)
+            if (ViewModel != null && (e.HeightChanged || e.WidthChanged))
             {
-                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.ActualHeight;                
+                //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
+                //Actual height is same as previous size. used when the Font size changed during zoom
+                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;                
             }  
         }
 

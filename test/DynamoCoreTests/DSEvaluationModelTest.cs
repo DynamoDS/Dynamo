@@ -680,7 +680,7 @@ namespace Dynamo.Tests
         public void Test_IFnode_3483_2()
         {
             RunModel(@"core\dsevaluation\ifnode_3483_2.dyn");
-            AssertPreviewValue("70b5aeba-80b7-48cc-a48d-6c755c28555c", new object []{ 1, 1, 1, new object []{ -2, -1, 0, 1, 2 },new object[] { -2, -1, 0, 1, 2 } });
+            AssertPreviewValue("70b5aeba-80b7-48cc-a48d-6c755c28555c", new object[] { 1, 1, 1, 1, 2 }); 
         }
         [Test]
         [Category("RegressionTests")]
@@ -710,7 +710,13 @@ namespace Dynamo.Tests
         public void Test_IfAsFunctionobject_3483()
         {
             RunModel(@"core\dsevaluation\IfAsFunctionobject_3483.dyn");
-            AssertPreviewValue("80d14b69-4796-48c9-a34d-f447abf7b5ba", new object[] {1,1,new double[]{-2,-1,0,1,2},1,1});
+            AssertPreviewValue("80d14b69-4796-48c9-a34d-f447abf7b5ba", new object[] {
+                new object[] { 1, 1, 1, 1, 1},
+                new object[] { 1, 1, 1, 1, 1},
+                new double[] {-2,-1, 0, 1, 2},
+                new object[] { 1, 1, 1, 1, 1},
+                new object[] { 1, 1, 1, 1, 1},
+                });
         }
         
         [Test]
