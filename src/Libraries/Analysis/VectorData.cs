@@ -11,7 +11,7 @@ namespace Analysis
     /// <summary>
     /// A class for storing structured vector analysis data.
     /// </summary>
-    public class VectorData : IStructuredData<Point, Vector>, IGraphicItem
+    public class VectorData : IStructuredData<Point, Vector> //, IGraphicItem
     {
         private const byte VectorColor = 120;
 

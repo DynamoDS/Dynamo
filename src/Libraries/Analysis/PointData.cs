@@ -11,7 +11,7 @@ namespace Analysis
     /// <summary>
     /// A class for storing structure point analysis data.
     /// </summary>
-    public class PointData : IStructuredData<Point, double>, IGraphicItem
+    public class PointData : IStructuredData<Point, double> //, IGraphicItem
     {
         /// <summary>
         /// A list of Points.

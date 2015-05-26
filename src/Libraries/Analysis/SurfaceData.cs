@@ -15,7 +15,7 @@ namespace Analysis
     /// <summary>
     /// A class for storing structured surface analysis data.
     /// </summary>
-    public class SurfaceData : ISurfaceData<UV, double>, IGraphicItem
+    public class SurfaceData : ISurfaceData<UV, double> //, IGraphicItem
     {
         private Color[,] colorMap ;
         private const int COLOR_MAP_WIDTH = 100;
