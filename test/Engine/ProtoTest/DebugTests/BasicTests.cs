@@ -2657,6 +2657,7 @@ c2 = [Associative]
 
         [Test]
         [Category("Debugger")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void TestModifierBlockDebugging1()
         {
 
@@ -2765,6 +2766,7 @@ c = 90;
 
         [Test]
         [Category("Debugger")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void TestModifierBlockDebugging2()
         {
 
@@ -2869,6 +2871,7 @@ c = 90;
 
         [Test]
         [Category("Debugger")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void TestModifierBlockDebugging3()
         {
 
@@ -4125,6 +4128,7 @@ l = Line.Line(x, y);
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void TestStepIntoClassConstructor3()
         {
             String code =
@@ -4246,6 +4250,7 @@ c = 3;
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void PropertyAssignFromBuiltInFunction()
         {
             string sourceCode = @"
@@ -6852,6 +6857,7 @@ l1 = p.mx;";
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void TestSSAassignments1()
         {
             String code =
@@ -10796,6 +10802,7 @@ class test
 
         [Test]
         [Category("Debugger")]
+        [Category("Failure")]
         public void Defect_IDE_607()
         {
             // Execute and verify the defect IDE-519
