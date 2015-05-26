@@ -19,15 +19,14 @@
              AllowDrop="True"
              Drop="OnWorkspaceDrop">
 
-    <Grid HorizontalAlignment="Stretch"
+    <Grid Name="outerCanvas"
+          HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
-        <Canvas Name="outerCanvas"
-                ClipToBounds="True">
-            <Canvas.IsHitTestVisible>
-                <Binding Path="DataContext.ShouldBeHitTestVisible"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
-            </Canvas.IsHitTestVisible>
-
+        <Grid.IsHitTestVisible>
+            <Binding Path="DataContext.ShouldBeHitTestVisible"
+                     RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
+        </Grid.IsHitTestVisible>
+        <Canvas ClipToBounds="True">
             <controls:ZoomBorder x:Name="zoomBorder"
                                  ClipToBounds="True"
                                  BorderThickness="0"
