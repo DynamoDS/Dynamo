@@ -15,6 +15,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (vm.Model.PreferenceSettings.ShowEdges != value)
                 {
                     vm.Model.PreferenceSettings.ShowEdges = value;
+                    vm.VisualizationManager.RenderPackageFactory.ShowEdges = value;
                     vm.Model.OnRequestsRedraw(this, EventArgs.Empty);
                 }
             }

@@ -190,6 +190,7 @@ namespace Dynamo
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
             renderPackageFactory = new HelixRenderPackageFactory();
+            RenderPackageFactory.ShowEdges = model.PreferenceSettings.ShowEdges;
 
             Start();
         }

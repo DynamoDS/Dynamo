@@ -9,11 +9,13 @@ namespace Dynamo
 {
     public class DefaultRenderPackageFactory : IRenderPackageFactory
     {
+        public bool ShowEdges { get; set; }
         public int MaxTessellationDivisions { get; set; }
 
         public DefaultRenderPackageFactory()
         {
             MaxTessellationDivisions = 32;
+            ShowEdges = false;
         }
 
         public IRenderPackage CreateRenderPackage()

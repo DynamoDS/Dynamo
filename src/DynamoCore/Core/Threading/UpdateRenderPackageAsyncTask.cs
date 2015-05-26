@@ -41,7 +41,6 @@ namespace Dynamo.Core.Threading
         private const byte DefB = 130;
         private const byte DefA = 255;
         private const byte MidTone = 180;
-        private bool renderEdges = false;
 
         #region Class Data Members and Properties
 
@@ -171,7 +170,7 @@ namespace Dynamo.Core.Threading
                 {
                     graphicItem.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
 
-                    if (renderEdges)
+                    if (factory.ShowEdges)
                     {
                         var surf = graphicItem as Surface;
                         if (surf != null)
