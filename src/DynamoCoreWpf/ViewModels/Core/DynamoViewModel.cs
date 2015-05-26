@@ -27,6 +27,7 @@ using DynamoUnits;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;
 
 namespace Dynamo.ViewModels
@@ -399,16 +400,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTessellationDivisions
-        {
-            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
-            set
-            {
-                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
-                model.OnRequestsRedraw(this, EventArgs.Empty);
-            }
-        }
-
         public bool VerboseLogging
         {
             get { return model.DebugSettings.VerboseLogging; }
@@ -466,6 +457,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowWatchSettingsControl");   
             }
         }
+
+        public VisualizationSettingsViewModel VisualizationSettings { get; set; }
 
         #endregion
 
@@ -548,6 +541,8 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
 
             SubscribeDispatcherHandlers();
+
+            VisualizationSettings = new VisualizationSettingsViewModel(this);
         }
 
         internal event EventHandler NodeViewReady;
