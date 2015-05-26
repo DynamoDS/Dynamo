@@ -10,7 +10,7 @@ using ProtoCore.Mirror;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using DynCmd = Dynamo.Models.DynamoModel;
+
 
 namespace Dynamo.Tests
 {
@@ -508,7 +508,6 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var newname = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
             ViewModel.HomeSpace.Run();
            
@@ -533,7 +532,7 @@ namespace Dynamo.Tests
             // watch displays the data from the Read node
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
 
-           ViewModel.HomeSpace.Run();
+            ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
@@ -614,9 +613,9 @@ namespace Dynamo.Tests
             
             string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN6872.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(12, ViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(9, ViewModel.CurrentSpace.Nodes.Count);
         
-            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -1282,11 +1281,12 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
+            var a = watch.Name;
+            var b = watch.InputNodes.Values;
             ViewModel.HomeSpace.Run();
             Assert.IsNull(watch.CachedValue.Data);
             Assert.IsTrue(watch.State == Models.ElementState.Warning);
-           
-
+         
         }
         
         [Test]
