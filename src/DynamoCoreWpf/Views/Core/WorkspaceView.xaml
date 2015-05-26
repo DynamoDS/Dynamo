@@ -165,61 +165,57 @@
                              BorderThickness="0"
                              Cursor="{Binding CurrentCursor}"
                              ForceCursor="{Binding IsCursorForced}">
-            <Grid>
-                <ItemsControl Name="WorkspaceElements"
-                              ItemsSource="{Binding WorkspaceElements}">
+            <ItemsControl Name="WorkspaceElements"
+                          ItemsSource="{Binding WorkspaceElements}">
 
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <controls:DragCanvas x:Name="DragCanvas"
-                                                 UseLayoutRounding="True"
-                                                 Width="0"
-                                                 Height="0"
-                                                 HorizontalAlignment="Left"
-                                                 VerticalAlignment="Top"
-                                                 Visibility="Visible"
-                                                 ContextMenuOpening="WorkBench_ContextMenuOpening"
-                                                 AllowDragOutOfView="True"
-                                                 Loaded="WorkBench_OnLoaded"
-                                                 IsItemsHost="True">
-                                <Canvas.Background>
-                                    <SolidColorBrush Color="Transparent" />
-                                </Canvas.Background>
-                                <Canvas.Opacity>
-                                    <Binding Path="DataContext.CanNavigateBackground"
-                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                                             Converter="{StaticResource NavigationToOpacityConverter}">
-                                    </Binding>
-                                </Canvas.Opacity>
-                            </controls:DragCanvas>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <controls:DragCanvas x:Name="DragCanvas"
+                                             UseLayoutRounding="True"
+                                             Width="0"
+                                             Height="0"
+                                             HorizontalAlignment="Left"
+                                             VerticalAlignment="Top"
+                                             Visibility="Visible"
+                                             ContextMenuOpening="WorkBench_ContextMenuOpening"
+                                             AllowDragOutOfView="True"
+                                             Loaded="WorkBench_OnLoaded"
+                                             IsItemsHost="True">
+                            <Canvas.Background>
+                                <SolidColorBrush Color="Transparent" />
+                            </Canvas.Background>
+                            <Canvas.Opacity>
+                                <Binding Path="DataContext.CanNavigateBackground"
+                                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
+                                         Converter="{StaticResource NavigationToOpacityConverter}">
+                                </Binding>
+                            </Canvas.Opacity>
+                        </controls:DragCanvas>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ContentPresenter">
-                            <Setter Property="Canvas.Left"
-                                    Value="{Binding Left}" />
-                            <Setter Property="Canvas.Top"
-                                    Value="{Binding Top}" />
-                            <Setter Property="Panel.ZIndex"
-                                    Value="{Binding ZIndex}" />
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left"
+                                Value="{Binding Left}" />
+                        <Setter Property="Canvas.Top"
+                                Value="{Binding Top}" />
+                        <Setter Property="Panel.ZIndex"
+                                Value="{Binding ZIndex}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
 
-                </ItemsControl>
-
-                <Canvas Name="selectionCanvas"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch">
-                    <Rectangle x:Name="selectionBox"
-                               Visibility="Collapsed"
-                               Stroke="Black"
-                               StrokeThickness="1"
-                               IsHitTestVisible="False" />
-                </Canvas>
-            </Grid>
+            </ItemsControl>
 
         </controls:ZoomBorder>
+
+        <Canvas>
+            <Rectangle x:Name="selectionBox"
+                       Visibility="Collapsed"
+                       Stroke="Black"
+                       StrokeThickness="1"
+                       IsHitTestVisible="False" />
+        </Canvas>
 
         <StackPanel Name="viewControlPanel"
                     Orientation="Vertical"
