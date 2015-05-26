@@ -41,17 +41,16 @@ namespace ProtoCore.Runtime
             macroBlockList = exec.exe.MacroBlockList;
 
             List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlockList);
-            if (validBlocks.Count > 0)
+            if (validBlocks.Count == 0)
             {
-                Setup(exec, exeblock, entry, stackFrame, locals);
+                return;
+            }
 
-                foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
-                {
-                    // Assert that the executive is setup for execution
-                    bool isExecutiveSetup = true;
-                    Validity.Assert(isExecutiveSetup);
-                    executive.Execute(macroBlock);
-                }
+            Setup(exec, exeblock, entry, stackFrame, locals);
+
+            foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
+            {
+                executive.Execute(macroBlock);
             }
         }
 
