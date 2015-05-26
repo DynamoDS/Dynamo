@@ -1206,7 +1206,6 @@ namespace ProtoScript.Runners
             terminating = false;
             changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             changeSetApplier = new ChangeSetApplier();
-            macroBlockGen = new MacroBlockGenerator(runnerCore);
         }
 
         public void Dispose()
@@ -1275,6 +1274,8 @@ namespace ProtoScript.Runners
             vmState = null;
 
             CreateRuntimeCore();
+
+            macroBlockGen = new MacroBlockGenerator(runnerCore);
         }
 
         /// <summary>

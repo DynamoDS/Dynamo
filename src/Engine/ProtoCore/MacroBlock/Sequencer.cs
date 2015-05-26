@@ -30,17 +30,28 @@ namespace ProtoCore.Runtime
         /// <summary>
         /// Begin excution of macroblocks
         /// </summary>
-        public void Execute()
+        public void Execute(
+            ProtoCore.DSASM.Executive exec,
+            int exeblock,
+            int entry,
+            StackFrame stackFrame, int locals = 0)
         {
-            Validity.Assert(executive != null);
-            Validity.Assert(macroBlockList != null);
+            Validity.Assert(exec != null);
+
+            macroBlockList = exec.exe.MacroBlockList;
+
             List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlockList);
-            foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
+            if (validBlocks.Count > 0)
             {
-                // Assert that the executive is setup for execution
-                bool isExecutiveSetup = true;
-                Validity.Assert(isExecutiveSetup);
-                executive.Execute(macroBlock);
+                Setup(exec, exeblock, entry, stackFrame, locals);
+
+                foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
+                {
+                    // Assert that the executive is setup for execution
+                    bool isExecutiveSetup = true;
+                    Validity.Assert(isExecutiveSetup);
+                    executive.Execute(macroBlock);
+                }
             }
         }
 
@@ -54,7 +65,10 @@ namespace ProtoCore.Runtime
             List<ProtoCore.Runtime.MacroBlock> validBlocks = new List<Runtime.MacroBlock>();
             foreach (ProtoCore.Runtime.MacroBlock block in macroBlocks)
             {
-                validBlocks.Add(block);
+                if (IsBlockReady(block))
+                {
+                    validBlocks.Add(block);
+                }
             }
             return validBlocks;
         }

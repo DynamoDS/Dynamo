@@ -131,7 +131,7 @@ namespace ProtoCore.DSASM
             calledInFunction = false;
             UpdatedSymbols = new HashSet<SymbolNode>();
             ExecutingMacroBlock = 0;
-            //ExecutingMacroBlock = Constants.kInvalidIndex;
+            MacroBlockList = new List<Runtime.MacroBlock>();
         }
 
         public InstructionStream GetInstructionStream(int scopeID)

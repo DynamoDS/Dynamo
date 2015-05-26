@@ -1014,6 +1014,7 @@ namespace ProtoCore
             DSExecutable.SetInstructionStreamList(istream);
 
             GenerateExprExe();
+            DSExecutable.MacroBlockList = RuntimeMacroBlockList;
             DSExecutable.FunctionTable = FunctionTable;
             DSExecutable.DynamicVarTable = DynamicVariableTable;
             DSExecutable.DynamicFuncTable = DynamicFunctionTable;
@@ -1021,7 +1022,8 @@ namespace ProtoCore
             DSExecutable.ContextDataMngr = ContextDataManager;
             DSExecutable.Configurations = Configurations;
             DSExecutable.CodeToLocation = codeToLocation;
-            DSExecutable.CurrentDSFileName = CurrentDSFileName;           
+            DSExecutable.CurrentDSFileName = CurrentDSFileName;     
+      
         }
 
 

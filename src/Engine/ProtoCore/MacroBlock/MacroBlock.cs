@@ -12,6 +12,11 @@ namespace ProtoCore.CompileTime
     {
         public int UID { get; set; }
         public List<BinaryExpressionNode> AstList { get; set; }
+
+        public MacroBlock()
+        {
+            AstList = new List<BinaryExpressionNode>();
+        }
     }
 }
 
@@ -54,7 +59,10 @@ namespace ProtoCore
             this.core = core;
             cachedASTList = new List<AssociativeNode>();
             cachedMacroBlocks = new List<CompileTime.MacroBlock>(); 
-            
+        }
+
+        public List<ProtoCore.CompileTime.MacroBlock> GenerateMacroBlocks(List<AssociativeNode> astList)
+        {
             // For now, generate 1 macroblock
             const int generatedMacroBlocks = 1;
 
@@ -63,16 +71,18 @@ namespace ProtoCore
             {
                 cachedMacroBlocks.Add(new ProtoCore.CompileTime.MacroBlock());
             }
-        }
 
-        public List<ProtoCore.CompileTime.MacroBlock> GenerateMacroBlocks(List<AssociativeNode> astList)
-        {
-            // For now, we generate a global macroblock
+
+            // Populate the macroblocks
+
+            // --------------------- Begin ---------------------
             foreach (BinaryExpressionNode bnode in astList)
             {
                 Validity.Assert(cachedMacroBlocks[bnode.MacroBlockID] != null);
                 cachedMacroBlocks[bnode.MacroBlockID].AstList.Add(bnode);
             }
+            // --------------------- End ---------------------
+
 
             // Generate macroblocks for compilation
             core.MacroBlockList = cachedMacroBlocks;

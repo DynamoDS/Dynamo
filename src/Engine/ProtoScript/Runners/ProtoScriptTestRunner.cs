@@ -219,14 +219,19 @@ namespace ProtoScript.Runners
 
                 ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer();
 
-                sequencer.Setup(
+                //sequencer.Setup(
+                //    runtimeCore.CurrentExecutive.CurrentDSASMExec,
+                //    codeBlock.codeBlockId,
+                //    runtimeCore.StartPC,
+                //    stackFrame,
+                //    locals);
+
+                sequencer.Execute(
                     runtimeCore.CurrentExecutive.CurrentDSASMExec,
                     codeBlock.codeBlockId,
                     runtimeCore.StartPC,
                     stackFrame,
                     locals);
-
-                sequencer.Execute();
 
                 //runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                 //    codeBlock.codeBlockId,
