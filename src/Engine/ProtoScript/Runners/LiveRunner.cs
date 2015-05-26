@@ -1807,12 +1807,17 @@ namespace ProtoScript.Runners
         private void GenerateMacroBlocksFromSyncData(GraphSyncData syncData)
         {
             List<AssociativeNode> astListToConvert = new List<AssociativeNode>();
+            if (syncData.AddedSubtrees == null)
+            {
+                return; 
+            }
+
             foreach (Subtree subtree in syncData.AddedSubtrees)
             {
                 astListToConvert.AddRange(subtree.AstNodes);
             }
 
-            macroBlockGen.GenerateMacroBlockIDForAST(astListToConvert);
+            macroBlockGen.GenerateMacroBlockIDForBinaryAST(astListToConvert);
             macroBlockGen.GenerateMacroBlocks(astListToConvert);
         }
 

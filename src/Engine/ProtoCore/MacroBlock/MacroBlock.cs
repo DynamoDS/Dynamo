@@ -11,11 +11,11 @@ namespace ProtoCore.CompileTime
     public class MacroBlock
     {
         public int UID { get; set; }
-        public List<BinaryExpressionNode> AstList { get; set; }
+        public List<AssociativeNode> AstList { get; set; }
 
         public MacroBlock()
         {
-            AstList = new List<BinaryExpressionNode>();
+            AstList = new List<AssociativeNode>();
         }
     }
 }
@@ -64,28 +64,45 @@ namespace ProtoCore
         public List<ProtoCore.CompileTime.MacroBlock> GenerateMacroBlocks(List<AssociativeNode> astList)
         {
             // For now, generate 1 macroblock
-            const int generatedMacroBlocks = 1;
+            const int numMacroBlocks = 1;
 
             // Initialize macroblocks
-            for (int n = 0; n < generatedMacroBlocks; ++n)
+            for (int n = 0; n < numMacroBlocks; ++n)
             {
                 cachedMacroBlocks.Add(new ProtoCore.CompileTime.MacroBlock());
             }
 
 
-            // Populate the macroblocks
-
+            // -------------------------------------------------
             // --------------------- Begin ---------------------
-            foreach (BinaryExpressionNode bnode in astList)
+            // -------------------------------------------------
+
+            // Generate the macroblocks
+            // Replace this logic with the real macroblock generator
+            List<List<AssociativeNode>> generatedMacroBlockList = new List<List<AssociativeNode>>();
+            for (int n = 0; n < numMacroBlocks; ++n)
             {
-                Validity.Assert(cachedMacroBlocks[bnode.MacroBlockID] != null);
-                cachedMacroBlocks[bnode.MacroBlockID].AstList.Add(bnode);
+                List<AssociativeNode> singleMacroBlock = new List<AssociativeNode>(astList);
+                generatedMacroBlockList.Add(singleMacroBlock);
             }
-            // --------------------- End ---------------------
 
+            // Cache the macroblocks 
+            for (int mBlockID = 0; mBlockID < numMacroBlocks; ++mBlockID)
+            {
+                List<AssociativeNode> macroBlock = generatedMacroBlockList[mBlockID];
+                foreach (AssociativeNode node in macroBlock)
+                {
+                    Validity.Assert(cachedMacroBlocks[mBlockID] != null);
+                    cachedMacroBlocks[mBlockID].AstList.Add(node);
+                }
+            }
 
-            // Generate macroblocks for compilation
             core.MacroBlockList = cachedMacroBlocks;
+
+            // -------------------------------------------------
+            // --------------------- End -----------------------
+            // -------------------------------------------------
+
 
             // Allocate space for runtime macroblock
             int allocateSize = core.MacroBlockList.Count - core.RuntimeMacroBlockList.Count;
@@ -97,11 +114,15 @@ namespace ProtoCore
             return cachedMacroBlocks;
         }
 
-        public void GenerateMacroBlockIDForAST(List<AssociativeNode> astList)
+        public void GenerateMacroBlockIDForBinaryAST(List<AssociativeNode> astList)
         {
-            foreach (BinaryExpressionNode bnode in astList)
+            foreach (AssociativeNode node in astList)
             {
-                bnode.MacroBlockID = 0;
+                BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                if (bnode != null)
+                {
+                    bnode.MacroBlockID = 0;
+                }
             }
         }
     }
