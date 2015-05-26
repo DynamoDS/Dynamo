@@ -4106,7 +4106,6 @@ z = 2;";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T56_Defect_1467342_Inline_Condition_replication()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
