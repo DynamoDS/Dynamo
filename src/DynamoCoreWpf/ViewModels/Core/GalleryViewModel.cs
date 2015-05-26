@@ -101,12 +101,12 @@ namespace Dynamo.Wpf.ViewModels.Core
         }
 
         /// <summary>
-        /// Set image path relative to the gallery Directory.
-        /// It looks for the images side-by-side with the gallerycontents.xml,
-        /// if it's can't be found, it looks one level up in gallery/Data
+        /// Set image path relative to the gallery directory. The method looks for the 
+        /// images alongside GalleryContents.xml. If a given image cannot be found, it 
+        /// searches under "Data" directory in the parent directory.
         /// </summary>
         /// <param name="galleryDirectory">
-        /// The directory in which the gallerycontents.xml resides
+        /// The directory in which the GalleryContents.xml resides
         /// </param>
         private void SetImagePath(string galleryDirectory)
         {
@@ -119,7 +119,8 @@ namespace Dynamo.Wpf.ViewModels.Core
                 }
                 else
                 {
-                    content.ImagePath = Path.Combine(galleryDirectory, @"..\Data", content.ImagePath);
+                    content.ImagePath = Path.GetFullPath(Path.Combine(galleryDirectory, 
+                                                        @"..\Data", content.ImagePath));
                 }
             }
         }
