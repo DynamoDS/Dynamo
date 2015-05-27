@@ -10,6 +10,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
              xmlns:wpf="clr-namespace:Dynamo.Wpf"
+             xmlns:rendering="clr-namespace:Dynamo.Wpf.Rendering"
              Name="topControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -125,15 +126,15 @@
             <hx:DirectionalLight3D Name="key" Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
             <hx:LineGeometryModel3D x:Name="linesView"  Geometry="{Binding Lines}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.5" IsHitTestVisible="False" />
             <hx:LineGeometryModel3D x:Name="linesSelectedView"  Geometry="{Binding LinesSelected}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="1.0" IsHitTestVisible="False" />
-            <hx:LineGeometryModel3D x:Name="gridView" Geometry="{Binding Grid}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
-            <hx:LineGeometryModel3D x:Name="axesView" Geometry="{Binding Axes}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
-            <hx:PointGeometryModel3D x:Name="pointsView" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.White}"/>
+            <hx:PointGeometryModel3D x:Name="pointsView" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Size="8 8" Figure="Ellipse"/>
             <hx:MeshGeometryModel3D x:Name="meshView" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False" />
             <hx:MeshGeometryModel3D x:Name="meshSelectedView" Geometry="{Binding MeshSelected}" Transform = "{Binding Model1Transform}" Material="{Binding SelectedMaterial}" IsHitTestVisible="False" />
-            <wpf:PerVertexMeshGeometryModel3D x:Name="perVertexMeshView" Geometry="{Binding PerVertexMesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False"/>
+            <rendering:PerVertexMeshGeometryModel3D x:Name="perVertexMeshView" Geometry="{Binding PerVertexMesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False"/>
             <hx:BillboardTextModel3D x:Name="textView" Geometry="{Binding Text}" Transform="{Binding Model1Transform}"/>
+            <hx:LineGeometryModel3D x:Name="gridView" Geometry="{Binding Grid}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
+            <hx:LineGeometryModel3D x:Name="axesView" Geometry="{Binding Axes}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
         </hx:Viewport3DX>
-        
+
         <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"
                DragDelta="ResizeThumb_OnDragDelta" DragStarted="ResizeThumb_OnDragStarted" DragCompleted="ResizeThumb_OnDragCompleted"
                Visibility="{Binding WatchIsResizable, Converter={StaticResource BooleanToVisibilityConverter}}"/>

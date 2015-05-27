@@ -34,6 +34,9 @@ namespace ProtoCore
             /// </summary>
             public bool applySSATransform { get; set; }
 
+            public List<AssociativeGraph.GraphNode> DependentVariablesInScope { get; set; }
+
+
             public Context()
             {
                 SourceCode = String.Empty;
@@ -43,6 +46,7 @@ namespace ProtoCore
                 exprExecutionFlags = new Dictionary<int, bool>();
                 applySSATransform = true;
                 CurrentBlockId = Constants.kInvalidIndex;
+                DependentVariablesInScope = new List<AssociativeGraph.GraphNode>();
             }
 
             public void SetData(string source, Dictionary<string, Object> context, Dictionary<string, bool> flagList)

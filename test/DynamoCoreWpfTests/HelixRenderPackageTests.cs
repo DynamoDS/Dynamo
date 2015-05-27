@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-
+using System.Windows.Media;
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Rendering;
 using NUnit.Framework;
 
 namespace DynamoCoreUITests
@@ -190,7 +190,7 @@ namespace DynamoCoreUITests
         /// <summary>
         /// Pushes an uncolored line into a package.
         /// </summary>
-        private static void PushLineIntoPackage(IRenderPackage package)
+        internal static void PushLineIntoPackage(IRenderPackage package)
         {
             package.AddLineStripVertex(0,0,0);
             package.AddLineStripVertex(1,1,1);
@@ -214,6 +214,38 @@ namespace DynamoCoreUITests
             }
 
             return colors;
+        }
+    }
+
+    [TestFixture]
+    public class HelixRenderPackageExtensionTests
+    {
+        [Test]
+        public void HelixRenderPackage_SingleLineVertexColor_AllLineStripVerticesHaveColor_True()
+        {
+            var p = new HelixRenderPackage();
+            Assert.NotNull(p);
+
+            // Same line strip vertex colors.
+            HelixRenderPackageTests.PushLineIntoPackage(p);
+            p.AddLineStripVertexColor(255,0,0,255);
+            p.AddLineStripVertexColor(255,0,0,255);
+
+            Assert.True(p.AllLineStripVerticesHaveColor(Color.FromArgb(255,255,0,0)));
+        }
+
+        [Test]
+        public void HelixRenderPackage_ManyLineVertexColors_AllLineStripVerticesHaveColor_False()
+        {
+            var p = new HelixRenderPackage();
+            Assert.NotNull(p);
+
+            // Different line strip vertex colors.
+            HelixRenderPackageTests.PushLineIntoPackage(p);
+            p.AddLineStripVertexColor(255, 0, 0, 255);
+            p.AddLineStripVertexColor(255, 255, 0, 0);
+
+            Assert.False(p.AllLineStripVerticesHaveColor(Color.FromArgb(255, 255, 0, 0)));
         }
     }
 }

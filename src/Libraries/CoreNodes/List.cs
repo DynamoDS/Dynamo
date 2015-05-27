@@ -300,7 +300,7 @@ namespace DSCore
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
         /// <returns name="list">Shifted list.</returns>
-        /// <search>shift,slide,offset</search>
+        /// <search>shift,offset</search>
         public static IList ShiftIndices(IList list, int amount)
         {
             if (amount == 0)

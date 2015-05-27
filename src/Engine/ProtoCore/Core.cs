@@ -54,6 +54,13 @@ namespace ProtoCore
     {
         public Options()
         {
+            // Execute using new graphnode dependency
+            // When executing direct dependency set the following:
+            //      DirectDependencyExecution = true
+            //      LHSGraphNodeUpdate = false
+            DirectDependencyExecution = true;
+            LHSGraphNodeUpdate = !DirectDependencyExecution;
+
             ApplyUpdate = false;
 
             DumpByteCode = false;
@@ -91,7 +98,6 @@ namespace ProtoCore
             EmitBreakpoints = true;
 
             localDependsOnGlobalSet = false;
-            LHSGraphNodeUpdate = true;
             TempReplicationGuideEmptyFlag = true;
             AssociativeToImperativePropagation = true;
             SuppressFunctionResolutionWarning = true;
@@ -104,6 +110,7 @@ namespace ProtoCore
 
         }
 
+        public bool DirectDependencyExecution { get; set; }
         public bool ApplyUpdate { get; set; }
         public bool DumpByteCode { get; set; }
         public bool DumpIL { get; private set; }
@@ -633,8 +640,10 @@ namespace ProtoCore
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
             }
 
+            SSAExpressionUID = 0;
             SSASubscript = 0;
             SSASubscript_GUID = Guid.NewGuid();
+            SSAExprUID = 0;
             ExpressionUID = 0;
             ModifierBlockUID = 0;
             ModifierStateSubscript = 0;
@@ -672,10 +681,12 @@ namespace ProtoCore
         // TODO Jun: Organize these variables in core into proper enums/classes/struct
         public int SSASubscript { get; set; }
         public Guid SSASubscript_GUID { get; set; }
+        public int SSAExprUID { get; set; }
+        public int SSAExpressionUID { get; set; }
 
         /// <summary> 
         /// ExpressionUID is used as the unique id to identify an expression
-        /// It is incremented by 1 after mapping tis current value to an expression
+        /// It is incremented by 1 after mapping its current value to an expression
         /// </summary>
         public int ExpressionUID { get; set; }
 

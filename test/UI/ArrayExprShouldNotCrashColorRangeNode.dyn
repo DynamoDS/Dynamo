@@ -1,0 +1,14 @@
+<Workspace Version="0.8.1.1314" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="c90f5c20-8c63-4708-bd1a-289647bae471" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="60.6666666666667" y="129.333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{ { 1.0 }, 1.0 };&#xA;0.3;&#xA;0.6;" ShouldFocus="false" />
+    <DSCoreNodesUI.ColorRange guid="6465aa45-ef84-4a34-90b0-49b659b3898c" type="DSCoreNodesUI.ColorRange" nickname="Color Range" x="282.666666666667" y="129.333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c90f5c20-8c63-4708-bd1a-289647bae471" start_index="0" end="6465aa45-ef84-4a34-90b0-49b659b3898c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c90f5c20-8c63-4708-bd1a-289647bae471" start_index="1" end="6465aa45-ef84-4a34-90b0-49b659b3898c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c90f5c20-8c63-4708-bd1a-289647bae471" start_index="2" end="6465aa45-ef84-4a34-90b0-49b659b3898c" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

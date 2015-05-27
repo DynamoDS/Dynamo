@@ -81,11 +81,6 @@
       <Pdbs Include="$(OutDir)*.pdb" />
       <Xmls Include="$(OutDir)*.xml" />
     </ItemGroup>
-    <Copy SourceFiles="@(Dlls)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\" />
-    <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\" />
-    <Copy SourceFiles="@(Xmls)" DestinationFolder="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\bin\" />
-    <Copy SourceFiles="$(ProjectDir)..\pkg.json" DestinationFiles="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\pkg.json" />
-    <MakeDir Directories="$(APPDATA)\Dynamo\0.8\packages\Dynamo Samples\dyf" />
     <Copy SourceFiles="@(Dlls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
     <Copy SourceFiles="@(Pdbs)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />
     <Copy SourceFiles="@(Xmls)" DestinationFolder="$(SolutionDir)..\bin\$(Platform)\$(Configuration)\0.8\packages\Dynamo Samples\bin\" />

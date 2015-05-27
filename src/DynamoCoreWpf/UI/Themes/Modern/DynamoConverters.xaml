@@ -149,4 +149,5 @@
     <controls:GroupFontSizeToEditorEnabledConverter x:Key="GroupFontSizeToEditorEnabledConverter"/>
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter"/>
+    <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
 </ResourceDictionary>

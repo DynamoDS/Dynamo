@@ -458,8 +458,9 @@ namespace Dynamo.Controls
         void DynamoViewModelRequestShowHideGallery(bool showGallery)
         {
             //Disable for now
+#if !DEBUG
             return;
-
+#endif
             if (showGallery)
             {
                 if (galleryView == null) //On-demand instantiation

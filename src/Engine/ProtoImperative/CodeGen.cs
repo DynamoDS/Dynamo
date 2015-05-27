@@ -91,6 +91,41 @@ namespace ProtoImperative
             return cb;
         }
 
+        /// <summary>
+        /// Emits a block of code for the following cases:
+        ///     if elseif else body
+        ///     while body
+        ///     for body
+        /// </summary>
+        /// <param name="codeBlock"></param>
+        /// <param name="inferedType"></param>
+        /// <param name="subPass"></param>
+        private void EmitCodeBlock(
+            List<ImperativeNode> codeBlock, 
+            ref ProtoCore.Type inferedType, 
+            bool isBooleanOp = false, 
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null)
+        {
+            foreach (ImperativeNode bodyNode in codeBlock)
+            {
+                inferedType = new ProtoCore.Type();
+                inferedType.UID = (int)PrimitiveType.kTypeVar;
+
+                if (bodyNode is LanguageBlockNode)
+                {
+                    BinaryExpressionNode langBlockNode = new BinaryExpressionNode();
+                    langBlockNode.LeftNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+                    langBlockNode.Optr = ProtoCore.DSASM.Operator.assign;
+                    langBlockNode.RightNode = bodyNode;
+                    DfsTraverse(langBlockNode, ref inferedType, isBooleanOp, graphNode);
+                }
+                else
+                {
+                    DfsTraverse(bodyNode, ref inferedType, isBooleanOp, graphNode);
+                }
+            }
+        }
+
         private ProtoCore.DSASM.CodeBlock BuildNewCodeBlock(ProcedureTable procTable = null)
         {
             /*
@@ -1810,24 +1845,7 @@ namespace ProtoImperative
                     backpatchMap.BreakTable[localCodeBlock.codeBlockId] = new BackpatchTable();
                     
                     EmitPushBlockID(localCodeBlock.codeBlockId);
-                    foreach (ImperativeNode bodyNode in whileNode.Body)
-                    {
-                        inferedType = new ProtoCore.Type();
-                        inferedType.UID = (int)PrimitiveType.kTypeVar;
-
-                        if (bodyNode is LanguageBlockNode)
-                        {
-                            BinaryExpressionNode langBlockNode = new BinaryExpressionNode();
-                            langBlockNode.LeftNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-                            langBlockNode.Optr = ProtoCore.DSASM.Operator.assign;
-                            langBlockNode.RightNode = bodyNode;
-                            DfsTraverse(langBlockNode, ref inferedType, isBooleanOp, graphNode);
-                        }
-                        else
-                        {
-                            DfsTraverse(bodyNode, ref inferedType, isBooleanOp, graphNode);
-                        }
-                    }
+                    EmitCodeBlock(whileNode.Body, ref inferedType, isBooleanOp, graphNode);
 
                     ProtoCore.AST.Node oldBlockNode = localCodeBlockNode;
                     localCodeBlockNode = node;

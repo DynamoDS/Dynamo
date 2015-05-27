@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1488,6 +1489,7 @@ namespace ProtoCore.DSASM
                 node.isCyclic = true;
                 SetGraphNodeStackValueNull(node);
                 node.dependentList.Clear();
+                node.isActive = false;
             }
             Properties.nodeIterations = new List<AssociativeGraph.GraphNode>();
         }
@@ -1599,15 +1601,47 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            // Find reachable graphnodes
-            List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
+            if (runtimeCore.Options.DirectDependencyExecution)
+            {
+                // Data flow execution prototype
+                // Dependency has already been resolved at compile time
+                // Get the reachable nodes directly from the executingGraphNode
+                reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.graphNodesToExecute);
+            }
+            else
+            {
+                // Find reachable graphnodes
+                reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                    Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+            }
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
-            foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+            int nextPC = Constants.kInvalidPC;
+            if (reachableGraphNodes.Count > 0)
             {
-                gnode.isDirty = true;
+                // Get the next pc to jump to
+                nextPC = reachableGraphNodes[0].updateBlock.startpc;
+                LX = StackValue.BuildInt(nextPC);
+                for (int n = 0; n < reachableGraphNodes.Count; ++n)
+                {
+                    AssociativeGraph.GraphNode gnode = reachableGraphNodes[n];
+                    gnode.isDirty = true;
+
+                    if (gnode.isCyclic)
+                    {
+                        // If the graphnode is cyclic, mark it as not dirst so it wont get executed 
+                        // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
+                        // The cyclepoint is the other graphNode that the current node cycles with
+                        gnode.isDirty = false;
+                        if (null != gnode.cyclePoint)
+                        {
+                            gnode.cyclePoint.isDirty = false;
+                            gnode.cyclePoint.isCyclic = true;
+                        }
+                    }
+                }
             }
 
             // Get all redefined graphnodes
@@ -6362,6 +6396,7 @@ namespace ProtoCore.DSASM
                 ci = classIndex;
                 fi = functionIndex;
             }
+
             SetupNextExecutableGraph(fi, ci);
         }
 
