@@ -423,6 +423,18 @@ namespace Dynamo.UI.Controls
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
         {
+           // http://stackoverflow.com/questions/1918877/how-can-i-get-the-dpi-in-wpf
+           // we should probably not be positioning based on pixels directly
+            PresentationSource source = PresentationSource.FromVisual(this);
+            double xfactor = 1.0;
+            double dpiX, dpiY;
+            if (source != null)
+            {
+                dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11;
+                dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22;
+                xfactor = dpiX / 96.0;
+            }
+           
             double gap = Configurations.ToolTipTargetGapInPixels;
             var dynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this.PlacementTarget);
             if (dynamoWindow == null)
@@ -436,7 +448,7 @@ namespace Dynamo.UI.Controls
 
             // Count width.
             double x = 0;
-            x = WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth*2
+            x = WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth*xfactor
                 + gap * 2 + targetLocation.X * (-1);
 
             // Count height.
