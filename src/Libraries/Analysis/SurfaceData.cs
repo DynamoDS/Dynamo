@@ -159,10 +159,8 @@ namespace Analysis
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            var package = parameters.RenderPackage;
-
             package.RequiresPerVertexColoration = true;
 
             if (!Values.Any() || Values == null)

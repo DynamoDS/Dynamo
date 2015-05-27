@@ -69,7 +69,7 @@ namespace Analysis
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             if (!Values.Any() || Values == null)
             {
@@ -80,7 +80,7 @@ namespace Analysis
 
             foreach (var d in data)
             {
-                DrawVector(d, parameters.RenderPackage);
+                DrawVector(d, package);
             }
         }
 

@@ -23,10 +23,10 @@ namespace Dynamo.Wpf.ViewModels
 
         public int MaxTessellationDivisions
         {
-            get { return vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxGridLines; }
+            get { return vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxTessellationDivisions; }
             set
             {
-                vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxGridLines = value;
+                vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxTessellationDivisions = value;
                 vm.Model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }

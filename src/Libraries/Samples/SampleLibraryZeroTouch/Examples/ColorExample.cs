@@ -16,10 +16,8 @@ namespace SampleLibraryZeroTouch.Examples
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            var package = parameters.RenderPackage;
-
             // Dynamo's renderer uses IRenderPackage objects
             // to store data for rendering. The Tessellate method
             // give you an IRenderPackage object which you can fill

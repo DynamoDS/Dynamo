@@ -32,10 +32,10 @@ namespace Analysis
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            parameters.RenderPackage.AddPointVertex(point.X, point.Y, point.Z);
-            parameters.RenderPackage.Description = label;
+            package.AddPointVertex(point.X, point.Y, point.Z);
+            package.Description = label;
         }
     }
 }

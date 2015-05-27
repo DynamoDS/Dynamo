@@ -43,17 +43,15 @@ namespace DSCore
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            var package = parameters.RenderPackage;
-
             package.RequiresPerVertexColoration = true;
 
             // As you add more data to the render package, you need
             // to keep track of the index where this coloration will 
             // start from.
 
-            geometry.Tessellate(parameters);
+            geometry.Tessellate(package, parameters);
 
             if (renderEdges)
             {
@@ -62,7 +60,7 @@ namespace DSCore
                 {
                     foreach (var curve in surf.PerimeterCurves())
                     {
-                        curve.Tessellate(parameters);
+                        curve.Tessellate(package, parameters);
                         curve.Dispose();
                     }
                 }
@@ -72,7 +70,7 @@ namespace DSCore
                 {
                     foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
                     {
-                        geom.Tessellate(parameters);
+                        geom.Tessellate(package, parameters);
                         geom.Dispose();
                     }
                 }

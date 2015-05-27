@@ -168,7 +168,7 @@ namespace Dynamo.Core.Threading
 
                 try
                 {
-                    graphicItem.Tessellate(factory.TessellationParameters);
+                    graphicItem.Tessellate(package, factory.TessellationParameters);
 
                     if (factory.TessellationParameters.ShowEdges)
                     {
@@ -177,7 +177,7 @@ namespace Dynamo.Core.Threading
                         {
                             foreach (var curve in surf.PerimeterCurves())
                             {
-                                curve.Tessellate(factory.TessellationParameters);
+                                curve.Tessellate(package, factory.TessellationParameters);
                                 curve.Dispose();
                             }
                         }
@@ -187,7 +187,7 @@ namespace Dynamo.Core.Threading
                         {
                             foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
                             {
-                                geom.Tessellate(factory.TessellationParameters);
+                                geom.Tessellate(package, factory.TessellationParameters);
                                 geom.Dispose();
                             }
                         }

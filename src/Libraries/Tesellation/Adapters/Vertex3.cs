@@ -29,9 +29,9 @@ namespace Tessellation.Adapters
 
         public double[] Position { get; set; }
 
-        public void Tessellate(TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            AsVector().Tessellate(parameters);
+            AsVector().Tessellate(package, parameters);
         }
 
         public double NormSquared()

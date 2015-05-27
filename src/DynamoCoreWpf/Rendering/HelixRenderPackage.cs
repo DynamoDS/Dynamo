@@ -22,7 +22,7 @@ namespace Dynamo.Wpf.Rendering
         {
             TessellationParameters = new TessellationParameters()
             {
-                MaxGridLines = MaxTessellationDivisionsDefault
+                MaxTessellationDivisions = MaxTessellationDivisionsDefault
             };
         }
 

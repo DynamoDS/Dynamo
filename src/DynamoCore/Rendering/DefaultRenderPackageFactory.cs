@@ -15,7 +15,7 @@ namespace Dynamo
         {
             TessellationParameters = new TessellationParameters()
             {
-                MaxGridLines = 32
+                MaxTessellationDivisions = 32
             };
         }
 

@@ -72,10 +72,8 @@ namespace SampleLibraryZeroTouch.Examples
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            var package = parameters.RenderPackage;
-
             for (var i = 0; i < width - 1; i++)
             {
                 for (var j = 0; j < length - 1; j++)
