@@ -407,7 +407,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
 
-            Assert.AreEqual(5, list.Count());
+            Assert.AreEqual(5, list.Count);
 
             // single column - 1, "word", 2, 3, "palabra"
             Assert.IsTrue(list[0].IsCollection);
@@ -430,6 +430,54 @@ namespace Dynamo.Tests
             rowList = list[4].GetElements();
             Assert.AreEqual("palabra", rowList[0].Data);
 
+        }
+
+        [Test]
+        public void CanReadEmptyCellsAsStrings()
+        {
+
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ReadEmptyCellsAsStrings.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            // watch displays the data from the Read node
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
+
+            Assert.AreEqual(15, list.Count);
+
+            List<MirrorData> rowList;
+            for (int i = 0; i < list.Count; i++)
+            {
+                Assert.IsTrue(list[i].IsCollection);
+                if (i >= 1 && i <= 3 || i >= 5 && i <= 10 || i >= 12 && i <= 13)
+                {
+                    rowList = list[i].GetElements();
+                    for (int j = 0; j < rowList.Count; j++)
+                    {
+                        Assert.AreEqual(null, rowList[j].Data);
+                    }
+                }
+            }
+            rowList = list[0].GetElements();
+            Assert.AreEqual("5", rowList[0].Data);
+
+            rowList = list[4].GetElements();
+            Assert.AreEqual("afsd", rowList[3].Data);
+
+            rowList = list[11].GetElements();
+            Assert.AreEqual("sfsd", rowList[5].Data);
+
+            rowList = list[14].GetElements();
+            Assert.AreEqual("3453425", rowList[9].Data);
         }
 
         #endregion
