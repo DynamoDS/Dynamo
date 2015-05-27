@@ -31,7 +31,22 @@ namespace Dynamo.Nodes
 
       void OK_Click(object sender, RoutedEventArgs e)
       {
-         this.DialogResult = true;
+          if (string.IsNullOrEmpty(Text))
+          {
+              MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
+                  Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
+                  MessageBoxButton.OK, MessageBoxImage.Error);
+          }
+          else if (string.IsNullOrEmpty(Category))
+          {
+              MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory,
+                  Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
+                  MessageBoxButton.OK, MessageBoxImage.Error);
+          }
+          else
+          {
+              this.DialogResult = true;
+          }
       }
 
       void Cancel_Click(object sender, RoutedEventArgs e)
