@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
@@ -12,8 +10,6 @@ namespace DSCore
     {
         internal Geometry geometry;
         internal Color color;
-
-        private bool renderEdges = false;
 
         private Display(Geometry geometry, Color color)
         {
@@ -53,7 +49,7 @@ namespace DSCore
 
             geometry.Tessellate(package, parameters);
 
-            if (renderEdges)
+            if (parameters.ShowEdges)
             {
                 var surf = geometry as Surface;
                 if (surf != null)
