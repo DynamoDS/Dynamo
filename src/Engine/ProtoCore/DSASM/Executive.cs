@@ -2646,11 +2646,14 @@ namespace ProtoCore.DSASM
 
         public void Execute(ProtoCore.Runtime.MacroBlock macroBlock)
         {
-            exe.SetupMacroBlock(macroBlock.UID);
-            int scope = 0;
-            istream = exe.GetInstructionStream(scope);
-            int entry = istream.entrypoint;
-            Execute(scope, entry, null);
+            int entry = macroBlock.GenerateEntryPoint();
+            if (entry != Constants.kInvalidPC)
+            {
+                exe.SetupMacroBlock(macroBlock.UID);
+                int scope = 0;
+                istream = exe.GetInstructionStream(scope);
+                Execute(scope, entry, null);
+            }
         }
 
         private void ExecuteInternal(int exeblock, int entry, Language language = Language.kInvalid)

@@ -1821,6 +1821,17 @@ namespace ProtoScript.Runners
             macroBlockGen.GenerateMacroBlocks(astListToConvert);
         }
 
+        /// <summary>
+        /// Generates a macroblock from DS code
+        /// This functionality only exists to support SynchronizeInternal(string) that processes DS code as strings
+        /// SynchronizeInternal(string) should be deprecated and we should only support SynchronizeInternal(GraphSyncData)
+        /// </summary>
+        /// <param name="code"></param>
+        private void GenerateMacroBlocksFromCode(string code)
+        {
+            macroBlockGen.GenerateMacroBlocks(code);
+        }
+
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
@@ -1854,6 +1865,7 @@ namespace ProtoScript.Runners
             }
             else
             {
+                GenerateMacroBlocksFromCode(code);
                 CompileAndExecuteForDeltaExecution(code);
             }
         }
