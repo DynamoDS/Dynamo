@@ -19,7 +19,6 @@ namespace Dynamo.Tests
         [SetUp]
         public void Init()
         {
-            model = new NodeSearchModel();
             viewModel = new SearchViewModel(null);
         }
 

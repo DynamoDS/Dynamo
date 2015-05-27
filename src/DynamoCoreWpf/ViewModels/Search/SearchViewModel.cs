@@ -186,11 +186,18 @@ namespace Dynamo.ViewModels
             get { return LibraryRootCategories; }
         }
 
-        public NodeSearchModel Model 
+        private NodeSearchModel model;
+        public NodeSearchModel Model
         {
             get
             {
-                return dynamoViewModel.Model.SearchModel;
+                if (dynamoViewModel != null)
+                    return dynamoViewModel.Model.SearchModel;
+
+                // dynamoViewModel can't be null, this case is just for tests.
+                if (model == null)
+                    model = new NodeSearchModel();
+                return model;
             }
         }
 
