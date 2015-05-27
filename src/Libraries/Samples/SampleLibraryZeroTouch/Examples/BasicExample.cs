@@ -154,11 +154,11 @@ namespace SampleLibraryZeroTouch.Examples
         /// <param name="maxGridLines">An optional tesselation tolerance which specifies the maximum number
         /// of surface subdivisions to be used for tesselation.</param>
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(TessellationParameters parameters)
         {
             // This example contains information to draw a point
-            package.AddPointVertex(point.X, point.Y, point.Z);
-            package.AddPointVertexColor(255, 0, 0, 255);
+            parameters.RenderPackage.AddPointVertex(point.X, point.Y, point.Z);
+            parameters.RenderPackage.AddPointVertexColor(255, 0, 0, 255);
         }
 
         #endregion

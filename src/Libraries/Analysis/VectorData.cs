@@ -69,7 +69,7 @@ namespace Analysis
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(TessellationParameters parameters)
         {
             if (!Values.Any() || Values == null)
             {
@@ -80,7 +80,7 @@ namespace Analysis
 
             foreach (var d in data)
             {
-                DrawVector(d, package);
+                DrawVector(d, parameters.RenderPackage);
             }
         }
 

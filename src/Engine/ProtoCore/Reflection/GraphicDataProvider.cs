@@ -117,7 +117,7 @@ namespace ProtoCore.Mirror
             return provider;
         }
 
-        public void Tessellate(List<object> objects, IRenderPackage package, double tol)
+        public void Tessellate(List<object> objects, TessellationParameters parameters)
         {
             foreach (var item in objects)
             {
@@ -127,7 +127,7 @@ namespace ProtoCore.Mirror
 
                 foreach (var g in graphicItems)
                 {
-                    g.Tessellate(package, tol);
+                    g.Tessellate(parameters);
                 }
             }
         }
@@ -221,7 +221,7 @@ namespace ProtoCore.Mirror
             return null;
         }
 
-        public void Tessellate(List<object> objects, IRenderPackage package, double tol)
+        public void Tessellate(List<object> objects, TessellationParameters parameters)
         {
             throw new NotImplementedException();
         }

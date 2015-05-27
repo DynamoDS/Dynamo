@@ -15,7 +15,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (vm.Model.PreferenceSettings.ShowEdges != value)
                 {
                     vm.Model.PreferenceSettings.ShowEdges = value;
-                    vm.VisualizationManager.RenderPackageFactory.ShowEdges = value;
+                    vm.VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges = value;
                     vm.Model.OnRequestsRedraw(this, EventArgs.Empty);
                 }
             }
@@ -23,10 +23,10 @@ namespace Dynamo.Wpf.ViewModels
 
         public int MaxTessellationDivisions
         {
-            get { return vm.VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
+            get { return vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxGridLines; }
             set
             {
-                vm.VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
+                vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxGridLines = value;
                 vm.Model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }

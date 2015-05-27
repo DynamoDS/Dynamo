@@ -159,8 +159,10 @@ namespace Analysis
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(TessellationParameters parameters)
         {
+            var package = parameters.RenderPackage;
+
             package.RequiresPerVertexColoration = true;
 
             if (!Values.Any() || Values == null)

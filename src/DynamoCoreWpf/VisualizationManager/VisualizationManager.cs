@@ -189,8 +189,7 @@ namespace Dynamo
             // events from the pre-existing workspace.
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
-            renderPackageFactory = new HelixRenderPackageFactory();
-            RenderPackageFactory.ShowEdges = model.PreferenceSettings.ShowEdges;
+            renderPackageFactory = new HelixRenderPackageFactory(new TessellationParameters() { ShowEdges = model.PreferenceSettings.ShowEdges });
 
             Start();
         }

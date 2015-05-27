@@ -1,4 +1,5 @@
 ﻿using Autodesk.DesignScript.Interfaces;
+using Dynamo.Annotations;
 
 namespace Dynamo.Interfaces
 {
@@ -10,17 +11,7 @@ namespace Dynamo.Interfaces
     /// </summary>
     public interface IRenderPackageFactory
     {
-        /// <summary>
-        /// A flag indicating whether edge geometry for surfaces should be included 
-        /// in the generated render packages.
-        /// </summary>
-        bool ShowEdges { get; set; }
-
-        /// <summary>
-        /// The maximum number of subdivisions of a surface for tesselation.
-        /// Used only by methods that tessellate BReps.
-        /// </summary>
-        int MaxTessellationDivisions { get; set; }
+        TessellationParameters TessellationParameters { get; set; }
 
         /// <summary>
         /// Create an IRenderPackage object of the type manufactured by this factory.

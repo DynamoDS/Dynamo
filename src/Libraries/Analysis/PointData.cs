@@ -66,7 +66,7 @@ namespace Analysis
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(TessellationParameters parameters)
         {
             if (!Values.Any() || Values == null)
             {
@@ -88,8 +88,8 @@ namespace Analysis
                 var pt = d.Item1;
 
                 var color = colorRange.GetColorAtParameter(d.Item2);
-                package.AddPointVertex(pt.X, pt.Y, pt.Z);
-                package.AddPointVertexColor(color.Red, color.Green, color.Blue, color.Alpha);
+                parameters.RenderPackage.AddPointVertex(pt.X, pt.Y, pt.Z);
+                parameters.RenderPackage.AddPointVertexColor(color.Red, color.Green, color.Blue, color.Alpha);
             }
         }
     }

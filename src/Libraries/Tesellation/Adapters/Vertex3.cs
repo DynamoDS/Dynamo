@@ -29,9 +29,9 @@ namespace Tessellation.Adapters
 
         public double[] Position { get; set; }
 
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(TessellationParameters parameters)
         {
-            AsVector().Tessellate(package, tol, maxGridLines);
+            AsVector().Tessellate(parameters);
         }
 
         public double NormSquared()
