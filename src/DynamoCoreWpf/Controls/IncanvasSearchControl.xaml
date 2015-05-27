@@ -138,7 +138,7 @@
                                     Value="Collapsed" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.CurrentMode,
+                        <DataTrigger Binding="{Binding Path=CurrentMode,
                                                        Converter={StaticResource LibraryViewModeToBoolConverter}}"
                                      Value="True">
                             <Setter Property="Visibility"

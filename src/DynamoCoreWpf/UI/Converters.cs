@@ -2245,6 +2245,10 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// Converter is used in search library view. If current mode is LibraryView, then hide found members.
+        /// Otherwise show found members.
+        /// </summary>
         public class LibraryViewModeToBoolConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

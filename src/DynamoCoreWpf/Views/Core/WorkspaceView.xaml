@@ -154,8 +154,7 @@
             </controls:ZoomBorder>
 
             <Canvas.ContextMenu>
-                <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}"
-                             Name="workspaceContextMenu">
+                <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}">
                     <MenuItem Name="WorkspaceLacingMenu"
                               Header="{x:Static p:Resources.ContextMenuLacing}">
                         <MenuItem IsCheckable="True"
