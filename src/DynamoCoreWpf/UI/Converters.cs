@@ -2202,6 +2202,31 @@ namespace Dynamo.Controls
         }
     }
 
+    public class GroupTitleVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null) return Visibility.Visible;
+            if (parameter.ToString() == "FlipTextblock")
+            {
+                if ((Visibility) value == Visibility.Collapsed)
+                {
+                    return Visibility.Visible;
+                }
+            }
+            else if (parameter.ToString() == "FlipTextbox")
+            {
+                return (Visibility)value; 
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
         /// Converts element type of node search element in short string.
         /// E.g. ElementTypes.Packaged => PKG.
