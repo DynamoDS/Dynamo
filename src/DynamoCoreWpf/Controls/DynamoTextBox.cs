@@ -436,7 +436,7 @@ namespace Dynamo.UI.Controls
 
             // Count width.
             double x = 0;
-            x = WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
+            x = WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth*2
                 + gap * 2 + targetLocation.X * (-1);
 
             // Count height.
