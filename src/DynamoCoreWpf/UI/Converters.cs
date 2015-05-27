@@ -2243,5 +2243,19 @@ namespace Dynamo.Controls
             {
                 throw new NotImplementedException();
             }
+        }
+
+        public class LibraryViewModeToBoolConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var mode = (SearchViewModel.ViewMode)value;
+                return mode == SearchViewModel.ViewMode.LibraryView;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
         }    
 }
