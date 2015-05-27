@@ -1,4 +1,4 @@
-<Workspace Version="0.8.2.1460" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="0.8.1.1460" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="e1fdbd63-f1b1-43df-8a34-057600f7b925" type="Dynamo.Nodes.DSFunction" nickname="Excel.ReadFromFile" x="654" y="192.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.ReadFromFile@var,string,bool">
