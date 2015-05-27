@@ -148,4 +148,5 @@
                                       FalseBrush="#666666" />
     <controls:GroupFontSizeToEditorEnabledConverter x:Key="GroupFontSizeToEditorEnabledConverter"/>
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
+    <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
 </ResourceDictionary>

@@ -138,8 +138,9 @@
                                     Value="Collapsed" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Path=CurrentMode}"
-                                     Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
+                        <DataTrigger Binding="{Binding Path=CurrentMode,
+                                                       Converter={StaticResource LibraryViewModeToBoolConverter}}"
+                                     Value="True">
                             <Setter Property="Visibility"
                                     Value="Collapsed" />
                         </DataTrigger>
