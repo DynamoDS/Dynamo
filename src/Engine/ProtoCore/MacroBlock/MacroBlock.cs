@@ -133,9 +133,9 @@ namespace ProtoCore
         /// <summary>
         /// Temporary support for DS code that need to be processed as strings
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name=></param>
         /// <returns></returns>
-        public void GenerateMacroBlocks(string code)
+        public void GenerateDefaultMacroBlock()
         {
             // Initialize macroblocks
             if (cachedMacroBlocks.Count == 0)
@@ -147,17 +147,16 @@ namespace ProtoCore
             core.MacroBlockList = cachedMacroBlocks;
         }
 
-        public void GenerateMacroBlockIDForBinaryAST(List<AssociativeNode> astList)
+        public void GenerateMacroBlockIDForBinaryAST(List<AssociativeNode> astList, int macroBlockID)
         {
             // The default macroblock ID is at 1. 
             // 0 is reserved for dummy macroblock that represetn DS code processed as strings 
-            const int defaultMacroBlockID = 1;
             foreach (AssociativeNode node in astList)
             {
                 BinaryExpressionNode bnode = node as BinaryExpressionNode;
                 if (bnode != null)
                 {
-                    bnode.MacroBlockID = defaultMacroBlockID;
+                    bnode.MacroBlockID = macroBlockID;
                 }
             }
         }

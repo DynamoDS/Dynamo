@@ -1817,7 +1817,8 @@ namespace ProtoScript.Runners
                 astListToConvert.AddRange(subtree.AstNodes);
             }
 
-            macroBlockGen.GenerateMacroBlockIDForBinaryAST(astListToConvert);
+            const int globalMacroBlockID = 0;
+            macroBlockGen.GenerateMacroBlockIDForBinaryAST(astListToConvert, globalMacroBlockID);
             macroBlockGen.GenerateMacroBlocks(astListToConvert);
         }
 
@@ -1826,10 +1827,12 @@ namespace ProtoScript.Runners
         /// This functionality only exists to support SynchronizeInternal(string) that processes DS code as strings
         /// SynchronizeInternal(string) should be deprecated and we should only support SynchronizeInternal(GraphSyncData)
         /// </summary>
-        /// <param name="code"></param>
-        private void GenerateMacroBlocksFromCode(string code)
+        /// <param name="astList"></param>
+        private void GenerateDefaultMacroBlock(List<AssociativeNode> astList)
         {
-            macroBlockGen.GenerateMacroBlocks(code);
+            const int macroBlockDefaultID = 0;
+            macroBlockGen.GenerateMacroBlockIDForBinaryAST(astList, macroBlockDefaultID);
+            macroBlockGen.GenerateDefaultMacroBlock();
         }
 
         private void SynchronizeInternal(GraphSyncData syncData)
@@ -1865,8 +1868,11 @@ namespace ProtoScript.Runners
             }
             else
             {
-                GenerateMacroBlocksFromCode(code);
-                CompileAndExecuteForDeltaExecution(code);
+                //GenerateMacroBlocksFromCode(code);
+                //CompileAndExecuteForDeltaExecution(code);
+                var astNodes = CoreUtils.BuildASTList(runnerCore, code);
+                GenerateDefaultMacroBlock(astNodes);
+                CompileAndExecuteForDeltaExecution(astNodes);
             }
         }
 
