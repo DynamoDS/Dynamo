@@ -1211,13 +1211,15 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
+                    var oldHasUnsavedChanges = workspace.HasUnsavedChanges;
                     workspace.SaveAs(savePath, null);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
+                    workspace.HasUnsavedChanges = oldHasUnsavedChanges;
                     backupFilesDict.Add(workspace.Guid, savePath);
-                    Logger.Log("Backup file is saved: " + savePath);
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
+                PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
             });
         }
 

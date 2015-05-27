@@ -1,0 +1,14 @@
+<Workspace Version="0.8.1.1411" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="48fceaf2-eb86-4ac4-a002-d5beb2e1e5c9" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="161" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="b18b3ca3-c5f4-44bb-a2d0-06db45b297d1" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="163" y="263" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="4e31742e-6033-4dec-a3d4-98909e038341" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="337" y="201" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x=a+b;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="48fceaf2-eb86-4ac4-a002-d5beb2e1e5c9" start_index="0" end="4e31742e-6033-4dec-a3d4-98909e038341" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b18b3ca3-c5f4-44bb-a2d0-06db45b297d1" start_index="0" end="4e31742e-6033-4dec-a3d4-98909e038341" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>
