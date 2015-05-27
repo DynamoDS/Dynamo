@@ -528,13 +528,20 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void PreferenceSettings_ShowEdges_DefaultFalse()
+        {
+            var settings = new PreferenceSettings();
+            Assert.False(settings.ShowEdges);
+        }
+
+        [Test]
         public void PreferenceSettings_ShowEdges_Toggle()
         {
             ViewModel.VisualizationSettings.ShowEdges = false;
-            Assert.AreEqual(false, Model.PreferenceSettings.ShowEdges);
+            Assert.False(Model.PreferenceSettings.ShowEdges);
 
             ViewModel.VisualizationSettings.ShowEdges = true;
-            Assert.AreEqual(true, Model.PreferenceSettings.ShowEdges);
+            Assert.True(Model.PreferenceSettings.ShowEdges);
         }
 
         [Test]
@@ -550,7 +557,7 @@ namespace DynamoCoreWpfTests
             initalSetting.ShowEdges = true;
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
-            Assert.AreEqual(true, resultSetting.ShowEdges);
+            Assert.True(resultSetting.ShowEdges);
         }
 
         private void RestartTestSetup(bool startInTestMode)
