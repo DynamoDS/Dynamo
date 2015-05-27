@@ -333,7 +333,12 @@ namespace DSOffice
                 for (int j = 0; j < cols; j++)
                 {
                     if (convertToString)
-                        output[i][j] = input[i + 1, j + 1].ToString();
+                    {
+                        if (input[i + 1, j + 1] == null)
+                            output[i][j] = null;
+                        else
+                            output[i][j] = input[i + 1, j + 1].ToString();
+                    }
                     else
                         output[i][j] = input[i + 1, j + 1];
                 }
