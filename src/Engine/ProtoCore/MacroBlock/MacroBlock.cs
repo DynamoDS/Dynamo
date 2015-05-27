@@ -67,7 +67,8 @@ namespace ProtoCore
             const int numMacroBlocks = 1;
 
             // Initialize macroblocks
-            for (int n = 0; n < numMacroBlocks; ++n)
+            int allocateSize = numMacroBlocks - cachedMacroBlocks.Count;
+            for (int n = 0; n < allocateSize; ++n)
             {
                 cachedMacroBlocks.Add(new ProtoCore.CompileTime.MacroBlock());
             }
@@ -105,7 +106,6 @@ namespace ProtoCore
 
 
             // Allocate space for runtime macroblock
-            int allocateSize = core.MacroBlockList.Count - core.RuntimeMacroBlockList.Count;
             for (int n = 0; n < allocateSize; ++n)
             {
                 core.RuntimeMacroBlockList.Add(new ProtoCore.Runtime.MacroBlock());
