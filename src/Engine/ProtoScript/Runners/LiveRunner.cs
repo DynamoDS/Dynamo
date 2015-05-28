@@ -320,6 +320,11 @@ namespace ProtoScript.Runners
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
+        public Dictionary<System.Guid, Subtree> GetProgramSnapshot()
+        {
+            return currentSubTreeList;
+        }
+
         /// <summary>
         /// Given deltaGraphNodes, estimate the reachable graphnodes from the live core
         /// </summary>
@@ -1814,20 +1819,20 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="syncData"></param>
         /// <returns></returns>
-        private void GenerateMacroBlocksFromSnapshot(List<Subtree> subtreeList)
+        private void GenerateMacroBlocksFromSnapshot(Dictionary<System.Guid, Subtree> snapshot)
         {
             List<AssociativeNode> astListToConvert = new List<AssociativeNode>();
-            if (subtreeList == null)
+            if (snapshot == null)
             {
                 return; 
             }
 
-            foreach (Subtree subtree in subtreeList)
+            foreach (KeyValuePair<System.Guid, Subtree> kvp in snapshot)
             {
-                astListToConvert.AddRange(subtree.AstNodes);
+                astListToConvert.AddRange(kvp.Value.AstNodes);
             }
 
-            const int globalMacroBlockID = 0;
+            const int globalMacroBlockID = 1;
             macroBlockGen.GenerateMacroBlockIDForBinaryAST(astListToConvert, globalMacroBlockID);
             macroBlockGen.GenerateMacroBlocks(astListToConvert);
         }
@@ -1855,12 +1860,12 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            List<Subtree> snapShot = GenerateProgramSnapshot();
-            GenerateMacroBlocksFromSnapshot(snapShot);
-
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
             changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
+
+            // Get the snapshot of the program and use it to generate macroblocks
+            GenerateMacroBlocksFromSnapshot(changeSetComputer.GetProgramSnapshot());
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
