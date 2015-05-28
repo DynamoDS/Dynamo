@@ -677,7 +677,10 @@ namespace DynamoCoreWpfTests
             Assert.True(BackgroundPreview.HasNumberOfLines(0));
 
             ViewModel.VisualizationSettings.ShowEdges = true;
-            Assert.True(BackgroundPreview.HasNumberOfLines(24));
+            Assert.True(BackgroundPreview.HasNumberOfLines(12));
+
+            ViewModel.VisualizationSettings.ShowEdges = false;
+            Assert.True(BackgroundPreview.HasNumberOfLines(0));
         }
 
         private int GetTotalDrawablesInModel()
