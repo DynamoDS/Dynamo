@@ -186,11 +186,7 @@ namespace Dynamo.ViewModels
             get { return LibraryRootCategories; }
         }
 
-        public NodeSearchModel Model
-        {
-            get;
-            private set;
-        }
+        public NodeSearchModel Model { get; private set; }
 
         private readonly DynamoViewModel dynamoViewModel;
         #endregion
