@@ -766,5 +766,10 @@ namespace Dynamo.Views
             outerCanvas.ContextMenu.IsOpen = false;
         }
 
+        private void OnContextMenuClosed(object sender, RoutedEventArgs e)
+        {
+            ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
+        }
+
     }
 }
