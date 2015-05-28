@@ -360,6 +360,26 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestTemporaryVariableRenaming4()
+        {
+            OpenModel(@"core\node2code\tempVariable4.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.AreEqual(2, result.AstNodes.Count());
+            Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+            var rhs = result.AstNodes.Cast<BinaryExpressionNode>().Select(n => n.RightNode.ToString());
+            Assert.AreEqual("Point.ByCoordinates(1, 2)", rhs.First());
+            Assert.AreEqual("Point.ByCoordinates(1, 3)", rhs.Last());
+        }
+
+        [Test]
         public void TestUnqualifiedNameReplacer1()
         {
             var functionCall = AstFactory.BuildFunctionCall(
