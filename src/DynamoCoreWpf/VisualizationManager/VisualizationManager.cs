@@ -540,6 +540,11 @@ namespace Dynamo
             gItem.Tessellate(renderPackage, renderPackageFactory.TessellationParameters);
             return renderPackage;
         }
+
+        public void UpdateAllNodeVisualsAndNotify()
+        {
+            RequestNodeVisualUpdateAsync(null, renderPackageFactory);
+        }
     }
 
     /// <summary>

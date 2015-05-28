@@ -66,5 +66,10 @@ namespace Dynamo.Interfaces
         /// Create an IRenderPackage given an IGraphicItem
         /// </summary>
         IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem graphicItem);
+
+        /// <summary>
+        /// Update all Node RenderPackages and raise notification.
+        /// </summary>
+        void UpdateAllNodeVisualsAndNotify();
     }
 }
