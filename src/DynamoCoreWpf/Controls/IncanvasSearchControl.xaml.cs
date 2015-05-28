@@ -37,6 +37,7 @@ namespace Dynamo.UI.Controls
         }
 
         private WorkspaceView workspaceView;
+        private DynamoView dynamoView;
 
         public InCanvasSearchControl()
         {
@@ -46,6 +47,12 @@ namespace Dynamo.UI.Controls
             {
                 if (workspaceView == null)
                     workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this.Parent);
+                if (dynamoView == null)
+                {
+                    dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this.Parent);
+                    if (dynamoView != null)
+                        dynamoView.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
+                }
             };
         }
 
