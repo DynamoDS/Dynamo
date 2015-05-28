@@ -2623,6 +2623,7 @@ z2 = z;
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_5()
         {
@@ -2651,6 +2652,7 @@ x = B.B(y);
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_6()
         {

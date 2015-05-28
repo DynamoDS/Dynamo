@@ -995,57 +995,16 @@ namespace Dynamo.Models
             if (modelGuids == null || (!modelGuids.Any()))
                 throw new ArgumentNullException("modelGuids");
 
-            var modelsToUpdate = GetModelsInternal(modelGuids).ToList();
-            if (!modelsToUpdate.Any())
+            var retrievedModels = GetModelsInternal(modelGuids);
+            if (!retrievedModels.Any())
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
-            UpdateValueParams visibilityParams = null;
-            var nodesToShowOrHide = new List<NodeModel>();
-
-            var modelsToRecordForUndo = new List<ModelBase>();
-            if (propertyName.Equals("IsUpstreamVisible"))
-            {
-                visibilityParams = new UpdateValueParams("IsVisible", value);
-
-                // If the update is meant to turn upstream preview on/off, then the number of nodes 
-                // involved in this update will presumably be higher than "modelsToUpdate". Here we 
-                // gather all the upstream nodes that are affected, record all those nodes for undo.
-                // 
-                var nodesToUpdate = modelsToUpdate.OfType<NodeModel>().ToList();
-                foreach (var nodeToUpdate in nodesToUpdate)
-                {
-                    // Unconditionally retrieve all upstream nodes.
-                    WorkspaceUtilities.GatherAllUpstreamNodes(
-                        nodeToUpdate, nodesToShowOrHide, model => true);
-                }
-
-                // Remove those nodes that are in "nodesToUpdate".
-                nodesToShowOrHide.RemoveAll(modelsToUpdate.Contains);
-
-                // Record those directly affected, then those indirectly affected.
-                modelsToRecordForUndo.AddRange(modelsToUpdate);
-                modelsToRecordForUndo.AddRange(nodesToShowOrHide.Distinct());
-            }
-            else
-            {
-                // The update does not affect other nodes.
-                modelsToRecordForUndo.AddRange(modelsToUpdate);
-            }
-
             var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
-            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, modelsToRecordForUndo))
+            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
-                foreach (var retrievedModel in modelsToUpdate)
+                foreach (var retrievedModel in retrievedModels)
                 {
                     retrievedModel.UpdateValue(updateValueParams);
-                }
-
-                if ((visibilityParams != null) && nodesToShowOrHide.Any())
-                {
-                    foreach (var nodeModel in nodesToShowOrHide)
-                    {
-                        nodeModel.UpdateValue(visibilityParams);
-                    }
                 }
             }
 

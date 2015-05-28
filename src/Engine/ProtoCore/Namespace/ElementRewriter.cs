@@ -70,7 +70,8 @@ namespace ProtoCore.Namespace
             {
                 Name = node.Name,
                 Value = node.Name,
-                datatype = type
+                datatype = type,
+                TypeAlias = node.TypeAlias
             };
 
             NodeUtils.CopyNodeLocation(typedNode, node);

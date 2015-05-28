@@ -150,7 +150,7 @@ namespace Dynamo.DSEngine
             public override void VisitIdentifierListNode(IdentifierListNode node)
             {
                 if ((node.LeftNode is IdentifierNode ||
-                    node.RightNode is IdentifierListNode) &&
+                    node.LeftNode is IdentifierListNode) &&
                     node.RightNode is FunctionCallNode)
                 {
                     var lhs = node.LeftNode.ToString();
@@ -634,6 +634,27 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        /// Check if this identifier is a temporary variable that output from
+        /// other code block node. 
+        /// </summary>
+        /// <param name="ident"></param>
+        /// <param name="renamingMap"></param>
+        /// <returns></returns>
+        private static bool IsTempVarFromCodeBlockNode(string ident,
+            Dictionary<string, string> renamingMap)
+        {
+            if (!ident.StartsWith(Constants.kTempVarForNonAssignment))
+                return false;
+
+            string renamedVariable = string.Empty;
+            // ident is: Constants.TempVarForNonAssignment_guid
+            if (!renamingMap.TryGetValue(ident, out renamedVariable))
+                return false;
+
+            return renamedVariable.StartsWith(Constants.kTempVarForNonAssignment);
+        }
+
+        /// <summary>
         /// Renumber variables used in astNode.
         /// </summary>
         /// <param name="astNode"></param>
@@ -653,9 +674,11 @@ namespace Dynamo.DSEngine
             {
                 var ident = n.Value;
 
-                // This ident is from other node's output port, it is not necessary to 
-                // do renumbering.
-                if (inputMap.ContainsKey(ident))
+                // This ident is from external non-code block node's output 
+                // port, or it is from a temporary variable in code block node,
+                // it is not necessary to do renumbering because the name is 
+                // unique.
+                if (inputMap.ContainsKey(ident) || /*IsTempVarFromCodeBlockNode(ident, renamingMap)*/ renamingMap.ContainsKey(ident))
                     return;
 
                 NumberingState ns; 
