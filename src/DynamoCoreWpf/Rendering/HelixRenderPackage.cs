@@ -26,11 +26,6 @@ namespace Dynamo.Wpf.Rendering
             };
         }
 
-        public HelixRenderPackageFactory(TessellationParameters parameters)
-        {
-            TessellationParameters = parameters;
-        }
-
         public IRenderPackage CreateRenderPackage()
         {
             return new HelixRenderPackage();
