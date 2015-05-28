@@ -186,19 +186,10 @@ namespace Dynamo.ViewModels
             get { return LibraryRootCategories; }
         }
 
-        private NodeSearchModel model;
         public NodeSearchModel Model
         {
-            get
-            {
-                if (dynamoViewModel != null)
-                    return dynamoViewModel.Model.SearchModel;
-
-                // dynamoViewModel can't be null, this case is just for tests.
-                if (model == null)
-                    model = new NodeSearchModel();
-                return model;
-            }
+            get;
+            private set;
         }
 
         private readonly DynamoViewModel dynamoViewModel;
@@ -209,6 +200,7 @@ namespace Dynamo.ViewModels
         internal SearchViewModel(DynamoViewModel dynamoViewModel)
         {
             this.dynamoViewModel = dynamoViewModel;
+            Model = dynamoViewModel.Model.SearchModel;
 
             IPathManager pathManager = null;
             if (dynamoViewModel != null && (dynamoViewModel.Model != null))
@@ -219,6 +211,12 @@ namespace Dynamo.ViewModels
             MaxNumSearchResults = 15;
 
             InitializeCore();
+        }
+
+        // Just for tests.
+        internal SearchViewModel(NodeSearchModel model)
+        {
+            Model = model;
         }
 
         private void InitializeCore()

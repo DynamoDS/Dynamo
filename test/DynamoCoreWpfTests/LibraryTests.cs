@@ -83,7 +83,7 @@ namespace DynamoCoreWpfTests
         [Category("UnitTests")]
         public void DumpLibraryToXmlZeroTouchTest()
         {
-            var searchViewModel = new SearchViewModel(null);
+            var searchViewModel = new SearchViewModel(new NodeSearchModel());
 
             LibraryLoaded = false;
 
