@@ -916,9 +916,12 @@ namespace Dynamo.ViewModels
             //SearchText = SearchResults[SelectedIndex].Model.Name;
         }
 
-        public void OnSearchElementClicked(NodeModel nodeModel)
+        public void OnSearchElementClicked(NodeModel nodeModel, Point position)
         {
-            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, 0, 0, true, true));
+            bool useDeafultPosition = position.X == 0 && position.Y == 0;
+
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+                nodeModel, position.X, position.Y, useDeafultPosition, true));
         }
         #endregion
 
