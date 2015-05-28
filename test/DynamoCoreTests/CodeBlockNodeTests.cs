@@ -289,6 +289,33 @@ b = c[w][x][y][z];";
         }
 
         [Test]
+        public void TestOutportConnectors_OnAssigningVariables_ToRetainConnections()
+        {
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\TestOutportConnectors_OnAssigningVariables_ToRetainConnections.dyn");
+            OpenModel(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+
+            BeginRun();
+
+            var result = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>(
+                Guid.Parse("76b2289a-a814-44fc-97b1-397f8abea296"));
+
+            Assert.AreEqual(-10, result.CachedValue.Data);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("3cd6cdb7-9e5c-4b61-bc8b-630e48b52fc0"));
+
+            Assert.IsNotNull(cbn);
+            string code = "a=10;20;";
+            UpdateCodeBlockNodeContent(cbn, code);
+
+            BeginRun();
+
+            Assert.AreEqual(-10, result.CachedValue.Data);
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_4946()
         {
