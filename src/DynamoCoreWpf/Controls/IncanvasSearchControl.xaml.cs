@@ -138,21 +138,57 @@ namespace Dynamo.UI.Controls
             return null;
         }
 
-        private void OnSearchTextBoxKeyDown(object sender, KeyEventArgs e)
+        private void OnInCanvasSearchKeyDown(object sender, KeyEventArgs e)
         {
             var key = e.Key;
 
             if (key == Key.Escape)
                 OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
 
-            if (key != Key.Enter)
+            switch (key)
+            {
+                case Key.Enter:
+                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                    {
+                        ExecuteSearchElement(HighlightedItem);
+                        OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    }
+                    break;
+                case Key.Up:
+                    MoveToNextMember(false);
+                    break;
+                case Key.Down:
+                    MoveToNextMember(true);
+                    break;
+            }
+        }
+
+        private void MoveToNextMember(bool moveForward)
+        {
+            var selectedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
+            var members = MembersListBox.Items;
+
+            int selectedMemberIndex = 0;
+            for (int i = 0; i < members.Count; i++)
+            {
+                var member = members[i] as NodeSearchElementViewModel;
+                if (member.Equals(selectedMember))
+                {
+                    selectedMemberIndex = i;
+                    break;
+                }
+            }
+
+            int nextselectedMemberIndex = selectedMemberIndex;
+            if (moveForward)
+                nextselectedMemberIndex++;
+            else
+                nextselectedMemberIndex--;
+
+            if (nextselectedMemberIndex < 0 || (nextselectedMemberIndex >= members.Count))
                 return;
 
-            if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
-            {
-                ExecuteSearchElement(HighlightedItem);
-                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
-            }
+            UpdateHighlightedItem(GetListItemByIndex(MembersListBox, nextselectedMemberIndex));
         }
     }
 }

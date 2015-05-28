@@ -30,7 +30,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid PreviewKeyDown="OnInCanvasSearchKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -96,8 +96,7 @@
                              MinWidth="200"
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
                              Margin="26,0,0,-1"
-                             TextChanged="OnSearchTextBoxTextChanged"
-                             KeyDown="OnSearchTextBoxKeyDown" />
+                             TextChanged="OnSearchTextBoxTextChanged" />
                 </Grid>
             </Border>
         </Grid>
