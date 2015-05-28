@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.ViewModels
                 {
                     vm.Model.PreferenceSettings.ShowEdges = value;
                     vm.VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges = value;
-                    vm.Model.OnRequestsRedraw(this, EventArgs.Empty);
+                    vm.VisualizationManager.UpdateAllNodeVisualsAndNotify();
                 }
             }
         }
@@ -27,13 +27,13 @@ namespace Dynamo.Wpf.ViewModels
             set
             {
                 vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxTessellationDivisions = value;
-                vm.Model.OnRequestsRedraw(this, EventArgs.Empty);
+                vm.VisualizationManager.UpdateAllNodeVisualsAndNotify();
             }
         }
 
         public VisualizationSettingsViewModel(DynamoViewModel viewModel)
         {
             vm = viewModel;
-        } 
+        }
     }
 }
