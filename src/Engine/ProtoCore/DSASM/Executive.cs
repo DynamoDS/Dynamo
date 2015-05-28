@@ -2652,7 +2652,14 @@ namespace ProtoCore.DSASM
                 exe.SetupMacroBlock(macroBlock.UID);
                 int scope = 0;
                 istream = exe.GetInstructionStream(scope);
-                Execute(scope, entry, null);
+                try
+                {
+                    Execute(scope, entry, null);
+                }
+
+                catch (ProtoCore.Exceptions.ExecutionCancelledException)
+                {
+                }
             }
         }
 
@@ -2672,6 +2679,7 @@ namespace ProtoCore.DSASM
             {
                 if(runtimeCore.CancellationPending)
                 {
+                    runtimeCore.ResetCancellation();
                     throw new ExecutionCancelledException();
                 }
 

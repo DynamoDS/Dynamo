@@ -2356,7 +2356,10 @@ namespace ProtoCore.AST.AssociativeAST
 
         public ImportNode(ImportNode rhs)
         {
-            CodeNode = new CodeBlockNode(rhs.CodeNode);
+            if (rhs.CodeNode != null)
+            {
+                CodeNode = new CodeBlockNode(rhs.CodeNode);
+            }
             HasBeenImported = rhs.HasBeenImported;
             Identifiers = new HashSet<string>(rhs.Identifiers);
             ModuleName = rhs.ModuleName;

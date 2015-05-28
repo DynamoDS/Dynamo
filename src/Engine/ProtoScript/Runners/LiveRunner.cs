@@ -1829,7 +1829,10 @@ namespace ProtoScript.Runners
 
             foreach (KeyValuePair<System.Guid, Subtree> kvp in snapshot)
             {
-                astListToConvert.AddRange(kvp.Value.AstNodes);
+                if (kvp.Value.AstNodes != null)
+                {
+                    astListToConvert.AddRange(kvp.Value.AstNodes);
+                }
             }
 
             const int globalMacroBlockID = 1;
