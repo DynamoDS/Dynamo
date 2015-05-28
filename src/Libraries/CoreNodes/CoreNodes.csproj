@@ -103,6 +103,9 @@
     <None Include="Flatten.ds" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DSCoreNodes.Migrations.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="DSCoreNodes_DynamoCustomization.xml">
       <SubType>Designer</SubType>
     </Content>
