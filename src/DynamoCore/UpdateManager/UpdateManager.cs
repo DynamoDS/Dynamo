@@ -55,6 +55,20 @@ namespace Dynamo.UpdateManager
         void RegisterExternalApplicationProcessId(int id);
     }
 
+    public interface IDynamoLookUp
+    {
+        /// <summary>
+        /// Gets installation path for all version of this Dynamo Product
+        /// installed on this system.
+        /// </summary>
+        IEnumerable<string> GetDynamoInstallLocations();
+
+        /// <summary>
+        /// Gets the version of latest installed product
+        /// </summary>
+        BinaryVersion LatestProduct { get; }
+    }
+
     public interface IUpdateManagerConfiguration
     {
         /// <summary>
@@ -81,6 +95,11 @@ namespace Dynamo.UpdateManager
         /// Gets the base name of the installer to be used for upgrade.
         /// </summary>
         string InstallerNameBase { get; set; }
+
+        /// <summary>
+        /// Gets IDynamoLookUp interface to search Dynamo installations on the system.
+        /// </summary>
+        IDynamoLookUp DynamoLookUp { get; set; }
     }
 
     /// <summary>
@@ -237,6 +256,12 @@ namespace Dynamo.UpdateManager
         public string InstallerNameBase { get; set; }
 
         /// <summary>
+        /// Return file path for the overriding config file.
+        /// </summary>
+        [XmlIgnore]
+        public string ConfigFilePath { get; set; }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public UpdateManagerConfiguration()
@@ -264,7 +289,10 @@ namespace Dynamo.UpdateManager
                 var serializer = new XmlSerializer(typeof(UpdateManagerConfiguration));
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
-                    return serializer.Deserialize(fs) as UpdateManagerConfiguration;
+                    var config = serializer.Deserialize(fs) as UpdateManagerConfiguration;
+                    if(null != config)
+                        config.ConfigFilePath = filePath;
+                    return config;
                 }
             }
             catch (Exception ex)
@@ -314,9 +342,10 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// Utility method to get the settings
         /// </summary>
+        /// <param name="lookUp">IDynamoLookUp instance</param>
         /// <param name="updateManager"></param>
         /// <returns></returns>
-        public static UpdateManagerConfiguration GetSettings(IUpdateManager updateManager = null)
+        public static UpdateManagerConfiguration GetSettings(IDynamoLookUp lookUp, IUpdateManager updateManager = null)
         {
             string filePath;
             var exists = TryGetConfigFilePath(out filePath);
@@ -326,11 +355,18 @@ namespace Dynamo.UpdateManager
             //to re-direct it to other download target for testing.
             if (!exists)
             {
-                var config = new UpdateManagerConfiguration();
-                config.Save(filePath, updateManager);
+                var umConfig = new UpdateManagerConfiguration();
+                umConfig.Save(filePath, updateManager);
             }
 #endif
-            return exists ? Load(filePath, updateManager) : new UpdateManagerConfiguration();
+            if (!exists) 
+                return new UpdateManagerConfiguration() { DynamoLookUp = lookUp };
+
+            var config = Load(filePath, updateManager);
+            if (null != config)
+                config.DynamoLookUp = lookUp;
+
+            return config;
         }
 
         /// <summary>
@@ -345,6 +381,9 @@ namespace Dynamo.UpdateManager
             filePath = Path.Combine(Path.GetDirectoryName(location), DEFAULT_CONFIG_FILE_S);
             return File.Exists(filePath);
         }
+
+        [XmlIgnore]
+        public IDynamoLookUp DynamoLookUp { get; set; }
     }
 
     /// <summary>
@@ -515,7 +554,7 @@ namespace Dynamo.UpdateManager
         {
             get 
             {
-                return configuration ?? (configuration = UpdateManagerConfiguration.GetSettings(this));
+                return configuration ?? (configuration = UpdateManagerConfiguration.GetSettings(null, this));
             }
         }
 
@@ -1053,7 +1092,7 @@ namespace Dynamo.UpdateManager
         internal static void CheckForProductUpdate(IUpdateManager manager)
         {
             //If we already have higher version installed, don't look for product update.
-            if(new DynamoLookUp().LatestProduct > manager.ProductVersion)
+            if(manager.Configuration.DynamoLookUp != null && manager.Configuration.DynamoLookUp.LatestProduct > manager.ProductVersion)
                 return;
 
             var downloadUri = new Uri(manager.Configuration.DownloadSourcePath);
@@ -1064,7 +1103,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// Lookup for installed products
     /// </summary>
-    public class DynamoLookUp
+    public abstract class DynamoLookUp : IDynamoLookUp
     {
         /// <summary>
         /// Gets the version of latest product
@@ -1089,28 +1128,14 @@ namespace Dynamo.UpdateManager
         /// Gets all dynamo install path on the system by looking into the Windows registry. 
         /// </summary>
         /// <returns>List of Dynamo install path</returns>
-        public virtual IEnumerable<string> GetDynamoInstalls()
-        {
-            // TODO: We need a cleaner solution for this that makes the choice of os explicit (MAGN-7241)
-            if (Context.IsUnix)
-            {
-                return Enumerable.Empty<String>();
-            }
-
-            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
-            //Open HKLM for 64bit registry
-            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-            //Open Windows/CurrentVersion/Uninstall registry key
-            regKey = regKey.OpenSubKey(regKey64);
-
-            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
-            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
-                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
-        }
-
+        public abstract IEnumerable<string> GetDynamoInstallLocations();
+        
         private BinaryVersion GetLatestInstallVersion()
         {
-            var dynamoInstallations = GetDynamoInstalls();
+            var dynamoInstallations = GetDynamoInstallLocations();
+            if(null == dynamoInstallations)
+                return null;
+
             var latestVersion =
                 dynamoInstallations.Select(GetDynamoVersion).OrderBy(s => s).LastOrDefault();
             return latestVersion == null ? null : BinaryVersion.FromString(latestVersion.ToString());

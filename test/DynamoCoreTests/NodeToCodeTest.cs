@@ -360,6 +360,26 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestTemporaryVariableRenaming4()
+        {
+            OpenModel(@"core\node2code\tempVariable4.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.AreEqual(2, result.AstNodes.Count());
+            Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+            var rhs = result.AstNodes.Cast<BinaryExpressionNode>().Select(n => n.RightNode.ToString());
+            Assert.AreEqual("Point.ByCoordinates(1, 2)", rhs.First());
+            Assert.AreEqual("Point.ByCoordinates(1, 3)", rhs.Last());
+        }
+
+        [Test]
         public void TestUnqualifiedNameReplacer1()
         {
             var functionCall = AstFactory.BuildFunctionCall(
@@ -472,6 +492,30 @@ namespace Dynamo.Tests
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
             Assert.AreEqual("t1.DistanceTo(t2)", expr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUnqualifiedNameReplacer7()
+        {
+            // Point.ByCoordinates(1,2,3);
+            // Point.ByCoordinates(1,2,3);
+            OpenModel(@"core\node2code\unqualifiedName6.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+            var expr2 = result.AstNodes.Last() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr1.RightNode.ToString());
+            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr2.RightNode.ToString());
         }
 
         [Test]

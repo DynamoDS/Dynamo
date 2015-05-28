@@ -16,6 +16,279 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Builds the dependencies within the list of graphNodes
+        /// </summary>
+        /// <param name="graphNodeScopeToCheck"></param>
+        public static void BuildGraphNodeDependencies(List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope == null)
+            {
+                return;
+            }
+
+            // Get the current graphnode to check against the list
+            //  [a = 10]  -> this one
+            //  c = 1
+            //  b = a
+            //  d = a
+            for (int i = 0; i < graphNodesInScope.Count; ++i)
+            {
+                AssociativeGraph.GraphNode currentNode = graphNodesInScope[i];
+                if (!currentNode.isActive)
+                {
+                    continue;
+                }
+                // Get the graphnode to check if it depends on nodeToCheckAgainstList
+                //  a = 10 (currentnode)
+                //  c = 1  (gnode) -> this is checked if it depends on [a]. If it does, add it to the dependency list of  a = 10 (currentnode)
+                //  b = a  (gnode) -> next
+                //  d = a  (gnode) -> next
+                for (int j = 0; j < graphNodesInScope.Count; ++j)
+                {
+                    AssociativeGraph.GraphNode gnode = graphNodesInScope[j];
+                    if (currentNode.UID != gnode.UID)
+                    {
+                        if (!gnode.isActive)
+                        {
+                            continue;
+                        }
+
+                        //
+                        // Associative update within an expression only allows downstream update
+                        //  Case 1
+                        //  a = a + 1
+                        //      [0] t0 = a
+                        //      [1] t1 = t0 + 1
+                        //      [2] a = t1  <- The final assignment to 'a' should not re-execute [0] as they are part of the same expression
+                        //
+                        //  Case 2
+                        //  a = b + c
+                        //  b = 2
+                        //      [0] t0 = b
+                        //      [1] t1 = c
+                        //      [2] t2 = t0 + t1
+                        //      [3] a = t2  
+                        //      [3] b = 2   <- Modifying 'b' should re-execute [0], [2] and [3]
+                        //
+
+                        bool isUpdatableNode = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
+                        if (!isUpdatableNode)
+                        {
+                            continue;
+                        }
+
+                        bool nodesAreSelfModifying = AreNodesSelfModifyingAndEqualLHS(currentNode, gnode);
+                        if (nodesAreSelfModifying)
+                        {
+                            continue;
+                        }
+
+                        bool nodesAreSelfModifyingIdentList = AreNodesSelfModifyingAndEqualIdentList(currentNode, gnode);
+                        if (nodesAreSelfModifyingIdentList)
+                        {
+                            continue;
+                        }
+
+                        bool canUpdate = DoesExecutingNodeAffectOtherNode(currentNode, gnode);
+                        if (!canUpdate)
+                        {
+                            continue;
+                        }
+
+                        // No update for auto generated temps
+                        bool isTempVarUpdate = IsTempVarLHS(currentNode);
+                        if (isTempVarUpdate)
+                        {
+                            continue;
+                        }
+
+
+                        bool equalIdentList = AreLHSEqualIdentList(currentNode, gnode);
+                        if (equalIdentList)
+                        {
+                            continue;
+                        }
+
+                        currentNode.PushGraphNodeToExecute(gnode);
+                    }
+                }
+            }
+        }
+
+        public static bool IsTempVarLHS(AssociativeGraph.GraphNode graphNode)
+        {
+            Validity.Assert(graphNode != null);
+            if(graphNode.updateNodeRefList.Count > 0)
+            {
+                return graphNode.updateNodeRefList[0].nodeList[0].symbol.name.Equals(Constants.kTempVar);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if executing 'execNode' will cause re-execution 'otherNode'
+        /// </summary>
+        /// <param name="executingNode"></param>
+        /// <param name="otherNode"></param>
+        private static bool DoesExecutingNodeAffectOtherNode(AssociativeGraph.GraphNode execNode, AssociativeGraph.GraphNode otherNode)
+        {
+            bool isWithinSSAExpression = execNode.ssaExpressionUID == otherNode.ssaExpressionUID;
+            bool isDownstreamUpdate = isWithinSSAExpression && execNode.UID < otherNode.UID;
+            bool isUpdatable = !isWithinSSAExpression || isDownstreamUpdate;
+            if (!isUpdatable)
+            {
+                return false;
+            }
+
+            AssociativeGraph.GraphNode dependent = null;
+            bool doesOtherNodeDependOnExecNode = false; 
+            foreach (AssociativeGraph.UpdateNodeRef nodeRef in execNode.updateNodeRefList)
+            {
+                if (otherNode.DependsOn(nodeRef, ref dependent))
+                {
+                    doesOtherNodeDependOnExecNode = true;
+                    break;
+                }
+            }
+
+            // Other conditions can go here
+
+            return doesOtherNodeDependOnExecNode;
+        }
+
+
+        /// <summary>
+        /// Check if both nodes are self modifying and have equal lhs
+        /// Example cases:
+        ///     x = x + 1 is equal to x = x + 1
+        ///     x = x + 1 is equal to x = a + x + 1
+        /// </summary>
+        /// <param name="varAssignNode"></param>
+        /// <param name="inspectNode"></param>
+        /// <returns></returns>
+        private static bool AreNodesSelfModifyingAndEqualLHS(AssociativeGraph.GraphNode varAssignNode, AssociativeGraph.GraphNode inspectNode)
+        {
+            // Check if self modifying
+            bool areNodesSelfModifying = varAssignNode.IsModifier && inspectNode.IsModifier;
+            if (!areNodesSelfModifying)
+            {
+                return false;
+            }
+
+            // Check if varAssignNode is indeed the final assignment node
+            //  x = x + 1
+            //      [0] t0 = x
+            //      [1] t1 = t0 + 1;
+            //      [2] x = t1  <- This is the varAssignNode
+            if (!varAssignNode.IsLastNodeInSSA)
+            {
+                return false; 
+            }
+
+            bool canInspectNodes =
+                varAssignNode != null && inspectNode != null
+                && varAssignNode.updateNodeRefList.Count > 0 && inspectNode.updateNodeRefList.Count > 0;
+            if (!canInspectNodes)
+            {
+                return false;
+            }
+
+            // Check if they are from different expressions
+            bool isWithinSSAExpression = varAssignNode.ssaExpressionUID == inspectNode.ssaExpressionUID;
+            if (isWithinSSAExpression)
+            {
+                return false;
+            }
+
+            // Check for equal LHS
+            AssociativeGraph.GraphNode assignNode = inspectNode.lastGraphNode;
+            bool isValidAssignNode = assignNode != null && assignNode.updateNodeRefList.Count > 0;
+            if (!isValidAssignNode)
+            {
+                return false;
+            }
+
+            bool areLHSEqual = AreLHSEqual(varAssignNode, assignNode);  
+            return areLHSEqual;
+        }
+
+
+        /// <summary>
+        /// Check if both nodes are self modifying and have equal lhs
+        /// Example cases:
+        ///     x.y = x.y + 1 is equal to x.y = x.y + 1
+        ///     x.y = x.y + 1 is equal to x.y = a + x.y + 1
+        /// </summary>
+        /// <param name="varAssignNode"></param>
+        /// <param name="inspectNode"></param>
+        /// <returns></returns>
+        private static bool AreNodesSelfModifyingAndEqualIdentList(AssociativeGraph.GraphNode varAssignNode, AssociativeGraph.GraphNode inspectNode)
+        {
+            AssociativeGraph.GraphNode node1 = varAssignNode.lastGraphNode;
+            AssociativeGraph.GraphNode node2 = inspectNode.lastGraphNode;
+
+            bool isUpdateable = node1 != null && node2 != null;
+            if (!isUpdateable)
+            {
+                return false;
+            }
+
+            // Check if their lhs are equal identlists
+            return AreLHSEqualIdentList(node1, node2);
+        }
+
+        /// <summary>
+        /// Checks if both nodes are LHS identlists and that their identlists are equal
+        /// </summary>
+        /// <param name="executingNode"></param>
+        /// <param name="dependentNode"></param>
+        /// <returns></returns>
+        public static bool AreLHSEqualIdentList(AssociativeGraph.GraphNode node, AssociativeGraph.GraphNode otherNode)
+        {
+            bool areBothLHSIdentList = node.IsLHSIdentList && otherNode.IsLHSIdentList;
+            if (!areBothLHSIdentList)
+            {
+                return false;
+            }
+
+            for (int n = 0; n < node.updateNodeRefList.Count; ++n)
+            {
+                // Only check for identlists where the nodeList > 1 
+                // nodeList contains all the symbols in an identlist 
+                // a.b.c -> nodeList.Count == 3
+                if (node.updateNodeRefList[n].nodeList.Count > 1)
+                {
+                    if (!node.updateNodeRefList[n].Equals(otherNode.updateNodeRefList[n]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// Checks if the lhs (updateNodeRefList) are equal for both graphnodes
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="otherNode"></param>
+        /// <returns></returns>
+        private static bool AreLHSEqual(AssociativeGraph.GraphNode node, AssociativeGraph.GraphNode otherNode)
+        {
+            Validity.Assert(node != null && otherNode != null);
+            Validity.Assert(node.updateNodeRefList.Count > 0);
+
+            // Check for same number of noderefs
+            if (node.updateNodeRefList.Count != otherNode.updateNodeRefList.Count)
+            {
+                return false;
+            }
+
+            return node.updateNodeRefList.SequenceEqual(otherNode.updateNodeRefList);
+        }
+
+        /// <summary>
         /// Returns the VM Graphnodes associated with the input ASTs
         /// </summary>
         /// <param name="core"></param>
@@ -319,7 +592,6 @@ namespace ProtoCore.AssociativeEngine
             return reachableGraphNodes;
         }
 
-
         //
         // Comment Jun: Revised 
         //
@@ -599,6 +871,8 @@ namespace ProtoCore.AssociativeGraph
 
     public class GraphNode
     {
+        public int ssaExpressionUID { get; set; }
+        public bool IsModifier { get; set; }    // Flags if a graphnode is part of a statement that performs self assignment (the LHS appears on the RHS)
         public int UID { get; set; }
         public Guid guid {get; set;}
         public int dependencyGraphListID { get; set; }
@@ -618,9 +892,11 @@ namespace ProtoCore.AssociativeGraph
         public bool ProcedureOwned { get; set; }       // This graphnode's immediate scope is within a function (as opposed to languageblock or construct)
         public UpdateBlock updateBlock { get; set; }
         public List<GraphNode> dependentList { get; set; }
+        public List<GraphNode> graphNodesToExecute { get; set; }
         public bool allowDependents { get; set; }
         public bool isIndexingLHS { get; set; }
         public bool isLHSNode { get; set; }
+        public bool IsLHSIdentList { get; set; }
         public ProcedureNode firstProc { get; set; }
         public int firstProcRefIndex { get; set; }
         public bool isCyclic { get; set; }
@@ -668,6 +944,7 @@ namespace ProtoCore.AssociativeGraph
 
         public GraphNode()
         {
+            IsModifier = false;
             UID = Constants.kInvalidIndex;
             AstID = Constants.kInvalidIndex;
             dependencyGraphListID = Constants.kInvalidIndex;
@@ -681,9 +958,11 @@ namespace ProtoCore.AssociativeGraph
             classIndex = Constants.kInvalidIndex;
             updateBlock = new UpdateBlock();
             dependentList = new List<GraphNode>();
+            graphNodesToExecute = new List<GraphNode>();
             allowDependents = true;
             isIndexingLHS = false;
             isLHSNode = false;
+            IsLHSIdentList = false;
             firstProc = null;
             firstProcRefIndex = Constants.kInvalidIndex;
             isCyclic = false;
@@ -704,6 +983,19 @@ namespace ProtoCore.AssociativeGraph
             IsLastNodeInSSA = false;
         }
 
+
+        public void PushGraphNodeToExecute(GraphNode dependent)
+        {
+            // Do not add if it already contains this dependent
+            foreach (GraphNode node in graphNodesToExecute)
+            {
+                if (node.UID == dependent.UID)
+                {
+                    return;
+                }
+            }
+            graphNodesToExecute.Add(dependent);
+        }
 
         public void PushDependent(GraphNode dependent)
         {
