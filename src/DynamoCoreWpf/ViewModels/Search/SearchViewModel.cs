@@ -187,7 +187,6 @@ namespace Dynamo.ViewModels
         }
 
         public NodeSearchModel Model { get; private set; }
-
         private readonly DynamoViewModel dynamoViewModel;
         #endregion
 
@@ -195,8 +194,8 @@ namespace Dynamo.ViewModels
 
         internal SearchViewModel(DynamoViewModel dynamoViewModel)
         {
-            this.dynamoViewModel = dynamoViewModel;
             Model = dynamoViewModel.Model.SearchModel;
+            this.dynamoViewModel = dynamoViewModel;
 
             IPathManager pathManager = null;
             if (dynamoViewModel != null && (dynamoViewModel.Model != null))
