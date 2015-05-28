@@ -3792,7 +3792,7 @@ namespace ProtoAssociative
                 {
                     AssociativeNode lastNode = DFSEmitSplitAssign_AST(bnode.RightNode, ref astList);
                     var newBNode = nodeBuilder.BuildBinaryExpression(bnode.LeftNode, lastNode);
-                    
+                    (newBNode as BinaryExpressionNode).MacroBlockID = bnode.MacroBlockID;
                     astList.Add(newBNode);
                     return bnode.LeftNode;
                 }
