@@ -150,7 +150,7 @@ namespace Dynamo.DSEngine
             public override void VisitIdentifierListNode(IdentifierListNode node)
             {
                 if ((node.LeftNode is IdentifierNode ||
-                    node.RightNode is IdentifierListNode) &&
+                    node.LeftNode is IdentifierListNode) &&
                     node.RightNode is FunctionCallNode)
                 {
                     var lhs = node.LeftNode.ToString();

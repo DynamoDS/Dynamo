@@ -495,6 +495,30 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestUnqualifiedNameReplacer7()
+        {
+            // Point.ByCoordinates(1,2,3);
+            // Point.ByCoordinates(1,2,3);
+            OpenModel(@"core\node2code\unqualifiedName6.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+            var expr2 = result.AstNodes.Last() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr1.RightNode.ToString());
+            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr2.RightNode.ToString());
+        }
+
+        [Test]
         public void TestBasicNode2CodeWorkFlow1()
         {
             // 1 -> a -> x
