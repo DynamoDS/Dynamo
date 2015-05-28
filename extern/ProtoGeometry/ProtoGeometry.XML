@@ -7,7 +7,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double,System.Int32)">
+        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
@@ -829,13 +829,13 @@
         <member name="M:Autodesk.DesignScript.Geometry.GraphicDataProvider.GetGraphicItems(System.Object)">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.GraphicDataProvider.Tessellate(System.Collections.Generic.List{System.Object},Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.GraphicDataProvider.Tessellate(System.Collections.Generic.List{System.Object},Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryGraphicItem.#ctor(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.GeometryGraphicItem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double,System.Int32)">
+        <member name="M:Autodesk.DesignScript.Geometry.GeometryGraphicItem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
