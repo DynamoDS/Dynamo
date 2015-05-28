@@ -1798,21 +1798,31 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// Generates a snapshot of the entire program 
+        /// A snapshot is the current list of nodes
+        /// </summary>
+        /// <returns></returns>
+        private List<Subtree> GenerateProgramSnapshot()
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Generates the macroblock grouping
         /// Assigns the macroblock Ids for each AST
         /// The macroblocks are cached in the liverunner core
         /// </summary>
         /// <param name="syncData"></param>
         /// <returns></returns>
-        private void GenerateMacroBlocksFromSyncData(GraphSyncData syncData)
+        private void GenerateMacroBlocksFromSnapshot(List<Subtree> subtreeList)
         {
             List<AssociativeNode> astListToConvert = new List<AssociativeNode>();
-            if (syncData.AddedSubtrees == null)
+            if (subtreeList == null)
             {
                 return; 
             }
 
-            foreach (Subtree subtree in syncData.AddedSubtrees)
+            foreach (Subtree subtree in subtreeList)
             {
                 astListToConvert.AddRange(subtree.AstNodes);
             }
@@ -1845,7 +1855,8 @@ namespace ProtoScript.Runners
                 return;
             }
 
-            GenerateMacroBlocksFromSyncData(syncData);
+            List<Subtree> snapShot = GenerateProgramSnapshot();
+            GenerateMacroBlocksFromSnapshot(snapShot);
 
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
