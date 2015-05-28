@@ -56,10 +56,11 @@ namespace Dynamo.UI.Controls
                 ViewModel.SearchCommand.Execute(null);
         }
 
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null) return;
+            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+
             ExecuteSearchElement(listBoxItem);
             OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
             e.Handled = true;
