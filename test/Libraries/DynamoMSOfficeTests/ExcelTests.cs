@@ -10,7 +10,7 @@ using ProtoCore.Mirror;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.Models;
 using Dynamo.Nodes;
-
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -213,7 +213,6 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
-
             Assert.AreEqual(18, list.Count);
 
             // 18 x 3 array of numbers
@@ -238,35 +237,14 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
-
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
-
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
-
             ViewModel.HomeSpace.Run();
-
-            Assert.IsTrue(watch.CachedValue.IsCollection);
+            //Assert.IsTrue(watch.CachedValue.IsCollection);
             var list = watch.CachedValue.GetElements();
-
-            Assert.AreEqual(4, list.Count);
-
-            // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual("a", rowList[0].Data);
-
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.IsNull(rowList[0].Data);
-
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual("cell is", rowList[0].Data);
-
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.AreEqual("missing", rowList[0].Data);
+            var data = new object[] {new object []{"a"},new object []{null},new object []{"cell is"},new object[] {"missing"} };
+            AssertPreviewValue(watch.GUID.ToString(), data);
         }
 
         [Test]
@@ -286,30 +264,9 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
-
-            Assert.AreEqual(5, list.Count());
-
-            // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual(1, rowList[0].Data);
-
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.AreEqual("word", rowList[0].Data);
-
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual(2, rowList[0].Data);
-
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.AreEqual(3, rowList[0].Data);
-
-            Assert.IsTrue(list[4].IsCollection);
-            rowList = list[4].GetElements();
-            Assert.AreEqual("palabra", rowList[0].Data);
+            var data = new object[] { new object[] {1},new object []{"word"},new object[]{2},new object[] {3},new object[]{"palabra" }};
+            
+            AssertPreviewValue(watch.GUID.ToString(), data);
 
         }
         [Test]
@@ -324,37 +281,10 @@ namespace Dynamo.Tests
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
-
-
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-
             ViewModel.HomeSpace.Run();
-
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
-
-            Assert.AreEqual(5, list.Count());
-
-            // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual(1, rowList[0].Data);
-
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.AreEqual("word", rowList[0].Data);
-
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual(2, rowList[0].Data);
-
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.AreEqual(3, rowList[0].Data);
-
-            Assert.IsTrue(list[4].IsCollection);
-            rowList = list[4].GetElements();
-            Assert.AreEqual("palabra", rowList[0].Data);
+            var data = new object[] { new object[] { 1 }, new object[] { "word" }, new object[] { 2 }, new object[] { 3 }, new object[] { "palabra" } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
 
         }
         [Test]
@@ -383,56 +313,11 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(File.Exists(filePath));
 
-            Assert.IsTrue(writeNode.CachedValue.IsCollection);
-            var list1 = writeNode.CachedValue.GetElements();
+            var data = new object[] { new object[] { 1 }, new object[] { "word" }, new object[] { 2 }, new object[] { 3 }, new object[] { "palabra" } };
 
-            Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list2 = watch.CachedValue.GetElements();
+            AssertPreviewValue(watch.GUID.ToString(), data);
 
-            Assert.AreEqual(5, list1.Count());
-            Assert.AreEqual(5, list2.Count());
-
-            // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList = list2[0].GetElements();
-            Assert.AreEqual(1, rowList[0].Data);
-
-            Assert.IsTrue(list2[1].IsCollection);
-            rowList = list2[1].GetElements();
-            Assert.AreEqual("word", rowList[0].Data);
-
-            Assert.IsTrue(list2[2].IsCollection);
-            rowList = list2[2].GetElements();
-            Assert.AreEqual(2, rowList[0].Data);
-
-            Assert.IsTrue(list2[3].IsCollection);
-            rowList = list2[3].GetElements();
-            Assert.AreEqual(3, rowList[0].Data);
-
-            Assert.IsTrue(list2[4].IsCollection);
-            rowList = list2[4].GetElements();
-            Assert.AreEqual("palabra", rowList[0].Data);
-
-            Assert.IsTrue(list1[0].IsCollection);
-            var rowList2 = list1[0].GetElements();
-            Assert.AreEqual(1, rowList2[0].Data);
-
-            Assert.IsTrue(list1[1].IsCollection);
-            rowList2 = list1[1].GetElements();
-            Assert.AreEqual("word", rowList2[0].Data);
-
-            Assert.IsTrue(list1[2].IsCollection);
-            rowList2 = list1[2].GetElements();
-            Assert.AreEqual(2, rowList2[0].Data);
-
-            Assert.IsTrue(list1[3].IsCollection);
-            rowList2 = list1[3].GetElements();
-            Assert.AreEqual(3, rowList2[0].Data);
-
-            Assert.IsTrue(list1[4].IsCollection);
-            rowList2 = list1[4].GetElements();
-            Assert.AreEqual("palabra", rowList2[0].Data);
-
+            
         }
         [Test]
         public void ReadChangeFilename()
@@ -452,46 +337,24 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
             
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-            var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("ddd5d868-7178-426d-8e87-a11fdd29af75");
+            var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("b9b04f1f-9069-4eaf-a31c-eee7428aacab");
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("1bd2c2da-b0e9-4b88-9f9e-33bd0906c6e9");
-            
-         
             
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list1 = watch.CachedValue.GetElements();
-
             Assert.AreEqual(5, list1.Count());
-            
-
             // single column - 1, "word", 2, 3, "palabra"
             Assert.IsTrue(list1[0].IsCollection);
             var rowList = list1[0].GetElements();
             Assert.AreEqual(1, rowList[0].Data);
-            
             // change the file path 
-
             ConnectorModel.Make(watch2, watch3, 0, 0);
             ViewModel.HomeSpace.Run();
             
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list2 = watch.CachedValue.GetElements();
-
-            Assert.AreEqual(5, list2.Count());
-
-
-            //  - 10, 20, 30, "test", "Dynamo"
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList1 = list2[0].GetElements();
-            Assert.AreEqual(10, rowList1[0].Data);
-            var rowList2 = list2[1].GetElements();
-            Assert.AreEqual(20, rowList2[0].Data);
-            var rowList3 = list2[2].GetElements();
-            Assert.AreEqual(30, rowList3[0].Data);
-            var rowList4 = list2[3].GetElements();
-            Assert.AreEqual("test", rowList4[0].Data);
-            var rowList5 = list2[4].GetElements();
-            Assert.AreEqual("Dynamo", rowList5[0].Data);
-
+            var data = new object[] { new object[] { 10 }, new object[] { 20 }, new object[] { 30 }, new object[] { "test" }, new object[] { "Dynamo" } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
+            
         }
         [Test]
         public void ReadNonExistingFile()
@@ -508,6 +371,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
+            var newname = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
             ViewModel.HomeSpace.Run();
            
@@ -531,34 +395,14 @@ namespace Dynamo.Tests
 
             // watch displays the data from the Read node
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-
+            
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
 
-            Assert.AreEqual(5, list.Count);
+            var data = new object[] { new object[] { "1" }, new object[] { "word" }, new object[] { "2" }, new object[] { "3" }, new object[] { "palabra" } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
 
-            // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual("1", rowList[0].Data);
-
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.AreEqual("word", rowList[0].Data);
-
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual("2", rowList[0].Data);
-
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.AreEqual("3", rowList[0].Data);
-
-            Assert.IsTrue(list[4].IsCollection);
-            rowList = list[4].GetElements();
-            Assert.AreEqual("palabra", rowList[0].Data);
 
         }
 
@@ -621,36 +465,13 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(13, ViewModel.CurrentSpace.Nodes.Count);
             
-
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
             ViewModel.HomeSpace.Run();
 
-
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
-
-            Assert.AreEqual(5, list.Count());
-
-            // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual("doodle", rowList[0].Data);
-
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.AreEqual(0, rowList[0].Data);
-
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual(21029, rowList[0].Data);
-
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.IsNull(rowList[0].Data);
-
-            Assert.IsTrue(list[4].IsCollection);
-            rowList = list[4].GetElements();
-            Assert.AreEqual(-90, rowList[0].Data);
+            
+            var data = new object[] { new object[] { "doodle" }, new object[] { 0.000 }, new object[] { 21029.000 }, new object[] { null }, new object[] { -90.000 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
 
         }
         [Test]
@@ -725,17 +546,10 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
 
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-
-            Assert.AreEqual(2.00, rowList[0].Data);
-            rowList = list[1].GetElements();
-            Assert.IsNull(rowList[0].Data);
-
-            rowList = list[2].GetElements();
-            Assert.AreEqual(3.00, rowList[0].Data);
+            var data = new object[] { new object[] { 2 }, new object[] { null }, new object[] {3 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
+            
         }
 
         [Test]
@@ -745,7 +559,7 @@ namespace Dynamo.Tests
             //Overwrite an existing file with EmptyList- it msut run ok
             string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN7213_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(7, ViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
@@ -756,17 +570,10 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
-
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-
-            Assert.AreEqual(2.00, rowList[0].Data);
-            rowList = list[1].GetElements();
-            Assert.IsNull(rowList[0].Data);
-
-            rowList = list[2].GetElements();
-            Assert.AreEqual(3.00, rowList[0].Data);
+            var data = new object[] { new object[] { 2 }, new object[] { null }, new object[] { 3 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
+            
+            
         }
         [Test]
         public void CanCreateNewWorksheetInNewWorkbook()
@@ -925,22 +732,8 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filePath));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
-            var list = writeNode.CachedValue.GetElements();
-
-            Assert.AreEqual(4, list.Count());
-
-            // get data returns 2d array
-            // input array is Transpose of {{1,2,3,null}, {1,2,3,4}, {null,2,3}}
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual(3, rowList.Count());
-            Assert.AreEqual(null, rowList[2].Data);
-
-            Assert.IsTrue(list[3].IsCollection);
-            rowList = list[3].GetElements();
-            Assert.AreEqual(3, rowList.Count());
-            Assert.AreEqual(null, rowList[0].Data);
-            Assert.AreEqual(null, rowList[2].Data);
+            var data = new object[] { new object[] { 1,1,null }, new object[] {2,2,2 }, new object []{3,3,3},new object[] { null,4,null }};
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
 
         }
 
@@ -961,24 +754,11 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filePath));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
-            var list = writeNode.CachedValue.GetElements();
-
-            Assert.AreEqual(3, list.Count());
-
-            // get data returns 1d array
-            // input array is {2, {}, 3}
-            var rowList = list[0].GetElements();
-            Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(2, rowList[0].Data);
-
-            rowList = list[1].GetElements();
-            Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(null, rowList[0].Data);
-
-            rowList = list[2].GetElements();
-            Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(3, rowList[0].Data);
-
+            
+            var data = new object[] { new object[] { 2 }, new object[] { null }, new object[] {3 } };
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
+            
+            
         }
 
         [Test]
@@ -999,32 +779,12 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filename.Value));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
-            var list = writeNode.CachedValue.GetElements();
+            var data = new object[] { new object[] { 99,99,99},new object[] { 99 ,99,99}, new object[] { 99,null,99 }};
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
 
             // input array is nested empty list, {{}, {}, {}}
             // Ensure output is {{99, 99, 99}, {99, 99, 99}, {99, "", 99}}
-            Assert.AreEqual(3, list.Count);
-
-            Assert.IsTrue(list[0].IsCollection);
-            var rowList = list[0].GetElements();
-            Assert.AreEqual(3, rowList.Count);
-            Assert.AreEqual(99, rowList[0].Data);
-            Assert.AreEqual(99, rowList[1].Data);
-            Assert.AreEqual(99, rowList[2].Data);
-
-            Assert.IsTrue(list[1].IsCollection);
-            rowList = list[1].GetElements();
-            Assert.AreEqual(3, rowList.Count);
-            Assert.AreEqual(99, rowList[0].Data);
-            Assert.AreEqual(99, rowList[1].Data);
-            Assert.AreEqual(99, rowList[2].Data);
-
-            Assert.IsTrue(list[2].IsCollection);
-            rowList = list[2].GetElements();
-            Assert.AreEqual(3, rowList.Count);
-            Assert.AreEqual(99, rowList[0].Data);
-            Assert.AreEqual(null, rowList[1].Data);
-            Assert.AreEqual(99, rowList[2].Data);
+            
 
         }
 
@@ -1182,24 +942,10 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filePath));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
-            var list = writeNode.CachedValue.GetElements();
+            var data = new object[] { new object []{2},new object[]{null},new object [] {3} };
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
 
-            Assert.AreEqual(3, list.Count());
-
-            // get data returns 1d array
-            // input array is {2, null, 3}
-            var rowList = list[0].GetElements();
-            Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(2, rowList[0].Data);
-
-            rowList = list[1].GetElements();
-            Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(null, rowList[0].Data);
-
-            rowList = list[2].GetElements();
-            Assert.AreEqual(1, rowList.Count());
-            Assert.AreEqual(3, rowList[0].Data);
-
+            
         }
 
         [Test]
@@ -1248,20 +994,9 @@ namespace Dynamo.Tests
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("8651eeba-33a9-4704-b92c-346e6e5e4b34");
             ViewModel.HomeSpace.Run();
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list2 = watch.CachedValue.GetElements();
-            Assert.AreEqual(5, list2.Count());
-            //   1, 2, 3, 4,5
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList1 = list2[0].GetElements();
-            Assert.AreEqual(1, rowList1[0].Data);
-            var rowList2 = list2[1].GetElements();
-            Assert.AreEqual(2, rowList2[0].Data);
-            var rowList3 = list2[2].GetElements();
-            Assert.AreEqual(3, rowList3[0].Data);
-            var rowList4 = list2[3].GetElements();
-            Assert.AreEqual(4, rowList4[0].Data);
-            var rowList5 = list2[4].GetElements();
-            Assert.AreEqual(5, rowList5[0].Data);
+            var data = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] {4} ,new object []{5}};
+            AssertPreviewValue(watch.GUID.ToString(), data);
+           
         }
         [Test]
         public void WriteNonExistingSheet()
@@ -1281,20 +1016,9 @@ namespace Dynamo.Tests
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("32dbe300-4780-4c47-b07c-63019d5285ac");
             ViewModel.HomeSpace.Run();
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list2 = watch.CachedValue.GetElements();
-            Assert.AreEqual(5, list2.Count());
-            //   10, 20, 30, "test", "Dynamo"
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList1 = list2[0].GetElements();
-            Assert.AreEqual(1, rowList1[0].Data);
-            var rowList2 = list2[1].GetElements();
-            Assert.AreEqual(2, rowList2[0].Data);
-            var rowList3 = list2[2].GetElements();
-            Assert.AreEqual(3, rowList3[0].Data);
-            var rowList4 = list2[3].GetElements();
-            Assert.AreEqual(4, rowList4[0].Data);
-            var rowList5 = list2[4].GetElements();
-            Assert.AreEqual(5, rowList5[0].Data);
+            
+            var data = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { 4 }, new object[] { 5 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
         }
         [Test,Category("Failure")]
         public void WritenodeWithWarning()
@@ -1329,12 +1053,11 @@ namespace Dynamo.Tests
 
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
-            var a = watch.Name;
-            var b = watch.InputNodes.Values;
             ViewModel.HomeSpace.Run();
             Assert.IsNull(watch.CachedValue.Data);
             Assert.IsTrue(watch.State == Models.ElementState.Warning);
-         
+           
+
         }
         
         [Test]
@@ -1370,22 +1093,8 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list2 = watch.CachedValue.GetElements();
-            Assert.AreEqual(6, list2.Count());
-           
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList1 = list2[0].GetElements();
-            Assert.AreEqual(5, rowList1[0].Data);
-            var rowList2 = list2[1].GetElements();
-            Assert.AreEqual(6, rowList2[0].Data);
-            var rowList3 = list2[2].GetElements();
-            Assert.AreEqual(7, rowList3[0].Data);
-            var rowList4 = list2[3].GetElements();
-            Assert.AreEqual(8, rowList4[0].Data);
-            var rowList5 = list2[4].GetElements();
-            Assert.AreEqual(9, rowList5[0].Data);
-            var rowList6 = list2[5].GetElements();
-            Assert.AreEqual(10, rowList6[0].Data);
+            var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
 
 
         }
@@ -1394,7 +1103,7 @@ namespace Dynamo.Tests
         {
 
             // 1.  Write into  an Existing excel file and Run
-            // 2.  Modify the contents written to an excel file
+            // 2.  Modify the contents written to an excel file wiht option overwrite
             //3.  Rerun the file  
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteModifyGraph.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -1409,44 +1118,16 @@ namespace Dynamo.Tests
             var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list1 = watch.CachedValue.GetElements();
-            Assert.AreEqual(6, list1.Count());
-            Assert.IsTrue(list1[0].IsCollection);
-            var rowList = list1[0].GetElements();
-            Assert.AreEqual(5, rowList[0].Data);
-            rowList = list1[1].GetElements();
-            Assert.AreEqual(6, rowList[0].Data);
-            rowList = list1[2].GetElements();
-            Assert.AreEqual(7, rowList[0].Data);
-            rowList = list1[3].GetElements();
-            Assert.AreEqual(8, rowList[0].Data);
-            rowList = list1[4].GetElements();
-            Assert.AreEqual(9, rowList[0].Data);
-            rowList = list1[5].GetElements();
-            Assert.AreEqual(10, rowList[0].Data);
-            
+            var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
             // change the data written into Excel
 
             ConnectorModel.Make(watch3, watch2, 0, 4);
             ViewModel.HomeSpace.Run();
-
             Assert.IsTrue(watch2.CachedValue.IsCollection);
-            var list2 = watch2.CachedValue.GetElements();
-            Assert.AreEqual(6, list2.Count());
-
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList1 = list2[0].GetElements();
-            Assert.AreEqual(0, rowList1[0].Data);
-            var rowList2 = list2[1].GetElements();
-            Assert.AreEqual(1, rowList2[0].Data);
-            var rowList3 = list2[2].GetElements();
-            Assert.AreEqual(2, rowList3[0].Data);
-            var rowList4 = list2[3].GetElements();
-            Assert.AreEqual(3, rowList4[0].Data);
-            var rowList5 = list2[4].GetElements();
-            Assert.AreEqual(4, rowList5[0].Data);
-            var rowList6 = list2[5].GetElements();
-            Assert.AreEqual(5, rowList6[0].Data);
+           
+            var data2 = new object[] { new object[] { 0 }, new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { 4 }, new object[] { 5 } };
+            AssertPreviewValue(watch2.GUID.ToString(), data2);
 
 
         }
@@ -1471,21 +1152,9 @@ namespace Dynamo.Tests
             var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list1 = watch.CachedValue.GetElements();
-            Assert.AreEqual(6, list1.Count());
-            Assert.IsTrue(list1[0].IsCollection);
-            var rowList = list1[0].GetElements();
-            Assert.AreEqual(5, rowList[0].Data);
-            rowList = list1[1].GetElements();
-            Assert.AreEqual(6, rowList[0].Data);
-            rowList = list1[2].GetElements();
-            Assert.AreEqual(7, rowList[0].Data);
-            rowList = list1[3].GetElements();
-            Assert.AreEqual(8, rowList[0].Data);
-            rowList = list1[4].GetElements();
-            Assert.AreEqual(9, rowList[0].Data);
-            rowList = list1[5].GetElements();
-            Assert.AreEqual(10, rowList[0].Data);
+
+            var data = new object[] { new object[] {5}, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
 
             // decrease the data written into excel
 
@@ -1493,22 +1162,10 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch2.CachedValue.IsCollection);
-            var list2 = watch2.CachedValue.GetElements();
-            Assert.AreEqual(6, list2.Count());
 
-            Assert.IsTrue(list2[0].IsCollection);
-            var rowList1 = list2[0].GetElements();
-            Assert.AreEqual(2, rowList1[0].Data);
-            var rowList2 = list2[1].GetElements();
-            Assert.AreEqual(3, rowList2[0].Data);
-            var rowList3 = list2[2].GetElements();
-            Assert.AreEqual(4, rowList3[0].Data);
-            var rowList4 = list2[3].GetElements();
-            Assert.AreEqual(5, rowList4[0].Data);
-            var rowList5 = list2[4].GetElements();
-            Assert.IsNull(rowList5[0].Data);
-            var rowList6 = list2[5].GetElements();
-            Assert.IsNull(rowList6[0].Data);
+            var data2 = new object[] { new object[] { 2}, new object[] { 3 }, new object[] { 4 }, new object[] { 5 }, new object[] { null}, new object[] { null} };
+            AssertPreviewValue(watch2.GUID.ToString(), data2);
+
         }
 
         [Test]
@@ -1533,21 +1190,8 @@ namespace Dynamo.Tests
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list1 = watch.CachedValue.GetElements();
-            Assert.AreEqual(6, list1.Count());
-            Assert.IsTrue(list1[0].IsCollection);
-            var rowList = list1[0].GetElements();
-            Assert.AreEqual(5, rowList[0].Data);
-            rowList = list1[1].GetElements();
-            Assert.AreEqual(6, rowList[0].Data);
-            rowList = list1[2].GetElements();
-            Assert.AreEqual(7, rowList[0].Data);
-            rowList = list1[3].GetElements();
-            Assert.AreEqual(8, rowList[0].Data);
-            rowList = list1[4].GetElements();
-            Assert.AreEqual(9, rowList[0].Data);
-            rowList = list1[5].GetElements();
-            Assert.AreEqual(10, rowList[0].Data);
-
+            var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
+            AssertPreviewValue(watch2.GUID.ToString(), data);
             // Increase the data written into excel
 
             ConnectorModel.Make(watch3, watch2, 0, 4);
@@ -1558,22 +1202,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, list2.Count());
 
             Assert.IsTrue(list2[0].IsCollection);
-            var rowList1 = list2[0].GetElements();
-            Assert.AreEqual(0, rowList1[0].Data);
-            var rowList2 = list2[1].GetElements();
-            Assert.AreEqual(1, rowList2[0].Data);
-            var rowList3 = list2[2].GetElements();
-            Assert.AreEqual(2, rowList3[0].Data);
-            var rowList4 = list2[3].GetElements();
-            Assert.AreEqual(3, rowList4[0].Data);
-            var rowList5 = list2[4].GetElements();
-            Assert.AreEqual(4, rowList5[0].Data);
-            var rowList6 = list2[5].GetElements();
-            Assert.AreEqual(5, rowList6[0].Data);
-            var rowList7 = list2[6].GetElements();
-            Assert.AreEqual(6, rowList7[0].Data);
-            var rowList8 = list2[7].GetElements();
-            Assert.AreEqual(7, rowList8[0].Data);
+            var data2 = new object[] { new object[] {0},new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { 4 }, new object[] { 5 }, new object[] { 6 },new object[]{7} };
+            AssertPreviewValue(watch2.GUID.ToString(), data2);
+
         }
 
         #endregion
