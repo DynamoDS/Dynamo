@@ -163,6 +163,7 @@
         <controls:ZoomBorder x:Name="zoomBorder"
                              ClipToBounds="True"
                              BorderThickness="0"
+                             Background="#fff9f9f9"
                              Cursor="{Binding CurrentCursor}"
                              ForceCursor="{Binding IsCursorForced}">
             <ItemsControl Name="WorkspaceElements"
