@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<GalleryContents xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<GalleryUiContents>
+	<GalleryContent>
+		<Header>Library items are now draggable 1</Header>
+		<Body>Give me some random texts inside 1</Body>
+		<ImagePath>1.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Library items are now draggable 2</Header>
+		<Body>Give me some random texts inside 2</Body>
+		<ImagePath>2.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Library items are now draggable 3</Header>
+		<Body>Give me some random texts inside 3</Body>
+		<ImagePath>3.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Library items are now draggable 4</Header>
+		<Body>Give me some random texts inside 4</Body>
+		<ImagePath>4.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Library items are now draggable 5</Header>
+		<Body>Give me some random texts inside 5</Body>
+		<ImagePath>5.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
+		<Header>Library items are now draggable 6</Header>
+		<Body>Give me some random texts inside 6</Body>
+		<ImagePath>6.png</ImagePath>
+	</GalleryContent>
+	</GalleryUiContents>
+</GalleryContents>
