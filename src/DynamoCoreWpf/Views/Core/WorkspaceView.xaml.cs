@@ -769,18 +769,29 @@ namespace Dynamo.Views
             }
         }
 
+        /// <summary>
+        /// MouseUp is used to close context menu. Only if original sender was Thumb(i.e. scroll bar),
+        /// then context menu is left open.
+        /// </summary>
         private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb))
                 outerCanvas.ContextMenu.IsOpen = false;
         }
 
+        /// <summary>
+        /// MouseDown is used to set place, where node will be created.
+        /// </summary>
         private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
         {
             var inCanvasSearch = sender as InCanvasSearchControl;
             inCanvasSearch.InCanvasSearchPosition = inCanvasSearchPosition;
         }
 
+        /// <summary>
+        /// Determines position of mouse, when user clicks on canvas.
+        /// Both left anf right mouse clicks.
+        /// </summary>
         private void OnCanvasClicked(object sender, MouseButtonEventArgs e)
         {
             var canvas = sender as FrameworkElement;
