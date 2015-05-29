@@ -729,6 +729,8 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
+        private Point inCanvasSearchPosition;
+
         private void ShowHideInCanvasControl(ShowHideFlags flag)
         {
             switch (flag)
@@ -739,6 +741,8 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     InCanvasSearchBar.IsOpen = this.IsMouseOver;
+                    var cntr = InCanvasSearchBar.Child as InCanvasSearchControl;
+                    cntr.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
         }
@@ -758,13 +762,32 @@ namespace Dynamo.Views
         private void OnInCanvasSearchContextMenuKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
+            {
+                var inCanvasSearch = sender as InCanvasSearchControl;
+                inCanvasSearch.InCanvasSearchPosition = inCanvasSearchPosition;
                 outerCanvas.ContextMenu.IsOpen = false;
+            }
         }
 
         private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb))
                 outerCanvas.ContextMenu.IsOpen = false;
+        }
+
+        private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var inCanvasSearch = sender as InCanvasSearchControl;
+            inCanvasSearch.InCanvasSearchPosition = inCanvasSearchPosition;
+        }
+
+        private void OnCanvasClicked(object sender, MouseButtonEventArgs e)
+        {
+            var canvas = sender as FrameworkElement;
+            if (canvas == null)
+                return;
+
+            inCanvasSearchPosition = Mouse.GetPosition(this.WorkspaceElements);
         }
 
     }
