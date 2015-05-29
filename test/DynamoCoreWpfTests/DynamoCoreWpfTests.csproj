@@ -95,6 +95,7 @@
     <Compile Include="DynamoTestUIBase.cs" />
     <Compile Include="DynamoViewModelUnitTest.cs" />
     <Compile Include="ExecutionIntervalTests.cs" />
+    <Compile Include="GalleryTests.cs" />
     <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="IconsTests.cs" />
     <Compile Include="LibraryTests.cs" />

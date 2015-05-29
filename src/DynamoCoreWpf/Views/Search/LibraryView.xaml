@@ -111,15 +111,15 @@
                     </Border>
                 </StackPanel>
             </DataTemplate>
-            <!-- This data template is used to show StandardPanel
+            <!-- This data template is used to show ClassInformationView
                  for some selected subcategory. -->
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <uicontrols:StandardPanel>
-                    <uicontrols:StandardPanel.Width>
+                <uicontrols:ClassInformationView>
+                    <uicontrols:ClassInformationView.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
-                    </uicontrols:StandardPanel.Width>
-                </uicontrols:StandardPanel>
+                    </uicontrols:ClassInformationView.Width>
+                </uicontrols:ClassInformationView>
             </DataTemplate>
 
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
