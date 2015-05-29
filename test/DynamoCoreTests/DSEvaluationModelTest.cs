@@ -396,7 +396,14 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\CBN_array_indexnull_619.dyn");
             AssertPreviewValue("6985948e-992c-4420-8c39-1f5f5d57dc64", new int[] { 5 });
         }
-        
+
+        [Test]
+        public void CBN_TypedIdentifier01()
+        {
+            // MAGN-7463
+            RunModel(@"core\dsevaluation\CBN_TypedIdentifier01.dyn");
+            AssertPreviewValue("9c422c81-821f-456e-9965-4aea6afe81f9", 1);
+        }
 
         [Test]
         public void Regress737()
