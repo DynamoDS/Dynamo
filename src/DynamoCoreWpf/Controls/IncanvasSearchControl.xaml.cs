@@ -162,11 +162,17 @@ namespace Dynamo.UI.Controls
         {
             var key = e.Key;
 
-            if (key == Key.Escape)
-                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+            int index;
+            var members = MembersListBox.Items.Cast<NodeSearchElementViewModel>();
+            NodeSearchElementViewModel highlightedMember = null;
+            if (HighlightedItem != null)
+                highlightedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
 
             switch (key)
             {
+                case Key.Escape:
+                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    break;
                 case Key.Enter:
                     if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
                     {
@@ -175,23 +181,23 @@ namespace Dynamo.UI.Controls
                     }
                     break;
                 case Key.Up:
-                    MoveToNextMember(false);
+                    index = MoveToNextMember(false, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
                     break;
                 case Key.Down:
-                    MoveToNextMember(true);
+                    index = MoveToNextMember(true, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
                     break;
             }
         }
 
-        private void MoveToNextMember(bool moveForward)
+        internal int MoveToNextMember(bool moveForward,
+            IEnumerable<NodeSearchElementViewModel> members, NodeSearchElementViewModel selectedMember)
         {
-            var selectedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
-            var members = MembersListBox.Items;
-
-            int selectedMemberIndex = 0;
-            for (int i = 0; i < members.Count; i++)
+            int selectedMemberIndex = -1;
+            for (int i = 0; i < members.Count(); i++)
             {
-                var member = members[i] as NodeSearchElementViewModel;
+                var member = members.ElementAt(i);
                 if (member.Equals(selectedMember))
                 {
                     selectedMemberIndex = i;
@@ -205,10 +211,10 @@ namespace Dynamo.UI.Controls
             else
                 nextselectedMemberIndex--;
 
-            if (nextselectedMemberIndex < 0 || (nextselectedMemberIndex >= members.Count))
-                return;
+            if (nextselectedMemberIndex < 0 || (nextselectedMemberIndex >= members.Count()))
+                return selectedMemberIndex;
 
-            UpdateHighlightedItem(GetListItemByIndex(MembersListBox, nextselectedMemberIndex));
+            return nextselectedMemberIndex;
         }
     }
 }
