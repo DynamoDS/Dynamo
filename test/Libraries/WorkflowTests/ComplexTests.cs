@@ -622,11 +622,11 @@ namespace Dynamo.Tests
             var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
             AssertPreviewValue(codeBlock,true);
 
-            // text writing to csv
+            // text writing to csv, persistent warning should be shown
+            // since the node is obsolete
             var writeCSV = "3ddc75fb-e607-4932-8e08-f215ee86211e";
             nodeModel = workspace.NodeFromWorkspace(writeCSV);
             Assert.AreEqual(ElementState.PersistentWarning, nodeModel.State);
-            Assert.IsTrue(nodeModel.ToolTipText.Contains("Use CSV.WriteToFile node instead."));
         }
 
         #endregion
