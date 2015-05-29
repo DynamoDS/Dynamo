@@ -24,19 +24,6 @@ namespace Dynamo.Wpf.Controls
         void NotificationsControl_Loaded(object sender, RoutedEventArgs e)
         {
             var window = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            window.PreviewMouseDown += window_PreviewMouseDown;
-        }
-
-        /// <summary>
-        /// Handle the DynamoView's PreviewMouseDown event.
-        /// When the user click anywhere in the view, clear the ViewModel's warning.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            var hsvm = (HomeWorkspaceViewModel)((DynamoViewModel)DataContext).HomeSpaceViewModel;
-            hsvm.ClearWarning();
         }
     }
 }
