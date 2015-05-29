@@ -761,9 +761,10 @@ namespace Dynamo.Views
                 outerCanvas.ContextMenu.IsOpen = false;
         }
 
-        private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
         {
-            outerCanvas.ContextMenu.IsOpen = false;
+            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb))
+                outerCanvas.ContextMenu.IsOpen = false;
         }
 
     }
