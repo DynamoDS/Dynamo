@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<migrations>
+  <priorNameHint>
+    <oldName>DSCore.File.ReadImage</oldName>
+    <newName>DSCore.IO.File.ReadImage</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.File.LoadImageFromPath</oldName>
+    <newName>DSCore.IO.File.LoadImageFromPath</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.File.ReadText</oldName>
+    <newName>DSCore.IO.File.ReadText</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.File.WriteImage</oldName>
+    <newName>DSCore.IO.File.WriteImage</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.File.WriteText</oldName>
+    <newName>DSCore.IO.File.WriteText</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.File.ExportToCSV</oldName>
+    <newName>DSCore.IO.File.ExportToCSV</newName>
+  </priorNameHint>
+</migrations>
