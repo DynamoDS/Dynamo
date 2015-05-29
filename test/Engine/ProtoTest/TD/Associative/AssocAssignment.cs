@@ -1328,6 +1328,7 @@ y1 = a..b..2;
         }
 
         [Test]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T58_Modifier_Block_On_User_Defined_Classes()
         {
             String code =

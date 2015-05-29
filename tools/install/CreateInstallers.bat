@@ -9,7 +9,7 @@ IF /I "%2"=="x64" set OPT_Platform=x64
 IF /I "%2"=="x86" set OPT_Platform=x86
 
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.rtf README.txt
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.exe *.dll *.xml *.config *.cer -XF *Tests.dll
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.exe *.dll *.xml *.config *.cer *.ds -XF *Tests.dll
 
 IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 (
 	robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 %cwd%\temp\bin\Revit_2014 *.dll *.xml *.config -XF *Tests.dll -XD int /e
@@ -25,7 +25,6 @@ IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2016 (
 
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes %cwd%\temp\bin\nodes *.dll *.xml /e
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\UI %cwd%\temp\bin\UI /E
-copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\FunctionObject.ds %cwd%\temp\bin\FunctionObject.ds
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\DSCoreNodes_DynamoCustomization.xml %cwd%\temp\bin\DSCoreNodes_DynamoCustomization.xml
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCustomization.xml %cwd%\temp\bin\ProtoGeometry_DynamoCustomization.xml
 

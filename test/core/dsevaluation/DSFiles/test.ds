@@ -1,0 +1,102 @@
+
+/*
+a = 10;
+c = 1;
+b = a;
+d = a;
+a = 20;
+*/
+
+/*
+class A
+{
+    a:var[]..[];
+    constructor A( c )
+    {
+        a = { 0, 1, 2 };
+        a = c > 1 ? a : a + 1;
+    }
+    def foo (c)
+    {
+        a = c == 4 ? a : a + 1;
+        return = a;
+    }
+}
+x = { A.A(0), A.A(2)};
+a1 = x.a;
+test = a1.foo(5);
+*/
+
+/*
+def f(a, b)
+{
+    return = a + b + 100;
+}
+
+
+def g(a)
+{
+    return = a + 2;
+}
+
+def h(a)
+{
+    return = a * 2;
+}
+
+x = 2;
+y = 3;
+i = f(g(x), h(y));
+*/
+
+/*
+def f()
+{
+    a = 1;
+    b = a;
+    a = 10;
+    return = b;
+}
+
+x = f();
+*/
+
+
+
+/*
+
+x = 3;
+a1 = 1;
+a2 = 2;
+a = x > 2 ? a1: a2;
+a1 = 3;
+a2 = 4;
+
+*/
+
+/*
+x = 1;
+a = 3 > 2 ? x : 10;
+x = 3;
+*/
+
+/*class A{	z : var[];		constructor A()	{		z = { B.B(), B.B(), B.B() };	}}class B{	constructor B()	{	}}a = A.A();b = B.B();c = { B.B(), B.B() };a.z[0] = b;a.z = c;*//*class A{	z : var[];		constructor A()	{		z = {B.B()};	}}class B{	constructor B()	{	}}a = A.A();c = {B.B()};a.z[0] = B.B();a.z = c;*//*======================t0 = A.A();
+a = t0;======================
+t1 = B.B();
+t2 = {t1};
+c = t2;======================
+t3 = B.B();
+a.z[0] = t3;======================
+t4 = c;
+a.z = t4;========================================================================================tSSA_2_ddf9cdaa18094f7780217fd477df2149 = A.A();
+a = tSSA_2_ddf9cdaa18094f7780217fd477df2149;==================================================================
+tSSA_3_ddf9cdaa18094f7780217fd477df2149 = B.B();
+tSSA_4_ddf9cdaa18094f7780217fd477df2149 = {tSSA_3_ddf9cdaa18094f7780217fd477df2149};
+c = tSSA_4_ddf9cdaa18094f7780217fd477df2149;================================================================== <------------
+tSSA_5_ddf9cdaa18094f7780217fd477df2149 = B.B();
+a.z[0] = tSSA_5_ddf9cdaa18094f7780217fd477df2149;==================================================================
+
+
+
+tSSA_6_ddf9cdaa18094f7780217fd477df2149 = c;
+a.z = tSSA_6_ddf9cdaa18094f7780217fd477df2149;==================================================================*/class vector2D{	mx : var;	my : var;			constructor vector2D(px : int, py : int)	{		mx = px; 		// Copy mx to my with px's value		my = mx; 	}}v1 = vector2D.vector2D(100,20);x = v1.mx;y = v1.my;

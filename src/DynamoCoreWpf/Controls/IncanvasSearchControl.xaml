@@ -23,8 +23,8 @@
             <Style x:Key="SearchMemberStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                             Handler="OnMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="OnMouseLeftButtonUp" />
             </Style>
 
         </ResourceDictionary>
@@ -116,7 +116,11 @@
                          TargetUpdated="OnMembersListBoxUpdated">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                            <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                                          Style="{StaticResource InCanvasScrollViewerStyle}"
+                                          CanContentScroll="True">
+                                <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                            </ScrollViewer>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.Template>
@@ -138,8 +142,9 @@
                                     Value="Collapsed" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Path=CurrentMode}"
-                                     Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
+                        <DataTrigger Binding="{Binding Path=CurrentMode,
+                                                       Converter={StaticResource LibraryViewModeToBoolConverter}}"
+                                     Value="True">
                             <Setter Property="Visibility"
                                     Value="Collapsed" />
                         </DataTrigger>

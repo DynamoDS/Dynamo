@@ -755,5 +755,16 @@ namespace Dynamo.Views
                 nodeModel, mousePosition.X, mousePosition.Y, false, true));
         }
 
+        private void OnInCanvasSearchContextMenuKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                outerCanvas.ContextMenu.IsOpen = false;
+        }
+
+        private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            outerCanvas.ContextMenu.IsOpen = false;
+        }
+
     }
 }
