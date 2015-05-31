@@ -635,9 +635,30 @@ namespace Dynamo.Controls
             if (!workspace.Nodes.Any() && (!workspace.Notes.Any()))
                 return; // An empty graph.
 
-            // Saving all contents of DragCanvas so bounds are required.
+            var initialized = false;
+            var bounds = new Rect();
+
             var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
-            var bounds = VisualTreeHelper.GetDescendantBounds(dragCanvas);
+            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
+            for (int index = 0; index < childrenCount; ++index)
+            {
+                var child = VisualTreeHelper.GetChild(dragCanvas, index);
+                var firstChild = VisualTreeHelper.GetChild(child, 0);
+                if ((!(firstChild is NodeView)) && (!(firstChild is NoteView)))
+                    continue;
+
+                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
+                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
+                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
+
+                if (initialized)
+                    bounds.Union(childBounds);
+                else
+                {
+                    initialized = true;
+                    bounds = childBounds;
+                }
+            }
 
             // Add padding to the edge and make them multiples of two.
             bounds.Width = (((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01;
@@ -649,6 +670,8 @@ namespace Dynamo.Controls
                 var targetRect = new Rect(0, 0, bounds.Width, bounds.Height);
                 var visualBrush = new VisualBrush(dragCanvas);
                 drawingContext.DrawRectangle(visualBrush, null, targetRect);
+
+                // drawingContext.DrawRectangle(null, new Pen(Brushes.Blue, 1.0), childBounds);
             }
 
             // var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
