@@ -35,6 +35,7 @@ using Dynamo.Wpf.Utilities;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
+using System.Collections.Generic;
 
 namespace Dynamo.Controls
 {
@@ -624,50 +625,54 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Path))
+            if (string.IsNullOrEmpty(e.Path))
+                return;
+
+            var workspace = dynamoViewModel.Model.CurrentWorkspace;
+            if (workspace == null)
+                return;
+
+            if (!workspace.Nodes.Any() && (!workspace.Notes.Any()))
+                return; // An empty graph.
+
+            // Saving all contents of DragCanvas so bounds are required.
+            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
+            var bounds = VisualTreeHelper.GetDescendantBounds(dragCanvas);
+
+            // Add padding to the edge and make them multiples of two.
+            bounds.Width = (((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01;
+            bounds.Height = (((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01;
+
+            var drawingVisual = new DrawingVisual();
+            using (var drawingContext = drawingVisual.RenderOpen())
             {
-                var control = WpfUtilities.ChildOfType<ZoomBorder>(this, "zoomBorder");
+                var targetRect = new Rect(0, 0, bounds.Width, bounds.Height);
+                var visualBrush = new VisualBrush(dragCanvas);
+                drawingContext.DrawRectangle(visualBrush, null, targetRect);
+            }
 
-                double width = 1;
-                double height = 1;
+            // var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
+            // region.Scale(m.M11, m.M22);
 
-                // connectors are most often within the bounding box of the nodes and notes
+            var rtb = new RenderTargetBitmap(((int)bounds.Width),
+                ((int)bounds.Height), 96, 96, PixelFormats.Default);
 
-                foreach (NodeModel n in dynamoViewModel.Model.CurrentWorkspace.Nodes)
+            rtb.Render(drawingVisual);
+
+            //endcode as PNG
+            var pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            try
+            {
+                using (var stm = File.Create(e.Path))
                 {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
+                    pngEncoder.Save(stm);
                 }
-
-                foreach (NoteModel n in dynamoViewModel.Model.CurrentWorkspace.Notes)
-                {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
-                }
-
-                var rtb = new RenderTargetBitmap(Math.Max((int)control.ActualWidth, (int)width),
-                                                  Math.Max((int)control.ActualHeight, (int)height),
-                                                  96,
-                                                  96,
-                                                  PixelFormats.Default);
-
-                rtb.Render(control);
-
-                //endcode as PNG
-                var pngEncoder = new PngBitmapEncoder();
-                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
-
-                try
-                {
-                    using (var stm = File.Create(e.Path))
-                    {
-                        pngEncoder.Save(stm);
-                    }
-                }
-                catch
-                {
-                    dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
-                }
+            }
+            catch
+            {
+                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
             }
         }
 
