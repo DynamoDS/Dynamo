@@ -793,5 +793,10 @@ namespace Dynamo.Views
             inCanvasSearchPosition = Mouse.GetPosition(this.WorkspaceElements);
         }
 
+        private void OnContextMenuClosed(object sender, RoutedEventArgs e)
+        {
+            ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
+        }
+
     }
 }

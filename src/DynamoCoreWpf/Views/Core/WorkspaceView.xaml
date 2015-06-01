@@ -77,6 +77,8 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <EventSetter Event="Closed"
+                         Handler="OnContextMenuClosed"/>
         </Style>
     </UserControl.Resources>
 

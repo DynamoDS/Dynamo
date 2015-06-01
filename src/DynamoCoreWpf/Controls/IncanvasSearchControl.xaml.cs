@@ -158,21 +158,63 @@ namespace Dynamo.UI.Controls
             return null;
         }
 
-        private void OnSearchTextBoxKeyDown(object sender, KeyEventArgs e)
+        private void OnInCanvasSearchKeyDown(object sender, KeyEventArgs e)
         {
             var key = e.Key;
 
-            if (key == Key.Escape)
-                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+            int index;
+            var members = MembersListBox.Items.Cast<NodeSearchElementViewModel>();
+            NodeSearchElementViewModel highlightedMember = null;
+            if (HighlightedItem != null)
+                highlightedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
 
-            if (key != Key.Enter)
-                return;
-
-            if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+            switch (key)
             {
-                ExecuteSearchElement(HighlightedItem);
-                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                case Key.Escape:
+                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    break;
+                case Key.Enter:
+                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                    {
+                        ExecuteSearchElement(HighlightedItem);
+                        OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    }
+                    break;
+                case Key.Up:
+                    index = MoveToNextMember(false, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
+                    break;
+                case Key.Down:
+                    index = MoveToNextMember(true, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
+                    break;
             }
+        }
+
+        internal int MoveToNextMember(bool moveForward,
+            IEnumerable<NodeSearchElementViewModel> members, NodeSearchElementViewModel selectedMember)
+        {
+            int selectedMemberIndex = -1;
+            for (int i = 0; i < members.Count(); i++)
+            {
+                var member = members.ElementAt(i);
+                if (member.Equals(selectedMember))
+                {
+                    selectedMemberIndex = i;
+                    break;
+                }
+            }
+
+            int nextselectedMemberIndex = selectedMemberIndex;
+            if (moveForward)
+                nextselectedMemberIndex++;
+            else
+                nextselectedMemberIndex--;
+
+            if (nextselectedMemberIndex < 0 || (nextselectedMemberIndex >= members.Count()))
+                return selectedMemberIndex;
+
+            return nextselectedMemberIndex;
         }
     }
 }
