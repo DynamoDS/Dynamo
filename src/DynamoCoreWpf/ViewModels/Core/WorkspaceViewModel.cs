@@ -50,14 +50,9 @@ namespace Dynamo.ViewModels
         public bool IsSnapping { get; set; }
 
         /// <summary>
-        /// ViewModel that is used in InCanvasSearch in context menu.
+        /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
         /// </summary>
-        public SearchViewModel InCanvasSearchContextMenuViewModel { get; private set; }
-
-        /// <summary>
-        /// ViewModel that is used in InCanvasSearchBar, called by Shift+DoubleClick.
-        /// </summary>
-        public SearchViewModel InCanvasSearchBarViewModel { get; private set; }
+        public SearchViewModel InCanvasSearchViewModel { get; private set; }
 
         /// <summary>
         /// For requesting registered workspace to zoom in center
@@ -324,11 +319,8 @@ namespace Dynamo.ViewModels
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
 
-            InCanvasSearchContextMenuViewModel = new SearchViewModel(DynamoViewModel, DynamoViewModel.Model.SearchModel);
-            InCanvasSearchContextMenuViewModel.Visible = true;
-
-            InCanvasSearchBarViewModel = new SearchViewModel(DynamoViewModel, DynamoViewModel.Model.SearchModel);
-            InCanvasSearchBarViewModel.Visible = true;
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel, DynamoViewModel.Model.SearchModel);
+            InCanvasSearchViewModel.Visible = true;
         }
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

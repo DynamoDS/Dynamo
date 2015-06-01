@@ -35,7 +35,7 @@
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
                         <StackPanel Margin="8,0,8,8"
                                     Width="250">
-                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchContextMenuViewModel}"
+                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}"
                                                       PreviewKeyDown="OnInCanvasSearchContextMenuKeyDown"
                                                       PreviewMouseUp="OnInCanvasSearchContextMenuMouseUp"
                                                       PreviewMouseDown="OnInCanvasSearchContextMenuMouseDown" />
@@ -57,13 +57,13 @@
                                         <Setter Property="Visibility"
                                                 Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=InCanvasSearchContextMenuViewModel.SearchRootCategories.Count}"
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}"
                                                          Value="0">
                                                 <Setter Property="Visibility"
                                                         Value="Visible" />
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=InCanvasSearchContextMenuViewModel.CurrentMode,
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.CurrentMode,
                                                                            Converter={StaticResource LibraryViewModeToBoolConverter}}"
                                                          Value="True">
                                                 <Setter Property="Visibility"
@@ -77,8 +77,8 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <EventSetter Event="Closed"
-                         Handler="OnContextMenuClosed"/>
+            <EventSetter Event="Opened"
+                         Handler="OnContextMenuOpened"/>
         </Style>
     </UserControl.Resources>
 
@@ -398,7 +398,7 @@
                AllowsTransparency="True"
                IsOpen="False"
                Placement="MousePoint"
-               DataContext="{Binding InCanvasSearchBarViewModel}">
+               DataContext="{Binding InCanvasSearchViewModel}">
             <ui:InCanvasSearchControl />
         </Popup>
 

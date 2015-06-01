@@ -736,7 +736,7 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     InCanvasSearchBar.IsOpen = this.IsMouseOver;
-                    ViewModel.InCanvasSearchBarViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
+                    ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
         }
@@ -757,7 +757,7 @@ namespace Dynamo.Views
         {
             if (e.Key == Key.Enter)
             {
-                ViewModel.InCanvasSearchContextMenuViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
+                ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                 outerCanvas.ContextMenu.IsOpen = false;
             }
         }
@@ -777,7 +777,7 @@ namespace Dynamo.Views
         /// </summary>
         private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.InCanvasSearchContextMenuViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
+            ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
         }
 
         /// <summary>
@@ -793,9 +793,9 @@ namespace Dynamo.Views
             inCanvasSearchPosition = Mouse.GetPosition(this.WorkspaceElements);
         }
 
-        private void OnContextMenuClosed(object sender, RoutedEventArgs e)
+        private void OnContextMenuOpened(object sender, RoutedEventArgs e)
         {
-            ViewModel.InCanvasSearchContextMenuViewModel.SearchText = String.Empty;
+            ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
         }
 
     }
