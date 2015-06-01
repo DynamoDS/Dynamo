@@ -36,8 +36,9 @@
                         <StackPanel Margin="8,0,8,8"
                                     Width="250">
                             <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}"
-                                                      KeyDown="OnInCanvasSearchContextMenuKeyDown"
-                                                      PreviewMouseDown="OnInCanvasSearchContextMenuMouseDown"/>
+                                                      PreviewKeyDown="OnInCanvasSearchContextMenuKeyDown"
+                                                      PreviewMouseUp="OnInCanvasSearchContextMenuMouseUp"
+                                                      PreviewMouseDown="OnInCanvasSearchContextMenuMouseDown" />
                             <Border BorderThickness="1"
                                     Name="Border"
                                     Background="White"
@@ -76,15 +77,16 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <EventSetter Event="Closed"
-                         Handler="OnContextMenuClosed"/>
+            <EventSetter Event="Opened"
+                         Handler="OnContextMenuOpened"/>
         </Style>
     </UserControl.Resources>
 
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
         <Canvas Name="outerCanvas"
-                ClipToBounds="True">
+                ClipToBounds="True"
+                PreviewMouseDown="OnCanvasClicked">
             <Canvas.IsHitTestVisible>
                 <Binding Path="DataContext.ShouldBeHitTestVisible"
                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
@@ -395,7 +397,8 @@
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
-               Placement="MousePoint">
+               Placement="MousePoint"
+               DataContext="{Binding InCanvasSearchViewModel}">
             <ui:InCanvasSearchControl />
         </Popup>
 

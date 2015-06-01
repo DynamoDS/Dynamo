@@ -31,7 +31,7 @@ namespace Dynamo.UI.Controls
 
         internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
 
-        private SearchViewModel ViewModel
+        public SearchViewModel ViewModel
         {
             get { return DataContext as SearchViewModel; }
         }
@@ -89,7 +89,7 @@ namespace Dynamo.UI.Controls
             var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
-                searchElement.Position = TranslatePoint(new Point(), workspaceView);
+                searchElement.Position = ViewModel.InCanvasSearchPosition;
                 searchElement.ClickedCommand.Execute(null);
             }
         }
