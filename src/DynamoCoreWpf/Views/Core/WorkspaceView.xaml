@@ -57,13 +57,13 @@
                                         <Setter Property="Visibility"
                                                 Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}"
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchContextMenuViewModel.SearchRootCategories.Count}"
                                                          Value="0">
                                                 <Setter Property="Visibility"
                                                         Value="Visible" />
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.CurrentMode,
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchContextMenuViewModel.CurrentMode,
                                                                            Converter={StaticResource LibraryViewModeToBoolConverter}}"
                                                          Value="True">
                                                 <Setter Property="Visibility"
