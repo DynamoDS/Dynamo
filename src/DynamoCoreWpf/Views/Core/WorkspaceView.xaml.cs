@@ -777,13 +777,12 @@ namespace Dynamo.Views
         /// </summary>
         private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var inCanvasSearch = sender as InCanvasSearchControl;
             ViewModel.InCanvasSearchContextMenuViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
         }
 
         /// <summary>
         /// Determines position of mouse, when user clicks on canvas.
-        /// Both left anf right mouse clicks.
+        /// Both left and right mouse clicks.
         /// </summary>
         private void OnCanvasClicked(object sender, MouseButtonEventArgs e)
         {
