@@ -93,11 +93,6 @@ namespace Dynamo.Views
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
 
-            var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
-            searchViewModel.Visible = true;
-
-            InCanvasSearchBar.DataContext = searchViewModel;
-
             var ctrl = InCanvasSearchBar.Child as InCanvasSearchControl;
             if (ctrl != null)
             {
@@ -741,8 +736,7 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     InCanvasSearchBar.IsOpen = this.IsMouseOver;
-                    var cntr = InCanvasSearchBar.Child as InCanvasSearchControl;
-                    cntr.InCanvasSearchPosition = inCanvasSearchPosition;
+                    ViewModel.InCanvasSearchBarViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
         }
@@ -763,8 +757,7 @@ namespace Dynamo.Views
         {
             if (e.Key == Key.Enter)
             {
-                var inCanvasSearch = sender as InCanvasSearchControl;
-                inCanvasSearch.InCanvasSearchPosition = inCanvasSearchPosition;
+                ViewModel.InCanvasSearchContextMenuViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                 outerCanvas.ContextMenu.IsOpen = false;
             }
         }
@@ -785,7 +778,7 @@ namespace Dynamo.Views
         private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
         {
             var inCanvasSearch = sender as InCanvasSearchControl;
-            inCanvasSearch.InCanvasSearchPosition = inCanvasSearchPosition;
+            ViewModel.InCanvasSearchContextMenuViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
         }
 
         /// <summary>

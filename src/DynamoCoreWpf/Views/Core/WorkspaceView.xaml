@@ -35,7 +35,7 @@
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
                         <StackPanel Margin="8,0,8,8"
                                     Width="250">
-                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}"
+                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchContextMenuViewModel}"
                                                       PreviewKeyDown="OnInCanvasSearchContextMenuKeyDown"
                                                       PreviewMouseUp="OnInCanvasSearchContextMenuMouseUp"
                                                       PreviewMouseDown="OnInCanvasSearchContextMenuMouseDown" />
@@ -395,7 +395,8 @@
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
-               Placement="MousePoint">
+               Placement="MousePoint"
+               DataContext="{Binding InCanvasSearchBarViewModel}">
             <ui:InCanvasSearchControl />
         </Popup>
 
