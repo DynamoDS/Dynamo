@@ -795,7 +795,7 @@ namespace Dynamo.Views
 
         private void OnContextMenuClosed(object sender, RoutedEventArgs e)
         {
-            ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
+            ViewModel.InCanvasSearchContextMenuViewModel.SearchText = String.Empty;
         }
 
     }
