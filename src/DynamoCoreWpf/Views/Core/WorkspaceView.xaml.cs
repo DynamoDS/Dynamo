@@ -765,10 +765,11 @@ namespace Dynamo.Views
         /// <summary>
         /// MouseUp is used to close context menu. Only if original sender was Thumb(i.e. scroll bar),
         /// then context menu is left open.
+        /// Or if original sender was TextBox, then context menu is left open as well.
         /// </summary>
         private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb))
+            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb) && !(e.OriginalSource is TextBox))
                 outerCanvas.ContextMenu.IsOpen = false;
         }
 
