@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
@@ -170,7 +168,7 @@ namespace DSCore
                 end == null || 
                 t < 0.0 || t > 1.0)
             {
-                return Color.ByARGB(255, 255, 255, 255);
+                return ByARGB(255, 255, 255, 255);
             }
 
             // Calculate the weighted average
@@ -200,22 +198,23 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(false)]
         public static Color Blerp(IList<IndexedColor2D> colors, UV parameter)
         {
-            // Calculate the weighted average
             var num = new double[4];
             var totalArea = 0.0;
             foreach (var ci in colors)
             {
-                var a = 1 - ci.Parameter.Area(parameter);
-                num[0] += ci.Color.Alpha * a;
-                num[1] += ci.Color.Red * a;
-                num[2] += ci.Color.Green * a;
-                num[3] += ci.Color.Blue * a;
-                totalArea += a;
-            }
+                var t = ci.Parameter;
+                var d = Math.Sqrt(Math.Pow(t.U - parameter.U, 2) + Math.Pow(t.V - parameter.V, 2));
+                if (d == 0.0)
+                {
+                    return ci.Color;
+                }
+                var w = 1/d;
 
-            if (totalArea == 0.0)
-            {
-                return ByARGB();
+                num[0] += ci.Color.Alpha * w;
+                num[1] += ci.Color.Red * w;
+                num[2] += ci.Color.Green * w;
+                num[3] += ci.Color.Blue * w;
+                totalArea += w;
             }
 
             return ByARGB((int)(num[0] / totalArea),
@@ -250,27 +249,27 @@ namespace DSCore
             return Equals((Color)obj);
         }
 
-        public static Color Add(DSCore.Color c1, DSCore.Color c2)
+        public static Color Add(Color c1, Color c2)
         {
-            return Color.ByARGB(
+            return ByARGB(
                 c1.Alpha + c2.Alpha,
                 c1.Red + c2.Red,
                 c1.Green + c2.Green,
                 c1.Blue + c2.Blue);
         }
 
-        public static Color Multiply(DSCore.Color c1, double div)
+        public static Color Multiply(Color c1, double div)
         {
-            return Color.ByARGB(
+            return ByARGB(
                 (int)(c1.Alpha * div),
                 (int)(c1.Red * div),
                 (int)(c1.Green * div),
                 (int)(c1.Blue * div));
         }
 
-        public static Color Divide(DSCore.Color c1, double div)
+        public static Color Divide(Color c1, double div)
         {
-            return Color.ByARGB(
+            return ByARGB(
                 (int)(c1.Alpha / div),
                 (int)(c1.Red / div),
                 (int)(c1.Green / div),
@@ -479,11 +478,11 @@ namespace DSCore
         }
     }
 
-    [IsVisibleInDynamoLibrary(false)]
+    [IsVisibleInDynamoLibrary(true)]
     public class ColorRange2D
     {
         private Quadtree quadtree;
-
+        
         private IList<Color.IndexedColor2D> indexedColors;
 
         private ColorRange2D(IEnumerable<Color> colors, IEnumerable<UV> parameters)
@@ -491,17 +490,17 @@ namespace DSCore
             var parameterList = parameters as UV[] ?? parameters.ToArray();
             var colorList = colors as Color[] ?? colors.ToArray();
 
-            quadtree = Quadtree.ByUVs(parameterList);
+            //quadtree = Quadtree.ByUVs(parameterList);
 
             // Store the colors
-            for (int i = 0; i < parameterList.Count(); i++)
-            {
-                Node node;
-                if (quadtree.Root.TryFind(parameterList[i], out node))
-                {
-                    node.Item = colorList[i];
-                }
-            }
+            //for (int i = 0; i < parameterList.Count(); i++)
+            //{
+            //    Node node;
+            //    if (quadtree.Root.TryFind(parameterList[i], out node))
+            //    {
+            //        node.Item = colorList[i];
+            //    }
+            //}
 
             indexedColors = colorList.Zip(parameterList, (c, t) => new Color.IndexedColor2D(c, t)).ToList();
         }
@@ -527,17 +526,18 @@ namespace DSCore
         {
             var color = Color.ByARGB(255, 255, 255, 255);
 
-            Node node = quadtree.Root.FindNodeWhichContains(parameter);
-            if (node == null) return color;
+            //var node = quadtree.Root.FindNodeWhichContains(parameter);
+            //if (node == null) return color;
 
-            //var weightedColors = indexedColors.ToList()
-            //    .OrderBy(ic => ic.Parameter.Area(parameter)).Take(4).ToList();
+            //var nodes = node.FindAllNodesUpLevel(2);
+            //var weightedColors =
+            //    nodes.Where(n => n.Point != null)
+            //        .Where(n => n.Item != null)
+            //        .Select(n => new Color.IndexedColor2D((Color)n.Item, n.Point)).ToList();
+            //color = Color.Blerp(weightedColors, parameter);
 
-            var nodes = node.FindAllNodesUpLevel(1);
-            var weightedColors =
-                nodes.Where(n => n.Point != null)
-                    .Where(n => n.Item != null)
-                    .Select(n => new Color.IndexedColor2D((Color)n.Item, n.Point)).ToList();
+            var weightedColors = indexedColors.ToList()
+                .OrderBy(ic => ic.Parameter.Area(parameter)).Take(4).ToList();
 
             color = Color.Blerp(weightedColors, parameter);
 
@@ -552,12 +552,16 @@ namespace DSCore
         /// <param name="width">The width of the color map.</param>
         /// <param name="height">The height of the color map.</param>
         /// <returns>A two-dimensional array of colors.</returns>
-        public Color[,] CreateColorMap(int width, int height)
+        public Color[][] CreateColorMap(int width, int height)
         {
             var sw = new Stopwatch();
             sw.Start();
 
-            var colorMap = new Color[width, height];
+            var colorMap = new Color[width][];;
+            for (int i = 0; i < colorMap.Length; i++)
+            {
+                colorMap[i] = new Color[height];
+            }
 
             Parallel.For(0, width,
                          w => Parallel.For(
@@ -565,9 +569,18 @@ namespace DSCore
                              height,
                              h =>
                              {
-                                 var uv = UV.ByCoordinates((double)w/width, (double)h/height);
-                                 colorMap[w, h] = GetColorAtParameter(uv);
+                                 var uv = UV.ByCoordinates((double)w / width, (double)h / height);
+                                 colorMap[w][h] = GetColorAtParameter(uv);
                              }));
+
+            //for (int i = 0; i < width; i++)
+            //{
+            //    for (int j = 0; j < height; j++)
+            //    {
+            //        var uv = UV.ByCoordinates((double)i / width, (double)j / height);
+            //        colorMap[i][j] = GetColorAtParameter(uv);
+            //    }
+            //}
             
             sw.Stop();
             Debug.WriteLine("{0} ellapsed for generating the color map.", sw.Elapsed);
