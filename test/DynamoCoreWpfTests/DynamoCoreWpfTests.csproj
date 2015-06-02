@@ -98,6 +98,7 @@
     <Compile Include="GalleryTests.cs" />
     <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="IconsTests.cs" />
+    <Compile Include="InCanvasSearchTests.cs" />
     <Compile Include="LibraryTests.cs" />
     <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />

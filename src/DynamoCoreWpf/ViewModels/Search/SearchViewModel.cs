@@ -63,6 +63,12 @@ namespace Dynamo.ViewModels
         public int MaxNumSearchResults { get; set; }
 
         /// <summary>
+        /// Position, where canvas was clicked. 
+        /// After node will be called, it will be created at the same place.
+        /// </summary>
+        public Point InCanvasSearchPosition; 
+
+        /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
         private bool browserVisibility = true;

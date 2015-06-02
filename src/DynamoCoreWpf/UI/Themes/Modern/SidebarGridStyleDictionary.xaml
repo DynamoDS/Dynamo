@@ -85,7 +85,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Width="Auto"
-                Height="3"
+                Height="5"
                 Background="#aaaaaa"
                 Opacity="0.5" />
     </ControlTemplate>
