@@ -195,7 +195,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
+        
         public void CanReadMultiDimensionalWorksheet()
         {
 
@@ -556,7 +556,7 @@ namespace Dynamo.Tests
         public void Excel_OverWriteEmptyList_MAGN7213()
         {
 
-            //Overwrite an existing file with EmptyList- it msut run ok
+            //Overwrite an existing file with EmptyList- it must run ok
             string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN7213_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
@@ -1016,11 +1016,11 @@ namespace Dynamo.Tests
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("32dbe300-4780-4c47-b07c-63019d5285ac");
             ViewModel.HomeSpace.Run();
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            
+           
             var data = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { 4 }, new object[] { 5 } };
             AssertPreviewValue(watch.GUID.ToString(), data);
         }
-        [Test,Category("Failure")]
+       
         public void WritenodeWithWarning()
         {
             // Write a node with warning to Excel.
@@ -1034,10 +1034,19 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("32dbe300-4780-4c47-b07c-63019d5285ac");
             ViewModel.HomeSpace.Run();
-            var list = watch.CachedValue.Data;
-            Assert.IsNotNull(list);
+            
+            var list = watch.CachedValue.GetElements();
+
+            // input array is empty list, {}
+            // Ensure output is also empty list
+            Assert.AreEqual(0, list.Count);
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            Assert.IsNull(watch.CachedValue.Data);
+   
+           
         }
-        [Test,Category("Failure")]
+       [Test]
         public void WriteToReadOnlyFile()
         {
 
@@ -1115,7 +1124,7 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-            var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile"); // {5,6,7,8,9,10}
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
@@ -1134,7 +1143,7 @@ namespace Dynamo.Tests
         [Test,Category("Failure")]
         public void WriteModifyGraph_2()
         {
-            //incomplete
+            // Failing due to -http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7515
             // 1.  Write into  an Existing excel file and Run
             // 2.  Reduce the array size written to an excel file
             //3.  Rerun the file 
@@ -1152,17 +1161,18 @@ namespace Dynamo.Tests
             var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
-
+            //from excel - {5,6,7,8,9,10}
             var data = new object[] { new object[] {5}, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
             AssertPreviewValue(watch.GUID.ToString(), data);
 
             // decrease the data written into excel
-
+            // Write {2,3,4,5} into excel 
             ConnectorModel.Make(watch3, watch2, 0, 4);
+            
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch2.CachedValue.IsCollection);
-
+            
             var data2 = new object[] { new object[] { 2}, new object[] { 3 }, new object[] { 4 }, new object[] { 5 }, new object[] { null}, new object[] { null} };
             AssertPreviewValue(watch2.GUID.ToString(), data2);
 
@@ -1174,7 +1184,7 @@ namespace Dynamo.Tests
             //incomplete
             // 1.  Write into  an Existing excel file and Run
             // 2.  Increase the array size written to an excel file
-            //3.  Rerun the file 
+            // 3.  Rerun the file 
 
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteModifyGraph_3.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -1187,6 +1197,7 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
             var watch2 = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            // Write {5,6,7,8,9,10} into excel
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list1 = watch.CachedValue.GetElements();
@@ -1257,7 +1268,48 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
             Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
         }
+        [Test]
+        public void WriteIntoExcelVerify()
+        {
+            // Write Into Excel sheet using WriteToFile
+            // Read Using ReadFromFile and verify the values are written correctly into Excel.
 
+            string testDir = TestDirectory;
+            string openPath = Path.Combine(testDir, @"core\excel\WriteFile.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            Assert.AreEqual(7, ViewModel.CurrentSpace.Nodes.Count);
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var filename = workspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
+            Assert.AreEqual(7, ViewModel.CurrentSpace.Nodes.Count);
+            ViewModel.HomeSpace.Run();
+            //Write into Excel - {5,6,7,8,9,10}
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            
+            var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
+            AssertPreviewValue(watch.GUID.ToString(), data);
+
+            string openPath2 = Path.Combine(testDir, @"core\excel\ReadFile.dyn");
+            ViewModel.OpenCommand.Execute(openPath2);
+            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
+
+            var filename2 = workspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename2.Value = filename2.Value.Replace(@"..\..\..\test", testDir);
+            ViewModel.HomeSpace.Run();
+            var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("78370571-c7bc-4ed8-be2e-90c5be172767");
+            Assert.IsTrue(watch2.CachedValue.IsCollection);
+            //Read and verify the results are - {5,6,7,8,9,10}
+            var data2 = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
+            AssertPreviewValue(watch2.GUID.ToString(), data2);
+
+        }
         #endregion
     }
 }
