@@ -169,13 +169,12 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-#if DEBUG
             references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-whats-new.png")
             {
                 ContextData = ButtonNames.ShowGallery,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
-#endif
+
             references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, "icon-reference.png")
             {
                 ContextData = Configurations.DynamoAdvancedTutorials,
