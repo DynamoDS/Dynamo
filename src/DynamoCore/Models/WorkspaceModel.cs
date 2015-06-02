@@ -804,6 +804,7 @@ namespace Dynamo.Models
             //start an undoBeginGroup
             using (var undoGroup = this.undoRecorder.BeginActionGroup())
             {
+               
                //reload each node, and record each each modification in the undogroup
                 foreach (var node in state.Nodes)
                 {
@@ -811,9 +812,15 @@ namespace Dynamo.Models
                     //otherwise bail on this node
                     if (nodes.Contains(node))
                     {
+                        var originalpos = node.Position;
                         var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
+                        //overwrite the xy coords of the serialized node with the current position, so the node is not moved
+                        serializedNode.SetAttribute("x", originalpos.X.ToString());
+                        serializedNode.SetAttribute("y", originalpos.Y.ToString());
+
                         this.undoRecorder.RecordModificationForUndo(node);
                         this.ReloadModel(serializedNode);
+                        
                     }
                 }
                 //select all the modified nodes in the UI
