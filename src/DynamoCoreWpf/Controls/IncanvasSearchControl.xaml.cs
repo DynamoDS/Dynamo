@@ -94,6 +94,22 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        private void OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            FrameworkElement fromSender = sender as FrameworkElement;
+            if (fromSender == null) return;
+
+            toolTipPopup.DataContext = fromSender.DataContext;
+            toolTipPopup.IsOpen = true;
+
+        }
+
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            toolTipPopup.DataContext = null;
+            toolTipPopup.IsOpen = false;
+        }
+
         private void OnInCanvasSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // If visibility  is false, then stop processing it.

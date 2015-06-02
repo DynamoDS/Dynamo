@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
@@ -24,6 +25,10 @@
                    TargetType="{x:Type ListBoxItem}">
                 <EventSetter Event="PreviewMouseLeftButtonUp"
                              Handler="OnMouseLeftButtonUp" />
+                <EventSetter Event="MouseEnter"
+                             Handler="OnMouseEnter" />
+                <EventSetter Event="MouseLeave"
+                             Handler="OnMouseLeave" />
             </Style>
 
         </ResourceDictionary>
@@ -151,5 +156,15 @@
                 </Style>
             </Border.Style>
         </Border>
+
+
+        <Popup x:Name="toolTipPopup"
+               StaysOpen="True"
+               AllowsTransparency="True"
+               Placement="Right"
+               HorizontalOffset="3">
+            <uicontrols:ToolTipWindow />
+        </Popup>
+
     </Grid>
 </UserControl>
