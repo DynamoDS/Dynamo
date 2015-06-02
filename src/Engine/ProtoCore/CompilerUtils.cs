@@ -422,6 +422,7 @@ namespace ProtoCore.Utils
                         {
                             // Add node as it is
                             astNodes.Add(node);
+                            index++;
                         }
                     }
                     else

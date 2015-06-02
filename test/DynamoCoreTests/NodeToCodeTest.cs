@@ -281,6 +281,33 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestVariableConfliction6()
+        {
+            // Test same name variables will be renamed in node to code
+            //
+            //   x = 1; --> Point.ByCoordinate()
+            //          --> Point.ByCoordinate()
+            OpenModel(@"core\node2code\sameNames5.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+            Assert.AreEqual(3, result.AstNodes.Count());
+            Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+
+            var rhs = result.AstNodes.Cast<BinaryExpressionNode>()
+                                     .Skip(1)
+                                     .Select(n => n.RightNode.ToString())
+                                     .ToList();
+            
+            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[0]);
+            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[1]);
+        }
+
+        [Test]
         public void TestTemporaryVariableRenaming1()
         {
             // Test temporary variables should be renamed

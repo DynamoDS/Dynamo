@@ -678,7 +678,7 @@ namespace Dynamo.DSEngine
                 // port, or it is from a temporary variable in code block node,
                 // it is not necessary to do renumbering because the name is 
                 // unique.
-                if (inputMap.ContainsKey(ident) || IsTempVarFromCodeBlockNode(ident, renamingMap))
+                if (inputMap.ContainsKey(ident) || /*IsTempVarFromCodeBlockNode(ident, renamingMap)*/ renamingMap.ContainsKey(ident))
                     return;
 
                 NumberingState ns; 
