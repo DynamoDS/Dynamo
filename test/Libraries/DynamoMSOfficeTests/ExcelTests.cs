@@ -450,34 +450,27 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
 
-            Assert.AreEqual(15, list.Count);
-
-            List<MirrorData> rowList;
-            for (int i = 0; i < list.Count; i++)
+            var data = new object[]
             {
-                Assert.IsTrue(list[i].IsCollection);
-                if (i >= 1 && i <= 3 || i >= 5 && i <= 10 || i >= 12 && i <= 13)
-                {
-                    rowList = list[i].GetElements();
-                    for (int j = 0; j < rowList.Count; j++)
-                    {
-                        Assert.AreEqual(null, rowList[j].Data);
-                    }
-                }
-            }
-            rowList = list[0].GetElements();
-            Assert.AreEqual("5", rowList[0].Data);
+                new object[] { 5, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, "afsd", null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, "sfsd", null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, 3453425 }
+            };
 
-            rowList = list[4].GetElements();
-            Assert.AreEqual("afsd", rowList[3].Data);
-
-            rowList = list[11].GetElements();
-            Assert.AreEqual("sfsd", rowList[5].Data);
-
-            rowList = list[14].GetElements();
-            Assert.AreEqual("3453425", rowList[9].Data);
+            AssertPreviewValue(watch.GUID.ToString(), data);
         }
 
         #endregion
@@ -824,24 +817,14 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filename.Value));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
-            var list = writeNode.CachedValue.GetElements();
 
-            // input array is {{999, 999, 999}, {999, 999, 999}, {999, 999, 999}};
-            Assert.AreEqual(3, list.Count);
-            
-            // file is overwritten fully as "overwrite" arg to "WriteToFile" node is true
-            for (int i = 0; i < list.Count; i++)
+            var data = new object[]
             {
-                Assert.IsTrue(list[i].IsCollection);
-
-                var rowList = list[i].GetElements();
-                Assert.AreEqual(3, rowList.Count);
-
-                Assert.AreEqual(999, rowList[0].Data);
-                Assert.AreEqual(999, rowList[1].Data);
-                Assert.AreEqual(999, rowList[2].Data);
-            }
-            
+                new object[] {999, 999, 999},
+                new object[] {999, 999, 999},
+                new object[] {999, 999, 999}
+            };
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
         }
 
         [Test]
@@ -862,36 +845,17 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(filename.Value));
 
             Assert.IsTrue(writeNode.CachedValue.IsCollection);
-            var list = writeNode.CachedValue.GetElements();
 
-            // input array is {{999, 999, 999}, {999, 999, 999}, {999, 999, 999}};
-            Assert.AreEqual(5, list.Count);
-
-            // File is overwritten only partially as "overwrite" arg to "WriteToFile" node is false
-            for (int i = 0; i < list.Count; i++)
+            var data = new object[]
             {
-                Assert.IsTrue(list[i].IsCollection);
-                var rowList = list[i].GetElements();
-                Assert.AreEqual(5, rowList.Count);
+                new object[] {1, 1, 1, 1, 1},
+                new object[] {1, 999, 999, 999, 1},
+                new object[] {1, 999, 999, 999, 1},
+                new object[] {1, 999, 999, 999, 1},
+                new object[] {1, 1, 1, 1, 1}
+            };
 
-                if (i == 0 || i == 4)
-                {
-                    Assert.AreEqual(1, rowList[0].Data);
-                    Assert.AreEqual(1, rowList[1].Data);
-                    Assert.AreEqual(1, rowList[2].Data);
-                    Assert.AreEqual(1, rowList[3].Data);
-                    Assert.AreEqual(1, rowList[4].Data);
-                }
-                else
-                {
-                    Assert.AreEqual(1, rowList[0].Data);
-                    Assert.AreEqual(999, rowList[1].Data);
-                    Assert.AreEqual(999, rowList[2].Data);
-                    Assert.AreEqual(999, rowList[3].Data);
-                    Assert.AreEqual(1, rowList[4].Data);
-                }
-            }
-
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
         }
 
         [Test]
