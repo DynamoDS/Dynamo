@@ -474,23 +474,15 @@ namespace DSOffice
                 {
                     // if there is only one worksheet, we need to add one more
                     // before we can delete the first one
-                    if (worksheets.Length == 1)
-                    {
-                        ws = (Worksheet)wb.Add();                       
-                        wSheet.ws.Delete();
-                        ws.Name = sheetName;
-                        wb.Save();
+                    ws = (Worksheet)wb.Add();
+                    wSheet.ws.Delete();
+                    ws.Name = sheetName;
+                    wb.Save();
 
-                        return;
-                    }
-                    else
-                        wSheet.ws.Delete();
-                }
-                else
-                {
-                    ws = wSheet.ws;
                     return;
                 }
+                ws = wSheet.ws;
+                return;
             }
             // If you don't find one, create one.
             ws = (Worksheet)wb.Add();
