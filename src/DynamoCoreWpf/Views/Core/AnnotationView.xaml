@@ -213,10 +213,10 @@
                 <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
             </Rectangle.Fill>
         </Rectangle>
-        <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
-              Margin="5,0,5,0"
+        <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}"             
               VerticalAlignment="Top">            
-            <TextBlock x:Name="GroupTextBlock"                                     
+            <TextBlock x:Name="GroupTextBlock" 
+                    Margin="10,0,10,0"
                     Text ="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}}"    
                     Visibility="Visible"
                     MaxWidth="{Binding Width}"  
@@ -227,6 +227,7 @@
                     TextWrapping="Wrap">                  
             </TextBlock>
             <TextBox 
+                    Margin="10,0,10,0"
                     Name="GroupTextBox" 
                     Visibility="Collapsed"
                     Text ="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}}"                                                    
