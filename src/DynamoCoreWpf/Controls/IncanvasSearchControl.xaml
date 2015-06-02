@@ -158,13 +158,14 @@
         </Border>
 
 
-        <Popup x:Name="toolTipPopup"
-               StaysOpen="True"
-               AllowsTransparency="True"
-               Placement="Right"
-               HorizontalOffset="3">
-            <uicontrols:ToolTipWindow />
-        </Popup>
+        <Border Margin="-3,0,-3,0">
+            <Popup StaysOpen="True"
+                   AllowsTransparency="True"
+                   Placement="Right"
+                   x:Name="toolTipPopup">
+                <uicontrols:ToolTipWindow />
+            </Popup>
+        </Border>
 
     </Grid>
 </UserControl>
