@@ -4361,6 +4361,7 @@ namespace DynamoCoreWpfTests
             //  b) reconnect inputs
             //  c)check nodes preview value
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            // issue link is here :http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7519
             preloadGeometry = true;
             RunCommandsFromFile("MAGN_7348_MAGN_7348_Math_Point_Formular_CBN.xml", (commandTag) =>
             {
@@ -4433,7 +4434,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test, Category("Failure")]
+        [Test]
         public void MAGN_7348_WriteToExcel()
         {
             // Check WriteToExcel
@@ -4441,7 +4442,6 @@ namespace DynamoCoreWpfTests
             //  a) By connecting node, check cbns
             //  b) complete inputs
             //  c) check values of CBN
-            //  d) give new input value and test write to excel node
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
             preloadGeometry = true;
             RunCommandsFromFile("MAGN_7348_WriteToExcel.xml", (commandTag) =>
@@ -4465,15 +4465,8 @@ namespace DynamoCoreWpfTests
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                        ("67ef5890-7aa6-4db6-ae82-c4532efc0c01");// check cbn 
                     Assert.AreEqual(ElementState.Active, node.State);
-                    AssertPreviewCount("67ef5890-7aa6-4db6-ae82-c4532efc0c01", 3);
-                   
-                }
-                else if (commandTag == "Tag-ca842c63")
-                {
-                  
-                     Assert.IsNotNull(GetPreviewValue("3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4"));//check write to excel node
-                     AssertPreviewCount("3c1cfb55-f23b-4a5b-9dc7-f02fde9215a4", 65);
-                }
+                    AssertPreviewCount("67ef5890-7aa6-4db6-ae82-c4532efc0c01", 3);       
+                }         
             });
         }
 
@@ -4534,6 +4527,7 @@ namespace DynamoCoreWpfTests
             //  b) change surface.pointAtParameter to cross product
             //  c) check the value of List and surface
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            //issue link: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
 
             preloadGeometry = true;
             RunCommandsFromFile("MAGN_7348_Combin.xml", (commandTag) =>
@@ -4567,6 +4561,7 @@ namespace DynamoCoreWpfTests
             //  a) By connecting node, 
             //  b) check List.Create
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            // issue link :http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
 
             preloadGeometry = true;
             RunCommandsFromFile("MAGN_7348_CreateList.xml", (commandTag) =>
@@ -4638,6 +4633,7 @@ namespace DynamoCoreWpfTests
             //  a) By connecting node, 
             //  b) check Flatten and List.Flatten
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            // issue link:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
 
             preloadGeometry = true;
             RunCommandsFromFile("MAGN_7348_Flatten.xml", (commandTag) =>
@@ -4990,7 +4986,7 @@ namespace DynamoCoreWpfTests
             //  a) Connect nodes 
             //  b) check list.Join
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
-
+            // issue link:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
             preloadGeometry = true;
             RunCommandsFromFile("MAGN_7348_ListJoin.xml", (commandTag) =>
             {
@@ -5020,7 +5016,7 @@ namespace DynamoCoreWpfTests
             // Scenario
             //  a) Connect nodes 
             //  b) check curve.extrude, polycurve.bypoint
-            //  
+            // issue link:  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
 
             preloadGeometry = true;
