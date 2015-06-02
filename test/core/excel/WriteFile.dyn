@@ -10,7 +10,7 @@
     <Dynamo.Nodes.CodeBlockNodeModel guid="44db5f9b-ee98-4dba-bd5d-cd126edb57e2" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="82" y="1242" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5..10;" ShouldFocus="false" />
     <Dynamo.Nodes.CodeBlockNodeModel guid="de96abf0-d6b3-4e98-b43c-f4db83372432" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="258" y="1194" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="true;" ShouldFocus="false" />
     <DSCore.File.Filename guid="94b54653-0450-497d-9d3d-dbcf84aced1f" type="DSCore.File.Filename" nickname="File Path" x="22.8150365244" y="867.28190311647" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>C:\Dynamo\Dynamo\test\core\excel\WriteFile.xlsx</System.String>
+      <System.String>..\..\..\test\core\excel\WriteFile.xlsx</System.String>
     </DSCore.File.Filename>
   </Elements>
   <Connectors>
