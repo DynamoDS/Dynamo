@@ -211,7 +211,7 @@ namespace DynamoSandbox
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
            // DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-
+            var evalComplete = false;
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
@@ -220,7 +220,7 @@ namespace DynamoSandbox
                 });
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath);
             Console.WriteLine("loaded file");
-
+            model.EvaluationCompleted += (o,args) => { evalComplete = true; };
             if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
             {
                 //load the states contained in this file, it should be structured so
@@ -257,7 +257,12 @@ namespace DynamoSandbox
             {
                 model.CurrentWorkspace.SetWorkspaceToState(stateName);
                 model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-                Thread.Sleep(250);
+                while (evalComplete == false)
+                {
+                    Thread.Sleep(250);
+                }
+                evalComplete = false;
+
             }
            
         }
@@ -362,5 +367,6 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.StackTrace);
             }
         }
+
     }
 }
