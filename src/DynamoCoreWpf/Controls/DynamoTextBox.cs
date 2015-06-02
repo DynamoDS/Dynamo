@@ -425,6 +425,7 @@ namespace Dynamo.UI.Controls
         {
            // http://stackoverflow.com/questions/1918877/how-can-i-get-the-dpi-in-wpf
             // MAGN 7397 Library tooltip popup is offset over library items on highres monitors (retina and >96 dpi)
+            //Youtrack http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7397
             PresentationSource source = PresentationSource.FromVisual(this);
             double xfactor = 1.0;
             if (source != null)
@@ -444,6 +445,8 @@ namespace Dynamo.UI.Controls
                 .Transform(new Point(0, 0));
 
             // Count width.
+            // multiplying by xfactor scales the placement point of the library UI tooltip to the correct location
+            //otherwise direct pixel coordinates are off by this factor due to screen dpi.
             double x = 0;
             x = (WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
                 + gap * 2 + targetLocation.X * (-1)) * xfactor;
