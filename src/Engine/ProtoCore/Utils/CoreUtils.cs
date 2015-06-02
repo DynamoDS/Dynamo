@@ -647,10 +647,12 @@ namespace ProtoCore.Utils
         ///     Return: "A"
         /// Given: A.B[0].C
         ///     Return: "A.B[0].C"
+        /// Given: A().B (global function)
+        ///     Return: empty string
         /// </summary>
         /// <param name="identList"></param>
         /// <returns></returns>
-        public static string GetIdentifierExceptMethodName(ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        public static string GetIdentifierExceptMethodName(IdentifierListNode identList)
         {
             Validity.Assert(null != identList);
             string identListString = identList.ToString();
@@ -658,7 +660,17 @@ namespace ProtoCore.Utils
             if (removeIndex > 0)
             {
                 identListString = identListString.Remove(removeIndex);
-                identListString = identListString.Remove(identListString.LastIndexOf('.'));
+
+                int lastIndex = identListString.LastIndexOf('.');
+                if (lastIndex > 0)
+                {
+                    identListString = identListString.Remove(lastIndex);
+                }
+                else
+                {
+                    // global function case
+                    return string.Empty;
+                }
             }
             return identListString;
         }
