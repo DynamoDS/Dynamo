@@ -439,7 +439,7 @@ namespace Dynamo.Tests
             var searchModel = new NodeSearchModel();
             # endregion
 
-            var searhViewModel = new SearchViewModel(dynamoViewModel, searchModel);
+            var searhViewModel = new SearchViewModel(dynamoViewModel);
             object[] array = { textBlock, searhViewModel };
             var thickness = new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
             object result;
@@ -575,6 +575,23 @@ namespace Dynamo.Tests
 
             degrees = Convert.ToDouble(converter.Convert("3,14159", typeof(string), null, new CultureInfo("de-DE")));
             Assert.AreEqual(180.0, degrees, 0.01);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void LibraryViewModeToBoolConverterTest()
+        {
+            var converter = new LibraryViewModeToBoolConverter();
+
+            Assert.Throws<InvalidCastException>(() => { converter.Convert("DummyValue", null, null, null); });
+
+            object result;
+
+            result = converter.Convert(SearchViewModel.ViewMode.LibraryView, null, null, null);
+            Assert.IsTrue((bool)result);
+
+            result = converter.Convert(SearchViewModel.ViewMode.LibrarySearchView, null, null, null);
+            Assert.IsFalse((bool)result);
         }
     }
 }

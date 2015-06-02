@@ -1,0 +1,10 @@
+<Workspace Version="0.8.1.1402" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="48339420-2ad4-490e-803d-4e3a7c708fb6" type="Dynamo.Nodes.DSFunction" nickname="DefaultArguments.Foobar" x="384.5" y="308.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.DefaultArguments.Foobar@int,int" />
+    <Dynamo.Nodes.DSFunction guid="cd8508ed-04ac-4009-a169-abea517650e6" type="Dynamo.Nodes.DSFunction" nickname="DefaultArguments.Barfoo" x="385.5" y="503.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="FFITarget.dll" function="FFITarget.DefaultArguments.Barfoo@int" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+</Workspace>

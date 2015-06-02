@@ -79,6 +79,70 @@
         </Grid>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="InCanvasThumbTemplate"
+                     TargetType="{x:Type Thumb}">
+        <Border CornerRadius="3"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Width="Auto"
+                Height="5"
+                Background="#aaaaaa"
+                Opacity="0.5" />
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="InCanvasScrollBarTemplate"
+                     TargetType="{x:Type ScrollBar}">
+        <Grid x:Name="GridRoot"
+              Background="{TemplateBinding Background}">
+            <Grid.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </Grid.LayoutTransform>
+
+            <Track x:Name="PART_Track"
+                   IsDirectionReversed="true"
+                   Focusable="false">
+                <Track.LayoutTransform>
+                    <RotateTransform Angle="-90" />
+                </Track.LayoutTransform>
+                
+                <Track.Thumb>
+                    <Thumb x:Name="Thumb"
+                           Template="{StaticResource InCanvasThumbTemplate}" />
+                </Track.Thumb>
+                
+            </Track>
+        </Grid>
+
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="InCanvasScrollViewerControlTemplate"
+                     TargetType="{x:Type ScrollViewer}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                        Margin="{TemplateBinding Padding}"
+                                        Content="{TemplateBinding Content}"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        CanContentScroll="{TemplateBinding CanContentScroll}"
+                                        Grid.RowSpan="2"
+                                        />
+            <ScrollBar x:Name="PART_HorizontalScrollBar"
+                       Orientation="Horizontal"
+                       Grid.Row="1"
+                       Minimum="0.0"
+                       Maximum="{TemplateBinding ScrollableWidth}"
+                       ViewportSize="{TemplateBinding ViewportWidth}"
+                       Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HorizontalOffset, Mode=OneWay}"
+                       Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                       AutomationProperties.AutomationId="HorizontalScrollBar"
+                       Width="Auto"
+                       Template="{StaticResource InCanvasScrollBarTemplate}" />
+        </Grid>
+    </ControlTemplate>
+
     <ControlTemplate x:Key="LibraryToggleExpanderTemplate"
                      TargetType="{x:Type ToggleButton}">
         <Border x:Name="ExpanderButtonBorder"
@@ -219,6 +283,19 @@
             <Trigger Property="IsMouseOver"
                      Value="true">
                 <Setter Property="VerticalScrollBarVisibility"
+                        Value="Auto" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="InCanvasScrollViewerStyle"
+           TargetType="ScrollViewer">
+        <Setter Property="HorizontalScrollBarVisibility"
+                Value="Hidden" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="true">
+                <Setter Property="HorizontalScrollBarVisibility"
                         Value="Auto" />
             </Trigger>
         </Style.Triggers>

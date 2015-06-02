@@ -15,6 +15,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Dynamo.Models;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -25,14 +29,39 @@ namespace Dynamo.UI.Controls
     {
         ListBoxItem HighlightedItem;
 
+        internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
+
+        public SearchViewModel ViewModel
+        {
+            get { return DataContext as SearchViewModel; }
+        }
+
+        private WorkspaceView workspaceView;
+        private DynamoView dynamoView;
+
         public InCanvasSearchControl()
         {
             InitializeComponent();
+
+            this.Loaded += (sender, e) =>
+            {
+                if (workspaceView == null)
+                    workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this.Parent);
+                if (dynamoView == null)
+                {
+                    dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this.Parent);
+                    if (dynamoView != null)
+                        dynamoView.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
+                }
+            };
         }
 
-        private SearchViewModel ViewModel
+        private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
         {
-            get { return DataContext as SearchViewModel; }
+            if (RequestShowInCanvasSearch != null)
+            {
+                RequestShowInCanvasSearch(flags);
+            }
         }
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -45,11 +74,13 @@ namespace Dynamo.UI.Controls
                 ViewModel.SearchCommand.Execute(null);
         }
 
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null) return;
+            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+
             ExecuteSearchElement(listBoxItem);
+            OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
             e.Handled = true;
         }
 
@@ -58,6 +89,7 @@ namespace Dynamo.UI.Controls
             var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
+                searchElement.Position = ViewModel.InCanvasSearchPosition;
                 searchElement.ClickedCommand.Execute(null);
             }
         }
@@ -126,15 +158,63 @@ namespace Dynamo.UI.Controls
             return null;
         }
 
-        private void OnSearchTextBoxKeyDown(object sender, KeyEventArgs e)
+        private void OnInCanvasSearchKeyDown(object sender, KeyEventArgs e)
         {
             var key = e.Key;
 
-            if (key != Key.Enter)
-                return;
+            int index;
+            var members = MembersListBox.Items.Cast<NodeSearchElementViewModel>();
+            NodeSearchElementViewModel highlightedMember = null;
+            if (HighlightedItem != null)
+                highlightedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
 
-            if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
-                ExecuteSearchElement(HighlightedItem);
+            switch (key)
+            {
+                case Key.Escape:
+                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    break;
+                case Key.Enter:
+                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                    {
+                        ExecuteSearchElement(HighlightedItem);
+                        OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    }
+                    break;
+                case Key.Up:
+                    index = MoveToNextMember(false, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
+                    break;
+                case Key.Down:
+                    index = MoveToNextMember(true, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
+                    break;
+            }
+        }
+
+        internal int MoveToNextMember(bool moveForward,
+            IEnumerable<NodeSearchElementViewModel> members, NodeSearchElementViewModel selectedMember)
+        {
+            int selectedMemberIndex = -1;
+            for (int i = 0; i < members.Count(); i++)
+            {
+                var member = members.ElementAt(i);
+                if (member.Equals(selectedMember))
+                {
+                    selectedMemberIndex = i;
+                    break;
+                }
+            }
+
+            int nextselectedMemberIndex = selectedMemberIndex;
+            if (moveForward)
+                nextselectedMemberIndex++;
+            else
+                nextselectedMemberIndex--;
+
+            if (nextselectedMemberIndex < 0 || (nextselectedMemberIndex >= members.Count()))
+                return selectedMemberIndex;
+
+            return nextselectedMemberIndex;
         }
     }
 }

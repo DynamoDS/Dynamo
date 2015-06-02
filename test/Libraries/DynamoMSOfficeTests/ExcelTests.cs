@@ -387,6 +387,92 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void CanReadExcelAsStrings()
+        {
+
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ReadExcelAsStrings.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            // watch displays the data from the Read node
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+
+           ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var list = watch.CachedValue.GetElements();
+
+            Assert.AreEqual(5, list.Count);
+
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual("1", rowList[0].Data);
+
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.AreEqual("word", rowList[0].Data);
+
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual("2", rowList[0].Data);
+
+            Assert.IsTrue(list[3].IsCollection);
+            rowList = list[3].GetElements();
+            Assert.AreEqual("3", rowList[0].Data);
+
+            Assert.IsTrue(list[4].IsCollection);
+            rowList = list[4].GetElements();
+            Assert.AreEqual("palabra", rowList[0].Data);
+
+        }
+
+        [Test]
+        public void CanReadEmptyCellsAsStrings()
+        {
+
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ReadEmptyCellsAsStrings.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            // watch displays the data from the Read node
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+
+            var data = new object[]
+            {
+                new object[] { 5, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, "afsd", null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, "sfsd", null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, null },
+                new object[] { null, null, null, null, null, null, null, null, null, 3453425 }
+            };
+
+            AssertPreviewValue(watch.GUID.ToString(), data);
+        }
+
         #endregion
 
         #region Writing
@@ -626,7 +712,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, list.Count());
 
             // get data returns 1d array
-            // input array is {2, null, 3}
+            // input array is {2, {}, 3}
             var rowList = list[0].GetElements();
             Assert.AreEqual(1, rowList.Count());
             Assert.AreEqual(2, rowList[0].Data);
@@ -639,6 +725,137 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, rowList.Count());
             Assert.AreEqual(3, rowList[0].Data);
 
+        }
+
+        [Test]
+        public void CanWriteNestedEmptyListToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNestedEmptyListToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filename.Value));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // input array is nested empty list, {{}, {}, {}}
+            // Ensure output is {{99, 99, 99}, {99, 99, 99}, {99, "", 99}}
+            Assert.AreEqual(3, list.Count);
+
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(3, rowList.Count);
+            Assert.AreEqual(99, rowList[0].Data);
+            Assert.AreEqual(99, rowList[1].Data);
+            Assert.AreEqual(99, rowList[2].Data);
+
+            Assert.IsTrue(list[1].IsCollection);
+            rowList = list[1].GetElements();
+            Assert.AreEqual(3, rowList.Count);
+            Assert.AreEqual(99, rowList[0].Data);
+            Assert.AreEqual(99, rowList[1].Data);
+            Assert.AreEqual(99, rowList[2].Data);
+
+            Assert.IsTrue(list[2].IsCollection);
+            rowList = list[2].GetElements();
+            Assert.AreEqual(3, rowList.Count);
+            Assert.AreEqual(99, rowList[0].Data);
+            Assert.AreEqual(null, rowList[1].Data);
+            Assert.AreEqual(99, rowList[2].Data);
+
+        }
+
+        [Test]
+        public void CanWriteEmptyListToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteEmptyListToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // input array is empty list, {}
+            // Ensure output is also empty list
+            Assert.AreEqual(0, list.Count);
+
+        }
+
+        [Test]
+        public void CanOverWriteToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\OverWriteExcelSheet.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filename.Value));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+
+            var data = new object[]
+            {
+                new object[] {999, 999, 999},
+                new object[] {999, 999, 999},
+                new object[] {999, 999, 999}
+            };
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
+        }
+
+        [Test]
+        public void CanOverWritePartiallyToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\OverWritePartialExcelSheet.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filename.Value));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+
+            var data = new object[]
+            {
+                new object[] {1, 1, 1, 1, 1},
+                new object[] {1, 999, 999, 999, 1},
+                new object[] {1, 999, 999, 999, 1},
+                new object[] {1, 999, 999, 999, 1},
+                new object[] {1, 1, 1, 1, 1}
+            };
+
+            AssertPreviewValue(writeNode.GUID.ToString(), data);
         }
 
         [Test]

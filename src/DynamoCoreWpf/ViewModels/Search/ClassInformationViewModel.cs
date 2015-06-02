@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.ViewModels
         public bool IsRootCategoryDetails { get; set; }
 
         /// <summary>
-        /// Specifies whether or not instance should be shown as StandardPanel.
+        /// Specifies whether or not instance should be shown as ClassInformationView.
         /// </summary>
         public bool ClassDetailsVisibility
         {

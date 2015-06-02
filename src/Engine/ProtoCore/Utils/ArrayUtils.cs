@@ -1051,6 +1051,28 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
+        /// Get a list of key-value pairs for an array.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        public static IDictionary<StackValue, StackValue> ToDictionary(StackValue array, RuntimeCore runtimeCore)
+        {
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
+            {
+                return null;
+            }
+
+            HeapElement he = GetHeapElement(array, runtimeCore);
+            var dict = Enumerable.Range(0, he.VisibleSize)
+                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), StackUtils.GetValue(he, i, runtimeCore)))
+                                 .Concat(he.Dict ?? Enumerable.Empty<KeyValuePair<StackValue, StackValue>>())
+                                 .ToDictionary(p => p.Key, p =>p.Value);
+            return dict;
+        }
+
+        /// <summary>
         /// Check if an array contain key
         /// </summary>
         /// <param name="array"></param>

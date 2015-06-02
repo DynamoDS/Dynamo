@@ -71,7 +71,7 @@ namespace Dynamo.UI.Views
         }
 
         /// When a category is collapsed, the selection of underlying sub-category 
-        /// list is cleared. As a result any visible StandardPanel will be hidden.
+        /// list is cleared. As a result any visible ClassInformationView will be hidden.
         private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
         {
             var expanderContent = (sender as FrameworkElement);
@@ -138,13 +138,13 @@ namespace Dynamo.UI.Views
                     classInfoPanel.Loaded += (send, handler) =>
                         {
                             // This call is made whenever a class button is clicked on to expand the class 
-                            // information (right after the corresponding "StandardPanel" view is created).
+                            // information (right after the corresponding "ClassInformationView" view is created).
                             // "selectedElement" here can either be the TextBlock or Image on the class button.
                             // 
-                            // Required height is calculated by adding class button and "StandardPanel" heights.
+                            // Required height is calculated by adding class button and "ClassInformationView" heights.
                             // If the required height is larger than the visible library height, then the class 
                             // button is placed on the top of library, with the rest of the space occupied by the 
-                            // "StandardPanel".
+                            // "ClassInformationView".
 
                             var selectedClassButton = WpfUtilities.FindUpVisualTree<Border>(selectedElement);
                             var height = classInfoPanel.RenderSize.Height + selectedClassButton.RenderSize.Height;
@@ -155,7 +155,7 @@ namespace Dynamo.UI.Views
                             else
                             {
                                 // If the class button is already visible on the library, simply bring the 
-                                // "StandardPanel" into view. Otherwise, the class button is brought into view.
+                                // "ClassInformationView" into view. Otherwise, the class button is brought into view.
                                 if (IsElementVisible(selectedClassButton, ScrollLibraryViewer))
                                     classInfoPanel.BringIntoView();
                                 else

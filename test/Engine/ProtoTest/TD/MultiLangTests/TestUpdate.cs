@@ -1450,7 +1450,7 @@ e;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T26_Defect_1463663()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -1479,6 +1479,7 @@ c = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Right_Assignment()
         {
             string code = @"
@@ -1502,6 +1503,7 @@ f = a3 + 1;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Function_Call()
         {
             string code = @"
@@ -1531,6 +1533,7 @@ f = a3 + 1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Function_Call_2()
         {
             string code = @"
@@ -1561,6 +1564,7 @@ x = [Associative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Different_Types()
         {
             string code = @"
@@ -1600,6 +1604,7 @@ x = [Associative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Different_Types_2()
         {
             string code = @"
@@ -1641,6 +1646,7 @@ x = [Associative]
         [Test]
         [Category("SmokeTest")]
         [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Function()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
@@ -1683,7 +1689,7 @@ x = foo ();
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors ";
@@ -1736,8 +1742,8 @@ y = a1.a;
         }
 
         [Test]
-        [Category("Modifier Block")]
         [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_2()
         {
 
@@ -1796,7 +1802,7 @@ y = { a1.a1, a1.a2, a1.a3, a1.a4, a1.a5, a1.a6, a1.a8 };
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_3()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
@@ -1890,7 +1896,7 @@ xa9 = ax.a9;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_4()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
@@ -1955,6 +1961,7 @@ res = ax.foo(1);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Cross_Reference()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack ");
@@ -1978,6 +1985,8 @@ b = {
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Update()
         {
             string src = string.Format("{0}{1}", testPath, "T27_Modifier_Stack_Update.ds");
@@ -2026,6 +2035,7 @@ b = {
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Update_2()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2046,6 +2056,7 @@ b1 = 2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Update_3()
         {
             string code = @"
@@ -2099,6 +2110,7 @@ z = a.x;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Update_4()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2140,6 +2152,7 @@ b2 = a;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Array_2()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2160,6 +2173,7 @@ a = 4;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Array_3()
         {
             string code = @"
@@ -2188,6 +2202,7 @@ x = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Update_5()
         {
             string code = @"
@@ -2211,6 +2226,7 @@ y = 2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Array_4()
         {
             //Assert.Fail("1465127 - Sprint 21 : [Design Issue] rev 2294 : Modifier stack syntax not supported in Imperative block ");
@@ -2246,6 +2262,7 @@ b = a;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Update_6()
         {
             string code = @"
@@ -2278,6 +2295,7 @@ y = 2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Inline_Condition()
         {
             string code = @"
@@ -2323,6 +2341,7 @@ x = a == 2 ? true : false;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Range_Expr()
         {
             string code = @"
@@ -2390,6 +2409,7 @@ a2 = 4;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_With_Self_Updates()
         {
             string code = @"
@@ -2603,6 +2623,7 @@ z2 = z;
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_5()
         {
@@ -2631,6 +2652,7 @@ x = B.B(y);
         }
 
         [Test]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_6()
         {
@@ -3007,6 +3029,7 @@ t3 = t1;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T36_Modifier_Block_Multiple_Updates()
         {
             string code = @"
@@ -3023,6 +3046,7 @@ a = { 2 => a1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T36_Modifier_Block_Multiple_Updates_2()
         {
             string code = @"
@@ -3058,6 +3082,7 @@ testArrayMember2 = c2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable()
         {
             string code = @"
@@ -3074,6 +3099,7 @@ b1 = 2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable_2()
         {
             string code = @"
@@ -3094,6 +3120,7 @@ b1 = 2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T39_Defect_1465319_Modifier_Stack_Update_Issue()
         {
             string code = @"
@@ -3114,6 +3141,7 @@ y1 = 5;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue()
         {
             string code = @"
@@ -3130,6 +3158,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_3()
         {
             //Assert.Fail("1467088 - Sprint23 : rev 2681 : Cross updates across 2 modifier stacks going into infinite loop");
@@ -3150,6 +3179,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue()
         {
             //Assert.Fail("1467088 - Sprint23 : rev 2681 : Cross updates across 2 modifier stacks going into infinite loop");
@@ -3168,6 +3198,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_2()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3193,6 +3224,7 @@ a = {
         [Test]
         [Category("Update")]
         [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4087
@@ -3591,7 +3623,6 @@ class A
 x:int = 3; 
 }
 a = A.A();
-a.x = 2;
 b1 = a.x;
 c = [Imperative]
 {
@@ -3883,6 +3914,7 @@ a = a + 1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T54_Defect_1467185_Modifier_Stack()
         {
             string errmsg = "";
@@ -3940,6 +3972,7 @@ a =
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T54_Defect_1467185_Modifier_Stack_2()
         {
             string errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
@@ -3985,6 +4018,7 @@ a8 = B.B(a1).bfoo(foo ( a1[a3] ) ); // works fine";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T54_Defect_1467185_Modifier_Stack_3()
         {
             string errmsg = "";//DNL-1467185 Modifier Blocks: Support to be added for exclusion of explicit variable prefixing of instance method/property/operator calls";
@@ -4026,6 +4060,7 @@ a =
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T54_Defect_1467185_CrossLinked_Modifier_Blocks()
         {
             String code = @"
@@ -4073,7 +4108,6 @@ z = 2;";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T56_Defect_1467342_Inline_Condition_replication()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
@@ -4138,37 +4172,6 @@ a1.a = -1;
             string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("b", new object[] { -1 });
-        }
-
-        [Test]
-        [Category("SmokeTest")]
-        public void T57_Defect_1467399_3()
-        {
-            String code = @"
-class A
-{
-    a : int[];            
-}
-def foo ( x1 : A)
-{
-    x1.a = -1;
-    return = x1;
-}
-def foo1 ( x1 : A)
-{
-    x1.a = 1;
-    return = x1;
-}
-a1 = A.A();
-a1 = foo ( a1);
-b = a1.a;
-a1 = foo1 ( a1);
-//received b =1 - 15,16,17,18,17 - correct 
- ";
-            Object n1 = null;
-            string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("b", new object[] { 1 });
         }
 
         [Test]
@@ -4337,13 +4340,13 @@ y2 = { y1[0].a, y1[1].a };
 {
     for ( i in y1)
     {
-        i.a = 0;        
+        i.a = 0;        // Modifying  the array y1 will re-execute y2
     }
 }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("y2", new Object[] { 1, 2 });
+            thisTest.Verify("y2", new Object[] { 0, 0 });
         }
 
         [Test]
