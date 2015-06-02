@@ -242,7 +242,7 @@ namespace Dynamo.Tests
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
             ViewModel.HomeSpace.Run();
             //Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list = watch.CachedValue.GetElements();
+            
             var data = new object[] {new object []{"a"},new object []{null},new object []{"cell is"},new object[] {"missing"} };
             AssertPreviewValue(watch.GUID.ToString(), data);
         }
@@ -329,16 +329,19 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\ChangeFilename.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+            var fileNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<DSCore.File.Filename>();
+            foreach (var file in fileNodes)
+            {
+                file.Value.Replace(@"..\..\..\test", TestDirectory);
+            }
 
             // remap the filename as Excel requires an absolute path
-            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
-   
+
             ViewModel.HomeSpace.Run();
             
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
-            var watch2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("b9b04f1f-9069-4eaf-a31c-eee7428aacab");
-            var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("1bd2c2da-b0e9-4b88-9f9e-33bd0906c6e9");
+            var excelFileName = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("b9b04f1f-9069-4eaf-a31c-eee7428aacab");
+            var FileObject = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("1bd2c2da-b0e9-4b88-9f9e-33bd0906c6e9");
             
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var list1 = watch.CachedValue.GetElements();
@@ -348,7 +351,7 @@ namespace Dynamo.Tests
             var rowList = list1[0].GetElements();
             Assert.AreEqual(1, rowList[0].Data);
             // change the file path 
-            ConnectorModel.Make(watch2, watch3, 0, 0);
+            ConnectorModel.Make(excelFileName, FileObject, 0, 0);
             ViewModel.HomeSpace.Run();
             
             Assert.IsTrue(watch.CachedValue.IsCollection);
@@ -1309,6 +1312,26 @@ namespace Dynamo.Tests
             var data2 = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
             AssertPreviewValue(watch2.GUID.ToString(), data2);
 
+        }
+        [Test]
+        public void TestFormula()
+        {
+            string testDir = TestDirectory;
+            string openPath = Path.Combine(testDir, @"core\excel\formula.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var filename = workspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
+            ViewModel.HomeSpace.Run();
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
+            Assert.IsTrue(watch.CachedValue.IsCollection);
+            var data2 = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { null }, new object[] { 6 } };
+            AssertPreviewValue(watch.GUID.ToString(), data2);
         }
         #endregion
     }
