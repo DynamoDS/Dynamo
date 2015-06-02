@@ -786,10 +786,6 @@ namespace Dynamo.Views
         /// </summary>
         private void OnCanvasClicked(object sender, MouseButtonEventArgs e)
         {
-            var canvas = sender as FrameworkElement;
-            if (canvas == null)
-                return;
-
             inCanvasSearchPosition = Mouse.GetPosition(this.WorkspaceElements);
         }
 

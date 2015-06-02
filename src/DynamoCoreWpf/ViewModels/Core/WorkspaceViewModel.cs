@@ -319,7 +319,7 @@ namespace Dynamo.ViewModels
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
 
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel, DynamoViewModel.Model.SearchModel);
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
         }
 
