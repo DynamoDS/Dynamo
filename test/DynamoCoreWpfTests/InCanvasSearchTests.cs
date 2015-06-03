@@ -112,6 +112,8 @@ namespace DynamoCoreWpfTests
 
             firstElement.RaiseEvent(e);
             Assert.Null(inCanvasSearch.toolTipPopup.DataContext);
+
+            Exit();
         }
 
         #region Helpers
