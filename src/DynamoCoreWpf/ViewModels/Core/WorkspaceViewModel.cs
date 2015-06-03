@@ -50,7 +50,7 @@ namespace Dynamo.ViewModels
         public bool IsSnapping { get; set; }
 
         /// <summary>
-        /// ViewModel that is used in InCanvasSearch in context menu.
+        /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
         /// </summary>
         public SearchViewModel InCanvasSearchViewModel { get; private set; }
 
@@ -319,7 +319,7 @@ namespace Dynamo.ViewModels
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
 
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel, DynamoViewModel.Model.SearchModel);
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
         }
 
