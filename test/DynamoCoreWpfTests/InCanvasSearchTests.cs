@@ -59,8 +59,6 @@ namespace DynamoCoreWpfTests
         [Category("UnitTests")]
         public void TooltipTest()
         {
-            Run();
-
             var canvas = View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First().outerCanvas;
 
             // Get context menu.
@@ -112,8 +110,6 @@ namespace DynamoCoreWpfTests
 
             firstElement.RaiseEvent(e);
             Assert.Null(inCanvasSearch.toolTipPopup.DataContext);
-
-            Exit();
         }
 
         #region Helpers
