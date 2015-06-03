@@ -270,16 +270,19 @@ namespace ProtoCore.DSASM
 
         // Totaly allocated StackValues
         private int totalAllocated = 0;
-        private bool isGCRunning = false;
-        private GCState gcState = GCState.Pause;
-        private BitArray markBits = null;
+        private int totalTraversed = 0;
 
         private LinkedList<StackValue> grayList = new LinkedList<StackValue>();
         private HashSet<int> sweepSet;
         private List<StackValue> roots;
+        private DSASM.Executive executive;
+
+        public bool IsGCRunning { get; private set; }
+        public GCState gcState = GCState.Pause;
 
         public Heap()
         {
+            IsGCRunning = false;
         }
 
         /// <summary>
@@ -542,6 +545,11 @@ namespace ProtoCore.DSASM
         }
 
         #region GC
+        /// <summary>
+        /// Mark all items in the array.
+        /// </summary>
+        /// <param name="hp"></param>
+        /// <returns></returns>
         private int TraverseArray(HeapElement hp)
         {
             int size = hp.Stack.Count();
@@ -571,16 +579,22 @@ namespace ProtoCore.DSASM
             return size;
         }
 
+        /// <summary>
+        /// Recursively mark all objects referenced by the object and change the
+        /// color of this object to black.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private int PropagateMark(StackValue value)
         {
             Validity.Assert(value.IsReferenceType);
             int rawPtr = (int)value.RawIntValue;
 
             var hp = heapElements[rawPtr];
-            if (hp.Mark != GCMark.White)
+            if (hp.Mark == GCMark.Black)
                 return 0;
 
-            hp.Mark = GCMark.Gray;
+            hp.Mark = GCMark.Black;
 
             int size = 0;
             int metatType = hp.MetaData.type;
@@ -597,10 +611,12 @@ namespace ProtoCore.DSASM
                     break;
             }
 
-            hp.Mark = GCMark.Black;
             return size;
         }
 
+        /// <summary>
+        /// Put all roots in gray list and be ready for gc.
+        /// </summary>
         private void StartCollection()
         {
             sweepSet = new HashSet<int>(Enumerable.Range(0, heapElements.Count));
@@ -616,17 +632,13 @@ namespace ProtoCore.DSASM
                 heapElements[ptr].Mark = GCMark.Gray;
                 grayList.AddLast(heapPointer);
             }
+
+            totalTraversed = 0;
         }
 
-        private void SetRoots(IEnumerable<StackValue> rootPointers)
-        {
-            if (gcState != GCState.WaitingForRoots)
-                return;
-
-            roots = new List<StackValue>(rootPointers);
-            gcState = GCState.Ready;
-        }
-
+        /// <summary>
+        /// Move gc a step forward.
+        /// </summary>
         private void SingleStep()
         { 
             switch (gcState)
@@ -641,12 +653,13 @@ namespace ProtoCore.DSASM
                 case GCState.Ready:
                     StartCollection();
                     gcState = GCState.Propagate;
+                    IsGCRunning = true;
                     break;
                     
                 case GCState.Propagate:
                     if (grayList.Any())
                     {
-                        PropagateMark(grayList.First());
+                        totalTraversed += PropagateMark(grayList.First());
                         grayList.RemoveFirst();
                     }
                     else
@@ -658,6 +671,10 @@ namespace ProtoCore.DSASM
                 case GCState.Sweep:
                     Sweep();
                     gcState = GCState.Pause;
+                    IsGCRunning = false;
+                    break;
+
+                default:
                     break;
             }
         }
@@ -678,12 +695,20 @@ namespace ProtoCore.DSASM
                 else if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
                 {
                     var objPointer = StackValue.BuildPointer(ptr, metaData);
-                    // GCDisposeObject(objPointer, exe);
+                    GCDisposeObject(objPointer, executive);
+                }
+
+                totalAllocated -= hp.Stack.Count();
+                if (hp.Dict != null)
+                {
+                    totalAllocated -= hp.Dict.Keys.Count;
+                    totalAllocated -= hp.Dict.Values.Count;
                 }
 
                 heapElements[ptr] = null;
                 freeList.Add(ptr);
             }
+
         }
 
         private void GC()
@@ -691,28 +716,42 @@ namespace ProtoCore.DSASM
             SingleStep();
         }
 
-        private void FullGC()
+        /// <summary>
+        /// Notify the heap that gc roots are ready so that gc could move
+        /// forward. The executive is passed for dispoing objects.
+        /// </summary>
+        /// <param name="gcroots"></param>
+        /// <param name="exe"></param>
+        /// <returns></returns>
+        public bool SetRoots(IEnumerable<StackValue> gcroots, DSASM.Executive exe)
         {
-            do
-            {
-                SingleStep();
-            }
-            while (gcState == GCState.Pause);
+            if (gcroots == null)
+                throw new ArgumentNullException("gcroots");
 
-            foreach (var hp in heapElements)
-            {
-                hp.Mark = GCMark.White; 
-            }
+            if (exe == null)
+                throw new ArgumentNullException("exe");
+
+            if (IsGCRunning || !gcroots.Any())
+                return false;
+
+            while (gcState != GCState.WaitingForRoots)
+                SingleStep();
+
+            roots = new List<StackValue>(gcroots);
+            executive = exe;
+
+            gcState = GCState.Ready;
+            return true;
         }
 
         public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
         {
-            if (isGCRunning)
+            if (IsGCRunning)
                 return;
 
             try
             {
-                isGCRunning = true;
+                IsGCRunning = true;
 
                 // Mark
                 var count = heapElements.Count;
@@ -780,7 +819,7 @@ namespace ProtoCore.DSASM
             }
             finally
             {
-                isGCRunning = false;
+                IsGCRunning = false;
             }
         }
         #endregion

@@ -6331,7 +6331,11 @@ namespace ProtoCore.DSASM
                     pc = Properties.executingGraphNode.updateBlock.startpc;
                 }
             }
-            GC();
+
+            var gcroots = CollectRootPointers();
+#if !TRACING_GC
+            rmem.Heap.GCMarkAndSweep(gcroots, this);
+#endif
             return;
         }
 
@@ -6529,6 +6533,13 @@ namespace ProtoCore.DSASM
 
         private void Exec(Instruction instruction)
         {
+#if TRACING_GC
+            if (!rmem.Heap.IsGCRunning)
+            {
+                var gcroots = CollectRootPointers();
+                rmem.Heap.SetRoots(gcroots, this);
+            }
+#endif
             switch (instruction.opCode)
             {
                 case OpCode.ALLOCC:
@@ -6817,7 +6828,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void GC()
+        private List<StackValue> CollectRootPointers()
         {
             var currentFramePointer = rmem.FramePointer;
             var frames = rmem.GetStackFrames();
@@ -6829,7 +6840,7 @@ namespace ProtoCore.DSASM
             if (blockId != 0 || 
                 rmem.CurrentStackFrame.StackFrameType != StackFrameType.kTypeLanguage)
             {
-                return;
+                return gcRoots;
             }
 
 #if DEBUG
@@ -6844,7 +6855,7 @@ namespace ProtoCore.DSASM
 
             if (isInNestedImperativeBlock)
             {
-                return;
+                return gcRoots;
             }
 
             foreach (var stackFrame in frames)
@@ -6936,8 +6947,7 @@ namespace ProtoCore.DSASM
             }
 
             gcRoots.Add(RX);
-
-            rmem.GC(gcRoots, this);
+            return gcRoots;
         }
     }
 }
