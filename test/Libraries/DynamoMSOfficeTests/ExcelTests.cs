@@ -563,7 +563,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN7213_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             Assert.AreEqual(7, ViewModel.CurrentSpace.Nodes.Count);
-
+            
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
             // remap the filename as Excel requires an absolute path
@@ -1049,7 +1049,7 @@ namespace Dynamo.Tests
    
            
         }
-       [Test]
+       [Test, Category("Failure")]
         public void WriteToReadOnlyFile()
         {
 
@@ -1062,13 +1062,20 @@ namespace Dynamo.Tests
 
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+            string filePath = filename.Value;
 
+            // get file attributes
+            FileAttributes fileAttributes = File.GetAttributes(filePath);
+            if (fileAttributes != FileAttributes.ReadOnly)
+                File.SetAttributes(filePath, FileAttributes.ReadOnly);
+            
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
 
             ViewModel.HomeSpace.Run();
             Assert.IsNull(watch.CachedValue.Data);
             Assert.IsTrue(watch.State == Models.ElementState.Warning);
-           
+            if (fileAttributes == FileAttributes.ReadOnly)
+                File.SetAttributes(filePath, FileAttributes.Normal);
 
         }
         
