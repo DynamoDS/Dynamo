@@ -56,6 +56,7 @@ UI
 - Control the preview state of multiple nodes at once in right-click menu
 - Node port tooltips now show default inputs
 - In canvas search available via Shift-DoubleClick (still working on additional access points)
+- Drag and drop nodes from the browser
 - ExportToSAT now has units control
 - Backup files are now created to recover lost work.  Backup folder location available in the Start page
 
