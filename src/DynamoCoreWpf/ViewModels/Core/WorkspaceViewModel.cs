@@ -48,6 +48,12 @@ namespace Dynamo.ViewModels
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
+
+        /// <summary>
+        /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
+        /// </summary>
+        public SearchViewModel InCanvasSearchViewModel { get; private set; }
+
         /// <summary>
         /// For requesting registered workspace to zoom in center
         /// </summary>
@@ -312,6 +318,9 @@ namespace Dynamo.ViewModels
             Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
+
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
+            InCanvasSearchViewModel.Visible = true;
         }
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
