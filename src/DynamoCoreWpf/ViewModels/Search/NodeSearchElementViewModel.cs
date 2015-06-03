@@ -8,10 +8,9 @@ using Dynamo.UI;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
-using System;
 using Dynamo.Models;
-using Dynamo.ViewModels;
 using Dynamo.Search;
+using System.Windows;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -169,15 +168,17 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        internal Point Position { get; set; }
+
         public ICommand ClickedCommand { get; private set; }
 
-        public event Action<NodeModel> Clicked;
+        public event Action<NodeModel, Point> Clicked;
         protected virtual void OnClicked()
         {
             if (Clicked != null)
             {
                 var nodeModel = Model.CreateNode();
-                Clicked(nodeModel);
+                Clicked(nodeModel, Position);
             }
         }
 
