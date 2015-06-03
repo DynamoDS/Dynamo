@@ -1,0 +1,25 @@
+<Workspace Version="0.8.1.1345" X="-179.085388593489" Y="495.337564922283" zoom="0.718001816798051" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DoubleInput guid="97e57e53-f7f9-402f-af08-05843c0e3ea9" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="318.796774389354" y="-22.0376741013817" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch guid="0cb7512d-ae0f-4fc5-b29a-fbb420d7948e" type="Dynamo.Nodes.Watch" nickname="Watch" x="841.714501594891" y="-217.273389744608" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="704d8c08-5f43-4e31-b63e-8a515a41ca77" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="258.304211194673" y="49.2015764214066" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{2,null,3};" ShouldFocus="false" />
+    <DSCore.File.Filename guid="0e26001b-4ae5-415e-bcc7-fba3cd561731" type="DSCore.File.Filename" nickname="File Path" x="121.469378434097" y="-214.499516656607" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\excel\Excel_MAGN7213.xlsx</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction guid="d5388751-3c9f-4b48-8498-3cf5ff5f88e2" type="Dynamo.Nodes.DSFunction" nickname="Excel.WriteToFile" x="578.156436141878" y="-249.763717770523" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.WriteToFile@string,string,int,int,var[][]" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="69a6ef2c-64ac-432a-ac1d-86a2a629e523" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="277.322060495306" y="-127.566076871048" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;Sheet1&quot;;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="97e57e53-f7f9-402f-af08-05843c0e3ea9" start_index="0" end="d5388751-3c9f-4b48-8498-3cf5ff5f88e2" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="97e57e53-f7f9-402f-af08-05843c0e3ea9" start_index="0" end="d5388751-3c9f-4b48-8498-3cf5ff5f88e2" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="704d8c08-5f43-4e31-b63e-8a515a41ca77" start_index="0" end="d5388751-3c9f-4b48-8498-3cf5ff5f88e2" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0e26001b-4ae5-415e-bcc7-fba3cd561731" start_index="0" end="d5388751-3c9f-4b48-8498-3cf5ff5f88e2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5388751-3c9f-4b48-8498-3cf5ff5f88e2" start_index="0" end="0cb7512d-ae0f-4fc5-b29a-fbb420d7948e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69a6ef2c-64ac-432a-ac1d-86a2a629e523" start_index="0" end="d5388751-3c9f-4b48-8498-3cf5ff5f88e2" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

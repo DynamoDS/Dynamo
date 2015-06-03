@@ -63,6 +63,12 @@ namespace Dynamo.ViewModels
         public int MaxNumSearchResults { get; set; }
 
         /// <summary>
+        /// Position, where canvas was clicked. 
+        /// After node will be called, it will be created at the same place.
+        /// </summary>
+        public Point InCanvasSearchPosition; 
+
+        /// <summary>
         ///     Indicates whether the node browser is visible or not
         /// </summary>
         private bool browserVisibility = true;
@@ -192,9 +198,9 @@ namespace Dynamo.ViewModels
 
         #region Initialization
 
-        internal SearchViewModel(DynamoViewModel dynamoViewModel, NodeSearchModel model)
+        internal SearchViewModel(DynamoViewModel dynamoViewModel)
         {
-            Model = model;
+            Model = dynamoViewModel.Model.SearchModel;
             this.dynamoViewModel = dynamoViewModel;
 
             IPathManager pathManager = null;
@@ -206,6 +212,12 @@ namespace Dynamo.ViewModels
             MaxNumSearchResults = 15;
 
             InitializeCore();
+        }
+
+        // Just for tests.
+        internal SearchViewModel(NodeSearchModel model)
+        {
+            Model = model;
         }
 
         private void InitializeCore()
@@ -349,7 +361,7 @@ namespace Dynamo.ViewModels
                 parent.Items.Remove(target);
 
                 // Check to see if all items under "parent" are removed, leaving behind only one 
-                // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).
+                // entry that is "ClassInformationViewModel" (a class used to show ClassInformationView).
                 // If that is the case, remove the "ClassInformationViewModel" at the same time.
                 if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
                     parent.Items.RemoveAt(0);
@@ -916,9 +928,12 @@ namespace Dynamo.ViewModels
             //SearchText = SearchResults[SelectedIndex].Model.Name;
         }
 
-        public void OnSearchElementClicked(NodeModel nodeModel)
+        public void OnSearchElementClicked(NodeModel nodeModel, Point position)
         {
-            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, 0, 0, true, true));
+            bool useDeafultPosition = position.X == 0 && position.Y == 0;
+
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+                nodeModel, position.X, position.Y, useDeafultPosition, true));
         }
         #endregion
 

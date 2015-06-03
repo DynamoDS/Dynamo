@@ -36,10 +36,6 @@
     <DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\Analysis.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MIConvexHull, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\MIConvexHull\MIConvexHull.dll</HintPath>
-    </Reference>
     <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
@@ -79,10 +75,6 @@
       <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Tesellation\Tessellation.csproj">
-      <Project>{d6279651-d099-4f8d-a319-5bf12ed9f269}</Project>
-      <Name>Tessellation</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AnalysisImages.resx" />
@@ -98,18 +90,16 @@
     <Copy SourceFiles="$(ProjectDir)Analysis_DynamoCustomization.xml" DestinationFiles="$(OutDir)Analysis_DynamoCustomization.xml" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
-	<!-- Get System.Drawing.dll -->
-	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      	<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    <!-- Get System.Drawing.dll -->
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
-	
-	<!-- Get assembly -->
-	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
-	</GetAssemblyIdentity>
-	
-	<!-- Generate customization dll -->
-	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)AnalysisImages.resx" OutputResources="$(ProjectDir)AnalysisImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <!-- Get assembly -->
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <!-- Generate customization dll -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)AnalysisImages.resx" OutputResources="$(ProjectDir)AnalysisImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutDir)Analysis.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

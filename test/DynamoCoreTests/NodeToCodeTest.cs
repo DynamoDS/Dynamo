@@ -281,6 +281,33 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestVariableConfliction6()
+        {
+            // Test same name variables will be renamed in node to code
+            //
+            //   x = 1; --> Point.ByCoordinate()
+            //          --> Point.ByCoordinate()
+            OpenModel(@"core\node2code\sameNames5.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+            Assert.AreEqual(3, result.AstNodes.Count());
+            Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+
+            var rhs = result.AstNodes.Cast<BinaryExpressionNode>()
+                                     .Skip(1)
+                                     .Select(n => n.RightNode.ToString())
+                                     .ToList();
+            
+            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[0]);
+            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[1]);
+        }
+
+        [Test]
         public void TestTemporaryVariableRenaming1()
         {
             // Test temporary variables should be renamed
@@ -357,6 +384,26 @@ namespace Dynamo.Tests
             Assert.IsNotNull(result.AstNodes);
             Assert.AreEqual(4, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+        }
+
+        [Test]
+        public void TestTemporaryVariableRenaming4()
+        {
+            OpenModel(@"core\node2code\tempVariable4.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.AreEqual(2, result.AstNodes.Count());
+            Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+            var rhs = result.AstNodes.Cast<BinaryExpressionNode>().Select(n => n.RightNode.ToString());
+            Assert.AreEqual("Point.ByCoordinates(1, 2)", rhs.First());
+            Assert.AreEqual("Point.ByCoordinates(1, 3)", rhs.Last());
         }
 
         [Test]
@@ -472,6 +519,30 @@ namespace Dynamo.Tests
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
             Assert.AreEqual("t1.DistanceTo(t2)", expr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUnqualifiedNameReplacer7()
+        {
+            // Point.ByCoordinates(1,2,3);
+            // Point.ByCoordinates(1,2,3);
+            OpenModel(@"core\node2code\unqualifiedName6.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+            var expr2 = result.AstNodes.Last() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr1.RightNode.ToString());
+            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr2.RightNode.ToString());
         }
 
         [Test]

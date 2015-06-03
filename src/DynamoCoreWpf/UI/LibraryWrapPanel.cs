@@ -112,8 +112,8 @@ namespace Dynamo.Controls
                 if (classButton.IsSelected)
                 {
                     int classInfoIndex = GetClassInformationIndex();
-                    var standardPanel = listButtons[classInfoIndex];
-                    var firstMemberList = WpfUtilities.ChildOfType<ListBox>(standardPanel, "primaryMembers");
+                    var classInformationView = listButtons[classInfoIndex];
+                    var firstMemberList = WpfUtilities.ChildOfType<ListBox>(classInformationView, "primaryMembers");
                     var generator = firstMemberList.ItemContainerGenerator;
                     (generator.ContainerFromIndex(0) as ListBoxItem).Focus();
 
@@ -194,14 +194,14 @@ namespace Dynamo.Controls
             if (double.IsNaN(classObjectWidth))
             {
                 // Make sure our assumption of the first child being a 
-                // StandardPanel still holds.
+                // ClassInformationView still holds.
                 var firstChild = this.Children[0];
-                if (firstChild is StandardPanel)
+                if (firstChild is ClassInformationView)
                 {
                     // If the following exception is thrown, please look at "LibraryWrapPanel.cs"
                     // where we insert both "BrowserItem" and "ClassInformation" items, ensure that
                     // the "ClassInformation" item is inserted last.
-                    throw new InvalidOperationException("firstChild is StandardPanel. " +
+                    throw new InvalidOperationException("firstChild is ClassInformationView. " +
                         "firstChild Type should be derived from BrowserItem");
                 }
 
@@ -216,7 +216,7 @@ namespace Dynamo.Controls
             foreach (UIElement child in this.Children)
             {
                 var classInformation = (child as FrameworkElement).DataContext as ClassInformationViewModel;
-                // Hidden StandardPanel shouldn't be arranged.
+                // Hidden ClassInformationView shouldn't be arranged.
                 if (classInformation != null && !classInformation.ClassDetailsVisibility)
                     continue;
 
@@ -230,7 +230,7 @@ namespace Dynamo.Controls
 
                 if (classInformation != null)
                 {
-                    // Then it's Standard panel, we do not need margin it.
+                    // Then it's ClassInformationView, we do not need margin it.
                     child.Arrange(new Rect(x, y, desiredSize.Width, desiredSize.Height));
                     x = x + desiredSize.Width;
                 }
@@ -271,7 +271,7 @@ namespace Dynamo.Controls
             // If user clicks on the same item when it is expanded, then 'OnClassButtonCollapse'
             // is invoked to deselect the item. This causes 'OnClassViewSelectionChanged' to be 
             // called again, with 'SelectedIndex' set to '-1', indicating that no item is selected,
-            // in which case we need to hide the standard panel.
+            // in which case we need to hide the ClassInformationView.
             if (selectedClassProspectiveIndex == -1)
             {
                 if (classInfoIndex != -1)
@@ -325,16 +325,16 @@ namespace Dynamo.Controls
             var currentClassInformationIndex = GetClassInformationIndex();
             var classObjectBase = collection[currentClassInformationIndex];
 
-            // If there is no selection, then mark the StandardPanel as hidden.
+            // If there is no selection, then mark the ClassInformationView as hidden.
             var classInformation = classObjectBase as ClassInformationViewModel;
             if (classInformation != null && (selectedClassProspectiveIndex == -1))
                 return;
 
-            //Add members of selected class to StandardPanel            
+            //Add members of selected class to ClassInformationView            
             classInformation.PopulateMemberCollections(currentClass);
 
             // When we know the number of items on a single row, through selected 
-            // item index we will find out where the expanded StandardPanel sit.
+            // item index we will find out where the expanded ClassInformationView sit.
             var itemsPerRow = ((int)Math.Floor(ActualWidth / classObjectWidth));
             var d = ((double)selectedClassProspectiveIndex) / itemsPerRow;
             var selectedItemRow = ((int)Math.Floor(d));
