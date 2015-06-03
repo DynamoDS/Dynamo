@@ -657,6 +657,7 @@ namespace ProtoCore.Utils
         public static string GetIdentifierExceptMethodName(IdentifierListNode identList)
         {
             Validity.Assert(null != identList);
+
             var leftNode = identList.LeftNode;
             var rightNode = identList.RightNode;
 
@@ -675,7 +676,7 @@ namespace ProtoCore.Utils
                 }
                 else
                 {
-                    intermediateNodes.Insert(0, ((IdentifierListNode)leftNode).RightNode);
+                    intermediateNodes.Insert(0, rightNode);
                 }
                 leftNode = ((IdentifierListNode)leftNode).LeftNode;
                 
