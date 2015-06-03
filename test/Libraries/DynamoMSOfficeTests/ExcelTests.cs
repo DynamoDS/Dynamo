@@ -1006,7 +1006,9 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(3, list.Count);
             AssertPreviewValue(writeNode.GUID.ToString(), new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 } });
-            
+
+            var wb = Excel.ReadExcelFile(filename.Value);
+            Assert.IsTrue(wb.WorkSheets.Length == 1);
         }
 
         #endregion
