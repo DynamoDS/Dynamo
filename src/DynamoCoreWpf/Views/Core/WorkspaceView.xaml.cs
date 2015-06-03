@@ -755,21 +755,26 @@ namespace Dynamo.Views
 
         private void OnInCanvasSearchContextMenuKeyDown(object sender, KeyEventArgs e)
         {
+            var contextMenu = sender as ContextMenu;
             if (e.Key == Key.Enter)
             {
                 ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
-                outerCanvas.ContextMenu.IsOpen = false;
+                if (contextMenu != null)
+                    contextMenu.IsOpen = false;
             }
         }
 
         /// <summary>
         /// MouseUp is used to close context menu. Only if original sender was Thumb(i.e. scroll bar),
         /// then context menu is left open.
+        /// Or if original sender was TextBox, then context menu is left open as well.
         /// </summary>
         private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb))
-                outerCanvas.ContextMenu.IsOpen = false;
+            var contextMenu = sender as ContextMenu;
+            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb) && !(e.OriginalSource is TextBox)
+                && contextMenu != null)
+                contextMenu.IsOpen = false;
         }
 
         /// <summary>
@@ -786,10 +791,6 @@ namespace Dynamo.Views
         /// </summary>
         private void OnCanvasClicked(object sender, MouseButtonEventArgs e)
         {
-            var canvas = sender as FrameworkElement;
-            if (canvas == null)
-                return;
-
             inCanvasSearchPosition = Mouse.GetPosition(this.WorkspaceElements);
         }
 
