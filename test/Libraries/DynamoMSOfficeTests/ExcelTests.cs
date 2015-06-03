@@ -562,7 +562,7 @@ namespace Dynamo.Tests
             //Overwrite an existing file with EmptyList- it must run ok
             string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN7213_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
-            Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(7, ViewModel.CurrentSpace.Nodes.Count);
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
@@ -1203,7 +1203,7 @@ namespace Dynamo.Tests
             // Write {5,6,7,8,9,10} into excel
             var watch3 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("17bf44dd-0285-496f-a388-58649cadbff8");
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list1 = watch.CachedValue.GetElements();
+            
             var data = new object[] { new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
             AssertPreviewValue(watch2.GUID.ToString(), data);
             // Increase the data written into excel
