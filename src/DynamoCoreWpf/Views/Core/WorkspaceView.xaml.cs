@@ -755,10 +755,12 @@ namespace Dynamo.Views
 
         private void OnInCanvasSearchContextMenuKeyDown(object sender, KeyEventArgs e)
         {
+            var contextMenu = sender as ContextMenu;
             if (e.Key == Key.Enter)
             {
                 ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
-                outerCanvas.ContextMenu.IsOpen = false;
+                if (contextMenu != null)
+                    contextMenu.IsOpen = false;
             }
         }
 
@@ -769,8 +771,10 @@ namespace Dynamo.Views
         /// </summary>
         private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb) && !(e.OriginalSource is TextBox))
-                outerCanvas.ContextMenu.IsOpen = false;
+            var contextMenu = sender as ContextMenu;
+            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb) && !(e.OriginalSource is TextBox)
+                && contextMenu != null)
+                contextMenu.IsOpen = false;
         }
 
         /// <summary>
