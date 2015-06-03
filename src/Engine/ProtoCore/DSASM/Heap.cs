@@ -653,7 +653,6 @@ namespace ProtoCore.DSASM
                 case GCState.Ready:
                     StartCollection();
                     gcState = GCState.Propagate;
-                    IsGCRunning = true;
                     break;
                     
                 case GCState.Propagate:
@@ -741,6 +740,7 @@ namespace ProtoCore.DSASM
             executive = exe;
 
             gcState = GCState.Ready;
+            IsGCRunning = true;
             return true;
         }
 
