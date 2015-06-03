@@ -4434,7 +4434,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
+        [Test, Category("WorkshopFiles")]
         public void MAGN_7348_WriteToExcel()
         {
             // Check WriteToExcel
