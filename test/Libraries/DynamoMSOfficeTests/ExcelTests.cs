@@ -10,7 +10,7 @@ using ProtoCore.Mirror;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using DynCmd = Dynamo.Models.DynamoModel;
+
 
 namespace Dynamo.Tests
 {
@@ -344,12 +344,11 @@ namespace Dynamo.Tests
             var FileObject = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("1bd2c2da-b0e9-4b88-9f9e-33bd0906c6e9");
             
             Assert.IsTrue(watch.CachedValue.IsCollection);
-            var list1 = watch.CachedValue.GetElements();
-            Assert.AreEqual(5, list1.Count());
+            
+            
             // single column - 1, "word", 2, 3, "palabra"
-            Assert.IsTrue(list1[0].IsCollection);
-            var rowList = list1[0].GetElements();
-            Assert.AreEqual(1, rowList[0].Data);
+            AssertPreviewValue(watch.GUID.ToString(), new object []{new object []{1},new object []{"word"},new object[]{2},new object[] { 3}, new object [] {"palabra"}});
+            
             // change the file path 
             ConnectorModel.Make(excelFileName, FileObject, 0, 0);
             ViewModel.HomeSpace.Run();
@@ -480,7 +479,7 @@ namespace Dynamo.Tests
         [Test]
         public void Excel_MAGN6872()
         {
-            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6872
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6872
             
             
             string openPath = Path.Combine(TestDirectory, @"core\excel\Excel_MAGN6872.dyn");
