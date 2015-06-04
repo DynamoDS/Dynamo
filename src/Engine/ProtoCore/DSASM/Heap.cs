@@ -31,7 +31,7 @@ namespace ProtoCore.DSASM
         private int AllocSize { get; set; }
         public int VisibleSize { get; set; }
         public Dictionary<StackValue, StackValue> Dict;
-        public StackValue[] Stack;
+        private StackValue[] Stack;
         public MetaData MetaData { get; set; }
         public GCMark Mark { get; set; }
 
@@ -145,7 +145,7 @@ namespace ProtoCore.DSASM
             }
             return retIndex;
         }
-
+        
         public IEnumerable<StackValue> VisibleItems
         {
             get
@@ -691,6 +691,18 @@ namespace ProtoCore.DSASM
             {
                 if (hp != null)
                     hp.Mark = GCMark.White;
+            }
+        }
+
+        public void WriteBarrierForward(HeapElement hp, StackValue value)
+        {
+            if (hp.Mark == GCMark.Black && value.IsReferenceType)
+            {
+                HeapElement valueHp;
+                if (TryGetHeapElement(value, out valueHp))
+                {
+                    totalTraversed += PropagateMark(value);
+                }
             }
         }
 
