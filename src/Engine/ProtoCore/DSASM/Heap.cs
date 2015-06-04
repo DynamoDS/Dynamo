@@ -157,6 +157,14 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public IEnumerable<StackValue> Values
+        {
+            get
+            {
+                return Dict == null ? VisibleItems : VisibleItems.Concat(Dict.Values);
+            }
+        }
+
         public StackValue GetItemAt(int index)
         {
             return Stack[index];
@@ -166,13 +174,27 @@ namespace ProtoCore.DSASM
         {
             Stack[index] = value;
         }
+
+        public void SetItemAt(StackValue index, StackValue value)
+        {
+            if (index.IsNumeric)
+            {
+                int arrayIndex = (int)index.ToInteger().opdata;
+                SetItemAt(arrayIndex, value);
+            }
+            else
+            {
+                if (Dict == null)
+                    Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
+            }
+        }
     }
 
     public class StackValueComparer : IEqualityComparer<StackValue>
     {
         private RuntimeCore runtimeCore;
 
-        public StackValueComparer(RuntimeCore runtimeCore)
+        public StackValueComparer(Heap heap)
         {
             this.runtimeCore = runtimeCore;
         }

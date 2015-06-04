@@ -292,26 +292,12 @@ namespace ProtoCore.Utils
 
             //This is the element on the heap that manages the data structure
             HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            foreach (var sv in heapElement.Values)
             {
                 if (sv.IsArray)
                 {
                     int subArrayRank = GetMaxRankForArray(sv, runtimeCore, tracer + 1);
-
                     largestSub = Math.Max(subArrayRank, largestSub);
-                }
-            }
-
-            var dict = heapElement.Dict;
-            if (dict != null)
-            {
-                foreach (var sv in dict.Values)
-                {
-                    if (sv.IsArray)
-                    {
-                        int subArrayRank = GetMaxRankForArray(sv, runtimeCore, tracer + 1);
-                        largestSub = Math.Max(subArrayRank, largestSub);
-                    }
                 }
             }
 
@@ -977,7 +963,7 @@ namespace ProtoCore.Utils
             }
 
             HeapElement he = GetHeapElement(array, runtimeCore);
-            return (he.Dict == null) ? he.VisibleItems : he.VisibleItems.Concat(he.Dict.Values);
+            return he.Values;
         }
 
         private static StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)
@@ -995,7 +981,7 @@ namespace ProtoCore.Utils
             {
                 array = workingSet.Dequeue();
                 HeapElement he = GetHeapElement(array, runtimeCore);
-                foreach (var value in he.VisibleItems)
+                foreach (var value in he.Values)
                 {
                     if (value.IsArray)
                     {
@@ -1004,21 +990,6 @@ namespace ProtoCore.Utils
                     else
                     {
                         flattenValues.Add(value);
-                    }
-                }
-
-                if (he.Dict != null)
-                {
-                    foreach (var value in he.Dict.Values)
-                    {
-                        if (value.IsArray)
-                        {
-                            workingSet.Enqueue(value);
-                        }
-                        else
-                        {
-                            flattenValues.Add(value);
-                        }
                     }
                 }
             }
