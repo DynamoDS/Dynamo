@@ -302,7 +302,9 @@ namespace Dynamo.ViewModels
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
-            Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
+            Model.NodeListChanged += Nodes_CollectionChanged;
+        //    Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
+
             Model.Notes.CollectionChanged += Notes_CollectionChanged;
             Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
             Model.ConnectorAdded += Connectors_ConnectorAdded;
@@ -1071,7 +1073,7 @@ namespace Dynamo.ViewModels
 
         private void DoGraphAutoLayout(object o)
         {
-            if (Model.Nodes.Count == 0)
+            if (Model.Nodes.Count() == 0)
                 return;
 
             var graph = new GraphLayout.Graph();

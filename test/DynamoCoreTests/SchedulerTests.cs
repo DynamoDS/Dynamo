@@ -1256,7 +1256,7 @@ namespace Dynamo.Tests
                 workspace.AddNode(node, false);
             }
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             return nodes;
         }
 

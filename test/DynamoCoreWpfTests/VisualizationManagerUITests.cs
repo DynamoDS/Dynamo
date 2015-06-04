@@ -222,7 +222,7 @@ namespace DynamoCoreWpfTests
             Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -344,7 +344,7 @@ namespace DynamoCoreWpfTests
             ws.RunSettings.RunType = RunType.Automatic;
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -388,7 +388,7 @@ namespace DynamoCoreWpfTests
             Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count());
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -549,7 +549,7 @@ namespace DynamoCoreWpfTests
             Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;

@@ -20,7 +20,7 @@ namespace Dynamo
         public CustomNodeDefinition(
             Guid functionId,
             string displayName="",
-            IList<NodeModel> nodeModels=null)
+            IEnumerable<NodeModel> nodeModels=null)
         {
             if (functionId == Guid.Empty)
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");

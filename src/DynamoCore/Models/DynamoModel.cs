@@ -1197,7 +1197,7 @@ namespace Dynamo.Models
                 {
                     if (!workspace.HasUnsavedChanges)
                     {
-                        if (workspace.Nodes.Count == 0 &&
+                        if (workspace.Nodes.Any() &&
                             workspace.Notes.Count == 0)
                             continue;
 
