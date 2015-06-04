@@ -106,29 +106,22 @@
                 Grid.Row="1"
                 Name="FoundMembers"
                 MaxHeight="250">
-            <ScrollViewer>
-                <ListBox Name="MembersListBox"
-                         Background="Transparent"
-                         BorderBrush="Transparent"
-                         ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                         ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
-                         TargetUpdated="OnMembersListBoxUpdated">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
-                                          Style="{StaticResource InCanvasScrollViewerStyle}"
-                                          CanContentScroll="True">
-                                <ContentControl Template="{StaticResource MemberControlTemplate}" />
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.Template>
-                        <ControlTemplate>
-                            <ItemsPresenter />
-                        </ControlTemplate>
-                    </ListBox.Template>
-                </ListBox>
-            </ScrollViewer>
+            <ListBox Name="MembersListBox"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{StaticResource SearchMemberStyle}"
+                     ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
+                     TargetUpdated="OnMembersListBoxUpdated">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                                      Style="{StaticResource InCanvasScrollViewerStyle}"
+                                      CanContentScroll="True">
+                            <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                        </ScrollViewer>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
