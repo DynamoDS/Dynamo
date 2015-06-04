@@ -467,27 +467,28 @@ namespace DSOffice
             WorkSheet[] worksheets = wbook.WorkSheets;
             WorkSheet wSheet = worksheets.FirstOrDefault(n => n.ws.Name == sheetName);
 
-            // If you find one, then use it.
-            if (wSheet != null)
+            if (wSheet == null)
             {
-                if (overWrite)
-                {
-                    // if there is only one worksheet, we need to add one more
-                    // before we can delete the first one
-                    ws = (Worksheet)wb.Add();
-                    wSheet.ws.Delete();
-                    ws.Name = sheetName;
-                    wb.Save();
-
-                    return;
-                }
-                ws = wSheet.ws;
+                // If you don't find one, create one.
+                ws = (Worksheet) wb.Add();
+                ws.Name = sheetName;
+                wb.Save();
                 return;
             }
-            // If you don't find one, create one.
-            ws = (Worksheet)wb.Add();
-            ws.Name = sheetName;
-            wb.Save();
+            
+            // If you find one, then use it.
+            if (overWrite)
+            {
+                // if there is only one worksheet, we need to add one more
+                // before we can delete the first one
+                ws = (Worksheet) wb.Add();
+                wSheet.ws.Delete();
+                ws.Name = sheetName;
+                wb.Save();
+
+            }
+            else
+                ws = wSheet.ws;
         }
 
         internal WorkSheet(Worksheet ws, WorkBook wb)
