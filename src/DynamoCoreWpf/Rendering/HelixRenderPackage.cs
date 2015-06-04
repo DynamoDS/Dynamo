@@ -41,6 +41,7 @@ namespace Dynamo.Wpf.Rendering
         private MeshGeometry3D mesh;
         private bool hasData;
         private List<int> lineStripVertexCounts;
+        private byte[] colors;
 
         #endregion
 
@@ -58,6 +59,11 @@ namespace Dynamo.Wpf.Rendering
 
         #region IRenderPackage implementation
 
+        public void SetColors(byte[] colors)
+        {
+            this.colors = colors;
+        }
+
         public void Clear()
         {
 
@@ -73,6 +79,8 @@ namespace Dynamo.Wpf.Rendering
 
             IsSelected = false;
             DisplayLabels = false;
+
+            colors = null;
         }
 
         /// <summary>
@@ -425,6 +433,13 @@ namespace Dynamo.Wpf.Rendering
         {
             get { return points.Indices.ToArray(); }
         }
+
+        public IEnumerable<byte> Colors
+        {
+            get { return colors; }
+        }
+
+        public int ColorsStride { get; set; }
 
         #endregion
 
