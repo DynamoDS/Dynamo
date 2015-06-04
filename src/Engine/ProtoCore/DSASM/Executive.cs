@@ -1274,7 +1274,7 @@ namespace ProtoCore.DSASM
 
             for (int n = 0; n < hs.VisibleSize; ++n)
             {
-                StackValue sv = hs.Stack[n];
+                StackValue sv = hs.GetItemAt(n);
                 if (sv.IsArray)
                 {
                     int ptr = (int)sv.opdata;
@@ -1290,7 +1290,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    arrayelements.Append(UnboxArray(hs.Stack[n], blockId, index));
+                    arrayelements.Append(UnboxArray(hs.GetItemAt(n), blockId, index));
                 }
 
                 if (n < hs.VisibleSize - 1)
@@ -3145,7 +3145,7 @@ namespace ProtoCore.DSASM
                             //push its dimension value
                             StackValue dimValArraySv = rmem.Pop();
                             HeapElement he = rmem.Heap.GetHeapElement(dimValArraySv);
-                            foreach (StackValue dimValSv in he.Stack)
+                            foreach (StackValue dimValSv in he.VisibleItems)
                             {
                                 rmem.Push(dimValSv);
                             }
@@ -3237,7 +3237,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     index = (int)rtSymbols[n].Sv.opdata;
-                    rtSymbols[n].Sv = rmem.Heap.GetHeapElement(ptr).Stack[index];
+                    rtSymbols[n].Sv = rmem.Heap.GetHeapElement(ptr).GetItemAt(index);
                 }
 
                 // Once a pointer to the member is retrieved, get its indexed value
@@ -3262,7 +3262,7 @@ namespace ProtoCore.DSASM
                 // Peek into the pointed data using nextPtr. 
                 // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
                 StackValue nextPtr = opVal;
-                var data = rmem.Heap.GetHeapElement(nextPtr).Stack[0];
+                var data = rmem.Heap.GetHeapElement(nextPtr).GetItemAt(0);
 
                 bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid;
                 if (isActualData)
@@ -3376,7 +3376,7 @@ namespace ProtoCore.DSASM
                 if (op1.IsMemberVariableIndex)
                 {
                     StackValue thisptr = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
-                    thisArray = rmem.Heap.GetHeapElement(thisptr).Stack[stackindex];
+                    thisArray = rmem.Heap.GetHeapElement(thisptr).GetItemAt(stackindex);
                 }
                 else
                 {
@@ -3564,7 +3564,7 @@ namespace ProtoCore.DSASM
                 StackValue argArraySv = rmem.Pop();
                 for (int i = 0; i < ArrayUtils.GetElementSize(argArraySv, runtimeCore); ++i)
                 {
-                    StackValue sv = rmem.Heap.GetHeapElement(argArraySv).Stack[i];
+                    StackValue sv = rmem.Heap.GetHeapElement(argArraySv).GetItemAt(i);
                     argSvList.Add(sv); //actual arguments
                     Type paramType = new Type();
                     paramType.UID = sv.metaData.type;
@@ -3672,7 +3672,7 @@ namespace ProtoCore.DSASM
                         else
                         {
                             StackValue ptr = rmem.Stack.Last();
-                            fpSv = rmem.Heap.GetHeapElement(ptr).Stack[(int)fpSv.opdata];
+                            fpSv = rmem.Heap.GetHeapElement(ptr).GetItemAt((int)fpSv.opdata);
                         }
                         //assuming the dimension is zero, as funtion call with nonzero dimension is not supported yet
 
@@ -3691,7 +3691,7 @@ namespace ProtoCore.DSASM
                             // Determine if we still need to move one more time on the heap
                             // Peek into the pointed data using nextPtr. 
                             // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
-                            var data = rmem.Heap.GetHeapElement(fpSv).Stack[0];
+                            var data = rmem.Heap.GetHeapElement(fpSv).GetItemAt(0);
 
                             bool isActualData = !data.IsPointer && 
                                                 !data.IsArray && 
@@ -4697,7 +4697,7 @@ namespace ProtoCore.DSASM
 
             StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
             runtimeVerify(svThis.IsPointer);
-            StackValue svProperty = rmem.Heap.GetHeapElement(svThis).Stack[stackIndex];
+            StackValue svProperty = rmem.Heap.GetHeapElement(svThis).GetItemAt(stackIndex);
 
             StackValue svOldData = svData;
             Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
@@ -4749,12 +4749,12 @@ namespace ProtoCore.DSASM
                 if (svData.IsPointer || svData.IsArray)
                 {
                     // Assign the src pointer directily to this property
-                    rmem.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
+                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svData);
                 }
                 else
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] { svData });
-                    rmem.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
+                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svNewProperty);
 
                     exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
@@ -4767,12 +4767,12 @@ namespace ProtoCore.DSASM
             {
                 if (svData.IsPointer || svData.IsArray)
                 {
-                    rmem.Heap.GetHeapElement(svThis).Stack[stackIndex] = svData;
+                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svData);
                 }
                 else
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] {svData});
-                    rmem.Heap.GetHeapElement(svThis).Stack[stackIndex] = svNewProperty;
+                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svNewProperty);
 
                     exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
@@ -4852,7 +4852,7 @@ namespace ProtoCore.DSASM
                     if (listInfo[n].Sv.IsStaticVariableIndex)
                         finalPointer = listInfo[n].Sv = GetOperandData(blockId, listInfo[n].Sv, new StackValue());
                     else
-                        finalPointer = listInfo[n].Sv = rmem.Heap.GetHeapElement(finalPointer).Stack[(int)listInfo[n].Sv.opdata];
+                        finalPointer = listInfo[n].Sv = rmem.Heap.GetHeapElement(finalPointer).GetItemAt((int)listInfo[n].Sv.opdata);
                 }
                 if (listInfo[n].Dimlist != null)
                 {
@@ -4885,7 +4885,7 @@ namespace ProtoCore.DSASM
                             ++pc;
                             return;
                         }
-                        tryPointer = rmem.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata];
+                        tryPointer = rmem.Heap.GetHeapElement(finalPointer).GetItemAt((int)listInfo[0].Sv.opdata);
                     }
                 }
                 else if (listInfo[0].Sv.IsStaticVariableIndex)
@@ -4896,7 +4896,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    tryPointer = rmem.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata];
+                    tryPointer = rmem.Heap.GetHeapElement(finalPointer).GetItemAt((int)listInfo[0].Sv.opdata);
                 }
             }
             else
@@ -4915,16 +4915,16 @@ namespace ProtoCore.DSASM
             if (tryPointer.IsNull)
             { //do nothing
             }
-            else if (rmem.Heap.GetHeapElement(tryPointer).Stack.Length == 1 &&
-                !rmem.Heap.GetHeapElement(tryPointer).Stack[0].IsPointer &&
-                !rmem.Heap.GetHeapElement(tryPointer).Stack[0].IsArray)
+            else if (rmem.Heap.GetHeapElement(tryPointer).VisibleSize == 1 &&
+                !rmem.Heap.GetHeapElement(tryPointer).GetItemAt(0).IsPointer &&
+                !rmem.Heap.GetHeapElement(tryPointer).GetItemAt(0).IsArray)
             {
                 // TODO Jun:
                 // Spawn GC here
 
                 // Setting a primitive
-                DX = rmem.Heap.GetHeapElement(tryPointer).Stack[0];
-                rmem.Heap.GetHeapElement(tryPointer).Stack[0] = data;
+                DX = rmem.Heap.GetHeapElement(tryPointer).GetItemAt(0);
+                rmem.Heap.GetHeapElement(tryPointer).SetItemAt(0, data);
             }
             else if (finalPointer.IsPointer || data.IsNull)
             {
@@ -4936,7 +4936,7 @@ namespace ProtoCore.DSASM
                 // Setting a pointer
                 int idx = (int)listInfo[0].Sv.opdata;
                 DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, runtimeCore);
-                rmem.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata] = data;
+                rmem.Heap.GetHeapElement(finalPointer).SetItemAt((int)listInfo[0].Sv.opdata, data);
             }
             else
             {
@@ -4945,7 +4945,7 @@ namespace ProtoCore.DSASM
                 runtimeVerify(finalPointer.IsArray);
 
                 // Setting an array
-                DX = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], runtimeCore);
+                DX = rmem.Heap.GetHeapElement(finalPointer).GetValue((int)listInfo[0].Dimlist[0], runtimeCore);
                 rmem.Heap.GetHeapElement(finalPointer).SetValue(listInfo[0].Dimlist[0], data);
             }
 

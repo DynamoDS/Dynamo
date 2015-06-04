@@ -598,10 +598,10 @@ namespace ProtoCore.Lang
 
                 if (Constants.kInvalidIndex != memvarIndex)
                 {
-                    StackValue svMemberPtr = rmem.Heap.GetHeapElement(thisObject).Stack[memvarIndex];
+                    StackValue svMemberPtr = rmem.Heap.GetHeapElement(thisObject).GetItemAt(memvarIndex);
                     if (svMemberPtr.IsPointer)
                     {
-                        StackValue svFunctionPtr = rmem.Heap.GetHeapElement(svMemberPtr).Stack[0];
+                        StackValue svFunctionPtr = rmem.Heap.GetHeapElement(svMemberPtr).GetItemAt(0);
                         if (svFunctionPtr.IsFunctionPointer)
                         {
                             // It is a function pointer
@@ -1888,8 +1888,8 @@ namespace ProtoCore.Lang
                 runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
-            int length1 = runtime.runtime.rmem.Heap.GetHeapElement(sv1).Stack.Length;
-            int length2 = runtime.runtime.rmem.Heap.GetHeapElement(sv2).Stack.Length;
+            int length1 = runtime.runtime.rmem.Heap.GetHeapElement(sv1).VisibleSize;
+            int length2 = runtime.runtime.rmem.Heap.GetHeapElement(sv2).VisibleSize;
             if (length2 == 0) return DSASM.StackValue.Null;
             if (length1 < length2)
             {
@@ -2142,7 +2142,7 @@ namespace ProtoCore.Lang
             for (int c1 = 0; c1 < numOfRows; c1++)
             {
                 int c2 = 1;
-                StackValue rowArray = heap.GetHeapElement(sv).Stack[c1];
+                StackValue rowArray = heap.GetHeapElement(sv).GetItemAt(c1);
                 if (!rowArray.IsArray)
                     original[c1, 0] = rowArray;
                 else

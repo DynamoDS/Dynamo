@@ -400,23 +400,23 @@ namespace ProtoCore.Utils
             }
 
             HeapElement he = rmem.Heap.GetHeapElement(svArray);
-            if (null == he.Stack || he.Stack.Length == 0)
+            if (!he.VisibleItems.Any())
             {
                 return false;
             }
 
-            while (he.Stack[0].IsArray)
+            while (he.GetItemAt(0).IsArray)
             {
-                he = rmem.Heap.GetHeapElement(he.Stack[0]);
+                he = rmem.Heap.GetHeapElement(he.GetItemAt(0));
 
                 // Handle the case where the array is valid but empty
-                if (he.Stack.Length == 0)
+                if (!he.VisibleItems.Any())
                 {
                     return false;
                 }
             }
 
-            sv = he.Stack[0].ShallowClone();
+            sv = he.GetItemAt(0).ShallowClone();
             return true;
         }
 
@@ -624,7 +624,7 @@ namespace ProtoCore.Utils
                 {
                     index = index.ToInteger();
                     int absIndex = he.ExpandByAcessingAt((int)index.opdata);
-                    subArray = he.Stack[absIndex];
+                    subArray = he.GetItemAt(absIndex);
                 }
                 else
                 {
@@ -683,7 +683,7 @@ namespace ProtoCore.Utils
                 StackValue[] oldValues = new StackValue[length];
                 for (int i = 0; i < length; ++i)
                 {
-                    StackValue coercedData = TypeSystem.Coerce(dataHeapElement.Stack[i], t, runtimeCore);
+                    StackValue coercedData = TypeSystem.Coerce(dataHeapElement.GetItemAt(i), t, runtimeCore);
                     oldValues[i] = SetValueForIndices(array, zippedIndices[i], coercedData, runtimeCore);
                 }
 
@@ -942,7 +942,7 @@ namespace ProtoCore.Utils
             StackValue[] elements = new StackValue[elementSize];
             for (int i = 0; i < elementSize; i++)
             {
-                StackValue coercedValue = TypeSystem.Coerce(he.Stack[i], type, runtimeCore);
+                StackValue coercedValue = TypeSystem.Coerce(he.GetItemAt(i), type, runtimeCore);
                 elements[i] = coercedValue;
             }
 
@@ -1123,7 +1123,7 @@ namespace ProtoCore.Utils
 
                 if (index >= 0 && index < he.VisibleSize)
                 {
-                    he.Stack[index] = StackValue.Null;
+                    he.SetItemAt((int)index, StackValue.Null);
 
                     if (index == he.VisibleSize - 1)
                     {

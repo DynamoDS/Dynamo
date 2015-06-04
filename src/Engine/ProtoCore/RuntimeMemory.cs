@@ -283,11 +283,11 @@ namespace ProtoCore
                 // Get the heapstck offset
                 int offset = exe.classTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
 
-                var heapElement = Heap.GetHeapElement(thisptr); 
-                if (null == heapElement.Stack || heapElement.Stack.Length == 0)
+                var heapElement = Heap.GetHeapElement(thisptr);
+                if (!heapElement.VisibleItems.Any())
                     return StackValue.Null;
 
-                StackValue sv = heapElement.Stack[offset];
+                StackValue sv = heapElement.GetItemAt(offset);
                 Validity.Assert(sv.IsPointer || sv.IsArray|| sv.IsInvalid);
 
                 // Not initialized yet
@@ -304,9 +304,9 @@ namespace ProtoCore
                 Validity.Assert(nextPtr.opdata >= 0);
                 heapElement = Heap.GetHeapElement(nextPtr);
 
-                if (null != heapElement.Stack && heapElement.Stack.Length > 0)
+                if (heapElement.VisibleItems.Any()) 
                 {
-                    StackValue data = heapElement.Stack[0];
+                    StackValue data = heapElement.GetItemAt(0);
                     bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
                     if (isActualData)
                     {

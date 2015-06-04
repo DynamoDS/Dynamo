@@ -405,14 +405,14 @@ namespace ProtoCore.DSASM
             HeapElement heap1 = ArrayUtils.GetHeapElement(sv1, rtCore1);
             HeapElement heap2 = ArrayUtils.GetHeapElement(sv2, rtCore2);
 
-            if (heap1.Stack.Length != heap2.Stack.Length)
+            if (heap1.VisibleSize != heap2.VisibleSize)
             {
                 return false;
             }
 
-            for (int i = 0; i < heap1.Stack.Length; i++)
+            for (int i = 0; i < heap1.VisibleSize; i++)
             {
-                if (!CompareStackValues(heap1.Stack[i], heap2.Stack[i], rtCore1, rtCore2, context))
+                if (!CompareStackValues(heap1.GetItemAt(i), heap2.GetItemAt(i), rtCore1, rtCore2, context))
                 {
                     return false;
                 }
@@ -463,7 +463,7 @@ namespace ProtoCore.DSASM
                 return StackValue.Null;
             }
 
-            return hs.Stack[index];
+            return hs.GetItemAt(index);
         }
 
         // helper method to support negative index into stack
@@ -475,8 +475,8 @@ namespace ProtoCore.DSASM
             }
 
             int index = ix < 0 ? ix + hs.VisibleSize : ix;
-            StackValue svOld = hs.Stack[index];
-            hs.Stack[index] = sv;
+            StackValue svOld = hs.GetItemAt(index);
+            hs.SetItemAt(index, sv);
 
             return svOld;
         }

@@ -109,7 +109,7 @@ namespace ProtoFFI
                 return null;
 
             IList elements = null;
-            var opType = hs.Stack[0].optype;
+            var opType = hs.GetItemAt(0).optype;
             if (opType == AddressType.Boolean)
             {
                 elements = new List<bool>();

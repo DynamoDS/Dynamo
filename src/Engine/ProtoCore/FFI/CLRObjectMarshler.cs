@@ -1079,7 +1079,7 @@ namespace ProtoFFI
                 return;
 
             var runtimeCore = dsi.runtime.RuntimeCore;
-            StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).Stack;
+            StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).VisibleItems.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];

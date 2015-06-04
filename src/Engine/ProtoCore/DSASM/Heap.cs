@@ -17,8 +17,8 @@ namespace ProtoCore.DSASM
 
         private int AllocSize { get; set; }
         public int VisibleSize { get; set; }
-        public Dictionary<StackValue, StackValue> Dict;
-        public StackValue[] Stack;
+        private Dictionary<StackValue, StackValue> Dict;
+        private StackValue[] Stack;
         public MetaData MetaData { get; set; }
 
         public int GetAllocatedSize()
@@ -155,6 +155,16 @@ namespace ProtoCore.DSASM
                     yield return this.Stack[i];
                 }
             }
+        }
+
+        public StackValue GetItemAt(int index)
+        {
+            return Stack[index];
+        }
+
+        public void SetItemAt(int index, StackValue value)
+        {
+            Stack[index] = value;
         }
     }
 
@@ -437,7 +447,7 @@ namespace ProtoCore.DSASM
             int i = 0;
             foreach (var item in values)
             {
-                heapElement.Stack[i] = item;
+                heapElement.SetItemAt(i, item);
                 i++;
             }
             return index;
@@ -629,7 +639,7 @@ namespace ProtoCore.DSASM
             if (heapElement.VisibleSize > 0)
             {
                 // Traverse each element in the heap
-                foreach (StackValue sv in heapElement.Stack)
+                foreach (StackValue sv in heapElement.VisibleItems)
                 {
                     // Is it a pointer
                     if (sv.IsReferenceType)
