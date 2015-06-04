@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -382,10 +383,36 @@ namespace Dynamo
             }
         }
 
+        public event Action<IEnumerable> RenderSelection;
+        protected virtual void OnSelectionChanged(IEnumerable items)
+        {
+            if (RenderSelection != null)
+                RenderSelection(items);
+        }
+
+
+        public event Action<NodeModel> UpdateGeometryOnNodeDeletion;
+        protected virtual void OnNodeDeletedFromWorkspace(NodeModel node)
+        {
+            if (UpdateGeometryOnNodeDeletion != null)
+                UpdateGeometryOnNodeDeletion(node);
+        }
+
+        public event Action InitializeGeomtery;
+        protected virtual void OnInitializeGeometry()
+        {
+            if (InitializeGeomtery != null)
+                InitializeGeomtery();
+        }
+
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                //Calling with NULL to make sure nothing is selected
+                OnSelectionChanged(null);
                 return;
+            }
 
             Debug.WriteLine("Viz manager responding to selection changed.");
 
@@ -403,7 +430,7 @@ namespace Dynamo
                 return;
             }
 
-            OnRenderComplete();
+            OnSelectionChanged(e.NewItems);
         }
 
         #endregion
