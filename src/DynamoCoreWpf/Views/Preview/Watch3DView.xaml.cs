@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
@@ -203,6 +205,29 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
+        private Dictionary<string, HelixToolkit.Wpf.SharpDX.Model3D> geomteryDictionary;
+        public Dictionary<string, HelixToolkit.Wpf.SharpDX.Model3D> GeomteryDictionary
+        {
+            get
+            {
+                return geomteryDictionary;
+            }
+
+            set
+            {
+                geomteryDictionary = value;
+            }
+        }
+
+        public List<HelixToolkit.Wpf.SharpDX.Model3D> GeometryValues
+        {
+            get
+            {
+                return GeomteryDictionary.Select(x => x.Value).ToList();
+            }
+        }
+
+
 #if DEBUG
         /// <summary>
         /// The TestSelectionCommand is used in the WatchSettingsControl
@@ -310,6 +335,47 @@ namespace Dynamo.Controls
             };
 
             DrawGrid();
+        }
+
+        private void InitializeHelix()
+        {
+            DirectionalLight3D directLight3D = new DirectionalLight3D();
+            directLight3D.Color = DirectionalLightColor;
+            directLight3D.Direction = DirectionalLightDirection;
+
+            if (geomteryDictionary != null && !geomteryDictionary.ContainsKey("DirectionalLight"))
+            {
+                geomteryDictionary.Add("DirectionalLight", directLight3D);
+            }
+
+            LineGeometryModel3D gridModel3D = new LineGeometryModel3D
+            {
+                Geometry = Grid,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false
+            };
+
+            if (geomteryDictionary != null && !geomteryDictionary.ContainsKey("Grid"))
+            {
+                geomteryDictionary.Add("Grid", gridModel3D);
+            }
+
+            LineGeometryModel3D axesModel3D = new LineGeometryModel3D
+            {
+                Geometry = Axes,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false
+            };
+
+            if (geomteryDictionary != null && !geomteryDictionary.ContainsKey("Axes"))
+            {
+                geomteryDictionary.Add("Axes", axesModel3D);
+            }
+
         }
 
         private static MeshGeometry3D DrawTestMesh()
