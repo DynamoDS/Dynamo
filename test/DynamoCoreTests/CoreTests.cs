@@ -31,7 +31,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");
             OpenModel(openPath);
 
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace Dynamo.Tests
         {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count, 1);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 1);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Dynamo.Tests
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
 
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
                 CurrentDynamoModel.AddToSelection(addNode);
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
@@ -138,9 +138,9 @@ namespace Dynamo.Tests
             {
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes[i]);
+                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes.Last());
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
@@ -159,7 +159,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // Make sure we have the number node created in active state.
-            var codeBlockNode = CurrentDynamoModel.CurrentWorkspace.Nodes[0] as CodeBlockNodeModel;
+            var codeBlockNode = CurrentDynamoModel.CurrentWorkspace.Nodes.First() as CodeBlockNodeModel;
             Assert.IsNotNull(codeBlockNode);
             Assert.AreEqual(ElementState.Active, codeBlockNode.State);
 
@@ -201,9 +201,9 @@ namespace Dynamo.Tests
             {
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes[i]);
+                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes.Last());
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
@@ -211,7 +211,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes, CurrentDynamoModel.ClipBoard.Count);
 
             CurrentDynamoModel.Paste();
-            Assert.AreEqual(numNodes * 2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(numNodes * 2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -225,7 +225,7 @@ namespace Dynamo.Tests
             {
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
                 CurrentDynamoModel.AddToSelection(addNode);
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
@@ -235,7 +235,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(numNodes, CurrentDynamoModel.ClipBoard.Count);
 
             CurrentDynamoModel.Paste();
-            Assert.AreEqual(numNodes * 2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(numNodes * 2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -249,9 +249,9 @@ namespace Dynamo.Tests
             {
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes[i]);
+                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes.Last());
 
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
@@ -265,7 +265,7 @@ namespace Dynamo.Tests
             {
                 CurrentDynamoModel.Paste();
                 Assert.AreEqual(numNodes, CurrentDynamoModel.ClipBoard.Count);
-                Assert.AreEqual(numNodes * (i + 1), CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(numNodes * (i + 1), CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             }
         }
 
@@ -281,9 +281,9 @@ namespace Dynamo.Tests
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
 
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes[i]);
+                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes.Last());
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
@@ -295,7 +295,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanCopyAndPasteDSVarArgFunctionNode()
         {
-            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             const string dsVarArgFunctionName = "DSCore.String.Split@string,string[]";
             var node = new DSVarArgFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor(dsVarArgFunctionName));
@@ -305,7 +305,7 @@ namespace Dynamo.Tests
             // is what this test case is written for, other nodes will render the 
             // test case meaningless).
             // 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             CurrentDynamoModel.AddToSelection(node); // Select the only DSVarArgFunction node.
             CurrentDynamoModel.Copy(); // Copy the only DSVarArgFunction node.
@@ -357,9 +357,9 @@ namespace Dynamo.Tests
 
             var homeNodes = home.Nodes;
 
-            Assert.AreEqual(2, homeNodes.Count);
-            Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[0]);
-            Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes[1]);
+            Assert.AreEqual(2, homeNodes.Count());
+            Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes.ElementAt(0));
+            Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes.ElementAt(1));
         }
 
         [Test]
@@ -374,10 +374,10 @@ namespace Dynamo.Tests
             //Assert HasUnsavedChanges is false 
             Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //Get the first node and assert the lacing strategy
-            var node = CurrentDynamoModel.CurrentWorkspace.Nodes[0];
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             Assert.IsNotNull(node);
             Assert.AreEqual(LacingStrategy.Shortest, node.ArgumentLacing);
 
@@ -425,7 +425,7 @@ namespace Dynamo.Tests
             {
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             }
 
             string fn = "ruthlessTurtles.dyn";
@@ -460,7 +460,7 @@ namespace Dynamo.Tests
             {
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             }
 
             CurrentDynamoModel.CurrentWorkspace.Save(CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
@@ -572,17 +572,17 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CurrentWorkspace.AddNode(new CodeBlockNodeModel("2", 100.0, 100.0, CurrentDynamoModel.LibraryServices), false);
             CurrentDynamoModel.CurrentWorkspace.AddNode(new Watch { X = 100, Y = 300 }, false);
 
-            ConnectorModel.Make(CurrentDynamoModel.CurrentWorkspace.Nodes[1], CurrentDynamoModel.CurrentWorkspace.Nodes[0], 0, 0);
-            ConnectorModel.Make(CurrentDynamoModel.CurrentWorkspace.Nodes[2], CurrentDynamoModel.CurrentWorkspace.Nodes[0], 0, 1);
-            ConnectorModel.Make(CurrentDynamoModel.CurrentWorkspace.Nodes[0], CurrentDynamoModel.CurrentWorkspace.Nodes[3], 0, 0);
+            ConnectorModel.Make(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1), CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0), 0, 0);
+            ConnectorModel.Make(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(2), CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0), 0, 1);
+            ConnectorModel.Make(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0), CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3), 0, 0);
 
             BeginRun();
 
             Thread.Sleep(250);
 
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes[3] is Watch, true);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3) is Watch, true);
 
-            var w = (Watch)CurrentDynamoModel.CurrentWorkspace.Nodes[3];
+            var w = (Watch)CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(3);
             Assert.AreEqual(4.0, w.CachedValue);
         }
 
@@ -593,7 +593,7 @@ namespace Dynamo.Tests
                 @"core\dsfunction\dsvarargfunction.dyn");
             OpenModel(openPath);
 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>(
                 Guid.Parse("a182d3f8-bb7d-4480-8aa5-eaacd6161415"));
@@ -614,16 +614,16 @@ namespace Dynamo.Tests
             {
                 var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
                 CurrentDynamoModel.CurrentWorkspace.AddNode(addNode, false);
-                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+                Assert.AreEqual(i + 1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes[i]);
+                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes.Last());
                 Assert.AreEqual(i + 1, DynamoSelection.Instance.Selection.Count);
             }
 
             // the number selected stays the same
             for (int i = 0; i < numNodes; i++)
             {
-                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes[i]);
+                CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.Nodes.Last());
                 Assert.AreEqual(numNodes, DynamoSelection.Instance.Selection.Count);
             }
         }
@@ -635,7 +635,7 @@ namespace Dynamo.Tests
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
             OpenModel(openPath);
 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);
@@ -643,7 +643,7 @@ namespace Dynamo.Tests
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
             OpenModel(openPath);
 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);
@@ -651,7 +651,7 @@ namespace Dynamo.Tests
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
             OpenModel(openPath);
 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);

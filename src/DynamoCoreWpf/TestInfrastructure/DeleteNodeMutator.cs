@@ -25,10 +25,10 @@ namespace Dynamo.TestInfrastructure
             bool pass = false;
 
             var nodes = DynamoViewModel.Model.CurrentWorkspace.Nodes;
-            if (nodes.Count == 0)
+            if (nodes.Count() == 0)
                 return pass;
 
-            int nodesCountBeforeDelete = nodes.Count;
+            int nodesCountBeforeDelete = nodes.Count();
 
             writer.WriteLine("### - Beginning readout");
             
@@ -58,7 +58,7 @@ namespace Dynamo.TestInfrastructure
 
             writer.WriteLine("### - Beginning undo");
 
-            int nodesCountAfterDelete = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
+            int nodesCountAfterDelete = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count();
 
             if (nodesCountBeforeDelete > nodesCountAfterDelete)
             {
@@ -94,7 +94,7 @@ namespace Dynamo.TestInfrastructure
                 writer.WriteLine("### - re-exec complete");
                 writer.Flush();
 
-                int nodesCountAfterUbdo = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
+                int nodesCountAfterUbdo = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count();
                 if (nodesCountBeforeDelete == nodesCountAfterUbdo)
                     writer.WriteLine("### - Node was restored");
                 else
