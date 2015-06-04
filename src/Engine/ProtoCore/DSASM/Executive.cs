@@ -4544,6 +4544,9 @@ namespace ProtoCore.DSASM
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
+#if TRACING_GC
+            rmem.Heap.GC();
+#endif
             ++pc;
             return tempSvData;
         }
@@ -6534,7 +6537,7 @@ namespace ProtoCore.DSASM
         private void Exec(Instruction instruction)
         {
 #if TRACING_GC
-            if (!rmem.Heap.IsGCRunning)
+            if (rmem.Heap.IsWaitingForRoots())
             {
                 var gcroots = CollectRootPointers();
                 rmem.Heap.SetRoots(gcroots, this);
@@ -6835,6 +6838,7 @@ namespace ProtoCore.DSASM
             var blockId = executingBlock;
             var gcRoots = new List<StackValue>();
 
+#if !TRACING_GC
             // Now garbage collection only happens on the top most block. 
             // We will loose this limiation soon.
             if (blockId != 0 || 
@@ -6842,10 +6846,13 @@ namespace ProtoCore.DSASM
             {
                 return gcRoots;
             }
+#endif
 
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
+
+#if !TRACING_GC
             var isInNestedImperativeBlock = frames.Any(f =>
                 {
                     var callerBlockId = f.FunctionCallerBlock;
@@ -6857,6 +6864,7 @@ namespace ProtoCore.DSASM
             {
                 return gcRoots;
             }
+#endif
 
             foreach (var stackFrame in frames)
             {

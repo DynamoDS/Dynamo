@@ -13,7 +13,6 @@ namespace ProtoCore.DSASM
     {
         Pause,
         WaitingForRoots,
-        Ready,
         Propagate,
         Sweep,
     }
@@ -446,8 +445,6 @@ namespace ProtoCore.DSASM
 
         private int AllocateInternal(int size)
         {
-            GC();
-
             HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex);
             hpe.Mark = GCMark.White;
             totalAllocated += size;
@@ -650,11 +647,6 @@ namespace ProtoCore.DSASM
                 case GCState.WaitingForRoots:
                     break;
 
-                case GCState.Ready:
-                    StartCollection();
-                    gcState = GCState.Propagate;
-                    break;
-                    
                 case GCState.Propagate:
                     if (grayList.Any())
                     {
@@ -669,6 +661,7 @@ namespace ProtoCore.DSASM
 
                 case GCState.Sweep:
                     Sweep();
+                    MarkAllWhite();
                     gcState = GCState.Pause;
                     IsGCRunning = false;
                     break;
@@ -707,12 +700,20 @@ namespace ProtoCore.DSASM
                 heapElements[ptr] = null;
                 freeList.Add(ptr);
             }
-
         }
 
-        private void GC()
+        private void MarkAllWhite()
         {
-            SingleStep();
+            foreach (var hp in heapElements)
+            {
+                if (hp != null)
+                    hp.Mark = GCMark.White;
+            }
+        }
+
+        public bool IsWaitingForRoots()
+        {
+            return gcState == GCState.WaitingForRoots;
         }
 
         /// <summary>
@@ -730,18 +731,49 @@ namespace ProtoCore.DSASM
             if (exe == null)
                 throw new ArgumentNullException("exe");
 
-            if (IsGCRunning || !gcroots.Any())
+            if (!IsWaitingForRoots() || !gcroots.Any())
                 return false;
-
-            while (gcState != GCState.WaitingForRoots)
-                SingleStep();
 
             roots = new List<StackValue>(gcroots);
             executive = exe;
 
-            gcState = GCState.Ready;
-            IsGCRunning = true;
+            StartCollection();
+            gcState = GCState.Propagate;
+
             return true;
+        }
+
+        /// <summary>
+        /// GC
+        /// </summary>
+        public void GC()
+        {
+            SingleStep();
+        }
+
+        /// <summary>
+        /// Do a full GC cycle
+        /// </summary>
+        /// <param name="gcroots"></param>
+        /// <param name="exe"></param>
+        public void FullGC(IEnumerable<StackValue> gcroots, DSASM.Executive exe)
+        {
+            if (gcroots == null)
+                throw new ArgumentNullException("gcroots");
+
+            if (exe == null)
+                throw new ArgumentNullException("exe");
+
+            while (gcState != GCState.WaitingForRoots)
+            {
+                SingleStep();
+            } 
+            SetRoots(gcroots, exe);
+
+            while (gcState != GCState.Pause)
+            {
+                SingleStep();
+            }
         }
 
         public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
@@ -812,9 +844,7 @@ namespace ProtoCore.DSASM
 
                     heapElements[i] = null;
 
-#if !HEAP_VERIFICATION
                     freeList.Add(i);
-#endif
                 }
             }
             finally
