@@ -27,6 +27,7 @@ using DynamoUnits;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;
 
 namespace Dynamo.ViewModels
@@ -512,7 +513,7 @@ namespace Dynamo.ViewModels
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
-            this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
+            this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
@@ -1092,15 +1093,30 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Open a definition or workspace.
         /// </summary>
-        /// <param name="parameters">The path the the file.</param>
+        /// <param name="parameters"></param>
+        /// For most cases, parameters variable refers to the file path to open
+        /// However, when this command is used in OpenFileDialog, the variable is
+        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
         private void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
             try
             {
-                var xmlFilePath = parameters as string;
-                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
+                string xmlFilePath = string.Empty;
+                bool forceManualMode = false;
+                var packedParams = parameters as Tuple<string, bool>;
+                if (packedParams != null)
+                {
+                    xmlFilePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    xmlFilePath = parameters as string;
+                }
+                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
             }
             catch (Exception e)
             {
@@ -1129,7 +1145,7 @@ namespace Dynamo.ViewModels
                     return;
             }
 
-            FileDialog _fileDialog = new OpenFileDialog()
+            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
             {
                 Filter = string.Format(Resources.FileDialogDynamoDefinitions,
                          BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
@@ -1157,7 +1173,9 @@ namespace Dynamo.ViewModels
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
-                    Open(_fileDialog.FileName);
+                {
+                    Open(new Tuple<string,bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                }
             }
         }
 

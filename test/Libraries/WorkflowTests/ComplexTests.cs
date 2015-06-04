@@ -5,8 +5,7 @@ using System.Linq;
 using System;
 
 using Autodesk.DesignScript.Geometry;
-
-
+using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -568,6 +567,69 @@ namespace Dynamo.Tests
         }
         #endregion
 
+        #region File test
+
+        [Test]
+        public void Test_File_Migration()
+        {
+            string directory = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\File Migration");
+            string openPath = Path.Combine(directory,"File.dyn");
+            OpenModel(openPath);
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, workspace.Connectors.Count());
+            Assert.AreEqual(11, workspace.Nodes.Count);
+
+            // give absolute path
+            var textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("545b092b-8b2c-4cd4-b15e-9e4162dd4579");
+            textFileName.Value = Path.Combine(directory, textFileName.Value);
+
+            textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("23f8f80b-eca7-4651-a082-7e2cce93c88d");
+            textFileName.Value = Path.Combine(directory, textFileName.Value);
+
+            var imgFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("c20d8f16-4bf7-465f-93ca-6afd05fe02a2");
+            imgFileName.Value = Path.Combine(directory, imgFileName.Value);
+
+            var imgDirectory = workspace.NodeFromWorkspace<DSCore.File.Directory>("729b5ffd-7813-4e09-94a2-74a1e4619c5f");
+            imgDirectory.Value = directory;
+
+            var xlsxFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("b8f8f48b-c546-4ae8-b7f6-45e52310e361");
+            xlsxFileName.Value = Path.Combine(directory, xlsxFileName.Value);
+
+            // run the graph
+            BeginRun();
+
+            // test reading
+            var readText = "b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b";
+            var text = GetPreviewValue(readText) as string;
+            Assert.AreEqual(text,"1234");
+
+            // test writting. Write text is not obsolete but the
+            // namespace needs to be migrated, no warning should
+            // be shown in this node
+            var writeText = "ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9";
+            var nodeModel = workspace.NodeFromWorkspace(writeText);
+            Assert.AreEqual(ElementState.Active, nodeModel.State);
+
+            // test reading image. There are 100 Colors object that is generated since 
+            // the sampling in x and y direction is 10.
+            var readImage = "7fba95f1-fd7a-4033-a7a9-5dfb91c7e886";
+            Assert.AreEqual(100,GetFlattenedPreviewValues(readImage).Count);
+
+            // test load image from path and writing image in a CBN
+            var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
+            AssertPreviewValue(codeBlock,true);
+
+            // text writing to csv, persistent warning should be shown
+            // since the node is obsolete
+            var writeCSV = "3ddc75fb-e607-4932-8e08-f215ee86211e";
+            nodeModel = workspace.NodeFromWorkspace(writeCSV);
+            Assert.AreEqual(ElementState.PersistentWarning, nodeModel.State);
+        }
+
+        #endregion
 
         [Test]
         public void Test_Lacing()

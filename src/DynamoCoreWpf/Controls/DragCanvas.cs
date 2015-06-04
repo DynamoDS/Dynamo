@@ -226,8 +226,10 @@ namespace Dynamo.Controls
             // DragCanvas should not handle the event here (e.Handled should
             // be set to 'false') so that workspace view gets a chance of 
             // handling it.
-            // 
-            if (owningWorkspace.IsSnappedToPort)
+            //
+            // Or if Shift is pressed, Workspace also handles event.
+            // Shift modifier is used to show InCanvasSearch.
+            if (owningWorkspace.IsSnappedToPort || Keyboard.Modifiers == ModifierKeys.Shift)
             {
                 e.Handled = false; // Do not handle it here!
                 return;
@@ -241,7 +243,6 @@ namespace Dynamo.Controls
                 //capture the mouse input even if the mouse is dragged outside the canvas
                 this.CaptureMouse();
                 base.OnMouseLeftButtonDown(e);               
-                e.Handled = true;
             }
         }
 

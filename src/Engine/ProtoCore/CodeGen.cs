@@ -91,7 +91,7 @@ namespace ProtoCore
 
 
         // Contains the list of Nodes in an identifier list
-        protected List<ProtoCore.AST.AssociativeAST.AssociativeNode> ssaPointerList;
+        protected Stack<List<ProtoCore.AST.AssociativeAST.AssociativeNode>> ssaPointerStack;
 
         // The first graphnode of the SSA'd identifier
         protected ProtoCore.AssociativeGraph.GraphNode firstSSAGraphNode = null;
@@ -152,7 +152,7 @@ namespace ProtoCore
                 }
             }
 
-            ssaPointerList = new List<AST.AssociativeAST.AssociativeNode>();
+            ssaPointerStack = new Stack<List<AST.AssociativeAST.AssociativeNode>>();
         }
 
 
@@ -496,6 +496,60 @@ namespace ProtoCore
             ProtoCore.AST.Node setterArgument = null
             );
 
+        /// <summary>
+        /// Assigns the modified pointers in a function argument to the graphNode
+        /// This enables associative update when a pointer that is an argument is modified within a function
+        /// </summary>
+        /// <param name="nodeRef"></param>
+        /// <param name="graphNode"></param>
+        protected void AutoGenerateUpdateArgumentReference(
+            ProtoCore.AssociativeGraph.UpdateNodeRef nodeRef, ProtoCore.AssociativeGraph.GraphNode graphNode)
+        {
+
+            ProtoCore.DSASM.SymbolNode firstSymbol = null;
+
+            // This is only valid within a function as we are dealing with function args
+            if(localProcedure == null);
+            {
+                return;
+            }
+            
+            // Check if there are at least 2 symbols in the list
+            if (nodeRef.nodeList.Count < 2)
+            {
+                return;
+            }
+
+            firstSymbol = nodeRef.nodeList[0].symbol;
+
+            bool isValidNodeRef = null != firstSymbol && nodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod;
+            if (!isValidNodeRef)
+            {
+                return;
+            }
+            
+            // Now check if the first element of the identifier list is an argument
+            foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.argInfoList)
+            {
+                if (argInfo.Name == firstSymbol.name)
+                {
+                    nodeRef.nodeList.RemoveAt(0);
+
+                    List<ProtoCore.AssociativeGraph.UpdateNodeRef> refList = null;
+                    bool found = localProcedure.updatedArgumentProperties.TryGetValue(argInfo.Name, out refList);
+                    if (found)
+                    {
+                        refList.Add(nodeRef);
+                    }
+                    else
+                    {
+                        refList = new List<ProtoCore.AssociativeGraph.UpdateNodeRef>();
+                        refList.Add(nodeRef);
+                        localProcedure.updatedArgumentProperties.Add(argInfo.Name, refList);
+                    }
+                }
+            }
+        }
 
         //  
         //  proc dfsgetsymbollist(node, lefttype, nodeRef)
@@ -2579,8 +2633,13 @@ namespace ProtoCore
 
         protected void BuildRealDependencyForIdentList(AssociativeGraph.GraphNode graphNode)
         {
+            if (ssaPointerStack.Count == 0)
+            {
+                return;
+            }
+
             // Push all dependent pointers
-            ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerList);
+            ProtoCore.AST.AssociativeAST.IdentifierListNode identList = BuildIdentifierList(ssaPointerStack.Peek());
 
             // Comment Jun: perhaps this can be an assert?
             if (null != identList)
@@ -2596,6 +2655,26 @@ namespace ProtoCore
                     ProtoCore.AssociativeGraph.GraphNode dependentNode = new ProtoCore.AssociativeGraph.GraphNode();
                     dependentNode.updateNodeRefList.Add(nodeRef);
                     graphNode.PushDependent(dependentNode);
+
+                    // If the pointerList is a setter, then it should also be in the lhs of a graphNode
+                    //  Given:
+                    //      a.x = 1 
+                    //  Which was converted to: 
+                    //      tvar = a.set_x(1)
+                    //  Set a.x as lhs of the graphnode. 
+                    //  This means that statement that depends on a.x can re-execute, such as:
+                    //      p = a.x;
+                    //
+                    List<ProtoCore.AST.AssociativeAST.AssociativeNode> topList = ssaPointerStack.Peek();
+                    string propertyName = topList[topList.Count - 1].Name;
+                    bool isSetter = propertyName.StartsWith(Constants.kSetterPrefix);
+                    if (isSetter)
+                    {
+                        graphNode.updateNodeRefList.Add(nodeRef);
+                        graphNode.IsLHSIdentList = true;
+
+                        AutoGenerateUpdateArgumentReference(nodeRef, graphNode);
+                    }
                 }
             }
         }
@@ -2639,8 +2718,8 @@ namespace ProtoCore
                 {
                     if ((node as ProtoCore.AST.AssociativeAST.IdentifierListNode).IsLastSSAIdentListFactor)
                     {
-                        Validity.Assert(null != ssaPointerList);
-                        ssaPointerList.Clear();
+                        Validity.Assert(null != ssaPointerStack);
+                        ssaPointerStack.Pop();
                     }
                 }
             }

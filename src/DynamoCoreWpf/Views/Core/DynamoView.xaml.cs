@@ -457,9 +457,6 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestShowHideGallery(bool showGallery)
         {
-            //Disable for now
-            return;
-
             if (showGallery)
             {
                 if (galleryView == null) //On-demand instantiation
@@ -699,76 +696,45 @@ namespace Dynamo.Controls
         /// <returns></returns>
         public void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
-            string error = "";
+            var categorized =
+                SearchCategoryUtil.CategorizeSearchEntries(
+                    dynamoViewModel.Model.SearchModel.SearchEntries,
+                    entry => entry.Categories);
 
-            do
+            var allCategories =
+                categorized.SubCategories.SelectMany(sub => sub.GetAllCategoryNames());
+
+            var dialog = new FunctionNamePrompt(allCategories)
             {
-                var categorized =
-                    SearchCategoryUtil.CategorizeSearchEntries(
-                        dynamoViewModel.Model.SearchModel.SearchEntries,
-                        entry => entry.Categories);
+                categoryBox = { Text = e.Category },
+                DescriptionInput = { Text = e.Description },
+                nameView = { Text = e.Name },
+                nameBox = { Text = e.Name },
+                // center the prompt
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
 
-                var allCategories =
-                    categorized.SubCategories.SelectMany(sub => sub.GetAllCategoryNames());
+            if (e.CanEditName)
+            {
+                dialog.nameBox.Visibility = Visibility.Visible;
+                dialog.nameView.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                dialog.nameView.Visibility = Visibility.Visible;
+                dialog.nameBox.Visibility = Visibility.Collapsed;
+            }
 
-                var dialog = new FunctionNamePrompt(allCategories)
-                {
-                    categoryBox = { Text = e.Category },
-                    DescriptionInput = { Text = e.Description },
-                    nameView = { Text = e.Name },
-                    nameBox = { Text = e.Name },
-                    // center the prompt
-                    Owner = this,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
+            if (dialog.ShowDialog() != true)
+            {
+                e.Success = false;
+                return;
+            }
 
-                if (e.CanEditName)
-                {
-                    dialog.nameBox.Visibility = Visibility.Visible;
-                    dialog.nameView.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    dialog.nameView.Visibility = Visibility.Visible;
-                    dialog.nameBox.Visibility = Visibility.Collapsed;
-                }
-
-                if (dialog.ShowDialog() != true)
-                {
-                    e.Success = false;
-                    return;
-                }
-
-                if (String.IsNullOrEmpty(dialog.Text))
-                {
-                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
-                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-
-                //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
-                //{
-                //    error = "A built-in node with the given name already exists.";
-                //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                //                                   MessageBoxImage.Error);
-                //}
-
-                else if (dialog.Category.Equals(""))
-                {
-                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory,
-                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                else
-                {
-                    error = "";
-                }
-
-                e.Name = dialog.Text;
-                e.Category = dialog.Category;
-                e.Description = dialog.Description;
-
-            } while (!error.Equals(""));
+            e.Name = dialog.Text;
+            e.Category = dialog.Category;
+            e.Description = dialog.Description;
 
             e.Success = true;
         }

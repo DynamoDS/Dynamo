@@ -9,8 +9,8 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
-             MaxHeight="350"
-             Width="250">
+             Width="250"
+             IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,14 +22,14 @@
             <Style x:Key="SearchMemberStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                             Handler="OnMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="OnMouseLeftButtonUp" />
             </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid PreviewKeyDown="OnInCanvasSearchKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -104,81 +104,30 @@
                 Background="{StaticResource LibraryCommonBackground}"
                 Margin="1,2,1,0"
                 Grid.Row="1"
-                Name="FoundMembers">
+                Name="FoundMembers"
+                MaxHeight="250">
             <ScrollViewer>
-                <ListView Name="CategoryListView"
-                          Grid.Row="1"
-                          ScrollViewer.CanContentScroll="True"
-                          BorderThickness="0"
-                          Background="Transparent"
-                          ItemsSource="{Binding SearchRootCategories}"
-                          SelectionMode="Single">
-                    <ListView.ItemTemplate>
+                <ListBox Name="MembersListBox"
+                         Background="Transparent"
+                         BorderBrush="Transparent"
+                         ItemContainerStyle="{StaticResource SearchMemberStyle}"
+                         ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
+                         TargetUpdated="OnMembersListBoxUpdated">
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <!--Found member groups-->
-                            <ListBox Background="Transparent"
-                                     BorderBrush="Transparent"
-                                     BorderThickness="0"
-                                     ItemContainerStyle="{StaticResource ListBoxMemberGroupsStyle}"
-                                     ItemsSource="{Binding MemberGroups}"
-                                     Name="MemberGroupsListBox">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
-                                                       FontSize="12"
-                                                       Margin="16,8,0,8">
-                                                            <Run Text="{Binding Prefix, Mode=OneWay}" />
-                                                            <Run Text="{Binding GroupName, Mode=OneWay}" />
-                                            </TextBlock>
-                                            <ListBox Background="Transparent"
-                                                     BorderBrush="Transparent"
-                                                     ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                                                     ItemsSource="{Binding Members}"
-                                                     Name="MembersListBox">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <ContentControl Template="{StaticResource MemberControlTemplate}" />
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                                <ListBox.Template>
-                                                    <ControlTemplate>
-                                                        <ItemsPresenter />
-                                                    </ControlTemplate>
-                                                </ListBox.Template>
-                                            </ListBox>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                                <ListBox.Template>
-                                    <ControlTemplate>
-                                        <ItemsPresenter />
-                                    </ControlTemplate>
-                                </ListBox.Template>
-                            </ListBox>
+                            <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                                          Style="{StaticResource InCanvasScrollViewerStyle}"
+                                          CanContentScroll="True">
+                                <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                            </ScrollViewer>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="Background"
-                                    Value="Transparent" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border BorderThickness="0">
-                                            <ContentPresenter />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.Template>
+                    </ListBox.ItemTemplate>
+                    <ListBox.Template>
                         <ControlTemplate>
                             <ItemsPresenter />
                         </ControlTemplate>
-                    </ListView.Template>
-                </ListView>
+                    </ListBox.Template>
+                </ListBox>
             </ScrollViewer>
 
             <Border.Style>
@@ -186,14 +135,15 @@
                     <Setter Property="Visibility"
                             Value="Visible" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=SearchRootCategories.Count}"
+                        <DataTrigger Binding="{Binding Path=SearchResults.Count}"
                                      Value="0">
                             <Setter Property="Visibility"
                                     Value="Collapsed" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Path=CurrentMode}"
-                                     Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
+                        <DataTrigger Binding="{Binding Path=CurrentMode,
+                                                       Converter={StaticResource LibraryViewModeToBoolConverter}}"
+                                     Value="True">
                             <Setter Property="Visibility"
                                     Value="Collapsed" />
                         </DataTrigger>
