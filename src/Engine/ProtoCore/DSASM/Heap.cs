@@ -28,6 +28,7 @@ namespace ProtoCore.DSASM
     {
         private const int kInitialSize = 5;
         private const double kReallocFactor = 0.5;
+        private Heap heap;
 
         private int AllocSize { get; set; }
         public int VisibleSize { get; set; }
@@ -41,11 +42,12 @@ namespace ProtoCore.DSASM
             return AllocSize;
         }
 
-        public HeapElement(int size, int symbolindex)
+        public HeapElement(int size, int symbolindex, Heap heap)
         {
             AllocSize = VisibleSize = size;
             Dict = null; 
             Stack = new StackValue[AllocSize];
+            this.heap = heap;
 
             for (int n = 0; n < AllocSize; ++n)
             {
@@ -90,7 +92,11 @@ namespace ProtoCore.DSASM
             {
                 Stack[i] = StackValue.Null;
             }
-            
+
+            // We should move StackValue list to heap. That is, heap
+            // manages StackValues instead of HeapElement itself.
+            heap.ReportAllocation(newAllocatedSize - AllocSize);
+
             AllocSize = newAllocatedSize;
             Validity.Assert(size <= AllocSize);
         }
@@ -149,10 +155,6 @@ namespace ProtoCore.DSASM
                 VisibleSize = retIndex + 1;
             }
             return retIndex;
-        }
-
-        public void Free()
-        {
         }
 
         public IEnumerable<StackValue> VisibleItems
@@ -445,7 +447,7 @@ namespace ProtoCore.DSASM
 
         private int AllocateInternal(int size)
         {
-            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex);
+            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex, this);
             hpe.Mark = GCMark.White;
             totalAllocated += size;
             return AddHeapElement(hpe);
@@ -774,6 +776,11 @@ namespace ProtoCore.DSASM
             {
                 SingleStep();
             }
+        }
+
+        public void ReportAllocation(int newSize)
+        {
+            totalAllocated += newSize;
         }
 
         public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
