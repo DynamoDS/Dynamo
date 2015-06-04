@@ -203,6 +203,16 @@ namespace Dynamo.Models
                 EvaluationCompleted(sender, e);
         }
 
+        /// <summary>
+        /// An event triggered when all tasks in scheduler are completed.
+        /// </summary>
+        public event EventHandler RefreshCompleted;
+        public virtual void OnRefreshCompleted(object sender, EventArgs e)
+        {
+            if (RefreshCompleted != null)
+                RefreshCompleted(sender, e);
+        }
+
         #endregion
     }
 
