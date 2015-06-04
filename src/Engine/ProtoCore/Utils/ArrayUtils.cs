@@ -474,7 +474,7 @@ namespace ProtoCore.Utils
         {
             List<StackValue[]> allFlattenValues = new List<StackValue[]>();
 
-            int zipLength = System.Int32.MaxValue;
+            int zipLength = Int32.MaxValue;
             foreach (var index in indices)
             {
                 int length = 1;
@@ -634,7 +634,7 @@ namespace ProtoCore.Utils
                 // auto-promotion
                 if (!subArray.IsArray)
                 {
-                    subArray = rmem.Heap.AllocateArray(new StackValue[] { subArray }, null);
+                    subArray = rmem.Heap.AllocateArray(new [] { subArray });
                     SetValueForIndex(array, index, subArray, runtimeCore);
                 }
 
@@ -688,7 +688,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return rmem.Heap.AllocateArray(oldValues, null);
+                return rmem.Heap.AllocateArray(oldValues);
             }
             else
             {
@@ -703,7 +703,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return rmem.Heap.AllocateArray(oldValues, null);
+                return rmem.Heap.AllocateArray(oldValues);
             }
         }
 
@@ -898,7 +898,7 @@ namespace ProtoCore.Utils
                 }
                 else
                 {
-                    return runtimeCore.RuntimeMemory.Heap.AllocateArray(values, null);
+                    return runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
                 }
             }
             else
@@ -915,7 +915,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue CopyArray(StackValue array, RuntimeCore runtimeCore)
         {
-            Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
+            Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
             return CopyArray(array, anyType, runtimeCore);
         }
 

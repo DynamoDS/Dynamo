@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Policy;
 
 using ProtoCore.Utils;
 
@@ -42,7 +40,7 @@ namespace ProtoCore.DSASM
             return AllocSize;
         }
 
-        public HeapElement(int size, int symbolindex, Heap heap)
+        public HeapElement(int size, Heap heap)
         {
             AllocSize = VisibleSize = size;
             Dict = null; 
@@ -71,23 +69,14 @@ namespace ProtoCore.DSASM
             return nextSize;
         }
 
-        //
-        // TODO Jun: Optimize the reallocation routines
-        //      1. Copying the temps can be optimized.
-        //      2. Explore using List for the HeapStack stack. In this case we take advantage of .Net List arrays
-        //
         private void ReAllocate(int size)
         {
             int newAllocatedSize = GetNewSize(size);
 
             // Copy current contents into a temp array
-            StackValue[] tempstack = new StackValue[AllocSize];
+            StackValue[] tempstack = new StackValue[newAllocatedSize];
             Stack.CopyTo(tempstack, 0);
-
-            // Reallocate the array and copy the temp contents to it
-            Stack = new StackValue[newAllocatedSize];
-            tempstack.CopyTo(Stack, 0);
-
+            Stack = tempstack;
             for (int i = AllocSize; i < newAllocatedSize; ++i)
             {
                 Stack[i] = StackValue.Null;
@@ -161,9 +150,9 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                for (int i = 0; i < this.VisibleSize; ++i)
+                for (int i = 0; i < VisibleSize; ++i)
                 {
-                    yield return this.Stack[i];
+                    yield return Stack[i];
                 }
             }
         }
@@ -252,7 +241,7 @@ namespace ProtoCore.DSASM
 
         internal bool TryRemoveString(int pointer)
         {
-            string stringToBeRemoved = null;
+            string stringToBeRemoved;
             if (!pointerToStringTable.TryGetValue(pointer, out stringToBeRemoved))
                 return false;
 
@@ -267,16 +256,16 @@ namespace ProtoCore.DSASM
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
-        private StringTable stringTable = new StringTable();
+        private readonly StringTable stringTable = new StringTable();
 
         // Totaly allocated StackValues
         private int totalAllocated = 0;
         private int totalTraversed = 0;
 
-        private LinkedList<StackValue> grayList = new LinkedList<StackValue>();
+        private LinkedList<StackValue> grayList;
         private HashSet<int> sweepSet;
         private List<StackValue> roots;
-        private DSASM.Executive executive;
+        private Executive executive;
 
         public bool IsGCRunning { get; private set; }
         public GCState gcState = GCState.Pause;
@@ -447,7 +436,7 @@ namespace ProtoCore.DSASM
 
         private int AllocateInternal(int size)
         {
-            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex, this);
+            HeapElement hpe = new HeapElement(size, this);
             hpe.Mark = GCMark.White;
             totalAllocated += size;
             return AddHeapElement(hpe);
@@ -606,8 +595,6 @@ namespace ProtoCore.DSASM
                 case (int)PrimitiveType.kTypeString:
                     // string are in string table
                     break;
-                default:
-                    break;
             }
 
             return size;
@@ -624,9 +611,6 @@ namespace ProtoCore.DSASM
             grayList = new LinkedList<StackValue>();
             foreach (var heapPointer in roots)
             {
-                if (!heapPointer.IsReferenceType)
-                    continue;
-
                 var ptr = (int)heapPointer.RawIntValue;
                 heapElements[ptr].Mark = GCMark.Gray;
                 grayList.AddLast(heapPointer);
@@ -666,9 +650,6 @@ namespace ProtoCore.DSASM
                     MarkAllWhite();
                     gcState = GCState.Pause;
                     IsGCRunning = false;
-                    break;
-
-                default:
                     break;
             }
         }
@@ -725,7 +706,7 @@ namespace ProtoCore.DSASM
         /// <param name="gcroots"></param>
         /// <param name="exe"></param>
         /// <returns></returns>
-        public bool SetRoots(IEnumerable<StackValue> gcroots, DSASM.Executive exe)
+        public bool SetRoots(IEnumerable<StackValue> gcroots, Executive exe)
         {
             if (gcroots == null)
                 throw new ArgumentNullException("gcroots");
@@ -733,12 +714,14 @@ namespace ProtoCore.DSASM
             if (exe == null)
                 throw new ArgumentNullException("exe");
 
-            if (!IsWaitingForRoots() || !gcroots.Any())
+            if (!IsWaitingForRoots())
                 return false;
 
-            roots = new List<StackValue>(gcroots);
-            executive = exe;
+            roots = new List<StackValue>(gcroots.Where(r => r.IsReferenceType));
+            if (!roots.Any())
+                return false;
 
+            executive = exe;
             StartCollection();
             gcState = GCState.Propagate;
 
@@ -758,7 +741,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="gcroots"></param>
         /// <param name="exe"></param>
-        public void FullGC(IEnumerable<StackValue> gcroots, DSASM.Executive exe)
+        public void FullGC(IEnumerable<StackValue> gcroots, Executive exe)
         {
             if (gcroots == null)
                 throw new ArgumentNullException("gcroots");
