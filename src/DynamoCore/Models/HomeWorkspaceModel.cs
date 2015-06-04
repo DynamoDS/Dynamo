@@ -458,6 +458,17 @@ namespace Dynamo.Models
         /// </summary>
         public void Run()
         {
+            // If the RunSettings.RunEnabled is set to false for some contexts, this
+            // method will not run if it is in the manual mode because the run button
+            // is disabled. But it is not the case in the automatic mode, even if the
+            // running of the graph will cause issues for some contexts. This is why
+            // the condition is added here so that if RunSettings.RunEnabled is set to
+            // false, this method will return.
+            if (!RunSettings.RunEnabled)
+            {
+                return;
+            }
+
             graphExecuted = true;
 
             // When Dynamo is shut down, the workspace is cleared, which results
