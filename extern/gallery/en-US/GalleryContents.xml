@@ -3,27 +3,27 @@
 	<GalleryUiContents>
 	<GalleryContent>
 		<Header>Colors in geometry</Header>
-		<Body>You can now apply colors into the geometry that you create. Visualise all your analysis data using color coded elements within Dynamo. Look out for Core > Display. Canvas also comes with better grid and the ability to visualise vectors.</Body>
+		<Body>You can now apply colors to the geometry that you create. Visualize all your analysis data using color coded elements within Dynamo. Look out for Core > Display. The canvas also comes with a better grid and the ability to visualize vectors.</Body>
 		<ImagePath>colored_geometry.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Grouping and annotation</Header>
-		<Body>You can select multiple nodes and group them together to add note related to that group. Shortcut is Ctrl + G for grouping. For switching between background preview and node view, use Ctrl + B</Body>
+		<Body>You can select multiple nodes and group them together. The shortcut is Ctrl + G for grouping. For switching between background preview and node view, use Ctrl + B.</Body>
 		<ImagePath>grouping_annotation.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Crash recovery</Header>
-		<Body>All your working files are always safe, even when Dynamo crashes. Look out for the recovered files in the start page when you restart Dynamo after crash.</Body>
+		<Body>All your working files are always safe, even when Dynamo crashes. Look out for recovered files in the start page when you restart Dynamo after a crash.</Body>
 		<ImagePath>crash_recovery.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Control multiple node states</Header>
-		<Body>You can select multiple nodes at one to toggle on / off the geometry preview.</Body>
+		<Body>You can select multiple nodes at once to toggle on/off the geometry preview.</Body>
 		<ImagePath>multiple_previews.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Library items drag-able</Header>
-		<Body>You can now drag items from library. It helps you place your nodes precisely in the first try.</Body>
+		<Body>You can now drag items from the library. It helps you place nodes precisely on the first try.</Body>
 		<ImagePath>library_draggable.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
