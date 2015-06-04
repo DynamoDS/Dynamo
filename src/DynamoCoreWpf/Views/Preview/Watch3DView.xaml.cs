@@ -222,7 +222,7 @@ namespace Dynamo.Controls
         public List<HelixToolkit.Wpf.SharpDX.Model3D> GeometryValues
         {
             get
-            {
+            {              
                 return GeomteryDictionary.Select(x => x.Value).ToList();
             }
         }
@@ -337,6 +337,11 @@ namespace Dynamo.Controls
             DrawGrid();
         }
 
+        /// <summary>
+        /// Initialize the Helix with these values. These values should be attached before the 
+        /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
+        /// So they are initialized before the process starts.
+        /// </summary>
         private void InitializeHelix()
         {
             DirectionalLight3D directLight3D = new DirectionalLight3D();
@@ -459,6 +464,11 @@ namespace Dynamo.Controls
 #endif
         }
 
+        /// <summary>
+        /// Initialize the Geometry everytime a workspace is opened or closed. 
+        /// Always, keep these DirectionalLight,Grid,Axes. These values are rendered
+        /// only once by helix, attaching them again will make no effect on helix 
+        /// </summary> 
         private void VisualizationManager_InitializeGeomtery()
         {
             List<string> keysList = new List<string>();
@@ -469,10 +479,15 @@ namespace Dynamo.Controls
             {
                 GeomteryDictionary.Remove(key);
             }
-
+            NotifyPropertyChanged("");
             View.InvalidateRender();
         }
 
+        /// <summary>
+        /// When a model is selected,then select only that Geometry
+        /// If any of the model is in selected mode, then unselect that model
+        /// </summary>
+        /// <param name="items">The items.</param>
         private void VisualizationManager_RenderSelection(IEnumerable items)
         {
             if (items == null)
@@ -504,11 +519,14 @@ namespace Dynamo.Controls
                         geometryModel.IsSelected = !geometryModel.IsSelected;
                     }
                 }
-            }
-            //View.InvalidateRender();
+            }            
         }
 
-
+        /// <summary>
+        /// when a node is deleted, then update the Geometry 
+        /// and notify helix        
+        /// </summary>
+        /// <param name="node">The node.</param>
         private void VisualizationManager_UpdateGeometryOnNodeDeletion(NodeModel node)
         {
             var geometryModel =
@@ -850,16 +868,20 @@ namespace Dynamo.Controls
             renderTimer.Reset();
             renderTimer.Start();
 #endif
+            View.InvalidateRender();
             NotifyPropertyChanged("");
         }
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
             MeshCount = 0;
-            //Add the defaults
-
+            //Clear the geometry values before adding the package.
+            VisualizationManager_InitializeGeomtery();
             foreach (var rp in parameters.Packages)
             {
+                //Node ID gets updated with a ":" everytime this function is called.
+                //For example, if the same point node is called multiple times (CBN), the ID has a ":"
+                //and this makes the dictionary to have multiple entries for the same node. 
                 var id = rp.Description;
                 if (id.IndexOf(":", StringComparison.Ordinal) > 0)
                 {
@@ -928,13 +950,12 @@ namespace Dynamo.Controls
                             IsHitTestVisible = false
                         };
 
-                        geomteryDictionary.Add(rp.Description, lineGeometry3D);
+                        geomteryDictionary.Add(id, lineGeometry3D);
                     }
 
                     lineGeometry3D = geomteryDictionary[id] as LineGeometryModel3D;
                     var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
                     var startIdx = lineSet.Positions.Count;
-
 
                     lineSet.Positions.AddRange(l.Positions);
                     lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));

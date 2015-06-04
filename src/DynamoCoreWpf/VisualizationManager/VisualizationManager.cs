@@ -360,6 +360,7 @@ namespace Dynamo
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
+            OnNodeDeletedFromWorkspace(node);
         }
 
         private void NodeAddedToHomeWorkspace(NodeModel node)
@@ -541,6 +542,7 @@ namespace Dynamo
 
         private void ClearVisualizationsAndRestart(object sender, EventArgs e)
         {
+            OnInitializeGeometry();
             Clear();
             Start();
         }
