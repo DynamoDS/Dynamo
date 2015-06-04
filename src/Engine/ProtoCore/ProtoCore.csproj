@@ -84,7 +84,7 @@
     <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;TRACING_GC</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
@@ -236,10 +236,9 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
   <Target Name="AfterBuild">
     <ItemGroup>
-		<ExtendedLibraries Include="$(ProjectDir)ExtendedLibraries\*.ds" />
+      <ExtendedLibraries Include="$(ProjectDir)ExtendedLibraries\*.ds" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
   </Target>
