@@ -130,10 +130,13 @@ namespace Analysis
                 var d = DSCore.Math.Pow(t.U - p.U, 2) + DSCore.Math.Pow(t.V - p.V, 2);
                 if (d == 0.0)
                 {
-                    continue;
-                    //return loc.Value;
+                    return loc.Value;
                 }
-                var w = 1 / d;
+
+                // 1/d^2 creates a suitable fall-off. 
+                // The higher the exponent, the more more pixelated the result.
+
+                var w = 1 / Math.Pow(d,2);
 
                 num[0] += loc.Value.Alpha * w;
                 num[1] += loc.Value.Red * w;
