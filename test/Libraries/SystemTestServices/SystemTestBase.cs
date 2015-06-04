@@ -397,7 +397,7 @@ namespace SystemTestServices
             return objects;
         }
 
-        private string GetVarName(string guid)
+        protected string GetVarName(string guid)
         {
             var model = ViewModel.Model;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
@@ -405,7 +405,7 @@ namespace SystemTestServices
             return node.AstIdentifierBase;
         }
 
-        private RuntimeMirror GetRuntimeMirror(string varName)
+        protected RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
