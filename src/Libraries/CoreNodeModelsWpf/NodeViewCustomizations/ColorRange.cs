@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using DSCore;
 using Dynamo.Controls;
 using Dynamo.UI;
 
@@ -132,7 +132,7 @@ namespace Dynamo.Wpf.Nodes
             for (var i = 1; i <= width; i++)
             {
                 var t = (double)i / width;
-                var newColor = colorRange.GetColorAtParameter(t);
+                var newColor = ColorRange1D.GetColorAtParameter(colorRange,t);
                 pixels[i-1] = (uint)((255 << 24) + (newColor.Red << 16) + (newColor.Green << 8) + newColor.Blue);
 
             }

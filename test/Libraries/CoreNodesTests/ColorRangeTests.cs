@@ -24,8 +24,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-            Assert.AreEqual(range.GetColorAtParameter(0), red);
-            Assert.AreEqual(range.GetColorAtParameter(1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
         }
 
         [Test]
@@ -36,8 +36,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-            Assert.AreEqual(range.GetColorAtParameter(0), red);
-            Assert.AreEqual(range.GetColorAtParameter(1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
         }
 
         [Test]
@@ -47,9 +47,9 @@ namespace Dynamo.Tests
             var parameters = new List<double>();
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
-            
-            Assert.AreEqual(range.GetColorAtParameter(0), red);
-            Assert.AreEqual(range.GetColorAtParameter(1), blue);
+
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
         }
 
         [Test]
@@ -60,8 +60,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-            Assert.AreEqual(range.GetColorAtParameter(0), red);
-            Assert.AreEqual(range.GetColorAtParameter(1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
         }
 
         [Test]
@@ -72,8 +72,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-            Assert.AreEqual(range.GetColorAtParameter(0), red);
-            Assert.AreEqual(range.GetColorAtParameter(1), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), red);
         }
 
         [Test]
@@ -84,8 +84,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-            Assert.AreEqual(range.GetColorAtParameter(0), blue);
-            Assert.AreEqual(range.GetColorAtParameter(1), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), red);
         }
 
         [Test]
@@ -95,9 +95,9 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(colors, null);
 
-            Assert.AreEqual(range.GetColorAtParameter(0), red);
-            Assert.AreEqual(range.GetColorAtParameter(0.5), orange);
-            Assert.AreEqual(range.GetColorAtParameter(1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0.5), orange);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range, 1), blue);
         }
 
         [Test]
@@ -107,8 +107,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(null, parameters);
 
-            Assert.AreEqual(range.GetColorAtParameter(0), red);
-            Assert.AreEqual(range.GetColorAtParameter(1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
         }
 
     }

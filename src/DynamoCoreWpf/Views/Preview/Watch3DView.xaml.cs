@@ -10,6 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using Dynamo.UI;
 using Dynamo.ViewModels;
@@ -683,6 +684,19 @@ namespace Dynamo.Controls
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
 
+            if (packages.Any())
+            {
+                var testPackage = packages.FirstOrDefault(p=>p.Colors != null);
+                if (testPackage != null)
+                {
+                    var testMap = testPackage.Colors;
+                    if (testMap != null)
+                    {
+                        WhiteMaterial.DiffuseMap = BitmapSource.Create(testPackage.ColorsStride, testPackage.ColorsStride, 96.0, 96.0, PixelFormats.Bgra32, null, testMap.ToArray(), 4 * testPackage.ColorsStride);
+                    }
+                }
+            }
+
             var points = HelixRenderPackage.InitPointGeometry();
             var lines = HelixRenderPackage.InitLineGeometry();
             var linesSel = HelixRenderPackage.InitLineGeometry();
@@ -751,8 +765,6 @@ namespace Dynamo.Controls
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-
-
             MeshCount = 0;
             foreach (var rp in parameters.Packages)
             {

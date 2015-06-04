@@ -2,12 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using DSCore;
 using Math = System.Math;
 
 namespace Analysis
 {
-    internal static class Utils
+    [IsVisibleInDynamoLibrary(false)]
+    public static class Utils
     {
         internal static ColorRange1D CreateAnalyticalColorRange()
         {
@@ -21,15 +23,6 @@ namespace Analysis
             return colorRange;
         }
 
-        /// <summary>
-        /// Create a gradient map of values on the surface. The gradient is
-        /// defined by computing the weighted average of values on the surface
-        /// at parameters whose locations are specified by the uSamples and vSamples 
-        /// parameters.
-        /// </summary>
-        /// <param name="uSamples">The number of samples evenly spaced in the U direction from 0->1</param>
-        /// <param name="vSamples">The number of samples evenly spaced in the V direction from 0->1</param>
-        /// <returns></returns>
         public static double[][] CreateGradientValueMap(IEnumerable<double> values, IEnumerable<UV> locations, int uSamples, int vSamples)
         {
             if (!values.Any())
@@ -37,71 +30,133 @@ namespace Analysis
                 return new double[0][];
             }
 
-            var min = values.Min();
-            var max = values.Max();
-
-            var domain = max - min;
-
-            if (min == max)
-            {
-                domain = Math.Abs(max);
-            }
-
-            // Normalize the values in the 0->1 range
-            var normalizedValues = values.Select(v => (v - min) / domain).ToList();
-
             // Zip the values and locations together to create an
             // enumerable of ValueLocation objects.
-            var zip = locations.Zip(normalizedValues, (uv, value) => new ValueLocation(value, uv));
+            var zip = locations.Zip(values, (uv, value) => new ValueLocation<double>(value, uv));
 
-            var valueMap = new double[uSamples][];
-            for (var i = 0; i < valueMap.Length; i++)
+            // The size of the map will be +1 in both directions
+            // than the number of samples, to ensure that we are
+            // sampling all the way to the edges.
+
+            var w = uSamples + 1;
+            var h = vSamples + 1;
+
+            var valueMap = new double[w][];
+            for (var i = 0; i < w; i++)
             {
-                valueMap[i] = new double[vSamples];
+                valueMap[i] = new double[h];
             }
 
-            Parallel.For(0, uSamples,
-                         w => Parallel.For(
+            Parallel.For(0,w,
+                         u => Parallel.For(
                              0,
-                             vSamples,
-                             h =>
+                             h,
+                             v =>
                              {
-                                 var uv = UV.ByCoordinates((double)w / uSamples, (double)h / vSamples);
-                                 valueMap[w][h] = Interpolate(zip, uv);
+                                 var uv = UV.ByCoordinates((double)u / uSamples, (double)v / vSamples);
+                                 valueMap[v][u] = Interpolate(zip, uv);
                              }));
             return valueMap;
         }
 
-        private static double Interpolate(IEnumerable<ValueLocation> locations, UV p)
+        public static Color[][] CreateGradientColorMap(Color[] colors, IEnumerable<UV> locations, int uSamples, int vSamples)
+        {
+            if (!colors.Any())
+            {
+                return new Color[0][];
+            }
+
+            // Zip the values and locations together to create an
+            // enumerable of ValueLocation objects.
+            var zip = locations.Zip(colors, (uv, value) => new ValueLocation<Color>(value, uv));
+
+            // The size of the map will be +1 in both directions
+            // than the number of samples, to ensure that we are
+            // sampling all the way to the edges.
+
+            var w = uSamples + 1;
+            var h = vSamples + 1;
+
+            var valueMap = new Color[w][];
+            for (var i = 0; i < w; i++)
+            {
+                valueMap[i] = new Color[h];
+            }
+
+            Parallel.For(0, w,
+                         u => Parallel.For(
+                             0,
+                             h,
+                             v =>
+                             {
+                                 var uv = UV.ByCoordinates((double)u / uSamples, (double)v / vSamples);
+                                 valueMap[v][u] = Interpolate(zip, uv);
+                             }));
+            return valueMap;
+        }
+
+        private static double Interpolate(IEnumerable<ValueLocation<double>> locations, UV p)
         {
             var num = 0.0;
             var totalArea = 0.0;
             foreach (var loc in locations)
             {
                 var t = loc.Location;
-                var d = System.Math.Sqrt(System.Math.Pow(t.U - p.U, 2) + Math.Pow(t.V - p.V, 2));
+
+                // Use the sum of the distances squared between components. No need to use the
+                // square root as the relative weight will be the same.
+                var d = Math.Pow(t.U - p.U, 2) + Math.Pow(t.V - p.V, 2);
+
                 if (d == 0.0)
                 {
                     return loc.Value;
                 }
                 var w = 1 / d;
 
-                num += w;
+                num += loc.Value * w;
                 totalArea += w;
             }
 
             return num / totalArea;
         }
 
+        private static Color Interpolate(IEnumerable<ValueLocation<Color>> locations, UV p)
+        {
+            var num = new double[4];
+            var totalArea = 0.0;
+            foreach (var loc in locations)
+            {
+                var t = loc.Location;
+                var d = DSCore.Math.Pow(t.U - p.U, 2) + DSCore.Math.Pow(t.V - p.V, 2);
+                if (d == 0.0)
+                {
+                    continue;
+                    //return loc.Value;
+                }
+                var w = 1 / d;
+
+                num[0] += loc.Value.Alpha * w;
+                num[1] += loc.Value.Red * w;
+                num[2] += loc.Value.Green * w;
+                num[3] += loc.Value.Blue * w;
+                totalArea += w;
+            }
+
+            return Color.ByARGB((int)(num[0] / totalArea),
+                (int)(num[1] / totalArea),
+                (int)(num[2] / totalArea),
+                (int)(num[3] / totalArea));
+        }
+
         /// <summary>
         /// A class for storing a value at a location.
         /// </summary>
-        private class ValueLocation
+        private class ValueLocation<TValue>
         {
-            public double Value { get; set; }
+            public TValue Value { get; set; }
             public UV Location { get; set; }
 
-            public ValueLocation(double value, UV location)
+            public ValueLocation(TValue value, UV location)
             {
                 Value = value;
                 Location = location;
