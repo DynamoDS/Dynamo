@@ -507,7 +507,12 @@ namespace Dynamo.PackageManager
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "PackageContents") CanSubmit();
+            if (e.PropertyName == "PackageContents")
+            {
+                CanSubmit();
+                BeginInvoke(
+                             (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
+            }
         }
 
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
