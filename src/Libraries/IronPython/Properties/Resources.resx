@@ -134,11 +134,11 @@
     <value>Edit Python Script...</value>
   </data>
   <data name="PythonScriptEditorInputComment" xml:space="preserve">
-    <value>#The inputs to this node will be stored as a list in the IN variables.</value>
+    <value>The inputs to this node will be stored as a list in the IN variables.</value>
     <comment>It is comment in the code. IN shouldn't be translated.</comment>
   </data>
   <data name="PythonScriptEditorOutputComment" xml:space="preserve">
-    <value>#Assign your output to the OUT variable.</value>
+    <value>Assign your output to the OUT variable.</value>
     <comment>It is comment in the code. OUT shouldn't be translated.</comment>
   </data>
   <data name="PythonScriptFromStringDescription" xml:space="preserve">
