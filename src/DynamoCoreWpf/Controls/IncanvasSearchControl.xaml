@@ -25,6 +25,12 @@
                 <EventSetter Event="PreviewMouseLeftButtonUp"
                              Handler="OnMouseLeftButtonUp" />
             </Style>
+            
+            <Style TargetType="{x:Type ScrollViewer}"
+                   BasedOn="{StaticResource LibraryScrollViewerStyle}">
+                <Setter Property="Template"
+                        Value="{StaticResource LibraryScrollViewerControlTemplate}" />
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -111,12 +117,14 @@
                      BorderBrush="Transparent"
                      ItemContainerStyle="{StaticResource SearchMemberStyle}"
                      ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
-                     TargetUpdated="OnMembersListBoxUpdated">
+                     TargetUpdated="OnMembersListBoxUpdated"
+                     PreviewMouseWheel="OnMembersListBoxMouseWheel">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
-                                      CanContentScroll="True">
+                                      CanContentScroll="True"
+                                      Width="250">
                             <ContentControl Template="{StaticResource MemberControlTemplate}" />
                         </ScrollViewer>
                     </DataTemplate>

@@ -126,6 +126,10 @@ namespace Dynamo.UI.Controls
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     UpdateHighlightedItem(GetListItemByIndex(MembersListBox, 0));
+
+
+                    var scrollViewer = MembersListBox.ChildOfType<ScrollViewer>();
+                    scrollViewer.ScrollToTop();
                 }),
                     DispatcherPriority.Loaded);
             }
@@ -215,6 +219,17 @@ namespace Dynamo.UI.Controls
                 return selectedMemberIndex;
 
             return nextselectedMemberIndex;
+        }
+
+        private void OnMembersListBoxMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var listBox = sender as FrameworkElement;
+
+            var scrollViewer = listBox.ChildOfType<ScrollViewer>();
+
+            // Make delta less to achieve smooth scrolling and not jump over other elements.
+            var delta = e.Delta/100;
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - delta);
         }
     }
 }
