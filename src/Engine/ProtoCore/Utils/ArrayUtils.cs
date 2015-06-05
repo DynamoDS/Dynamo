@@ -428,7 +428,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static int GetElementSize(StackValue array, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
             if (!array.IsArray)
             {
                 return Constants.kInvalidIndex;
@@ -551,7 +550,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
+            if (array.IsArray)
+                return StackValue.Null;
 
             HeapElement arrayHeap = GetHeapElement(array, runtimeCore);
             index = arrayHeap.ExpandByAcessingAt(index);
@@ -571,7 +571,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, StackValue index, StackValue value, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
+            if (array.IsArray)
+                return StackValue.Null;
 
             if (index.IsNumeric)
             {
@@ -610,7 +611,9 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndices(StackValue array, StackValue[] indices, StackValue value, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
+                return StackValue.Null;
+
             RuntimeMemory rmem = runtimeCore.RuntimeMemory;
 
             for (int i = 0; i < indices.Length - 1; ++i)
@@ -716,7 +719,10 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, int index, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray || array.IsString);
+            if (!array.IsArray && !array.IsString)
+            {
+                return StackValue.Null;
+            }
             RuntimeMemory rmem = runtimeCore.RuntimeMemory;
 
             if (array.IsString)
@@ -756,7 +762,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndex(StackValue array, StackValue index, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray || array.IsString);
             if (!array.IsArray && !array.IsString)
             {
                 return StackValue.Null;
@@ -828,7 +833,9 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray || array.IsString);
+            if (array.IsArray || array.IsString)
+                return StackValue.Null;
+
             for (int i = 0; i < indices.Length - 1; ++i)
             {
                 StackValue index = indices[i];
@@ -928,13 +935,12 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue CopyArray(StackValue array, Type type, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             if (!array.IsArray)
             {
                 return StackValue.Null;
             }
 
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             HeapElement he = GetHeapElement(array, runtimeCore);
             Validity.Assert(he != null);
 
@@ -1034,7 +1040,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue[] GetKeys(StackValue array, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
             if (!array.IsArray)
             {
                 return null;
@@ -1058,7 +1063,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static IDictionary<StackValue, StackValue> ToDictionary(StackValue array, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
             if (!array.IsArray)
             {
                 return null;
@@ -1081,7 +1085,6 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static bool ContainsKey(StackValue array, StackValue key, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
             if (!array.IsArray)
             {
                 return false;
@@ -1105,7 +1108,6 @@ namespace ProtoCore.Utils
 
         public static bool RemoveKey(StackValue array, StackValue key, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
             if (!array.IsArray)
             {
                 return false;
