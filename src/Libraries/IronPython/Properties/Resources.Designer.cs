@@ -79,6 +79,51 @@ namespace DSIronPythonNode.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string PythonScriptEditoCancelButton {
+            get {
+                return ResourceManager.GetString("PythonScriptEditoCancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept Changes.
+        /// </summary>
+        internal static string PythonScriptEditorAcceptChangesButton {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorAcceptChangesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Python Script....
+        /// </summary>
+        internal static string PythonScriptEditorCaption {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #The inputs to this node will be stored as a list in the IN variables..
+        /// </summary>
+        internal static string PythonScriptEditorInputComment {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorInputComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #Assign your output to the OUT variable..
+        /// </summary>
+        internal static string PythonScriptEditorOutputComment {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorOutputComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs a IronPython script from a string..
         /// </summary>
         internal static string PythonScriptFromStringDescription {
