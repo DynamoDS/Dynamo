@@ -22,7 +22,7 @@ namespace DSIronPythonNode.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace DSIronPythonNode.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DSIronPythonNode.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace DSIronPythonNode.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>
-        internal static string PythonNodePortDataOutputToolTip {
+        public static string PythonNodePortDataOutputToolTip {
             get {
                 return ResourceManager.GetString("PythonNodePortDataOutputToolTip", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Runs an embedded IronPython script..
         /// </summary>
-        internal static string PythonScriptDescription {
+        public static string PythonScriptDescription {
             get {
                 return ResourceManager.GetString("PythonScriptDescription", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        internal static string PythonScriptEditoCancelButton {
+        public static string PythonScriptEditoCancelButton {
             get {
                 return ResourceManager.GetString("PythonScriptEditoCancelButton", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Accept Changes.
         /// </summary>
-        internal static string PythonScriptEditorAcceptChangesButton {
+        public static string PythonScriptEditorAcceptChangesButton {
             get {
                 return ResourceManager.GetString("PythonScriptEditorAcceptChangesButton", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Edit Python Script....
         /// </summary>
-        internal static string PythonScriptEditorCaption {
+        public static string PythonScriptEditorCaption {
             get {
                 return ResourceManager.GetString("PythonScriptEditorCaption", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The inputs to this node will be stored as a list in the IN variables..
         /// </summary>
-        internal static string PythonScriptEditorInputComment {
+        public static string PythonScriptEditorInputComment {
             get {
                 return ResourceManager.GetString("PythonScriptEditorInputComment", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Assign your output to the OUT variable..
         /// </summary>
-        internal static string PythonScriptEditorOutputComment {
+        public static string PythonScriptEditorOutputComment {
             get {
                 return ResourceManager.GetString("PythonScriptEditorOutputComment", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Runs a IronPython script from a string..
         /// </summary>
-        internal static string PythonScriptFromStringDescription {
+        public static string PythonScriptFromStringDescription {
             get {
                 return ResourceManager.GetString("PythonScriptFromStringDescription", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace DSIronPythonNode.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Python script to run..
         /// </summary>
-        internal static string PythonStringPortDataScriptToolTip {
+        public static string PythonStringPortDataScriptToolTip {
             get {
                 return ResourceManager.GetString("PythonStringPortDataScriptToolTip", resourceCulture);
             }
