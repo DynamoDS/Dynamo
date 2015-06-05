@@ -125,11 +125,10 @@ namespace Dynamo.UI.Controls
                 MembersListBox.ItemContainerGenerator.StatusChanged -= OnMembersListBoxIcgStatusChanged;
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, 0));
-
-
                     var scrollViewer = MembersListBox.ChildOfType<ScrollViewer>();
                     scrollViewer.ScrollToTop();
+
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, 0));
                 }),
                     DispatcherPriority.Loaded);
             }
@@ -148,7 +147,10 @@ namespace Dynamo.UI.Controls
 
             // Select new value.
             if (HighlightedItem != null)
+            {
                 HighlightedItem.IsSelected = true;
+                HighlightedItem.BringIntoView();
+            }
         }
 
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
