@@ -34,10 +34,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
                         <StackPanel Margin="8,0,8,8"
-                                    Width="250">
+                                    Width="250"
+                                    Height="{Binding ElementName=MenuItems, Path=ActualHeight, 
+                                                     Converter={StaticResource WorkspaceContextMenuHeightConverter}}">
                             <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" />
                             <Border BorderThickness="1"
-                                    Name="Border"
+                                    Name="MenuItems"
                                     Background="White"
                                     BorderBrush="#bbbbbb"
                                     Padding="0,3,0,3"
