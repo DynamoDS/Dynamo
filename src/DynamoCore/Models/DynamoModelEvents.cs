@@ -206,11 +206,12 @@ namespace Dynamo.Models
         /// <summary>
         /// An event triggered when all tasks in scheduler are completed.
         /// </summary>
-        public event EventHandler RefreshCompleted;
+        public event Action<HomeWorkspaceModel> RefreshCompleted;
         public virtual void OnRefreshCompleted(object sender, EventArgs e)
         {
-            if (RefreshCompleted != null)
-                RefreshCompleted(sender, e);
+            var homeWorkspaceModel = sender as HomeWorkspaceModel;
+            if (RefreshCompleted != null && homeWorkspaceModel != null)
+                RefreshCompleted(homeWorkspaceModel);
         }
 
         #endregion
