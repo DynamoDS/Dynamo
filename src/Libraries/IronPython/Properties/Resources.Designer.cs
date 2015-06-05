@@ -106,7 +106,7 @@ namespace DSIronPythonNode.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #The inputs to this node will be stored as a list in the IN variables..
+        ///   Looks up a localized string similar to The inputs to this node will be stored as a list in the IN variables..
         /// </summary>
         internal static string PythonScriptEditorInputComment {
             get {
@@ -115,7 +115,7 @@ namespace DSIronPythonNode.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #Assign your output to the OUT variable..
+        ///   Looks up a localized string similar to Assign your output to the OUT variable..
         /// </summary>
         internal static string PythonScriptEditorOutputComment {
             get {
