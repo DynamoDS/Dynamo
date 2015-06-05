@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
+using ProtoCore.Properties;
 using ProtoCore.Utils;
 
 namespace ProtoCore.Lang.Replication
@@ -113,7 +114,7 @@ namespace ProtoCore.Lang.Replication
                             //If we've previous seen a shortest node with this guide
                             if (i > 0 && indexLace[guideCounter] == ZipAlgorithm.Shortest)
                             {
-                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
+                                throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
                             }
 
                             //Overwrite the default behaviour
@@ -125,7 +126,7 @@ namespace ProtoCore.Lang.Replication
                             //then we've created a violation foo(a<1>, b1<1L>) is not allowed
                             if (indexLace[guideCounter] == ZipAlgorithm.Longest)
                             {
-                                throw new ReplicationCaseNotCurrentlySupported("Cannot support Longest and shortest zipped collections");
+                                throw new ReplicationCaseNotCurrentlySupported(Resources.ZipAlgorithmError);
                             }
                             else
                             {
@@ -190,8 +191,8 @@ namespace ProtoCore.Lang.Replication
                 {
                     if (guidesOnParam[i] != sorted[i])
                     {
-                        throw new ReplicationCaseNotCurrentlySupported(
-                            "Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead, err code: {3C5360D1}");
+                        throw new ReplicationCaseNotCurrentlySupported(Resources.MultipleGuidesNotSupported + 
+                            string.Format(Resources.ErrorCode, "{3C5360D1}"));
                     }
                 }
             }
@@ -769,7 +770,8 @@ namespace ProtoCore.Lang.Replication
 
             if (providedControl.Count > maxDepth)
             {
-                throw new ReplicationCaseNotCurrentlySupported("Replication requested exceeds the available dimensions of the array. This case is not yet supported {1EC8AF3C-48D6-4582-999E-ADBCBF9155D1}");
+                throw new ReplicationCaseNotCurrentlySupported(
+                    string.Format(Resources.MaxDimensionExceeded, "{1EC8AF3C-48D6-4582-999E-ADBCBF9155D1}"));
             }
             else
             {
