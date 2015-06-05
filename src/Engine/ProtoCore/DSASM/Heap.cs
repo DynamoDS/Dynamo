@@ -26,7 +26,7 @@ namespace ProtoCore.DSASM
             return AllocSize;
         }
 
-        public HeapElement(int size, int symbolindex)
+        public HeapElement(int size)
         {
             AllocSize = VisibleSize = size;
             Dict = null; 
@@ -190,6 +190,35 @@ namespace ProtoCore.DSASM
         }
     }
 
+    public class DSArray : HeapElement
+    {
+        private Dictionary<StackValue, StackValue> Dict;
+        public DSArray(int size)
+            : base(size)
+        {
+            Dict = new Dictionary<StackValue, StackValue>();
+            MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
+        }
+    }
+
+    public class DSObject : HeapElement
+    {
+        public DSObject(int size)
+            : base(size)
+        {
+            MetaData = new MetaData { type = (int)PrimitiveType.kTypePointer };
+        }
+    }
+
+    public class DSString : HeapElement
+    {
+        public DSString(int size)
+            : base(size)
+        {
+            MetaData = new MetaData { type = (int)PrimitiveType.kTypeString };
+        }
+    }
+
     public class StackValueComparer : IEqualityComparer<StackValue>
     {
         private RuntimeCore runtimeCore;
@@ -301,12 +330,10 @@ namespace ProtoCore.DSASM
         /// <param name="values">Array elements whose indices are integer</param>
         /// <param name="dict">Array elements whose indices are not integer</param>
         /// <returns></returns>
-        public StackValue AllocateArray(IEnumerable<StackValue> values, 
-                                        Dictionary<StackValue, StackValue> dict = null)
+        public StackValue AllocateArray(IEnumerable<StackValue> values)
         {
-            int index = AllocateInternal(values);
+            int index = AllocateInternal(values, PrimitiveType.kTypeArray);
             var heapElement = heapElements[index];
-            heapElement.Dict = dict;
             heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
             return StackValue.BuildArrayPointer(index);
         }
@@ -320,7 +347,7 @@ namespace ProtoCore.DSASM
         public StackValue AllocatePointer(IEnumerable<StackValue> values, 
                                           MetaData metaData)
         {
-            int index = AllocateInternal(values);
+            int index = AllocateInternal(values, PrimitiveType.kTypePointer);
             var heapElement = heapElements[index];
             heapElement.MetaData = metaData;
             return StackValue.BuildPointer(index, metaData);
@@ -346,7 +373,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocatePointer(int size, MetaData metadata)
         {    
-            int index = AllocateInternal(size);
+            int index = AllocateInternal(size, PrimitiveType.kTypePointer);
             var hpe = heapElements[index];
             hpe.MetaData = metadata;
             return StackValue.BuildPointer(index, metadata);
@@ -374,9 +401,8 @@ namespace ProtoCore.DSASM
             int index;
             if (!stringTable.TryGetPointer(str, out index))
             {
-                index = AllocateInternal(Enumerable.Empty<StackValue>());
+                index = AllocateInternal(Enumerable.Empty<StackValue>(), PrimitiveType.kTypeString);
                 stringTable.AddString(index, str);
-                heapElements[index].MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
             }
             return index;
         }
@@ -454,16 +480,33 @@ namespace ProtoCore.DSASM
             freeList.Clear();
         }
 
-        private int AllocateInternal(int size)
+        private int AllocateInternal(int size, PrimitiveType type)
         {
-            HeapElement hpe = new HeapElement(size, Constants.kInvalidIndex);
-            return AddHeapElement(hpe);
+            switch (type)
+            {
+                case PrimitiveType.kTypeArray:
+                    var dsArray = new DSArray(size);
+                    AddHeapElement(dsArray);
+                    break;
+
+                case PrimitiveType.kTypePointer:
+                    var dsObject = new DSObject(size);
+                    AddHeapElement(dsObject);
+                    break;
+
+                case PrimitiveType.kTypeString:
+                    var dsString = new DSString(size);
+                    AddHeapElement(dsString);
+                    break;
+            }
+
+            return Constants.kInvalidIndex;
         }
 
-        private int AllocateInternal(IEnumerable<StackValue> values)
+        private int AllocateInternal(IEnumerable<StackValue> values, PrimitiveType type)
         {
             int size = values.Count();
-            int index = AllocateInternal(size);
+            int index = AllocateInternal(size, type);
             var heapElement = heapElements[index];
 
             int i = 0;

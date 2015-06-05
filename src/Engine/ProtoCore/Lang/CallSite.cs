@@ -1769,7 +1769,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
             }
             else
@@ -1882,7 +1882,7 @@ namespace ProtoCore
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
 
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
 
             }
@@ -2050,7 +2050,7 @@ namespace ProtoCore
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv }, null);
+                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv });
                     oldSv = newSV;
                 }
 

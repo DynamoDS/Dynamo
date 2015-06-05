@@ -338,7 +338,7 @@ namespace ProtoCore.DSASM.Mirror
                     halfArraySize = (int)Math.Floor(formatParams.MaxArraySize * 0.5);
             }
 
-            int totalElementCount = hs.VisibleSize + (hs.Dict == null ? 0 : hs.Dict.Count());
+            int totalElementCount = hs.Values.Count(); 
 
             for (int n = 0; n < hs.VisibleSize; ++n)
             {

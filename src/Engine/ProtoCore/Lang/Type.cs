@@ -435,7 +435,7 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
-                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue });
                     return newSv;
                 }
                 else
@@ -449,7 +449,7 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
-                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue });
                     return newSv;
                 }
             }

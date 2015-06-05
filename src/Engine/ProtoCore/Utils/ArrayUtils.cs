@@ -620,7 +620,7 @@ namespace ProtoCore.Utils
                 // auto-promotion
                 if (!subArray.IsArray)
                 {
-                    subArray = rmem.Heap.AllocateArray(new StackValue[] { subArray }, null);
+                    subArray = rmem.Heap.AllocateArray(new StackValue[] { subArray });
                     SetValueForIndex(array, index, subArray, runtimeCore);
                 }
 
@@ -674,7 +674,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return rmem.Heap.AllocateArray(oldValues, null);
+                return rmem.Heap.AllocateArray(oldValues);
             }
             else
             {
@@ -689,7 +689,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return rmem.Heap.AllocateArray(oldValues, null);
+                return rmem.Heap.AllocateArray(oldValues);
             }
         }
 
@@ -884,7 +884,7 @@ namespace ProtoCore.Utils
                 }
                 else
                 {
-                    return runtimeCore.RuntimeMemory.Heap.AllocateArray(values, null);
+                    return runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
                 }
             }
             else
@@ -1188,7 +1188,7 @@ namespace ProtoCore.Utils
 
             if (hasValue)
             {
-                value = rmem.Heap.AllocateArray(values, null);
+                value = rmem.Heap.AllocateArray(values);
                 return true;
             }
             else

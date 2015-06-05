@@ -2988,7 +2988,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue array = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>(), null);
+                    StackValue array = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
                     rmem.SetSymbolValue(symbolnode, array);
                     if (!value.IsNull)
                     {
@@ -6062,7 +6062,7 @@ namespace ProtoCore.DSASM
 
                 if (runtimeCore.ContinuationStruct.Done)
                 {
-                    RX = rmem.Heap.AllocateArray(runtimeCore.ContinuationStruct.RunningResult, null);
+                    RX = rmem.Heap.AllocateArray(runtimeCore.ContinuationStruct.RunningResult);
 
                     runtimeCore.ContinuationStruct.RunningResult.Clear();
                     runtimeCore.ContinuationStruct.IsFirstCall = true;

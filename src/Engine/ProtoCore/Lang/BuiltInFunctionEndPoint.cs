@@ -424,7 +424,7 @@ namespace ProtoCore.Lang
                         else
                         {
                             var result = ArrayUtils.GetKeys(array, runtimeCore);
-                            ret = rmem.Heap.AllocateArray(result, null);
+                            ret = rmem.Heap.AllocateArray(result);
                         }
                         break;
                     }
@@ -439,7 +439,7 @@ namespace ProtoCore.Lang
                         else
                         {
                             var result = ArrayUtils.GetValues(array, runtimeCore);
-                            ret = rmem.Heap.AllocateArray(result, null);
+                            ret = rmem.Heap.AllocateArray(result);
                         }
                         break;
                     }
@@ -1175,7 +1175,7 @@ namespace ProtoCore.Lang
                         }
                 }
             }
-            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range, null);
+            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
         }
     }
     internal class ArrayUtilsForBuiltIns
@@ -1212,7 +1212,7 @@ namespace ProtoCore.Lang
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
-            return runtime.runtime.rmem.Heap.AllocateArray(newElements, null);
+            return runtime.runtime.rmem.Heap.AllocateArray(newElements);
         }
 
         internal static StackValue Concat(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -2097,7 +2097,7 @@ namespace ProtoCore.Lang
             //Convert list to Operand
             if (svList.Count >= 0)
             {
-                return runtime.runtime.rmem.Heap.AllocateArray(svList, null);
+                return runtime.runtime.rmem.Heap.AllocateArray(svList);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -2106,7 +2106,7 @@ namespace ProtoCore.Lang
         {
             for (; countBraces > 0; countBraces--)
             {
-                sv = runtime.runtime.rmem.Heap.AllocateArray(new StackValue[] { sv }, null);
+                sv = runtime.runtime.rmem.Heap.AllocateArray(new StackValue[] { sv });
             }
             return sv;
         }
