@@ -852,4 +852,47 @@
   <data name="kInvalidType" xml:space="preserve">
     <value>The type is invalid</value>
   </data>
+  <data name="AlgorithmNotSupported" xml:space="preserve">
+    <value>Selected algorithm not supported</value>
+  </data>
+  <data name="ArrayWithNotSupported" xml:space="preserve">
+    <value>Array with no common superclass not yet supported: {0}</value>
+  </data>
+  <data name="ErrorCode" xml:space="preserve">
+    <value>Error code: {0}</value>
+  </data>
+  <data name="ExcelCommunicationError" xml:space="preserve">
+    <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
+  </data>
+  <data name="ExcelNotInstalled" xml:space="preserve">
+    <value>Excel is not installed.</value>
+  </data>
+  <data name="FailedToResolveSortingFunction" xml:space="preserve">
+    <value>Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)</value>
+  </data>
+  <data name="FunctionDispatchFailed" xml:space="preserve">
+    <value>Function dispatch could not be completed {0}</value>
+  </data>
+  <data name="MaxDimensionExceeded" xml:space="preserve">
+    <value>Replication requested exceeds the available dimensions of the array. This case is not yet supported {0}</value>
+  </data>
+  <data name="MultipleFunctionsFound" xml:space="preserve">
+    <value>Couldn't decide which function to execute. Please provide more specific type information. Possible functions were: </value>
+  </data>
+  <data name="MultipleGuidesNotSupported" xml:space="preserve">
+    <value>Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead. </value>
+  </data>
+  <data name="OneDArrayExpected" xml:space="preserve">
+    <value>Both arguments were expected to be one-dimensional array type!</value>
+  </data>
+  <data name="OperationFailType1" xml:space="preserve">
+    <value>{0}.{1} operation failed.</value>
+  </data>
+  <data name="OperationFailType2" xml:space="preserve">
+    <value>{0}.{1} operation failed. 
+{2}</value>
+  </data>
+  <data name="ZipAlgorithmError" xml:space="preserve">
+    <value>Cannot support Longest and shortest zipped collections</value>
+  </data>
 </root>

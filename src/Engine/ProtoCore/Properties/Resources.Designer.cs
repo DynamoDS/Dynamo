@@ -79,6 +79,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selected algorithm not supported.
+        /// </summary>
+        public static string AlgorithmNotSupported {
+            get {
+                return ResourceManager.GetString("AlgorithmNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;&amp;&quot; expected.
         /// </summary>
         public static string and_expected {
@@ -93,6 +102,15 @@ namespace ProtoCore.Properties {
         public static string andand_expected {
             get {
                 return ResourceManager.GetString("andand_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Array with no common superclass not yet supported: {0}.
+        /// </summary>
+        public static string ArrayWithNotSupported {
+            get {
+                return ResourceManager.GetString("ArrayWithNotSupported", resourceCulture);
             }
         }
         
@@ -358,11 +376,47 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error code: {0}.
+        /// </summary>
+        public static string ErrorCode {
+            get {
+                return ResourceManager.GetString("ErrorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error setting up communication with Excel.  Try closing any open Excel instances..
+        /// </summary>
+        public static string ExcelCommunicationError {
+            get {
+                return ResourceManager.GetString("ExcelCommunicationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Excel is not installed..
+        /// </summary>
+        public static string ExcelNotInstalled {
+            get {
+                return ResourceManager.GetString("ExcelNotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to import {0}.
         /// </summary>
         public static string FailedToImport {
             get {
                 return ResourceManager.GetString("FailedToImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to resolve the comparison function for sorting, expected def sorter : int(x,y).
+        /// </summary>
+        public static string FailedToResolveSortingFunction {
+            get {
+                return ResourceManager.GetString("FailedToResolveSortingFunction", resourceCulture);
             }
         }
         
@@ -390,6 +444,15 @@ namespace ProtoCore.Properties {
         public static string FunctionCallCannotBeAtLeftSide {
             get {
                 return ResourceManager.GetString("FunctionCallCannotBeAtLeftSide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function dispatch could not be completed {0}.
+        /// </summary>
+        public static string FunctionDispatchFailed {
+            get {
+                return ResourceManager.GetString("FunctionDispatchFailed", resourceCulture);
             }
         }
         
@@ -1753,6 +1816,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replication requested exceeds the available dimensions of the array. This case is not yet supported {0}.
+        /// </summary>
+        public static string MaxDimensionExceeded {
+            get {
+                return ResourceManager.GetString("MaxDimensionExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modifier Blocks are not supported currently.
         /// </summary>
         public static string ModifierBlockNotSupported {
@@ -1767,6 +1839,24 @@ namespace ProtoCore.Properties {
         public static string ModuloByZero {
             get {
                 return ResourceManager.GetString("ModuloByZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t decide which function to execute. Please provide more specific type information. Possible functions were: .
+        /// </summary>
+        public static string MultipleFunctionsFound {
+            get {
+                return ResourceManager.GetString("MultipleFunctionsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead. .
+        /// </summary>
+        public static string MultipleGuidesNotSupported {
+            get {
+                return ResourceManager.GetString("MultipleGuidesNotSupported", resourceCulture);
             }
         }
         
@@ -1834,6 +1924,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Both arguments were expected to be one-dimensional array type!.
+        /// </summary>
+        public static string OneDArrayExpected {
+            get {
+                return ResourceManager.GetString("OneDArrayExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;{&quot; expected.
         /// </summary>
         public static string openbrace_expected {
@@ -1857,6 +1956,25 @@ namespace ProtoCore.Properties {
         public static string openparen_expected {
             get {
                 return ResourceManager.GetString("openparen_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.{1} operation failed..
+        /// </summary>
+        public static string OperationFailType1 {
+            get {
+                return ResourceManager.GetString("OperationFailType1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.{1} operation failed. 
+        ///{2}.
+        /// </summary>
+        public static string OperationFailType2 {
+            get {
+                return ResourceManager.GetString("OperationFailType2", resourceCulture);
             }
         }
         
@@ -2262,6 +2380,15 @@ namespace ProtoCore.Properties {
         public static string ValidForImperativeBlockOnly {
             get {
                 return ResourceManager.GetString("ValidForImperativeBlockOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot support Longest and shortest zipped collections.
+        /// </summary>
+        public static string ZipAlgorithmError {
+            get {
+                return ResourceManager.GetString("ZipAlgorithmError", resourceCulture);
             }
         }
     }

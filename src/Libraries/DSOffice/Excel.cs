@@ -55,7 +55,7 @@ namespace DSOffice
             // get excel, throw exception if it is not
             var officeType = Type.GetTypeFromProgID("Excel.Application");
             if (officeType == null)
-                throw new Exception("Excel is not installed.");
+                throw new Exception(Resources.ExcelNotInstalled);
 
             try
             {
@@ -68,7 +68,7 @@ namespace DSOffice
 
                 if (!e.ToString().Contains("0x800401E3"))
                 {
-                    throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
+                    throw new Exception(Resources.ExcelCommunicationError);
                 }
             }
             catch (Exception)
