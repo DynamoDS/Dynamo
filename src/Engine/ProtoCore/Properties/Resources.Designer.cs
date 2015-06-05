@@ -1861,6 +1861,25 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}.{1} operation failed..
+        /// </summary>
+        public static string OperationFailType1 {
+            get {
+                return ResourceManager.GetString("OperationFailType1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.{1} operation failed. 
+        ///{2}.
+        /// </summary>
+        public static string OperationFailType2 {
+            get {
+                return ResourceManager.GetString("OperationFailType2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;||&quot; expected.
         /// </summary>
         public static string oror_expected {

@@ -852,4 +852,11 @@
   <data name="kInvalidType" xml:space="preserve">
     <value>The type is invalid</value>
   </data>
+  <data name="OperationFailType1" xml:space="preserve">
+    <value>{0}.{1} operation failed.</value>
+  </data>
+  <data name="OperationFailType2" xml:space="preserve">
+    <value>{0}.{1} operation failed. 
+{2}</value>
+  </data>
 </root>
