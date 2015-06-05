@@ -119,9 +119,9 @@ namespace DSIronPythonNode
         {
             script = "import clr\nclr.AddReference('ProtoGeometry')\n"
                 + "from Autodesk.DesignScript.Geometry import *\n"
-                + "#The inputs to this node will be stored as a list in the IN variable.\n"
+                + "#" + Properties.Resources.PythonScriptEditorInputComment + "\n"
                 + "dataEnteringNode = IN\n\n"
-                + "#Assign your output to the OUT variable\n"
+                + "#" + Properties.Resources.PythonScriptEditorOutputComment + "\n"
                 + "OUT = 0";
 
             AddInput();
