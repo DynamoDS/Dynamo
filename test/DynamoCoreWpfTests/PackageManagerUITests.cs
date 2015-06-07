@@ -9,6 +9,10 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 
 using NUnit.Framework;
+using System.Reflection;
+using System;
+using System.IO;
+
 
 namespace DynamoCoreWpfTests
 {
@@ -90,6 +94,39 @@ namespace DynamoCoreWpfTests
             AssertWindowClosedWithDynamoView<PublishPackageView>();
 
         }
+
+        [Test]
+        public void AdddingaPackageRaisesCanExecuteChangeOnDelegateCommand()
+        {
+            //create a new synchronization context since the package searchview from previous UI tests is still
+            //running and throws exception when attempting to modify searchresults
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            var vm = new PublishPackageViewModel(ViewModel);
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            //find a customnode to add to the package
+            string packagedirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs");
+            var packages = Directory.EnumerateDirectories(packagedirectory);
+            var first = Path.GetFullPath(packages.First());
+            string dyfpath = Path.Combine(first, "dyf");
+            var customnodes = Directory.GetFiles(dyfpath);
+            var firstnode = customnodes.First();
+                      
+            var canExecuteChangedFired = 0;
+            vm.SubmitCommand.CanExecuteChanged += ((o, e) => { canExecuteChangedFired ++; });
+            //now use reflection to add a customnode to the package
+            var propertyChangedmethod = typeof(PublishPackageViewModel).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x=>x.Name == "AddFile").First();
+            propertyChangedmethod.Invoke(vm, BindingFlags.InvokeMethod,null, new object[] { firstnode },System.Globalization.CultureInfo.CurrentCulture);
+            
+            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            //assert that canExecute changed was fired one time 
+            Assert.AreEqual(canExecuteChangedFired,1);
+
+        }
+
+       
+
+
 
         #endregion
 
