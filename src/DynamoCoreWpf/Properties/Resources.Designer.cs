@@ -1966,6 +1966,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open in Manual Execution Mode.
+        /// </summary>
+        public static string FileDialogManualMode {
+            get {
+                return ResourceManager.GetString("FileDialogManualMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PNG Image|{0}.
         /// </summary>
         public static string FileDialogPNGFiles {

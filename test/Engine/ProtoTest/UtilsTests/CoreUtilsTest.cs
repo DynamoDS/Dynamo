@@ -106,5 +106,41 @@ namespace ProtoTest.UtilsTests
             string expected = "A.B[0].C";
             Assert.IsTrue(Test_GetIdentifierExceptMethodName(input, expected));
         }
+
+        [Test]
+        public void Test_GetIdentifierExceptMethodName_05()
+        {
+            // Given: A().X (global function)
+            // Return: empty string
+            string input = "p = A().B;";
+            string expected = "";
+            Assert.IsTrue(Test_GetIdentifierExceptMethodName(input, expected));
+
+            input = "p = A().B[0].C;";
+            expected = "";
+            Assert.IsTrue(Test_GetIdentifierExceptMethodName(input, expected));
+
+            input = "p = A().B().C;";
+            expected = "";
+            Assert.IsTrue(Test_GetIdentifierExceptMethodName(input, expected));
+
+            input = "p = A().B.C();";
+            expected = "";
+            Assert.IsTrue(Test_GetIdentifierExceptMethodName(input, expected));
+
+            input = "p = A().B.C()[0];";
+            expected = "";
+            Assert.IsTrue(Test_GetIdentifierExceptMethodName(input, expected));
+        }
+
+        [Test]
+        public void Test_GetIdentifierExceptMethodName_06()
+        {
+            // Given: A.B[0].C()
+            //     Return: "A.B[0]"
+            string input = "p = A.B[0].C();";
+            string expected = "A.B[0]";
+            Assert.IsTrue(Test_GetIdentifierExceptMethodName(input, expected));
+        }
     }
 }
