@@ -226,8 +226,10 @@ namespace Dynamo
             Debug.WriteLine("Visualization manager started.");
 #endif
             updatingPaused = false;
-            if(update)
-                OnRenderComplete();
+            if (update)
+                //OnRenderComplete();
+                return;
+
         }
 
         /// <summary>
@@ -408,10 +410,15 @@ namespace Dynamo
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
+            if (e.Action == NotifyCollectionChangedAction.Reset)
             {
                 //Calling with NULL to make sure nothing is selected
                 OnSelectionChanged(null);
+                return;
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
                 return;
             }
 

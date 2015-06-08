@@ -477,6 +477,8 @@ namespace Dynamo.Controls
             keysList.Add("Axes");
             foreach (var key in GeomteryDictionary.Keys.Except(keysList).ToList())
             {
+                var model = GeomteryDictionary[key] as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                model.Detach();
                 GeomteryDictionary.Remove(key);
             }
             NotifyPropertyChanged("");
@@ -868,7 +870,7 @@ namespace Dynamo.Controls
             renderTimer.Reset();
             renderTimer.Start();
 #endif
-            View.InvalidateRender();
+            //View.InvalidateRender();
             NotifyPropertyChanged("");
         }
 
