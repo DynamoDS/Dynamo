@@ -4403,6 +4403,7 @@ namespace DynamoCoreWpfTests
         }
 
 
+
         [Test, Category("WorkshopFiles")]
         public void MAGN_7348_Math_Point_Formula()
         {
@@ -4415,24 +4416,29 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("MAGN_7348_Math_Point_Formula.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
-               
+
                 if (commandTag == "FirstRun")
                 {
-                    AssertPreviewCount("eb39e7be-b421-4083-9e50-b628a78fe02e", 20);//check nurbscurve
+                    AssertPreviewCount("b735b5a2-4081-4e1d-9532-c742ef60930a", 20);//check nurbscurve
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
-                       ("54648e79-9127-445c-a3c9-7c59b0453880");// check surface.byloft
+                       ("acb743b6-d4df-4d04-ac6f-cc68f6380e00");// check surface.byloft
                     Assert.AreEqual(ElementState.Active, node.State);
-                    Assert.AreEqual(GetPreviewValue("54648e79-9127-445c-a3c9-7c59b0453880").ToString(),"Surface");
+                    Assert.AreEqual(GetPreviewValue("acb743b6-d4df-4d04-ac6f-cc68f6380e00").ToString(), "Surface");
                 }
                 else if (commandTag == "SecondRun")
                 {
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
-                      ("54648e79-9127-445c-a3c9-7c59b0453880");// check surface.byloft
+                      ("acb743b6-d4df-4d04-ac6f-cc68f6380e00");// check surface.byloft
                     Assert.AreEqual(ElementState.Warning, node.State);
-                }     
+                    var cbnID = "a3bcf5b1-fbb5-45cd-a51e-743827d31a60";
+                    AssertPreviewCount(cbnID, 20);
+                    for(int i =0;i<20;i++){
+                        var ele = GetPreviewValueAtIndex(cbnID, i);
+                        Assert.IsNotNull(ele);
+                    }
+                }
             });
         }
-
 
         [Test, Category("WorkshopFiles")]
         public void MAGN_7348_WriteToExcel()
