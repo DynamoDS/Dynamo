@@ -230,7 +230,7 @@ namespace Dynamo.UI
 
         #region InCanvasSearch
 
-        public const double InCanvasSearchTextBoxHeigth = 40.0;
+        public const double InCanvasSearchTextBoxHeight = 40.0;
 
         #endregion
 

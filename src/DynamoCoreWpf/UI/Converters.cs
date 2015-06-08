@@ -2298,7 +2298,7 @@ namespace Dynamo.Controls
             {
                 double actualContextMenuHeight = (double)value;
 
-                return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeigth;
+                return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeight;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
