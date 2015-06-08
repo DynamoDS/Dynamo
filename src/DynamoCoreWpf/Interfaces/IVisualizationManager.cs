@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections;
 using Dynamo.Models;
 using Dynamo.Interfaces;
 using Autodesk.DesignScript.Interfaces;
@@ -66,5 +66,20 @@ namespace Dynamo.Interfaces
         /// Create an IRenderPackage given an IGraphicItem
         /// </summary>
         IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem graphicItem);
+
+        /// <summary>
+        /// An event triggered on the Selection of model.
+        /// </summary>
+        event Action<IEnumerable> RenderSelection;
+
+        /// <summary>
+        /// An event triggered on the Deletion of model.
+        /// </summary>
+        event Action<NodeModel> UpdateGeometryOnNodeDeletion;
+
+        /// <summary>
+        /// An event triggered when a workspace is closed / open.
+        /// </summary>
+        event Action InitializeGeomtery;
     }
 }
