@@ -3,7 +3,7 @@
   <SelectInRegionCommand X="160" Y="93" Width="0" Height="0" IsCrossSelection="false" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
     <DSCore.File.Filename guid="9094b25c-7928-44ee-ba23-4be4bae83401" type="DSCore.File.Filename" nickname="File Path" x="42.5" y="38.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>C:\Users\t_yanz\Desktop\20140901 Colin's Workshop Files\01 Dynamo Basics\ecaade.csv</System.String>
+      <System.String>.\ecaade.csv</System.String>
     </DSCore.File.Filename>
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="9094b25c-7928-44ee-ba23-4be4bae83401" Modifiers="0" />
