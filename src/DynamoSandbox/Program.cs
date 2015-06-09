@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
@@ -12,9 +13,12 @@ using Dynamo.DynamoSandbox;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
 using DynamoUtilities;
+
+using Microsoft.Win32;
 
 namespace DynamoSandbox
 {
@@ -61,6 +65,72 @@ namespace DynamoSandbox
         }
     }
 
+    struct CommandLineArguments
+    {
+        internal static CommandLineArguments FromArguments(string[] args)
+        {
+            // Running Dynamo sandbox with a command file:
+            // DynamoSandbox.exe /c "C:\file path\file.xml"
+            // 
+            var commandFilePath = string.Empty;
+
+            // Running Dynamo under a different locale setting:
+            // DynamoSandbox.exe /l "ja-JP"
+            //
+            var locale = string.Empty;
+
+            for (var i = 0; i < args.Length; ++i)
+            {
+                var arg = args[i];
+                if (arg.Length != 2 || (arg[0] != '/'))
+                {
+                    continue; // Not a "/x" type of command switch.
+                }
+
+                switch (arg[1])
+                {
+                    case 'c':
+                    case 'C':
+                        // If there's at least one more argument...
+                        if (i < args.Length - 1)
+                            commandFilePath = args[++i];
+                        break;
+
+                    case 'l':
+                    case 'L':
+                        if (i < args.Length - 1)
+                            locale = args[++i];
+                        break;
+                }
+            }
+
+            return new CommandLineArguments
+            {
+                Locale = locale,
+                CommandFilePath = commandFilePath
+            };
+        }
+
+        internal string Locale { get; set; }
+        internal string CommandFilePath { get; set; }
+    }
+
+    internal class SandboxLookUp : DynamoLookUp
+    {
+        public override IEnumerable<string> GetDynamoInstallLocations()
+        {
+            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
+            //Open HKLM for 64bit registry
+            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            //Open Windows/CurrentVersion/Uninstall registry key
+            regKey = regKey.OpenSubKey(regKey64);
+
+            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
+            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
+                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
+        }
+    }
+
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
@@ -77,11 +147,15 @@ namespace DynamoSandbox
 
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
 
+            var umConfig = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
+            Debug.Assert(umConfig.DynamoLookUp != null);
+
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath
+                    PathResolver = new PathResolver(preloaderLocation),
+                    GeometryFactoryPath = geometryFactoryPath,
+                    UpdateManager = new UpdateManager(umConfig)
                 });
 
             
