@@ -36,6 +36,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,6 +70,7 @@
     <Compile Include="OverloadTarget.cs" />
     <Compile Include="ProtoFFITests.cs" />
     <Compile Include="RegressionTargets.cs" />
+    <Compile Include="TestDefaultArgumentAttributes.cs" />
     <Compile Include="TestMessageLog.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
     <Compile Include="TestNamespaceResolution.cs" />
