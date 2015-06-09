@@ -74,8 +74,8 @@ namespace Analysis
             // than the number of samples, to ensure that we are
             // sampling all the way to the edges.
 
-            var w = uSamples + 1;
-            var h = vSamples + 1;
+            var w = uSamples;
+            var h = vSamples;
 
             var valueMap = new Color[w][];
             for (var i = 0; i < w; i++)
