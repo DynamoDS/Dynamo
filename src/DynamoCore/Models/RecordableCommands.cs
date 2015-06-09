@@ -416,9 +416,10 @@ namespace Dynamo.Models
         {
             #region Public Class Methods
 
-            public OpenFileCommand(string xmlFilePath)
+            public OpenFileCommand(string xmlFilePath, bool forceManualExecutionMode = false)
             {
                 XmlFilePath = xmlFilePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
             }
 
             static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -459,6 +460,7 @@ namespace Dynamo.Models
 
             [DataMember]
             internal string XmlFilePath { get; private set; }
+            internal bool ForceManualExecutionMode { get; private set; }
 
             #endregion
 

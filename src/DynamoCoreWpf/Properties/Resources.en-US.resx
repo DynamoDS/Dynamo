@@ -1682,4 +1682,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ZeroTouchTypeShortString" xml:space="preserve">
     <value>DLL</value>
   </data>
+  <data name="FileDialogManualMode" xml:space="preserve">
+    <value>Open in Manual Execution Mode</value>
+  </data>
 </root>

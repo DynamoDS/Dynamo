@@ -259,11 +259,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-#if DEBUG
                 return true;
-#else
-                return false;
-#endif
             }
         }
 

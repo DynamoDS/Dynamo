@@ -283,7 +283,7 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
             ViewModel.HomeSpace.Run();
-            var data = new object[] { new object[] { 1 }, new object[] { "word" }, new object[] { 2 }, new object[] { 3 }, new object[] { "palabra" } };
+            var data = new object[] { new object[] { 4 }, new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
             AssertPreviewValue(watch.GUID.ToString(), data);
 
         }
@@ -1189,6 +1189,33 @@ namespace Dynamo.Tests
             var data2 = new object[] { new object[] {0},new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { 4 }, new object[] { 5 }, new object[] { 6 },new object[]{7} };
             AssertPreviewValue(watch2.GUID.ToString(), data2);
 
+        }
+
+        [Test]
+        public void TestOverwriteToSingleSheetExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\SingleSheetOverwrite.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
+
+            ViewModel.HomeSpace.Run();
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            Assert.IsTrue(File.Exists(filename.Value));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            Assert.AreEqual(3, list.Count);
+            AssertPreviewValue(writeNode.GUID.ToString(), new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 } });
+
+            var wb = Excel.ReadExcelFile(filename.Value);
+            Assert.IsTrue(wb.WorkSheets.Length == 1);
         }
 
         #endregion
