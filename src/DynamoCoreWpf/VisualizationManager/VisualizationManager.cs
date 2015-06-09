@@ -225,11 +225,7 @@ namespace Dynamo
 #if DEBUG
             Debug.WriteLine("Visualization manager started.");
 #endif
-            updatingPaused = false;
-            if (update)
-                //OnRenderComplete();
-                return;
-
+            updatingPaused = false;           
         }
 
         /// <summary>
@@ -417,6 +413,7 @@ namespace Dynamo
                 return;
             }
 
+            //On delete action, do not select / unselect the nodes.
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 return;
