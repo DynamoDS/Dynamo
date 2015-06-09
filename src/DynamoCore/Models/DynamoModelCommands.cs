@@ -31,7 +31,8 @@ namespace Dynamo.Models
         protected virtual void OpenFileImpl(OpenFileCommand command)
         {
             string xmlFilePath = command.XmlFilePath;
-            OpenFileFromPath(xmlFilePath);
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenFileFromPath(xmlFilePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();

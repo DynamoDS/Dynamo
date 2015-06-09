@@ -1278,8 +1278,7 @@ namespace ProtoCore.Lang
             {
                 //LC urgent patch
                 runtimeCore.RuntimeStatus.LogWarning(
-                    ProtoCore.Runtime.WarningID.kTypeMismatch, 
-                    "Both arguments were expected to be one-dimensional array type!");
+                    ProtoCore.Runtime.WarningID.kTypeMismatch, Resources.OneDArrayExpected);
                 return DSASM.StackValue.Null;
             }
             return RemoveDuplicates(Concat(sv1, sv2, runtime), runtime, context);
@@ -2212,7 +2211,7 @@ namespace ProtoCore.Lang
             catch (System.Exception e)
             {
                 if (e.InnerException is Exceptions.CompilerInternalException)
-                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAurgumentIsNotExpected, "Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)");
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAurgumentIsNotExpected, Resources.FailedToResolveSortingFunction);
                 else if(e.InnerException != null)
                     runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAurgumentIsNotExpected, e.InnerException.Message);
                 else
