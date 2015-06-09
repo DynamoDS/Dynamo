@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Utilities;
-using DynamoServices;
-using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
@@ -19,11 +14,9 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
 
-using RestSharp;
 
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
-using ProtoCore.Mirror;
 using ProtoCore.Namespace;
 
 namespace Dynamo.DSEngine
