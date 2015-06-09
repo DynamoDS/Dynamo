@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Runtime;
+using FFITarget.DesignScript;
 
 namespace FFITarget
 {
-    public class ArgumentClass
-    {
-        public static float GetFloat()
-        {
-            return 2.5F;
-        }    
-    }
-
+   
     public class TestDefaultArgumentAttributes
     {
-        public static double GetCircleArea([DefaultArgument("ArgumentClass.GetFloat()")]double radius)
+        public static double ComputeCircle([DefaultArgument("FFITarget.DesignScript.Point.ByCoordinates(0, 0, 0)")]Point centerPoint, double radius = 1)
+        {
+            return radius * radius * Math.PI;
+        }
+
+        public static double ComputeCircleConflict([DefaultArgument("Point.ByCoordinates(0, 0, 0)")]Point centerPoint, double radius = 1)
         {
             return radius * radius * Math.PI;
         }
