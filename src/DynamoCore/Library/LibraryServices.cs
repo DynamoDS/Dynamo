@@ -738,28 +738,6 @@ namespace Dynamo.DSEngine
             return defaultArgumentNode != null;
         }
 
-        //private AssociativeNode ResolveDefaultArgumentClass(ProtoCore.Type argType, AssociativeNode defaultArgNode)
-        //{
-        //    if (!(defaultArgNode is IdentifierListNode) && !(defaultArgNode is IdentifierNode)) 
-        //        return defaultArgNode;
-
-        //    var matchingClasses = CoreUtils.GetResolvedClassName(LibraryManagementCore.ClassTable, defaultArgNode);
-
-        //    if (matchingClasses.Length == 1)
-        //    {
-        //        var resolvedName = matchingClasses[0];
-        //        return ElementRewriter.RewriteIdentifierListNode(defaultArgNode, resolvedName);
-        //    }
-
-        //    if(matchingClasses.Length > 1)
-        //    {
-        //        string message = ProtoCore.Properties.Resources.kMultipleSymbolFoundFromName;
-        //        message += String.Join(", ", matchingClasses);
-        //        LogWarningMessageEvents.OnLogWarningMessage(message);
-        //    }
-        //    return defaultArgNode;
-        //}
-
         private void ImportProcedure(string library, ProcedureNode proc)
         {
             string procName = proc.name;
@@ -847,7 +825,6 @@ namespace Dynamo.DSEngine
                     }
                     if (defaultArgumentNode != null)
                     {
-                        //defaultArgumentNode = ResolveDefaultArgumentClass(argType, defaultArgumentNode);
                         var rewriter = new ElementRewriter(LibraryManagementCore);
                         defaultArgumentNode = defaultArgumentNode.Accept(rewriter);
                     }
