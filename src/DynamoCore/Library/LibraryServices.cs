@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Utilities;
+using DynamoServices;
 using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -22,6 +23,8 @@ using RestSharp;
 
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
+using ProtoCore.Mirror;
+using ProtoCore.Namespace;
 
 namespace Dynamo.DSEngine
 {
@@ -735,6 +738,28 @@ namespace Dynamo.DSEngine
             return defaultArgumentNode != null;
         }
 
+        //private AssociativeNode ResolveDefaultArgumentClass(ProtoCore.Type argType, AssociativeNode defaultArgNode)
+        //{
+        //    if (!(defaultArgNode is IdentifierListNode) && !(defaultArgNode is IdentifierNode)) 
+        //        return defaultArgNode;
+
+        //    var matchingClasses = CoreUtils.GetResolvedClassName(LibraryManagementCore.ClassTable, defaultArgNode);
+
+        //    if (matchingClasses.Length == 1)
+        //    {
+        //        var resolvedName = matchingClasses[0];
+        //        return ElementRewriter.RewriteIdentifierListNode(defaultArgNode, resolvedName);
+        //    }
+
+        //    if(matchingClasses.Length > 1)
+        //    {
+        //        string message = ProtoCore.Properties.Resources.kMultipleSymbolFoundFromName;
+        //        message += String.Join(", ", matchingClasses);
+        //        LogWarningMessageEvents.OnLogWarningMessage(message);
+        //    }
+        //    return defaultArgNode;
+        //}
+
         private void ImportProcedure(string library, ProcedureNode proc)
         {
             string procName = proc.name;
@@ -820,7 +845,12 @@ namespace Dynamo.DSEngine
                             defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
-
+                    if (defaultArgumentNode != null)
+                    {
+                        //defaultArgumentNode = ResolveDefaultArgumentClass(argType, defaultArgumentNode);
+                        var rewriter = new ElementRewriter(LibraryManagementCore);
+                        defaultArgumentNode = defaultArgumentNode.Accept(rewriter);
+                    }
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode);
                 }).ToList();
 

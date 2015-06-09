@@ -7,20 +7,20 @@ using ProtoCore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Namespace
 {
 
     public class ElementRewriter : AstReplacer
     {
-        private readonly ClassTable classTable;
+        private readonly Core core;
         private readonly ElementResolver elementResolver;
 
-        internal ElementRewriter(ClassTable classTable, ElementResolver resolver)
+        public ElementRewriter(Core core, ElementResolver resolver = null)
         {
-            this.classTable = classTable;
-            this.elementResolver = resolver;
+            this.core = core;
+            this.elementResolver = resolver ?? new ElementResolver();
         }
 
         /// <summary>
@@ -29,13 +29,13 @@ namespace ProtoCore.Namespace
         /// If partial class is not found in map, 
         /// update ResolutionMap with fully resolved name from compiler.
         /// </summary>
-        /// <param name="classTable"></param>
+        /// <param name="core"></param>
         /// <param name="elementResolver"></param>
         /// <param name="astNodes"> parent AST node </param>
-        public static IEnumerable<Node> RewriteElementNames(ClassTable classTable,
+        public static IEnumerable<Node> RewriteElementNames(Core core,
             ElementResolver elementResolver, IEnumerable<Node> astNodes)
         {
-            var elementRewriter = new ElementRewriter(classTable, elementResolver);
+            var elementRewriter = new ElementRewriter(core, elementResolver);
             return astNodes.OfType<AssociativeNode>().Select(astNode => astNode.Accept(elementRewriter)).Cast<Node>().ToList();
         }
 
@@ -62,7 +62,7 @@ namespace ProtoCore.Namespace
             var type = new Type
             {
                 Name = identListString,
-                UID = classTable.IndexOf(identListString),
+                UID = core.ClassTable.IndexOf(identListString),
                 rank = node.datatype.rank
             };
 
@@ -127,30 +127,35 @@ namespace ProtoCore.Namespace
                 return String.Empty;
 
             var resolvedName = elementResolver.LookupResolvedName(partialName);
-            if (string.IsNullOrEmpty(resolvedName))
+            if (!string.IsNullOrEmpty(resolvedName)) 
+                return resolvedName;
+            
+            // If namespace resolution map does not contain entry for partial name, 
+            // back up on compiler to resolve the namespace from partial name
+            var matchingClasses = CoreUtils.GetResolvedClassName(core.ClassTable, identifierList);
+
+            if (matchingClasses.Length == 1)
             {
-                // If namespace resolution map does not contain entry for partial name, 
-                // back up on compiler to resolve the namespace from partial name
-                var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifierList);
+                resolvedName = matchingClasses[0];
+                var assemblyName = CoreUtils.GetAssemblyFromClassName(core.ClassTable, resolvedName);
 
-                if (matchingClasses.Length == 1)
-                {
-                    resolvedName = matchingClasses[0];
-                    var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
-
-                    elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
-                }
+                elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
+            }
+            else if (matchingClasses.Length > 1)
+            {
+                core.BuildStatus.LogSymbolConflictWarning(partialName, matchingClasses);
             }
             return resolvedName;
         }
 
-        private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
+        public AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
         {
-            var identListNode = identifierList as IdentifierListNode;
             var resolvedName = ResolveClassName(identifierList);
 
             if (string.IsNullOrEmpty(resolvedName))
                 return identifierList;
+
+            var identListNode = identifierList as IdentifierListNode;
 
             var newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
 
