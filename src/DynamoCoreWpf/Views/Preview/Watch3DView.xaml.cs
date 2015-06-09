@@ -27,6 +27,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Material = HelixToolkit.Wpf.SharpDX.Material;
 
 namespace Dynamo.Controls
 {
@@ -844,19 +845,6 @@ namespace Dynamo.Controls
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
 
-            if (packages.Any())
-            {
-                var testPackage = packages.FirstOrDefault(p=>p.Colors != null);
-                if (testPackage != null)
-                {
-                    var testMap = testPackage.Colors;
-                    if (testMap != null)
-                    {
-                        WhiteMaterial.DiffuseMap = BitmapSource.Create(testPackage.ColorsStride, testPackage.ColorsStride, 96.0, 96.0, PixelFormats.Bgra32, null, testMap.ToArray(), 4 * testPackage.ColorsStride);
-                    }
-                }
-            }
-
             var points = HelixRenderPackage.InitPointGeometry();
             var lines = HelixRenderPackage.InitLineGeometry();         
             var mesh = HelixRenderPackage.InitMeshGeometry();           
@@ -968,6 +956,11 @@ namespace Dynamo.Controls
                     }
 
                     lineGeometry3D = geomteryDictionary[id] as LineGeometryModel3D;
+                    if (lineGeometry3D == null)
+                    {
+                        continue;
+                    }
+
                     var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
                     var startIdx = lineSet.Positions.Count;
 
@@ -998,34 +991,52 @@ namespace Dynamo.Controls
                 var m = rp.Mesh;
                 if (m.Positions.Any())
                 {
-                    // Pick a mesh to use to store the data. Selected geometry
-                    // goes into the selected mesh. Geometry with
-                    // colors goes into the per vertex mesh. Everything else
-                    // goes into the plain mesh.
+                    PerVertexMeshGeometryModel3D meshGeometry3D;
 
-                    // var meshSet =
-                    //rp.RequiresPerVertexColoration ? parameters.PerVertexMesh : parameters.Mesh;
-
-                    // var idxCount = meshSet.Positions.Count;
-
-                    MeshGeometryModel3D meshGeometry3D = null;
-                    PerVertexMeshGeometryModel3D perVertexMesh3D;
                     if (geomteryDictionary != null && !geomteryDictionary.ContainsKey(id))
                     {
                         if (rp.RequiresPerVertexColoration)
                         {
-                            perVertexMesh3D = new PerVertexMeshGeometryModel3D()
+                            meshGeometry3D = new PerVertexMeshGeometryModel3D()
                             {
                                 Geometry = HelixRenderPackage.InitMeshGeometry(),
                                 Transform = Model1Transform,
                                 Material = WhiteMaterial,
                                 IsHitTestVisible = false
                             };
-                            geomteryDictionary.Add(rp.Description, perVertexMesh3D);
+                            geomteryDictionary.Add(rp.Description, meshGeometry3D);
+                            meshGeometry3D.RequiresPerVertexColoration = true;
+                        }
+                        else if (rp.Colors != null)
+                        {
+                            meshGeometry3D = new PerVertexMeshGeometryModel3D()
+                            {
+                                Geometry = HelixRenderPackage.InitMeshGeometry(),
+                                Transform = Model1Transform,
+                                Material = WhiteMaterial,
+                                IsHitTestVisible = false
+                            };
+                            meshGeometry3D.RequiresPerVertexColoration = false;
+                            geomteryDictionary.Add(rp.Description, meshGeometry3D);
+
+                            var pf = PixelFormats.Bgra32;
+                            var stride = (4 * pf.BitsPerPixel + 7) / 8;
+                            var diffMap = BitmapSource.Create(rp.ColorsStride, rp.ColorsStride, 96.0, 96.0, pf, null, rp.Colors.ToArray(), stride);
+                            var diffMat = new PhongMaterial
+                            {
+                                Name = "White",
+                                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                                DiffuseColor = materialColor,
+                                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                                SpecularShininess = 12.8f,
+                                DiffuseMap = diffMap
+                            };
+                            meshGeometry3D.Material = diffMat;
                         }
                         else
                         {
-                            meshGeometry3D = new MeshGeometryModel3D()
+                            meshGeometry3D = new PerVertexMeshGeometryModel3D()
                             {
                                 Geometry = HelixRenderPackage.InitMeshGeometry(),
                                 Transform = Model1Transform,
@@ -1036,8 +1047,9 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    meshGeometry3D = rp.RequiresPerVertexColoration ? geomteryDictionary[id] as PerVertexMeshGeometryModel3D
-                        : geomteryDictionary[id] as MeshGeometryModel3D;
+                    meshGeometry3D = rp.RequiresPerVertexColoration || rp.Colors != null?
+                        geomteryDictionary[rp.Description] as PerVertexMeshGeometryModel3D :
+                        geomteryDictionary[id] as PerVertexMeshGeometryModel3D;
 
                     var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
                     var idxCount = meshSet.Positions.Count;
