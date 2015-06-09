@@ -33,7 +33,6 @@ namespace ProtoCore.Utils
 
             foreach (ClassNode cn in typeStats.Keys)
             {
-//<<<<<<< .mine
                 List<int> chain = ClassUtils.GetClassUpcastChain(cn, runtimeCore);
 
                 //Now add in the other conversions - as we don't have a common superclass yet
@@ -42,9 +41,6 @@ namespace ProtoCore.Utils
                     if (!chain.Contains(id))
                         chain.Add((id));
 
-//=======
-//                List<int> chain = GetConversionChain(cn, core);
-//>>>>>>> .r2886
                 chains.Add(chain);
 
                 foreach (int nodeId in chain)
@@ -550,7 +546,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, RuntimeCore runtimeCore)
         {
-            if (array.IsArray)
+            if (!array.IsArray)
                 return StackValue.Null;
 
             HeapElement arrayHeap = GetHeapElement(array, runtimeCore);
@@ -571,7 +567,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, StackValue index, StackValue value, RuntimeCore runtimeCore)
         {
-            if (array.IsArray)
+            if (!array.IsArray)
                 return StackValue.Null;
 
             if (index.IsNumeric)
@@ -833,7 +829,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, RuntimeCore runtimeCore)
         {
-            if (array.IsArray || array.IsString)
+            if (!array.IsArray && !array.IsString)
                 return StackValue.Null;
 
             for (int i = 0; i < indices.Length - 1; ++i)
