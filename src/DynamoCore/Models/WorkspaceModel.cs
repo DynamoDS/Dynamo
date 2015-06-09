@@ -84,8 +84,6 @@ namespace Dynamo.Models
 
         public event NodeEventHandler RequestNodeCentered;
 
-        public delegate void NodeCentered();
-        
         /// <summary>
         ///     Requests that a Node or Note model should be centered.
         /// </summary>
@@ -96,7 +94,6 @@ namespace Dynamo.Models
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
-
 
 
         public event NotifyCollectionChangedEventHandler NodeListChanged;
@@ -274,20 +271,20 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     All of the nodes currently in the workspace.
-        /// 
-        ///     TODO(Peter): This should be an IEnumerable of nodes to prevent modification from the outside - MAGN-6580
         /// </summary>
-        public IEnumerable<NodeModel> Nodes { get
-        {
-            IEnumerable<NodeModel> nodesClone;
-
-            lock (nodes)
+        public IEnumerable<NodeModel> Nodes { 
+            get 
             {
-                nodesClone = nodes.ToList();                
-            }
+                IEnumerable<NodeModel> nodesClone;
+                lock (nodes)
+                {
+                    nodesClone = nodes.ToList();                
+                }
 
-            return nodesClone;
-        } }
+                return nodesClone;
+            } 
+        }
+
 
         public void AddNode(NodeModel node)
         {
@@ -587,7 +584,6 @@ namespace Dynamo.Models
             }
 
             ClearNodes();
-      //      Nodes.Clear();
             Notes.Clear();
             Annotations.Clear();
 
@@ -643,7 +639,6 @@ namespace Dynamo.Models
                 OnRequestNodeCentered(this, args);
             }
 
-            //nodes.Add(node);
             AddNode(node);
 
             OnNodeAdded(node);
@@ -1145,7 +1140,6 @@ namespace Dynamo.Models
                         totalY += node.Y;
                         undoHelper.RecordDeletion(node);
                         RemoveNode(node);
-                       // Nodes.Remove(node);
                         #endregion
                     }
                     #endregion
@@ -1165,7 +1159,6 @@ namespace Dynamo.Models
                     undoHelper.RecordCreation(codeBlockNode);
                    
                     AddNode(codeBlockNode);
-              //      Nodes.Add(codeBlockNode);
                     this.RegisterNode(codeBlockNode);
 
                     codeBlockNodes.Add(codeBlockNode);
@@ -1509,7 +1502,6 @@ namespace Dynamo.Models
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 
                 AddNode(nodeModel);
-              //  Nodes.Add(nodeModel);
                 RegisterNode(nodeModel);
                 
                 //check whether this node belongs to a group
