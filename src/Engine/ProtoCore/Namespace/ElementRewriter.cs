@@ -148,7 +148,7 @@ namespace ProtoCore.Namespace
             return resolvedName;
         }
 
-        public AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
+        private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
         {
             var resolvedName = ResolveClassName(identifierList);
 
