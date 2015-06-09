@@ -226,11 +226,15 @@ namespace Dynamo.UI.Controls
         private void OnMembersListBoxMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var listBox = sender as FrameworkElement;
+            if (listBox == null)
+                return;
 
             var scrollViewer = listBox.ChildOfType<ScrollViewer>();
+            if (scrollViewer == null)
+                return;
 
             // Make delta less to achieve smooth scrolling and not jump over other elements.
-            var delta = e.Delta/100;
+            var delta = e.Delta / 100;
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - delta);
         }
     }
