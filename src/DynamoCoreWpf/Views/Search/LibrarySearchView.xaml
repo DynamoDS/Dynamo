@@ -194,14 +194,11 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-
-                <EventSetter Event="PreviewKeyDown"
-                             Handler="OnMainGridKeyDown" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid KeyDown="OnMainGridKeyDown">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -221,11 +218,7 @@
                       BorderBrush="Transparent"
                       ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                      ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
-                      KeyDown="OnMemberButtonKeyDown"
-                      MouseEnter="OnTopResultMouseEnter"
-                      MouseLeave="OnTopResultMouseLeave"
-                      TargetUpdated="OnTopResultTargetUpdated">
+                      ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}">
                 <TreeView.ItemTemplate>
                     <DataTemplate>
                         <Border BorderThickness="2,0,0,0"
@@ -245,7 +238,6 @@
                    ItemTemplateSelector="{StaticResource LibrarySearchTreeTemplateSelector}"
                    ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                    ScrollViewer.CanContentScroll="True"
-                   KeyDown="OnCategoryKeyDown"
                    VirtualizingStackPanel.IsVirtualizing="True"
                    VirtualizingStackPanel.VirtualizationMode="Recycling" />
 
