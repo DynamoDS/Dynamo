@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Dynamo.Core;
+using Dynamo.Interfaces;
+using Greg;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +25,10 @@ namespace Dynamo.Extensions
         //
         // It is expected that this class will be extended in the future, so it should stay as minimal as possible.
         //
+        public IAuthProvider AuthProvider { get; set; }
+
+        public IPathManager PathManager { get; set; }
+
+        public CustomNodeManager CustomNodeManager { get; set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Dynamo.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Dynamo.Extensions
@@ -50,5 +52,17 @@ namespace Dynamo.Extensions
         /// Action to be invoked when shutdown has begun.
         /// </summary>
         void Shutdown();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="preferences"></param>
+        /// <param name="pathManager"></param>
+        void Load(IPreferences preferences, IPathManager pathManager);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        event Action<Assembly> RequestLoadNodeLibrary;
     }
 }

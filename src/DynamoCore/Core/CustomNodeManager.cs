@@ -6,7 +6,6 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;

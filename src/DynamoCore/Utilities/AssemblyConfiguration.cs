@@ -9,13 +9,13 @@ namespace Dynamo.Utilities
     /// <summary>
     ///     A tool for obtaining configuration values from the current Library.  
     /// </summary>
-    internal sealed class AssemblyConfiguration
+    public sealed class AssemblyConfiguration
     {
         private readonly Configuration configuration;
 
         private static AssemblyConfiguration instance;
 
-        internal static AssemblyConfiguration Instance
+        public static AssemblyConfiguration Instance
         {
             get { return instance ?? new AssemblyConfiguration(); }
         }
@@ -42,7 +42,7 @@ namespace Dynamo.Utilities
             return config;
         }
 
-        internal string GetAppSetting(string key)
+        public string GetAppSetting(string key)
         {
             if (configuration == null) return string.Empty;
 

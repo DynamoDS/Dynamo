@@ -365,9 +365,10 @@ namespace Dynamo.ViewModels
         {
             foreach (var f in funcDefs)
             {
-                var pkg = DynamoViewModel.Model.PackageLoader.GetOwnerPackage(f.Item1);
+                var pmExtension = DynamoViewModel.Model.GetPackageManagerExtension();
+                var pkg = pmExtension.PackageLoader.GetOwnerPackage(f.Item1);
 
-                if (DynamoViewModel.Model.PackageLoader.GetOwnerPackage(f.Item1) != null)
+                if (pkg != null)
                 {
                     var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, 
                             DynamoViewModel.BrandingResourceProvider.ProductName,pkg.Name),
@@ -439,13 +440,14 @@ namespace Dynamo.ViewModels
 
                         Package dynPkg;
 
-                        var firstOrDefault = DynamoViewModel.Model.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                        var pmExtension = DynamoViewModel.Model.GetPackageManagerExtension();
+                        var firstOrDefault = pmExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                         if (firstOrDefault != null)
                         {
                             var dynModel = DynamoViewModel.Model;
                             try
                             {
-                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, dynModel.PackageLoader, dynModel.PreferenceSettings);
+                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
                             }
                             catch
                             {
@@ -460,7 +462,7 @@ namespace Dynamo.ViewModels
                         if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
                         {
                             var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
-                            DynamoViewModel.Model.PackageLoader.Load(p);
+                            pmExtension.PackageLoader.Load(p);
 
                             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                         }
@@ -489,7 +491,6 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
-
     }
 
 }

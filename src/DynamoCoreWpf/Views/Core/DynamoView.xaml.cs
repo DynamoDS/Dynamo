@@ -540,8 +540,9 @@ namespace Dynamo.Controls
         {
             if (_installedPkgsView == null)
             {
+                var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
                 _installedPkgsView = new InstalledPackagesView(new InstalledPackagesViewModel(dynamoViewModel,
-                    dynamoViewModel.Model.PackageLoader))
+                    pmExtension.PackageLoader))
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
