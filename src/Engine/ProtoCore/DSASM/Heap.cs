@@ -15,6 +15,7 @@ namespace ProtoCore.DSASM
         private const int kInitialSize = 5;
         private const double kReallocFactor = 0.5;
 
+        protected Heap heap;
         private int AllocSize { get; set; }
         public int VisibleSize { get; set; }
         private Dictionary<StackValue, StackValue> Dict;
@@ -157,14 +158,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public IEnumerable<StackValue> Values
-        {
-            get
-            {
-                return Dict == null ? VisibleItems : VisibleItems.Concat(Dict.Values);
-            }
-        }
-
         public StackValue GetItemAt(int index)
         {
             return Stack[index];
@@ -295,9 +288,16 @@ namespace ProtoCore.DSASM
         {
         }
 
-        public T Cast<T>(HeapElement hp) where T : HeapElement
+        public T Cast<T>(StackValue heapObject) where T : HeapElement
         {
-            return hp as T; 
+            HeapElement heapElement;
+            if (!TryGetHeapElement(heapObject, out heapElement))
+                return null;
+
+            if (!(heapElement is T))
+                throw new InvalidCastException();
+
+            return heapElement as T; 
         }
 
         /// <summary>

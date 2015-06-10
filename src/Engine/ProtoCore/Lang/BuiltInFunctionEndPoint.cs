@@ -1185,7 +1185,8 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
 
-            return ArrayUtils.GetElementSize(sv, runtime.runtime.RuntimeCore);
+            DSArray array = runtime.runtime.rmem.Heap.Cast<DSArray>(sv);
+            return array.VisibleSize;
         }
 
         internal static int Rank(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
@@ -1220,9 +1221,10 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray || !sv2.IsArray)
                 return DSASM.StackValue.Null;
 
-            var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
-            var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.RuntimeCore);
-            var values = svArray1.Concat(svArray2).ToList();
+            var heap = runtime.runtime.RuntimeCore.Heap;
+            var array1 = heap.Cast<DSArray>(sv1);
+            var array2 = heap.Cast<DSArray>(sv2);
+            var values = array1.Values.Concat(array2.Values).ToList();
             return runtime.runtime.rmem.Heap.AllocateArray(values);
         }
 

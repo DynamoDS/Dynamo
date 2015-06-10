@@ -3562,7 +3562,8 @@ namespace ProtoCore.DSASM
             {
                 arglist = new List<Type>();
                 StackValue argArraySv = rmem.Pop();
-                for (int i = 0; i < ArrayUtils.GetElementSize(argArraySv, runtimeCore); ++i)
+                DSArray array = rmem.Heap.Cast<DSArray>(argArraySv);
+                for (int i = 0; i < array.VisibleSize; ++i)
                 {
                     StackValue sv = rmem.Heap.GetHeapElement(argArraySv).GetItemAt(i);
                     argSvList.Add(sv); //actual arguments

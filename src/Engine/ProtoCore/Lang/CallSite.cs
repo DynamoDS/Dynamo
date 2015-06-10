@@ -1790,7 +1790,8 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], runtimeCore).ToArray();
+                    DSArray array = runtimeCore.Heap.Cast<DSArray>(formalParameters[cartIndex]);
+                    parameters = array.Values.ToArray();
                     retSize = parameters.Length;
                 }
                 else
