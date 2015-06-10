@@ -993,7 +993,7 @@ namespace Dynamo.Controls
                         };
                         meshGeometry3D.Material = diffMat;
                     }
-
+                    ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
                     geometryDictionary.Add((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : id, meshGeometry3D);
                 }
 
