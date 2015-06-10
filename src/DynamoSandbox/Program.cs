@@ -84,95 +84,6 @@ namespace DynamoSandbox
         }
     }
 
-    struct CommandLineArguments
-    {
-        internal static CommandLineArguments FromArguments(string[] args)
-        {
-            // Running Dynamo sandbox with a command file:
-            // DynamoSandbox.exe /c "C:\file path\file.xml"
-            // 
-            var commandFilePath = string.Empty;
-
-            // Running Dynamo under a different locale setting:
-            // DynamoSandbox.exe /l "ja-JP"
-            //
-            var locale = string.Empty;
-
-            // Open Dynamo headless and open file at path
-            // DynamoSandbox.exe /o "C:\file path\graph.dyn"
-            //
-            var openfilepath = string.Empty;
-
-            // set current opened graph to state by name 
-            // DynamoSandbox.exe /o "C:\file path\graph.dyn" /s "state1"
-            //
-            var presetFile = string.Empty;
-
-            // set current opened graph to state by name 
-            // DynamoSandbox.exe /o "C:\file path\graph.dyn" /s "state1"
-            //
-            var presetStateid = string.Empty;
-
-            for (var i = 0; i < args.Length; ++i)
-            {
-                var arg = args[i];
-                if (arg.Length != 2 || (arg[0] != '/'))
-                {
-                    continue; // Not a "/x" type of command switch.
-                }
-
-                switch (arg[1])
-                {
-                    case 'c':
-                    case 'C':
-                        // If there's at least one more argument...
-                        if (i < args.Length - 1)
-                            commandFilePath = args[++i];
-                        break;
-
-                    case 'l':
-                    case 'L':
-                        if (i < args.Length - 1)
-                            locale = args[++i];
-                        break;
-
-                    case 'o':
-                    case 'O':
-                        if (i < args.Length - 1)
-                            openfilepath = args[++i];
-                        break;
-                    
-                    case 's':
-                    case 'S':
-                        if (i < args.Length - 1)
-                            presetStateid = args[++i];
-                        break;
-
-                    case 'p':
-                    case 'P':
-                        if (i < args.Length - 1)
-                            presetFile = args[++i];
-                        break;
-                }
-            }
-
-            return new CommandLineArguments
-            {
-                Locale = locale,
-                CommandFilePath = commandFilePath,
-                OpenFilePath = openfilepath,
-                PresetStateID = presetStateid,
-                PresetFilePath = presetFile,
-            };
-        }
-
-        internal string Locale { get; set; }
-        internal string CommandFilePath { get; set; }
-        internal string OpenFilePath { get; set; }
-        internal string PresetStateID { get; set; }
-        internal string PresetFilePath { get; set; }
-    }
-
     internal class SandboxLookUp : DynamoLookUp
     {
         public override IEnumerable<string> GetDynamoInstallLocations()
@@ -192,6 +103,27 @@ namespace DynamoSandbox
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
+
+        private static DynamoModel makeModel()
+        {
+            var geometryFactoryPath = string.Empty;
+            var preloaderLocation = string.Empty;
+            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+
+            DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+
+            var umConfig = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
+            Debug.Assert(umConfig.DynamoLookUp != null);
+
+            var model = DynamoModel.Start(
+                new DynamoModel.DefaultStartConfiguration()
+                {
+                    PathResolver = new PathResolver(preloaderLocation),
+                    GeometryFactoryPath = geometryFactoryPath,
+                    UpdateManager = new UpdateManager(umConfig)
+                });
+            return model;
+        }
 
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
@@ -226,69 +158,6 @@ namespace DynamoSandbox
             app.Run(view);
 
             DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
-        }
-
-        private static void MakeModelAndSetState(CommandLineArguments cmdLineArgs)
-        {
-            var geometryFactoryPath = string.Empty;
-            var preloaderLocation = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
-
-           // DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-            var evalComplete = false;
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    PathResolver = new PathResolver(preloaderLocation),
-                    GeometryFactoryPath = geometryFactoryPath
-                });
-            model.OpenFileFromPath(cmdLineArgs.OpenFilePath);
-            Console.WriteLine("loaded file");
-            model.EvaluationCompleted += (o,args) => { evalComplete = true; };
-            if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
-            {
-                //load the states contained in this file, it should be structured so
-                //that there is a PresetsModel element containing multiple PresetStates elements
-                //load it pointing to the file we opened so that states will point to the correct nodes
-                model.CurrentWorkspace.PresetsCollection.ImportStates( 
-                    PresetsModel.LoadFromXmlPaths(cmdLineArgs.PresetFilePath,cmdLineArgs.OpenFilePath,model.NodeFactory));
-            }
-
-            //build a list of states, for now, none, a single state, or all of them
-            //this must be done after potentially loading states from external file
-            var stateNames = new List<String>();
-            if (!string.IsNullOrEmpty(cmdLineArgs.PresetStateID))
-            {
-                if (cmdLineArgs.PresetStateID == "all")
-                {
-                    foreach (var state in model.CurrentWorkspace.PresetsCollection.DesignStates)
-                    {
-                        stateNames.Add(state.Name);
-                    }
-                }
-                else
-                {
-                    stateNames.Add(cmdLineArgs.PresetStateID);
-                }
-            }
-            else
-            {
-                stateNames.Add("default");
-            }
-
-
-            foreach (var stateName in stateNames)
-            {
-                model.CurrentWorkspace.SetWorkspaceToState(stateName);
-                model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-                while (evalComplete == false)
-                {
-                    Thread.Sleep(250);
-                }
-                evalComplete = false;
-
-            }
-           
         }
 
         private static void CloseMigrationWindow()
@@ -335,6 +204,7 @@ namespace DynamoSandbox
         public static void Main(string[] args)
         {
             DynamoViewModel viewModel = null;
+            string result = string.Empty;
 
             try
             {
@@ -350,7 +220,10 @@ namespace DynamoSandbox
                 //if supplied, if we have supplied a presetsFile, then append that as the presetsModel for our workspace
                 if (!string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
                 {
-                    MakeModelAndSetState(cmdLineArgs);
+
+                   var runner = new CommandLineRunner(makeModel());
+                   runner.Run(cmdLineArgs);
+                   
                 }
                 else
                 {

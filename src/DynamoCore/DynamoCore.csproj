@@ -111,6 +111,7 @@ limitations under the License.
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Core\CommandLineRunner.cs" />
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
