@@ -415,6 +415,12 @@ namespace Dynamo
                 return;
             }
 
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                OnSelectionChanged(e.OldItems);
+                return;
+            }
+
             // When a node is added to the workspace, it is also added
             // to the selection. When running automatically, this addition
             // also triggers an execution. This would successive calls to render.
