@@ -216,14 +216,11 @@ namespace DynamoSandbox
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
                     Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
                 }
-                //if we have an openfilepath arg then open headless and attempt to set that file to a state
-                //if supplied, if we have supplied a presetsFile, then append that as the presetsModel for our workspace
+                //if we have an openfilepath arg then open headless, and determine behavior from other flags '/s, /p, /v' 
                 if (!string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
                 {
-
                    var runner = new CommandLineRunner(makeModel());
                    runner.Run(cmdLineArgs);
-                   
                 }
                 else
                 {

@@ -41,7 +41,7 @@ namespace Dynamo.Core
             var presetStateid = string.Empty;
 
             // print the resulting values of all nodes to the console 
-            // DynamoSandbox.exe /o "C:\file path\graph.dyn" /v "C:\someoutputfilepath.txt"
+            // DynamoSandbox.exe /o "C:\file path\graph.dyn" /v "C:\someoutputfilepath.xml"
             //
             var verbose = string.Empty;
 
@@ -112,7 +112,12 @@ namespace Dynamo.Core
         internal string PresetFilePath { get; set; }
         internal string Verbose { get; set; }
     }
-
+    /// <summary>
+    /// This class invokes a dynamo model's run methods in a headless mode from the CLI using a set of flags
+    /// that set the graph to different preset states. This class also has a very limited method for exporting 
+    /// the graph evaluation to an xml file, so that the results from invoking dynamo from the command line 
+    /// are useable.
+    /// </summary>
     public class CommandLineRunner
     {
         private readonly DynamoModel model;
@@ -226,12 +231,12 @@ namespace Dynamo.Core
               }
           }
 
-
         public void Run(CommandLineArguments args)
         {
             var doc = RunCommandLineArgs(this.model, args);
             if (doc != null && Directory.Exists(new FileInfo(args.Verbose).Directory.FullName))
             {
+                //if it exists and the path is valid, save the output file
                 doc.Save(args.Verbose);
             }
         }
