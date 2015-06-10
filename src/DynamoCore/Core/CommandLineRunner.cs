@@ -130,7 +130,7 @@ namespace Dynamo.Core
         private static XmlDocument RunCommandLineArgs(DynamoModel model, CommandLineArguments cmdLineArgs)
         {
             var evalComplete = false;
-            model.OpenFileFromPath(cmdLineArgs.OpenFilePath);
+            model.OpenFileFromPath(cmdLineArgs.OpenFilePath,true);
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
             if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
