@@ -218,6 +218,7 @@ namespace Dynamo.ViewModels
         internal SearchViewModel(NodeSearchModel model)
         {
             Model = model;
+            InitializeCore();
         }
 
         private void InitializeCore()

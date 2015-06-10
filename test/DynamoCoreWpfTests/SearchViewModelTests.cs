@@ -631,6 +631,69 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Key navigation
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectNextTest()
+        {
+            var element = CreateCustomNode("A", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AA", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AAA", "Category2");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("a");
+
+            Assert.Greater(viewModel.SearchResults.Count, 0);
+            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.SelectNext();
+            Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.SelectNext();
+            Assert.AreEqual("AAA", viewModel.CurrentlySelectedMember.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectPreviousTest()
+        {
+            var element = CreateCustomNode("A", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AA", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AAA", "Category2");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("a");
+
+            Assert.Greater(viewModel.SearchResults.Count, 0);
+            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.SelectNext();
+
+            viewModel.SelectPrevious();
+            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.SelectNext();
+            viewModel.SelectNext();
+
+            viewModel.SelectPrevious();
+            Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
+        }
+
+        #endregion
+
         #region Helpers
 
         private static NodeSearchElement CreateCustomNode(string name, string category,
