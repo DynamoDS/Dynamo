@@ -15,7 +15,6 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class ClassInformationView : UserControl
     {
-        private const int TruncatedMembersCount = 5;
         private ClassInformationViewModel castedDataContext;
 
         public bool FocusItemOnSelection { get; set; }
@@ -41,8 +40,6 @@ namespace Dynamo.UI.Controls
                 castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
                 secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
-
-            TruncateSecondaryMembers();
 
             e.Handled = true;
         }
@@ -130,7 +127,6 @@ namespace Dynamo.UI.Controls
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
-                TruncateSecondaryMembers();
                 return;
             }
 
@@ -148,7 +144,6 @@ namespace Dynamo.UI.Controls
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
-                TruncateSecondaryMembers();
                 return;
             }
 
@@ -158,31 +153,6 @@ namespace Dynamo.UI.Controls
             {
                 primaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
-        }
-
-        private void OnMoreButtonClick(object sender, RoutedEventArgs e)
-        {
-            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
-            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
-                collection = castedDataContext.QueryMembers;
-
-            secondaryMembers.ItemsSource = collection;
-
-            castedDataContext.HiddenSecondaryMembersCount = 0;
-        }
-
-        private void TruncateSecondaryMembers()
-        {
-            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.None)
-                return;
-
-            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
-            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
-                collection = castedDataContext.QueryMembers;
-
-            secondaryMembers.ItemsSource = collection.Take(TruncatedMembersCount);
-
-            castedDataContext.HiddenSecondaryMembersCount = collection.Count() - TruncatedMembersCount;
         }
 
         // This method will work only, when user presses Shift.
