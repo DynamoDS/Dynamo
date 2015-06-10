@@ -10,6 +10,7 @@ namespace Dynamo.Extensions
     /// </summary>
     public interface IExtensionLoader
     {
-        IEnumerable<IExtension> Load(string extensionsPath);
+        IExtension Load(string extensionPath);
+        IEnumerable<IExtension> LoadDirectory(string extensionsPath);
     }
 }

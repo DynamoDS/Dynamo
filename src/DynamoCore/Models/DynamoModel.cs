@@ -182,7 +182,9 @@ namespace Dynamo.Models
         /// <summary>
         ///     Manages all extensions for Dynamo
         /// </summary>
-        public readonly IExtensionManager ExtensionManager; // MAGN-7366
+        public IExtensionManager ExtensionManager { get { return extensionManager; } }
+
+        private readonly ExtensionManager extensionManager;
 
         /// <summary>
         ///     Manages all loaded NodeModel libraries.
@@ -488,22 +490,20 @@ namespace Dynamo.Models
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
 
-            ExtensionManager = new ExtensionManager();
-            var extensions = ExtensionManager.ExtensionLoader.Load(pathManager.ExtensionsDirectory);
+            extensionManager = new ExtensionManager();
+            extensionManager.MessageLogged += LogMessage;
+            var extensions = ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
 
             if (extensions.Any())
             {
-                var startupParams = new StartupParams()
-                {
-                    AuthProvider = config.AuthProvider,
-                    PathManager = pathManager,
-                    CustomNodeManager = CustomNodeManager
-                };
+                var startupParams = new StartupParams(config.AuthProvider,
+                    pathManager, CustomNodeManager);
 
                 foreach (var ext in extensions)
                 {
                     ext.Startup(startupParams);
                     ext.Load(preferences, pathManager);
+                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
                     ExtensionManager.Add(ext);
                 }
             }
@@ -555,6 +555,7 @@ namespace Dynamo.Models
             
         private void RemoveExtension(IExtension ext)
         {
+            ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
             ExtensionManager.Remove(ext);
         }
 
@@ -685,7 +686,13 @@ namespace Dynamo.Models
         {
             EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
 
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
+            }
+
             ExtensionManager.Dispose();
+            extensionManager.MessageLogged -= LogMessage;
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();

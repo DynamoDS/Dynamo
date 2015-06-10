@@ -15,14 +15,42 @@ using System.Threading.Tasks;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerExtension : IExtension
+    public class PackageManagerExtension : IExtension, ILogSource
     {
+        #region Fields & Properties
+
+        private PackageLoader packageLoader;
+        private PackageManagerClient packageManagerClient;
+
+        public event Action<ILogMessage> MessageLogged;
+        public event Action<Assembly> RequestLoadNodeLibrary;
+
         public string Name { get { return "DynamoPackageManager"; } }
 
         public string UniqueId
         {
             get { return "FCABC211-D56B-4109-AF18-F434DFE48139"; }
         }
+
+        /// <summary>
+        ///     Manages loading of packages.
+        /// </summary>
+        public PackageLoader PackageLoader
+        {
+            get { return packageLoader; }
+        }
+
+        /// <summary>
+        ///     Dynamo Package Manager Instance.
+        /// </summary>
+        public PackageManagerClient PackageManagerClient
+        {
+            get { return packageManagerClient; }
+        }
+
+        #endregion
+
+        #region IExtension members
 
         public void Load(IPreferences preferences, IPathManager pathManager)
         {
@@ -35,54 +63,11 @@ namespace Dynamo.PackageManager
             });
         }
 
-        /// <summary>
-        ///     Manages loading of packages.
-        /// </summary>
-        public PackageLoader PackageLoader 
-        { 
-            get { return packageLoader; } 
-        }
-
-        private PackageLoader packageLoader;
-
-        /// <summary>
-        ///     Dynamo Package Manager Instance.
-        /// </summary>
-        public PackageManagerClient PackageManagerClient
-        {
-            get { return packageManagerClient; }
-        }
-
-        private PackageManagerClient packageManagerClient;
-
-
         public void Dispose()
         {
             this.packageLoader.MessageLogged -= OnMessageLogged;
             this.packageLoader.RequestLoadNodeLibrary -= OnRequestLoadNodeLibrary;
         }
-
-        public event Action<ILogMessage> MessageLogged;
-
-        public void OnMessageLogged(ILogMessage msg)
-        {
-            if (this.MessageLogged != null)
-            {
-                this.MessageLogged(msg);
-            }
-        }
-
-
-        public event Action<Assembly> RequestLoadNodeLibrary;
-
-        private void OnRequestLoadNodeLibrary(Assembly assembly)
-        {
-            if (RequestLoadNodeLibrary != null)
-            {
-                RequestLoadNodeLibrary(assembly);
-            }
-        }
-
 
         /// <summary>
         ///     Validate the package manager url and initialize the PackageManagerClient object
@@ -127,6 +112,28 @@ namespace Dynamo.PackageManager
         {
             this.Dispose();
         }
+
+        #endregion
+
+        #region Private helper methods
+
+        private void OnMessageLogged(ILogMessage msg)
+        {
+            if (this.MessageLogged != null)
+            {
+                this.MessageLogged(msg);
+            }
+        }
+
+        private void OnRequestLoadNodeLibrary(Assembly assembly)
+        {
+            if (RequestLoadNodeLibrary != null)
+            {
+                RequestLoadNodeLibrary(assembly);
+            }
+        }
+
+        #endregion
     }
 
     public static class DynamoModelExtensions
