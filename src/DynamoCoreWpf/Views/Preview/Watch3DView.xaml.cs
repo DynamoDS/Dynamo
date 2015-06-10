@@ -216,16 +216,6 @@ namespace Dynamo.Controls
             }
         }
 
-
-#if DEBUG
-        /// <summary>
-        /// The TestSelectionCommand is used in the WatchSettingsControl
-        /// to test the ability to toggle a boolean effect variable
-        /// representing the selection state.
-        /// </summary>
-        public DelegateCommand TestSelectionCommand { get; set; }
-#endif
-
         #endregion
 
         #region constructors
@@ -449,10 +439,6 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-#if DEBUG
-            TestSelectionCommand = new DelegateCommand(TestSelection, CanTestSelection);
-#endif
         }
 
         /// <summary>
@@ -535,7 +521,6 @@ namespace Dynamo.Controls
             }
         }
 
-
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -571,7 +556,6 @@ namespace Dynamo.Controls
                 DirectionalLightDirection = v; 
             }
         }
-
 
         /// <summary>
         /// Handler for the visualization manager's ResultsReadyToVisualize event.
@@ -1037,26 +1021,6 @@ namespace Dynamo.Controls
         }
 
         #endregion
-
-#if DEBUG
-        private bool CanTestSelection(object parameters)
-        {
-            return true;
-        }
-
-        private void TestSelection(object parameters)
-        {
-            foreach (var item in watch_view.Items)
-            {
-                var geom = item as GeometryModel3D;
-                if (geom != null)
-                {
-                    geom.IsSelected = !geom.IsSelected;
-                }
-            }
-        }
-#endif
-
     }
 
     internal class PackageAggregationParams
