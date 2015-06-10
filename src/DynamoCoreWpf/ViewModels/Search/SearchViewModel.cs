@@ -692,6 +692,7 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
 
+            // Select first element, in first group, in first category.
             if (foundNodes.Any())
             {
                 selectedCategoryIndex = 0;
@@ -854,6 +855,9 @@ namespace Dynamo.ViewModels
         #region Selection
 
         private int selectedMemberIndex;
+        /// <summary>
+        /// Used during library search key navigation. Indicates which item index is selected.
+        /// </summary>
         public int SelectedMemberIndex
         {
             get { return selectedMemberIndex; }
@@ -870,18 +874,30 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Used during library search key navigation. Indicates which group index is selected.
+        /// </summary>
         private int selectedMemberGroupIndex;
 
+        /// <summary>
+        /// Used during library search key navigation. Indicates which category index is selected.
+        /// </summary>
         private int selectedCategoryIndex;
 
+        /// <summary>
+        /// Used during library search key navigation. Counts next selected member index.
+        /// Enables moving from top to bottom.
+        /// </summary>
         public void SelectNext()
         {
+            // We should have at least one category, otherwise we can't move.
             if (!SearchRootCategories.Any())
                 return;
 
             var selectedCategory = SearchRootCategories[selectedCategoryIndex];
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
+            // If it's not the last member, we can move further.
             if (SelectedMemberIndex != selectedMemberGroup.Members.Count() - 1)
             {
                 UnSelectOldMember();
@@ -889,6 +905,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            // If it's last member, we should jump to next member group.
             if (selectedMemberGroupIndex != selectedCategory.MemberGroups.Count() - 1)
             {
                 UnSelectOldMember();
@@ -897,6 +914,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            // If it's last member group, we should jump to next category.
             if (selectedCategoryIndex != SearchRootCategories.Count() - 1)
             {
                 UnSelectOldMember();
@@ -907,6 +925,10 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Used during library search key navigation. Counts previous selected member index.
+        /// Enables moving from bottom to top.
+        /// </summary>
         public void SelectPrevious()
         {
             if (!SearchRootCategories.Any())
@@ -915,6 +937,7 @@ namespace Dynamo.ViewModels
             var selectedCategory = SearchRootCategories[selectedCategoryIndex];
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
+            // If it's not the first member, we can move back.
             if (SelectedMemberIndex != 0)
             {
                 UnSelectOldMember();
@@ -922,19 +945,24 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            // If it's not the first member group, we can move back.
             if (selectedMemberGroupIndex != 0)
             {
                 UnSelectOldMember();
                 selectedMemberGroupIndex--;
+                // Select last member in member group. We are moving from bottom to top.
                 SelectedMemberIndex = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
                 return;
             }
 
+            // If it's not the first category, we can move back.
             if (selectedCategoryIndex != 0)
             {
                 UnSelectOldMember();
                 selectedCategoryIndex--;
+                // Select last member group.
                 selectedMemberGroupIndex = SearchRootCategories[selectedCategoryIndex].MemberGroups.Count() - 1;
+                // Select last member in member group. We are moving from bottom to top.
                 SelectedMemberIndex = SearchRootCategories[selectedCategoryIndex].MemberGroups.
                                             ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
                 return;
