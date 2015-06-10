@@ -491,6 +491,9 @@ namespace Dynamo.Tests
         [Test]
         public void TestCoordinateSystem()
         {
+            //This test is use to test coordinate system
+            //Newly added Default arguments are missing for entire CoordinateSystem class.
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7517
             string openPath = Path.Combine(
                 TestDirectory,
                 @"core\geometryui\coordinateSystem.dyn");
@@ -500,9 +503,7 @@ namespace Dynamo.Tests
             var csPreview = GetPreviewValue("c7a317fc-c980-43f9-90c5-df50c9703f95") as CoordinateSystem;
             Assert.AreEqual(0,csPreview.Origin.X );
             Assert.AreEqual(0,csPreview.Origin.Y);
-            Assert.AreEqual(0, csPreview.Origin.Z);
-            
-        }
-        
+            Assert.AreEqual(0, csPreview.Origin.Z); 
+        }       
     }
 }
