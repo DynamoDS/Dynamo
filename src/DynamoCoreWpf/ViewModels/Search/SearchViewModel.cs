@@ -854,6 +854,21 @@ namespace Dynamo.ViewModels
 
         #region Selection
 
+        /// <summary>
+        /// Selected member is  library search view.
+        /// </summary>
+        public NodeSearchElementViewModel CurrentlySelectedMember
+        {
+            get
+            {
+                var selectedCategory = SearchRootCategories[selectedCategoryIndex];
+                var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
+                var selectedMember = selectedMemberGroup.Members.ElementAt(SelectedMemberIndex);
+
+                return selectedMember;
+            }
+        }
+
         private int selectedMemberIndex;
         /// <summary>
         /// Used during library search key navigation. Indicates which item index is selected.
@@ -865,12 +880,8 @@ namespace Dynamo.ViewModels
             {
                 selectedMemberIndex = value;
 
-                // Get new selected member.
-                var selectedCategory = SearchRootCategories[selectedCategoryIndex];
-                var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
-                var selectedMember = selectedMemberGroup.Members.ElementAt(selectedMemberIndex);
-
-                selectedMember.IsSelected = true;
+                // Select new member.
+                CurrentlySelectedMember.IsSelected = true;
             }
         }
 
@@ -971,11 +982,7 @@ namespace Dynamo.ViewModels
 
         private void UnSelectOldMember()
         {
-            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
-            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
-            var selectedMember = selectedMemberGroup.Members.ElementAt(SelectedMemberIndex);
-
-            selectedMember.IsSelected = false;
+            CurrentlySelectedMember.IsSelected = false;
         }
 
         private void UpdateTopResult(SearchMemberGroup memberGroup)
@@ -990,6 +997,11 @@ namespace Dynamo.ViewModels
             topMemberGroup.AddMember(memberGroup.Members.First());
 
             TopResult = topMemberGroup;
+        }
+
+        internal void ExecuteSelectedMember()
+        {
+            CurrentlySelectedMember.ClickedCommand.Execute(null);
         }
 
         #endregion

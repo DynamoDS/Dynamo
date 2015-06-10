@@ -205,6 +205,10 @@ namespace Dynamo.Search
                     if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
                         viewModel.SelectPrevious();
                     break;
+                case Key.Enter:
+                    if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
+                        viewModel.ExecuteSelectedMember();
+                    break;
             }
         }
 
