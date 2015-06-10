@@ -468,16 +468,23 @@ namespace Dynamo.Controls
                 foreach (var item in items)
                 {
                     var node = item as NodeModel;
-                    if (node == null) continue;
-                    var geometryModel =
-                        GeometryDictionary.Where(x => x.Key == node.AstIdentifierBase)
-                            .Select(x => x.Value)
-                            .FirstOrDefault()
-                            as GeometryModel3D;
-
-                    if (geometryModel != null)
+                    if (node == null)
                     {
-                        geometryModel.IsSelected = !geometryModel.IsSelected;
+                        continue;
+                    }
+
+                    var geometryModels =
+                        GeometryDictionary
+                            .Where(x => x.Key.Contains(node.AstIdentifierBase))
+                            .Where(x=> x.Value is GeometryModel3D)
+                            .Select(x => x.Value).Cast<GeometryModel3D>();
+
+                    if (geometryModels.Any())
+                    {
+                        foreach (var model3D in geometryModels)
+                        {
+                            model3D.IsSelected = !model3D.IsSelected;
+                        }
                     }
                 }
             }            
