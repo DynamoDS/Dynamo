@@ -96,11 +96,11 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void AdddingaPackageRaisesCanExecuteChangeOnDelegateCommand()
+        public void AddingPackagesRaisesCanExecuteChangeOnDelegateCommand()
         {
-            //create a new synchronization context since the package searchview from previous UI tests is still
+            //set synchronization context since the package searchview from previous UI tests is still
             //running and throws exception when attempting to modify searchresults
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(SynchronizationContext.Current);
             var vm = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(vm);
 
@@ -114,11 +114,9 @@ namespace DynamoCoreWpfTests
                       
             var canExecuteChangedFired = 0;
             vm.SubmitCommand.CanExecuteChanged += ((o, e) => { canExecuteChangedFired ++; });
-            //now use reflection to add a customnode to the package
-            var propertyChangedmethod = typeof(PublishPackageViewModel).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).Where(x=>x.Name == "AddFile").First();
-            propertyChangedmethod.Invoke(vm, BindingFlags.InvokeMethod,null, new object[] { firstnode },System.Globalization.CultureInfo.CurrentCulture);
+            //now add a customnode to the package
+            vm.AddFile(firstnode);
             
-            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             //assert that canExecute changed was fired one time 
             Assert.AreEqual(canExecuteChangedFired,1);
 

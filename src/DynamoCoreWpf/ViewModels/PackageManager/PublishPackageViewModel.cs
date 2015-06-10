@@ -510,8 +510,7 @@ namespace Dynamo.PackageManager
             if (e.PropertyName == "PackageContents")
             {
                 CanSubmit();
-                BeginInvoke(
-                             (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
+               SubmitCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -832,7 +831,7 @@ namespace Dynamo.PackageManager
             return true;
         }
 
-        private void AddFile(string filename)
+        internal void AddFile(string filename)
         {
             if (!File.Exists(filename)) return;
 
