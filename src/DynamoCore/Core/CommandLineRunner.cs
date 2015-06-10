@@ -187,12 +187,13 @@ namespace Dynamo.Core
                         resultsdict.Add(node.GUID, portvalues);
                     }
                     outputresults.Add(resultsdict);
+                    populateXmlDocWithResults(doc, outputresults);
                 }
                 evalComplete = false;
 
             }
             
-            populateXmlDocWithResults(doc, outputresults);
+           
             return doc;
         }
 
