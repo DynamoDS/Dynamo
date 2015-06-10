@@ -25,7 +25,7 @@
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
     <ModelGuid>3a22370f-7f07-4bd6-b4fb-5680ec82e8d4</ModelGuid>
     <DSCore.File.Filename guid="3a22370f-7f07-4bd6-b4fb-5680ec82e8d4" type="DSCore.File.Filename" nickname="File Path" x="69.5" y="86.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>MYXJ_20150312182324_fast.jpg</System.String>
+      <System.String>bug.PNG</System.String>
     </DSCore.File.Filename>
   </CreateNodeCommand>
   <SelectModelCommand Modifiers="0">
