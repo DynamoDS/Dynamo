@@ -4953,6 +4953,28 @@ test = { A.A() => x;
             new object[] { 30, 60 }, new object[] { null, null } }
 );
         }
+
+        [Test]
+        public void TestRemoveKeyNoThrow()
+        {
+            string code = @"
+x = 0;
+y = RemoveKey(x, x);
+";
+            Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
+            thisTest.Verify("y", false);
+        }
+
+        [Test]
+        public void TestContainsKeyNoThrow()
+        {
+            string code = @"
+x = 0;
+y = ContainsKey(x, x);
+";
+            Assert.DoesNotThrow(() => thisTest.RunScriptSource(code));
+            thisTest.Verify("y", false);
+        }
     }
 
 }

@@ -510,6 +510,49 @@ namespace ProtoTest.FFITests
         }
 
         [Test]
+        public void LookupResolvedName_ForGlobalFunction_RewriteAst()
+        {
+            var astNodes = CoreUtils.BuildASTList(core, "a = Flatten(a).DifferenceAll(Flatten(b));");
+
+            var elementResolver = new ElementResolver();
+
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes).ToList();
+
+            Assert.AreEqual("a = Flatten(a).DifferenceAll(Flatten(b));\n", newNodes[0].ToString());
+        }
+
+        [Test]
+        public void LookupResolvedName_ForGlobalClass_RewriteAst()
+        {
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            var testCore = thisTest.GetTestCore();
+            var astNodes = CoreUtils.BuildASTList(testCore, "a = GlobalClass.GlobalClass(a);");
+
+            var elementResolver = new ElementResolver();
+
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes).ToList();
+
+            Assert.AreEqual("a = GlobalClass.GlobalClass(a);\n", newNodes[0].ToString());
+
+            astNodes = CoreUtils.BuildASTList(testCore, "a : GlobalClass;");
+
+            newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes).ToList();
+
+            Assert.AreEqual("a : GlobalClass", newNodes[0].ToString());
+
+            // Add verification for contents of element resolver resolution map
+            Assert.AreEqual(1, elementResolver.ResolutionMap.Count);
+
+            var assembly = elementResolver.LookupAssemblyName("GlobalClass");
+            var resolvedName = elementResolver.LookupResolvedName("GlobalClass");
+
+            Assert.AreEqual("FFITarget.dll", assembly);
+            Assert.AreEqual("GlobalClass", resolvedName);
+        }
+
+        [Test]
         public void SkipResolvingName_ForPrimitiveTypedIdentifier_RetainAst()
         {
             var astNodes = CoreUtils.BuildASTList(core, "p : int;");

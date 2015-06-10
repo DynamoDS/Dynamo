@@ -107,6 +107,7 @@
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
     <Compile Include="Extensions\ViewStartupParams.cs" />
+    <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
     <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>

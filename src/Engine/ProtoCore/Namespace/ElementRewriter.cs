@@ -81,7 +81,7 @@ namespace ProtoCore.Namespace
         public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
         {
             // First pass attempt to resolve the node before traversing it deeper
-            IdentifierListNode newIdentifierListNode = null;
+            AssociativeNode newIdentifierListNode = null;
             if (IsMatchingResolvedName(node, out newIdentifierListNode))
                 return newIdentifierListNode;
 
@@ -104,14 +104,14 @@ namespace ProtoCore.Namespace
 
         #region private helper methods
 
-        private bool IsMatchingResolvedName(IdentifierListNode identifierList, out IdentifierListNode newIdentList)
+        private bool IsMatchingResolvedName(IdentifierListNode identifierList, out AssociativeNode newIdentList)
         {
             newIdentList = null;
             var resolvedName = ResolveClassName(identifierList);
             if (string.IsNullOrEmpty(resolvedName))
                 return false;
 
-            newIdentList = (IdentifierListNode)CoreUtils.CreateNodeFromString(resolvedName);
+            newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
             
             var symbol = new Symbol(resolvedName);
             return symbol.Matches(identifierList.ToString());
@@ -123,6 +123,9 @@ namespace ProtoCore.Namespace
 
             string partialName = identListNode != null ?
                 CoreUtils.GetIdentifierExceptMethodName(identListNode) : identifierList.Name;
+            
+            if(string.IsNullOrEmpty(partialName))
+                return String.Empty;
 
             var resolvedName = elementResolver.LookupResolvedName(partialName);
             if (string.IsNullOrEmpty(resolvedName))
@@ -151,7 +154,6 @@ namespace ProtoCore.Namespace
                 return identifierList;
 
             var newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
-            Validity.Assert(newIdentList is IdentifierListNode);
 
             // If the original input node matches with the resolved name, simply return 
             // the identifier list constructed from the resolved name
@@ -172,7 +174,6 @@ namespace ProtoCore.Namespace
             intermediateNodes.Insert(0, newIdentList);
 
             var lNode = CoreUtils.CreateNodeByCombiningIdentifiers(intermediateNodes);
-            Validity.Assert(lNode is IdentifierListNode);
 
             // The last ident list for the functioncall or identifier rhs
             var lastIdentList = new IdentifierListNode

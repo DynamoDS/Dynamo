@@ -20,7 +20,7 @@ namespace Dynamo.Models
         }
 
         public static bool FromXmlDocument(
-            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceInfo workspaceInfo)
+            XmlDocument xmlDoc, string path, bool isTestMode, bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Dynamo.Models
                             version = att.Value;
                         else if (att.Name.Equals("RunType"))
                         {
-                            if (!Enum.TryParse(att.Value, false, out runType))
+                            if (forceManualExecutionMode || !Enum.TryParse(att.Value, false, out runType))
                             {
                                 runType = RunType.Manual;
                             }

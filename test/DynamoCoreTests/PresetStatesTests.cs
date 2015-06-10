@@ -298,5 +298,58 @@ namespace Dynamo.Tests
             var allSerializedNodesInAllStates2 = model.CurrentWorkspace.PresetsCollection.DesignStates.SelectMany(x => x.SerializedNodes);
             Assert.AreEqual(allSerializedNodesInAllStates.Count(), allSerializedNodesInAllStates2.Count());
         }
+
+        [Test]
+        public void CanRestoreStateAndNodesDoNotMove()
+        {
+            var model = CurrentDynamoModel;
+            //create some numbers
+            var numberNode1 = new DoubleInput();
+           
+            numberNode1.Value = "1";
+            var numberNode2 = new DoubleInput();
+            numberNode2.Value = "2";
+            
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+             
+            //add the nodes
+            model.CurrentWorkspace.AddNode(numberNode1, false);
+            model.CurrentWorkspace.AddNode(numberNode2, false);
+            model.CurrentWorkspace.AddNode(addNode, false);
+            //connect them up
+            ConnectorModel.Make(numberNode1, addNode, 0, 0);
+            ConnectorModel.Make(numberNode2, addNode, 0, 1);
+
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+            Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
+
+            //create the first state with the numbers selected
+            DynamoSelection.Instance.Selection.Add(numberNode1);
+            DynamoSelection.Instance.Selection.Add(numberNode2);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            //create the preset from 2 nodes
+            model.CurrentWorkspace.CreatePresetStateFromSelection(
+                 "state1",
+                 "3", IDS);
+
+            Assert.AreEqual(numberNode1.X, 0);
+            Assert.AreEqual(numberNode1.Y, 0);
+            Assert.AreEqual(numberNode2.X, 0);
+            Assert.AreEqual(numberNode2.Y, 0);
+
+            // move the nodes
+            numberNode1.X = 10;
+            numberNode1.Y = 10;
+
+            numberNode2.X = 20;
+            numberNode2.Y = 20;
+            //set the state back before 
+            model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.DesignStates.Where(
+                   x => x.Name == "state1").First());
+            Assert.AreEqual(numberNode1.X, 10);
+            Assert.AreEqual(numberNode1.Y, 10);
+            Assert.AreEqual(numberNode2.X, 20);
+            Assert.AreEqual(numberNode2.Y, 20);
+        }
     }
 }

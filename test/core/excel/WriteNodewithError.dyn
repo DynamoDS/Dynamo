@@ -1,0 +1,30 @@
+<Workspace Version="0.8.1.1521" X="-276.879603951157" Y="-422.500626999846" zoom="0.837801617107673" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Autodesk.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="Autodesk.DesignScript.Geometry.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="c17fb010-8f9a-4513-b9ba-ffd804153c36" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="341.744036771261" y="669.449378478687" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;Sheet1&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="51fc9efe-99b7-4922-acba-95b56ea18010" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="504.119826771583" y="826.312059411556" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="32dbe300-4780-4c47-b07c-63019d5285ac" type="Dynamo.Nodes.DSFunction" nickname="Excel.WriteToFile" x="939.548338139396" y="771.625508381941" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.WriteToFile@string,string,int,int,var[][],bool">
+      <PortInfo index="5" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="3af35770-749c-4496-b93a-55491476596e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="514" y="990" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Autodesk.Point.ByCoordinates(1,a,1);" ShouldFocus="false" />
+    <DSCore.File.Filename guid="08a87be3-4c83-4c07-b25b-e11f67707885" type="DSCore.File.Filename" nickname="File Path" x="515.579722010683" y="564.51417415097" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\excel\WriteNodeWithError.xlsx</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="9771dc0d-2294-4d87-ac01-0ad6ee90c654" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="317" y="1001" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="true;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="0a77e000-8da4-43a8-8ba2-df515df4778f" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="814" y="1119" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="true;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c17fb010-8f9a-4513-b9ba-ffd804153c36" start_index="0" end="32dbe300-4780-4c47-b07c-63019d5285ac" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="51fc9efe-99b7-4922-acba-95b56ea18010" start_index="0" end="32dbe300-4780-4c47-b07c-63019d5285ac" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="51fc9efe-99b7-4922-acba-95b56ea18010" start_index="0" end="32dbe300-4780-4c47-b07c-63019d5285ac" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3af35770-749c-4496-b93a-55491476596e" start_index="0" end="32dbe300-4780-4c47-b07c-63019d5285ac" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="08a87be3-4c83-4c07-b25b-e11f67707885" start_index="0" end="32dbe300-4780-4c47-b07c-63019d5285ac" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9771dc0d-2294-4d87-ac01-0ad6ee90c654" start_index="0" end="3af35770-749c-4496-b93a-55491476596e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0a77e000-8da4-43a8-8ba2-df515df4778f" start_index="0" end="32dbe300-4780-4c47-b07c-63019d5285ac" end_index="5" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

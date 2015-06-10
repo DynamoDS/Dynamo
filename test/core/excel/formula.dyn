@@ -1,0 +1,21 @@
+<Workspace Version="0.8.1.1521" X="255.366570523339" Y="-218.351149250911" zoom="0.643792202554436" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCore.File.Filename guid="94b54653-0450-497d-9d3d-dbcf84aced1f" type="DSCore.File.Filename" nickname="File Path" x="-87.4890538083617" y="570.839660347173" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\excel\formula.xlsx</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.Watch guid="33e0b5c6-ea32-4791-8358-f00c2b27ec31" type="Dynamo.Nodes.Watch" nickname="Watch" x="838.544055524946" y="1136.5397550221" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction guid="78370571-c7bc-4ed8-be2e-90c5be172767" type="Dynamo.Nodes.DSFunction" nickname="Excel.ReadFromFile" x="319.931621937036" y="595.938573111001" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.ReadFromFile@var,string,bool">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <DSCore.File.FileObject guid="67a7e535-ca55-420d-beb0-9266f8fef145" type="DSCore.File.FileObject" nickname="File.FromPath" x="201.326786089912" y="502.213249119683" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="4f30a345-00d2-4b99-86fa-2f3b86cb0072" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="142" y="712" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;Sheet1&quot;;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="94b54653-0450-497d-9d3d-dbcf84aced1f" start_index="0" end="67a7e535-ca55-420d-beb0-9266f8fef145" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="67a7e535-ca55-420d-beb0-9266f8fef145" start_index="0" end="78370571-c7bc-4ed8-be2e-90c5be172767" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4f30a345-00d2-4b99-86fa-2f3b86cb0072" start_index="0" end="78370571-c7bc-4ed8-be2e-90c5be172767" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

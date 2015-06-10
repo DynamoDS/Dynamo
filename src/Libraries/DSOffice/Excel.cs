@@ -9,7 +9,6 @@ using Microsoft.Office.Interop.Excel;
 using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
-using ProtoCore.Properties;
 
 namespace DSOffice
 {
@@ -55,7 +54,7 @@ namespace DSOffice
             // get excel, throw exception if it is not
             var officeType = Type.GetTypeFromProgID("Excel.Application");
             if (officeType == null)
-                throw new Exception("Excel is not installed.");
+                throw new Exception(Properties.Resources.ExcelNotInstalled);
 
             try
             {
@@ -68,7 +67,7 @@ namespace DSOffice
 
                 if (!e.ToString().Contains("0x800401E3"))
                 {
-                    throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
+                    throw new Exception(Properties.Resources.ExcelCommunicationError);
                 }
             }
             catch (Exception)
@@ -403,7 +402,7 @@ namespace DSOffice
                         {
                             if (((StackValue)item).IsPointer)
                             {
-                                string message = string.Format(Resources.kMethodResolutionFailureWithTypes,
+                                string message = string.Format(Properties.Resources.kMethodResolutionFailureWithTypes,
                                     "Excel.WriteToFile", "_SingleFunctionObject");
                                 LogWarningMessageEvents.OnLogWarningMessage(message);
                                 return null;
@@ -464,25 +463,31 @@ namespace DSOffice
             wb = wbook;
 
             // Look for an existing worksheet
-            WorkSheet wSheet = wbook.WorkSheets.FirstOrDefault(n => n.ws.Name == sheetName);
+            WorkSheet[] worksheets = wbook.WorkSheets;
+            WorkSheet wSheet = worksheets.FirstOrDefault(n => n.ws.Name == sheetName);
 
-            // If you find one, then use it.
-            if (wSheet != null)
+            if (wSheet == null)
             {
-                if (overWrite)
-                {
-                    wSheet.ws.Delete();
-                }
-                else
-                {
-                    ws = wSheet.ws;
-                    return;
-                }
+                // If you don't find one, create one.
+                ws = (Worksheet) wb.Add();
+                ws.Name = sheetName;
+                wb.Save();
+                return;
             }
-            // If you don't find one, create one.
-            ws = (Worksheet)wb.Add();
-            ws.Name = sheetName;
-            wb.Save();
+            
+            // If you find one, then use it.
+            if (overWrite)
+            {
+                // if there is only one worksheet, we need to add one more
+                // before we can delete the first one
+                ws = (Worksheet) wb.Add();
+                wSheet.ws.Delete();
+                ws.Name = sheetName;
+                wb.Save();
+
+            }
+            else
+                ws = wSheet.ws;
         }
 
         internal WorkSheet(Worksheet ws, WorkBook wb)
