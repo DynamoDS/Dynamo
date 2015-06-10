@@ -59,8 +59,9 @@ namespace Dynamo.Controls
         private Color4 selectionColor;
         private Color4 materialColor;
         private bool showShadows;
-        private Vector3 directionalLightDirection;
-        private Color4 directionalLightColor;
+        private Color4 lightColor;
+        private Vector3 lightDirection;
+        private DirectionalLight3D directionalLight;
         private Color4 defaultLineColor;
         private Color4 defaultPointColor;
         private double lightAzimuthDegrees = 45.0;
@@ -132,26 +133,6 @@ namespace Dynamo.Controls
         public PhongMaterial WhiteMaterial { get; private set; }
 
         public PhongMaterial SelectedMaterial { get; private set; }
-
-        public Vector3 DirectionalLightDirection
-        {
-            get { return directionalLightDirection; }
-            private set
-            {
-                directionalLightDirection = value;
-                NotifyPropertyChanged("DirectionalLightDirection");
-            }
-        }
-
-        public Color4 DirectionalLightColor
-        {
-            get { return directionalLightColor; }
-            private set
-            {
-                directionalLightColor = value;
-                NotifyPropertyChanged("DirectionalLightColor");
-            }
-        }
 
         public Transform3D Model1Transform { get; private set; }
         
@@ -272,8 +253,8 @@ namespace Dynamo.Controls
             var lineColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
             defaultLineColor = new Color4(lineColor.R/255.0f, lineColor.G/255.0f, lineColor.B/255.0f, lineColor.A/255.0f);
 
-            DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
-            DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+            lightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+            lightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
 
             var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
@@ -325,13 +306,15 @@ namespace Dynamo.Controls
         /// </summary>
         private void InitializeHelix()
         {
-            DirectionalLight3D directLight3D = new DirectionalLight3D();
-            directLight3D.Color = DirectionalLightColor;
-            directLight3D.Direction = DirectionalLightDirection;
+            directionalLight = new DirectionalLight3D
+            {
+                Color = lightColor,
+                Direction = lightDirection
+            };
 
             if (geometryDictionary != null && !geometryDictionary.ContainsKey("DirectionalLight"))
             {
-                geometryDictionary.Add("DirectionalLight", directLight3D);
+                geometryDictionary.Add("DirectionalLight", directionalLight);
             }
 
             LineGeometryModel3D gridModel3D = new LineGeometryModel3D
@@ -448,10 +431,8 @@ namespace Dynamo.Controls
         /// </summary> 
         private void VisualizationManager_InitializeGeomtery()
         {
-            List<string> keysList = new List<string>();
-            keysList.Add("DirectionalLight");
-            keysList.Add("Grid");
-            keysList.Add("Axes");
+            List<string> keysList = new List<string> {"DirectionalLight", "Grid", "Axes"};
+
             foreach (var key in GeometryDictionary.Keys.Except(keysList).ToList())
             {
                 var model = GeometryDictionary[key] as GeometryModel3D;
@@ -459,6 +440,7 @@ namespace Dynamo.Controls
                 GeometryDictionary.Remove(key);
             }
             NotifyPropertyChanged("");
+
             View.InvalidateRender();
         }
 
@@ -542,6 +524,10 @@ namespace Dynamo.Controls
                 renderTimer.Reset();
             }
 #endif
+            if (directionalLight == null)
+            {
+                return;
+            }
 
             var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
             var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
@@ -550,10 +536,11 @@ namespace Dynamo.Controls
             var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
             var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
             var v = Vector3.Transform(cf, qaz*qel);
+            lightDirection = v;
 
-            if (!DirectionalLightDirection.Equals(v))
+            if ( !directionalLight.Direction.Equals(lightDirection))
             {
-                DirectionalLightDirection = v; 
+                directionalLight.Direction = v;
             }
         }
 
@@ -839,8 +826,10 @@ namespace Dynamo.Controls
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
             MeshCount = 0;
+
             //Clear the geometry values before adding the package.
             VisualizationManager_InitializeGeomtery();
+
             foreach (var rp in parameters.Packages)
             {
                 //Node ID gets updated with a ":" everytime this function is called.
