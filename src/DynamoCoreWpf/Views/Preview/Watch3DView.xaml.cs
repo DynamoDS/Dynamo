@@ -116,18 +116,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public PointGeometry3D Points { get; set; }
-
-        public LineGeometry3D Lines { get; set; }
-
-        public LineGeometry3D LinesSelected { get; set; }
-
-        public MeshGeometry3D Mesh { get; set; }
-
-        public MeshGeometry3D PerVertexMesh { get; set; }
-
-        public MeshGeometry3D MeshSelected { get; set; }
-
         public BillboardText3D Text { get; set; }
 
         public Viewport3DX View
@@ -837,35 +825,22 @@ namespace Dynamo.Controls
 
 #if DEBUG
             renderTimer.Start();
-#endif
-            Points = null;
-            Lines = null;           
-            Mesh = null;
-            PerVertexMesh = null;           
+#endif                  
             Text = null;
             MeshCount = 0;
 
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
-
-            var points = HelixRenderPackage.InitPointGeometry();
-            var lines = HelixRenderPackage.InitLineGeometry();         
-            var mesh = HelixRenderPackage.InitMeshGeometry();           
-            var perVertexMesh = HelixRenderPackage.InitMeshGeometry();
+    
             var text = HelixRenderPackage.InitText3D();
 
             var aggParams = new PackageAggregationParams
             {
-                Packages = packages,
-                Points = points,
-                Lines = lines,                
-                Mesh = mesh,
-                PerVertexMesh = perVertexMesh,                 
+                Packages = packages,                          
                 Text = text
             };
 
             AggregateRenderPackages(aggParams);
- 
 
 #if DEBUG
             renderTimer.Stop();
@@ -992,104 +967,73 @@ namespace Dynamo.Controls
                 }
 
                 var m = rp.Mesh;
-                if (m.Positions.Any())
+                if (!m.Positions.Any()) continue;
+
+                DynamoGeometryModel3D meshGeometry3D;
+
+                if ((rp.Colors != null || rp.RequiresPerVertexColoration) &&
+                    geomteryDictionary.ContainsKey(rp.Description))
                 {
-                    DynamoGeometryModel3D meshGeometry3D;
-
-                    if (geomteryDictionary != null && !geomteryDictionary.ContainsKey(id))
-                    {
-                        if (rp.RequiresPerVertexColoration)
-                        {
-                            meshGeometry3D = new DynamoGeometryModel3D()
-                            {
-                                Geometry = HelixRenderPackage.InitMeshGeometry(),
-                                Transform = Model1Transform,
-                                Material = WhiteMaterial,
-                                IsHitTestVisible = false
-                            };
-                            geomteryDictionary.Add(rp.Description, meshGeometry3D);
-                            meshGeometry3D.RequiresPerVertexColoration = true;
-                        }
-                        else if (rp.Colors != null)
-                        {
-                            meshGeometry3D = new DynamoGeometryModel3D()
-                            {
-                                Geometry = HelixRenderPackage.InitMeshGeometry(),
-                                Transform = Model1Transform,
-                                Material = WhiteMaterial,
-                                IsHitTestVisible = false
-                            };
-                            meshGeometry3D.RequiresPerVertexColoration = false;
-                            geomteryDictionary.Add(rp.Description, meshGeometry3D);
-
-                            var pf = PixelFormats.Bgra32;
-                            var stride = (4 * pf.BitsPerPixel + 7) / 8;
-                            var diffMap = BitmapSource.Create(rp.ColorsStride, rp.ColorsStride, 96.0, 96.0, pf, null, rp.Colors.ToArray(), stride);
-                            var diffMat = new PhongMaterial
-                            {
-                                Name = "White",
-                                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                                DiffuseColor = materialColor,
-                                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
-                                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
-                                SpecularShininess = 12.8f,
-                                DiffuseMap = diffMap
-                            };
-                            meshGeometry3D.Material = diffMat;
-                        }
-                        else
-                        {
-                            meshGeometry3D = new DynamoGeometryModel3D()
-                            {
-                                Geometry = HelixRenderPackage.InitMeshGeometry(),
-                                Transform = Model1Transform,
-                                Material = WhiteMaterial,
-                                IsHitTestVisible = false
-                            };
-                            geomteryDictionary.Add(id, meshGeometry3D);
-                        }
-                    }
-
-                    meshGeometry3D = rp.RequiresPerVertexColoration || rp.Colors != null?
-                        geomteryDictionary[rp.Description] as DynamoGeometryModel3D :
-                        geomteryDictionary[id] as DynamoGeometryModel3D;
-
-                    var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
-                    var idxCount = meshSet.Positions.Count;
-
-                    meshSet.Positions.AddRange(m.Positions);
-
-                    meshSet.Colors.AddRange(m.Colors);
-                    meshSet.Normals.AddRange(m.Normals);
-                    meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
-                    meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
-
-                    if (rp.DisplayLabels)
-                    {
-                        var pt = meshSet.Positions[idxCount];
-                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(id), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
-                    }
-
-                    MeshCount++;
-
-                    meshGeometry3D.Geometry = meshSet;
-                    meshGeometry3D.Attach(View.RenderHost);
+                    meshGeometry3D = geomteryDictionary[rp.Description] as DynamoGeometryModel3D;
                 }
+                else if (geomteryDictionary.ContainsKey(id))
+                {
+                    meshGeometry3D = geomteryDictionary[id] as DynamoGeometryModel3D;
+                }
+                else
+                {
+                    meshGeometry3D = new DynamoGeometryModel3D()
+                    {
+                        Geometry = HelixRenderPackage.InitMeshGeometry(),
+                        Transform = Model1Transform,
+                        Material = WhiteMaterial,
+                        IsHitTestVisible = false,
+                        RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                        IsSelected = rp.IsSelected,
+                    };
+
+                    if (rp.Colors != null)
+                    {
+                        var pf = PixelFormats.Bgra32;
+                        var stride = (4 * pf.BitsPerPixel + 7) / 8;
+                        var diffMap = BitmapSource.Create(rp.ColorsStride, rp.ColorsStride, 96.0, 96.0, pf, null, rp.Colors.ToArray(), stride);
+                        var diffMat = new PhongMaterial
+                        {
+                            Name = "White",
+                            AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                            DiffuseColor = materialColor,
+                            SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                            EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                            SpecularShininess = 12.8f,
+                            DiffuseMap = diffMap
+                        };
+                        meshGeometry3D.Material = diffMat;
+                    }
+
+                    geomteryDictionary.Add((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : id, meshGeometry3D);
+                }
+
+                var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
+                var idxCount = meshSet.Positions.Count;
+
+                meshSet.Positions.AddRange(m.Positions);
+
+                meshSet.Colors.AddRange(m.Colors);
+                meshSet.Normals.AddRange(m.Normals);
+                meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
+                meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
+
+                if (rp.DisplayLabels)
+                {
+                    var pt = meshSet.Positions[idxCount];
+                    parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(id), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                }
+
+                MeshCount++;
+
+                meshGeometry3D.Geometry = meshSet;
+                meshGeometry3D.Attach(View.RenderHost);
             }
-        }
-
-        private void SendGraphicsToView(GraphicsUpdateParams parameters)
-        {
-            Points = parameters.Points;
-            Lines = parameters.Lines;
-            LinesSelected = parameters.SelectedLines;
-            Mesh = parameters.Mesh;
-            MeshSelected = parameters.SelectedMesh;
-            PerVertexMesh = parameters.PerVertexMesh;
-            Text = parameters.Text;
-
-            // Send property changed notifications for everything
-            NotifyPropertyChanged(string.Empty);
         }
 
         #endregion
@@ -1115,26 +1059,9 @@ namespace Dynamo.Controls
 
     }
 
-    internal class GraphicsUpdateParams
-    {
-        public PointGeometry3D Points { get; set; }
-        public LineGeometry3D Lines { get; set; }
-        public LineGeometry3D SelectedLines { get; set; }
-        public MeshGeometry3D Mesh { get; set; }
-        public MeshGeometry3D SelectedMesh { get; set; }
-        public MeshGeometry3D PerVertexMesh { get; set; }
-        public BillboardText3D Text { get; set; }
-    }
-
     internal class PackageAggregationParams
     {
         public IEnumerable<HelixRenderPackage> Packages { get; set; } 
-        public PointGeometry3D Points { get; set; }
-        public LineGeometry3D Lines { get; set; }
-        public LineGeometry3D SelectedLines { get; set; }
-        public MeshGeometry3D Mesh { get; set; }
-        public MeshGeometry3D PerVertexMesh { get; set; }
-        public MeshGeometry3D SelectedMesh { get; set; }
         public BillboardText3D Text { get; set; }
     }
 }
