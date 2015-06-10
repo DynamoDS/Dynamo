@@ -210,7 +210,8 @@ namespace Dynamo.Core
                   //foreach node:results pair in this eval
                     foreach(KeyValuePair<Guid, List<object>> entry in resultsDict[index])
                     {
-                        var nodeval = doc.CreateElement(entry.Key.ToString());
+                        var nodeval = doc.CreateElement("Node");
+                        nodeval.SetAttribute("guid", entry.Key.ToString());
                         currenteval.AppendChild(nodeval);
 
                         foreach (var value in entry.Value)
