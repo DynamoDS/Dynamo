@@ -896,7 +896,6 @@ namespace Dynamo.Controls
                     }
 
                     pointGeometry3D.Geometry = points;
-                    pointGeometry3D.Attach(View.RenderHost);
                 }
 
                 var l = rp.Lines;
@@ -947,7 +946,6 @@ namespace Dynamo.Controls
                     }
 
                     lineGeometry3D.Geometry = lineSet;
-                    lineGeometry3D.Attach(View.RenderHost);
                 }
 
                 var m = rp.Mesh;
@@ -1016,7 +1014,15 @@ namespace Dynamo.Controls
                 MeshCount++;
 
                 meshGeometry3D.Geometry = meshSet;
-                meshGeometry3D.Attach(View.RenderHost);
+            }
+
+            foreach (var kvp in geometryDictionary)
+            {
+                var model3d = kvp.Value;
+                if (model3d is GeometryModel3D)
+                {
+                    model3d.Attach(View.RenderHost);  
+                }
             }
         }
 
