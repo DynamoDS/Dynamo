@@ -300,7 +300,9 @@ namespace Dynamo.Controls
 
             var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
-            RenderTechnique = Techniques.RenderPhong;
+            
+            RenderTechnique = Techniques.RenderDynamo;
+
             WhiteMaterial = new PhongMaterial
             {
                 Name = "White",
@@ -991,13 +993,13 @@ namespace Dynamo.Controls
                 var m = rp.Mesh;
                 if (m.Positions.Any())
                 {
-                    PerVertexMeshGeometryModel3D meshGeometry3D;
+                    DynamoGeometryModel3D meshGeometry3D;
 
                     if (geomteryDictionary != null && !geomteryDictionary.ContainsKey(id))
                     {
                         if (rp.RequiresPerVertexColoration)
                         {
-                            meshGeometry3D = new PerVertexMeshGeometryModel3D()
+                            meshGeometry3D = new DynamoGeometryModel3D()
                             {
                                 Geometry = HelixRenderPackage.InitMeshGeometry(),
                                 Transform = Model1Transform,
@@ -1009,7 +1011,7 @@ namespace Dynamo.Controls
                         }
                         else if (rp.Colors != null)
                         {
-                            meshGeometry3D = new PerVertexMeshGeometryModel3D()
+                            meshGeometry3D = new DynamoGeometryModel3D()
                             {
                                 Geometry = HelixRenderPackage.InitMeshGeometry(),
                                 Transform = Model1Transform,
@@ -1036,7 +1038,7 @@ namespace Dynamo.Controls
                         }
                         else
                         {
-                            meshGeometry3D = new PerVertexMeshGeometryModel3D()
+                            meshGeometry3D = new DynamoGeometryModel3D()
                             {
                                 Geometry = HelixRenderPackage.InitMeshGeometry(),
                                 Transform = Model1Transform,
@@ -1048,8 +1050,8 @@ namespace Dynamo.Controls
                     }
 
                     meshGeometry3D = rp.RequiresPerVertexColoration || rp.Colors != null?
-                        geomteryDictionary[rp.Description] as PerVertexMeshGeometryModel3D :
-                        geomteryDictionary[id] as PerVertexMeshGeometryModel3D;
+                        geomteryDictionary[rp.Description] as DynamoGeometryModel3D :
+                        geomteryDictionary[id] as DynamoGeometryModel3D;
 
                     var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
                     var idxCount = meshSet.Positions.Count;
