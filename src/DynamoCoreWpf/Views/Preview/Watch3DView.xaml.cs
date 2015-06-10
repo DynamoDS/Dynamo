@@ -473,18 +473,17 @@ namespace Dynamo.Controls
                         continue;
                     }
 
-                    var geometryModels =
-                        GeometryDictionary
-                            .Where(x => x.Key.Contains(node.AstIdentifierBase))
-                            .Where(x=> x.Value is GeometryModel3D)
-                            .Select(x => x.Value).Cast<GeometryModel3D>();
+                    var geometryModels = FindGeometryModel3DsForNode(node);
 
-                    if (geometryModels.Any())
+                    if (!geometryModels.Any())
                     {
-                        foreach (var model3D in geometryModels)
-                        {
-                            model3D.IsSelected = !model3D.IsSelected;
-                        }
+                        continue;
+                    }
+
+                    foreach (var kvp in geometryModels)
+                    {
+                        var model3D = (GeometryModel3D)kvp.Value;
+                        model3D.IsSelected = !model3D.IsSelected;
                     }
                 }
             }            
@@ -497,17 +496,36 @@ namespace Dynamo.Controls
         /// <param name="node">The node.</param>
         private void VisualizationManager_UpdateGeometryOnNodeDeletion(NodeModel node)
         {
-            var geometryModel =
-                       GeometryDictionary.Where(x => x.Key == node.AstIdentifierBase)
-                           .Select(x => x.Value)
-                           .FirstOrDefault()
-                           as GeometryModel3D;
+            var geometryModels = FindGeometryModel3DsForNode(node);
 
-            if (geometryModel != null)
+            if (!geometryModels.Any())
             {
-                GeometryDictionary.Remove(node.AstIdentifierBase);
-                NotifyPropertyChanged("");
+                return;
             }
+
+            foreach (var kvp in geometryModels)
+            {
+                GeometryDictionary.Remove(kvp.Key);
+            }
+
+            NotifyPropertyChanged("");
+        }
+
+        /// <summary>
+        /// A utility method for finding all the geometry model objects in the geometry
+        /// dictionary which correspond to a node.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <returns></returns>
+        private KeyValuePair<string, Model3D>[] FindGeometryModel3DsForNode(NodeModel node)
+        {
+            var geometryModels =
+                GeometryDictionary
+                    .Where(x => x.Key.Contains(node.AstIdentifierBase))
+                    .Where(x => x.Value is GeometryModel3D)
+                    .Select(x => x).ToArray();
+
+            return geometryModels;
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
