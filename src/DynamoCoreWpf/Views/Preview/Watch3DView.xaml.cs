@@ -3,31 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using Dynamo.Models;
 using Dynamo.UI;
+using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
-using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
+using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
-using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
-using Material = HelixToolkit.Wpf.SharpDX.Material;
+using Quaternion = SharpDX.Quaternion;
 
 namespace Dynamo.Controls
 {
@@ -207,8 +206,8 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
-        private Dictionary<string, HelixToolkit.Wpf.SharpDX.Model3D> geomteryDictionary;
-        public Dictionary<string, HelixToolkit.Wpf.SharpDX.Model3D> GeomteryDictionary
+        private Dictionary<string, Model3D> geomteryDictionary;
+        public Dictionary<string, Model3D> GeomteryDictionary
         {
             get
             {
@@ -221,7 +220,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<HelixToolkit.Wpf.SharpDX.Model3D> GeometryValues
+        public List<Model3D> GeometryValues
         {
             get
             {              
@@ -236,7 +235,7 @@ namespace Dynamo.Controls
         /// to test the ability to toggle a boolean effect variable
         /// representing the selection state.
         /// </summary>
-        public Dynamo.UI.Commands.DelegateCommand TestSelectionCommand { get; set; }
+        public DelegateCommand TestSelectionCommand { get; set; }
 #endif
 
         #endregion
@@ -251,7 +250,7 @@ namespace Dynamo.Controls
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
             Unloaded += OnViewUnloaded;
-            geomteryDictionary = new Dictionary<string, HelixToolkit.Wpf.SharpDX.Model3D>();
+            geomteryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
         }
 
@@ -266,7 +265,7 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-            geomteryDictionary = new Dictionary<string, HelixToolkit.Wpf.SharpDX.Model3D>();
+            geomteryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
 
         }
@@ -283,7 +282,7 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-            geomteryDictionary = new Dictionary<string, HelixToolkit.Wpf.SharpDX.Model3D>();
+            geomteryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
         }
 
@@ -464,7 +463,7 @@ namespace Dynamo.Controls
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
 #if DEBUG
-            TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
+            TestSelectionCommand = new DelegateCommand(TestSelection, CanTestSelection);
 #endif
         }
 
@@ -481,7 +480,7 @@ namespace Dynamo.Controls
             keysList.Add("Axes");
             foreach (var key in GeomteryDictionary.Keys.Except(keysList).ToList())
             {
-                var model = GeomteryDictionary[key] as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                var model = GeomteryDictionary[key] as GeometryModel3D;
                 model.Detach();
                 GeomteryDictionary.Remove(key);
             }
@@ -500,7 +499,7 @@ namespace Dynamo.Controls
             {
                 foreach (var item in watch_view.Items)
                 {
-                    var geom = item as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                    var geom = item as GeometryModel3D;
                     if (geom != null)
                     {
                         if (geom.IsSelected)
@@ -518,7 +517,7 @@ namespace Dynamo.Controls
                         GeomteryDictionary.Where(x => x.Key == node.AstIdentifierBase)
                             .Select(x => x.Value)
                             .FirstOrDefault()
-                            as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                            as GeometryModel3D;
 
                     if (geometryModel != null)
                     {
@@ -539,7 +538,7 @@ namespace Dynamo.Controls
                        GeomteryDictionary.Where(x => x.Key == node.AstIdentifierBase)
                            .Select(x => x.Value)
                            .FirstOrDefault()
-                           as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                           as GeometryModel3D;
 
             if (geometryModel != null)
             {
@@ -575,8 +574,8 @@ namespace Dynamo.Controls
             var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
             var right = Vector3.Cross(cf, cu);
 
-            var qel = SharpDX.Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
-            var qaz = SharpDX.Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
+            var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
+            var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
             var v = Vector3.Transform(cf, qaz*qel);
 
             if (!DirectionalLightDirection.Equals(v))
@@ -1105,7 +1104,7 @@ namespace Dynamo.Controls
         {
             foreach (var item in watch_view.Items)
             {
-                var geom = item as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+                var geom = item as GeometryModel3D;
                 if (geom != null)
                 {
                     geom.IsSelected = !geom.IsSelected;
