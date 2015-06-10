@@ -406,6 +406,8 @@ namespace Dynamo
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Debug.WriteLine("SELECTION: {0}", e.Action);
+
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
                 //Calling with NULL to make sure nothing is selected
@@ -413,13 +415,11 @@ namespace Dynamo
                 return;
             }
 
-            //On delete action, do not select / unselect the nodes.
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
+                OnSelectionChanged(e.OldItems);
                 return;
             }
-
-            Debug.WriteLine("Viz manager responding to selection changed.");
 
             // When a node is added to the workspace, it is also added
             // to the selection. When running automatically, this addition
