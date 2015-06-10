@@ -691,6 +691,13 @@ namespace Dynamo.ViewModels
 
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
+
+            if (foundNodes.Any())
+            {
+                selectedCategoryIndex = 0;
+                selectedMemberGroupIndex = 0;
+                SelectedMemberIndex = 0;
+            }
         }
 
 
@@ -846,12 +853,101 @@ namespace Dynamo.ViewModels
 
         #region Selection
 
-        /// <summary>
-        ///     Increments the selected element by 1, unless it is the last element already
-        /// </summary>
+        private int selectedMemberIndex;
+        public int SelectedMemberIndex
+        {
+            get { return selectedMemberIndex; }
+            set
+            {
+                selectedMemberIndex = value;
+
+                // Get new selected member.
+                var selectedCategory = SearchRootCategories[selectedCategoryIndex];
+                var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
+                var selectedMember = selectedMemberGroup.Members.ElementAt(selectedMemberIndex);
+
+                selectedMember.IsSelected = true;
+            }
+        }
+
+        private int selectedMemberGroupIndex;
+
+        private int selectedCategoryIndex;
+
         public void SelectNext()
         {
+            if (!SearchRootCategories.Any())
+                return;
 
+            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
+            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
+
+            if (SelectedMemberIndex != selectedMemberGroup.Members.Count() - 1)
+            {
+                UnSelectOldMember();
+                SelectedMemberIndex++;
+                return;
+            }
+
+            if (selectedMemberGroupIndex != selectedCategory.MemberGroups.Count() - 1)
+            {
+                UnSelectOldMember();
+                selectedMemberGroupIndex++;
+                SelectedMemberIndex = 0;
+                return;
+            }
+
+            if (selectedCategoryIndex != SearchRootCategories.Count() - 1)
+            {
+                UnSelectOldMember();
+                selectedCategoryIndex++;
+                selectedMemberGroupIndex = 0;
+                SelectedMemberIndex = 0;
+                return;
+            }
+        }
+
+        public void SelectPrevious()
+        {
+            if (!SearchRootCategories.Any())
+                return;
+
+            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
+            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
+
+            if (SelectedMemberIndex != 0)
+            {
+                UnSelectOldMember();
+                SelectedMemberIndex--;
+                return;
+            }
+
+            if (selectedMemberGroupIndex != 0)
+            {
+                UnSelectOldMember();
+                selectedMemberGroupIndex--;
+                SelectedMemberIndex = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
+                return;
+            }
+
+            if (selectedCategoryIndex != 0)
+            {
+                UnSelectOldMember();
+                selectedCategoryIndex--;
+                selectedMemberGroupIndex = SearchRootCategories[selectedCategoryIndex].MemberGroups.Count() - 1;
+                SelectedMemberIndex = SearchRootCategories[selectedCategoryIndex].MemberGroups.
+                                            ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
+                return;
+            }
+        }
+
+        private void UnSelectOldMember()
+        {
+            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
+            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
+            var selectedMember = selectedMemberGroup.Members.ElementAt(SelectedMemberIndex);
+
+            selectedMember.IsSelected = false;
         }
 
         private void UpdateTopResult(SearchMemberGroup memberGroup)
