@@ -194,17 +194,17 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
-        private Dictionary<string, Model3D> geomteryDictionary;
-        public Dictionary<string, Model3D> GeomteryDictionary
+        private Dictionary<string, Model3D> geometryDictionary;
+        public Dictionary<string, Model3D> GeometryDictionary
         {
             get
             {
-                return geomteryDictionary;
+                return geometryDictionary;
             }
 
             set
             {
-                geomteryDictionary = value;
+                geometryDictionary = value;
             }
         }
 
@@ -212,7 +212,7 @@ namespace Dynamo.Controls
         {
             get
             {              
-                return GeomteryDictionary.Select(x => x.Value).ToList();
+                return GeometryDictionary.Select(x => x.Value).ToList();
             }
         }
 
@@ -228,7 +228,7 @@ namespace Dynamo.Controls
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
             Unloaded += OnViewUnloaded;
-            geomteryDictionary = new Dictionary<string, Model3D>();
+            geometryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
         }
 
@@ -243,7 +243,7 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-            geomteryDictionary = new Dictionary<string, Model3D>();
+            geometryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
 
         }
@@ -260,7 +260,7 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-            geomteryDictionary = new Dictionary<string, Model3D>();
+            geometryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
         }
 
@@ -329,9 +329,9 @@ namespace Dynamo.Controls
             directLight3D.Color = DirectionalLightColor;
             directLight3D.Direction = DirectionalLightDirection;
 
-            if (geomteryDictionary != null && !geomteryDictionary.ContainsKey("DirectionalLight"))
+            if (geometryDictionary != null && !geometryDictionary.ContainsKey("DirectionalLight"))
             {
-                geomteryDictionary.Add("DirectionalLight", directLight3D);
+                geometryDictionary.Add("DirectionalLight", directLight3D);
             }
 
             LineGeometryModel3D gridModel3D = new LineGeometryModel3D
@@ -343,9 +343,9 @@ namespace Dynamo.Controls
                 IsHitTestVisible = false
             };
 
-            if (geomteryDictionary != null && !geomteryDictionary.ContainsKey("Grid"))
+            if (geometryDictionary != null && !geometryDictionary.ContainsKey("Grid"))
             {
-                geomteryDictionary.Add("Grid", gridModel3D);
+                geometryDictionary.Add("Grid", gridModel3D);
             }
 
             LineGeometryModel3D axesModel3D = new LineGeometryModel3D
@@ -357,9 +357,9 @@ namespace Dynamo.Controls
                 IsHitTestVisible = false
             };
 
-            if (geomteryDictionary != null && !geomteryDictionary.ContainsKey("Axes"))
+            if (geometryDictionary != null && !geometryDictionary.ContainsKey("Axes"))
             {
-                geomteryDictionary.Add("Axes", axesModel3D);
+                geometryDictionary.Add("Axes", axesModel3D);
             }
 
         }
@@ -452,11 +452,11 @@ namespace Dynamo.Controls
             keysList.Add("DirectionalLight");
             keysList.Add("Grid");
             keysList.Add("Axes");
-            foreach (var key in GeomteryDictionary.Keys.Except(keysList).ToList())
+            foreach (var key in GeometryDictionary.Keys.Except(keysList).ToList())
             {
-                var model = GeomteryDictionary[key] as GeometryModel3D;
+                var model = GeometryDictionary[key] as GeometryModel3D;
                 model.Detach();
-                GeomteryDictionary.Remove(key);
+                GeometryDictionary.Remove(key);
             }
             NotifyPropertyChanged("");
             View.InvalidateRender();
@@ -488,7 +488,7 @@ namespace Dynamo.Controls
                     var node = item as NodeModel;
                     if (node == null) continue;
                     var geometryModel =
-                        GeomteryDictionary.Where(x => x.Key == node.AstIdentifierBase)
+                        GeometryDictionary.Where(x => x.Key == node.AstIdentifierBase)
                             .Select(x => x.Value)
                             .FirstOrDefault()
                             as GeometryModel3D;
@@ -509,14 +509,14 @@ namespace Dynamo.Controls
         private void VisualizationManager_UpdateGeometryOnNodeDeletion(NodeModel node)
         {
             var geometryModel =
-                       GeomteryDictionary.Where(x => x.Key == node.AstIdentifierBase)
+                       GeometryDictionary.Where(x => x.Key == node.AstIdentifierBase)
                            .Select(x => x.Value)
                            .FirstOrDefault()
                            as GeometryModel3D;
 
             if (geometryModel != null)
             {
-                GeomteryDictionary.Remove(node.AstIdentifierBase);
+                GeometryDictionary.Remove(node.AstIdentifierBase);
                 NotifyPropertyChanged("");
             }
         }
@@ -856,7 +856,7 @@ namespace Dynamo.Controls
                 if (p.Positions.Any())
                 {
                     PointGeometryModel3D pointGeometry3D = null;
-                    if (!geomteryDictionary.ContainsKey(id))
+                    if (!geometryDictionary.ContainsKey(id))
                     {
                         pointGeometry3D = new PointGeometryModel3D
                         {
@@ -868,10 +868,10 @@ namespace Dynamo.Controls
                             IsHitTestVisible = false
 
                         };
-                        geomteryDictionary.Add(id, pointGeometry3D);
+                        geometryDictionary.Add(id, pointGeometry3D);
                     }
 
-                    pointGeometry3D = geomteryDictionary[id] as PointGeometryModel3D;
+                    pointGeometry3D = geometryDictionary[id] as PointGeometryModel3D;
                     var points = pointGeometry3D.Geometry as PointGeometry3D;
                     var startIdx = points.Positions.Count;
 
@@ -903,7 +903,7 @@ namespace Dynamo.Controls
                 if (l.Positions.Any())
                 {
                     LineGeometryModel3D lineGeometry3D = null;
-                    if (geomteryDictionary != null && !geomteryDictionary.ContainsKey(id))
+                    if (geometryDictionary != null && !geometryDictionary.ContainsKey(id))
                     {
                         lineGeometry3D = new LineGeometryModel3D()
                         {
@@ -914,10 +914,10 @@ namespace Dynamo.Controls
                             IsHitTestVisible = false
                         };
 
-                        geomteryDictionary.Add(id, lineGeometry3D);
+                        geometryDictionary.Add(id, lineGeometry3D);
                     }
 
-                    lineGeometry3D = geomteryDictionary[id] as LineGeometryModel3D;
+                    lineGeometry3D = geometryDictionary[id] as LineGeometryModel3D;
                     if (lineGeometry3D == null)
                     {
                         continue;
@@ -956,13 +956,13 @@ namespace Dynamo.Controls
                 DynamoGeometryModel3D meshGeometry3D;
 
                 if ((rp.Colors != null || rp.RequiresPerVertexColoration) &&
-                    geomteryDictionary.ContainsKey(rp.Description))
+                    geometryDictionary.ContainsKey(rp.Description))
                 {
-                    meshGeometry3D = geomteryDictionary[rp.Description] as DynamoGeometryModel3D;
+                    meshGeometry3D = geometryDictionary[rp.Description] as DynamoGeometryModel3D;
                 }
-                else if (geomteryDictionary.ContainsKey(id))
+                else if (geometryDictionary.ContainsKey(id))
                 {
-                    meshGeometry3D = geomteryDictionary[id] as DynamoGeometryModel3D;
+                    meshGeometry3D = geometryDictionary[id] as DynamoGeometryModel3D;
                 }
                 else
                 {
@@ -994,7 +994,7 @@ namespace Dynamo.Controls
                         meshGeometry3D.Material = diffMat;
                     }
 
-                    geomteryDictionary.Add((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : id, meshGeometry3D);
+                    geometryDictionary.Add((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : id, meshGeometry3D);
                 }
 
                 var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
