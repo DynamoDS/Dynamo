@@ -1,13 +1,7 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.UI;
 using System.IO;
-using SystemTestServices;
-using Dynamo;
 using Dynamo.Tests;
 
 namespace DynamoCoreWpfTests
@@ -17,7 +11,7 @@ namespace DynamoCoreWpfTests
     {
 
         [Test]
-        public void AddingPackagesRaisesCanExecuteChangeOnDelegateCommand()
+        public void AddingDyfRaisesCanExecuteChangeOnDelegateCommand()
         {
             
             var vm = new PublishPackageViewModel(ViewModel);
