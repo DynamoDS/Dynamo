@@ -186,12 +186,12 @@
                             </Button>
 
                             <ControlTemplate.Triggers>
-                                <!--<Trigger Property="IsExpanded"
+                                <Trigger Property="IsExpanded"
                                          Value="false">
                                     <Setter Property="Visibility"
                                             TargetName="ItemsHost"
                                             Value="Collapsed" />
-                                </Trigger>-->
+                                </Trigger>
                                 <Trigger Property="IsSelected"
                                          Value="true">
                                     <Setter Property="Background"
