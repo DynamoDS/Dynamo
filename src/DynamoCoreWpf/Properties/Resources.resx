@@ -1685,4 +1685,16 @@ Do you want to install the latest Dynamo update?</value>
   <data name="FileDialogManualMode" xml:space="preserve">
     <value>Open in Manual Execution Mode</value>
   </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>No file selected.</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>Edit...</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>Show Raw Data</value>
+  </data>
 </root>

@@ -151,6 +151,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        public static string BrowserNodeButtonLabel {
+            get {
+                return ResourceManager.GetString("BrowserNodeButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No file selected..
+        /// </summary>
+        public static string BrowserNodeNoFileSelected {
+            get {
+                return ResourceManager.GetString("BrowserNodeNoFileSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
         public static string BrowserWindowLoading {
@@ -3885,6 +3903,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit....
+        /// </summary>
+        public static string StringInputNodeEditMenu {
+            get {
+                return ResourceManager.GetString("StringInputNodeEditMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I Accept.
         /// </summary>
         public static string TermsOfUseAcceptButton {
@@ -4018,6 +4045,15 @@ namespace Dynamo.Wpf.Properties {
         public static string Watch3DViewContextMenuZoomToFit {
             get {
                 return ResourceManager.GetString("Watch3DViewContextMenuZoomToFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Raw Data.
+        /// </summary>
+        public static string WatchNodeRawDataMenu {
+            get {
+                return ResourceManager.GetString("WatchNodeRawDataMenu", resourceCulture);
             }
         }
         
