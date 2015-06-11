@@ -1,0 +1,38 @@
+<Workspace Version="0.7.2.2114" X="-92.5" Y="274" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="75b9d0a3-e954-42b5-8ccf-66845b122e3f" nickname="Code Block" x="462" y="257" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="c = File.LoadImageFromPath(a);&#xA;File.WriteImage(b,&quot;Image&quot;,c);" ShouldFocus="false" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="545b092b-8b2c-4cd4-b15e-9e4162dd4579" nickname="File Path" x="118" y="185.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>File_Migration.txt</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b" nickname="File.ReadText" x="544" y="146.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.ReadText@string" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" nickname="File.ReadImage" x="467" y="413.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.ReadImage@string,int,int" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="c865c5b3-8dd8-4a9b-97a5-a9aaa87ea0a9" nickname="Code Block" x="136" y="514" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="10;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3ddc75fb-e607-4932-8e08-f215ee86211e" nickname="File.ExportToCSV" x="805" y="444.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.ExportToCSV@string,double[][]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9" nickname="File.WriteText" x="815" y="128.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.WriteText@string,string" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="c20d8f16-4bf7-465f-93ca-6afd05fe02a2" nickname="File Path" x="91" y="301.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>File_Migration.png</System.String>
+    </DSCore.File.Filename>
+    <DSCore.File.Directory type="DSCore.File.Directory" guid="729b5ffd-7813-4e09-94a2-74a1e4619c5f" nickname="Directory Path" x="345.5" y="19.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>No file selected.</System.String>
+    </DSCore.File.Directory>
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="23f8f80b-eca7-4651-a082-7e2cce93c88d" nickname="File Path" x="570.5" y="-80.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>File_Migration_Write.txt</System.String>
+    </DSCore.File.Filename>
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="b8f8f48b-c546-4ae8-b7f6-45e52310e361" nickname="File Path" x="141.5" y="78.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>File_Migration.xlsx</System.String>
+    </DSCore.File.Filename>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="545b092b-8b2c-4cd4-b15e-9e4162dd4579" start_index="0" end="b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b" start_index="0" end="ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" start_index="0" end="3ddc75fb-e607-4932-8e08-f215ee86211e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c865c5b3-8dd8-4a9b-97a5-a9aaa87ea0a9" start_index="0" end="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c865c5b3-8dd8-4a9b-97a5-a9aaa87ea0a9" start_index="0" end="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c20d8f16-4bf7-465f-93ca-6afd05fe02a2" start_index="0" end="75b9d0a3-e954-42b5-8ccf-66845b122e3f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c20d8f16-4bf7-465f-93ca-6afd05fe02a2" start_index="0" end="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="729b5ffd-7813-4e09-94a2-74a1e4619c5f" start_index="0" end="75b9d0a3-e954-42b5-8ccf-66845b122e3f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="23f8f80b-eca7-4651-a082-7e2cce93c88d" start_index="0" end="ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8f8f48b-c546-4ae8-b7f6-45e52310e361" start_index="0" end="3ddc75fb-e607-4932-8e08-f215ee86211e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

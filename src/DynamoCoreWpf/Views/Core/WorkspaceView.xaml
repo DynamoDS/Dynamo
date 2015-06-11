@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI.Controls"
              xmlns:views="clr-namespace:Dynamo.Views"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300"
@@ -18,11 +19,77 @@
              IsHitTestVisible="{Binding IsCurrentSpace}"
              AllowDrop="True"
              Drop="OnWorkspaceDrop">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type ContextMenu}"
+               x:Key="WorkspaceContextMenuStyle">
+            <Setter Property="SnapsToDevicePixels"
+                    Value="True" />
+            <Setter Property="OverridesDefaultStyle"
+                    Value="True" />
+            <Setter Property="Grid.IsSharedSizeScope"
+                    Value="true" />
+            <Setter Property="HasDropShadow"
+                    Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <StackPanel Margin="8,0,8,8"
+                                    Width="250">
+                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" />
+                            <Border BorderThickness="1"
+                                    Name="Border"
+                                    Background="White"
+                                    BorderBrush="#bbbbbb"
+                                    Padding="0,3,0,3"
+                                    CornerRadius="4">
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="20"
+                                                      ShadowDepth="0"
+                                                      Opacity="0.7" />
+                                </Border.Effect>
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.SearchRootCategories.Count}"
+                                                         Value="0">
+                                                <Setter Property="Visibility"
+                                                        Value="Visible" />
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Path=InCanvasSearchViewModel.CurrentMode,
+                                                                           Converter={StaticResource LibraryViewModeToBoolConverter}}"
+                                                         Value="True">
+                                                <Setter Property="Visibility"
+                                                        Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="Opened"
+                         Handler="OnContextMenuOpened"/>
+            <EventSetter Event="PreviewKeyDown"
+                         Handler="OnInCanvasSearchContextMenuKeyDown" />
+            <EventSetter Event="PreviewMouseUp"
+                         Handler="OnInCanvasSearchContextMenuMouseUp" />
+            <EventSetter Event="PreviewMouseDown"
+                         Handler="OnInCanvasSearchContextMenuMouseDown" />
+        </Style>
+    </UserControl.Resources>
 
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
         <Canvas Name="outerCanvas"
-                ClipToBounds="True">
+                ClipToBounds="True"
+                PreviewMouseDown="OnCanvasClicked">
             <Canvas.IsHitTestVisible>
                 <Binding Path="DataContext.ShouldBeHitTestVisible"
                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
@@ -94,7 +161,7 @@
             </controls:ZoomBorder>
 
             <Canvas.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}">
                     <MenuItem Name="WorkspaceLacingMenu"
                               Header="{x:Static p:Resources.ContextMenuLacing}">
                         <MenuItem IsCheckable="True"
@@ -333,7 +400,8 @@
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
-               Placement="MousePoint">
+               Placement="MousePoint"
+               DataContext="{Binding InCanvasSearchViewModel}">
             <ui:InCanvasSearchControl />
         </Popup>
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
+using ProtoCore.Properties;
 using ProtoCore.Utils;
 
 namespace ProtoCore
@@ -98,7 +99,8 @@ namespace ProtoCore
                         ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(formalParameters[i], runtimeCore);
 
                         if (commonBaseType == null)
-                            throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported("Array with no common superclass not yet supported: {0C644179-14F5-4172-8EF8-A2F3739901B2}");
+                            throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
+                                string.Format(Resources.ArrayWithNotSupported, "{0C644179-14F5-4172-8EF8-A2F3739901B2}"));
 
                         cn = commonBaseType; //From now on perform tests on the commmon base type
                     }

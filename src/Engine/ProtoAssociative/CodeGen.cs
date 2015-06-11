@@ -8569,12 +8569,7 @@ namespace ProtoAssociative
                     var tident = bnode.LeftNode as TypedIdentifierNode;
                     if (tident != null)
                     {
-                        int castUID = tident.datatype.UID;
-                        if ((int)PrimitiveType.kInvalidType == castUID)
-                        {
-                            castUID = core.ClassTable.IndexOf(tident.datatype.Name);
-                        }
-
+                        int castUID = core.ClassTable.IndexOf(tident.datatype.Name);
                         if ((int)PrimitiveType.kInvalidType == castUID)
                         {
                             castType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kInvalidType, 0);

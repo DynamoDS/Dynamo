@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         public void Init()
         {
             model = new NodeSearchModel();
-            viewModel = new SearchViewModel(null, model);
+            viewModel = new SearchViewModel(model);
         }
 
         [Test]

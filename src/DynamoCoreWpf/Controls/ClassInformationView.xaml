@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.StandardPanel"
+﻿<UserControl x:Class="Dynamo.UI.Controls.ClassInformationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -95,7 +95,6 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -170,19 +169,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Grid.Row="4"
-                    Grid.ColumnSpan="2"
-                    Height="32"
-                    Style="{StaticResource MoreButtonStyle}"
-                    Click="OnMoreButtonClick">
-                <Button.Visibility>
-                    <Binding Path="HiddenSecondaryMembersCount"
-                             Converter="{StaticResource IntToVisibilityConverter}" />
-                </Button.Visibility>
-                <Button.Content>
-                    <Binding Path="MoreButtonText" />
-                </Button.Content>
-            </Button>
+            
             <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                             StaysOpen="True"
                                             AllowsTransparency="True"

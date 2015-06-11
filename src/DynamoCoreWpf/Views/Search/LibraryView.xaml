@@ -6,6 +6,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -111,15 +112,15 @@
                     </Border>
                 </StackPanel>
             </DataTemplate>
-            <!-- This data template is used to show StandardPanel
+            <!-- This data template is used to show ClassInformationView
                  for some selected subcategory. -->
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <uicontrols:StandardPanel>
-                    <uicontrols:StandardPanel.Width>
+                <uicontrols:ClassInformationView>
+                    <uicontrols:ClassInformationView.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
-                    </uicontrols:StandardPanel.Width>
-                </uicontrols:StandardPanel>
+                    </uicontrols:ClassInformationView.Width>
+                </uicontrols:ClassInformationView>
             </DataTemplate>
 
             <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
@@ -603,10 +604,10 @@
                     <Button.ContextMenu>
                         <ContextMenu Style="{StaticResource AddButtonContextMenu}">
                             <MenuItem Focusable="False"
-                                      Header="Import Library..."
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuImport}"
                                       Command="{Binding Path=ImportLibraryCommand}" />
                             <MenuItem Focusable="False"
-                                      Header="Search for a Package..."
+                                      Header="{x:Static p:Resources.DynamoViewPackageMenuSearchPackage}"
                                       Command="{Binding Path=ShowPackageManagerSearchCommand}" />
                         </ContextMenu>
                     </Button.ContextMenu>

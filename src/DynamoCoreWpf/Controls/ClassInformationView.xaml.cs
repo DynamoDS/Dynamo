@@ -11,16 +11,15 @@ using Dynamo.Wpf.ViewModels;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for StandardPanel.xaml
+    /// Interaction logic for ClassInformationView.xaml
     /// </summary>
-    public partial class StandardPanel : UserControl
+    public partial class ClassInformationView : UserControl
     {
-        private const int TruncatedMembersCount = 5;
         private ClassInformationViewModel castedDataContext;
 
         public bool FocusItemOnSelection { get; set; }
 
-        public StandardPanel()
+        public ClassInformationView()
         {
             InitializeComponent();
 
@@ -41,8 +40,6 @@ namespace Dynamo.UI.Controls
                 castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
                 secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
             }
-
-            TruncateSecondaryMembers();
 
             e.Handled = true;
         }
@@ -130,7 +127,6 @@ namespace Dynamo.UI.Controls
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
-                TruncateSecondaryMembers();
                 return;
             }
 
@@ -148,7 +144,6 @@ namespace Dynamo.UI.Controls
                     secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
-                TruncateSecondaryMembers();
                 return;
             }
 
@@ -160,31 +155,6 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void OnMoreButtonClick(object sender, RoutedEventArgs e)
-        {
-            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
-            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
-                collection = castedDataContext.QueryMembers;
-
-            secondaryMembers.ItemsSource = collection;
-
-            castedDataContext.HiddenSecondaryMembersCount = 0;
-        }
-
-        private void TruncateSecondaryMembers()
-        {
-            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.None)
-                return;
-
-            IEnumerable<NodeSearchElementViewModel> collection = castedDataContext.ActionMembers;
-            if (castedDataContext.CurrentDisplayMode == ClassInformationViewModel.DisplayMode.Query)
-                collection = castedDataContext.QueryMembers;
-
-            secondaryMembers.ItemsSource = collection.Take(TruncatedMembersCount);
-
-            castedDataContext.HiddenSecondaryMembersCount = collection.Count() - TruncatedMembersCount;
-        }
-
         // This method will work only, when user presses Shift.
         private void OnShiftMouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -192,7 +162,7 @@ namespace Dynamo.UI.Controls
             scv.ScrollToHorizontalOffset(scv.HorizontalOffset - e.Delta);
         }
 
-        // Main grid in "StandardPanel" contains of 2 lists: primary members and secondary members.
+        // Main grid in "ClassInformationView" contains of 2 lists: primary members and secondary members.
         // When, these is no way to move inside one of these lists, main grid decides where focus
         // should move next.
         private void OnMainGridKeyDown(object sender, KeyEventArgs e)
@@ -208,7 +178,7 @@ namespace Dynamo.UI.Controls
 
             if (e.Key == Key.Down)
             {
-                // If there is no secondary members, we stay at the bottom of StandardPanel.
+                // If there is no secondary members, we stay at the bottom of ClassInformationView.
                 if (!hasSecondaryMembers)
                 {
                     e.Handled = true;

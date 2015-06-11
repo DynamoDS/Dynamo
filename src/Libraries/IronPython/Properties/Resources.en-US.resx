@@ -124,6 +124,23 @@
     <value>Runs an embedded IronPython script.</value>
     <comment>Description for Python Script</comment>
   </data>
+  <data name="PythonScriptEditoCancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="PythonScriptEditorAcceptChangesButton" xml:space="preserve">
+    <value>Accept Changes</value>
+  </data>
+  <data name="PythonScriptEditorCaption" xml:space="preserve">
+    <value>Edit Python Script...</value>
+  </data>
+  <data name="PythonScriptEditorInputComment" xml:space="preserve">
+    <value>The inputs to this node will be stored as a list in the IN variables.</value>
+    <comment>It is comment in the code. IN shouldn't be translated.</comment>
+  </data>
+  <data name="PythonScriptEditorOutputComment" xml:space="preserve">
+    <value>Assign your output to the OUT variable.</value>
+    <comment>It is comment in the code. OUT shouldn't be translated.</comment>
+  </data>
   <data name="PythonScriptFromStringDescription" xml:space="preserve">
     <value>Runs a IronPython script from a string.</value>
     <comment>Description for Python Script From String</comment>

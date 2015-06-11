@@ -154,6 +154,11 @@ namespace Dynamo
         /// </summary>
         public bool ShowEdges { get; set; }
 
+        /// Indicates the default state of the "Open in Manual Mode"
+        /// checkbox in OpenFileDialog
+        /// </summary>
+        public bool OpenFileInManualExecutionMode { get; set; }
+
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -176,6 +181,7 @@ namespace Dynamo
             PackageDownloadTouAccepted = false;
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
             ShowEdges = false;
+            OpenFileInManualExecutionMode = false;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
