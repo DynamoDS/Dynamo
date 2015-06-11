@@ -18,8 +18,6 @@ namespace ProtoCore.Namespace
 
         public delegate void SymbolConflictWarningHandler(string symbolName, string[] collidingSymbolNames);
 
-        //public event SymbolConflictWarningHandler LogSymbolConflictWarning;
-
         private void OnLogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
             if (symbolConflictHandler != null)
