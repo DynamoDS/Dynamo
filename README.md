@@ -48,6 +48,7 @@ Excel
 Lists
 - List.Transpose now keeps indices of lists consistent
 - List.Clean removes null and empty lists from a given list, with or without preserving indices
+- IF nodes will now lace over test input. Example, list with inputs {true, false, true}, {1,2,3}, {a,b,c} will result in {1,b,3}.  Previously, result would be {{1,2,3},{a,b,c},{1,2,3}}.  See submission https://github.com/DynamoDS/Dynamo/pull/4464
 
 Revit
 - FamilyInstance.SetRotation node
