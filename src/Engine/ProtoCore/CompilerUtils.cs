@@ -304,7 +304,8 @@ namespace ProtoCore.Utils
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
-                var reWrittenNodes = ElementRewriter.RewriteElementNames(core, parseParams.ElementResolver, astNodes);
+                var reWrittenNodes = ElementRewriter.RewriteElementNames(core.ClassTable,  
+                    parseParams.ElementResolver, astNodes, core.BuildStatus.LogSymbolConflictWarning);
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's

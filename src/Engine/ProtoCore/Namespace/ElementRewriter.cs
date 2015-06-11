@@ -10,14 +10,26 @@ using ProtoCore.Utils;
 namespace ProtoCore.Namespace
 {
 
-    public class ElementRewriter : AstReplacer
+    public class ElementRewriter : AstReplacer, IDisposable
     {
-        private readonly Core core;
+        private readonly ClassTable classTable;
         private readonly ElementResolver elementResolver;
+        private readonly SymbolConflictWarningHandler handler;
 
-        public ElementRewriter(Core core, ElementResolver resolver = null)
+        public delegate void SymbolConflictWarningHandler(string symbolName, string[] collidingSymbolNames);
+
+        public event SymbolConflictWarningHandler LogSymbolConflictWarning;
+
+        private void OnLogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
-            this.core = core;
+            if (LogSymbolConflictWarning != null)
+                handler(symbolName, collidingSymbolNames);
+        }
+
+        public ElementRewriter(ClassTable classTable, SymbolConflictWarningHandler handler, ElementResolver resolver = null)
+        {
+            this.classTable = classTable;
+            this.handler = handler;
             this.elementResolver = resolver ?? new ElementResolver();
         }
 
@@ -27,13 +39,14 @@ namespace ProtoCore.Namespace
         /// If partial class is not found in map, 
         /// update ResolutionMap with fully resolved name from compiler.
         /// </summary>
-        /// <param name="core"></param>
+        /// <param name="classTable"></param>
+        /// <param name="handler"></param>
         /// <param name="elementResolver"></param>
         /// <param name="astNodes"> parent AST node </param>
-        public static IEnumerable<Node> RewriteElementNames(Core core,
-            ElementResolver elementResolver, IEnumerable<Node> astNodes)
+        public static IEnumerable<Node> RewriteElementNames(ClassTable classTable, 
+            ElementResolver elementResolver, IEnumerable<Node> astNodes, SymbolConflictWarningHandler handler = null)
         {
-            var elementRewriter = new ElementRewriter(core, elementResolver);
+            var elementRewriter = new ElementRewriter(classTable, handler, elementResolver);
             return astNodes.OfType<AssociativeNode>().Select(astNode => astNode.Accept(elementRewriter)).Cast<Node>().ToList();
         }
 
@@ -60,7 +73,7 @@ namespace ProtoCore.Namespace
             var type = new Type
             {
                 Name = identListString,
-                UID = core.ClassTable.IndexOf(identListString),
+                UID = classTable.IndexOf(identListString),
                 rank = node.datatype.rank
             };
 
@@ -130,18 +143,18 @@ namespace ProtoCore.Namespace
             
             // If namespace resolution map does not contain entry for partial name, 
             // back up on compiler to resolve the namespace from partial name
-            var matchingClasses = CoreUtils.GetResolvedClassName(core.ClassTable, identifierList);
+            var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifierList);
 
             if (matchingClasses.Length == 1)
             {
                 resolvedName = matchingClasses[0];
-                var assemblyName = CoreUtils.GetAssemblyFromClassName(core.ClassTable, resolvedName);
+                var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
 
                 elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
             }
             else if (matchingClasses.Length > 1)
             {
-                core.BuildStatus.LogSymbolConflictWarning(partialName, matchingClasses);
+                OnLogSymbolConflictWarning(partialName, matchingClasses);
             }
             return resolvedName;
         }
@@ -189,5 +202,10 @@ namespace ProtoCore.Namespace
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            LogSymbolConflictWarning -= handler;
+        }
     }
 }

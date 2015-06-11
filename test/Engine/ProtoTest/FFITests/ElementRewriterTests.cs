@@ -20,7 +20,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual(string.Format("d = {0}.{1};\n", fullName, functionOrProperty), newNodes.ElementAt(0).ToString());
 
@@ -44,7 +44,7 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(0, 0, 0);\n", newNodes.ElementAt(0).ToString());
         }
@@ -61,7 +61,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("d = FFITarget.ElementResolverTarget.ElementResolverTarget();\n", newNodes.ElementAt(0).ToString());
 
@@ -87,7 +87,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("d = FFITarget.ElementResolverTarget.Create().Property.Method();\n", newNodes.ElementAt(0).ToString());
 
@@ -113,7 +113,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("d = FFITarget.ElementResolverTarget.Create().Property.Method(FFITarget.ElementResolverTarget.Create().Property);\n", newNodes.ElementAt(0).ToString());
 
@@ -139,7 +139,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("d = FFITarget.ElementResolverTarget.StaticProperty.Method(FFITarget.ElementResolverTarget.Create().Property.Method(FFITarget.ElementResolverTarget.Create().Property));\n", newNodes.ElementAt(0).ToString());
 
@@ -166,7 +166,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual(
                 string.Format("d = {0}.Property.Method({1}.Create().Property.Method({0}.Property.Property));\n", fullName1, fullName2), 
@@ -184,7 +184,7 @@ namespace ProtoTest.FFITests
 
             elementResolver = new ElementResolver();
 
-            newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual(
                 string.Format("d = {0}.Property.Method({1}.Create().Property.Method({0}.Property.Property));\n", fullName1, fullName2),
@@ -359,7 +359,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("d : FFITarget.ElementResolverTarget", newNodes.ElementAt(0).ToString());
 
@@ -379,7 +379,7 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X;\n", newNodes.ElementAt(0).ToString());
         }
@@ -392,7 +392,7 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Autodesk.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X;\n", newNodes.ElementAt(0).ToString());
 
@@ -402,7 +402,7 @@ namespace ProtoTest.FFITests
             elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Autodesk.DS.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X;\n", newNodes.ElementAt(0).ToString());
 
@@ -412,7 +412,7 @@ namespace ProtoTest.FFITests
             elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Autodesk.DS.Geometry.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X;\n", newNodes.ElementAt(0).ToString());
         }
@@ -425,7 +425,7 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X, y, z).X;\n", newNodes.ElementAt(0).ToString());
         }
@@ -438,7 +438,7 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Autodesk.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X, y, z).X;\n", newNodes.ElementAt(0).ToString());
 
@@ -449,7 +449,7 @@ namespace ProtoTest.FFITests
             elementResolver.AddToResolutionMap("Autodesk.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
             elementResolver.AddToResolutionMap("Autodesk.DS.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X, y, z).X;\n", newNodes.ElementAt(0).ToString());
 
@@ -460,7 +460,7 @@ namespace ProtoTest.FFITests
             elementResolver.AddToResolutionMap("Autodesk.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
             elementResolver.AddToResolutionMap("Autodesk.DS.Geometry.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(Autodesk.DS.Geometry.Point.ByCoordinates(x, y, z).X, y, z).X;\n", newNodes.ElementAt(0).ToString());
         }
@@ -473,7 +473,7 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p : Autodesk.DS.Geometry.Point", newNodes.ElementAt(0).ToString());
         }
@@ -486,7 +486,7 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Autodesk.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p : Autodesk.DS.Geometry.Point", newNodes.ElementAt(0).ToString());
 
@@ -495,7 +495,7 @@ namespace ProtoTest.FFITests
             elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Autodesk.DS.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p : Autodesk.DS.Geometry.Point", newNodes.ElementAt(0).ToString());
 
@@ -504,7 +504,7 @@ namespace ProtoTest.FFITests
             elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Autodesk.DS.Geometry.Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            ElementRewriter.RewriteElementNames(core, elementResolver, astNodes);
+            ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes);
 
             Assert.AreEqual("p : Autodesk.DS.Geometry.Point", newNodes.ElementAt(0).ToString());
         }
@@ -516,7 +516,7 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, elementResolver, astNodes).ToList();
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes).ToList();
 
             Assert.AreEqual("a = Flatten(a).DifferenceAll(Flatten(b));\n", newNodes[0].ToString());
         }
@@ -532,13 +532,13 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes).ToList();
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes).ToList();
 
             Assert.AreEqual("a = GlobalClass.GlobalClass(a);\n", newNodes[0].ToString());
 
             astNodes = CoreUtils.BuildASTList(testCore, "a : GlobalClass;");
 
-            newNodes = ElementRewriter.RewriteElementNames(testCore, elementResolver, astNodes).ToList();
+            newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes).ToList();
 
             Assert.AreEqual("a : GlobalClass", newNodes[0].ToString());
 
@@ -557,7 +557,7 @@ namespace ProtoTest.FFITests
         {
             var astNodes = CoreUtils.BuildASTList(core, "p : int;");
 
-            var newNodes = ElementRewriter.RewriteElementNames(core, new ElementResolver(), astNodes);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, new ElementResolver(), astNodes);
 
             Assert.AreEqual("p : int", newNodes.ElementAt(0).ToString());
         }

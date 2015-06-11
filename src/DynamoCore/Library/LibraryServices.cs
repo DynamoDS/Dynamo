@@ -818,7 +818,7 @@ namespace Dynamo.DSEngine
                     }
                     if (defaultArgumentNode != null)
                     {
-                        var rewriter = new ElementRewriter(LibraryManagementCore);
+                        var rewriter = new ElementRewriter(LibraryManagementCore.ClassTable, LibraryManagementCore.BuildStatus.LogSymbolConflictWarning);
                         defaultArgumentNode = defaultArgumentNode.Accept(rewriter);
                     }
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode);
