@@ -527,4 +527,10 @@
   <data name="ListCreateInPortToolTip" xml:space="preserve">
     <value>Item Index #{0}</value>
   </data>
+  <data name="SelectionNodeNothingSelected" xml:space="preserve">
+    <value>Nothing selected.</value>
+  </data>
+  <data name="SelectionNodeSugestion" xml:space="preserve">
+    <value>Select something in the model.</value>
+  </data>
 </root>
