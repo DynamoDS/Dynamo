@@ -860,17 +860,25 @@ namespace Dynamo.Controls
                 //Node ID gets updated with a ":" everytime this function is called.
                 //For example, if the same point node is called multiple times (CBN), the ID has a ":"
                 //and this makes the dictionary to have multiple entries for the same node. 
-                var id = rp.Description;
-                if (id.IndexOf(":", StringComparison.Ordinal) > 0)
+                var baseId = rp.Description;
+                if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
                 {
-                    id = id.Split(':')[0];
+                    baseId = baseId.Split(':')[0];
                 }
+                var id = baseId;
 
                 var p = rp.Points;
                 if (p.Positions.Any())
                 {
-                    PointGeometryModel3D pointGeometry3D = null;
-                    if (!geometryDictionary.ContainsKey(id))
+                    id = baseId + ":points";
+
+                    PointGeometryModel3D pointGeometry3D;
+
+                    if (geometryDictionary.ContainsKey(id))
+                    {
+                        pointGeometry3D = geometryDictionary[id] as PointGeometryModel3D;
+                    }
+                    else
                     {
                         pointGeometry3D = new PointGeometryModel3D
                         {
@@ -885,7 +893,6 @@ namespace Dynamo.Controls
                         geometryDictionary.Add(id, pointGeometry3D);
                     }
 
-                    pointGeometry3D = geometryDictionary[id] as PointGeometryModel3D;
                     var points = pointGeometry3D.Geometry as PointGeometry3D;
                     var startIdx = points.Positions.Count;
 
@@ -915,8 +922,15 @@ namespace Dynamo.Controls
                 var l = rp.Lines;
                 if (l.Positions.Any())
                 {
-                    LineGeometryModel3D lineGeometry3D = null;
-                    if (geometryDictionary != null && !geometryDictionary.ContainsKey(id))
+                    id = baseId + ":lines";
+
+                    LineGeometryModel3D lineGeometry3D;
+
+                    if (geometryDictionary.ContainsKey(id))
+                    {
+                        lineGeometry3D = geometryDictionary[id] as LineGeometryModel3D;
+                    }
+                    else
                     {
                         lineGeometry3D = new LineGeometryModel3D()
                         {
@@ -928,12 +942,6 @@ namespace Dynamo.Controls
                         };
 
                         geometryDictionary.Add(id, lineGeometry3D);
-                    }
-
-                    lineGeometry3D = geometryDictionary[id] as LineGeometryModel3D;
-                    if (lineGeometry3D == null)
-                    {
-                        continue;
                     }
 
                     var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
@@ -965,14 +973,11 @@ namespace Dynamo.Controls
                 var m = rp.Mesh;
                 if (!m.Positions.Any()) continue;
 
+                id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + ":mesh";
+
                 DynamoGeometryModel3D meshGeometry3D;
 
-                if ((rp.Colors != null || rp.RequiresPerVertexColoration) &&
-                    geometryDictionary.ContainsKey(rp.Description))
-                {
-                    meshGeometry3D = geometryDictionary[rp.Description] as DynamoGeometryModel3D;
-                }
-                else if (geometryDictionary.ContainsKey(id))
+                if (geometryDictionary.ContainsKey(id))
                 {
                     meshGeometry3D = geometryDictionary[id] as DynamoGeometryModel3D;
                 }
@@ -1006,7 +1011,7 @@ namespace Dynamo.Controls
                         meshGeometry3D.Material = diffMat;
                     }
                     ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
-                    geometryDictionary.Add((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : id, meshGeometry3D);
+                    geometryDictionary.Add(id, meshGeometry3D);
                 }
 
                 var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
