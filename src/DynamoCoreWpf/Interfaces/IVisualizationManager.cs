@@ -81,5 +81,9 @@ namespace Dynamo.Interfaces
         /// An event triggered when a workspace is closed / open.
         /// </summary>
         event Action InitializeGeomtery;
+
+        /// Update all Node RenderPackages and raise notification.
+        /// </summary>
+        void UpdateAllNodeVisualsAndNotify();
     }
 }

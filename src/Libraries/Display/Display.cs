@@ -92,21 +92,21 @@ namespace DSCore
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             if (singleColor != null)
             {
-                CreateGeometryRenderData(singleColor, package, tol, maxGridLines);
+                CreateGeometryRenderData(singleColor, package, parameters);
             }
             else if (colorMap != null)
             {
-                CreateColorMappedSurfaceRenderData(colorMap, package, tol, maxGridLines);
+                CreateColorMappedSurfaceRenderData(colorMap, package, parameters);
             }
         }
 
-        private void CreateColorMappedSurfaceRenderData(Color[][] colorMap , IRenderPackage package, double tol, int maxGridLines)
+        private void CreateColorMappedSurfaceRenderData(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
         {
-            geometry.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, parameters);
 
             var colorBytes = new List<byte>();
 
@@ -125,7 +125,7 @@ namespace DSCore
             package.ColorsStride = colorMap.First().Length;
         }
 
-        private void CreateGeometryRenderData(Color color, IRenderPackage package, double tol, int maxGridLines)
+        private void CreateGeometryRenderData(Color color, IRenderPackage package, TessellationParameters parameters)
         {
             package.RequiresPerVertexColoration = true;
 
@@ -133,7 +133,7 @@ namespace DSCore
             // to keep track of the index where this coloration will 
             // start from.
 
-            geometry.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, parameters);
 
             if (renderEdges)
             {
@@ -142,7 +142,7 @@ namespace DSCore
                 {
                     foreach (var curve in surf.PerimeterCurves())
                     {
-                        curve.Tessellate(package, tol, maxGridLines);
+                        curve.Tessellate(package, parameters);
                         curve.Dispose();
                     }
                 }
@@ -152,7 +152,7 @@ namespace DSCore
                 {
                     foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
                     {
-                        geom.Tessellate(package, tol, maxGridLines);
+                        geom.Tessellate(package, parameters);
                         geom.Dispose();
                     }
                 }
