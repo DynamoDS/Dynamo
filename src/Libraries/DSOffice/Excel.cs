@@ -9,7 +9,6 @@ using Microsoft.Office.Interop.Excel;
 using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
-using ProtoCore.Properties;
 
 namespace DSOffice
 {
@@ -55,7 +54,7 @@ namespace DSOffice
             // get excel, throw exception if it is not
             var officeType = Type.GetTypeFromProgID("Excel.Application");
             if (officeType == null)
-                throw new Exception("Excel is not installed.");
+                throw new Exception(Properties.Resources.ExcelNotInstalled);
 
             try
             {
@@ -68,7 +67,7 @@ namespace DSOffice
 
                 if (!e.ToString().Contains("0x800401E3"))
                 {
-                    throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
+                    throw new Exception(Properties.Resources.ExcelCommunicationError);
                 }
             }
             catch (Exception)
@@ -403,7 +402,7 @@ namespace DSOffice
                         {
                             if (((StackValue)item).IsPointer)
                             {
-                                string message = string.Format(Resources.kMethodResolutionFailureWithTypes,
+                                string message = string.Format(Properties.Resources.kMethodResolutionFailureWithTypes,
                                     "Excel.WriteToFile", "_SingleFunctionObject");
                                 LogWarningMessageEvents.OnLogWarningMessage(message);
                                 return null;

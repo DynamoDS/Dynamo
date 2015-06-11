@@ -283,7 +283,7 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
             var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.ReadFromFile");
             ViewModel.HomeSpace.Run();
-            var data = new object[] { new object[] { 1 }, new object[] { "word" }, new object[] { 2 }, new object[] { 3 }, new object[] { "palabra" } };
+            var data = new object[] { new object[] { 4 }, new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
             AssertPreviewValue(watch.GUID.ToString(), data);
 
         }
