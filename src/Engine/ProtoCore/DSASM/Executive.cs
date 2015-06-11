@@ -2972,7 +2972,7 @@ namespace ProtoCore.DSASM
 
                 }
 
-                ret = ArrayUtils.SetValueForIndices(value, dimlist, data, t, runtimeCore);
+                ret = runtimeCore.Heap.Cast<DSArray>(value).SetValueForIndices(dimlist, data, t, runtimeCore);
             }
             else if (value.IsString)
             {
@@ -2988,13 +2988,15 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue array = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-                    rmem.SetSymbolValue(symbolnode, array);
+                    StackValue svArray = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
+                    rmem.SetSymbolValue(symbolnode, svArray);
+
+                    var array = rmem.Heap.Cast<DSArray>(svArray);
                     if (!value.IsNull)
                     {
-                        ArrayUtils.SetValueForIndex(array, 0, value, runtimeCore);
+                        array.SetValueForIndex(0, value, runtimeCore);
                     }
-                    ret = ArrayUtils.SetValueForIndices(array, dimlist, data, t, runtimeCore);
+                    ret = array.SetValueForIndices(dimlist, data, t, runtimeCore);
                 }
             }
 
@@ -3348,7 +3350,10 @@ namespace ProtoCore.DSASM
 
         public StackValue GetIndexedArray(StackValue array, List<StackValue> indices)
         {
-            return ArrayUtils.GetValueFromIndices(array, indices, runtimeCore);
+            if (!array.IsArray)
+                return StackValue.Null;
+
+            return runtimeCore.Heap.Cast<DSArray>(array).GetValueFromIndices(indices, runtimeCore);
         }
 
         public StackValue GetIndexedArrayW(int dimensions, int blockId, StackValue op1, StackValue op2)

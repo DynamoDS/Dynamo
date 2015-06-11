@@ -291,8 +291,7 @@ namespace ProtoCore.Utils
             int largestSub = 0;
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.Values)
+            foreach (var sv in runtimeCore.Heap.Cast<DSArray>(array).Values)
             {
                 if (sv.IsArray)
                 {
@@ -340,8 +339,8 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return true;
 
-            var values = ArrayUtils.GetValues(sv, runtimeCore);
-            return values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
+            var array = runtimeCore.Heap.Cast<DSArray>(sv);
+            return array.Values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
         }
 
         /// <summary>

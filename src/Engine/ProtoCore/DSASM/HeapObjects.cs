@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProtoCore.Properties;
+using ProtoCore.Runtime;
 
 namespace ProtoCore.DSASM
 {
@@ -205,7 +207,7 @@ namespace ProtoCore.DSASM
         public IDictionary<StackValue, StackValue> ToDictionary()
         {
             var dict = Enumerable.Range(0, VisibleSize)
-                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), StackUtils.GetValue(he, i, runtimeCore)))
+                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), StackUtils.GetValue(this, i, runtimeCore)))
                                  .Concat(Dict ?? Enumerable.Empty<KeyValuePair<StackValue, StackValue>>())
                                  .ToDictionary(p => p.Key, p => p.Value);
             return dict;
@@ -369,7 +371,7 @@ namespace ProtoCore.DSASM
         public StackValue SetValueForIndex(int index, StackValue value, RuntimeCore runtimeCore)
         {
             index = ExpandByAcessingAt(index);
-            StackValue oldValue = SetValue(index, value);
+            StackValue oldValue = this.SetValue(index, value);
             return oldValue;
         }
 
@@ -516,7 +518,7 @@ namespace ProtoCore.DSASM
         {
             if (array.IsString)
             {
-                string str = rmem.Heap.GetString(array);
+                string str = heap.GetString(array);
                 if (str == null)
                     return StackValue.Null;
 
@@ -562,23 +564,21 @@ namespace ProtoCore.DSASM
                     return GetValueFromIndex(array, fullIndex, runtimeCore);
                 }
 
-                HeapElement he = GetHeapElement(array, runtimeCore);
-
-                if (he.VisibleSize > fullIndex)
+                if (VisibleSize > fullIndex)
                 {
-                    return GetValueFromIndex(array, fullIndex, runtimeCore);
+                    return GetValueFromIndex(fullIndex, runtimeCore);
                 }
                 else
                 {
-                    fullIndex = fullIndex - he.VisibleSize;
-                    if (he.Dict != null && he.Dict.Count > fullIndex)
+                    fullIndex = fullIndex - VisibleSize;
+                    if (Dict != null && Dict.Count > fullIndex)
                     {
                         int count = 0;
-                        foreach (var key in he.Dict.Keys)
+                        foreach (var key in Dict.Keys)
                         {
                             if (count == fullIndex)
                             {
-                                return he.Dict[key];
+                                return Dict[key];
                             }
                             count = count + 1;
                         }
@@ -613,7 +613,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue GetValueFromIndices(StackValue[] indices, RuntimeCore runtimeCore)
         {
-            StackValue svArray;
+            StackValue svArray = StackValue.Null;
 
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -630,7 +630,7 @@ namespace ProtoCore.DSASM
                         runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                         return StackValue.Null;
                     }
-                    svArray = GetValueFromIndex(svArray, index, runtimeCore);
+                    svArray = heap.Cast<DSArray>(svArray).GetValueFromIndex(index, runtimeCore);
                 }
 
                 if (!svArray.IsArray)
@@ -689,7 +689,7 @@ namespace ProtoCore.DSASM
         }
 
 
-        private static StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)
+        private StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)
         {
             Queue<StackValue> workingSet = new Queue<StackValue>();
             List<StackValue> flattenValues = new List<StackValue>();
@@ -703,8 +703,7 @@ namespace ProtoCore.DSASM
             while (workingSet.Count > 0)
             {
                 array = workingSet.Dequeue();
-                HeapElement he = GetHeapElement(array, runtimeCore);
-                foreach (var value in he.Values)
+                foreach (var value in heap.Cast<DSArray>(array).Values)
                 {
                     if (value.IsArray)
                     {
@@ -736,6 +735,26 @@ namespace ProtoCore.DSASM
             : base(size)
         {
             MetaData = new MetaData { type = (int)PrimitiveType.kTypeString };
+        }
+
+        public override StackValue GetValueFromIndex(int index, RuntimeCore runtimeCore)
+        {
+            string str = heap.GetString(array);
+            if (str == null)
+                return StackValue.Null;
+
+            if (index < 0)
+            {
+                index = index + str.Length;
+            }
+
+            if (index >= str.Length || index < 0)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                return StackValue.Null;
+            }
+
+            return heap.AllocateString(str.Substring(index, 1));
         }
     }
 }

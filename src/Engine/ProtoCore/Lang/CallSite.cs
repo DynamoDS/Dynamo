@@ -1665,7 +1665,7 @@ namespace ProtoCore
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], runtimeCore).ToArray();
+                        subParameters = runtimeCore.Heap.Cast<DSArray>(formalParameters[repIndex]).Values.ToArray();
                     }
                     else
                     {

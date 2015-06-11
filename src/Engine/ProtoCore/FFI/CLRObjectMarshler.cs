@@ -365,7 +365,7 @@ namespace ProtoFFI
             }
 
             var csDict = (IDictionary)Activator.CreateInstance(instanceType);
-            var dsDict = ArrayUtils.ToDictionary(dsObject, dsi.runtime.RuntimeCore);
+            var dsDict = dsi.runtime.RuntimeCore.Heap.Cast<DSArray>(dsObject).ToDictionary();
             return AddToDictionary(context, dsi, csDict, dsDict, keyType, valueType);
         }
 
@@ -456,8 +456,8 @@ namespace ProtoFFI
         {
             var runtimeCore = dsi.runtime.RuntimeCore;
 
-            var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-            HeapElement ho = ArrayUtils.GetHeapElement(array, runtimeCore);
+            var svArray = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
+            DSArray array = dsi.runtime.rmem.Heap.Cast<DSArray>(svArray);
             ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
 
             foreach (var key in dictionary.Keys)
@@ -484,8 +484,12 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.RuntimeCore);
             var result = new List<T>();
+            var heap = dsi.runtime.RuntimeCore.Heap;
+            if (!dsObject.IsArray)
+                return result.ToArray();
+
+            var dsElements = heap.Cast<DSArray>(dsObject).Values;
             Type objType = typeof(T);
 
             foreach (var elem in dsElements)
