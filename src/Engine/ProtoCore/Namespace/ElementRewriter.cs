@@ -10,26 +10,26 @@ using ProtoCore.Utils;
 namespace ProtoCore.Namespace
 {
 
-    public class ElementRewriter : AstReplacer, IDisposable
+    public class ElementRewriter : AstReplacer
     {
         private readonly ClassTable classTable;
         private readonly ElementResolver elementResolver;
-        private readonly SymbolConflictWarningHandler handler;
+        private readonly SymbolConflictWarningHandler symbolConflictHandler;
 
         public delegate void SymbolConflictWarningHandler(string symbolName, string[] collidingSymbolNames);
 
-        public event SymbolConflictWarningHandler LogSymbolConflictWarning;
+        //public event SymbolConflictWarningHandler LogSymbolConflictWarning;
 
         private void OnLogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
-            if (LogSymbolConflictWarning != null)
-                handler(symbolName, collidingSymbolNames);
+            if (symbolConflictHandler != null)
+                symbolConflictHandler(symbolName, collidingSymbolNames);
         }
 
-        public ElementRewriter(ClassTable classTable, SymbolConflictWarningHandler handler, ElementResolver resolver = null)
+        public ElementRewriter(ClassTable classTable, SymbolConflictWarningHandler warningHandler, ElementResolver resolver = null)
         {
             this.classTable = classTable;
-            this.handler = handler;
+            this.symbolConflictHandler = warningHandler;
             this.elementResolver = resolver ?? new ElementResolver();
         }
 
@@ -202,10 +202,5 @@ namespace ProtoCore.Namespace
         }
 
         #endregion
-
-        public void Dispose()
-        {
-            LogSymbolConflictWarning -= handler;
-        }
     }
 }
