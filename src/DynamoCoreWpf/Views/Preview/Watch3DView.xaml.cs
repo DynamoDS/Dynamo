@@ -119,11 +119,9 @@ namespace Dynamo.Controls
 
         public LineGeometry3D LinesSelected { get; set; }
 
+        public MeshGeometry3D DynamoMesh { get; set; }
+
         public MeshGeometry3D Mesh { get; set; }
-
-        public MeshGeometry3D PerVertexMesh { get; set; }
-
-        public MeshGeometry3D MeshSelected { get; set; }
 
         public BillboardText3D Text { get; set; }
 
@@ -674,9 +672,8 @@ namespace Dynamo.Controls
             Points = null;
             Lines = null;
             LinesSelected = null;
+            DynamoMesh = null;
             Mesh = null;
-            PerVertexMesh = null;
-            MeshSelected = null;
             Text = null;
             MeshCount = 0;
 
@@ -686,9 +683,8 @@ namespace Dynamo.Controls
             var points = HelixRenderPackage.InitPointGeometry();
             var lines = HelixRenderPackage.InitLineGeometry();
             var linesSel = HelixRenderPackage.InitLineGeometry();
+            var dynamoMesh = HelixRenderPackage.InitMeshGeometry();
             var mesh = HelixRenderPackage.InitMeshGeometry();
-            var meshSel = HelixRenderPackage.InitMeshGeometry();
-            var perVertexMesh = HelixRenderPackage.InitMeshGeometry();
             var text = HelixRenderPackage.InitText3D();
 
             var aggParams = new PackageAggregationParams
@@ -697,9 +693,8 @@ namespace Dynamo.Controls
                 Points = points,
                 Lines = lines,
                 SelectedLines = linesSel,
+                DynamoMesh = dynamoMesh,
                 Mesh = mesh,
-                PerVertexMesh = perVertexMesh,
-                SelectedMesh = meshSel,
                 Text = text
             };
 
@@ -717,14 +712,11 @@ namespace Dynamo.Controls
             if (!text.TextInfo.Any())
                 text = null;
 
+            if (!dynamoMesh.Positions.Any())
+                dynamoMesh = null;
+
             if (!mesh.Positions.Any())
                 mesh = null;
-
-            if (!meshSel.Positions.Any())
-                meshSel = null;
-
-            if (!perVertexMesh.Positions.Any())
-                perVertexMesh = null;
 
 #if DEBUG
             renderTimer.Stop();
@@ -738,9 +730,8 @@ namespace Dynamo.Controls
                 Points = points,
                 Lines = lines,
                 SelectedLines = linesSel,
+                DynamoMesh = dynamoMesh,
                 Mesh = mesh,
-                SelectedMesh = meshSel,
-                PerVertexMesh = perVertexMesh,
                 Text = text
             };
 
@@ -751,8 +742,6 @@ namespace Dynamo.Controls
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-
-
             MeshCount = 0;
             foreach (var rp in parameters.Packages)
             {
@@ -821,15 +810,14 @@ namespace Dynamo.Controls
                     // colors goes into the per vertex mesh. Everything else
                     // goes into the plain mesh.
 
-                    var meshSet = rp.IsSelected ? 
-                        parameters.SelectedMesh :
-                        rp.RequiresPerVertexColoration ? parameters.PerVertexMesh : parameters.Mesh;
+                    var meshSet = rp.IsSelected || rp.RequiresPerVertexColoration ? 
+                        parameters.DynamoMesh : parameters.Mesh;
 
                     var idxCount = meshSet.Positions.Count;
-
+                    
                     meshSet.Positions.AddRange(m.Positions);
 
-                    meshSet.Colors.AddRange(m.Colors);
+                    meshSet.Colors.AddRange(rp.IsSelected ? Enumerable.Repeat(selectionColor,m.Positions.Count): m.Colors);
                     meshSet.Normals.AddRange(m.Normals);
                     meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
                     meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
@@ -850,9 +838,8 @@ namespace Dynamo.Controls
             Points = parameters.Points;
             Lines = parameters.Lines;
             LinesSelected = parameters.SelectedLines;
+            DynamoMesh = parameters.DynamoMesh;
             Mesh = parameters.Mesh;
-            MeshSelected = parameters.SelectedMesh;
-            PerVertexMesh = parameters.PerVertexMesh;
             Text = parameters.Text;
 
             // Send property changed notifications for everything
@@ -887,9 +874,8 @@ namespace Dynamo.Controls
         public PointGeometry3D Points { get; set; }
         public LineGeometry3D Lines { get; set; }
         public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D DynamoMesh { get; set; }
         public MeshGeometry3D Mesh { get; set; }
-        public MeshGeometry3D SelectedMesh { get; set; }
-        public MeshGeometry3D PerVertexMesh { get; set; }
         public BillboardText3D Text { get; set; }
     }
 
@@ -899,9 +885,8 @@ namespace Dynamo.Controls
         public PointGeometry3D Points { get; set; }
         public LineGeometry3D Lines { get; set; }
         public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D DynamoMesh { get; set; }
         public MeshGeometry3D Mesh { get; set; }
-        public MeshGeometry3D PerVertexMesh { get; set; }
-        public MeshGeometry3D SelectedMesh { get; set; }
         public BillboardText3D Text { get; set; }
     }
 }
