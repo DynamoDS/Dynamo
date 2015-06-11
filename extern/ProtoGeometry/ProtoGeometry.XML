@@ -2525,7 +2525,11 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByFilletTangentToCurve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
              <summary>
+<<<<<<< HEAD
              Create an arc by filleting two curves tangent to given curve at internal point
+=======
+             Form a Point in the given coordinate system given its position in spherical coordinates.
+>>>>>>> master
              </summary>
             <search>
             arc,fillet,round,smooth
@@ -2741,6 +2745,7 @@
             The Vertex at which this Edge starts
             </summary>
         </member>
+<<<<<<< HEAD
         <member name="P:Autodesk.DesignScript.Geometry.Edge.EndVertex">
             <summary>
             The Vertex at which this Edge ends
@@ -2751,6 +2756,31 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.Equals(System.Double,System.Double,System.Double)">
             <notranslation>true</notranslation>
+=======
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(System.Double,System.Double)">
+             <summary>
+             Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
+             </summary>
+            <search>
+            rectbylengths
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
+             <summary>
+             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and (Plane Y axis length).
+             </summary>
+            <search>
+            rectangle,rectbylengths
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
+             <summary>
+             Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
+             </summary>
+            <search>
+            rectbylengths
+            </search>
+>>>>>>> master
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.GeometryExtension.EqualsTo(System.Double,System.Double)">
             <notranslation>true</notranslation>

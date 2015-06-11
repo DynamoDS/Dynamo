@@ -507,7 +507,7 @@ namespace ProtoCore.Utils
             {
                 if (warningEntry.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
                 {
-                    var varName = warningEntry.Message.Split(' ')[1].Replace("'", "");
+                    var varName = warningEntry.UnboundVariableSymbolNode.name;
                     result.Add(new VariableLine()
                     {
                         variable = varName,

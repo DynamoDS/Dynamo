@@ -1154,7 +1154,7 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,               
+                nodeGraph.Annotations,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
@@ -1162,16 +1162,19 @@ namespace Dynamo.Models
 
             RegisterHomeWorkspace(newWorkspace);
 
-            workspace = newWorkspace;            
+            workspace = newWorkspace;
             return true;
         }
 
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
+            newWorkspace.RefreshCompleted += OnRefreshCompleted;
+
             newWorkspace.Disposed += () =>
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
+                newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
         }
 
