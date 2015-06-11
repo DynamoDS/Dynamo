@@ -2633,7 +2633,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
              <summary>
-             Form a Point in the given coordinate system given its position in cylindrical coordinates.
+             Form a Point in the given coordinate system given its position in spherical coordinates.
              </summary>
             <search>
             point,localposition
