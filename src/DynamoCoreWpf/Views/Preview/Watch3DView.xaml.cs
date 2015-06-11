@@ -996,8 +996,8 @@ namespace Dynamo.Controls
                     if (rp.Colors != null)
                     {
                         var pf = PixelFormats.Bgra32;
-                        var stride = (4 * pf.BitsPerPixel + 7) / 8;
-                        var diffMap = BitmapSource.Create(rp.ColorsStride, rp.ColorsStride, 96.0, 96.0, pf, null, rp.Colors.ToArray(), stride);
+                        var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
+                        var diffMap = BitmapSource.Create(rp.ColorsStride/4, rp.ColorsStride/4, 96.0, 96.0, pf, null, rp.Colors.ToArray(), stride);
                         var diffMat = new PhongMaterial
                         {
                             Name = "White",
