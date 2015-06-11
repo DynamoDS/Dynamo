@@ -344,7 +344,6 @@ namespace Dynamo.Controls
             {
                 geometryDictionary.Add("Axes", axesModel3D);
             }
-
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -431,16 +430,19 @@ namespace Dynamo.Controls
         /// </summary> 
         private void VisualizationManager_InitializeGeomtery()
         {
-            List<string> keysList = new List<string> {"DirectionalLight", "Grid", "Axes"};
-
+            List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText"};
+            if (Text != null && Text.TextInfo.Any())
+            {
+                Text.TextInfo.Clear();               
+            }
             foreach (var key in GeometryDictionary.Keys.Except(keysList).ToList())
             {
                 var model = GeometryDictionary[key] as GeometryModel3D;
                 model.Detach();
                 GeometryDictionary.Remove(key);
             }
-            NotifyPropertyChanged("");
 
+            NotifyPropertyChanged("");
             View.InvalidateRender();
         }
 
@@ -843,8 +845,42 @@ namespace Dynamo.Controls
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
             renderTimer.Reset();
             renderTimer.Start();
-#endif
-            //View.InvalidateRender();
+#endif        
+             
+            //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
+            //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
+            //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
+            //Instead, only the geometry gets updated every time. Once it is attached (after the geometry), helix
+            // renders the text at the right position.
+            if (Text != null && Text.TextInfo.Any())
+            {
+                BillboardTextModel3D billboardText3D = new BillboardTextModel3D
+                {
+                    Transform = Model1Transform
+                };
+
+                if (geometryDictionary != null && !geometryDictionary.ContainsKey("BillBoardText"))
+                {
+                    geometryDictionary.Add("BillBoardText", billboardText3D);
+                }
+
+                var billBoardModel3D = geometryDictionary["BillBoardText"] as BillboardTextModel3D;
+                billBoardModel3D.Geometry = Text;
+                if (!billBoardModel3D.IsAttached)
+                {
+                    billBoardModel3D.Attach(View.RenderHost);
+                }
+            }
+            else
+            {               
+                if (geometryDictionary != null && geometryDictionary.ContainsKey("BillBoardText"))
+                {
+                    var billBoardModel3D = geometryDictionary["BillBoardText"] as BillboardTextModel3D;
+                    billBoardModel3D.Geometry = Text;                   
+                }                
+            }
+
+            //This is required for Dynamo to send property changed notifications to helix.          
             NotifyPropertyChanged("");
         }
 
@@ -913,7 +949,8 @@ namespace Dynamo.Controls
                     if (rp.DisplayLabels)
                     {
                         var pt = p.Positions[0];
-                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(id), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        Text = parameters.Text;
                     }
 
                     pointGeometry3D.Geometry = points;
@@ -964,7 +1001,8 @@ namespace Dynamo.Controls
                     if (rp.DisplayLabels)
                     {
                         var pt = lineSet.Positions[startIdx];
-                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(id), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        Text = parameters.Text;
                     }
 
                     lineGeometry3D.Geometry = lineSet;
@@ -1027,7 +1065,8 @@ namespace Dynamo.Controls
                 if (rp.DisplayLabels)
                 {
                     var pt = meshSet.Positions[idxCount];
-                    parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(id), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    Text = parameters.Text;
                 }
 
                 MeshCount++;
@@ -1037,12 +1076,13 @@ namespace Dynamo.Controls
 
             foreach (var kvp in geometryDictionary)
             {
-                var model3d = kvp.Value;
+                var model3d = kvp.Value;                
                 if (model3d is GeometryModel3D)
                 {
-                    model3d.Attach(View.RenderHost);  
-                }
-            }
+                    if (!model3d.IsAttached)
+                        model3d.Attach(View.RenderHost);                      
+                }               
+            }          
         }
 
         #endregion
