@@ -3,6 +3,7 @@ using System.Linq;
 using Dynamo.PackageManager;
 using System.IO;
 using Dynamo.Tests;
+using System;
 
 namespace DynamoCoreWpfTests
 {
@@ -24,6 +25,8 @@ namespace DynamoCoreWpfTests
             string dyfpath = Path.Combine(first, "dyf");
             var customnodes = Directory.GetFiles(dyfpath);
             var firstnode = customnodes.First();
+
+            Console.WriteLine("add node at" + firstnode + "to package");
 
             var canExecuteChangedFired = 0;
             vm.SubmitCommand.CanExecuteChanged += ((o, e) => { canExecuteChangedFired++; });
