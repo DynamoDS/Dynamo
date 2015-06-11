@@ -14,7 +14,9 @@ namespace DSCore
         private readonly Color singleColor;
         private Color[][] colorMap;
         private bool renderEdges = false;
-        private const int Samples = 64;
+        private int samples;
+        private const int LowestPower = 2;
+        private const int HighestPower = 9;
 
         private Display(Geometry geometry, Color color)
         {
@@ -22,21 +24,20 @@ namespace DSCore
             this.singleColor = color;
         }
 
-        private Display(Surface surface, UV[] uvs, Color[] colors)
+        private Display(Surface surface, UV[] uvs, Color[] colors, int samples)
         {
-            this.geometry = surface;
-            this.colorMap = ComputeColorMap(surface, uvs, colors);
+            geometry = surface;
+            this.samples = samples;
+            colorMap = ComputeColorMap(surface, uvs, colors, samples, samples);
         }
 
         /// <summary>
         /// Compute a set of color maps from a set of SurfaceData objects.
         /// </summary>
-        /// <param name="surfaceDatas"></param>
-        /// <param name="colorRange"></param>
         /// <returns></returns>
-        private Color[][] ComputeColorMap(Surface surface, UV[] uvs,  Color[] colors)
+        private static Color[][] ComputeColorMap(Surface surface, IEnumerable<UV> uvs,  Color[] colors, int samplesU, int samplesV)
         {
-            return Utils.CreateGradientColorMap(colors, uvs, Samples, Samples);
+            return Utils.CreateGradientColorMap(colors, uvs, samplesU, samplesV);
         }
 
         /// <summary>
@@ -63,10 +64,12 @@ namespace DSCore
         /// <summary>
         /// Display interpolated color values on a surface from data stored in a SurfaceData object.
         /// </summary>
-        /// <param name="surfaceData">The SurfaceData object.</param>
-        /// <param name="colorRange">A ColorRange1D object.</param>
+        /// <param name="surface">The surface on which to apply the colors.</param>
+        /// <param name="uvs">A set of UV locations on the surface corresponding to the colors.</param>
+        /// <param name="colors">A set of Colors corresponding to the uvs.</param>
+        /// <param name="precision">A value between 0.0 (low) and 1.0 (high) which defines the resolution</param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors)
+        public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors, double precision = 0.5)
         {
             if (!uvs.Any())
             {
@@ -88,7 +91,22 @@ namespace DSCore
                 throw new ArgumentNullException("colors");
             }
 
-            return new Display(surface, uvs, colors);
+            if (precision < 0.0)
+            {
+                precision = 0.0;
+            }
+
+            if (precision > 1.0)
+            {
+                precision = 1.0;
+            }
+
+            // Calculate the size of the image
+            // Samples range from 2^2 (4) - 2^9 (512)
+            var expRange = HighestPower - LowestPower;
+            var t = expRange*precision;
+            var finalExp = (int)Math.Pow(2, (int) (LowestPower + t));
+            return new Display(surface, uvs, colors, finalExp);
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -100,6 +118,11 @@ namespace DSCore
             }
             else if (colorMap != null)
             {
+                if (!colorMap.Any())
+                {
+                    return;
+                }
+
                 CreateColorMappedSurfaceRenderData(colorMap, package, parameters);
             }
         }
@@ -122,7 +145,7 @@ namespace DSCore
             }
 
             package.SetColors(colorBytes.ToArray());
-            package.ColorsStride = colorMap.First().Length;
+            package.ColorsStride = colorMap.First().Length * 4;
         }
 
         private void CreateGeometryRenderData(Color color, IRenderPackage package, TessellationParameters parameters)
