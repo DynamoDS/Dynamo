@@ -753,9 +753,6 @@ namespace Dynamo.ViewModels
             else
                 UpdateTopResult(null);
 
-            // Order found categories by name.
-            searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
-
             SortSearchCategoriesChildren();
         }
 
