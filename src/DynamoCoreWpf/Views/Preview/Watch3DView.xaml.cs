@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Dynamo.UI;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
@@ -336,6 +337,8 @@ namespace Dynamo.Controls
 
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
+            Detach(true);
+
             var vm = DataContext as IWatchViewModel;
             if (vm == null) return;
             vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
@@ -379,6 +382,7 @@ namespace Dynamo.Controls
 #if DEBUG
             TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
 #endif
+            
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -416,7 +420,6 @@ namespace Dynamo.Controls
                 DirectionalLightDirection = v; 
             }
         }
-
 
         /// <summary>
         /// Handler for the visualization manager's ResultsReadyToVisualize event.
@@ -671,14 +674,10 @@ namespace Dynamo.Controls
 #if DEBUG
             renderTimer.Start();
 #endif
-            Points = null;
-            Lines = null;
-            LinesSelected = null;
-            Mesh = null;
-            PerVertexMesh = null;
-            MeshSelected = null;
-            Text = null;
+
             MeshCount = 0;
+
+            Detach(false);
 
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
@@ -751,8 +750,6 @@ namespace Dynamo.Controls
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-
-
             MeshCount = 0;
             foreach (var rp in parameters.Packages)
             {
@@ -845,6 +842,24 @@ namespace Dynamo.Controls
             }
         }
 
+        private void Detach(bool detachPersistentObjects)
+        {
+            if (detachPersistentObjects)
+            {
+                key.Detach();
+                gridView.Detach();
+                axesView.Detach();
+            }
+            
+            linesView.Detach();
+            linesSelectedView.Detach();
+            pointsView.Detach();
+            meshView.Detach();
+            meshSelectedView.Detach();
+            perVertexMeshView.Detach();
+            textView.Detach();
+        }
+
         private void SendGraphicsToView(GraphicsUpdateParams parameters)
         {
             Points = parameters.Points;
@@ -855,8 +870,24 @@ namespace Dynamo.Controls
             PerVertexMesh = parameters.PerVertexMesh;
             Text = parameters.Text;
 
+            linesView.Attach(watch_view.RenderHost);
+            linesSelectedView.Attach(watch_view.RenderHost);
+            pointsView.Attach(watch_view.RenderHost);
+            meshView.Attach(watch_view.RenderHost);
+            meshSelectedView.Attach(watch_view.RenderHost);
+            perVertexMeshView.Attach(watch_view.RenderHost);
+            textView.Attach(watch_view.RenderHost);
+
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
+
+            Points = null;
+            Lines = null;
+            LinesSelected = null;
+            Mesh = null;
+            MeshSelected = null;
+            PerVertexMesh = null;
+            Text = null;
         }
 
         #endregion
