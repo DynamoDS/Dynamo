@@ -33,9 +33,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
-                        <StackPanel Margin="8,0,8,8"
-                                    Width="250">
-                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" />
+                        <StackPanel Margin="8,0,8,8">
+                            <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}"
+                                                      Width="{Binding Path=ActualWidth, 
+                                                      RelativeSource={RelativeSource AncestorType=StackPanel}}" />
                             <Border BorderThickness="1"
                                     Name="Border"
                                     Background="White"
