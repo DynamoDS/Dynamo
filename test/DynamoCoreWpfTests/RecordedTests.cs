@@ -5082,6 +5082,41 @@ namespace DynamoCoreWpfTests
             });
         }
         #endregion
+
+        [Test]
+        public void MAGN_7638_assignValueToVariable()
+        {
+            // Check whether connections are swapping after assigning
+            // value to variable
+            // Scenario
+            //  a) create -,/ node and connect the input with value 10,20;
+            //  b) assign input value to variable a and b,check the result
+            // issue link: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5453#
+
+
+            RunCommandsFromFile("MAGN-7638assignValueToVariable.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                var divisorID = "2b213bb4-8d6f-4d82-86a7-29f83b6b9272";
+                var minusID = "6024f3ae-d6b7-4ee5-8dac-67100c631189";
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check / ,-;
+                        AssertPreviewValue( divisorID,0.666667);
+                        AssertPreviewValue(minusID,-1);
+                        break;
+
+                    case "SecondRun":
+                        //Check / ,-;                       
+                        AssertPreviewValue(divisorID, 0.666667);
+                        AssertPreviewValue(minusID, -1);
+                        break;
+
+                }
+            });
+        }
     }
 
 }
