@@ -9,6 +9,7 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
+             MinWidth="250"
              IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
