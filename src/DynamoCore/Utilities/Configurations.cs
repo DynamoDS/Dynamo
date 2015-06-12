@@ -228,6 +228,12 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region InCanvasSearch
+
+        public const double InCanvasSearchTextBoxHeight = 40.0;
+
+        #endregion
+
         #region Backup
 
         public static string BackupFileNamePrefix = "backup";
