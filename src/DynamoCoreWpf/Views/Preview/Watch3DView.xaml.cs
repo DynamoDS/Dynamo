@@ -193,7 +193,8 @@ namespace Dynamo.Controls
         {
             get
             {              
-                return GeometryDictionary.Select(x => x.Value).ToList();
+                return GeometryDictionary == null ? new List<Model3D>() : 
+                    GeometryDictionary.Select(x => x.Value).ToList();
             }
         }
 
@@ -225,7 +226,7 @@ namespace Dynamo.Controls
 
             _id = id;
             geometryDictionary = new Dictionary<string, Model3D>();
-            InitializeHelix();
+            //InitializeHelix();
 
         }
 
@@ -242,7 +243,7 @@ namespace Dynamo.Controls
 
             _id = id;
             geometryDictionary = new Dictionary<string, Model3D>();
-            InitializeHelix();
+            //InitializeHelix();
         }
 
         private void SetupScene()
