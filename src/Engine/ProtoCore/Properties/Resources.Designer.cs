@@ -385,24 +385,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error setting up communication with Excel.  Try closing any open Excel instances..
-        /// </summary>
-        public static string ExcelCommunicationError {
-            get {
-                return ResourceManager.GetString("ExcelCommunicationError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Excel is not installed..
-        /// </summary>
-        public static string ExcelNotInstalled {
-            get {
-                return ResourceManager.GetString("ExcelNotInstalled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to import {0}.
         /// </summary>
         public static string FailedToImport {

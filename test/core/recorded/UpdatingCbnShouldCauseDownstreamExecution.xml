@@ -1,0 +1,12 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath=".\UpdatingCbnShouldCauseDownstreamExecution.dyn" />
+  <PausePlaybackCommand Tag="AfterFileOpen" PauseDurationInMs="200" />
+  <UpdateModelValueCommand Name="Code" Value="9;" WorkspaceGuid="ea8a14dc-70ba-4ff6-9dea-28dfc82dd3c4">
+    <ModelGuid>505023ef-9b86-4220-a1f2-e0bf7cf415f1</ModelGuid>
+  </UpdateModelValueCommand>
+  <PausePlaybackCommand Tag="CbnUpdatedTo9" PauseDurationInMs="200" />
+  <UpdateModelValueCommand Name="Code" Value="12;" WorkspaceGuid="ea8a14dc-70ba-4ff6-9dea-28dfc82dd3c4">
+    <ModelGuid>505023ef-9b86-4220-a1f2-e0bf7cf415f1</ModelGuid>
+  </UpdateModelValueCommand>
+  <PausePlaybackCommand Tag="CbnUpdatedTo12" PauseDurationInMs="200" />
+</Commands>

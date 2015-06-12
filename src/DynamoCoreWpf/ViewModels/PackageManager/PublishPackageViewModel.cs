@@ -507,7 +507,11 @@ namespace Dynamo.PackageManager
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "PackageContents") CanSubmit();
+            if (e.PropertyName == "PackageContents")
+            {
+                CanSubmit();
+               SubmitCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
@@ -827,7 +831,7 @@ namespace Dynamo.PackageManager
             return true;
         }
 
-        private void AddFile(string filename)
+        internal void AddFile(string filename)
         {
             if (!File.Exists(filename)) return;
 

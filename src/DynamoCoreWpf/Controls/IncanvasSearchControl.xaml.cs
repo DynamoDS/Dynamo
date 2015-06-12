@@ -94,6 +94,22 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        private void OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            FrameworkElement fromSender = sender as FrameworkElement;
+            if (fromSender == null) return;
+
+            toolTipPopup.DataContext = fromSender.DataContext;
+            toolTipPopup.IsOpen = true;
+
+        }
+
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            toolTipPopup.DataContext = null;
+            toolTipPopup.IsOpen = false;
+        }
+
         private void OnInCanvasSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // If visibility  is false, then stop processing it.
@@ -125,6 +141,9 @@ namespace Dynamo.UI.Controls
                 MembersListBox.ItemContainerGenerator.StatusChanged -= OnMembersListBoxIcgStatusChanged;
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
+                    var scrollViewer = MembersListBox.ChildOfType<ScrollViewer>();
+                    scrollViewer.ScrollToTop();
+
                     UpdateHighlightedItem(GetListItemByIndex(MembersListBox, 0));
                 }),
                     DispatcherPriority.Loaded);
@@ -144,7 +163,10 @@ namespace Dynamo.UI.Controls
 
             // Select new value.
             if (HighlightedItem != null)
+            {
                 HighlightedItem.IsSelected = true;
+                HighlightedItem.BringIntoView();
+            }
         }
 
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
@@ -215,6 +237,21 @@ namespace Dynamo.UI.Controls
                 return selectedMemberIndex;
 
             return nextselectedMemberIndex;
+        }
+
+        private void OnMembersListBoxMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var listBox = sender as FrameworkElement;
+            if (listBox == null)
+                return;
+
+            var scrollViewer = listBox.ChildOfType<ScrollViewer>();
+            if (scrollViewer == null)
+                return;
+
+            // Make delta less to achieve smooth scrolling and not jump over other elements.
+            var delta = e.Delta / 100;
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - delta);
         }
     }
 }

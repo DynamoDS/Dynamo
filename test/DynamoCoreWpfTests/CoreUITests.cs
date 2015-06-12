@@ -527,6 +527,39 @@ namespace DynamoCoreWpfTests
             View.Close();
         }
 
+        [Test]
+        public void PreferenceSettings_ShowEdges_DefaultFalse()
+        {
+            var settings = new PreferenceSettings();
+            Assert.False(settings.ShowEdges);
+        }
+
+        [Test]
+        public void PreferenceSettings_ShowEdges_Toggle()
+        {
+            ViewModel.VisualizationSettings.ShowEdges = false;
+            Assert.False(Model.PreferenceSettings.ShowEdges);
+
+            ViewModel.VisualizationSettings.ShowEdges = true;
+            Assert.True(Model.PreferenceSettings.ShowEdges);
+        }
+
+        [Test]
+        public void PreferenceSettings_ShowEdges_Save()
+        {
+            // Test if variable can be serialize and deserialize without any issue
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            var initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            initalSetting.ShowEdges = true;
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+            Assert.True(resultSetting.ShowEdges);
+        }
+
         private void RestartTestSetup(bool startInTestMode)
         {
             // Shutdown Dynamo and restart it

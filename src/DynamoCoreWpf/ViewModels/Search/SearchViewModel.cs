@@ -711,7 +711,7 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<NodeSearchElementViewModel> Search(string search, int maxNumSearchResults)
         {
-            var foundNodes = Model.Search(search).Take(maxNumSearchResults);
+            var foundNodes = Model.Search(search);
 
             ClearSearchCategories();
             PopulateSearchCategories(foundNodes);
@@ -743,9 +743,6 @@ namespace Dynamo.ViewModels
                 UpdateTopResult(searchRootCategories.FirstOrDefault().MemberGroups.FirstOrDefault());
             else
                 UpdateTopResult(null);
-
-            // Order found categories by name.
-            searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
 
             SortSearchCategoriesChildren();
         }
