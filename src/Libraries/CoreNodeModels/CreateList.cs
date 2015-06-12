@@ -31,7 +31,7 @@ namespace DSCoreNodesUI
 
         protected override string GetInputTooltip(int index)
         {
-            return "Item Index #" + index;
+            return string.Format(Resources.ListCreateInPortToolTip, index);
         }
 
         protected override void RemoveInput()

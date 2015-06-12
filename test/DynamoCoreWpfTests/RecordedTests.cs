@@ -1418,6 +1418,36 @@ namespace DynamoCoreWpfTests
 
         #region Defect Verifications Test Cases
 
+        [Test, RequiresSTA]
+        public void UpdatingCbnShouldCauseDownstreamExecution()
+        {
+            // This test is meant to verify the fix for MAGN-7575 where updating
+            // a code block node causes downstream addition node to result in "null"
+            // instead of retaining its value of "16". Modifying the code block node
+            // in this case should not have caused such issue.
+            // 
+            RunCommandsFromFile("UpdatingCbnShouldCauseDownstreamExecution.xml", (commandTag) =>
+            {
+                switch (commandTag)
+                {
+                    case "AfterFileOpen":
+                        DynamoModel.IsTestMode = false; // Simulate normal UI interaction mode.
+                        AssertPreviewValue("556efc56-6043-4f96-8012-e5b716174d62", 16); // Addition node.
+                        AssertPreviewValue("505023ef-9b86-4220-a1f2-e0bf7cf415f1", 8);  // Code block node.
+                        break;
+
+                    case "CbnUpdatedTo9":
+                        AssertPreviewValue("556efc56-6043-4f96-8012-e5b716174d62", 17); // Addition node.
+                        AssertPreviewValue("505023ef-9b86-4220-a1f2-e0bf7cf415f1", 9);  // Code block node.
+                        break;
+
+                    case "CbnUpdatedTo12":
+                        AssertPreviewValue("556efc56-6043-4f96-8012-e5b716174d62", 20); // Addition node.
+                        AssertPreviewValue("505023ef-9b86-4220-a1f2-e0bf7cf415f1", 12); // Code block node.
+                        break;
+                }
+            });
+        }
 
         [Test, RequiresSTA, Category("RegressionTests")]
         public void Defect_MAGN_1956()
