@@ -5117,6 +5117,57 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
+
+
+        [Test]
+        public void MAGN_7159_ImagePixel()
+        {
+            // Check Image.pixel
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check image.Pixel
+            //  c) change input value and check image.Pixel
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7159#
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7159_ImagePixel.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // give absolute path
+                string directory = Path.Combine(TestDirectory, @"core\recorded");
+                var textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("3a22370f-7f07-4bd6-b4fb-5680ec82e8d4");
+                textFileName.Value = Path.Combine(directory, textFileName.Value);
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check Image.Pixel
+                        AssertPreviewCount("e2f85c04-d992-41dd-8e0b-1def88f2c834", 4);
+                        var colorList = GetFlattenedPreviewValues("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        foreach (var ele in colorList)
+                        {
+                            Assert.IsNotNull(ele);
+                        }
+                        NodeModel node1 = workspace.NodeFromWorkspace
+                              ("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+                        break;
+                    case "SecondRun":
+
+                        //Check Image.Pixel
+                        AssertPreviewCount("e2f85c04-d992-41dd-8e0b-1def88f2c834", 5);
+                        var colorListt = GetFlattenedPreviewValues("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        foreach (var ele in colorListt)
+                        {
+                            Assert.IsNotNull(ele);
+                        }
+                        NodeModel node11 = workspace.NodeFromWorkspace
+                              ("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        Assert.AreEqual(ElementState.Active, node11.State);
+                        break;
+                }
+            });
+        }
     }
 
 }
