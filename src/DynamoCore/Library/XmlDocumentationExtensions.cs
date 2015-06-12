@@ -73,9 +73,6 @@ namespace Dynamo.DSEngine
         {
             var assemblyName = function.Assembly;
 
-            if (string.IsNullOrEmpty(assemblyName) || (function.Type == FunctionType.GenericFunction))
-                return String.Empty; // Operators, or generic global function in DS script.
-
             var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
                 (assemblyName, GetMemberElementName(function));
 
@@ -190,6 +187,9 @@ namespace Dynamo.DSEngine
 
                 case FunctionType.StaticProperty:
                     goto case FunctionType.InstanceProperty;
+                    break;
+                case FunctionType.GenericFunction:
+                    return member.FunctionName;
                     break;
 
                 default:
