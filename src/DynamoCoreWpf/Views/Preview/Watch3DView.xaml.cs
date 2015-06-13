@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -327,14 +328,19 @@ namespace Dynamo.Controls
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             Detach(true);
+            UnregisterEventHandlers();
+        }
 
+        private void UnregisterEventHandlers()
+        {
             var vm = DataContext as IWatchViewModel;
             if (vm == null) return;
+
             vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
@@ -367,11 +373,17 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
+            vm.ViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
 #if DEBUG
             TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
 #endif
             
+        }
+
+        void Model_ShutdownStarted(Models.DynamoModel model)
+        {
+            Detach(true);
+            UnregisterEventHandlers();
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -828,13 +840,6 @@ namespace Dynamo.Controls
 
         private void Detach(bool detachPersistentObjects)
         {
-            if (detachPersistentObjects)
-            {
-                key.Detach();
-                gridView.Detach();
-                axesView.Detach();
-            }
-            
             linesView.Detach();
             linesSelectedView.Detach();
             pointsView.Detach();
@@ -842,6 +847,16 @@ namespace Dynamo.Controls
             meshSelectedView.Detach();
             perVertexMeshView.Detach();
             textView.Detach();
+
+            if (detachPersistentObjects)
+            {
+                key.Detach();
+                gridView.Detach();
+                axesView.Detach();
+                watch_view.Detach();
+            }
+
+            GC.Collect();
         }
 
         private void SendGraphicsToView(GraphicsUpdateParams parameters)
