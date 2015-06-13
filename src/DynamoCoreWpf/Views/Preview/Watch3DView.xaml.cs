@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Dynamo.UI;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -24,7 +19,7 @@ using ColorConverter = System.Windows.Media.ColorConverter;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
-using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Quaternion = SharpDX.Quaternion;
 
 namespace Dynamo.Controls
 {
@@ -70,8 +65,6 @@ namespace Dynamo.Controls
 
         #endregion
 
-        #region public properties
-
         /// <summary>
         /// The LeftClickCommand is set according to the
         /// ViewModel's IsPanning or IsOrbiting properties.
@@ -93,6 +86,8 @@ namespace Dynamo.Controls
                 return null;
             }
         }
+
+        #region public properties
 
         public LineGeometry3D Grid
         {
@@ -133,20 +128,14 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
-        /// <summary>
-        /// Used for testing to track the number of meshes that are merged
-        /// during render.
-        /// </summary>
-        public int MeshCount { get; set; }
+        public PhongMaterial WhiteMaterial { get; set; }
 
-        public PhongMaterial WhiteMaterial { get; private set; }
-
-        public PhongMaterial SelectedMaterial { get; private set; }
+        public PhongMaterial SelectedMaterial { get; set; }
 
         public Vector3 DirectionalLightDirection
         {
             get { return directionalLightDirection; }
-            private set
+            set
             {
                 directionalLightDirection = value;
                 NotifyPropertyChanged("DirectionalLightDirection");
@@ -156,15 +145,15 @@ namespace Dynamo.Controls
         public Color4 DirectionalLightColor
         {
             get { return directionalLightColor; }
-            private set
+            set
             {
                 directionalLightColor = value;
                 NotifyPropertyChanged("DirectionalLightColor");
             }
         }
 
-        public Transform3D Model1Transform { get; private set; }
-        
+        public Transform3D Model1Transform { get; set; }
+
         public RenderTechnique RenderTechnique
         {
             get
@@ -185,7 +174,7 @@ namespace Dynamo.Controls
                 return this.camera;
             }
 
-            protected set
+            set
             {
                 camera = value;
                 NotifyPropertyChanged("Camera");
@@ -335,7 +324,6 @@ namespace Dynamo.Controls
 
         #region event handlers
 
-        
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             Detach(true);
@@ -412,8 +400,8 @@ namespace Dynamo.Controls
             var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
             var right = Vector3.Cross(cf, cu);
 
-            var qel = SharpDX.Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
-            var qaz = SharpDX.Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
+            var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
+            var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
             var v = Vector3.Transform(cf, qaz*qel);
 
             if (!DirectionalLightDirection.Equals(v))
@@ -676,8 +664,6 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            MeshCount = 0;
-
             Detach(false);
 
             var packages = e.Packages.Concat(e.SelectedPackages)
@@ -751,7 +737,6 @@ namespace Dynamo.Controls
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-            MeshCount = 0;
             foreach (var rp in parameters.Packages)
             {
                 var p = rp.Points;
@@ -837,8 +822,6 @@ namespace Dynamo.Controls
                         var pt = meshSet.Positions[idxCount];
                         parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
-
-                    MeshCount++;
                 }
             }
         }
