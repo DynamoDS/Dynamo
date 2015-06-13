@@ -335,6 +335,7 @@ namespace Dynamo.Controls
 
         #region event handlers
 
+        
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             Detach(true);

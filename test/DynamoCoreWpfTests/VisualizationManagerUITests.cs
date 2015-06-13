@@ -673,13 +673,13 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            ViewModel.VisualizationSettings.ShowEdges = false;
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
             Assert.True(BackgroundPreview.HasNumberOfLines(0));
 
-            ViewModel.VisualizationSettings.ShowEdges = true;
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
             Assert.True(BackgroundPreview.HasNumberOfLines(12));
 
-            ViewModel.VisualizationSettings.ShowEdges = false;
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
             Assert.True(BackgroundPreview.HasNumberOfLines(0));
         }
 

@@ -1,39 +1,37 @@
-﻿using System;
+﻿using Dynamo.Interfaces;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.ViewModels
 {
-    public class VisualizationSettingsViewModel
+    public class RenderPackageFactoryViewModel : ViewModelBase
     {
-        private readonly DynamoViewModel vm;
+        private readonly IRenderPackageFactory factory;
 
         public bool ShowEdges
         {
-            get { return vm.Model.PreferenceSettings.ShowEdges; }
+            get { return factory.TessellationParameters.ShowEdges; }
             set
             {
-                if (vm.Model.PreferenceSettings.ShowEdges != value)
-                {
-                    vm.Model.PreferenceSettings.ShowEdges = value;
-                    vm.VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges = value;
-                    vm.VisualizationManager.UpdateAllNodeVisualsAndNotify();
-                }
+                if (factory.TessellationParameters.ShowEdges == value) return;
+                factory.TessellationParameters.ShowEdges = value;
+                RaisePropertyChanged("ShowEdges");
             }
         }
 
         public int MaxTessellationDivisions
         {
-            get { return vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxTessellationDivisions; }
+            get { return factory.TessellationParameters.MaxTessellationDivisions; }
             set
             {
-                vm.VisualizationManager.RenderPackageFactory.TessellationParameters.MaxTessellationDivisions = value;
-                vm.VisualizationManager.UpdateAllNodeVisualsAndNotify();
+                if (factory.TessellationParameters.MaxTessellationDivisions == value) return;
+                factory.TessellationParameters.MaxTessellationDivisions = value;
+                RaisePropertyChanged("MaxTessellationDivisions");
             }
         }
 
-        public VisualizationSettingsViewModel(DynamoViewModel viewModel)
+        public RenderPackageFactoryViewModel(IRenderPackageFactory factory)
         {
-            vm = viewModel;
+            this.factory = factory;
         }
     }
 }
