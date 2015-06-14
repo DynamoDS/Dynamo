@@ -82,13 +82,10 @@ namespace Dynamo.Models
 
            
             var tempdoc = new XmlDocument();
-            var root = tempdoc.CreateElement("temproot");
-            tempdoc.AppendChild(root);
-            Dynamo.Nodes.Utilities.SetDocumentXmlPath(tempdoc,"C:/tempdoc" );
             serializedNodes = new List<XmlElement>();
             foreach (var node in Nodes)
             {
-                serializedNodes.Add(node.Serialize(tempdoc, SaveContext.File));
+                serializedNodes.Add(node.Serialize(tempdoc, SaveContext.Preset));
             }
         }
         //this overload is used for loading

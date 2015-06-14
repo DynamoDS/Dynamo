@@ -958,8 +958,8 @@ namespace Dynamo.Models
                 }
 
                 //save the presetsCollection into the dyn file as a seperate element on the root
-                var designOptions =  presetsCollection.Serialize(xmlDoc,SaveContext.File);
-                root.AppendChild(designOptions);
+                var presetsModel =  presetsCollection.Serialize(xmlDoc,SaveContext.File);
+                root.AppendChild(presetsModel);
                
                 return true;
             }
