@@ -1546,17 +1546,17 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
-  <data name="DesignOptionsWindowDescription" xml:space="preserve">
+  <data name="PresetsWindowDescription" xml:space="preserve">
     <value>Description</value>
   </data>
-  <data name="DesignOptionsWindowDescriptionHint" xml:space="preserve">
-    <value>Enter a description of this design options state</value>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>Enter a description for this preset.</value>
   </data>
-  <data name="DesignOptionsWindowName" xml:space="preserve">
+  <data name="PresetsWindowName" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="DesignOptionsWindowTitle" xml:space="preserve">
-    <value> Design Options Properties</value>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>Preset State Properties</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
     <value>Run is not available when running Automatically or Periodically.</value>

@@ -44,13 +44,13 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel( 
             NodeFactory factory,
-            PresetsModel designOptions,
+            PresetsModel presets,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
-            : base(e, n,a, info, factory,designOptions)
+            : base(e, n,a, info, factory,presets)
         {
             HasUnsavedChanges = false;
 

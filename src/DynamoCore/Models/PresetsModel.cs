@@ -14,34 +14,23 @@ namespace Dynamo.Models
     /// a class that holds a set of preset design options states
     /// there is one instance of this class per workspacemodel
     /// </summary>
-    public class PresetsModel:ILogSource
+    public class PresetsModel : ILogSource
     {
         #region private members
-        private readonly List<PresetState> designStates;
-
-        private void LoadStateFromXml(string name, string description, List<NodeModel> nodes, List<XmlElement> serializednodes, Guid id)
-        {
-            var loadedState = new PresetState(name, description, nodes, serializednodes, id);
-            designStates.Add(loadedState);
-        }
+        private readonly List<PresetState> presetStates = new List<PresetState>();
         #endregion
 
         # region properties
-        public IEnumerable<PresetState> DesignStates { get { return designStates; } }
-        #endregion
+        public IEnumerable<PresetState> PresetStates { get { return presetStates; } }
 
-        #region constructor
-        public PresetsModel()
-        {
-            designStates = new List<PresetState>();
-        }
+        public const string GuidAttributeName = "guid";
+        public const string NameAttributeName = "Name";
+        public const string DescriptionAttributeName = "Description";
+        public const string NicknameAttributeName = "nickname";
+
         #endregion
 
         #region serialization / deserialzation
-        // we serialze the presets to xml like a model, but we deserialze them before the workspacemodel is constructed
-        //during save and load of the graph, can just inject this into workspacemodel 
-        //when a new designstate is created we'll serialize all the current nodes into a new xmlelement
-        //but not actually write this xml to a file until the graph is saved
 
         //grabbed some methods needed from modelbase for serialization
         protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
@@ -51,6 +40,15 @@ namespace Dynamo.Models
             return element;
         }
 
+        /// <summary>
+        /// we serialze the presets to xml like a model, but we deserialze them before the workspacemodel is constructed
+        /// during save and load of the graph, can just inject this into workspacemodel 
+        /// when a new presetState is created we'll serialize all the current nodes into a new xmlelement
+        /// but not actually write this xml to a file until the graph is saved
+        /// </summary>
+        /// <param name="xmlDocument"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
             var element = CreateElement(xmlDocument, context);
@@ -61,13 +59,13 @@ namespace Dynamo.Models
         protected virtual void SerializeCore(System.Xml.XmlElement element, SaveContext context)
         {
 
-            foreach (var state in designStates)
+            foreach (var state in presetStates)
             {
                 var parent = element.OwnerDocument.CreateElement("PresetState");
                 element.AppendChild(parent);
-                parent.SetAttribute("Name", state.Name);
-                parent.SetAttribute("Description", state.Description);
-                parent.SetAttribute("guid", state.Guid.ToString());
+                parent.SetAttribute(NameAttributeName, state.Name);
+                parent.SetAttribute(DescriptionAttributeName, state.Description);
+                parent.SetAttribute(GuidAttributeName, state.Guid.ToString());
                 //the states are already serialized
                 foreach (var serializedNode in state.SerializedNodes)
                 {
@@ -78,8 +76,16 @@ namespace Dynamo.Models
 
             }
         }
-
-        internal static PresetsModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph,ILogger logger)
+        /// <summary>
+        /// this is method used to load a state from xml into this presets model collection
+        /// </summary>
+        private void loadStateFromXml(string name, string description, List<NodeModel> nodes, List<XmlElement> serializednodes, Guid id)
+        {
+            var loadedState = new PresetState(name, description, nodes, serializednodes, id);
+            presetStates.Add(loadedState);
+        }
+       
+        internal static PresetsModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph, ILogger logger)
         {
             var loadedStateSet = new PresetsModel();
 
@@ -91,14 +97,14 @@ namespace Dynamo.Models
                 {
                     foreach (XmlElement stateNode in element.ChildNodes)
                     {
-                        var name = stateNode.GetAttribute("Name");
-                        var des = stateNode.GetAttribute("Description");
-                        var stateguidString = stateNode.GetAttribute("guid");
+                        var name = stateNode.GetAttribute(NameAttributeName);
+                        var des = stateNode.GetAttribute(DescriptionAttributeName);
+                        var stateguidString = stateNode.GetAttribute(GuidAttributeName);
 
                         Guid stateID;
                         if (!Guid.TryParse(stateguidString, out stateID))
                         {
-                            logger.LogError("unable to parse the GUID for preset state: " +name+ ", will atttempt to load this state anyway");
+                            logger.LogError("unable to parse the GUID for preset state: " + name + ", will atttempt to load this state anyway");
                         }
 
                         var nodes = new List<NodeModel>();
@@ -109,12 +115,12 @@ namespace Dynamo.Models
                         //iterate each actual saved nodemodel in each state
                         foreach (XmlElement node in stateNode.ChildNodes)
                         {
-                            var nodename = stateNode.GetAttribute("nickname");
-                            var guidString = node.GetAttribute("guid");
+                            var nodename = stateNode.GetAttribute(NicknameAttributeName);
+                            var guidString = node.GetAttribute(GuidAttributeName);
                             Guid nodeID;
                             if (!Guid.TryParse(guidString, out nodeID))
                             {
-                                logger.LogError("unable to parse GUID for node " +nodename );
+                                logger.LogError("unable to parse GUID for node " + nodename);
                                 continue;
                             }
 
@@ -132,7 +138,7 @@ namespace Dynamo.Models
 
                         }
 
-                        loadedStateSet.LoadStateFromXml(name, des, nodes, deserialzedNodes, stateID);
+                        loadedStateSet.loadStateFromXml(name, des, nodes, deserialzedNodes, stateID);
                     }
                 }
             }
@@ -142,18 +148,35 @@ namespace Dynamo.Models
 
         #region public methods
         /// <summary>
-        /// method to create and add a new state to this presets collection
+        ///  this method creates a new preset state from a set of NodeModels and adds this new state to this presets collection
         /// </summary>
-        public void CreateNewState(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
+        /// <param name="name">the name of preset state</param>
+        /// <param name="description">a description of what the state does</param>
+        /// <param name="currentSelection">a set of NodeModels that are to be serialized in this state</param>
+        /// <param name="id">a GUID id for the state, if not supplied, a new GUID will be generated, cannot be a duplicate</param>
+        public void AddState(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
         {
+            if (currentSelection == null || currentSelection.Count() < 1)
+            {
+                throw new ArgumentException("currentSelection is empty or null");
+            }
             var inputs = currentSelection;
+
+            if (presetStates.Any(x => x.Guid == id))
+            {
+                throw new ArgumentException("duplicate id in collection");
+            }
+
             var newstate = new PresetState(name, description, inputs, id);
-            designStates.Add(newstate);
+            presetStates.Add(newstate);
         }
 
         public void RemoveState(PresetState state)
         {
-            designStates.Remove(state);
+            if (PresetStates.Contains(state))
+            {
+                presetStates.Remove(state);
+            }
         }
 
         #endregion

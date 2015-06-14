@@ -1673,7 +1673,9 @@ namespace Dynamo.Models
 
             [DataMember]
             internal string PresetStateName { get; set; }
+            [DataMember]
             internal string PresetStateDescription { get; set; }
+            [DataMember]
             internal List<Guid> SelectedNodesIDs { get; set; }
 
              #endregion
@@ -1728,6 +1730,7 @@ namespace Dynamo.Models
 
             [DataMember]
             internal Guid StateID { get; set; }
+            [DataMember]
             internal Guid WorkSpaceID { get; set; }
           
             #endregion

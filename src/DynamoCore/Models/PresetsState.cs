@@ -10,7 +10,8 @@ using Dynamo.Nodes;
 namespace Dynamo.Models
 {
     /// <summary>
-    /// a class that saves the state of a subset of a graph
+    /// This class references a set of nodemodels, and a set of serialized versions of those nodemodels
+    /// a client can use this class to store the state of a set of nodes from a graph
     /// </summary>
     public class PresetState
     {
@@ -44,8 +45,27 @@ namespace Dynamo.Models
         #endregion
 
         #region constructor
+        /// <summary>
+        /// create a new presetsState, this will serialize all the referenced nodes by calling their serialize method, 
+        /// the resulting XML elements will be used to save this state when the presetModel is saved on workspace save
+        /// the below temp root and doc is to avoid exceptions thrown by the zero touch serialization methods
+        /// </summary>
+        /// <param name="name">name for the state, must not be null </param>
+        /// <param name="description">description of the state, can be null</param>
+        /// <param name="inputsToSave">set of nodeModels, must not be null</param>
+        /// <param name="id">an id GUID, can be empty GUID</param>
         public PresetState(string name, string description, IEnumerable<NodeModel> inputsToSave, Guid id)
         {
+            if (String.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (inputsToSave == null || inputsToSave.Count() < 1)
+            {
+                throw new ArgumentNullException("inputsToSave");
+            } 
+
             //if we have not supplied a guid at construction then create a new one
             if (id == Guid.Empty)
             {
@@ -56,24 +76,11 @@ namespace Dynamo.Models
                 guid = id;
             }
             
-            if (String.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException("preset options state name is null");
-            }
-
-            if (inputsToSave == null || inputsToSave.Count() < 1)
-            {
-                throw new ArgumentNullException("nodes to save are null null");
-            } 
-  
             Name = name;
             Description = description;
             nodes = inputsToSave.ToList();
-            
-            // serialize all the nodes by calling their serialize method, 
-            // the resulting elements will be used to save this state when 
-            // the presetModel is saved on graph save
-            // the below temp root and doc is to avoid a exceptions thrown by the zero touch serialization methods
+
+           
             var tempdoc = new XmlDocument();
             var root = tempdoc.CreateElement("temproot");
             tempdoc.AppendChild(root);

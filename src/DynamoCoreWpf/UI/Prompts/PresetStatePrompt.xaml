@@ -1,9 +1,9 @@
-﻿<Window x:Class="Dynamo.Nodes.DesignOptionsPrompt"
+﻿<Window x:Class="Dynamo.Nodes.PresetStatePrompt"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        Title="{x:Static p:Resources.DesignOptionsWindowTitle}" Height="410" Width="400" WindowStartupLocation="CenterOwner"
+        Title="{x:Static p:Resources.PresetsWindowTitle}" Height="410" Width="400" WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
@@ -20,8 +20,8 @@
 
         <StackPanel Margin="15">
 
-            <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.DesignOptionsWindowTitle}"/>
-            <Label Content="{x:Static p:Resources.DesignOptionsWindowName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
+            <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.PresetsWindowTitle}"/>
+            <Label Content="{x:Static p:Resources.PresetsWindowName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
                     <TextBlock>A unique name for the preset.</TextBlock>
                 </Label.ToolTip>
@@ -29,13 +29,13 @@
             <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5"/>
             <TextBlock Name="nameView" Foreground="WhiteSmoke" FontSize="13" Padding="5"></TextBlock>
 
-            <Label Content="{x:Static p:Resources.DesignOptionsWindowDescription}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
+            <Label Content="{x:Static p:Resources.PresetsWindowDescription}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
-                    <TextBlock>A description of what the preset state sets the graph to.</TextBlock>
+                    <TextBlock>A description of the preset state.</TextBlock>
                 </Label.ToolTip>
             </Label>
             <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" 
-                     Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="{x:Static p:Resources.DesignOptionsWindowDescriptionHint}"/>
+                     Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="{x:Static p:Resources.PresetsWindowDescriptionHint}"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,25,0,0">
 

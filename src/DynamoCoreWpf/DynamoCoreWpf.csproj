@@ -134,8 +134,8 @@
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
-    <Compile Include="UI\Prompts\DesignOptionsPrompt.xaml.cs">
-      <DependentUpon>DesignOptionsPrompt.xaml</DependentUpon>
+    <Compile Include="UI\Prompts\PresetStatePrompt.xaml.cs">
+      <DependentUpon>PresetStatePrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -988,7 +988,7 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="UI\Prompts\DesignOptionsPrompt.xaml">
+    <Page Include="UI\Prompts\PresetStatePrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

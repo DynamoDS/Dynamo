@@ -639,42 +639,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Description.
-        /// </summary>
-        public static string DesignOptionsWindowDescription {
-            get {
-                return ResourceManager.GetString("DesignOptionsWindowDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter a description of this design options state.
-        /// </summary>
-        public static string DesignOptionsWindowDescriptionHint {
-            get {
-                return ResourceManager.GetString("DesignOptionsWindowDescriptionHint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string DesignOptionsWindowName {
-            get {
-                return ResourceManager.GetString("DesignOptionsWindowName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to  Design Options Properties.
-        /// </summary>
-        public static string DesignOptionsWindowTitle {
-            get {
-                return ResourceManager.GetString("DesignOptionsWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Download Warning.
         /// </summary>
         public static string DownloadWarningMessageBoxTitle {
@@ -3440,6 +3404,42 @@ namespace Dynamo.Wpf.Properties {
         public static string PortViewContextMenuUserDefaultValue {
             get {
                 return ResourceManager.GetString("PortViewContextMenuUserDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PresetsWindowDescription {
+            get {
+                return ResourceManager.GetString("PresetsWindowDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a description for this preset..
+        /// </summary>
+        public static string PresetsWindowDescriptionHint {
+            get {
+                return ResourceManager.GetString("PresetsWindowDescriptionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PresetsWindowName {
+            get {
+                return ResourceManager.GetString("PresetsWindowName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preset State Properties.
+        /// </summary>
+        public static string PresetsWindowTitle {
+            get {
+                return ResourceManager.GetString("PresetsWindowTitle", resourceCulture);
             }
         }
         
