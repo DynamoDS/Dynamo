@@ -160,6 +160,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No file selected..
+        /// </summary>
+        public static string BrowserNodeNoFileSelected {
+            get {
+                return ResourceManager.GetString("BrowserNodeNoFileSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
         public static string BrowserWindowLoading {

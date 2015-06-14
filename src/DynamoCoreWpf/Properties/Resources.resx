@@ -1718,6 +1718,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="BrowserNodeButtonLabel" xml:space="preserve">
     <value>Browse...</value>
   </data>
+   <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>No file selected.</value>
+  </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">
     <value>Edit...</value>
   </data>
