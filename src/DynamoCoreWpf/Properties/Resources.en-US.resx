@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1706,7 +1706,22 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewEditMenuStatesMenu" xml:space="preserve">
     <value>States</value>
   </data>
+  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>Visualization Settings</value>
+  </data>
   <data name="FileDialogManualMode" xml:space="preserve">
     <value>Open in Manual Execution Mode</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>Edit...</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>Show Raw Data</value>
   </data>
 </root>
