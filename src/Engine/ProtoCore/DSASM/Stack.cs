@@ -442,7 +442,7 @@ namespace ProtoCore.DSASM
         // helper method to support negative index into stack
         public static StackValue SetValue(this HeapElement hs, int ix, StackValue sv)
         {
-            if (ix >= hs.GetAllocatedSize())
+            if (ix >= hs.VisibleSize)
             {
                 throw new System.IndexOutOfRangeException();
             }

@@ -670,9 +670,9 @@ namespace ProtoCore.DSASM
                 // If array dimension were provided then retrive the final pointer 
                 if (svDimensionCount.opdata > 0)
                 {
-                    HeapElement he = rmem.Heap.GetHeapElement(svArrayPtrDimesions);
-                    Validity.Assert(he.VisibleSize == svDimensionCount.opdata);
-                    dotCallDimensions.AddRange(he.VisibleItems);
+                    var dimArray = rmem.Heap.ToHeapObject<DSArray>(svArrayPtrDimesions);
+                    Validity.Assert(dimArray.VisibleSize == svDimensionCount.opdata);
+                    dotCallDimensions.AddRange(dimArray.Values);
                 }
             }
             else
@@ -3599,11 +3599,11 @@ namespace ProtoCore.DSASM
                         while (paramSv.IsArray)
                         {
                             paramType.rank++;
-                            var he = rmem.Heap.GetHeapElement(paramSv);
+                            var paramArray = rmem.Heap.ToHeapObject<DSArray>(paramSv);
 
-                            if (he.VisibleItems.Any())
+                            if (paramArray.Values.Any())
                             {
-                                paramSv = he.VisibleItems.First();
+                                paramSv = paramArray.Values.First();
                                 paramType.UID = paramSv.metaData.type;
                             }
                             else

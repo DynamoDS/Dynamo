@@ -16,44 +16,38 @@ namespace ProtoCore.DSASM
         private const double kReallocFactor = 0.5;
 
         protected Heap heap;
-        private int AllocSize { get; set; }
-        public int VisibleSize { get; set; }
-        private Dictionary<StackValue, StackValue> Dict;
-        private StackValue[] Stack;
-        public MetaData MetaData { get; set; }
+        private int allocated;
+        private StackValue[] items;
 
-        public int GetAllocatedSize()
-        {
-            return AllocSize;
-        }
+        public int VisibleSize { get; set; }
+        public MetaData MetaData { get; set; }
 
         public HeapElement(int size, Heap heap)
         {
-            AllocSize = VisibleSize = size;
-            Dict = null; 
-            Stack = new StackValue[AllocSize];
+            allocated = VisibleSize = size;
+            items = new StackValue[allocated];
             this.heap = heap;
 
-            for (int n = 0; n < AllocSize; ++n)
+            for (int n = 0; n < allocated; ++n)
             {
-                Stack[n] = StackValue.BuildInvalid();
+                items[n] = StackValue.BuildInvalid();
             }
         }
 
         public HeapElement(StackValue[] arrayElements)
         {
-            AllocSize = VisibleSize = arrayElements.Length;
-            Stack = arrayElements;
+            allocated = VisibleSize = arrayElements.Length;
+            items = arrayElements;
         }
 
         private int GetNewSize(int size)
         {
-            Validity.Assert(size > AllocSize);
+            Validity.Assert(size > allocated);
             int nextSize = kInitialSize;
             if (size > kInitialSize)
             {
                 // Determine the next allocation size
-                nextSize = (int)(AllocSize * kReallocFactor) + AllocSize;
+                nextSize = (int)(allocated * kReallocFactor) + allocated;
 
                 // If the requested index is greater than the computed next allocation size, 
                 // then the requested index is the next allocation size
@@ -72,25 +66,25 @@ namespace ProtoCore.DSASM
             int newAllocatedSize = GetNewSize(size);
 
             // Copy current contents into a temp array
-            StackValue[] tempstack = new StackValue[AllocSize];
-            Stack.CopyTo(tempstack, 0);
+            StackValue[] tempstack = new StackValue[allocated];
+            items.CopyTo(tempstack, 0);
 
             // Reallocate the array and copy the temp contents to it
-            Stack = new StackValue[newAllocatedSize];
-            tempstack.CopyTo(Stack, 0);
+            items = new StackValue[newAllocatedSize];
+            tempstack.CopyTo(items, 0);
 
-            for (int i = AllocSize; i < newAllocatedSize; ++i)
+            for (int i = allocated; i < newAllocatedSize; ++i)
             {
-                Stack[i] = StackValue.Null;
+                items[i] = StackValue.Null;
             }
             
-            AllocSize = newAllocatedSize;
-            Validity.Assert(size <= AllocSize);
+            allocated = newAllocatedSize;
+            Validity.Assert(size <= allocated);
         }
 
         private void RightShiftElements(int size)
         {
-            Validity.Assert(VisibleSize + size <= AllocSize);
+            Validity.Assert(VisibleSize + size <= allocated);
             if (size <= 0)
             {
                 return;
@@ -99,14 +93,14 @@ namespace ProtoCore.DSASM
             for (int pos = VisibleSize - 1; pos >= 0; pos--)
             {
                 int targetPos = pos + size;
-                Stack[targetPos] = Stack[pos];
-                Stack[pos] = StackValue.Null;
+                items[targetPos] = items[pos];
+                items[pos] = StackValue.Null;
             }
 
             VisibleSize = VisibleSize + size;
         }
 
-        public int ExpandByAcessingAt(int index)
+        protected int ExpandByAcessingAt(int index)
         {
             int retIndex = index;
 
@@ -117,7 +111,7 @@ namespace ProtoCore.DSASM
                     int size = -index;
                     int shiftSize = size - (VisibleSize == 0 ? size : VisibleSize);
 
-                    if (size > GetAllocatedSize())
+                    if (size > allocated)
                     {
                         ReAllocate(size);
                     }
@@ -131,7 +125,7 @@ namespace ProtoCore.DSASM
                     retIndex = index + VisibleSize;
                 }
             }
-            else if (index >= GetAllocatedSize())
+            else if (index >= allocated)
             {
                 ReAllocate(index + 1);
                 VisibleSize = index + 1;
@@ -144,29 +138,25 @@ namespace ProtoCore.DSASM
             return retIndex;
         }
 
-        public void Free()
-        {
-        }
-
         public IEnumerable<StackValue> VisibleItems
         {
             get
             {
                 for (int i = 0; i < this.VisibleSize; ++i)
                 {
-                    yield return this.Stack[i];
+                    yield return this.items[i];
                 }
             }
         }
 
         public StackValue GetItemAt(int index)
         {
-            return Stack[index];
+            return items[index];
         }
 
         public void SetItemAt(int index, StackValue value)
         {
-            Stack[index] = value;
+            items[index] = value;
         }
     }
 
