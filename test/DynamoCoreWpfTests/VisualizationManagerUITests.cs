@@ -711,7 +711,7 @@ namespace DynamoCoreWpfTests
 
         public static bool HasMeshes(this Watch3DView view)
         {
-            var mesh = view.GeometryValuesWithoutConstants.Where(x => x is MeshGeometryModel3D).ToList().Cast<MeshGeometryModel3D>().ToList();
+            var mesh = view.GeometryValuesWithoutConstants.Where(x => x is DynamoGeometryModel3D).ToList().Cast<DynamoGeometryModel3D>().ToList();
             var meshPositions = mesh.Select(x => x.Geometry.Positions);
             int count = 0;
             foreach (var msp in meshPositions)
@@ -723,7 +723,7 @@ namespace DynamoCoreWpfTests
 
         public static bool HasNumberOfMeshVertices(this Watch3DView view, int numberOfVertices)
         {
-            var mesh = view.GeometryValuesWithoutConstants.Where(x => x is MeshGeometryModel3D).ToList().Cast<MeshGeometryModel3D>().ToList();
+            var mesh = view.GeometryValuesWithoutConstants.Where(x => x is DynamoGeometryModel3D).ToList().Cast<DynamoGeometryModel3D>().ToList();
             var meshPositions = mesh.Select(x => x.Geometry.Positions);
             int count = 0;
             foreach (var msp in meshPositions)
@@ -742,7 +742,7 @@ namespace DynamoCoreWpfTests
             {
                 count = ln.Count;
             }
-            return count == numberOfLines;           
+            return count == numberOfLines * 2;           
         }
     }
 
