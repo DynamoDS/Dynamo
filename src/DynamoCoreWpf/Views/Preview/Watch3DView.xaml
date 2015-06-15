@@ -104,8 +104,8 @@
             MouseLeftButtonDown="Watch_view_OnMouseDown" 
             ShowCoordinateSystem="False"
             RenderTechnique="{Binding RenderTechnique}"
-            Camera="{Binding Camera}" RotationSensitivity="1"
-            IsShadowMappingEnabled="{Binding ShowShadows}" 
+            Camera="{Binding Camera}" 
+            RotationSensitivity="1"
             UseDefaultGestures="False" 
             IsInertiaEnabled="False" 
             IsChangeFieldOfViewEnabled="False" 
@@ -127,8 +127,8 @@
             <hx:LineGeometryModel3D x:Name="linesView"  Geometry="{Binding Lines}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.5" IsHitTestVisible="False" />
             <hx:LineGeometryModel3D x:Name="linesSelectedView"  Geometry="{Binding LinesSelected}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="1.0" IsHitTestVisible="False" />
             <hx:PointGeometryModel3D x:Name="pointsView" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Size="8 8" Figure="Ellipse"/>
-            <hx:DynamoGeometryModel3D x:Name="dynamoMesh" Geometry="{Binding DynamoMesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False" RequiresPerVertexColoration="True"/>
-            <hx:MeshGeometryModel3D x:Name="mesh" Geometry="{Binding Mesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False"/>
+            <hx:DynamoGeometryModel3D x:Name="dynamoMeshView" Geometry="{Binding DynamoMesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False" RequiresPerVertexColoration="True"/>
+            <hx:MeshGeometryModel3D x:Name="meshView" Geometry="{Binding Mesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False"/>
             <hx:BillboardTextModel3D x:Name="textView" Geometry="{Binding Text}" Transform="{Binding Model1Transform}"/>
             <hx:LineGeometryModel3D x:Name="gridView" Geometry="{Binding Grid}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
             <hx:LineGeometryModel3D x:Name="axesView" Geometry="{Binding Axes}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>

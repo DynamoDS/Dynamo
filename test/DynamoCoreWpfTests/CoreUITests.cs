@@ -537,10 +537,10 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PreferenceSettings_ShowEdges_Toggle()
         {
-            ViewModel.VisualizationSettings.ShowEdges = false;
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
             Assert.False(Model.PreferenceSettings.ShowEdges);
 
-            ViewModel.VisualizationSettings.ShowEdges = true;
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
             Assert.True(Model.PreferenceSettings.ShowEdges);
         }
 
