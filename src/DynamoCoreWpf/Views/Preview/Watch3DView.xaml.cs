@@ -52,7 +52,6 @@ namespace Dynamo.Controls
         private PerspectiveCamera camera;
         private Color4 selectionColor;
         private Color4 materialColor;
-        private bool showShadows;
         private Vector3 directionalLightDirection;
         private Color4 directionalLightColor;
         private Color4 defaultLineColor;
