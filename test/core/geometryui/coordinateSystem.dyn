@@ -1,0 +1,11 @@
+<Workspace Version="0.8.2.1591" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="c7a317fc-c980-43f9-90c5-df50c9703f95" type="Dynamo.Nodes.DSFunction" nickname="CoordinateSystem.ByOrigin" x="253" y="147" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@Autodesk.DesignScript.Geometry.Point">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+</Workspace>

@@ -1,13 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ProtoCore.Namespace
 {
@@ -16,11 +14,21 @@ namespace ProtoCore.Namespace
     {
         private readonly ClassTable classTable;
         private readonly ElementResolver elementResolver;
+        private readonly SymbolConflictWarningHandler symbolConflictHandler;
 
-        internal ElementRewriter(ClassTable classTable, ElementResolver resolver)
+        public delegate void SymbolConflictWarningHandler(string symbolName, string[] collidingSymbolNames);
+
+        private void OnLogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
+        {
+            if (symbolConflictHandler != null)
+                symbolConflictHandler(symbolName, collidingSymbolNames);
+        }
+
+        public ElementRewriter(ClassTable classTable, SymbolConflictWarningHandler warningHandler, ElementResolver resolver = null)
         {
             this.classTable = classTable;
-            this.elementResolver = resolver;
+            this.symbolConflictHandler = warningHandler;
+            this.elementResolver = resolver ?? new ElementResolver();
         }
 
         /// <summary>
@@ -30,12 +38,13 @@ namespace ProtoCore.Namespace
         /// update ResolutionMap with fully resolved name from compiler.
         /// </summary>
         /// <param name="classTable"></param>
+        /// <param name="handler"></param>
         /// <param name="elementResolver"></param>
         /// <param name="astNodes"> parent AST node </param>
-        public static IEnumerable<Node> RewriteElementNames(ClassTable classTable,
-            ElementResolver elementResolver, IEnumerable<Node> astNodes)
+        public static IEnumerable<Node> RewriteElementNames(ClassTable classTable, 
+            ElementResolver elementResolver, IEnumerable<Node> astNodes, SymbolConflictWarningHandler handler = null)
         {
-            var elementRewriter = new ElementRewriter(classTable, elementResolver);
+            var elementRewriter = new ElementRewriter(classTable, handler, elementResolver);
             return astNodes.OfType<AssociativeNode>().Select(astNode => astNode.Accept(elementRewriter)).Cast<Node>().ToList();
         }
 
@@ -128,30 +137,35 @@ namespace ProtoCore.Namespace
                 return String.Empty;
 
             var resolvedName = elementResolver.LookupResolvedName(partialName);
-            if (string.IsNullOrEmpty(resolvedName))
+            if (!string.IsNullOrEmpty(resolvedName)) 
+                return resolvedName;
+            
+            // If namespace resolution map does not contain entry for partial name, 
+            // back up on compiler to resolve the namespace from partial name
+            var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifierList);
+
+            if (matchingClasses.Length == 1)
             {
-                // If namespace resolution map does not contain entry for partial name, 
-                // back up on compiler to resolve the namespace from partial name
-                var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifierList);
+                resolvedName = matchingClasses[0];
+                var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
 
-                if (matchingClasses.Length == 1)
-                {
-                    resolvedName = matchingClasses[0];
-                    var assemblyName = CoreUtils.GetAssemblyFromClassName(classTable, resolvedName);
-
-                    elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
-                }
+                elementResolver.AddToResolutionMap(partialName, resolvedName, assemblyName);
+            }
+            else if (matchingClasses.Length > 1)
+            {
+                OnLogSymbolConflictWarning(partialName, matchingClasses);
             }
             return resolvedName;
         }
 
         private AssociativeNode RewriteIdentifierListNode(AssociativeNode identifierList)
         {
-            var identListNode = identifierList as IdentifierListNode;
             var resolvedName = ResolveClassName(identifierList);
 
             if (string.IsNullOrEmpty(resolvedName))
                 return identifierList;
+
+            var identListNode = identifierList as IdentifierListNode;
 
             var newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
 

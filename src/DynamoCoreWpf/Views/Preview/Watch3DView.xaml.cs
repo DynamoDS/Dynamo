@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using Dynamo.Models;
 using Dynamo.UI;
-using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
 using HelixToolkit.Wpf.SharpDX;
@@ -837,6 +836,7 @@ namespace Dynamo.Controls
             };
 
             AggregateRenderPackages(aggParams);
+
 
 #if DEBUG
             renderTimer.Stop();
