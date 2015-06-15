@@ -33,7 +33,6 @@ namespace ProtoCore.Utils
 
             foreach (ClassNode cn in typeStats.Keys)
             {
-//<<<<<<< .mine
                 List<int> chain = ClassUtils.GetClassUpcastChain(cn, runtimeCore);
 
                 //Now add in the other conversions - as we don't have a common superclass yet
@@ -42,9 +41,6 @@ namespace ProtoCore.Utils
                     if (!chain.Contains(id))
                         chain.Add((id));
 
-//=======
-//                List<int> chain = GetConversionChain(cn, core);
-//>>>>>>> .r2886
                 chains.Add(chain);
 
                 foreach (int nodeId in chain)

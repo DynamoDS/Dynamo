@@ -1069,13 +1069,13 @@ namespace Dynamo.Models
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath"></param>
-        public void OpenFileFromPath(string xmlPath)
+        public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
 
             WorkspaceInfo workspaceInfo;
-            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
+            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
             {
                 if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
                 {
@@ -1154,7 +1154,7 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,               
+                nodeGraph.Annotations,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
@@ -1162,16 +1162,19 @@ namespace Dynamo.Models
 
             RegisterHomeWorkspace(newWorkspace);
 
-            workspace = newWorkspace;            
+            workspace = newWorkspace;
             return true;
         }
 
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
+            newWorkspace.RefreshCompleted += OnRefreshCompleted;
+
             newWorkspace.Disposed += () =>
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
+                newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
         }
 

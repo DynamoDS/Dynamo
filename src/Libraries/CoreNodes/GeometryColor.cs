@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
@@ -12,8 +10,6 @@ namespace DSCore
     {
         internal Geometry geometry;
         internal Color color;
-
-        private bool renderEdges = false;
 
         private Display(Geometry geometry, Color color)
         {
@@ -43,7 +39,7 @@ namespace DSCore
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             package.RequiresPerVertexColoration = true;
 
@@ -51,16 +47,16 @@ namespace DSCore
             // to keep track of the index where this coloration will 
             // start from.
 
-            geometry.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, parameters);
 
-            if (renderEdges)
+            if (parameters.ShowEdges)
             {
                 var surf = geometry as Surface;
                 if (surf != null)
                 {
                     foreach (var curve in surf.PerimeterCurves())
                     {
-                        curve.Tessellate(package, tol, maxGridLines);
+                        curve.Tessellate(package, parameters);
                         curve.Dispose();
                     }
                 }
@@ -70,7 +66,7 @@ namespace DSCore
                 {
                     foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
                     {
-                        geom.Tessellate(package, tol, maxGridLines);
+                        geom.Tessellate(package, parameters);
                         geom.Dispose();
                     }
                 }

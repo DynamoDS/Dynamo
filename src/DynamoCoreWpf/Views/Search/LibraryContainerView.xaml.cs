@@ -82,7 +82,6 @@ namespace Dynamo.Search
             viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
             viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
 
-            this.librarySearchView.SearchTextBox = SearchTextBox;
         }
 
         private void OnSearchViewMouseLeave(object sender, MouseEventArgs e)
@@ -200,8 +199,8 @@ namespace Dynamo.Search
                 case Key.Down:
                 case Key.Up:
                 case Key.Enter:
-                    if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
-                        librarySearchView.SelectNext(e.Key);
+                    /*if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
+                        librarySearchView.SelectNext(e.Key);*/
                     break;
             }
         }

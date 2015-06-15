@@ -662,6 +662,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor.ToColor4());
         }
 
+        [Test]
+        public void ViewSettings_ShowEdges_Toggled_GeometryIsCorrect()
+        {
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_cuboid.dyn");
+            Open(openPath);
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            ws.RunSettings.RunType = RunType.Automatic;
+
+            ViewModel.VisualizationSettings.ShowEdges = false;
+            Assert.True(BackgroundPreview.HasNumberOfLines(0));
+
+            ViewModel.VisualizationSettings.ShowEdges = true;
+            Assert.True(BackgroundPreview.HasNumberOfLines(12));
+
+            ViewModel.VisualizationSettings.ShowEdges = false;
+            Assert.True(BackgroundPreview.HasNumberOfLines(0));
+        }
+
         private int GetTotalDrawablesInModel()
         {
             return
@@ -707,6 +728,11 @@ namespace DynamoCoreWpfTests
 
         public static bool HasNumberOfLines(this Watch3DView view, int numberOfLines)
         {
+            if (numberOfLines == 0 && view.Lines == null)
+            {
+                return true;
+            }
+
             return view.Lines.Positions.Count == numberOfLines*2;
         }
     }

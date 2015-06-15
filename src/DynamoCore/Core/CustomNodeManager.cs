@@ -440,7 +440,7 @@ namespace Dynamo.Core
                 xmlDoc.Load(path);
 
                 WorkspaceInfo header;
-                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
+                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
                 {
                     Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                     info = null;
@@ -578,6 +578,7 @@ namespace Dynamo.Core
                     xmlDoc,
                     xmlPath,
                     isTestMode,
+                    false,
                     AsLogger(),
                     out info) && info.IsCustomNodeWorkspace)
                 {

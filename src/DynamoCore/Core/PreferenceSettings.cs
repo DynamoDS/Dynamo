@@ -148,6 +148,17 @@ namespace Dynamo
         /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
 
+        /// <summary>
+        /// Indicates whether surface and solid edges will 
+        /// be rendered.
+        /// </summary>
+        public bool ShowEdges { get; set; }
+
+        /// Indicates the default state of the "Open in Manual Mode"
+        /// checkbox in OpenFileDialog
+        /// </summary>
+        public bool OpenFileInManualExecutionMode { get; set; }
+
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -169,6 +180,8 @@ namespace Dynamo
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
             maxNumRecentFiles = DefaultMaxNumRecentFiles;
+            ShowEdges = false;
+            OpenFileInManualExecutionMode = false;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
