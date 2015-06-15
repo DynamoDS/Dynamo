@@ -191,7 +191,7 @@ namespace Dynamo.Models
 
         public void ImportStates(PresetsModel presetsCollection)
         {
-            designStates.AddRange(presetsCollection.DesignStates);
+            presetStates.AddRange(presetsCollection.PresetStates);
         }
 
         public void RemoveState(PresetState state)

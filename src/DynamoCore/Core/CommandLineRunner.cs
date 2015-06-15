@@ -149,7 +149,7 @@ namespace Dynamo.Core
             {
                 if (cmdLineArgs.PresetStateID == "all")
                 {
-                    foreach (var state in model.CurrentWorkspace.PresetsCollection.DesignStates)
+                    foreach (var state in model.CurrentWorkspace.PresetsCollection.PresetStates)
                     {
                         stateNames.Add(state.Name);
                     }
