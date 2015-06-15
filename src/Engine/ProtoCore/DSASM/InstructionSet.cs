@@ -742,7 +742,7 @@ namespace ProtoCore.DSASM
                 if (array.Values.Count() > index + 1)
                     nextIndex = index + 1;
             }
-            else if (svArray.IsStaticType)
+            else if (svArray.IsString)
             {
                 DSString str = runtimeCore.Heap.ToHeapObject<DSString>(svArray);
                 if (str.Value.Length > index + 1)

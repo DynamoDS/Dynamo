@@ -423,7 +423,7 @@ namespace ProtoCore.Lang
                         }
                         else
                         {
-                            var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).Values;
+                            var result = runtimeCore.Heap.ToHeapObject<DSArray>(array).GetKeys();
                             ret = rmem.Heap.AllocateArray(result);
                         }
                         break;

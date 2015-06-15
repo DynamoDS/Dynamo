@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
+using ProtoCore.Utils;
 
 namespace ProtoCore.DSASM
 {
     public class DSArray : HeapElement
     {
         private Dictionary<StackValue, StackValue> Dict;
-        public DSArray(int size)
-            : base(size)
+        public DSArray(int size, Heap heap)
+            : base(size, heap)
         {
             Dict = new Dictionary<StackValue, StackValue>();
             MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
@@ -131,7 +132,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
-        public StackValue[] GetKeys(RuntimeCore runtimeCore)
+        public StackValue[] GetKeys()
         {
             var keys = Enumerable.Range(0, VisibleSize).Select(i => StackValue.BuildInt(i))
                                  .Concat(Dict.Keys)
@@ -199,110 +200,6 @@ namespace ProtoCore.DSASM
             var array = heap.ToHeapObject<DSArray>(svArray);
             array.Dict = dict;
             return svArray;
-        }
-
-        /// <summary>
-        /// For an array we supporting zipped replicaiton for array indexing as 
-        /// well. I.e., for the following expression:
-        /// 
-        ///     a[1..3][2..4] = x;
-        /// 
-        /// It will be expanded to 
-        /// 
-        ///     a[1][2] = x;
-        ///     a[2][3] = x;
-        ///     a[3][4] = x;
-        ///     
-        /// So here we need to calculate zipped indices. The length of returned 
-        /// indices is decided by the shortest length of index that used in 
-        /// array indexing. E.g.,
-        /// 
-        /// For array indexing
-        /// 
-        ///     [{1, 2, 3}][{"x", "y"}][{6, 7, 8}], i.e., 
-        ///     
-        ///     1 -> "x" -> 6
-        ///     2 -> "y" -> 7
-        ///     3 ->     -> 8
-        /// 
-        /// The shortest length of index is 2 ({"x", "y"}), so function will 
-        /// returns:
-        /// 
-        ///     {{1, "x", 6}, {2, "y", 7}}
-        ///     
-        /// </summary>
-        /// <param name="indices"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        private StackValue[][] GetZippedIndices(List<StackValue> indices, RuntimeCore runtimeCore)
-        {
-            List<StackValue[]> allFlattenValues = new List<StackValue[]>();
-
-            int zipLength = System.Int32.MaxValue;
-            foreach (var index in indices)
-            {
-                int length = 1;
-                if (index.IsArray)
-                {
-                    StackValue[] flattenValues = GetFlattenValue(index, runtimeCore);
-                    allFlattenValues.Add(flattenValues);
-                    length = flattenValues.Count();
-                }
-                else
-                {
-                    allFlattenValues.Add(null);
-                }
-
-                if (zipLength > length)
-                {
-                    zipLength = length;
-                }
-            }
-
-            if (zipLength == 0)
-            {
-                return null;
-            }
-            else
-            {
-                int dims = indices.Count;
-                StackValue[][] zippedIndices = new StackValue[zipLength][];
-                for (int i = 0; i < zipLength; ++i)
-                {
-                    zippedIndices[i] = new StackValue[dims];
-                }
-
-                for (int i = 0; i < dims; ++i)
-                {
-                    StackValue index = indices[i];
-                    StackValue[] values = null;
-                    if (index.IsArray)
-                    {
-                        values = allFlattenValues[i];
-                    }
-
-                    if (1 == zipLength)
-                    {
-                        if (index.IsArray)
-                        {
-                            zippedIndices[0][i] = values[0];
-                        }
-                        else
-                        {
-                            zippedIndices[0][i] = index;
-                        }
-                    }
-                    else
-                    {
-                        for (int j = 0; j < zipLength; ++j)
-                        {
-                            zippedIndices[j][i] = values[j];
-                        }
-                    }
-                }
-
-                return zippedIndices;
-            }
         }
 
         /// <summary>
@@ -381,7 +278,7 @@ namespace ProtoCore.DSASM
                 if (!svSubArray.IsArray)
                 {
                     svSubArray = heap.AllocateArray(new StackValue[] { svSubArray });
-                    heap.ToHeapObject<DSArray>(svSubArray).SetValueForIndex(index, svSubArray, runtimeCore);
+                    array.SetValueForIndex(index, svSubArray, runtimeCore);
                 }
 
                 array = heap.ToHeapObject<DSArray>(svSubArray);
@@ -401,7 +298,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue SetValueForIndices(List<StackValue> indices, StackValue value, Type t, RuntimeCore runtimeCore)
         {
-            StackValue[][] zippedIndices = GetZippedIndices(indices, runtimeCore);
+            StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
             if (zippedIndices == null || zippedIndices.Length == 0)
             {
                 return StackValue.Null;
@@ -531,24 +428,21 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue GetValueFromIndices(StackValue[] indices, RuntimeCore runtimeCore)
         {
-            StackValue svArray = StackValue.Null;
+            DSArray array = this;
 
             for (int i = 0; i < indices.Length - 1; ++i)
             {
                 StackValue index = indices[i];
+                StackValue svArray = StackValue.Null;
+
                 if (index.IsNumeric)
                 {
                     index = index.ToInteger();
-                    svArray = GetValueFromIndex((int)index.opdata, runtimeCore);
+                    svArray = array.GetValueFromIndex((int)index.opdata, runtimeCore);
                 }
                 else
                 {
-                    if (!svArray.IsArray)
-                    {
-                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
-                        return StackValue.Null;
-                    }
-                    svArray = heap.ToHeapObject<DSArray>(svArray).GetValueFromIndex(index, runtimeCore);
+                    svArray = array.GetValueFromIndex(index, runtimeCore);
                 }
 
                 if (!svArray.IsArray)
@@ -556,10 +450,11 @@ namespace ProtoCore.DSASM
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
+
+                array = heap.ToHeapObject<DSArray>(svArray);
             }
 
-            DSArray innerArray = heap.ToHeapObject<DSArray>(svArray);
-            return innerArray.GetValueFromIndex(indices[indices.Length - 1], runtimeCore);
+            return array.GetValueFromIndex(indices[indices.Length - 1], runtimeCore);
         }
 
         /// <summary>
@@ -571,7 +466,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue GetValueFromIndices(List<StackValue> indices, RuntimeCore runtimeCore)
         {
-            StackValue[][] zippedIndices = GetZippedIndices(indices, runtimeCore);
+            StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
             if (zippedIndices == null || zippedIndices.Length == 0)
             {
                 return StackValue.Null;
@@ -591,36 +486,6 @@ namespace ProtoCore.DSASM
             {
                 return values[0];
             }
-        }
-
-        private StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)
-        {
-            Queue<StackValue> workingSet = new Queue<StackValue>();
-            List<StackValue> flattenValues = new List<StackValue>();
-
-            if (!array.IsArray)
-            {
-                return null;
-            }
-
-            workingSet.Enqueue(array);
-            while (workingSet.Count > 0)
-            {
-                array = workingSet.Dequeue();
-                foreach (var value in heap.ToHeapObject<DSArray>(array).Values)
-                {
-                    if (value.IsArray)
-                    {
-                        workingSet.Enqueue(value);
-                    }
-                    else
-                    {
-                        flattenValues.Add(value);
-                    }
-                }
-            }
-
-            return flattenValues.ToArray();
         }
 
         public static bool CompareFromDifferentCore(DSArray array1, DSArray array2, RuntimeCore rtCore1, RuntimeCore rtCore2, Context context = null)
@@ -660,8 +525,8 @@ namespace ProtoCore.DSASM
 
     public class DSObject : HeapElement
     {
-        public DSObject(int size)
-            : base(size)
+        public DSObject(int size, Heap heap)
+            : base(size, heap)
         {
             MetaData = new MetaData { type = (int)PrimitiveType.kTypePointer };
         }
@@ -683,8 +548,8 @@ namespace ProtoCore.DSASM
     {
         private StackValue pointer = StackValue.Null;
 
-        public DSString(int size)
-            : base(size)
+        public DSString(int size, Heap heap)
+            : base(size, heap)
         {
             MetaData = new MetaData { type = (int)PrimitiveType.kTypeString };
         }
@@ -721,6 +586,26 @@ namespace ProtoCore.DSASM
                 }
 
                 return heap.AllocateString(str.Substring(index, 1));
+            }
+        }
+
+        public StackValue this[StackValue index]
+        {
+            get
+            {
+                int pos = Constants.kInvalidIndex;
+                if (index.IsNumeric)
+                {
+                    pos = (int)index.ToInteger().opdata;
+                    return this[pos];
+                }
+                else if (index.IsArrayKey)
+                {
+                    pos = (int)index.opdata;
+                    return this[pos];
+                }
+                else
+                    return StackValue.Null;
             }
         }
 

@@ -405,5 +405,139 @@ namespace ProtoCore.Utils
             sv = he.GetItemAt(0).ShallowClone();
             return true;
         }
+
+        private static StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)
+        {
+            Queue<StackValue> workingSet = new Queue<StackValue>();
+            List<StackValue> flattenValues = new List<StackValue>();
+
+            if (!array.IsArray)
+            {
+                return null;
+            }
+
+            workingSet.Enqueue(array);
+            while (workingSet.Count > 0)
+            {
+                array = workingSet.Dequeue();
+                foreach (var value in runtimeCore.Heap.ToHeapObject<DSArray>(array).Values)
+                {
+                    if (value.IsArray)
+                    {
+                        workingSet.Enqueue(value);
+                    }
+                    else
+                    {
+                        flattenValues.Add(value);
+                    }
+                }
+            }
+
+            return flattenValues.ToArray();
+        }
+
+        /// <summary>
+        /// For an array we supporting zipped replicaiton for array indexing as 
+        /// well. I.e., for the following expression:
+        /// 
+        ///     a[1..3][2..4] = x;
+        /// 
+        /// It will be expanded to 
+        /// 
+        ///     a[1][2] = x;
+        ///     a[2][3] = x;
+        ///     a[3][4] = x;
+        ///     
+        /// So here we need to calculate zipped indices. The length of returned 
+        /// indices is decided by the shortest length of index that used in 
+        /// array indexing. E.g.,
+        /// 
+        /// For array indexing
+        /// 
+        ///     [{1, 2, 3}][{"x", "y"}][{6, 7, 8}], i.e., 
+        ///     
+        ///     1 -> "x" -> 6
+        ///     2 -> "y" -> 7
+        ///     3 ->     -> 8
+        /// 
+        /// The shortest length of index is 2 ({"x", "y"}), so function will 
+        /// returns:
+        /// 
+        ///     {{1, "x", 6}, {2, "y", 7}}
+        ///     
+        /// </summary>
+        /// <param name="indices"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static StackValue[][] GetZippedIndices(List<StackValue> indices, RuntimeCore runtimeCore)
+        {
+            List<StackValue[]> allFlattenValues = new List<StackValue[]>();
+
+            int zipLength = System.Int32.MaxValue;
+            foreach (var index in indices)
+            {
+                int length = 1;
+                if (index.IsArray)
+                {
+                    StackValue[] flattenValues = GetFlattenValue(index, runtimeCore);
+                    allFlattenValues.Add(flattenValues);
+                    length = flattenValues.Count();
+                }
+                else
+                {
+                    allFlattenValues.Add(null);
+                }
+
+                if (zipLength > length)
+                {
+                    zipLength = length;
+                }
+            }
+
+            if (zipLength == 0)
+            {
+                return null;
+            }
+            else
+            {
+                int dims = indices.Count;
+                StackValue[][] zippedIndices = new StackValue[zipLength][];
+                for (int i = 0; i < zipLength; ++i)
+                {
+                    zippedIndices[i] = new StackValue[dims];
+                }
+
+                for (int i = 0; i < dims; ++i)
+                {
+                    StackValue index = indices[i];
+                    StackValue[] values = null;
+                    if (index.IsArray)
+                    {
+                        values = allFlattenValues[i];
+                    }
+
+                    if (1 == zipLength)
+                    {
+                        if (index.IsArray)
+                        {
+                            zippedIndices[0][i] = values[0];
+                        }
+                        else
+                        {
+                            zippedIndices[0][i] = index;
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < zipLength; ++j)
+                        {
+                            zippedIndices[j][i] = values[j];
+                        }
+                    }
+                }
+
+                return zippedIndices;
+            }
+        }
    }
 }

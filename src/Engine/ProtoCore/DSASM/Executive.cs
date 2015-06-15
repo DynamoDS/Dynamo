@@ -3348,15 +3348,30 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
-        public StackValue GetIndexedArray(StackValue array, List<StackValue> indices)
+        public StackValue GetIndexedArray(StackValue svArray, List<StackValue> indices)
         {
-            if (!array.IsArray)
-                return StackValue.Null;
-
             if (indices.Count == 0)
-                return array;
+                return svArray;
 
-            return runtimeCore.Heap.ToHeapObject<DSArray>(array).GetValueFromIndices(indices, runtimeCore);
+            if (svArray.IsArray)
+            {
+                var array = runtimeCore.Heap.ToHeapObject<DSArray>(svArray);
+                return array.GetValueFromIndices(indices, runtimeCore);
+            }
+            else if (svArray.IsString)
+            {
+                StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
+                if (zippedIndices == null || zippedIndices.Length == 0)
+                {
+                    return StackValue.Null;
+                }
+                var dsString = runtimeCore.Heap.ToHeapObject<DSString>(svArray);
+                var substrings = zippedIndices.Select(s => dsString[s[0]]);
+                string result = string.Join(string.Empty, substrings.Select(s => rmem.Heap.ToHeapObject<DSString>(s).Value));
+                return runtimeCore.RuntimeMemory.Heap.AllocateString(result);
+            }
+            else
+                return StackValue.Null;
         }
 
         public StackValue GetIndexedArrayW(int dimensions, int blockId, StackValue op1, StackValue op2)

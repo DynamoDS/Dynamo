@@ -27,11 +27,12 @@ namespace ProtoCore.DSASM
             return AllocSize;
         }
 
-        public HeapElement(int size)
+        public HeapElement(int size, Heap heap)
         {
             AllocSize = VisibleSize = size;
             Dict = null; 
             Stack = new StackValue[AllocSize];
+            this.heap = heap;
 
             for (int n = 0; n < AllocSize; ++n)
             {
@@ -457,22 +458,20 @@ namespace ProtoCore.DSASM
             switch (type)
             {
                 case PrimitiveType.kTypeArray:
-                    var dsArray = new DSArray(size);
-                    AddHeapElement(dsArray);
-                    break;
+                    var dsArray = new DSArray(size, this);
+                    return AddHeapElement(dsArray);
 
                 case PrimitiveType.kTypePointer:
-                    var dsObject = new DSObject(size);
-                    AddHeapElement(dsObject);
-                    break;
+                    var dsObject = new DSObject(size, this);
+                    return AddHeapElement(dsObject);
 
                 case PrimitiveType.kTypeString:
-                    var dsString = new DSString(size);
-                    AddHeapElement(dsString);
-                    break;
-            }
+                    var dsString = new DSString(size, this);
+                    return AddHeapElement(dsString);
 
-            return Constants.kInvalidIndex;
+                default:
+                    throw new ArgumentException("type");
+            }
         }
 
         private int AllocateInternal(IEnumerable<StackValue> values, PrimitiveType type)
