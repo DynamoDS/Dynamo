@@ -67,11 +67,11 @@ namespace Dynamo.Models
         }
 
 
-        public event Action<DesignOptionNamePromptEventArgs> RequestDesignOptionNamePrompt;
-        public void OnRequestsDesignOptionNamePrompt(DesignOptionNamePromptEventArgs e)
+        public event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
+        public void OnRequestsDesignOptionNamePrompt(PresetsNamePromptEventArgs e)
         {
-            if (RequestDesignOptionNamePrompt != null)
-                RequestDesignOptionNamePrompt(e);
+            if (RequestPresetsNamePrompt != null)
+                RequestPresetsNamePrompt(e);
         }
         public event WorkspaceHandler WorkspaceSaved;
         internal void OnWorkspaceSaved(WorkspaceModel model)

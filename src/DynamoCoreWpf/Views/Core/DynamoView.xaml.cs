@@ -387,7 +387,7 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
             //DesignOptions Name Prompt
-            dynamoViewModel.Model.RequestDesignOptionNamePrompt += DynamoViewModelRequestDesignOptionsNamePrompt;
+            dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestDesignOptionsNamePrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
@@ -745,9 +745,9 @@ namespace Dynamo.Controls
         /// <summary>
         /// Handles the request for the presentation of the design options name prompt
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void DynamoViewModelRequestDesignOptionsNamePrompt (DesignOptionNamePromptEventArgs e)
+        /// <param name="e">a parameter object contains default Name and Description,
+        /// and Success bool returned from the dialog</param>
+        void DynamoViewModelRequestDesignOptionsNamePrompt (PresetsNamePromptEventArgs e)
         {
             ShowNewDesignOptionsDialog(e);
         }
@@ -756,16 +756,13 @@ namespace Dynamo.Controls
         /// Presents the design options name dialogue. Returns true if the user enters
         /// a designoptions name/timestamp and description.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="category"></param>
-        /// <returns></returns>
-        public void ShowNewDesignOptionsDialog(DesignOptionNamePromptEventArgs e)
+        public void ShowNewDesignOptionsDialog(PresetsNamePromptEventArgs e)
         {
             string error = "";
 
             do
             {
-                var dialog = new DesignOptionsPrompt()
+                var dialog = new PresetStatePrompt()
                 {
                     DescriptionInput = { Text = e.Description },
                     nameView = { Text = "" },
@@ -863,7 +860,7 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
 
             //DesignOptions Name Prompt
-            dynamoViewModel.Model.RequestDesignOptionNamePrompt -= DynamoViewModelRequestDesignOptionsNamePrompt;
+            dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestDesignOptionsNamePrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
@@ -931,18 +928,18 @@ namespace Dynamo.Controls
         private void LoadStateMenus(object sender, RoutedEventArgs e)
         {
             //grab serialized designoptions from current workspace... hopefully this is loaded?
-            var designOptionsSet = dynamoViewModel.Model.CurrentWorkspace.PresetsCollection;
+            var PresetSet = dynamoViewModel.Model.CurrentWorkspace.PresetsCollection;
             // now grab all the states off the set and create a menu item for each one
 
            
             //only update the states menus if the states have been updated or the user
             // has switched workspace contexts, can check if designOptionsSet collection is different
-            if (!designOptionsSet.DesignStates.SequenceEqual(((MenuItem)(sender)).Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
+            if (!PresetSet.PresetStates.SequenceEqual(((MenuItem)(sender)).Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
             {
                 //dispose all state items in the menu
                 ((MenuItem)sender).Items.Clear();
 
-                foreach (var state in designOptionsSet.DesignStates)
+                foreach (var state in PresetSet.PresetStates)
               {
                 //create a new menu item for each state in the options set
                 //when any of this buttons are clicked we'll call the SetWorkSpaceToStateCommand(state)

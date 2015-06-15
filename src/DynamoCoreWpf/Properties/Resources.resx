@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1546,17 +1546,17 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
-  <data name="DesignOptionsWindowDescription" xml:space="preserve">
+  <data name="PresetsWindowDescription" xml:space="preserve">
     <value>Description</value>
   </data>
-  <data name="DesignOptionsWindowDescriptionHint" xml:space="preserve">
-    <value>Enter a description of this design options state</value>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>Enter a description for this preset.</value>
   </data>
-  <data name="DesignOptionsWindowName" xml:space="preserve">
+  <data name="PresetsWindowName" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="DesignOptionsWindowTitle" xml:space="preserve">
-    <value> Design Options Properties</value>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>Preset State Properties</value>
   </data>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
     <value>Run is not available when running Automatically or Periodically.</value>
@@ -1706,7 +1706,25 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewEditMenuStatesMenu" xml:space="preserve">
     <value>States</value>
   </data>
+  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>Visualization Settings</value>
+  </data>
   <data name="FileDialogManualMode" xml:space="preserve">
     <value>Open in Manual Execution Mode</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+   <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>No file selected.</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>Edit...</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>Show Raw Data</value>
   </data>
 </root>

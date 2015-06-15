@@ -183,13 +183,13 @@ namespace Dynamo.Models
         }
     }
 
-    public class DesignOptionNamePromptEventArgs : EventArgs
+    public class PresetsNamePromptEventArgs : EventArgs
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public bool Success { get; set; }
 
-        public DesignOptionNamePromptEventArgs()
+        public PresetsNamePromptEventArgs()
         {
             Name = System.DateTime.Now.ToString();
             Description = "";

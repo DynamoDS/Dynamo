@@ -14,13 +14,143 @@ using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
-    internal class PresetStatesTests : Dynamo.DynamoModelTestBase
+    internal class PresetsTests : Dynamo.DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanAddPresetState()
+        {
+            var model = CurrentDynamoModel;
+            //create some numbers
+            var numberNode1 = new DoubleInput();
+            numberNode1.Value = "1";
+            var numberNode2 = new DoubleInput();
+            numberNode2.Value = "2";
+
+            model.CurrentWorkspace.AddNode(numberNode1, false);
+            model.CurrentWorkspace.AddNode(numberNode2, false);
+       
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 2);
+
+            DynamoSelection.Instance.Selection.Add(numberNode1);
+            DynamoSelection.Instance.Selection.Add(numberNode2);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            //create the preset from 2 nodes
+            model.CurrentWorkspace.CreatePresetStateFromSelection(
+                "state1",
+                "a state with 2 numbers", IDS);
+            //assert that the preset has been created
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 1);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.First().Nodes.Count(), 2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanDeletePresetState()
+        {
+            var model = CurrentDynamoModel;
+            //create some numbers
+            var numberNode1 = new DoubleInput();
+            numberNode1.Value = "1";
+            var numberNode2 = new DoubleInput();
+            numberNode2.Value = "2";
+
+            model.CurrentWorkspace.AddNode(numberNode1, false);
+            model.CurrentWorkspace.AddNode(numberNode2, false);
+
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 2);
+
+            DynamoSelection.Instance.Selection.Add(numberNode1);
+            DynamoSelection.Instance.Selection.Add(numberNode2);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            //create the preset from 2 nodes
+            model.CurrentWorkspace.CreatePresetStateFromSelection(
+                "state1",
+                "a state with 2 numbers", IDS);
+            //assert that the preset has been created
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 1);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.First().Nodes.Count(), 2);
+
+            //delete state
+            var state = model.CurrentWorkspace.PresetsCollection.PresetStates.First();
+           model.CurrentWorkspace.PresetsCollection.RemoveState(state);
+
+           Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 0);
+
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanAddAndRestoreState()
+        {
+            var model = CurrentDynamoModel;
+            //create some numbers
+            var numberNode1 = new DoubleInput();
+            numberNode1.Value = "1";
+            var numberNode2 = new DoubleInput();
+            numberNode2.Value = "2";
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+
+            //add the nodes
+            model.CurrentWorkspace.AddNode(numberNode1, false);
+            model.CurrentWorkspace.AddNode(numberNode2, false);
+            model.CurrentWorkspace.AddNode(addNode, false);
+
+           //connect them up
+           ConnectorModel.Make(numberNode1,addNode, 0, 0);
+           ConnectorModel.Make(numberNode2,addNode, 0, 1);
+
+           Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+           Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
+
+            //create the first state with the numbers selected
+           DynamoSelection.Instance.Selection.Add(numberNode1);
+           DynamoSelection.Instance.Selection.Add(numberNode2);
+           var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+           //create the preset from 2 nodes
+           model.CurrentWorkspace.CreatePresetStateFromSelection(
+               "state1",
+               "3", IDS);
+
+            //change values
+           numberNode1.Value = "2";
+           numberNode2.Value = "3";
+
+           DynamoSelection.Instance.ClearSelection();
+           DynamoSelection.Instance.Selection.Add(numberNode1);
+           DynamoSelection.Instance.Selection.Add(numberNode2);
+           IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+
+           model.CurrentWorkspace.CreatePresetStateFromSelection(
+           "state2",
+           "5", IDS);
+
+            //now restore state to state 1
+           model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.PresetStates.Where(
+               x => x.Name == "state1").First());
+
+           RunCurrentModel();
+           Thread.Sleep(250);
+              //assert that the value of the add node is 3
+           Assert.AreEqual(addNode.CachedValue.Data, 3);
+
+           //now restore state to state 2
+           model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.PresetStates.Where(
+               x => x.Name == "state2").First());
+
+           RunCurrentModel();
+           Thread.Sleep(250);
+           //assert that the value of the add node is 5
+           Assert.AreEqual(addNode.CachedValue.Data, 5);
+
         }
 
         [Test]
@@ -69,7 +199,7 @@ namespace Dynamo.Tests
             "5", IDS);
 
             //now restore state to state 1
-            model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.DesignStates.Where(
+            model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.PresetStates.Where(
                 x => x.Name == "state1").First());
 
             RunCurrentModel();
@@ -78,7 +208,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(addNode.CachedValue.Data, 3);
 
             //now restore state to state 2
-            model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.DesignStates.Where(
+            model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.PresetStates.Where(
                 x => x.Name == "state2").First());
 
             RunCurrentModel();
@@ -105,10 +235,11 @@ namespace Dynamo.Tests
             OpenModel(openPath);
            
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 5);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 5);
 
         }
-         [Test]
+
+        [Test]
         public void CanLoadFileWithNoPresetsObject()
         {
             var model = CurrentDynamoModel;
@@ -116,11 +247,10 @@ namespace Dynamo.Tests
             OpenModel(openPath);
            
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 0);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 0);
 
         }
 
-      
         //this attempts to load some good states and some states with bad GUIDS, 
         [Test]
         public void CanLoadFileWithMalformedPresetsObject()
@@ -131,21 +261,21 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
               //assert all the states are loadead even if the GUID and nodetypes are malformed
-            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 5);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 5);
 
         }
 
         [Test]
-          public void CanLoadFromDynWithMissingNodes()
+        public void CanLoadFromDynWithMissingNodes()
           {
               var model = CurrentDynamoModel;
               string openPath = Path.Combine(TestDirectory, @"core\PresetStates\MissingNodesInGraph.dyn");
               Assert.DoesNotThrow(() => { OpenModel(openPath); });
 
               Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-              Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 5);
+              Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 5);
 
-             var stateWithMissingNodes = model.CurrentWorkspace.PresetsCollection.DesignStates.Where(x=>x.Name == "4/8/2015 2:57:02 PM").First();
+              var stateWithMissingNodes = model.CurrentWorkspace.PresetsCollection.PresetStates.Where(x => x.Name == "4/8/2015 2:57:02 PM").First();
             //get all the serialized nodes that were loaded when the state was loaded
              var nodesInState = stateWithMissingNodes.SerializedNodes.Select(x=>Guid.Parse(x.GetAttribute("guid")));
             //now assert that one or more of the IDS in the state is missing from the ids in the graph
@@ -201,7 +331,7 @@ namespace Dynamo.Tests
             //now restore state to state 1
             Assert.DoesNotThrow(() =>
             {
-                model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.DesignStates.Where(
+                model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.PresetStates.Where(
                     x => x.Name == "state1").First());
             });
 
@@ -212,7 +342,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-       public void CanCreateStatesAndSave()
+        public void CanCreateStatesAndSave()
           {
               var model = CurrentDynamoModel;
               //create some numbers
@@ -274,9 +404,9 @@ namespace Dynamo.Tests
             OpenModel(openPath);
 
             Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 5);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 5);
 
-            var allSerializedNodesInAllStates = model.CurrentWorkspace.PresetsCollection.DesignStates.SelectMany(x => x.SerializedNodes);
+            var allSerializedNodesInAllStates = model.CurrentWorkspace.PresetsCollection.PresetStates.SelectMany(x => x.SerializedNodes);
 
             //now delete a node that is included in the state
             var num1 = model.CurrentWorkspace.Nodes.OfType<DoubleInput>().First();
@@ -292,10 +422,10 @@ namespace Dynamo.Tests
             OpenModel(newPath);
             //now only 4 nodes
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.DesignStates.Count(), 5);
+            Assert.AreEqual(model.CurrentWorkspace.PresetsCollection.PresetStates.Count(), 5);
             
             //make sure we have the same number of serialized nodes in this newly loaded presets state
-            var allSerializedNodesInAllStates2 = model.CurrentWorkspace.PresetsCollection.DesignStates.SelectMany(x => x.SerializedNodes);
+            var allSerializedNodesInAllStates2 = model.CurrentWorkspace.PresetsCollection.PresetStates.SelectMany(x => x.SerializedNodes);
             Assert.AreEqual(allSerializedNodesInAllStates.Count(), allSerializedNodesInAllStates2.Count());
         }
 
@@ -344,7 +474,7 @@ namespace Dynamo.Tests
             numberNode2.X = 20;
             numberNode2.Y = 20;
             //set the state back before 
-            model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.DesignStates.Where(
+            model.CurrentWorkspace.SetWorkspaceToState(model.CurrentWorkspace.PresetsCollection.PresetStates.Where(
                    x => x.Name == "state1").First());
             Assert.AreEqual(numberNode1.X, 10);
             Assert.AreEqual(numberNode1.Y, 10);

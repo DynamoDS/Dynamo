@@ -62,7 +62,7 @@ namespace Dynamo.Models
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly ObservableCollection<AnnotationModel> annotations;
-        protected readonly PresetsModel presetsCollection;
+        private readonly PresetsModel presetsCollection;
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
 
@@ -452,7 +452,7 @@ namespace Dynamo.Models
             IEnumerable<AnnotationModel> a,
             WorkspaceInfo info, 
             NodeFactory factory,
-            PresetsModel designOptions)
+            PresetsModel presets)
         {
             guid = Guid.NewGuid();
 
@@ -476,7 +476,7 @@ namespace Dynamo.Models
 
             NodeFactory = factory;
 
-            presetsCollection = designOptions;
+            presetsCollection = presets;
             // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
             ElementResolver = new ElementResolver();
             foreach (var node in nodes)
@@ -805,7 +805,7 @@ namespace Dynamo.Models
         {
             if (state == null)
             {
-                Log("that state cannot be found");
+                Log("Attempted to apply a PresetState that was null");
                 return;
             }
             //start an undoBeginGroup
@@ -842,7 +842,7 @@ namespace Dynamo.Models
             //lookup the nodes by their ID, can also check that we find all of them....
             var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID)).ToList();
  	        //access the presetsCollection and add a new state based on the current selection
-            presetsCollection.CreateNewState(name, description, nodesFromIDs);
+            presetsCollection.AddState(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
         }
 
@@ -965,8 +965,8 @@ namespace Dynamo.Models
                 }
 
                 //save the presetsCollection into the dyn file as a seperate element on the root
-                var designOptions =  presetsCollection.Serialize(xmlDoc,SaveContext.File);
-                root.AppendChild(designOptions);
+                var presetsModel =  presetsCollection.Serialize(xmlDoc,SaveContext.File);
+                root.AppendChild(presetsModel);
                
                 return true;
             }

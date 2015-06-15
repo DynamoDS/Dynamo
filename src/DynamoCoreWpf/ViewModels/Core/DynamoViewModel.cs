@@ -400,16 +400,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTessellationDivisions
-        {
-            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
-            set
-            {
-                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
-                model.OnRequestsRedraw(this, EventArgs.Empty);
-            }
-        }
-
         public bool VerboseLogging
         {
             get { return model.DebugSettings.VerboseLogging; }
@@ -467,6 +457,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowWatchSettingsControl");   
             }
         }
+
+        public VisualizationSettingsViewModel VisualizationSettings { get; set; }
 
         #endregion
 
@@ -549,6 +541,8 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
 
             SubscribeDispatcherHandlers();
+
+            VisualizationSettings = new VisualizationSettingsViewModel(this);
         }
 
         internal event EventHandler NodeViewReady;
@@ -1379,6 +1373,28 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Present the new designOption dialogue and add a new design 
+        /// option to the design option set on this graph
+        /// </summary>
+        private void ShowNewPresetStateDialogAndMakePreset(object parameter)
+        {
+            //trigger the event to request the display
+            //of the design option name dialogue
+            var args = new PresetsNamePromptEventArgs();
+            this.Model.OnRequestsDesignOptionNamePrompt(args);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            if (args.Success)
+            {
+                this.ExecuteCommand(new DynamoModel.CreatePresetStateFromSelectionCommand(args.Name, args.Description, IDS));
+            }
+        }
+        private bool CanShowNewPresetStateDialog(object parameter)
+        {
+            //TODO(mike) in future may want to return false if we're in a custom node, currently returns true. 
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = this;
@@ -2184,29 +2200,6 @@ namespace Dynamo.ViewModels
             return FullscreenWatchShowing;
         }
 
-        /// <summary>
-        /// Present the new designOption dialogue and add a new design 
-        /// option to the design option set on this graph
-        /// </summary>
-        /// <param name="parameter"></param>
-        private void ShowNewDesignOptionDialogAndMakeDesignOption(object parameter)
-        {
-            //trigger the event to request the display
-            //of the design option name dialogue
-            var args = new DesignOptionNamePromptEventArgs();
-            this.Model.OnRequestsDesignOptionNamePrompt(args);
-            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
-            if (args.Success)
-            {
-                this.ExecuteCommand(new DynamoModel.CreatePresetStateFromSelectionCommand(args.Name, args.Description,IDS));
-            }
-        }
-        private bool CanShowNewDesignOptionDialog(object parameter)
-        {
-            //TODO(mike) in future may want to return false if we're in a custom node, currently returns true. 
-            return DynamoSelection.Instance.Selection.Count > 0;
-        }
-        
         public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion

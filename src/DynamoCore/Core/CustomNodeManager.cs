@@ -499,11 +499,11 @@ namespace Dynamo.Core
  
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
             //use the nodeFactory's logger to log during load of presets
-            var designOptions = PresetsModel.LoadFromXml(xmlDoc, nodeGraph,nodeFactory.AsLogger());
+            var presets = PresetsModel.LoadFromXml(xmlDoc, nodeGraph,nodeFactory.AsLogger());
 
             var newWorkspace = new CustomNodeWorkspaceModel(
                 nodeFactory,
-                designOptions,
+                presets,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
                 nodeGraph.Annotations,                               
