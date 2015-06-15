@@ -24,7 +24,7 @@ using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 using HelixToolkit.Wpf.SharpDX;
-
+using HelixToolkit.Wpf.SharpDX.Core;
 using ProtoCore.AST.AssociativeAST;
 
 using SharpDX;
@@ -500,7 +500,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(1f,0f,0f,1f)));
+            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(1f, 0f, 0f, 1f)));
             Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(0f,1f,0f,1f)));
             Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(0f,0f,1f,1f)));
         }
@@ -680,16 +680,28 @@ namespace DynamoCoreWpfTests
     internal static class Watch3DViewExtensions
     {
         public static bool HasNumberOfLinesOfColor(this Watch3DView view, int lineCount, Color4 color)
-        {
-            throw new Exception("Update required after MAGN-7381!");
-            //var ptsOfColor = view.Lines.Colors.Where(c => c == color);
-            //return ptsOfColor.Count() == lineCount * 2;
+        {                  
+            var lines = view.GeometryValuesWithoutConstants.Where(x => x is LineGeometryModel3D).ToList().Cast<LineGeometryModel3D>().ToList();
+            var lineColor = lines.Select(x => x.Geometry.Colors);
+            int count = 0;
+            foreach (var lc in lineColor)
+            {
+                count = lc.Count(x => x == color);
+            }
+
+            return count == lineCount * 2;           
         }
 
         public static bool HasNumberOfPointVertices(this Watch3DView view, int numberOfPoints)
         {
-            throw new Exception("Update required after MAGN-7381!");
-            //return view.Points.Positions.Count == numberOfPoints;
+            var points = view.GeometryValuesWithoutConstants.Where(x => x is PointGeometryModel3D).ToList().Cast<PointGeometryModel3D>().ToList();
+            var pointPositions = points.Select(x => x.Geometry.Positions);
+            int count = 0;
+            foreach (var pt in pointPositions)
+            {
+                count = pt.Count;
+            }
+            return count == numberOfPoints;
         }
 
         public static bool HasNumberOfTextObjects(this Watch3DView view, int numberOfTextObjects)
@@ -699,20 +711,38 @@ namespace DynamoCoreWpfTests
 
         public static bool HasMeshes(this Watch3DView view)
         {
-            throw new Exception("Update required after MAGN-7381!");
-            //return view.Mesh.Positions.Count > 0;
+            var mesh = view.GeometryValuesWithoutConstants.Where(x => x is MeshGeometryModel3D).ToList().Cast<MeshGeometryModel3D>().ToList();
+            var meshPositions = mesh.Select(x => x.Geometry.Positions);
+            int count = 0;
+            foreach (var msp in meshPositions)
+            {
+                count = msp.Count;
+            }
+            return count > 0;  
         }
 
         public static bool HasNumberOfMeshVertices(this Watch3DView view, int numberOfVertices)
         {
-            throw new Exception("Update required after MAGN-7381.");
-            //return view.Mesh.Positions.Count == numberOfVertices;
+            var mesh = view.GeometryValuesWithoutConstants.Where(x => x is MeshGeometryModel3D).ToList().Cast<MeshGeometryModel3D>().ToList();
+            var meshPositions = mesh.Select(x => x.Geometry.Positions);
+            int count = 0;
+            foreach (var msp in meshPositions)
+            {
+                count = msp.Count;
+            }
+            return count == numberOfVertices;  
         }
 
         public static bool HasNumberOfLines(this Watch3DView view, int numberOfLines)
         {
-            throw new Exception("Update required after MAGN-7381!");
-            //return view.Lines.Positions.Count == numberOfLines*2;
+            var lines = view.GeometryValuesWithoutConstants.Where(x => x is LineGeometryModel3D).ToList().Cast<LineGeometryModel3D>().ToList();
+            var linePositions = lines.Select(x => x.Geometry.Positions);
+            int count = 0;
+            foreach (var ln in linePositions)
+            {
+                count = ln.Count;
+            }
+            return count == numberOfLines;           
         }
     }
 

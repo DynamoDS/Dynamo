@@ -192,9 +192,20 @@ namespace Dynamo.Controls
         public List<Model3D> GeometryValues
         {
             get
-            {              
-                return GeometryDictionary == null ? new List<Model3D>() : 
-                    GeometryDictionary.Select(x => x.Value).ToList();
+            {
+                return GeometryDictionary == null ? new List<Model3D>() :
+                   GeometryDictionary.Select(x => x.Value).ToList();
+            }
+        }
+
+        public List<Model3D> GeometryValuesWithoutConstants
+        {
+            get
+            {
+                List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
+
+                return GeometryDictionary.Keys.Except(keysList).ToList().Select(key => GeometryDictionary[key] as GeometryModel3D)
+                    .Cast<Model3D>().ToList();              
             }
         }
 
