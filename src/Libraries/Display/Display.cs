@@ -91,22 +91,14 @@ namespace DSCore
                 throw new ArgumentNullException("colors");
             }
 
-            if (precision < 0.0)
+            if (precision < 0.0 || precision > 1.0)
             {
-                precision = 0.0;
+                throw new Exception("The precision must be in the range 0.0 to 1.0");
             }
 
-            if (precision > 1.0)
-            {
-                precision = 1.0;
-            }
+            var samples = ComputeSamplesFromNormalizedValue(precision, LowestPower, HighestPower);
 
-            // Calculate the size of the image
-            // Samples range from 2^2 (4) - 2^9 (512)
-            var expRange = HighestPower - LowestPower;
-            var t = expRange*precision;
-            var finalExp = (int)Math.Pow(2, (int) (LowestPower + t));
-            return new Display(surface, uvs, colors, finalExp);
+            return new Display(surface, uvs, colors, samples);
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -216,6 +208,16 @@ namespace DSCore
         public override string ToString()
         {
             return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, singleColor != null ? singleColor.ToString() : "Multiple colors.");
+        }
+
+        private static int ComputeSamplesFromNormalizedValue(double value, int lowestPower, int highestPower)
+        {
+            // Calculate the size of the image
+            // Samples range from 2^2 (4) - 2^9 (512)
+            var expRange = highestPower - lowestPower;
+            var t = expRange*value;
+            var finalExp = (int)Math.Pow(2, (int) (LowestPower + t));
+            return finalExp;
         }
     }
 }
