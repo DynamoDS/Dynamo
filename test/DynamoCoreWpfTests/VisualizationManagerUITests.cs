@@ -527,14 +527,14 @@ namespace DynamoCoreWpfTests
             // 30 mesh vertices
             //ensure that the number of visualizations matches the 
             //number of pieces of geometry in the collection
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, BackgroundPreview.PerVertexMesh.Positions.Count);
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, BackgroundPreview.DynamoMesh.Positions.Count);
             var testColor = new SharpDX.Color4(0, 0, 0, 10.0f/255.0f);
-            Assert.True(BackgroundPreview.PerVertexMesh.Colors.All(c => c == testColor));
+            Assert.True(BackgroundPreview.DynamoMesh.Colors.All(c => c == testColor));
 
             // Increase the number of planes
             numberOfPlanes = numberOfPlanes + 5;
             numberOfPlanesNode.Value = numberOfPlanes.ToString();
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, BackgroundPreview.PerVertexMesh.Positions.Count);
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, BackgroundPreview.DynamoMesh.Positions.Count);
         }
 
         [Test]
