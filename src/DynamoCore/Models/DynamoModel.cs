@@ -728,7 +728,7 @@ namespace Dynamo.Models
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
-            return new PackageManagerClient( new GregClient(provider, url), uploadBuilder );
+            return new PackageManagerClient( new GregClient(provider, url), uploadBuilder, rootDirectory );
         }
 
         private void InitializeCustomNodeManager()
