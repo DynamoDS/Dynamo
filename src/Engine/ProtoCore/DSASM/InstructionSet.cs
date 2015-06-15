@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ProtoCore.Utils;
+using System.Linq;
 using Operand = ProtoCore.DSASM.StackValue;
 
 namespace ProtoCore.DSASM
@@ -716,6 +717,42 @@ namespace ProtoCore.DSASM
 
             return true;
         }
+
+        /// <summary>
+        /// Get an array's next key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public StackValue GetNextKey(RuntimeCore runtimeCore)
+        {
+            StackValue svArray;
+            int index;
+
+            if (!TryGetArrayKey(out svArray, out index))
+            {
+                return StackValue.Null;
+            }
+
+            int nextIndex = Constants.kInvalidIndex;
+
+            if (svArray.IsArray)
+            {
+                DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(svArray);
+                if (array.Values.Count() > index + 1)
+                    nextIndex = index + 1;
+            }
+            else if (svArray.IsStaticType)
+            {
+                DSString str = runtimeCore.Heap.ToHeapObject<DSString>(svArray);
+                if (str.Value.Length > index + 1)
+                    nextIndex = index + 1;
+
+            }
+
+            return nextIndex == Constants.kInvalidIndex ? StackValue.Null : StackValue.BuildArrayKey(svArray, nextIndex);
+        }
+
 
         #region Converters
         /// <summary>

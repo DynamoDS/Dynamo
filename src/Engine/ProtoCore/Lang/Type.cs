@@ -418,7 +418,8 @@ namespace ProtoCore
                     }
                 }
 
-                return ArrayUtils.CopyArray(sv, newTargetType, runtimeCore);
+                var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+                return array.CopyArray(newTargetType, runtimeCore);
             }
 
             if (!sv.IsArray && !sv.IsNull &&
@@ -538,7 +539,8 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.kTypeArray:
                     {
-                        return ArrayUtils.CopyArray(sv, targetType, runtimeCore);
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+                        return array.CopyArray(targetType, runtimeCore);
                     }
 
                 default:

@@ -2972,7 +2972,7 @@ namespace ProtoCore.DSASM
 
                 }
 
-                ret = runtimeCore.Heap.Cast<DSArray>(value).SetValueForIndices(dimlist, data, t, runtimeCore);
+                ret = runtimeCore.Heap.ToHeapObject<DSArray>(value).SetValueForIndices(dimlist, data, t, runtimeCore);
             }
             else if (value.IsString)
             {
@@ -2991,7 +2991,7 @@ namespace ProtoCore.DSASM
                     StackValue svArray = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
                     rmem.SetSymbolValue(symbolnode, svArray);
 
-                    var array = rmem.Heap.Cast<DSArray>(svArray);
+                    var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
                     if (!value.IsNull)
                     {
                         array.SetValueForIndex(0, value, runtimeCore);
@@ -3353,7 +3353,10 @@ namespace ProtoCore.DSASM
             if (!array.IsArray)
                 return StackValue.Null;
 
-            return runtimeCore.Heap.Cast<DSArray>(array).GetValueFromIndices(indices, runtimeCore);
+            if (indices.Count == 0)
+                return array;
+
+            return runtimeCore.Heap.ToHeapObject<DSArray>(array).GetValueFromIndices(indices, runtimeCore);
         }
 
         public StackValue GetIndexedArrayW(int dimensions, int blockId, StackValue op1, StackValue op2)
@@ -3567,7 +3570,7 @@ namespace ProtoCore.DSASM
             {
                 arglist = new List<Type>();
                 StackValue argArraySv = rmem.Pop();
-                DSArray array = rmem.Heap.Cast<DSArray>(argArraySv);
+                DSArray array = rmem.Heap.ToHeapObject<DSArray>(argArraySv);
                 for (int i = 0; i < array.VisibleSize; ++i)
                 {
                     StackValue sv = rmem.Heap.GetHeapElement(argArraySv).GetItemAt(i);
@@ -4417,11 +4420,8 @@ namespace ProtoCore.DSASM
             StackValue key = StackValue.Null;
             if (svArrayToIterate.IsArray)
             {
-                HeapElement he = ArrayUtils.GetHeapElement(svArrayToIterate, runtimeCore);
-                Validity.Assert(he != null);
-                bool arrayHasElement = he.VisibleItems.Any();
-                bool dictionaryHasElement = he.Dict != null && he.Dict.Count > 0;
-                if (arrayHasElement || dictionaryHasElement)
+                var array = rmem.Heap.ToHeapObject<DSArray>(svArrayToIterate);
+                if (array.ToDictionary().Any())
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
                     key.metaData = svArrayToIterate.metaData;
@@ -4433,9 +4433,8 @@ namespace ProtoCore.DSASM
             }
             else if (svArrayToIterate.IsString)
             {
-                var str = runtimeCore.RuntimeMemory.Heap.GetString(svArrayToIterate);
-                Validity.Assert(str != null);
-                if (str.Any())
+                var str = rmem.Heap.ToHeapObject<DSString>(svArrayToIterate);
+                if (str.Value.Any())
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
                     key.metaData = svArrayToIterate.metaData;
@@ -4767,7 +4766,8 @@ namespace ProtoCore.DSASM
             }
             else if (svProperty.IsArray && (dimensions > 0))
             {
-                EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, runtimeCore);
+                var propertyArray = rmem.Heap.ToHeapObject<DSArray>(svProperty);
+                EX = propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
             }
             else // This property has NOT been allocated
             {
@@ -4941,8 +4941,10 @@ namespace ProtoCore.DSASM
 
                 // Setting a pointer
                 int idx = (int)listInfo[0].Sv.opdata;
-                DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, runtimeCore);
-                rmem.Heap.GetHeapElement(finalPointer).SetItemAt((int)listInfo[0].Sv.opdata, data);
+
+                DSObject dsObject = rmem.Heap.ToHeapObject<DSObject>(finalPointer);
+                DX = dsObject.GetValueFromIndex(idx, runtimeCore);
+                dsObject.SetValueAtIndex(idx, data, runtimeCore);
             }
             else
             {
@@ -5007,7 +5009,7 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.opdata == 1)
                 {
-                    opdata2 = ArrayUtils.GetNextKey(opdata2, runtimeCore);
+                    opdata2 = opdata2.GetNextKey(runtimeCore);
                 }
                 else
                 {

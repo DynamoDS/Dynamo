@@ -291,7 +291,7 @@ namespace ProtoCore.Utils
             int largestSub = 0;
 
             //This is the element on the heap that manages the data structure
-            foreach (var sv in runtimeCore.Heap.Cast<DSArray>(array).Values)
+            foreach (var sv in runtimeCore.Heap.ToHeapObject<DSArray>(array).Values)
             {
                 if (sv.IsArray)
                 {
@@ -321,7 +321,7 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return exe.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
-            DSArray array = runtimeCore.Heap.Cast<DSArray>(sv);
+            DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
             return array.Values.Any(
                         v => (v.IsArray && ContainsDoubleElement(v, runtimeCore)) ||
                              (exe.TypeSystem.GetType(v) == (int)PrimitiveType.kTypeDouble));
@@ -339,7 +339,7 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return true;
 
-            var array = runtimeCore.Heap.Cast<DSArray>(sv);
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
             return array.Values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
         }
 

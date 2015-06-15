@@ -365,7 +365,7 @@ namespace ProtoFFI
             }
 
             var csDict = (IDictionary)Activator.CreateInstance(instanceType);
-            var dsDict = dsi.runtime.RuntimeCore.Heap.Cast<DSArray>(dsObject).ToDictionary();
+            var dsDict = dsi.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(dsObject).ToDictionary();
             return AddToDictionary(context, dsi, csDict, dsDict, keyType, valueType);
         }
 
@@ -457,18 +457,16 @@ namespace ProtoFFI
             var runtimeCore = dsi.runtime.RuntimeCore;
 
             var svArray = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-            DSArray array = dsi.runtime.rmem.Heap.Cast<DSArray>(svArray);
-            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
-
+            DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
             foreach (var key in dictionary.Keys)
             {
                 var value = dictionary[key];
                 StackValue dsKey = MarshalToStackValue(key, context, dsi);
                 StackValue dsValue = MarshalToStackValue(value, context, dsi);
-                ho.Dict[dsKey] = dsValue;
+                array.SetValueForIndex(dsKey, dsValue, dsi.runtime.RuntimeCore);
             }
 
-            return array;
+            return svArray;
         }
 
         #endregion
@@ -489,7 +487,7 @@ namespace ProtoFFI
             if (!dsObject.IsArray)
                 return result.ToArray();
 
-            var dsElements = heap.Cast<DSArray>(dsObject).Values;
+            var dsElements = heap.ToHeapObject<DSArray>(dsObject).Values;
             Type objType = typeof(T);
 
             foreach (var elem in dsElements)

@@ -186,7 +186,7 @@ namespace ProtoTest.DSASM
             var dict = new Dictionary<StackValue, StackValue>();
             dict[key] = val;
 
-            var array = heap.AllocateArray(new StackValue[] { }, dict);
+            var array = heap.AllocateArray(new StackValue[] { });
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
@@ -207,7 +207,7 @@ namespace ProtoTest.DSASM
             var array = heap.AllocateArray(new StackValue[] { StackValue.Null });
             var arrayHeapElement = heap.GetHeapElement(array);
             // self reference
-            arrayHeapElement.Stack[0] = array;
+            arrayHeapElement.SetItemAt(0, array);
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
@@ -226,7 +226,7 @@ namespace ProtoTest.DSASM
             var array2 = heap.AllocateArray(new StackValue[] { array1 });
             var array1HeapElement = heap.GetHeapElement(array1);
             // self reference
-            array1HeapElement.Stack[0] = array2;
+            array1HeapElement.SetItemAt(0, array2);
 
             heap.GCMarkAndSweep(new List<StackValue>() { }, testExecutive);
 

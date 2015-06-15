@@ -1665,7 +1665,7 @@ namespace ProtoCore
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = runtimeCore.Heap.Cast<DSArray>(formalParameters[repIndex]).Values.ToArray();
+                        subParameters = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[repIndex]).Values.ToArray();
                     }
                     else
                     {
@@ -1790,7 +1790,7 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    DSArray array = runtimeCore.Heap.Cast<DSArray>(formalParameters[cartIndex]);
+                    DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[cartIndex]);
                     parameters = array.Values.ToArray();
                     retSize = parameters.Length;
                 }

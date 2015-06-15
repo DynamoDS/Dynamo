@@ -167,27 +167,13 @@ namespace ProtoCore.DSASM
         {
             Stack[index] = value;
         }
-
-        public void SetItemAt(StackValue index, StackValue value)
-        {
-            if (index.IsNumeric)
-            {
-                int arrayIndex = (int)index.ToInteger().opdata;
-                SetItemAt(arrayIndex, value);
-            }
-            else
-            {
-                if (Dict == null)
-                    Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
-            }
-        }
     }
 
     public class StackValueComparer : IEqualityComparer<StackValue>
     {
         private RuntimeCore runtimeCore;
 
-        public StackValueComparer(Heap heap)
+        public StackValueComparer(RuntimeCore runtimeCore)
         {
             this.runtimeCore = runtimeCore;
         }
@@ -288,7 +274,7 @@ namespace ProtoCore.DSASM
         {
         }
 
-        public T Cast<T>(StackValue heapObject) where T : HeapElement
+        public T ToHeapObject<T>(StackValue heapObject) where T : HeapElement
         {
             HeapElement heapElement;
             if (!TryGetHeapElement(heapObject, out heapElement))
@@ -392,7 +378,12 @@ namespace ProtoCore.DSASM
         {
             int index = AllocateStringInternal(str);
             fixedHeapElements.Add(index);
-            return StackValue.BuildString(index);
+            var svString = StackValue.BuildString(index);
+
+            DSString dsstring = ToHeapObject<DSString>(svString);
+            dsstring.SetPointer(svString);
+
+            return svString;
         }
 
         /// <summary>
@@ -403,7 +394,12 @@ namespace ProtoCore.DSASM
         public StackValue AllocateString(string str)
         {
             int index = AllocateStringInternal(str);
-            return StackValue.BuildString(index);
+            var svString = StackValue.BuildString(index);
+
+            DSString dsstring = ToHeapObject<DSString>(svString);
+            dsstring.SetPointer(svString);
+
+            return svString;
         }
 
         /// <summary>
@@ -599,11 +595,17 @@ namespace ProtoCore.DSASM
                     markBits.Set(ptr, true);
 
                     var heapElement = heapElements[ptr];
-                    var subElements = heapElement.VisibleItems;
-                    if (heapElement.Dict != null)
+                    IEnumerable<StackValue> subElements = Enumerable.Empty<StackValue>();
+
+                    if (pointer.IsArray)
                     {
-                        subElements = subElements.Concat(heapElement.Dict.Keys)
-                            .Concat(heapElement.Dict.Values);
+                        var array = ToHeapObject<DSArray>(pointer);
+                        var dict = array.ToDictionary();
+                        subElements = subElements.Concat(dict.Keys).Concat(dict.Values);
+                    }
+                    else
+                    {
+                        subElements = heapElement.VisibleItems;
                     }
 
                     foreach (var subElement in subElements)

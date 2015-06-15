@@ -338,7 +338,11 @@ namespace ProtoCore.DSASM.Mirror
                     halfArraySize = (int)Math.Floor(formatParams.MaxArraySize * 0.5);
             }
 
-            int totalElementCount = hs.Values.Count(); 
+            int totalElementCount = hs.VisibleSize; 
+            if (pointer.IsArray)
+            {
+                totalElementCount = heap.ToHeapObject<DSArray>(pointer).Values.Count();
+            }
 
             for (int n = 0; n < hs.VisibleSize; ++n)
             {
@@ -370,12 +374,15 @@ namespace ProtoCore.DSASM.Mirror
                 }
             }
 
-            if (hs.Dict != null)
+            if (pointer.IsArray)
             {
-                int startIndex = (halfArraySize > 0) ? hs.Dict.Count - halfArraySize : 0;
+                DSArray array = heap.ToHeapObject<DSArray>(pointer);
+                var dict = array.ToDictionary().Where(kvp => !kvp.Key.IsInteger);
+
+                int startIndex = (halfArraySize > 0) ? dict.Count() - halfArraySize : 0;
                 int index = -1;
 
-                foreach (var keyValuePair in hs.Dict)
+                foreach (var keyValuePair in dict)
                 {
                     index++;
                     if (index < startIndex)
