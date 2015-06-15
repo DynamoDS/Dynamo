@@ -58,6 +58,7 @@ namespace Dynamo.Controls
         private Color4 defaultPointColor;
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
+        private int renderingTier;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -357,7 +358,7 @@ namespace Dynamo.Controls
             vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
 
-            var renderingTier = (RenderCapability.Tier >> 16);
+            renderingTier = (RenderCapability.Tier >> 16);
             var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
             var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
@@ -665,6 +666,12 @@ namespace Dynamo.Controls
             //check the id, if the id is meant for another watch,
             //then ignore it
             if (e.Id != _id)
+            {
+                return;
+            }
+
+            // Don't render if the user's system is incapable.
+            if (renderingTier == 0)
             {
                 return;
             }
