@@ -629,12 +629,12 @@ namespace ProtoCore.DSASM
             if (index.IsNumeric)
             {
                 pos = (int)index.ToInteger().opdata;
-                return GetValueAtIndex(index, runtimeCore);
+                return GetValueAtIndex(pos, runtimeCore);
             }
             else if (index.IsArrayKey)
             {
                 pos = (int)index.opdata;
-                return GetValueAtIndex(index, runtimeCore);
+                return GetValueAtIndex(pos, runtimeCore);
             }
             else
             {

@@ -577,7 +577,10 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return dsi.runtime.rmem.Heap.ToHeapObject<DSString>(dsObject).Value;
+            var dsString = dsi.runtime.rmem.Heap.ToHeapObject<DSString>(dsObject);
+            if (dsString == null)
+                return null;
+            return dsString.Value;
         }
     }
 
