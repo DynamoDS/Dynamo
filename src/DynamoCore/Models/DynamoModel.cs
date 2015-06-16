@@ -314,6 +314,8 @@ namespace Dynamo.Models
         /// </summary>
         public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
 
+        public AuthenticationManager AuthenticationManager { get; set; }
+
         #endregion
 
         #region initialization and disposal
@@ -526,6 +528,8 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode)
@@ -537,8 +541,8 @@ namespace Dynamo.Models
             var url = config.PackageManagerAddress ??
                       AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
 
-            PackageManagerClient = InitializePackageManager(config.AuthProvider, url,
-                PackageLoader.RootPackagesDirectory, CustomNodeManager, config.StartInTestMode);
+            PackageManagerClient = InitializePackageManager(url, PackageLoader.RootPackagesDirectory,
+                CustomNodeManager, config.StartInTestMode);
 
             Logger.Log("Dynamo will use the package manager server at : " + url);
 
@@ -714,7 +718,7 @@ namespace Dynamo.Models
         /// <param name="rootDirectory">The root directory for the package manager</param>
         /// <param name="customNodeManager">A valid CustomNodeManager object</param>
         /// <returns>Newly created object</returns>
-        private static PackageManagerClient InitializePackageManager(IAuthProvider provider, string url, string rootDirectory,
+        private PackageManagerClient InitializePackageManager(string url, string rootDirectory,
             CustomNodeManager customNodeManager, bool isTestMode )
         {
             if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
@@ -728,7 +732,7 @@ namespace Dynamo.Models
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
-            return new PackageManagerClient( new GregClient(provider, url), uploadBuilder );
+            return new PackageManagerClient( new GregClient(AuthenticationManager.AuthProvider, url), uploadBuilder );
         }
 
         private void InitializeCustomNodeManager()

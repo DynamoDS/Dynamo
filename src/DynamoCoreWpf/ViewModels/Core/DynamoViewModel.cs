@@ -426,6 +426,7 @@ namespace Dynamo.ViewModels
         public IVisualizationManager VisualizationManager { get; private set; }
         public SearchViewModel SearchViewModel { get; private set; }
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
+        public LoginViewModel LoginViewModel { get; set; }
 
         /// <summary>
         ///     Whether sign in should be shown in Dynamo.  In instances where Dynamo obtains
@@ -505,6 +506,7 @@ namespace Dynamo.ViewModels
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
+            this.LoginViewModel = new LoginViewModel(this);
             this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.

@@ -21,9 +21,9 @@ namespace Dynamo.Wpf.Controls
     /// </summary>
     public partial class Login : UserControl
     {
-        private readonly PackageManagerClientViewModel _viewModel;
+        private readonly LoginViewModel _viewModel;
 
-        public Login(PackageManagerClientViewModel viewModel)
+        public Login(LoginViewModel viewModel)
         {
             this.DataContext = viewModel;
             this._viewModel = viewModel;
