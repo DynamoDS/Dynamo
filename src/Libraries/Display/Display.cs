@@ -14,9 +14,8 @@ namespace DSCore
         private readonly Color singleColor;
         private Color[][] colorMap;
         private bool renderEdges = false;
-        private int samples;
-        private const int LowestPower = 2;
-        private const int HighestPower = 9;
+        private const int LowestPower = 3;
+        private const int HighestPower = 10;
 
         private Display(Geometry geometry, Color color)
         {
@@ -27,7 +26,6 @@ namespace DSCore
         private Display(Surface surface, UV[] uvs, Color[] colors, int samples)
         {
             geometry = surface;
-            this.samples = samples;
             colorMap = ComputeColorMap(surface, uvs, colors, samples, samples);
         }
 
@@ -69,7 +67,7 @@ namespace DSCore
         /// <param name="colors">A set of Colors corresponding to the uvs.</param>
         /// <param name="precision">A value between 0.0 (low) and 1.0 (high) which defines the resolution</param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors, double precision = 0.5)
+        public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors, double precision = 0.75)
         {
             if (!uvs.Any())
             {
@@ -115,11 +113,11 @@ namespace DSCore
                     return;
                 }
 
-                CreateColorMappedSurfaceRenderData(colorMap, package, parameters);
+                CreateColorMapOnSurface(colorMap, package, parameters);
             }
         }
 
-        private void CreateColorMappedSurfaceRenderData(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
+        private void CreateColorMapOnSurface(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
         {
             geometry.Tessellate(package, parameters);
 
