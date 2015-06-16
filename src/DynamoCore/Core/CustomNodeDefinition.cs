@@ -237,9 +237,12 @@ namespace Dynamo
             
             FunctionId = functionId;
             Name = name;
-            Category = category;
             Description = description;
             Path = path;
+
+            Category = category;
+            if (String.IsNullOrWhiteSpace(Category))
+                Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
 
         public Guid FunctionId { get; set; }
