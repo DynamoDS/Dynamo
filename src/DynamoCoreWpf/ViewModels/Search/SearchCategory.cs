@@ -19,19 +19,7 @@ namespace Dynamo.Search
         public string Name { get; private set; }
 
         private bool isExpanded;
-        public bool IsExpanded
-        {
-            get
-            { 
-                return isExpanded;
-            }
-            set
-            {
-                if (value.Equals(isExpanded)) return;
-                isExpanded = value;
-                RaisePropertyChanged("IsExpanded");
-            }
-        }
+        public bool IsExpanded { get { return isExpanded; } }
 
         // TODO: classes functionality.
         //       All functionality marked as 'classes functionality'
@@ -51,7 +39,8 @@ namespace Dynamo.Search
 
         private void OnClicked(object obj)
         {
-            IsExpanded = !IsExpanded;
+            isExpanded = !isExpanded;
+            RaisePropertyChanged("IsExpanded");
         }
 
         internal SearchCategory(string name)
@@ -59,7 +48,7 @@ namespace Dynamo.Search
             Name = name;
             classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
-            IsExpanded = true;
+            isExpanded = true;
 
             ClickedCommand = new DelegateCommand(OnClicked);
         }
