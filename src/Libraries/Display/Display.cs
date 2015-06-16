@@ -145,6 +145,8 @@ namespace Display
 
         private void CreateColorMapOnSurface(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
         {
+            const byte gray = 80;
+ 
             geometry.Tessellate(package, parameters);
 
             var colorBytes = new List<byte>();
@@ -162,6 +164,14 @@ namespace Display
 
             package.SetColors(colorBytes.ToArray());
             package.ColorsStride = colorMap.First().Length * 4;
+
+            TessellateEdges(package, parameters);
+
+            if (package.LineVertexCount > 0)
+            {
+                package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, gray, gray,
+                    gray, 255));
+            }
         }
 
         private void CreateGeometryRenderData(Color color, IRenderPackage package, TessellationParameters parameters)
@@ -174,28 +184,7 @@ namespace Display
 
             geometry.Tessellate(package, parameters);
 
-            if (parameters.ShowEdges)
-            {
-                var surf = geometry as Surface;
-                if (surf != null)
-                {
-                    foreach (var curve in surf.PerimeterCurves())
-                    {
-                        curve.Tessellate(package, parameters);
-                        curve.Dispose();
-                    }
-                }
-
-                var solid = geometry as Solid;
-                if (solid != null)
-                {
-                    foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
-                    {
-                        geom.Tessellate(package, parameters);
-                        geom.Dispose();
-                    }
-                }
-            }
+            TessellateEdges(package, parameters);
 
             if (package.LineVertexCount > 0)
             {
@@ -213,6 +202,31 @@ namespace Display
             {
                 package.ApplyMeshVertexColors(CreateColorByteArrayOfSize(package.MeshVertexCount, color.Red, color.Green,
                     color.Blue, color.Alpha));
+            }
+        }
+
+        private void TessellateEdges(IRenderPackage package, TessellationParameters parameters)
+        {
+            if (!parameters.ShowEdges) return;
+
+            var surf = geometry as Surface;
+            if (surf != null)
+            {
+                foreach (var curve in surf.PerimeterCurves())
+                {
+                    curve.Tessellate(package, parameters);
+                    curve.Dispose();
+                }
+            }
+
+            var solid = geometry as Solid;
+            if (solid != null)
+            {
+                foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                {
+                    geom.Tessellate(package, parameters);
+                    geom.Dispose();
+                }
             }
         }
 
