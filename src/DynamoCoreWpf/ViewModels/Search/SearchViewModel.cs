@@ -19,6 +19,12 @@ using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
+
+    public enum NavigationDirection
+    {
+        Backward, Forward
+    }
+
     public partial class SearchViewModel : NotificationObject
     {
         #region events
@@ -871,7 +877,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Used during library search key navigation. Indicates which item index is selected.
         /// </summary>
-        public int SelectedMemberIndex
+        private int SelectedMemberIndex
         {
             get { return selectedMemberIndex; }
             set
@@ -895,86 +901,60 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Used during library search key navigation. Counts next selected member index.
-        /// Enables moving from top to bottom.
         /// </summary>
-        public void SelectNext()
+        public void MoveSelection(NavigationDirection direction)
         {
             // We should have at least one category, otherwise we can't move.
             if (!SearchRootCategories.Any())
                 return;
 
-            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
-            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
-
-            // If it's not the last member, we can move further.
-            if (SelectedMemberIndex != selectedMemberGroup.Members.Count() - 1)
-            {
-                UnSelectOldMember();
-                SelectedMemberIndex++;
-                return;
-            }
-
-            // If it's last member, we should jump to next member group.
-            if (selectedMemberGroupIndex != selectedCategory.MemberGroups.Count() - 1)
-            {
-                UnSelectOldMember();
-                selectedMemberGroupIndex++;
-                SelectedMemberIndex = 0;
-                return;
-            }
-
-            // If it's last member group, we should jump to next category.
-            if (selectedCategoryIndex != SearchRootCategories.Count() - 1)
-            {
-                UnSelectOldMember();
-                selectedCategoryIndex++;
-                selectedMemberGroupIndex = 0;
-                SelectedMemberIndex = 0;
-                return;
-            }
-        }
-
-        /// <summary>
-        /// Used during library search key navigation. Counts previous selected member index.
-        /// Enables moving from bottom to top.
-        /// </summary>
-        public void SelectPrevious()
-        {
-            if (!SearchRootCategories.Any())
-                return;
+            var offset = direction == NavigationDirection.Backward ? -1 : 1;
 
             var selectedCategory = SearchRootCategories[selectedCategoryIndex];
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
-            // If it's not the first member, we can move back.
-            if (SelectedMemberIndex != 0)
+            // If it's not the first/last member, we can move further.
+            if ((SelectedMemberIndex != selectedMemberGroup.Members.Count() - 1 || direction != NavigationDirection.Forward) &&
+                (SelectedMemberIndex != 0 || direction != NavigationDirection.Backward))
             {
                 UnSelectOldMember();
-                SelectedMemberIndex--;
+                SelectedMemberIndex += offset;
                 return;
             }
 
-            // If it's not the first member group, we can move back.
-            if (selectedMemberGroupIndex != 0)
+            // If it's first/last member, we should jump to next member group.
+            if ((selectedMemberGroupIndex != selectedCategory.MemberGroups.Count() - 1 || direction != NavigationDirection.Forward) &&
+                (selectedMemberGroupIndex != 0 || direction != NavigationDirection.Backward))
             {
                 UnSelectOldMember();
-                selectedMemberGroupIndex--;
-                // Select last member in member group. We are moving from bottom to top.
-                SelectedMemberIndex = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
+                selectedMemberGroupIndex += offset;
+                if (direction == NavigationDirection.Forward)
+                    SelectedMemberIndex = 0;
+                else
+                    // Select the last member.
+                    SelectedMemberIndex = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
                 return;
             }
 
-            // If it's not the first category, we can move back.
-            if (selectedCategoryIndex != 0)
+            // If it's first/last member group, we should jump to next category.
+            if ((selectedCategoryIndex != SearchRootCategories.Count() - 1 || direction != NavigationDirection.Forward) &&
+                (selectedCategoryIndex != 0 || direction != NavigationDirection.Backward))
             {
                 UnSelectOldMember();
-                selectedCategoryIndex--;
-                // Select last member group.
-                selectedMemberGroupIndex = SearchRootCategories[selectedCategoryIndex].MemberGroups.Count() - 1;
-                // Select last member in member group. We are moving from bottom to top.
-                SelectedMemberIndex = SearchRootCategories[selectedCategoryIndex].MemberGroups.
-                                            ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
-                return;
+                selectedCategoryIndex += offset;
+
+                if (direction == NavigationDirection.Forward)
+                {
+                    selectedMemberGroupIndex = 0;
+                    SelectedMemberIndex = 0;
+                }
+                else
+                {
+                    var memberGroups =SearchRootCategories[selectedCategoryIndex].MemberGroups;
+                    selectedMemberGroupIndex = memberGroups.Count() - 1;
+                    // Select last member in member group. We are moving from bottom to top.
+                    SelectedMemberIndex = memberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
+                }
             }
         }
 
