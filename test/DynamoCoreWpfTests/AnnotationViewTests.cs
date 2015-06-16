@@ -118,6 +118,7 @@ namespace DynamoCoreWpfTests
 
             var modelCount = annotationView.ViewModel.AnnotationModel.SelectedModels.Count();
             Assert.AreEqual(1, modelCount);
+
         }
     }
 }
