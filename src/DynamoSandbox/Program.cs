@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,8 @@ using System.Threading;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using Greg.AuthProviders;
+
 using Microsoft.Win32;
 
 namespace DynamoSandbox
@@ -154,6 +157,7 @@ namespace DynamoSandbox
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
+        private const string DefaultAddres = "https://accounts-staging.autodesk.com/";
 
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
@@ -166,19 +170,23 @@ namespace DynamoSandbox
             var umConfig = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
             Debug.Assert(umConfig.DynamoLookUp != null);
 
+            var authAddress = ConfigurationManager.AppSettings["authAddress"] ?? DefaultAddres;
+
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
                     PathResolver = new PathResolver(preloaderLocation),
                     GeometryFactoryPath = geometryFactoryPath,
-                    UpdateManager = new UpdateManager(umConfig)
+                    UpdateManager = new UpdateManager(umConfig),
+                    AuthProvider = new OxygenProvider(authAddress)
                 });
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
                     CommandFilePath = commandFilePath,
-                    DynamoModel = model
+                    DynamoModel = model,
+                    ShowLogin = true
                 });
 
             var view = new DynamoView(viewModel);

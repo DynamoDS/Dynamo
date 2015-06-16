@@ -60,6 +60,7 @@
     <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="AsyncTaskExtensionsTests.cs" />
+    <Compile Include="AuthenticationManagerTests.cs" />
     <Compile Include="CallsiteTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
     <Compile Include="DefaultArgumentMigrationTests.cs" />
