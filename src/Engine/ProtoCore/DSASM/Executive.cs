@@ -3310,13 +3310,15 @@ namespace ProtoCore.DSASM
                 return StackValue.Null;
             }
 
+            var ptrArray = rmem.Heap.ToHeapObject<DSArray>(svPtr);
             int dimensions = dimList.Length;
+
             for (int n = 0; n < dimensions - 1; ++n)
             {
                 // TODO Jun: This means that variables are coerced to 32-bit when used as an array index
                 try
                 {
-                    StackValue array = rmem.Heap.GetHeapElement(svPtr).GetValue(dimList[n], runtimeCore);
+                    StackValue array = ptrArray.GetValueFromIndex(dimList[n], runtimeCore);
                     if (!array.IsArray)
                     {
                         runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
@@ -3333,7 +3335,7 @@ namespace ProtoCore.DSASM
             StackValue sv;
             try
             {
-                sv = rmem.Heap.GetHeapElement(svPtr).GetValue(dimList[dimensions - 1], runtimeCore);
+                sv = ptrArray.GetValueFromIndex(dimList[dimensions - 1], runtimeCore);
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -4873,13 +4875,13 @@ namespace ProtoCore.DSASM
                     if (listInfo[n].Sv.IsStaticVariableIndex)
                         finalPointer = listInfo[n].Sv = GetOperandData(blockId, listInfo[n].Sv, new StackValue());
                     else
-                        finalPointer = listInfo[n].Sv = rmem.Heap.GetHeapElement(finalPointer).GetItemAt((int)listInfo[n].Sv.opdata);
+                        finalPointer = listInfo[n].Sv = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex((int)listInfo[n].Sv.opdata, runtimeCore);
                 }
                 if (listInfo[n].Dimlist != null)
                 {
                     for (int d = listInfo[n].Dimlist.Length - 1; d >= 0; --d)
                     {
-                        finalPointer = listInfo[n].Sv = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[n].Dimlist[d], runtimeCore);
+                        finalPointer = listInfo[n].Sv = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex(listInfo[n].Dimlist[d], runtimeCore);
                     }
                 }
             }
@@ -4929,8 +4931,8 @@ namespace ProtoCore.DSASM
             {
                 finalPointer = tryPointer;
                 for (int d = listInfo[0].Dimlist.Length - 1; d >= 1; --d)
-                    finalPointer = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[d], runtimeCore);
-                tryPointer = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], runtimeCore);
+                    finalPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex(listInfo[0].Dimlist[d], runtimeCore);
+                tryPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex(listInfo[0].Dimlist[0], runtimeCore);
             }
 
             if (tryPointer.IsNull)
@@ -4968,8 +4970,10 @@ namespace ProtoCore.DSASM
                 runtimeVerify(finalPointer.IsArray);
 
                 // Setting an array
-                DX = rmem.Heap.GetHeapElement(finalPointer).GetValue((int)listInfo[0].Dimlist[0], runtimeCore);
-                rmem.Heap.GetHeapElement(finalPointer).SetValue(listInfo[0].Dimlist[0], data);
+                var finalPointerArray = rmem.Heap.ToHeapObject<DSArray>(finalPointer);
+                var index = listInfo[0].Dimlist[0];
+                DX = finalPointerArray.GetValueFromIndex(index, runtimeCore);
+                finalPointerArray.SetValueForIndex(index, data, runtimeCore);
             }
 
             ++pc;

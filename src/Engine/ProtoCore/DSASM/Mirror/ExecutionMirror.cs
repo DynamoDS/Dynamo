@@ -1004,12 +1004,12 @@ namespace ProtoCore.DSASM.Mirror
                 // check if the members are primitive type
                 if (val.IsPointer)
                 {
-                    var heapElement = rmem.Heap.GetHeapElement(val);
-                    if (heapElement.VisibleSize == 1 &&
-                        !heapElement.GetItemAt(0).IsPointer &&
-                        !heapElement.GetItemAt(0).IsArray)
+                    var pointer = rmem.Heap.ToHeapObject<DSObject>(val);
+                    if (pointer.VisibleSize == 1 &&
+                        !pointer.GetItemAt(0).IsPointer &&
+                        !pointer.GetItemAt(0).IsArray)
                     {
-                        val = heapElement.GetItemAt(0);
+                        val = pointer.GetItemAt(0);
                     }
                 }
 

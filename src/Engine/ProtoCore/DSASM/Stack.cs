@@ -425,20 +425,6 @@ namespace ProtoCore.DSASM
             return true;
         }
 
-        // heaper method to support negative index into stack
-        public static StackValue GetValue(this HeapElement hs, int ix, RuntimeCore runtimeCore)
-        {
-            int index = ix < 0 ? ix + hs.VisibleSize : ix;
-            if (index >= hs.VisibleSize || index < 0)
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
-                return StackValue.Null;
-            }
-
-            return hs.GetItemAt(index);
-        }
-
         // helper method to support negative index into stack
         public static StackValue SetValue(this HeapElement hs, int ix, StackValue sv)
         {
