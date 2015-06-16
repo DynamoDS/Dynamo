@@ -18,10 +18,11 @@ namespace Dynamo.Extensions
 
         public void Add(IExtension extension)
         {
+            var fullName = extension.Name + " (id: " + extension.UniqueId + ")";
             if (extensions.Find(ext => ext.UniqueId == extension.UniqueId) == null)
             {
                 extensions.Add(extension);
-                Log(extension.Name + " extension is added");
+                Log(fullName + " extension is added");
 
                 if (ExtensionAdded != null)
                 {
@@ -30,21 +31,22 @@ namespace Dynamo.Extensions
             }
             else
             {
-                Log("Could not add a duplicate of " + extension.Name);
+                Log("Could not add a duplicate of " + fullName);
             }
         }
 
         public void Remove(IExtension extension)
         {
+            var fullName = extension.Name + " (id: " + extension.UniqueId + ")";
             if (!extensions.Contains(extension))
             {
-                Log("ExtensionManager does not contain a specified extension");
+                Log("ExtensionManager does not contain " + fullName + " extension");
                 return;
             }
 
             extensions.Remove(extension);
             extension.Dispose();
-            Log(extension.Name + " extension is removed");
+            Log(fullName + " extension is removed");
             if (ExtensionRemoved != null)
             {
                 ExtensionRemoved(extension);

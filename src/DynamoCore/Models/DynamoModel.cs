@@ -374,7 +374,7 @@ namespace Dynamo.Models
             ISchedulerThread SchedulerThread { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
-            IEnumerable<ExtensionDefinition> Extensions { get; set; }
+            IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace Dynamo.Models
             public ISchedulerThread SchedulerThread { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
-            public IEnumerable<ExtensionDefinition> Extensions { get; set; }
+            public IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -492,7 +492,7 @@ namespace Dynamo.Models
 
             extensionManager = new ExtensionManager();
             extensionManager.MessageLogged += LogMessage;
-            var extensions = ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
+            var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
 
             if (extensions.Any())
             {
@@ -551,7 +551,7 @@ namespace Dynamo.Models
             {
                 ext.Ready(new ReadyParams());
             }
-        }	 
+        }
             
         private void RemoveExtension(IExtension ext)
         {
