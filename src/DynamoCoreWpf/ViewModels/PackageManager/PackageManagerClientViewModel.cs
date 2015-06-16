@@ -26,6 +26,7 @@ namespace Dynamo.ViewModels
     {
         internal IBrandingResourceProvider ResourceProvider { get; set; }
         internal PackageManagerClient PackageManagerClient { get; set; }
+        internal AuthenticationManager AuthenticationManager { get; set; }
         internal Action AcceptanceCallback { get; set; }
     }
 
@@ -38,6 +39,7 @@ namespace Dynamo.ViewModels
         private readonly IBrandingResourceProvider resourceProvider;
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
+        private readonly AuthenticationManager authenticationManager;
 
         public TermsOfUseHelper(TermsOfUseHelperParams touParams)
         {
@@ -45,6 +47,8 @@ namespace Dynamo.ViewModels
                 throw new ArgumentNullException("touParams");
             if (touParams.PackageManagerClient == null)
                 throw new ArgumentNullException("PackageManagerClient");
+            if (touParams.AuthenticationManager == null)
+                throw new ArgumentNullException("AuthenticationManager");
             if (touParams.AcceptanceCallback == null)
                 throw new ArgumentNullException("AcceptanceCallback");
             if (touParams.ResourceProvider == null)
@@ -53,6 +57,7 @@ namespace Dynamo.ViewModels
             resourceProvider = touParams.ResourceProvider;
             packageManagerClient = touParams.PackageManagerClient;
             callbackAction = touParams.AcceptanceCallback;
+            authenticationManager = touParams.AuthenticationManager;
         }
 
         public void Execute()
@@ -65,7 +70,7 @@ namespace Dynamo.ViewModels
                     // without signing in, we won't show the terms of use dialog,
                     // simply return from here.
                     // 
-                    if (packageManagerClient.LoginState != LoginState.LoggedIn)
+                    if (authenticationManager.LoginState != LoginState.LoggedIn)
                         return;
 
                     var termsOfUseAccepted = t.Result;
@@ -159,64 +164,17 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
+        public AuthenticationManager AuthenticationManager { get; set; }
         internal PackageManagerClient Model { get; private set; }
 
-        public LoginState LoginState
-        {
-            get
-            {
-                return Model.LoginState;
-            }
-        }
-
-        public string Username
-        {
-            get
-            {
-                return Model.Username;
-            }
-        }
-
-        public bool HasAuthProvider
-        {
-            get { return Model.HasAuthProvider; }
-        }
-
         #endregion
-
-        public ICommand ToggleLoginStateCommand { get; private set; }
 
         internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
             this.DynamoViewModel = dynamoViewModel;
+            this.AuthenticationManager = dynamoViewModel.Model.AuthenticationManager;
             Model = model;
             CachedPackageList = new List<PackageManagerSearchElement>();
-
-            this.ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
-
-            model.LoginStateChanged += (loginState) =>
-            {
-                RaisePropertyChanged("LoginState");
-                RaisePropertyChanged("Username");
-            };
-
-        }
-
-        private void ToggleLoginState()
-        {
-            if (this.LoginState == LoginState.LoggedIn)
-            {
-                this.Model.Logout();
-            }
-            else
-            {
-                this.Model.Login();
-            }
-        }
-
-        private bool CanToggleLoginState()
-        {
-            return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
         }
 
         public void PublishCurrentWorkspace(object m)
@@ -237,6 +195,7 @@ namespace Dynamo.ViewModels
                     var touParams = new TermsOfUseHelperParams
                     {
                         PackageManagerClient = Model,
+                        AuthenticationManager = DynamoViewModel.Model.AuthenticationManager,
                         ResourceProvider = DynamoViewModel.BrandingResourceProvider,
                         AcceptanceCallback = () => ShowNodePublishInfo(new[]
                         {
@@ -257,7 +216,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCurrentWorkspace(object m)
         {
-            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && HasAuthProvider;
+            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && AuthenticationManager.HasAuthProvider;
         }
 
         public void PublishNewPackage(object m)
@@ -265,6 +224,7 @@ namespace Dynamo.ViewModels
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
             {
                 PackageManagerClient = Model,
+                AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
                 AcceptanceCallback = ShowNodePublishInfo
             });
@@ -274,7 +234,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishNewPackage(object m)
         {
-            return HasAuthProvider;
+            return AuthenticationManager.HasAuthProvider;
         }
 
         public void PublishCustomNode(Dynamo.Nodes.Function m)
@@ -287,6 +247,7 @@ namespace Dynamo.ViewModels
                 var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
                 {
                     PackageManagerClient = Model,
+                    AuthenticationManager = AuthenticationManager,
                     ResourceProvider = DynamoViewModel.BrandingResourceProvider,
                     AcceptanceCallback = () => ShowNodePublishInfo(new[]
                     {
@@ -300,7 +261,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCustomNode(Dynamo.Nodes.Function m)
         {
-            return HasAuthProvider && m != null;
+            return AuthenticationManager.HasAuthProvider && m != null;
         }
 
         public void PublishSelectedNodes(object m)
@@ -342,6 +303,7 @@ namespace Dynamo.ViewModels
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
             {
                 PackageManagerClient = Model,
+                AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
                 AcceptanceCallback = () => ShowNodePublishInfo(defs)
             });
@@ -352,7 +314,7 @@ namespace Dynamo.ViewModels
         public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is Function) && HasAuthProvider;;
+                   DynamoSelection.Instance.Selection.All(x => x is Function) && AuthenticationManager.HasAuthProvider; ;
         }
 
         private void ShowNodePublishInfo()
@@ -489,7 +451,6 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
-
     }
 
 }
