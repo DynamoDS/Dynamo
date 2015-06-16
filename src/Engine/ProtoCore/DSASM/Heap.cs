@@ -34,22 +34,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private int GetNewSize(int size)
-        {
-            Validity.Assert(size > allocated);
-            int nextSize = kInitialSize;
-            if (size > kInitialSize)
-            {
-                // Determine the next allocation size
-                nextSize = (int)(allocated * kReallocFactor) + allocated;
-
-                // If the requested index is greater than the computed next allocation size, 
-                // then the requested index is the next allocation size
-                nextSize = (size >= nextSize) ? size : nextSize;
-            }
-            return nextSize;
-        }
-
         //
         // TODO Jun: Optimize the reallocation routines
         //      1. Copying the temps can be optimized.
@@ -57,22 +41,31 @@ namespace ProtoCore.DSASM
         //
         private void ReAllocate(int size)
         {
-            int newAllocatedSize = GetNewSize(size);
+            int newSize = kInitialSize;
+            if (size > kInitialSize)
+            {
+                // Determine the next allocation size
+                newSize = (int)(allocated * kReallocFactor) + allocated;
+
+                // If the requested index is greater than the computed next allocation size, 
+                // then the requested index is the next allocation size
+                newSize = (size >= newSize) ? size : newSize;
+            }
 
             // Copy current contents into a temp array
             StackValue[] tempstack = new StackValue[allocated];
             items.CopyTo(tempstack, 0);
 
             // Reallocate the array and copy the temp contents to it
-            items = new StackValue[newAllocatedSize];
+            items = new StackValue[newSize];
             tempstack.CopyTo(items, 0);
 
-            for (int i = allocated; i < newAllocatedSize; ++i)
+            for (int i = allocated; i < newSize; ++i)
             {
                 items[i] = StackValue.Null;
             }
-            
-            allocated = newAllocatedSize;
+
+            allocated = newSize;
             Validity.Assert(size <= allocated);
         }
 

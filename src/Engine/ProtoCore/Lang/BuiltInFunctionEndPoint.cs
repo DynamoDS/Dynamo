@@ -543,8 +543,8 @@ namespace ProtoCore.Lang
             int functionArgs = (int)argumentCount.opdata;
 
             // Build the function arguments
-            HeapElement heapElem = rmem.Heap.GetHeapElement(functionArguments);
-            var arguments = heapElem.VisibleItems.ToList();
+            var argArray = rmem.Heap.ToHeapObject<DSArray>(functionArguments);
+            var arguments = argArray.Values.ToList();
 
             bool removeFirstArgument = false;
             if (arguments.Count > 0)
@@ -612,10 +612,11 @@ namespace ProtoCore.Lang
 
                 if (Constants.kInvalidIndex != memvarIndex)
                 {
-                    StackValue svMemberPtr = rmem.Heap.GetHeapElement(thisObject).GetItemAt(memvarIndex);
+                    var obj = rmem.Heap.ToHeapObject<DSObject>(thisObject);
+                    StackValue svMemberPtr = obj.GetItemAt(memvarIndex);
                     if (svMemberPtr.IsPointer)
                     {
-                        StackValue svFunctionPtr = rmem.Heap.GetHeapElement(svMemberPtr).GetItemAt(0);
+                        StackValue svFunctionPtr = rmem.Heap.ToHeapObject<DSObject>(svMemberPtr).GetItemAt(0);
                         if (svFunctionPtr.IsFunctionPointer)
                         {
                             // It is a function pointer
@@ -1751,8 +1752,8 @@ namespace ProtoCore.Lang
             if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore)) 
                 return true;
 
-            var he = runtime.runtime.rmem.Heap.GetHeapElement(sv1);
-            foreach (var op in he.VisibleItems)
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv1);
+            foreach (var op in array.VisibleItems)
             {
                 if (!sv2.IsArray)
                 {
@@ -1906,8 +1907,12 @@ namespace ProtoCore.Lang
                 runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
-            int length1 = runtime.runtime.rmem.Heap.GetHeapElement(sv1).VisibleSize;
-            int length2 = runtime.runtime.rmem.Heap.GetHeapElement(sv2).VisibleSize;
+
+            var array1 = runtimeCore.Heap.ToHeapObject<DSArray>(sv1);
+            var array2 = runtimeCore.Heap.ToHeapObject<DSArray>(sv2);
+
+            int length1 = array1.VisibleSize;
+            int length2 = array2.VisibleSize;
             if (length2 == 0) return DSASM.StackValue.Null;
             if (length1 < length2)
             {
@@ -1918,7 +1923,7 @@ namespace ProtoCore.Lang
             }
             var heap = runtime.runtime.RuntimeCore.Heap;
             StackValue[] svArray = heap.ToHeapObject<DSArray>(sv1).Values.ToArray();
-            var svIdxArray = heap.ToHeapObject<DSArray>(sv2).Values.ToArray();
+            StackValue[] svIdxArray = heap.ToHeapObject<DSArray>(sv2).Values.ToArray();
             List<StackValue> svList = new List<StackValue>();
             foreach (StackValue idx in svIdxArray)
             {
@@ -2146,16 +2151,19 @@ namespace ProtoCore.Lang
                 return sv;
             }
             bool is2DArray = false;
-            var array = runtime.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(sv);
+            var array = heap.ToHeapObject<DSArray>(sv);
             var svarr = array.Values;
             int numOfCols = 0;
             int numOfRows = svarr.Count();
-            foreach(StackValue element in svarr)
+            foreach (StackValue element in svarr)
+            {
                 if (element.IsArray)
                 {
+                    var elementArray = heap.ToHeapObject<DSArray>(element);
                     is2DArray = true;
-                    numOfCols = Math.Max(heap.GetHeapElement(element).VisibleSize, numOfCols);
+                    numOfCols = Math.Max(elementArray.VisibleSize, numOfCols);
                 }
+            }
             if (is2DArray == false)
                 return sv;
             //By now the numCols and numRows are confirmed
@@ -2163,7 +2171,7 @@ namespace ProtoCore.Lang
             for (int c1 = 0; c1 < numOfRows; c1++)
             {
                 int c2 = 1;
-                StackValue rowArray = heap.GetHeapElement(sv).GetItemAt(c1);
+                StackValue rowArray = array.GetItemAt(c1);
                 if (!rowArray.IsArray)
                     original[c1, 0] = rowArray;
                 else

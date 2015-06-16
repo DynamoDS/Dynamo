@@ -533,7 +533,14 @@ namespace ProtoCore.DSASM
 
         public StackValue GetValueFromIndex(int index, RuntimeCore runtimeCore)
         {
-            return StackUtils.GetValue(this, index, runtimeCore);
+            if (index >= VisibleSize || index < 0)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                return StackValue.Null;
+            }
+
+            return GetItemAt(index);
         }
 
         public StackValue SetValueAtIndex(int index, StackValue value, RuntimeCore runtimeCore)

@@ -3146,8 +3146,8 @@ namespace ProtoCore.DSASM
                         {
                             //push its dimension value
                             StackValue dimValArraySv = rmem.Pop();
-                            HeapElement he = rmem.Heap.GetHeapElement(dimValArraySv);
-                            foreach (StackValue dimValSv in he.VisibleItems)
+                            var dimValArray = rmem.Heap.ToHeapObject<DSArray>(dimValArraySv);
+                            foreach (StackValue dimValSv in dimValArray.Values)
                             {
                                 rmem.Push(dimValSv);
                             }
