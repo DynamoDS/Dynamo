@@ -1088,12 +1088,8 @@ namespace Dynamo.Controls
 
             foreach (var kvp in geometryDictionary)
             {
-                var model3d = kvp.Value;                
-                if (model3d is GeometryModel3D)
-                {
-                    if (!model3d.IsAttached)
-                        model3d.Attach(View.RenderHost);                      
-                }               
+                var model3d = kvp.Value;
+                model3d.Attach(View.RenderHost);                             
             }          
         }
 
