@@ -29,6 +29,16 @@ namespace DynamoCoreWpfTests
             return annotationViewOfType.First();
         }
 
+        
+        public NodeView NodeModelViewWithGuid(string guid)
+        {
+            var nodeViews = View.NodeViewsInFirstWorkspace();
+            var nodeViewsOfType = nodeViews.Where(x => x.ViewModel.NodeLogic.GUID.ToString() == guid);
+            Assert.AreEqual(1, nodeViewsOfType.Count(), "Expected a single NodeView with guid: " + guid);
+
+            return nodeViewsOfType.First();
+        }
+
         public override void Open(string path)
         {
             base.Open(path);
@@ -91,6 +101,23 @@ namespace DynamoCoreWpfTests
             //Group textblock should be visible.
             Assert.IsTrue(annotationView.GroupTextBlock.IsVisible);
 
+        }
+
+        [Test]
+        public void TestAnnotationOnDummyNodes()
+        {
+            Open(@"UI\GroupDummyNodes.dyn");
+
+            //check whether the Dummy nodes have the same GUID.
+            var nodeView = NodeModelViewWithGuid("de745c17-d6ef-4ff8-ac09-0d1703f58de5");
+            Assert.IsNotNull(nodeView);
+
+            //check whether there is a GROUP around Dummy nodes.
+            var annotationView = NodeViewWithGuid("ce97bb23-ad59-461b-ae81-17e8c48cf8de");
+            Assert.IsNotNull(annotationView);
+
+            var modelCount = annotationView.ViewModel.AnnotationModel.SelectedModels.Count();
+            Assert.AreEqual(1, modelCount);
         }
     }
 }
