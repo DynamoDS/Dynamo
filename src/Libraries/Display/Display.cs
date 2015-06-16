@@ -5,17 +5,24 @@ using Analysis;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using DSCore;
+using Math = DSCore.Math;
 
-namespace DSCore
+namespace Display
 {
     public class Display :  IGraphicItem
     {
+        #region private members
+
         private readonly Geometry geometry;
         private readonly Color singleColor;
-        private Color[][] colorMap;
-        private bool renderEdges = false;
+        private readonly Color[][] colorMap;
         private const int LowestPower = 3;
         private const int HighestPower = 10;
+
+        #endregion
+
+        #region private constructors
 
         private Display(Geometry geometry, Color color)
         {
@@ -29,14 +36,9 @@ namespace DSCore
             colorMap = ComputeColorMap(surface, uvs, colors, samples, samples);
         }
 
-        /// <summary>
-        /// Compute a set of color maps from a set of SurfaceData objects.
-        /// </summary>
-        /// <returns></returns>
-        private static Color[][] ComputeColorMap(Surface surface, IEnumerable<UV> uvs,  Color[] colors, int samplesU, int samplesV)
-        {
-            return Utils.CreateGradientColorMap(colors, uvs, samplesU, samplesV);
-        }
+        #endregion
+
+        #region static constructors
 
         /// <summary>
         /// Display geometry using a color.
@@ -60,12 +62,14 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Display interpolated color values on a surface from data stored in a SurfaceData object.
+        /// Display interpolated color values on a surface given a list of colors and a list of UVs .
         /// </summary>
         /// <param name="surface">The surface on which to apply the colors.</param>
         /// <param name="uvs">A set of UV locations on the surface corresponding to the colors.</param>
         /// <param name="colors">A set of Colors corresponding to the uvs.</param>
-        /// <param name="precision">A value between 0.0 (low) and 1.0 (high) which defines the resolution</param>
+        /// <param name="precision">A value between 0.0 (low) and 1.0 (high) which defines the resolution.
+        /// The default value is 0.75. This value controls the number of samples at which interpolated color 
+        /// values are calculated.</param>
         /// <returns>A Display object.</returns>
         public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors, double precision = 0.75)
         {
@@ -99,6 +103,10 @@ namespace DSCore
             return new Display(surface, uvs, colors, samples);
         }
 
+        #endregion
+
+        #region public methods
+
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
@@ -115,6 +123,24 @@ namespace DSCore
 
                 CreateColorMapOnSurface(colorMap, package, parameters);
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, singleColor != null ? singleColor.ToString() : "Multiple colors.");
+        }
+
+        #endregion
+
+        #region private helper methods
+
+        /// <summary>
+        /// Compute a set of color maps from a set of SurfaceData objects.
+        /// </summary>
+        /// <returns></returns>
+        private static Color[][] ComputeColorMap(Surface surface, IEnumerable<UV> uvs, Color[] colors, int samplesU, int samplesV)
+        {
+            return Utils.CreateGradientColorMap(colors, uvs, samplesU, samplesV);
         }
 
         private void CreateColorMapOnSurface(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
@@ -148,7 +174,7 @@ namespace DSCore
 
             geometry.Tessellate(package, parameters);
 
-            if (renderEdges)
+            if (parameters.ShowEdges)
             {
                 var surf = geometry as Surface;
                 if (surf != null)
@@ -203,11 +229,6 @@ namespace DSCore
             return arr;
         }
 
-        public override string ToString()
-        {
-            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, singleColor != null ? singleColor.ToString() : "Multiple colors.");
-        }
-
         private static int ComputeSamplesFromNormalizedValue(double value, int lowestPower, int highestPower)
         {
             // Calculate the size of the image
@@ -217,5 +238,7 @@ namespace DSCore
             var finalExp = (int)Math.Pow(2, (int) (LowestPower + t));
             return finalExp;
         }
+
+        #endregion
     }
 }

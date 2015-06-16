@@ -13,49 +13,49 @@ namespace DisplayTests
         [Test]
         public void BySurfaceUVsColors_Construction_AllGood()
         {
-            Assert.DoesNotThrow(()=>Display.BySurfaceUvsColors(
+            Assert.DoesNotThrow(()=>Display.Display.BySurfaceUvsColors(
                 CreateOneSurface(), CreateThreeUvs(), CreateThreeColors())); 
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_NullSurface_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.BySurfaceUvsColors(
+            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceUvsColors(
                 null, CreateThreeUvs(), CreateThreeColors()));
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_NullUvs_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.BySurfaceUvsColors(
+            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceUvsColors(
                 CreateOneSurface(), null, CreateThreeColors())); 
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_EmptyUvs_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.BySurfaceUvsColors(
+            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceUvsColors(
                 CreateOneSurface(), new UV[]{}, CreateThreeColors())); 
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_PrecisionTooLow_ThrowsException()
         {
-            Assert.Throws<Exception>(() => Display.BySurfaceUvsColors(
+            Assert.Throws<Exception>(() => Display.Display.BySurfaceUvsColors(
                 CreateOneSurface(), CreateThreeUvs(), CreateThreeColors(), -42.0)); 
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_PrecisionTooHigh_ThrowsException()
         {
-            Assert.Throws<Exception>(() => Display.BySurfaceUvsColors(
+            Assert.Throws<Exception>(() => Display.Display.BySurfaceUvsColors(
                 CreateOneSurface(), CreateThreeUvs(), CreateThreeColors(), 42.0)); 
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_UvsColorsCountMismatch_ThrowsException()
         {
-            Assert.Throws<Exception>(() => Display.BySurfaceUvsColors(
+            Assert.Throws<Exception>(() => Display.Display.BySurfaceUvsColors(
                 CreateOneSurface(), CreateTwoUvs(), CreateThreeColors(), 42.0)); 
         }
 
