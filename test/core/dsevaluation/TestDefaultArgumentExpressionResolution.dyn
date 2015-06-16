@@ -1,4 +1,4 @@
-<Workspace Version="0.8.2.1592" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="0.8.1.1592" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="3b92db37-3646-429a-9ec0-2fc09d0d5643" type="Dynamo.Nodes.DSFunction" nickname="Point.XYZ" x="280.5" y="450.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\bin\AnyCPU\Debug\FFITarget.dll" function="FFITarget.DesignScript.Point.XYZ@double,double,double" />
