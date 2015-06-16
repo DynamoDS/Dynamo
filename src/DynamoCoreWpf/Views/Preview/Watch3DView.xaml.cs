@@ -57,22 +57,20 @@ namespace Dynamo.Controls
         private PerspectiveCamera camera;
         private Color4 selectionColor;
         private Color4 materialColor;
-        private bool showShadows;
-        private Color4 lightColor;
-        private Vector3 lightDirection;
+        private Vector3 directionalLightDirection;
+        private Color4 directionalLightColor;
         private DirectionalLight3D directionalLight;
         private Color4 defaultLineColor;
         private Color4 defaultPointColor;
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
+        private int renderingTier;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
 #endif
 
         #endregion
-
-        #region public properties
 
         /// <summary>
         /// The LeftClickCommand is set according to the
@@ -95,6 +93,8 @@ namespace Dynamo.Controls
                 return null;
             }
         }
+
+        #region public properties
 
         public LineGeometry3D Grid
         {
@@ -123,15 +123,9 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
-        /// <summary>
-        /// Used for testing to track the number of meshes that are merged
-        /// during render.
-        /// </summary>
-        public int MeshCount { get; set; }
+        public PhongMaterial WhiteMaterial { get; set; }
 
-        public PhongMaterial WhiteMaterial { get; private set; }
-
-        public PhongMaterial SelectedMaterial { get; private set; }
+        public PhongMaterial SelectedMaterial { get; set; }
 
         public Transform3D Model1Transform { get; private set; }
         
@@ -155,7 +149,7 @@ namespace Dynamo.Controls
                 return this.camera;
             }
 
-            protected set
+            set
             {
                 camera = value;
                 NotifyPropertyChanged("Camera");
@@ -174,7 +168,8 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
-        private Dictionary<string, Model3D> geometryDictionary;
+        private Dictionary<string, Model3D> geometryDictionary= new Dictionary<string, Model3D>();
+
         public Dictionary<string, Model3D> GeometryDictionary
         {
             get
@@ -208,13 +203,11 @@ namespace Dynamo.Controls
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
             Unloaded += OnViewUnloaded;
-            geometryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
         }
 
         public Watch3DView(Guid id)
         {
-
             SetupScene();
 
             InitializeComponent();
@@ -223,9 +216,7 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-            geometryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
-
         }
 
         public Watch3DView(Guid id, IWatchViewModel dataContext)
@@ -240,7 +231,6 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-            geometryDictionary = new Dictionary<string, Model3D>();
             InitializeHelix();
         }
 
@@ -252,8 +242,8 @@ namespace Dynamo.Controls
             var lineColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
             defaultLineColor = new Color4(lineColor.R/255.0f, lineColor.G/255.0f, lineColor.B/255.0f, lineColor.A/255.0f);
 
-            lightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
-            lightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+            directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+            directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
 
             var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
@@ -307,8 +297,8 @@ namespace Dynamo.Controls
         {
             directionalLight = new DirectionalLight3D
             {
-                Color = lightColor,
-                Direction = lightDirection
+                Color = directionalLightColor,
+                Direction = directionalLightDirection
             };
 
             if (geometryDictionary != null && !geometryDictionary.ContainsKey("DirectionalLight"))
@@ -376,16 +366,24 @@ namespace Dynamo.Controls
 
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
+            UnregisterEventHandlers();
+        }
+
+        private void UnregisterEventHandlers()
+        {
             var vm = DataContext as IWatchViewModel;
             if (vm == null) return;
+
             vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+
             vm.VisualizationManager.RenderSelection -= VisualizationManager_RenderSelection;
             vm.VisualizationManager.UpdateGeometryOnNodeDeletion -= VisualizationManager_UpdateGeometryOnNodeDeletion;
             vm.VisualizationManager.InitializeGeomtery -= VisualizationManager_InitializeGeomtery;
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
@@ -408,7 +406,7 @@ namespace Dynamo.Controls
             vm.VisualizationManager.UpdateGeometryOnNodeDeletion += VisualizationManager_UpdateGeometryOnNodeDeletion;
             vm.VisualizationManager.InitializeGeomtery += VisualizationManager_InitializeGeomtery;
 
-            var renderingTier = (RenderCapability.Tier >> 16);
+            renderingTier = (RenderCapability.Tier >> 16);
             var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
             var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
@@ -421,6 +419,7 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            vm.ViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
         }
 
         /// <summary>
@@ -524,7 +523,12 @@ namespace Dynamo.Controls
                     .Where(x => x.Value is GeometryModel3D)
                     .Select(x => x).ToArray();
 
-            return geometryModels;
+            return geometryModels;   
+        }
+
+        void Model_ShutdownStarted(Models.DynamoModel model)
+        {
+            UnregisterEventHandlers();
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -560,9 +564,9 @@ namespace Dynamo.Controls
             var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
             var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
             var v = Vector3.Transform(cf, qaz*qel);
-            lightDirection = v;
+            directionalLightDirection = v;
 
-            if ( !directionalLight.Direction.Equals(lightDirection))
+            if ( !directionalLight.Direction.Equals(directionalLightDirection))
             {
                 directionalLight.Direction = v;
             }
@@ -818,11 +822,16 @@ namespace Dynamo.Controls
                 return;
             }
 
+            // Don't render if the user's system is incapable.
+            if (renderingTier == 0)
+            {
+                return;
+            }
+
 #if DEBUG
             renderTimer.Start();
 #endif                  
             Text = null;
-            MeshCount = 0;
 
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
@@ -850,8 +859,6 @@ namespace Dynamo.Controls
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-            MeshCount = 0;
-
             //Clear the geometry values before adding the package.
             VisualizationManager_InitializeGeomtery();
 
@@ -1013,7 +1020,6 @@ namespace Dynamo.Controls
                     ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
                     geometryDictionary.Add(id, meshGeometry3D);
                 }
-
                 var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
                 var idxCount = meshSet.Positions.Count;
 
@@ -1029,8 +1035,6 @@ namespace Dynamo.Controls
                     var pt = meshSet.Positions[idxCount];
                     parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(id), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                 }
-
-                MeshCount++;
 
                 meshGeometry3D.Geometry = meshSet;
             }

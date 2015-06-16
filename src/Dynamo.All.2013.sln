@@ -180,11 +180,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryZeroTouch", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryUI", "Libraries\Samples\SampleLibraryUI\SampleLibraryUI.csproj", "{0A4B4EEA-8FAB-4AC8-90D4-27DBC5B0CF2A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4466E6F6-F644-43AB-96B3-5ECE1622E711}"
-	ProjectSection(SolutionItems) = preProject
-		Config.xml = Config.xml
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTestServices", "..\test\Libraries\SystemTestServices\SystemTestServices.csproj", "{89563CD0-509B-40A5-8728-9D3EC6FE8410}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryTests", "Libraries\Samples\SampleLibraryTests\SampleLibraryTests.csproj", "{933B8108-4E74-470A-86C7-4B7F633115B9}"
