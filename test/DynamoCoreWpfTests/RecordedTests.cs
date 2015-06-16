@@ -5082,6 +5082,92 @@ namespace DynamoCoreWpfTests
             });
         }
         #endregion
+
+        [Test]
+        public void MAGN_7638_assignValueToVariable()
+        {
+            // Check whether connections are swapping after assigning
+            // value to variable
+            // Scenario
+            //  a) create -,/ node and connect the input with value 10,20;
+            //  b) assign input value to variable a and b,check the result
+            // issue link: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5453#
+
+
+            RunCommandsFromFile("MAGN-7638assignValueToVariable.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                var divisorID = "2b213bb4-8d6f-4d82-86a7-29f83b6b9272";
+                var minusID = "6024f3ae-d6b7-4ee5-8dac-67100c631189";
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check / ,-;
+                        AssertPreviewValue( divisorID,0.666667);
+                        AssertPreviewValue(minusID,-1);
+                        break;
+
+                    case "SecondRun":
+                        //Check / ,-;                       
+                        AssertPreviewValue(divisorID, 0.666667);
+                        AssertPreviewValue(minusID, -1);
+                        break;
+
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7159_ImagePixel()
+        {
+            // Check Image.pixel
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check image.Pixel
+            //  c) change input value and check image.Pixel
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7159#
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7159_ImagePixel.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // give absolute path
+                string directory = Path.Combine(TestDirectory, @"core\recorded");
+                var textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("3a22370f-7f07-4bd6-b4fb-5680ec82e8d4");
+                textFileName.Value = Path.Combine(directory, textFileName.Value);
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check Image.Pixel
+                        AssertPreviewCount("e2f85c04-d992-41dd-8e0b-1def88f2c834", 4);
+                        var colorList = GetFlattenedPreviewValues("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        foreach (var ele in colorList)
+                        {
+                            Assert.IsNotNull(ele);
+                        }
+                        NodeModel node1 = workspace.NodeFromWorkspace
+                              ("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+                        break;
+                    case "SecondRun":
+
+                        //Check Image.Pixel
+                        AssertPreviewCount("e2f85c04-d992-41dd-8e0b-1def88f2c834", 5);
+                        var colorListt = GetFlattenedPreviewValues("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        foreach (var ele in colorListt)
+                        {
+                            Assert.IsNotNull(ele);
+                        }
+                        NodeModel node11 = workspace.NodeFromWorkspace
+                              ("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        Assert.AreEqual(ElementState.Active, node11.State);
+                        break;
+                }
+            });
+        }
     }
 
 }
