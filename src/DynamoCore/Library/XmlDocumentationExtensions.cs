@@ -73,6 +73,9 @@ namespace Dynamo.DSEngine
         {
             var assemblyName = function.Assembly;
 
+            if (string.IsNullOrEmpty(assemblyName))
+                return String.Empty;
+
             var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
                 (assemblyName, GetMemberElementName(function));
 

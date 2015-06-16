@@ -48,11 +48,15 @@ namespace Dynamo.DSEngine
         {
             string cashedAssemblyLocation = assemblyLocation;
             if (pathManager != null)
+            {
                 pathManager.ResolveLibraryPath(ref assemblyLocation);
+            }
 
             // Some nodes don't have assembly, e.g. operators, but they do have xml file.
             if (String.IsNullOrEmpty(assemblyLocation))
+            {
                 assemblyLocation = cashedAssemblyLocation;
+            }
 
             var assemblyPath = Path.GetFullPath(assemblyLocation);
 
