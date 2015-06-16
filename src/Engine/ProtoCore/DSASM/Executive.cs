@@ -1260,7 +1260,7 @@ namespace ProtoCore.DSASM
             if (!pointer.IsString)
                 return null;
 
-            string str = rmem.Heap.GetString(pointer);
+            string str = rmem.Heap.ToHeapObject<DSString>(pointer).Value;
             if (string.IsNullOrEmpty(str))
                 return null;
 
@@ -1270,11 +1270,11 @@ namespace ProtoCore.DSASM
         private string GetArrayTrace(StackValue pointer, int blockId, int index, HashSet<int> pointers)
         {
             StringBuilder arrayelements = new StringBuilder();
-            HeapElement hs = rmem.Heap.GetHeapElement(pointer); 
+            var array = rmem.Heap.ToHeapObject<DSArray>(pointer);
 
-            for (int n = 0; n < hs.VisibleSize; ++n)
+            for (int n = 0; n < array.VisibleSize; ++n)
             {
-                StackValue sv = hs.GetItemAt(n);
+                StackValue sv = array.GetValueFromIndex(n, runtimeCore);
                 if (sv.IsArray)
                 {
                     int ptr = (int)sv.opdata;
@@ -1290,10 +1290,10 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    arrayelements.Append(UnboxArray(hs.GetItemAt(n), blockId, index));
+                    arrayelements.Append(UnboxArray(array.GetValueFromIndex(n, runtimeCore), blockId, index));
                 }
 
-                if (n < hs.VisibleSize - 1)
+                if (n < array.VisibleSize - 1)
                 {
                     arrayelements.Append(",");
                 }
@@ -3239,7 +3239,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     index = (int)rtSymbols[n].Sv.opdata;
-                    rtSymbols[n].Sv = rmem.Heap.GetHeapElement(ptr).GetItemAt(index);
+                    rtSymbols[n].Sv = rmem.Heap.ToHeapObject<DSObject>(ptr).GetValueFromIndex(index, runtimeCore);
                 }
 
                 // Once a pointer to the member is retrieved, get its indexed value
@@ -3264,7 +3264,7 @@ namespace ProtoCore.DSASM
                 // Peek into the pointed data using nextPtr. 
                 // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
                 StackValue nextPtr = opVal;
-                var data = rmem.Heap.GetHeapElement(nextPtr).GetItemAt(0);
+                var data = rmem.Heap.ToHeapObject<DSObject>(nextPtr).GetValueFromIndex(0, runtimeCore);
 
                 bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid;
                 if (isActualData)
@@ -3368,7 +3368,7 @@ namespace ProtoCore.DSASM
                     return StackValue.Null;
                 }
                 var dsString = runtimeCore.Heap.ToHeapObject<DSString>(svArray);
-                var substrings = zippedIndices.Select(s => dsString[s[0]]);
+                var substrings = zippedIndices.Select(s => dsString.GetValueAtIndex(s[0], runtimeCore));
                 string result = string.Join(string.Empty, substrings.Select(s => rmem.Heap.ToHeapObject<DSString>(s).Value));
                 return runtimeCore.RuntimeMemory.Heap.AllocateString(result);
             }
@@ -3401,7 +3401,7 @@ namespace ProtoCore.DSASM
                 if (op1.IsMemberVariableIndex)
                 {
                     StackValue thisptr = rmem.GetAtRelative(StackFrame.kFrameIndexThisPtr);
-                    thisArray = rmem.Heap.GetHeapElement(thisptr).GetItemAt(stackindex);
+                    thisArray = rmem.Heap.ToHeapObject<DSObject>(thisptr).GetValueFromIndex(stackindex, runtimeCore);
                 }
                 else
                 {
@@ -3590,7 +3590,7 @@ namespace ProtoCore.DSASM
                 DSArray array = rmem.Heap.ToHeapObject<DSArray>(argArraySv);
                 for (int i = 0; i < array.VisibleSize; ++i)
                 {
-                    StackValue sv = rmem.Heap.GetHeapElement(argArraySv).GetItemAt(i);
+                    StackValue sv = array.GetValueFromIndex(i, runtimeCore);
                     argSvList.Add(sv); //actual arguments
                     Type paramType = new Type();
                     paramType.UID = sv.metaData.type;
@@ -3698,7 +3698,7 @@ namespace ProtoCore.DSASM
                         else
                         {
                             StackValue ptr = rmem.Stack.Last();
-                            fpSv = rmem.Heap.GetHeapElement(ptr).GetItemAt((int)fpSv.opdata);
+                            fpSv = rmem.Heap.ToHeapObject<DSObject>(ptr).GetValueFromIndex((int)fpSv.opdata, runtimeCore);
                         }
                         //assuming the dimension is zero, as funtion call with nonzero dimension is not supported yet
 
@@ -3717,7 +3717,7 @@ namespace ProtoCore.DSASM
                             // Determine if we still need to move one more time on the heap
                             // Peek into the pointed data using nextPtr. 
                             // If nextPtr is not a pointer (a primitive) then return the data at nextPtr
-                            var data = rmem.Heap.GetHeapElement(fpSv).GetItemAt(0);
+                            var data = rmem.Heap.ToHeapObject<DSObject>(fpSv).GetValueFromIndex(0, runtimeCore);
 
                             bool isActualData = !data.IsPointer && 
                                                 !data.IsArray && 
@@ -4719,7 +4719,8 @@ namespace ProtoCore.DSASM
 
             StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
             runtimeVerify(svThis.IsPointer);
-            StackValue svProperty = rmem.Heap.GetHeapElement(svThis).GetItemAt(stackIndex);
+            var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
+            StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
             StackValue svOldData = svData;
             Type targetType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
@@ -4771,12 +4772,12 @@ namespace ProtoCore.DSASM
                 if (svData.IsPointer || svData.IsArray)
                 {
                     // Assign the src pointer directily to this property
-                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svData);
+                    thisObject.SetValueAtIndex(stackIndex, svData, runtimeCore);
                 }
                 else
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] { svData });
-                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svNewProperty);
+                    thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
 
                     exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
@@ -4790,12 +4791,12 @@ namespace ProtoCore.DSASM
             {
                 if (svData.IsPointer || svData.IsArray)
                 {
-                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svData);
+                    thisObject.SetValueAtIndex(stackIndex, svData, runtimeCore);
                 }
                 else
                 {
                     StackValue svNewProperty = rmem.Heap.AllocatePointer(new [] {svData});
-                    rmem.Heap.GetHeapElement(svThis).SetItemAt(stackIndex, svNewProperty);
+                    thisObject.SetValueAtIndex(stackIndex, svNewProperty, runtimeCore);
 
                     exe.classTable.ClassNodes[classIndex].symbols.symbolList[stackIndex].heapIndex = (int)svNewProperty.opdata;
                 }
@@ -4891,10 +4892,11 @@ namespace ProtoCore.DSASM
             StackValue data = rmem.Pop();
             if (!finalPointer.IsNull)
             {
-                if (listInfo[0].Sv.IsDynamic)
+                StackValue rtSymbol = listInfo[0].Sv;
+                if (rtSymbol.IsDynamic)
                 {
                     classsccope = listInfo[1].Sv.metaData.type;
-                    bool succeeded = ProcessDynamicVariable((listInfo[0].Dimlist != null), ref listInfo[0].Sv, classsccope);
+                    bool succeeded = ProcessDynamicVariable((listInfo[0].Dimlist != null), ref rtSymbol, classsccope);
                     //if the identifier is unbounded. Push null
                     if (!succeeded)
                     {
@@ -4902,24 +4904,24 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        if (listInfo[0].Sv.IsStaticVariableIndex)
+                        if (rtSymbol.IsStaticVariableIndex)
                         {
-                            SetOperandData(listInfo[0].Sv, data, listInfo[0].BlockId);
+                            SetOperandData(rtSymbol, data, listInfo[0].BlockId);
                             ++pc;
                             return;
                         }
-                        tryPointer = rmem.Heap.GetHeapElement(finalPointer).GetItemAt((int)listInfo[0].Sv.opdata);
+                        tryPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex((int)rtSymbol.opdata, runtimeCore);
                     }
                 }
-                else if (listInfo[0].Sv.IsStaticVariableIndex)
+                else if (rtSymbol.IsStaticVariableIndex)
                 {
-                    SetOperandData(listInfo[0].Sv, data, listInfo[0].BlockId);
+                    SetOperandData(rtSymbol, data, listInfo[0].BlockId);
                     ++pc;
                     return;
                 }
                 else
                 {
-                    tryPointer = rmem.Heap.GetHeapElement(finalPointer).GetItemAt((int)listInfo[0].Sv.opdata);
+                    tryPointer = rmem.Heap.ToHeapObject<DSObject>(finalPointer).GetValueFromIndex((int)rtSymbol.opdata, runtimeCore);
                 }
             }
             else
@@ -4938,42 +4940,45 @@ namespace ProtoCore.DSASM
             if (tryPointer.IsNull)
             { //do nothing
             }
-            else if (rmem.Heap.GetHeapElement(tryPointer).VisibleSize == 1 &&
-                !rmem.Heap.GetHeapElement(tryPointer).GetItemAt(0).IsPointer &&
-                !rmem.Heap.GetHeapElement(tryPointer).GetItemAt(0).IsArray)
-            {
-                // TODO Jun:
-                // Spawn GC here
-
-                // Setting a primitive
-                DX = rmem.Heap.GetHeapElement(tryPointer).GetItemAt(0);
-                rmem.Heap.GetHeapElement(tryPointer).SetItemAt(0, data);
-            }
-            else if (finalPointer.IsPointer || data.IsNull)
-            {
-                if (data.IsNull)
-                {
-                    StackValue ptr = rmem.Heap.AllocatePointer(new [] { data });
-                }
-
-                // Setting a pointer
-                int idx = (int)listInfo[0].Sv.opdata;
-
-                DSObject dsObject = rmem.Heap.ToHeapObject<DSObject>(finalPointer);
-                DX = dsObject.GetValueFromIndex(idx, runtimeCore);
-                dsObject.SetValueAtIndex(idx, data, runtimeCore);
-            }
             else
             {
-                // TODO Jun:
-                // Spawn GC here
-                runtimeVerify(finalPointer.IsArray);
+                var pointer = rmem.Heap.ToHeapObject<DSObject>(tryPointer);
+                var firstItem = pointer.VisibleSize == 1 ? pointer.GetValueFromIndex(0, runtimeCore) : StackValue.Null;
+                if (pointer.VisibleSize == 1 && !firstItem.IsPointer && !firstItem.IsArray)
+                {
+                    // TODO Jun:
+                    // Spawn GC here
 
-                // Setting an array
-                var finalPointerArray = rmem.Heap.ToHeapObject<DSArray>(finalPointer);
-                var index = listInfo[0].Dimlist[0];
-                DX = finalPointerArray.GetValueFromIndex(index, runtimeCore);
-                finalPointerArray.SetValueForIndex(index, data, runtimeCore);
+                    // Setting a primitive
+                    DX = firstItem;
+                    pointer.SetValueAtIndex(0, data, null);
+                }
+                else if (finalPointer.IsPointer || data.IsNull)
+                {
+                    if (data.IsNull)
+                    {
+                        StackValue ptr = rmem.Heap.AllocatePointer(new[] { data });
+                    }
+
+                    // Setting a pointer
+                    int idx = (int)listInfo[0].Sv.opdata;
+
+                    DSObject dsObject = rmem.Heap.ToHeapObject<DSObject>(finalPointer);
+                    DX = dsObject.GetValueFromIndex(idx, runtimeCore);
+                    dsObject.SetValueAtIndex(idx, data, runtimeCore);
+                }
+                else
+                {
+                    // TODO Jun:
+                    // Spawn GC here
+                    runtimeVerify(finalPointer.IsArray);
+
+                    // Setting an array
+                    var finalPointerArray = rmem.Heap.ToHeapObject<DSArray>(finalPointer);
+                    var index = listInfo[0].Dimlist[0];
+                    DX = finalPointerArray.GetValueFromIndex(index, runtimeCore);
+                    finalPointerArray.SetValueForIndex(index, data, runtimeCore);
+                }
             }
 
             ++pc;

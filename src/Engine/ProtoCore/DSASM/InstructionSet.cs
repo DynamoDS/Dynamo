@@ -782,7 +782,7 @@ namespace ProtoCore.DSASM
                     return StackValue.BuildBoolean(true);
 
                 case AddressType.String:
-                    string str = runtimeCore.RuntimeMemory.Heap.GetString(this);
+                    string str = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSString>(this).Value;
                     return string.IsNullOrEmpty(str) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:

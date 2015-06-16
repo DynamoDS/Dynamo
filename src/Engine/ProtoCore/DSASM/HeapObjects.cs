@@ -217,8 +217,8 @@ namespace ProtoCore.DSASM
 
             if (index >= VisibleSize || index < 0)
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                if (runtimeCore != null)
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -373,8 +373,8 @@ namespace ProtoCore.DSASM
 
             if (index >= VisibleSize || index < 0)
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                if (runtimeCore != null)
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -556,8 +556,8 @@ namespace ProtoCore.DSASM
         {
             if (index >= VisibleSize || index < 0)
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                if (runtimeCore != null)
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -568,8 +568,8 @@ namespace ProtoCore.DSASM
         {
             if (index >= VisibleSize || index < 0)
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                if (runtimeCore != null)
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -581,7 +581,7 @@ namespace ProtoCore.DSASM
 
     public class DSString : HeapElement
     {
-        private StackValue pointer = StackValue.Null;
+        public StackValue Pointer = StackValue.Null;
 
         public DSString(int size, Heap heap)
             : base(size, heap)
@@ -591,56 +591,56 @@ namespace ProtoCore.DSASM
 
         public void SetPointer(StackValue pointer)
         {
-            this.pointer = pointer;
+            this.Pointer = pointer;
         }
 
         public string Value
         {
             get
             {
-                return heap.GetString(pointer);
+                return heap.GetString(this);
             }
         }
 
-        public StackValue this[int index]
+        public StackValue GetValueAtIndex(int index, RuntimeCore runtimeCore)
         {
-            get
+            string str = heap.GetString(this);
+            if (str == null)
+                return StackValue.Null;
+
+            if (index < 0)
             {
-                string str = heap.GetString(pointer);
-                if (str == null)
-                    return StackValue.Null;
-
-                if (index < 0)
-                {
-                    index = index + str.Length;
-                }
-
-                if (index >= str.Length || index < 0)
-                {
-                    throw new ArgumentOutOfRangeException("index", Resources.kArrayOverIndexed);
-                }
-
-                return heap.AllocateString(str.Substring(index, 1));
+                index = index + str.Length;
             }
+
+            if (index >= str.Length || index < 0)
+            {
+                if (runtimeCore != null)
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kStringOverIndexed);
+                return StackValue.Null;
+            }
+
+            return heap.AllocateString(str.Substring(index, 1));
         }
 
-        public StackValue this[StackValue index]
+        public StackValue GetValueAtIndex(StackValue index, RuntimeCore runtimeCore)
         {
-            get
+            int pos = Constants.kInvalidIndex;
+            if (index.IsNumeric)
             {
-                int pos = Constants.kInvalidIndex;
-                if (index.IsNumeric)
-                {
-                    pos = (int)index.ToInteger().opdata;
-                    return this[pos];
-                }
-                else if (index.IsArrayKey)
-                {
-                    pos = (int)index.opdata;
-                    return this[pos];
-                }
-                else
-                    return StackValue.Null;
+                pos = (int)index.ToInteger().opdata;
+                return GetValueAtIndex(index, runtimeCore);
+            }
+            else if (index.IsArrayKey)
+            {
+                pos = (int)index.opdata;
+                return GetValueAtIndex(index, runtimeCore);
+            }
+            else
+            {
+                if (runtimeCore != null)
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidIndexing, Resources.kInvalidArguments);
+                return StackValue.Null;
             }
         }
 
@@ -650,7 +650,7 @@ namespace ProtoCore.DSASM
             if (otherString == null)
                 return false;
 
-            if (object.ReferenceEquals(heap, otherString.heap) && pointer.Equals(otherString.pointer))
+            if (object.ReferenceEquals(heap, otherString.heap) && Pointer.Equals(otherString.Pointer))
                 return true;
 
             return Value.Equals(otherString.Value);

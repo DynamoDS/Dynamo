@@ -136,7 +136,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public StackValue GetItemAt(int index)
+        protected StackValue GetItemAt(int index)
         {
             return items[index];
         }
@@ -165,7 +165,7 @@ namespace ProtoCore.DSASM
         {
             if (value.IsString)
             {
-                string s = runtimeCore.Heap.GetString(value);
+                string s = runtimeCore.Heap.ToHeapObject<DSString>(value).Value;
                 return s.GetHashCode();
             }
             else
@@ -385,12 +385,9 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="pointer"></param>
         /// <returns></returns>
-        public string GetString(StackValue pointer)
+        public string GetString(DSString dsString)
         {
-            if (!pointer.IsString)
-                return null;
-
-            int index = (int)pointer.opdata;
+            int index = (int)dsString.Pointer.opdata;
             Validity.Assert(index >= 0 && index < heapElements.Count);
 
             string s;
@@ -400,19 +397,7 @@ namespace ProtoCore.DSASM
                 return null;
         }
 
-        /// <summary>
-        /// Get HeapElement that pointer represents.
-        /// </summary>
-        /// <param name="pointer"></param>
-        /// <returns></returns>
-        public HeapElement GetHeapElement(StackValue pointer)
-        {
-            int index = (int)pointer.opdata;
-            var heapElement = heapElements[index];
-            return heapElement;
-        }
-
-        public bool TryGetHeapElement(StackValue pointer, out HeapElement heapElement)
+        private bool TryGetHeapElement(StackValue pointer, out HeapElement heapElement)
         {
             heapElement = null;
             int index = (int)pointer.opdata;
@@ -668,7 +653,10 @@ namespace ProtoCore.DSASM
                         {
                             return true;
                         }
-                        return IsHeapCyclic(GetHeapElement(sv),  HeapID);
+
+                        HeapElement hpe;
+                        TryGetHeapElement(sv, out hpe);
+                        return IsHeapCyclic(hpe, HeapID);
                     }
                 }
             }

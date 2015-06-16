@@ -395,7 +395,6 @@ namespace ProtoCore
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 
-                var hpe = rmem.Heap.GetHeapElement(sv);
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one

@@ -183,8 +183,8 @@ namespace ProtoCore.Utils
             Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.VisibleItems)
             {
                 if (!usageFreq.ContainsKey(sv.metaData.type))
                     usageFreq.Add(sv.metaData.type, sv);
@@ -212,8 +212,8 @@ namespace ProtoCore.Utils
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode,int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.VisibleItems)
             {
                 ClassNode cn = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
                 if (!usageFreq.ContainsKey(cn))
@@ -243,8 +243,8 @@ namespace ProtoCore.Utils
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode, int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.VisibleItems)
             {
                 if (sv.IsArray)
                 {
@@ -339,22 +339,6 @@ namespace ProtoCore.Utils
             return array.Values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
         }
 
-        /// <summary>
-        /// Pull the heap element out of a heap object
-        /// </summary>
-        /// <param name="heapObject"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static HeapElement GetHeapElement(StackValue heapObject, RuntimeCore runtimeCore)
-        {
-            if (!heapObject.IsArray && !heapObject.IsPointer)
-            {
-                return null;
-            }
-
-            return runtimeCore.RuntimeMemory.Heap.GetHeapElement(heapObject);
-        }
-
         public static bool IsUniform(StackValue sv, RuntimeCore runtimeCore)
         {
             if (!sv.IsArray)
@@ -381,24 +365,24 @@ namespace ProtoCore.Utils
                 return false;
             }
 
-            HeapElement he = rmem.Heap.GetHeapElement(svArray);
-            if (!he.VisibleItems.Any())
+            var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
+            if (!array.VisibleItems.Any())
             {
                 return false;
             }
 
-            while (he.GetItemAt(0).IsArray)
+            while (array.GetValueFromIndex(0, runtimeCore).IsArray)
             {
-                he = rmem.Heap.GetHeapElement(he.GetItemAt(0));
+                array = rmem.Heap.ToHeapObject<DSArray>(array.GetValueFromIndex(0, runtimeCore));
 
                 // Handle the case where the array is valid but empty
-                if (!he.VisibleItems.Any())
+                if (!array.VisibleItems.Any())
                 {
                     return false;
                 }
             }
 
-            sv = he.GetItemAt(0).ShallowClone();
+            sv = array.GetValueFromIndex(0, runtimeCore).ShallowClone();
             return true;
         }
 

@@ -396,7 +396,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        return CompareStackValuesFromHeap(sv1, sv2, rtCore1, rtCore2, context);
+                        return ComparePointerFromHeap(sv1, sv2, rtCore1, rtCore2, context);
                     }
                 default :
                     return sv1.opdata == sv2.opdata;
@@ -404,19 +404,21 @@ namespace ProtoCore.DSASM
         }
 
         //this method compares the heap for the stack variables and determines if the values of the heap are same
-        private static bool CompareStackValuesFromHeap(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context)
+        private static bool ComparePointerFromHeap(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context)
         {
-            HeapElement heap1 = ArrayUtils.GetHeapElement(sv1, rtCore1);
-            HeapElement heap2 = ArrayUtils.GetHeapElement(sv2, rtCore2);
+            var obj1 = rtCore1.Heap.ToHeapObject<DSObject>(sv1);
+            var obj2 = rtCore1.Heap.ToHeapObject<DSObject>(sv2);
 
-            if (heap1.VisibleSize != heap2.VisibleSize)
+            if (obj1.VisibleSize != obj2.VisibleSize)
             {
                 return false;
             }
 
-            for (int i = 0; i < heap1.VisibleSize; i++)
+            for (int i = 0; i < obj1.VisibleSize; i++)
             {
-                if (!CompareStackValues(heap1.GetItemAt(i), heap2.GetItemAt(i), rtCore1, rtCore2, context))
+                if (!CompareStackValues(obj1.GetValueFromIndex(i, rtCore1), 
+                                        obj2.GetValueFromIndex(i, rtCore2), 
+                                        rtCore1, rtCore2, context))
                 {
                     return false;
                 }

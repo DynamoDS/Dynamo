@@ -613,10 +613,10 @@ namespace ProtoCore.Lang
                 if (Constants.kInvalidIndex != memvarIndex)
                 {
                     var obj = rmem.Heap.ToHeapObject<DSObject>(thisObject);
-                    StackValue svMemberPtr = obj.GetItemAt(memvarIndex);
+                    StackValue svMemberPtr = obj.GetValueFromIndex(memvarIndex, runtimeCore);
                     if (svMemberPtr.IsPointer)
                     {
-                        StackValue svFunctionPtr = rmem.Heap.ToHeapObject<DSObject>(svMemberPtr).GetItemAt(0);
+                        StackValue svFunctionPtr = rmem.Heap.ToHeapObject<DSObject>(svMemberPtr).GetValueFromIndex(0, runtimeCore);
                         if (svFunctionPtr.IsFunctionPointer)
                         {
                             // It is a function pointer
@@ -801,7 +801,7 @@ namespace ProtoCore.Lang
             if (!st.IsString) 
                 return result;
 
-            result = runtime.runtime.rmem.Heap.GetString(st);
+            result = runtime.runtime.rmem.Heap.ToHeapObject<DSString>(st).Value;
             result.Replace("\\\\", "\\");
             return result;
         }
@@ -1252,8 +1252,8 @@ namespace ProtoCore.Lang
                 return;
             }
 
-            var heapElement = ArrayUtils.GetHeapElement(sv, runtime.runtime.RuntimeCore);
-            foreach (var item in heapElement.VisibleItems)
+            var array = runtime.runtime.rmem.Heap.ToHeapObject<DSArray>(sv);
+            foreach (var item in array.VisibleItems)
             {
                 GetFlattenedArrayElements(item, runtime, ref list); 
             }
@@ -2171,13 +2171,13 @@ namespace ProtoCore.Lang
             for (int c1 = 0; c1 < numOfRows; c1++)
             {
                 int c2 = 1;
-                StackValue rowArray = array.GetItemAt(c1);
+                StackValue rowArray = array.GetValueFromIndex(c1, runtime.runtime.RuntimeCore);
                 if (!rowArray.IsArray)
                     original[c1, 0] = rowArray;
                 else
                 {
-                    var heapElement = heap.GetHeapElement(rowArray);
-                    var items = heapElement.VisibleItems.ToList();
+                    var row = heap.ToHeapObject<DSArray>(rowArray);
+                    var items = row.VisibleItems.ToList();
                     for (c2 = 0; c2 < items.Count(); c2++)
                     {
                         original[c1, c2] = items[c2];

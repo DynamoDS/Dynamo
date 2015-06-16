@@ -58,12 +58,8 @@ namespace ProtoTest.DSASM
             var str = heap.AllocateString("hello world");
 
             heap.GCMarkAndSweep(new List<StackValue>(), testExecutive);
-
-            HeapElement arrayHeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(array, out arrayHeapElement));
-
-            HeapElement strHeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(str, out strHeapElement));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(array));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(str));
         }
 
         /// <summary>
@@ -102,8 +98,7 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>() { array1}, testExecutive);
 
-            HeapElement arrayHeapElement;
-            Assert.IsTrue(heap.TryGetHeapElement(array1, out arrayHeapElement));
+            Assert.IsNotNull(heap.ToHeapObject<DSArray>(array1));
 
             heap.Free();
         }
@@ -143,8 +138,7 @@ namespace ProtoTest.DSASM
             // non pointer gc root won't retain memory
             heap.GCMarkAndSweep(allTypes, testExecutive);
 
-            HeapElement arrayHeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(array, out arrayHeapElement));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(array));
 
             heap.Free();
         }
@@ -163,14 +157,9 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
-            HeapElement array1HeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(array1, out array1HeapElement));
-
-            HeapElement array2HeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(array2, out array2HeapElement));
-
-            HeapElement array3HeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(array3, out array3HeapElement));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(array1));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(array2));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(array3));
         }
 
         /// <summary>
@@ -190,11 +179,8 @@ namespace ProtoTest.DSASM
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
 
-            HeapElement valHeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(val, out valHeapElement));
-
-            HeapElement arrayHeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(array, out arrayHeapElement));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(val));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(array));
         }
 
         /// <summary>
@@ -204,15 +190,13 @@ namespace ProtoTest.DSASM
         public void TestSelfReference()
         {
             var heap = new Heap();
-            var array = heap.AllocateArray(new StackValue[] { StackValue.Null });
-            var arrayHeapElement = heap.GetHeapElement(array);
+            var svArray = heap.AllocateArray(new StackValue[] { StackValue.Null });
+            var array = heap.ToHeapObject<DSArray>(svArray);
             // self reference
-            arrayHeapElement.SetItemAt(0, array);
+            array.SetValueForIndex(0, svArray, null);
 
             heap.GCMarkAndSweep(new List<StackValue>() {}, testExecutive);
-
-            HeapElement releasedHeapElement;
-            Assert.IsFalse(heap.TryGetHeapElement(array, out releasedHeapElement));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(svArray));
         }
 
         /// <summary>
@@ -222,19 +206,15 @@ namespace ProtoTest.DSASM
         public void TestCircularReference()
         {
             var heap = new Heap();
-            var array1 = heap.AllocateArray(new StackValue[] { StackValue.Null });
-            var array2 = heap.AllocateArray(new StackValue[] { array1 });
-            var array1HeapElement = heap.GetHeapElement(array1);
+            var svArray1 = heap.AllocateArray(new StackValue[] { StackValue.Null });
+            var svArray2 = heap.AllocateArray(new StackValue[] { svArray1 });
+            var array1 = heap.ToHeapObject<DSArray>(svArray1);
             // self reference
-            array1HeapElement.SetItemAt(0, array2);
+            array1.SetValueForIndex(0, svArray2, null);
 
             heap.GCMarkAndSweep(new List<StackValue>() { }, testExecutive);
-
-            HeapElement array1Hpe;
-            Assert.IsFalse(heap.TryGetHeapElement(array1, out array1Hpe));
-
-            HeapElement array2Hpe;
-            Assert.IsFalse(heap.TryGetHeapElement(array2, out array2Hpe));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(svArray1));
+            Assert.IsNull(heap.ToHeapObject<DSArray>(svArray2));
         }
     }
 }
