@@ -34,12 +34,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public HeapElement(StackValue[] arrayElements)
-        {
-            allocated = VisibleSize = arrayElements.Length;
-            items = arrayElements;
-        }
-
         private int GetNewSize(int size)
         {
             Validity.Assert(size > allocated);
