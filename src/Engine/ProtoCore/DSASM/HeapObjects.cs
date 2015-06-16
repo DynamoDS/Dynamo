@@ -566,8 +566,15 @@ namespace ProtoCore.DSASM
 
         public StackValue SetValueAtIndex(int index, StackValue value, RuntimeCore runtimeCore)
         {
-            index = ExpandByAcessingAt(index);
-            StackValue oldValue = this.SetValue(index, value);
+            if (index >= VisibleSize || index < 0)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                return StackValue.Null;
+            }
+
+            StackValue oldValue = GetItemAt(index);
+            SetItemAt(index, value);
             return oldValue;
         }
     }

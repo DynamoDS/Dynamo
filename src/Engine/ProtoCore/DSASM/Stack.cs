@@ -424,21 +424,6 @@ namespace ProtoCore.DSASM
 
             return true;
         }
-
-        // helper method to support negative index into stack
-        public static StackValue SetValue(this HeapElement hs, int ix, StackValue sv)
-        {
-            if (ix >= hs.VisibleSize)
-            {
-                throw new System.IndexOutOfRangeException();
-            }
-
-            int index = ix < 0 ? ix + hs.VisibleSize : ix;
-            StackValue svOld = hs.GetItemAt(index);
-            hs.SetItemAt(index, sv);
-
-            return svOld;
-        }
     };
 
     public class StackAlignToFramePointerRestorer
