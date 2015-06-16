@@ -369,6 +369,32 @@ namespace Dynamo.Controls
             UnregisterEventHandlers();
         }
 
+        private void OnViewLoaded(object sender, RoutedEventArgs e)
+        {
+            MouseLeftButtonDown += view_MouseButtonIgnore;
+            MouseLeftButtonUp += view_MouseButtonIgnore;
+            MouseRightButtonUp += view_MouseRightButtonUp;
+            PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
+
+            var vm = DataContext as IWatchViewModel;
+            
+            //check this for null so the designer can load the preview
+            if (vm == null) return;
+            RegisterEventHandlers(vm);
+
+            renderingTier = (RenderCapability.Tier >> 16);
+            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
+            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
+            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File); 
+        }
+
         private void UnregisterEventHandlers()
         {
             var vm = DataContext as IWatchViewModel;
@@ -386,39 +412,15 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
 
-        private void OnViewLoaded(object sender, RoutedEventArgs e)
+        private void RegisterEventHandlers(IWatchViewModel vm)
         {
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-
-            MouseLeftButtonDown += view_MouseButtonIgnore;
-            MouseLeftButtonUp += view_MouseButtonIgnore;
-            MouseRightButtonUp += view_MouseRightButtonUp;
-            PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
-
-            var vm = DataContext as IWatchViewModel;
-            
-            //check this for null so the designer can load the preview
-            if (vm == null) return;
-
             vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+            vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
             vm.VisualizationManager.RenderSelection += VisualizationManager_RenderSelection;
             vm.VisualizationManager.UpdateGeometryOnNodeDeletion += VisualizationManager_UpdateGeometryOnNodeDeletion;
             vm.VisualizationManager.InitializeGeomtery += VisualizationManager_InitializeGeomtery;
-
-            renderingTier = (RenderCapability.Tier >> 16);
-            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
-            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
-            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
-            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
-
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
-
-            vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
             vm.ViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
         }
 
