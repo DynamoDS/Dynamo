@@ -11,9 +11,9 @@ namespace Dynamo.Library
     public class TypedParameter
     {
         private string summary = null; // Indicating that it is not initialized.
-        private string defaultValueString;
+        private readonly string defaultValueString;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null, AssociativeNode shortDefaultValue = null)
+        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null)
         {
             if (parameter == null)
                 throw new ArgumentNullException("parameter");
@@ -21,13 +21,8 @@ namespace Dynamo.Library
             Name = parameter;
             Type = type;
             DefaultValue = defaultValue;
-            
-            if (DefaultValue != null)
-            {
-                defaultValueString = shortDefaultValue != null
-                    ? shortDefaultValue.ToString()
-                    : DefaultValue.ToString();
-            }
+
+            defaultValueString = shortArgumentName;
         }
 
         public FunctionDescriptor Function { get; private set; }
