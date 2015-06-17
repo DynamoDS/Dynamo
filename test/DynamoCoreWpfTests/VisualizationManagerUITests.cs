@@ -2,21 +2,32 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 using System.Xml;
+
 using SystemTestServices;
-using Autodesk.DesignScript.Interfaces;
+
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.Utilities;
+using Dynamo.Wpf;
+using Dynamo.Wpf.Rendering;
 using DynamoCoreWpfTests.Utility;
-using HelixToolkit.Wpf.SharpDX;
+
 using NUnit.Framework;
+
+using HelixToolkit.Wpf.SharpDX;
+
+using ProtoCore.AST.AssociativeAST;
+
 using SharpDX;
-using Color = System.Windows.Media.Color;
 
 namespace DynamoCoreWpfTests
 {
@@ -38,10 +49,16 @@ namespace DynamoCoreWpfTests
         [Test]
         public void VisualizationManager_EmptyGraph_NothingRenders()
         {
+            var viz = ViewModel.VisualizationManager;
+
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.False(ws.HasSomethingToRender());
+            // All collections will be null if there
+            // is nothing to visualize
+            Assert.Null(BackgroundPreview.Points);
+            Assert.Null(BackgroundPreview.Lines);
+            Assert.Null(BackgroundPreview.Mesh);
         }
 
         [Test]
@@ -61,37 +78,38 @@ namespace DynamoCoreWpfTests
             //we start with all previews disabled
             //the graph is two points feeding into a line
 
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
+            //ensure that visulations match our expectations
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
             var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Assert.AreEqual(1, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
+            Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
+            Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Assert.AreEqual(1, ws.TotalPointsToRender());
-            Assert.AreEqual(0, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
+            Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
+            Assert.Null(BackgroundPreview.Lines);
+            Assert.Null(BackgroundPreview.Mesh);
 
             //flip those back on and ensure the visualization returns
             p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
             l1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
 
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
+            Assert.Null(BackgroundPreview.Mesh);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationManager_PreviewUpstreamToggled_RenderingUpToDate()
         {
             var model = ViewModel.Model;
@@ -108,30 +126,33 @@ namespace DynamoCoreWpfTests
             //the graph is two points feeding into a line
 
             //ensure that visulations match our expectations
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
-
-            // listen for the render complete event so
-            // we can inspect the packages sent to the watch3d node
-            var viz = ViewModel.VisualizationManager;
-            viz.ResultsReadyToVisualize += viz_ResultsReadyToVisualize;
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
+            Assert.Null(BackgroundPreview.Mesh);
 
             //flip off the line node's preview upstream
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
 
-            viz.ResultsReadyToVisualize -= viz_ResultsReadyToVisualize;
-        }
+            Assert.NotNull(model);
+            Assert.NotNull(model.CurrentWorkspace);
 
-        void viz_ResultsReadyToVisualize(VisualizationEventArgs args)
-        {
-            if (args.Id == Guid.Empty)
+            //ensure that the watch 3d is not showing the upstream
+            //the render descriptions will still be around for those
+            //nodes, but watch 3D will not be showing them
+            var nodeViews = View.NodeViewsInFirstWorkspace();
+            var watchNodes = nodeViews.OfNodeModelType<Watch3D>().ToList();
+            Assert.AreEqual(1, watchNodes.Count());
+
+            var watch3DNodeView = watchNodes.First();
+            if (!watch3DNodeView.PresentationGrid.Children().Any())
             {
-                return;
+                // Watch3D views on nodes are disabled on CI without GPUs.
+                Assert.Inconclusive();
             }
 
-            Assert.AreEqual(0, args.Packages.Sum(rp=>rp.PointVertexCount));
+            var watchView = watch3DNodeView.PresentationGrid.Children().First(c => c is Watch3DView) as Watch3DView;
+            Assert.Null(watchView.Points);
         }
 
         [Test]
@@ -153,8 +174,9 @@ namespace DynamoCoreWpfTests
 
             //look at the data in the visualization manager
             //ensure that the number of Drawable nodes
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
+            //and the number of entries in the Dictionary match
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(6, BackgroundPreview.Lines.Positions.Count/2);
 
             //delete a conector coming into the lines node
             var lineNode =
@@ -165,13 +187,15 @@ namespace DynamoCoreWpfTests
 
             //ensure that the visualization no longer contains
             //the renderables for the line node
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
+            Assert.Null(BackgroundPreview.Lines);
         }
 
         [Test]
         public void VisualizationManager_Python_CreatesVisualizations()
         {
+            var viz = ViewModel.VisualizationManager;
+
             string openPath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
                 @"core\visualization\ASM_python.dyn");
@@ -182,8 +206,9 @@ namespace DynamoCoreWpfTests
 
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
-            Assert.AreEqual(1000, ws.TotalPointsToRender());
-            Assert.AreEqual(1000, ws.TotalMeshesToRender());
+            Assert.AreEqual(1000, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(1000, BackgroundPreview.MeshCount);
+
         }
 
         [Test]
@@ -203,7 +228,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(6, ws.TotalPointsToRender());
+            Assert.AreEqual(6, BackgroundPreview.Points.Positions.Count);
 
             //delete a node and ensure that the renderables are cleaned up
             var pointNode =
@@ -214,7 +239,7 @@ namespace DynamoCoreWpfTests
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
 
-            Assert.AreEqual(0, ws.TotalPointsToRender());
+            Assert.Null(BackgroundPreview.Points);
         }
 
         [Test]
@@ -231,13 +256,13 @@ namespace DynamoCoreWpfTests
             ws.RunSettings.RunType = RunType.Automatic;
 
             //ensure that we have some visualizations
-            Assert.Greater(ws.TotalPointsToRender(), 0);
+            Assert.Greater(BackgroundPreview.Points.Positions.Count, 0);
 
             //now clear the workspace
             model.ClearCurrentWorkspace();
 
             //ensure that we have no visualizations
-            Assert.AreEqual(0, ws.TotalPointsToRender());
+            Assert.Null(BackgroundPreview.Points);
         }
 
         [Test]
@@ -249,11 +274,11 @@ namespace DynamoCoreWpfTests
 
             // Make sure the workspace is running automatically.
             // Flipping the mode here will cause it to run.
-            var ws = model.CurrentWorkspace as HomeWorkspaceModel;
-            ws.RunSettings.RunType = RunType.Automatic;
+            var hws = model.CurrentWorkspace as HomeWorkspaceModel;
+            hws.RunSettings.RunType = RunType.Automatic;
 
             // Ensure we have some geometry
-            Assert.Greater(ws.TotalPointsToRender(),0);
+            Assert.Greater(BackgroundPreview.Points.Points.Count(), 0);
 
             // Open a new file. It doesn't matter if the new file
             // is saved in Manual or Automatic, the act of clearing
@@ -263,9 +288,7 @@ namespace DynamoCoreWpfTests
             openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_thicken.dyn");
             Open(openPath);
 
-            ws = model.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.AreEqual(0, ws.TotalPointsToRender());
+            Assert.Null(BackgroundPreview.Points);
         }
 
         [Test]
@@ -288,7 +311,7 @@ namespace DynamoCoreWpfTests
             ws.RunSettings.RunType = RunType.Automatic;
 
             //ensure that we have some visualizations
-            Assert.Greater(ws.TotalPointsToRender(), 0);
+            Assert.Greater(BackgroundPreview.Points.Positions.Count, 0);
         }
 
         [Test]
@@ -304,7 +327,7 @@ namespace DynamoCoreWpfTests
 
             //all nodes are set to not preview in the file
             //ensure that we have no visualizations
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            Assert.Null(BackgroundPreview.Lines);
         }
 
         [Test]
@@ -337,21 +360,21 @@ namespace DynamoCoreWpfTests
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<1>,a<1>);", elementResolver);
 
             // run the expression
-            Assert.AreEqual(4, ws.TotalPointsToRender());
+            Assert.True(BackgroundPreview.HasNumberOfPointVertices(4));
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
             cbn.DisplayLabels = true;
-            Assert.AreEqual(4, ws.TotalTextObjectsToRender());
+            Assert.True(BackgroundPreview.HasNumberOfTextObjects(4));
 
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<2>,a<3>);", elementResolver);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
-            Assert.AreEqual(64, ws.TotalPointsToRender());
-            Assert.AreEqual(64, ws.TotalTextObjectsToRender());
+            Assert.True(BackgroundPreview.HasNumberOfPointVertices(64));
+            Assert.True(BackgroundPreview.HasNumberOfTextObjects(64));
 
             cbn.DisplayLabels = false;
-            Assert.AreEqual(0, ws.TotalTextObjectsToRender());
+            Assert.Null(BackgroundPreview.Text);
         }
 
         [Test]
@@ -375,7 +398,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(6, ws.TotalLinesToRender());
+            Assert.True(BackgroundPreview.HasNumberOfLines(6));
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
@@ -385,7 +408,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
-            Assert.AreEqual(6, ws.TotalTextObjectsToRender());
+            Assert.True(BackgroundPreview.HasNumberOfTextObjects(6));
         }
 
         [Test]
@@ -404,7 +427,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(1, ws.TotalLinesToRender());
+            Assert.AreEqual(1, BackgroundPreview.Lines.Positions.Count / 2);
 
             // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
             var workspace = model.CurrentWorkspace;
@@ -426,15 +449,14 @@ namespace DynamoCoreWpfTests
 
             // Switch to custom workspace
             model.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
-            var customSpace = Model.CurrentWorkspace;
 
             // Select that node
             DynamoSelection.Instance.Selection.Add(node);
 
             // No preview in the background
-            Assert.AreEqual(0, customSpace.TotalPointsToRender());
-            Assert.AreEqual(0, customSpace.TotalLinesToRender());
-            Assert.AreEqual(0, customSpace.TotalMeshesToRender());
+            Assert.Null(BackgroundPreview.Points);
+            Assert.Null(BackgroundPreview.Lines);
+            Assert.Null(BackgroundPreview.Mesh);
         }
 
         [Test]
@@ -448,7 +470,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.True(ws.HasAnyMeshes());
+            Assert.True(BackgroundPreview.HasMeshes());
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
         }
@@ -464,7 +486,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(36, ws.TotalMeshVerticesToRender());
+            Assert.True(BackgroundPreview.HasNumberOfMeshVertices(36));
         }
 
         [Test]
@@ -478,9 +500,9 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(1, ws.TotalLinesOfColorToRender(new Color4(1f, 0f, 0f, 1f)));
-            Assert.AreEqual(1, ws.TotalLinesOfColorToRender(new Color4(0f, 1f, 0f, 1f)));
-            Assert.AreEqual(1, ws.TotalLinesOfColorToRender(new Color4(0f, 0f, 1f, 1f)));
+            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(1f,0f,0f,1f)));
+            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(0f,1f,0f,1f)));
+            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(0f,0f,1f,1f)));
         }
 
         [Test]
@@ -505,15 +527,44 @@ namespace DynamoCoreWpfTests
             // 30 mesh vertices
             //ensure that the number of visualizations matches the 
             //number of pieces of geometry in the collection
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, ws.TotalMeshVerticesToRender());
-
-            var testColor = new Color4(0, 0, 0, 10.0f/255.0f);
-            Assert.True(ws.HasMeshVerticesAllOfColor(testColor));
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, BackgroundPreview.PerVertexMesh.Positions.Count);
+            var testColor = new SharpDX.Color4(0, 0, 0, 10.0f/255.0f);
+            Assert.True(BackgroundPreview.PerVertexMesh.Colors.All(c => c == testColor));
 
             // Increase the number of planes
             numberOfPlanes = numberOfPlanes + 5;
             numberOfPlanesNode.Value = numberOfPlanes.ToString();
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, ws.TotalMeshVerticesToRender());
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, BackgroundPreview.PerVertexMesh.Positions.Count);
+        }
+
+        [Test]
+        public void VisualizationManager_Points_Render()
+        {
+            var model = ViewModel.Model;
+            var viz = ViewModel.VisualizationManager;
+
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points.dyn");
+            Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            ws.RunSettings.RunType = RunType.Automatic;
+
+            //ensure that the number of visualizations matches the 
+            //number of pieces of geometry in the collection
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Positions.Count);
+
+            //adjust the number node's value - currently set to 0..5 (6 elements)
+            var numNode = (DoubleInput)model.CurrentWorkspace.Nodes.First(x => x is DoubleInput);
+            numNode.Value = "0..10";
+            ViewModel.HomeSpace.Run();
+
+            Assert.AreEqual(GetTotalDrawablesInModel(), BackgroundPreview.Points.Positions.Count);
         }
 
         [Test]
@@ -600,13 +651,13 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            var homeColor = (Color) SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+            var homeColor = (System.Windows.Media.Color) SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
 
             Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor.ToColor4());
 
             Open(customNodePath);
 
-            var customColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
+            var customColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
 
             Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor.ToColor4());
         }
@@ -622,14 +673,22 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            ViewModel.VisualizationSettings.ShowEdges = false;
+            Assert.True(BackgroundPreview.HasNumberOfLines(0));
 
-            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
-            Assert.AreEqual(12, ws.TotalLinesToRender());
+            ViewModel.VisualizationSettings.ShowEdges = true;
+            Assert.True(BackgroundPreview.HasNumberOfLines(12));
 
-            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            ViewModel.VisualizationSettings.ShowEdges = false;
+            Assert.True(BackgroundPreview.HasNumberOfLines(0));
+        }
+
+        private int GetTotalDrawablesInModel()
+        {
+            return
+                ViewModel.Model.CurrentWorkspace.Nodes.SelectMany(x => x.RenderPackages)
+                    .Where(x => x.HasRenderingData).Cast<HelixRenderPackage>()
+                    .Aggregate(0, (a, b) => a + b.Points.Points.Count() + (b.Mesh.Positions.Any() ? 1 : 0) + (b.Lines.Positions.Any() ? 1 : 0));
         }
 
         private void Open(string relativePath)
@@ -639,122 +698,43 @@ namespace DynamoCoreWpfTests
         }
     }
 
-    internal static class WorkspaceExtensions
+    internal static class Watch3DViewExtensions
     {
-        public static int TotalLinesOfColorToRender(this WorkspaceModel workspace, Color4 color)
+        public static bool HasNumberOfLinesOfColor(this Watch3DView view, int lineCount, Color4 color)
         {
-            var colorLineCount = workspace.Nodes.
-                SelectMany(n=>n.RenderPackages).
-                Where(rp=>rp.LineVertexCount > 0).
-                Sum(rp => rp.TotalCurvesOfColor(color));
-
-            return colorLineCount;
+            var ptsOfColor = view.Lines.Colors.Where(c => c == color);
+            return ptsOfColor.Count() == lineCount * 2;
         }
 
-        public static int TotalPointsToRender(this WorkspaceModel workspace)
+        public static bool HasNumberOfPointVertices(this Watch3DView view, int numberOfPoints)
         {
-            var vertexCount = workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Sum(rp => rp.PointVertexCount);
-
-            return vertexCount;
+            return view.Points.Positions.Count == numberOfPoints;
         }
 
-        public static int TotalTextObjectsToRender(this WorkspaceModel workspace)
+        public static bool HasNumberOfTextObjects(this Watch3DView view, int numberOfTextObjects)
         {
-            var labelledPackages = workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Where(rp=>rp.DisplayLabels).ToArray();
-
-            int total = 0;
-
-            total += labelledPackages.
-                Where(rp=>rp.PointVertexCount > 0).
-                Sum(rp => rp.PointVertexCount);
-
-            total += labelledPackages.
-                Where(rp=>rp.LineVertexCount > 0).
-                Sum(rp => rp.LineStripVertexCounts.Count(c => c >0));
-
-            total += labelledPackages.Count(rp => rp.MeshVertexCount > 0);
-
-            return total;
+            return view.Text.TextInfo.Count == numberOfTextObjects;
         }
 
-        public static int TotalMeshesToRender(this WorkspaceModel workspace)
+        public static bool HasMeshes(this Watch3DView view)
         {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages).Count(rp => rp.MeshVertexCount > 0);
+            return view.Mesh.Positions.Count > 0;
         }
 
-        public static bool HasAnyMeshes(this WorkspaceModel workspace)
+        public static bool HasNumberOfMeshVertices(this Watch3DView view, int numberOfVertices)
         {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages).Any(rp => rp.MeshVertexCount > 0);
+            return view.Mesh.Positions.Count == numberOfVertices;
         }
 
-        public static bool HasMeshVerticesAllOfColor(this WorkspaceModel workspace, Color4 color)
+        public static bool HasNumberOfLines(this Watch3DView view, int numberOfLines)
         {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages)
-                .All(rp => rp.MeshVertexColors.IsArrayOfColor(color));
-        }
-
-        public static int TotalMeshVerticesToRender(this WorkspaceModel workspace)
-        {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages).Sum(rp => rp.MeshVertexCount);
-        }
-
-        public static int TotalLinesToRender(this WorkspaceModel workspace)
-        {
-            return workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Where(rp=>rp.LineStripVertexCounts.Any()).
-                Sum(rp => rp.LineStripVertexCounts.Count(c => c > 0));
-        }
-
-        public static bool HasSomethingToRender(this WorkspaceModel workspace)
-        {
-            var allPackages = workspace.Nodes.
-                SelectMany(n => n.RenderPackages);
-
-            return allPackages.Any();
-        }
-
-        private static int TotalCurvesOfColor(this IRenderPackage package, Color4 color)
-        {
-            var count = 0;
-            var idx = 0;
-            for (var i = 0; i < package.LineStripVertexCounts.Count(); i++)
+            if (numberOfLines == 0 && view.Lines == null)
             {
-                var currCount = package.LineStripVertexCounts.ElementAt(i);
-                if (currCount == 0) continue;
-
-                var colorBytes = package.LineStripVertexColors.Skip(idx).Take(currCount*4);
-                if (colorBytes.IsArrayOfColor(color))
-                {
-                    count++;
-                }
-                idx += currCount*4;
+                return true;
             }
 
-            return count;
-        }
-
-        private static bool IsArrayOfColor(this IEnumerable<byte> colorBytes, Color4 color)
-        {
-            var colorArr = colorBytes.ToArray();
-
-            for (var i = 0; i < colorArr.Count(); i += 4)
-            {
-                var r = colorArr[i] == (byte)(color.Red * 255);
-                var g = colorArr[i+1] == (byte)(color.Green * 255);
-                var b = colorArr[i+2] == (byte)(color.Blue * 255);
-                var a = colorArr[i+3] == (byte)(color.Alpha * 255);
-                if (!a || !r || !g || !b)
-                {
-                    return false;
-                }
-            }
-            
-            return true;
+            return view.Lines.Positions.Count == numberOfLines*2;
         }
     }
+
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -302,8 +302,6 @@ namespace Dynamo.ViewModels
             Model.NodeAdded += Model_NodeAdded;
             Model.NodeRemoved += Model_NodeRemoved;
             Model.NodesCleared += Model_NodesCleared;
-        //    Model.NodeListChanged += Nodes_CollectionChanged;
-        //    Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
 
             Model.Notes.CollectionChanged += Notes_CollectionChanged;
             Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
@@ -318,7 +316,6 @@ namespace Dynamo.ViewModels
 
             
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-        //    Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
             foreach (var c in Model.Connectors)
@@ -417,7 +414,6 @@ namespace Dynamo.ViewModels
         {
             _nodes.Clear();
             Errors.Clear();
-
             PostNodeChangeActions();
         }
 
