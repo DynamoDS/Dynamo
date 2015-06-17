@@ -48,6 +48,10 @@ namespace DSCoreNodesUI
             var helper = new XmlElementHelper(originalElement);
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
+
+            //Take the GUID from the old node (dummy nodes should have their
+            //GUID's. This will allow the Groups to work as expected. MAGN-7568)
+            GUID = helper.ReadGuid("guid", this.GUID);
         }
 
         private void LoadNode(XmlNode nodeElement)

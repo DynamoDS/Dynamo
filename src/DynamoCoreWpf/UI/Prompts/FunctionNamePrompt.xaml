@@ -42,8 +42,8 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,25,0,0">
 
-                <Button Content="{x:Static p:Resources.OKButton}" Style="{DynamicResource ResourceKey=STextButton}" Margin="5" HorizontalAlignment="Right" Name="okButton" VerticalAlignment="Top" Width="75" Click="OK_Click" IsDefault="True" TabIndex="2" />
-                <Button Content="{x:Static p:Resources.CancelButton}" Style="{DynamicResource ResourceKey=STextButton}" Margin="5" HorizontalAlignment="Right" Name="cancelButton" VerticalAlignment="Top" Width="75" Click="Cancel_Click" IsCancel="True" TabIndex="3" />
+                <Button Content="{x:Static p:Resources.OKButton}" Style="{DynamicResource ResourceKey=STextButton}" Margin="5" HorizontalAlignment="Right" Name="okButton" VerticalAlignment="Top" Width="auto" MinWidth="75" Click="OK_Click" IsDefault="True" TabIndex="2" />
+                <Button Content="{x:Static p:Resources.CancelButton}" Style="{DynamicResource ResourceKey=STextButton}" Margin="5" HorizontalAlignment="Right" Name="cancelButton" VerticalAlignment="Top" Width="auto" MinWidth="75" Click="Cancel_Click" IsCancel="True" TabIndex="3" />
 
             </StackPanel>
 

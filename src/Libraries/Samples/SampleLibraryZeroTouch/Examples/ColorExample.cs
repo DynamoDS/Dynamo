@@ -16,7 +16,7 @@ namespace SampleLibraryZeroTouch.Examples
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             // Dynamo's renderer uses IRenderPackage objects
             // to store data for rendering. The Tessellate method

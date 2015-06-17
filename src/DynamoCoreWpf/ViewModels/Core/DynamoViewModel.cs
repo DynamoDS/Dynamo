@@ -401,16 +401,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTessellationDivisions
-        {
-            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
-            set
-            {
-                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
-                model.OnRequestsRedraw(this, EventArgs.Empty);
-            }
-        }
-
         public bool VerboseLogging
         {
             get { return model.DebugSettings.VerboseLogging; }
@@ -468,6 +458,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowWatchSettingsControl");   
             }
         }
+
+        public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
         #endregion
 
@@ -551,6 +543,21 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
 
             SubscribeDispatcherHandlers();
+
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(this.VisualizationManager.RenderPackageFactory);
+            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+        }
+
+        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    Model.PreferenceSettings.ShowEdges =
+                        VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges;
+                    break;
+            }
+            VisualizationManager.UpdateAllNodeVisualsAndNotify();
         }
 
         internal event EventHandler NodeViewReady;
@@ -577,6 +584,7 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
+            RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
         }
 
         private void InitializeRecentFiles()

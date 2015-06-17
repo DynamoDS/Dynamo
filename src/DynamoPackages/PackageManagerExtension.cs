@@ -103,7 +103,8 @@ namespace Dynamo.PackageManager
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
-            this.packageManagerClient = new PackageManagerClient(new GregClient(startupParams.AuthProvider, url), uploadBuilder);
+            this.packageManagerClient = new PackageManagerClient(new GregClient(startupParams.AuthProvider, url), 
+                uploadBuilder, PackageLoader.RootPackagesDirectory);
         }
 
         public void Ready(ReadyParams sp) { }
