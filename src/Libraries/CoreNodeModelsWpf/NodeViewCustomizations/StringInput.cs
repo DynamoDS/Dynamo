@@ -22,7 +22,11 @@ namespace Dynamo.Wpf.Nodes
             this.nodeModel = stringInput;
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
-            this.editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            this.editWindowItem = new MenuItem
+            {
+                Header = Properties.Resources.StringInputNodeEditMenu, 
+                IsCheckable = false
+            };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
 
             editWindowItem.Click += editWindowItem_Click;

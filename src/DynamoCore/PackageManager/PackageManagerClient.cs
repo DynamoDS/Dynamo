@@ -29,6 +29,9 @@ namespace Dynamo.PackageManager
         private readonly IAuthProvider authProvider;
         private readonly IPackageUploadBuilder uploadBuilder;
 
+        /// <summary>
+        ///     The directory where all packages are to be stored for this session.
+        /// </summary>
         private readonly string packagesDirectory;
        
         public event Action<LoginState> LoginStateChanged;
@@ -67,8 +70,9 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder)
+        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder, string packagesDirectory)
         {
+            this.packagesDirectory = packagesDirectory;
             this.uploadBuilder = builder;
             this.client = client;
 

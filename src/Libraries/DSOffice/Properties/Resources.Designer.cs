@@ -22,7 +22,7 @@ namespace DSOffice.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace DSOffice.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DSOffice.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace DSOffice.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace DSOffice.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Error setting up communication with Excel.  Try closing any open Excel instances..
         /// </summary>
-        public static string ExcelCommunicationError {
+        internal static string ExcelCommunicationError {
             get {
                 return ResourceManager.GetString("ExcelCommunicationError", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace DSOffice.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Excel is not installed..
         /// </summary>
-        public static string ExcelNotInstalled {
+        internal static string ExcelNotInstalled {
             get {
                 return ResourceManager.GetString("ExcelNotInstalled", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace DSOffice.Properties {
         /// <summary>
         ///   Looks up a localized string similar to One or more of the input types are not matching. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
         /// </summary>
-        public static string kMethodResolutionFailureWithTypes {
+        internal static string kMethodResolutionFailureWithTypes {
             get {
                 return ResourceManager.GetString("kMethodResolutionFailureWithTypes", resourceCulture);
             }

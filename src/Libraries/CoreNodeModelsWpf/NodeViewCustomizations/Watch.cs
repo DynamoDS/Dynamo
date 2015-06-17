@@ -76,7 +76,7 @@ namespace Dynamo.Wpf.Nodes
 
             var rawDataMenuItem = new MenuItem
             {
-                Header = "Show Raw Data",
+                Header = Properties.Resources.WatchNodeRawDataMenu,
                 IsCheckable = true,
             };
             rawDataMenuItem.SetBinding(MenuItem.IsCheckedProperty, checkedBinding);
