@@ -78,7 +78,7 @@ namespace Dynamo.ViewModels
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
             ShowGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(true), o => true);
             CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
-            ShowNewDesignOptionDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
+            ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
        }
 
         public DelegateCommand OpenCommand { get; set; }
@@ -154,6 +154,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
         public DelegateCommand ShowGalleryCommand { get; set; }
         public DelegateCommand CloseGalleryCommand { get; set; }
-        public DelegateCommand ShowNewDesignOptionDialogCommand { get; set; }
+        public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
     }
 }

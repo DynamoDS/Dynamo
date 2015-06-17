@@ -386,9 +386,9 @@ namespace Dynamo.Models
             {
                 return;
             }
-            var state = workspaceToSet.PresetsCollection.PresetStates.Where(x => x.Guid == command.StateID).First();
+            var state = workspaceToSet.Presets.Where(x => x.Guid == command.StateID).First();
 
-            workspaceToSet.SetWorkspaceToState (state);
+            workspaceToSet.ApplyPreset (state);
         }
 
     }

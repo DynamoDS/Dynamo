@@ -1153,13 +1153,12 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-            var designOptions = PresetsModel.LoadFromXml(xmlDoc,nodeGraph,this.Logger);
-
+            
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
                 NodeFactory,
-                designOptions,
+                nodeGraph.Presets,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
@@ -1386,7 +1385,6 @@ namespace Dynamo.Models
                 EngineController,
                 Scheduler,
                 NodeFactory,
-                new PresetsModel(),
                 DebugSettings.VerboseLogging,
                 IsTestMode,string.Empty);
 
@@ -1767,13 +1765,11 @@ namespace Dynamo.Models
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
-            workspace.PresetsCollection.MessageLogged += LogMessage;
             workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
-                workspace.PresetsCollection.MessageLogged -= LogMessage;
                 workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };
 

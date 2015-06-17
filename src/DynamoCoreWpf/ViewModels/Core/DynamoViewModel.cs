@@ -790,7 +790,7 @@ namespace Dynamo.ViewModels
             DeleteCommand.RaiseCanExecuteChanged();
             UngroupModelCommand.RaiseCanExecuteChanged();
             AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
-            ShowNewDesignOptionDialogCommand.RaiseCanExecuteChanged();
+            ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)

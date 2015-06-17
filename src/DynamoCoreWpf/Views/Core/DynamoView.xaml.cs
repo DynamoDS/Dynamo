@@ -928,18 +928,18 @@ namespace Dynamo.Controls
         private void LoadStateMenus(object sender, RoutedEventArgs e)
         {
             //grab serialized designoptions from current workspace... hopefully this is loaded?
-            var PresetSet = dynamoViewModel.Model.CurrentWorkspace.PresetsCollection;
+            var PresetSet = dynamoViewModel.Model.CurrentWorkspace.Presets;
             // now grab all the states off the set and create a menu item for each one
 
            
             //only update the states menus if the states have been updated or the user
             // has switched workspace contexts, can check if designOptionsSet collection is different
-            if (!PresetSet.PresetStates.SequenceEqual(((MenuItem)(sender)).Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
+            if (!PresetSet.SequenceEqual(((MenuItem)(sender)).Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
             {
                 //dispose all state items in the menu
                 ((MenuItem)sender).Items.Clear();
 
-                foreach (var state in PresetSet.PresetStates)
+                foreach (var state in PresetSet)
               {
                 //create a new menu item for each state in the options set
                 //when any of this buttons are clicked we'll call the SetWorkSpaceToStateCommand(state)
@@ -970,24 +970,19 @@ namespace Dynamo.Controls
 
         private void RestoreState_Click(object sender, RoutedEventArgs e)
         {
-            PresetState state = ((MenuItem)sender).Tag as PresetState;
+            PresetModel state = ((MenuItem)sender).Tag as PresetModel;
             var workspace = dynamoViewModel.HomeSpace;
-           /* if (workspace.HasUnsavedChanges)
-            {
-                if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
-                    return; // User has not saved his/her work.
-            }
-            */
+
             dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
             dynamoViewModel.ExecuteCommand(new DynamoModel.SetWorkSpaceToStateCommand(workspace.Guid, state.Guid));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)
         {
-            PresetState state = ((MenuItem)sender).Tag as PresetState;
+            PresetModel state = ((MenuItem)sender).Tag as PresetModel;
             var workspace = dynamoViewModel.HomeSpace;
             workspace.HasUnsavedChanges = true;
-            dynamoViewModel.Model.CurrentWorkspace.PresetsCollection.RemoveState(state);
+            dynamoViewModel.Model.CurrentWorkspace.RemoveState(state);
             
         }
         

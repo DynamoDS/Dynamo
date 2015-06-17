@@ -36,7 +36,7 @@ namespace Dynamo.Models
             NodeFactory factory)
             : this(
                 factory,
-                new PresetsModel(),
+                Enumerable.Empty<PresetModel>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
@@ -44,7 +44,7 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel( 
             NodeFactory factory,
-            PresetsModel presets,
+            IEnumerable<PresetModel> presets,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
