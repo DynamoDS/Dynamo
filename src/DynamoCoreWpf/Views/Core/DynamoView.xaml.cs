@@ -197,7 +197,7 @@ namespace Dynamo.Controls
         {
             if ( dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
-                var login = new Login(dynamoViewModel.LoginViewModel);
+                var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
                 loginGrid.Children.Add(login);
             }
         }

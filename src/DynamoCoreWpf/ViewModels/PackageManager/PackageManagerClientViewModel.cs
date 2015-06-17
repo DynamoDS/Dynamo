@@ -167,7 +167,25 @@ namespace Dynamo.ViewModels
         public AuthenticationManager AuthenticationManager { get; set; }
         internal PackageManagerClient Model { get; private set; }
 
+        public LoginState LoginState
+        {
+            get
+            {
+                return AuthenticationManager.LoginState;
+            }
+        }
+
+        public string Username
+        {
+            get
+            {
+                return AuthenticationManager.Username;
+            }
+        }
+
         #endregion
+
+        public ICommand ToggleLoginStateCommand { get; private set; }
 
         internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
@@ -175,6 +193,32 @@ namespace Dynamo.ViewModels
             this.AuthenticationManager = dynamoViewModel.Model.AuthenticationManager;
             Model = model;
             CachedPackageList = new List<PackageManagerSearchElement>();
+
+            this.ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
+
+            AuthenticationManager.LoginStateChanged += (loginState) =>
+            {
+                RaisePropertyChanged("LoginState");
+                RaisePropertyChanged("Username");
+            };
+
+        }
+
+        private void ToggleLoginState()
+        {
+            if (this.LoginState == LoginState.LoggedIn)
+            {
+                this.AuthenticationManager.Logout();
+            }
+            else
+            {
+                this.AuthenticationManager.Login();
+            }
+        }
+
+        private bool CanToggleLoginState()
+        {
+            return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
         }
 
         public void PublishCurrentWorkspace(object m)
@@ -451,6 +495,7 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
+
     }
 
 }
