@@ -3471,59 +3471,97 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test, RequiresSTA]
-        [Category("RegressionTests")]
+        [Test, RequiresSTA, Category("RegressionTests")]
         public void EqualEqualTest_Defect6694()
         {
             // Details are available in defect 
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6694
 
-            RunCommandsFromFile("Defect_6694_EqualEqualOperatorTest.xml", (commandTag) =>
+            RunCommandsFromFile(
+                "Defect_6694_EqualEqualOperatorTest.xml",
+                (commandTag) =>
+                {
+                    var workspace = ViewModel.Model.CurrentWorkspace;
+
+                    string equalequalNode = "9ab64309-4cc5-4ea6-9281-85fe7dd46ebb";
+
+                    if (commandTag == "FirstRun")
+                    {
+                        // check for number of Nodes and Connectors
+                        Assert.AreEqual(3, workspace.Nodes.Count);
+                        Assert.AreEqual(2, workspace.Connectors.Count());
+                        AssertPreviewValue(equalequalNode, false);
+                    }
+                    else if (commandTag == "SecondRun")
+                    {
+                        // check for number of Nodes and Connectors
+                        Assert.AreEqual(3, workspace.Nodes.Count);
+                        Assert.AreEqual(2, workspace.Connectors.Count());
+                        AssertPreviewValue(equalequalNode, true);
+                    }
+                    else if (commandTag == "ThirdRun")
+                    {
+                        // check for number of Nodes and Connectors
+                        Assert.AreEqual(3, workspace.Nodes.Count);
+                        Assert.AreEqual(2, workspace.Connectors.Count());
+                        AssertPreviewValue(equalequalNode, false);
+                    }
+                    else if (commandTag == "FourthRun")
+                    {
+                        // check for number of Nodes and Connectors
+                        Assert.AreEqual(4, workspace.Nodes.Count);
+                        Assert.AreEqual(2, workspace.Connectors.Count());
+                        AssertPreviewValue(equalequalNode, false);
+                    }
+                    else if (commandTag == "FifthRun")
+                    {
+                        // check for number of Nodes and Connectors
+                        Assert.AreEqual(1, workspace.Nodes.Count);
+                        Assert.AreEqual(0, workspace.Connectors.Count());
+                    }
+                    else if (commandTag == "FinalRun")
+                    {
+                        // check for number of Nodes and Connectors
+                        Assert.AreEqual(3, workspace.Nodes.Count);
+                        Assert.AreEqual(2, workspace.Connectors.Count());
+                        AssertPreviewValue(equalequalNode, false);
+                    }
+                });
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void PointDoesntUpdateProperlyWithRageChange_MAGN7635()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-67635
+
+            RunCommandsFromFile("7635_PointDoesntUpdateProperlyWithRageChange.xml", (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
-                string equalequalNode = "9ab64309-4cc5-4ea6-9281-85fe7dd46ebb";
+                string pointNodeID = "037a09ae-9fc0-4687-8ea5-6e29d4720bec";
 
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count());
-                    AssertPreviewValue(equalequalNode, false );
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 10);
                 }
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count());
-                    AssertPreviewValue(equalequalNode, true);
-                }
-                else if (commandTag == "ThirdRun")
-                {
-                    // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count());
-                    AssertPreviewValue(equalequalNode, false);
-                }
-                else if (commandTag == "FourthRun")
-                {
-                    // check for number of Nodes and Connectors
-                    Assert.AreEqual(4, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count());
-                    AssertPreviewValue(equalequalNode, false);
-                }
-                else if (commandTag == "FifthRun")
-                {
-                    // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
-                    Assert.AreEqual(0, workspace.Connectors.Count());
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 5);
                 }
                 else if (commandTag == "FinalRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
-                    Assert.AreEqual(2, workspace.Connectors.Count());
-                    AssertPreviewValue(equalequalNode, false);
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 10);
                 }
             });
 
