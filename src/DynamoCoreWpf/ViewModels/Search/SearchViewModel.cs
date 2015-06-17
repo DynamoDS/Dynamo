@@ -704,7 +704,8 @@ namespace Dynamo.ViewModels
             {
                 selectedCategoryIndex = 0;
                 selectedMemberGroupIndex = 0;
-                SelectedMemberIndex = 0;
+                selectedMemberIndex = 0;
+                SelectNewMember();
             }
         }
 
@@ -865,29 +866,40 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var selectedCategory = SearchRootCategories[selectedCategoryIndex];
-                var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
-                var selectedMember = selectedMemberGroup.Members.ElementAt(SelectedMemberIndex);
+                NodeSearchElementViewModel selectedMember = null;
+                bool isSelectedMemberFound = false;
+
+                foreach (var category in SearchRootCategories)
+                {
+                    foreach (var group in category.MemberGroups)
+                    {
+                        foreach (var member in group.Members)
+                        {
+                            if (member.IsSelected)
+                            {
+                                selectedMember = member;
+                                isSelectedMemberFound = true;
+                                break;
+                            }
+
+                        }
+
+                        if (isSelectedMemberFound)
+                            break;
+                    }
+
+                    if (isSelectedMemberFound)
+                        break;
+                }
 
                 return selectedMember;
             }
         }
 
-        private int selectedMemberIndex;
         /// <summary>
         /// Used during library search key navigation. Indicates which item index is selected.
         /// </summary>
-        private int SelectedMemberIndex
-        {
-            get { return selectedMemberIndex; }
-            set
-            {
-                selectedMemberIndex = value;
-
-                // Select new member.
-                CurrentlySelectedMember.IsSelected = true;
-            }
-        }
+        private int selectedMemberIndex;
 
         /// <summary>
         /// Used during library search key navigation. Indicates which group index is selected.
@@ -914,11 +926,12 @@ namespace Dynamo.ViewModels
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
             // If it's not the first/last member, we can move further.
-            if ((SelectedMemberIndex != selectedMemberGroup.Members.Count() - 1 || direction != NavigationDirection.Forward) &&
-                (SelectedMemberIndex != 0 || direction != NavigationDirection.Backward))
+            if ((selectedMemberIndex != selectedMemberGroup.Members.Count() - 1 || direction != NavigationDirection.Forward) &&
+                (selectedMemberIndex != 0 || direction != NavigationDirection.Backward))
             {
                 UnSelectOldMember();
-                SelectedMemberIndex += offset;
+                selectedMemberIndex += offset;
+                SelectNewMember();
                 return;
             }
 
@@ -929,10 +942,11 @@ namespace Dynamo.ViewModels
                 UnSelectOldMember();
                 selectedMemberGroupIndex += offset;
                 if (direction == NavigationDirection.Forward)
-                    SelectedMemberIndex = 0;
+                    selectedMemberIndex = 0;
                 else
                     // Select the last member.
-                    SelectedMemberIndex = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
+                    selectedMemberIndex = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
+                SelectNewMember();
                 return;
             }
 
@@ -946,16 +960,35 @@ namespace Dynamo.ViewModels
                 if (direction == NavigationDirection.Forward)
                 {
                     selectedMemberGroupIndex = 0;
-                    SelectedMemberIndex = 0;
+                    selectedMemberIndex = 0;
                 }
                 else
                 {
-                    var memberGroups =SearchRootCategories[selectedCategoryIndex].MemberGroups;
+                    var memberGroups = SearchRootCategories[selectedCategoryIndex].MemberGroups;
                     selectedMemberGroupIndex = memberGroups.Count() - 1;
                     // Select last member in member group. We are moving from bottom to top.
-                    SelectedMemberIndex = memberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
+                    selectedMemberIndex = memberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
                 }
+                SelectNewMember();
             }
+        }
+
+        private void SelectNewMember()
+        {
+            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
+            if (selectedCategory == null)
+                return;
+
+            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
+            if (selectedMemberGroup == null)
+                return;
+
+            var selectedMember = selectedMemberGroup.Members.ElementAt(selectedMemberIndex);
+            if (selectedMember == null)
+                return;
+
+            selectedMember.IsSelected = true;
+
         }
 
         private void UnSelectOldMember()

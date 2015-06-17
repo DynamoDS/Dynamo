@@ -653,10 +653,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
 
-            viewModel.SelectNext();
+            viewModel.MoveSelection(NavigationDirection.Forward);
             Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
 
-            viewModel.SelectNext();
+            viewModel.MoveSelection(NavigationDirection.Forward);
             Assert.AreEqual("AAA", viewModel.CurrentlySelectedMember.Name);
         }
 
@@ -680,15 +680,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
 
-            viewModel.SelectNext();
+            viewModel.MoveSelection(NavigationDirection.Forward);
 
-            viewModel.SelectPrevious();
+            viewModel.MoveSelection(NavigationDirection.Backward);
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
 
-            viewModel.SelectNext();
-            viewModel.SelectNext();
+            viewModel.MoveSelection(NavigationDirection.Forward);
+            viewModel.MoveSelection(NavigationDirection.Forward);
 
-            viewModel.SelectPrevious();
+            viewModel.MoveSelection(NavigationDirection.Forward);
             Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
         }
 
