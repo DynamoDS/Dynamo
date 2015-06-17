@@ -95,15 +95,6 @@ namespace Dynamo.Models
                 RequestNodeCentered(this, e);
         }
 
-
-        public event NotifyCollectionChangedEventHandler NodeListChanged;
-
-        public virtual void OnNodeListChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (NodeListChanged != null)
-                NodeListChanged(sender, e);
-        }
-
         /// <summary>
         ///     Function that can be used to respond to a changed workspace Zoom amount.
         /// </summary>
@@ -187,6 +178,13 @@ namespace Dynamo.Models
         {
             var handler = NodeRemoved;
             if (handler != null) handler(node);
+        }
+
+        public event Action NodesCleared;
+        protected virtual void OnNodesCleared()
+        {
+            var handler = NodesCleared;
+            if (handler != null) handler();
         }
 
         /// <summary>
@@ -293,10 +291,7 @@ namespace Dynamo.Models
                 nodes.Add(node);
             }            
 
-            OnNodeListChanged(this, new NotifyCollectionChangedEventArgs(
-                NotifyCollectionChangedAction.Add,
-                new ArrayList() { node }
-                ));
+            OnNodeAdded(node);
         }
 
         public void ClearNodes()
@@ -306,9 +301,7 @@ namespace Dynamo.Models
                 nodes.Clear();
             }
 
-            OnNodeListChanged(this, new NotifyCollectionChangedEventArgs(
-                NotifyCollectionChangedAction.Reset
-                ));
+            OnNodesCleared();
         }
 
 
@@ -678,9 +671,7 @@ namespace Dynamo.Models
                 if (!nodes.Remove(model)) return;                
             }
 
-            OnNodeListChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
-                new ArrayList() { model }));
-
+            OnNodeRemoved(model);
             DisposeNode(model);
         }
 
