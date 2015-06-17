@@ -1101,8 +1101,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(planeOffset.ToString(), "Plane(Origin = Point(X = 0.000, Y = 0.000, Z = 20.000), Normal = Vector(X = 0.000, Y = 0.000, Z = 1.000, Length = 1.000), XAxis = Vector(X = 1.000, Y = 0.000, Z = 0.000, Length = 1.000), YAxis = Vector(X = 0.000, Y = 1.000, Z = 0.000, Length = 1.000))");
 
             //check Rectangle.ByWidthHeight
-            var rectangle1ID = "49f7b7e2-2e41-463f-9a2e-c77d902d5d97";
-            var rectangle2ID = "2e436c2f-88b6-461f-9208-9852ccf6e731";
+            var rectangle1ID = "c0690f9e-00bc-4a20-b38c-10c8fae24fa9";
+            var rectangle2ID = "04af33df-1fe8-4a81-b5b7-6a04c4e55e6a";
             var rectangle1 = GetPreviewValue(rectangle1ID) as Rectangle;
             var rectangle2 = GetPreviewValue(rectangle2ID) as Rectangle;
             Assert.AreEqual(rectangle1.ToString(), rectangle2.ToString());  
