@@ -634,7 +634,6 @@ namespace Dynamo.Models
 
             AddNode(node);
 
-            OnNodeAdded(node);
             HasUnsavedChanges = true;
 
             RequestRun();
@@ -1150,8 +1149,6 @@ namespace Dynamo.Models
                     undoHelper.RecordCreation(codeBlockNode);
                    
                     AddNode(codeBlockNode);
-                    this.RegisterNode(codeBlockNode);
-
                     codeBlockNodes.Add(codeBlockNode);
                     #endregion
 
@@ -1493,7 +1490,6 @@ namespace Dynamo.Models
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 
                 AddNode(nodeModel);
-                RegisterNode(nodeModel);
                 
                 //check whether this node belongs to a group
                 foreach (var annotation in Annotations)
