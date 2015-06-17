@@ -816,14 +816,14 @@ namespace Dynamo.DSEngine
                             defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
-                    AssociativeNode shortDefaultArgNode = null;
+                    string shortName = null;
                     if (defaultArgumentNode != null)
                     {
-                        shortDefaultArgNode = NodeUtils.Clone(defaultArgumentNode);
+                        shortName = defaultArgumentNode.ToString();
                         var rewriter = new ElementRewriter(LibraryManagementCore.ClassTable, LibraryManagementCore.BuildStatus.LogSymbolConflictWarning);
                         defaultArgumentNode = defaultArgumentNode.Accept(rewriter);
                     }
-                    return new TypedParameter(arg.Name, argType, defaultArgumentNode, shortDefaultArgNode);
+                    return new TypedParameter(arg.Name, argType, defaultArgumentNode, shortName);
                 }).ToList();
 
             IEnumerable<string> returnKeys = null;
