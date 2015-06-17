@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Dynamo.Core;
+﻿using System.IO;
 using Dynamo.Models;
+using Dynamo.Interfaces;
 
 namespace Dynamo.PackageManager
 {

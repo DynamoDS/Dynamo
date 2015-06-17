@@ -549,7 +549,14 @@ namespace Dynamo.Models
             
             foreach (var ext in ExtensionManager.Extensions)
             {
-                ext.Ready(new ReadyParams());
+                try
+                {
+                    ext.Ready(new ReadyParams());
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.Message);
+                }
             }
         }
             

@@ -1,7 +1,8 @@
 ﻿using Dynamo.Models;
 using System;
 using System.Collections.Generic;
-namespace Dynamo.Core
+
+namespace Dynamo.Interfaces
 {
     public interface ICustomNodeManager
     {

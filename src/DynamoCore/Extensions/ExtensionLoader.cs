@@ -37,7 +37,7 @@ namespace Dynamo.Extensions
 
             if (topNode.Count == 0)
             {
-                Log("Malformed ExtensionDefinition.xml file");
+                Log("Malformed " + extensionPath + " file");
                 return null;
             }
 
