@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structured surface analysis data.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class SurfaceData : ISurfaceData<UV, double>
     {
         /// <summary>
