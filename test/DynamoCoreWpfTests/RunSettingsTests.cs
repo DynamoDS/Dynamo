@@ -150,7 +150,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 10);
         }
 
-        [Test]
+        // This test is now irrelevant due to the follow fix:
+        //   https://github.com/DynamoDS/Dynamo/pull/4674
+        // 
+        [Test, Ignore]
+        [Category("Failure")]
         public void RunSettingsDisableRun()
         {
             string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\math\Add.dyn");
