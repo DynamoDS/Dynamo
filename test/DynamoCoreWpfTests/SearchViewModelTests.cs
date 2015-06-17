@@ -688,7 +688,7 @@ namespace Dynamo.Tests
             viewModel.MoveSelection(NavigationDirection.Forward);
             viewModel.MoveSelection(NavigationDirection.Forward);
 
-            viewModel.MoveSelection(NavigationDirection.Forward);
+            viewModel.MoveSelection(NavigationDirection.Backward);
             Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
         }
 
