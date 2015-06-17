@@ -12,6 +12,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
+using Dynamo.Library;
 
 namespace Dynamo.Core
 {
@@ -922,6 +923,7 @@ namespace Dynamo.Core
                         // two kinds of nodes whose input type are available:
                         // function node and custom node. 
                         List<Library.TypedParameter> parameters = null;
+
                         if (inputReceiverNode is Function) 
                         {
                             var func = inputReceiverNode as Function; 
@@ -930,7 +932,16 @@ namespace Dynamo.Core
                         else if (inputReceiverNode is DSFunctionBase)
                         {
                             var dsFunc = inputReceiverNode as DSFunctionBase;
-                            parameters = dsFunc.Controller.Definition.Parameters.ToList(); 
+                            var funcDesc = dsFunc.Controller.Definition;
+                            parameters = dsFunc.Controller.Definition.Parameters.ToList();
+
+                            if (funcDesc.Type == DSEngine.FunctionType.InstanceMethod ||
+                                funcDesc.Type == DSEngine.FunctionType.InstanceProperty)
+                            {
+                                var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
+                                var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);
+                                parameters.Insert(0, instanceParam);
+                            }
                         }
 
                         // so the input of custom node has format 
