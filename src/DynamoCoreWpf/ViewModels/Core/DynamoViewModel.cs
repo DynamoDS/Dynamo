@@ -458,7 +458,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public VisualizationSettingsViewModel VisualizationSettings { get; set; }
+        public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
         #endregion
 
@@ -542,7 +542,20 @@ namespace Dynamo.ViewModels
 
             SubscribeDispatcherHandlers();
 
-            VisualizationSettings = new VisualizationSettingsViewModel(this);
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(this.VisualizationManager.RenderPackageFactory);
+            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+        }
+
+        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    Model.PreferenceSettings.ShowEdges =
+                        VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges;
+                    break;
+            }
+            VisualizationManager.UpdateAllNodeVisualsAndNotify();
         }
 
         internal event EventHandler NodeViewReady;
@@ -569,6 +582,7 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
+            RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
         }
 
         private void InitializeRecentFiles()

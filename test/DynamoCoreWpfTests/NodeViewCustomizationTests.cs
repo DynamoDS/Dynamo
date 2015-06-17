@@ -68,8 +68,8 @@ namespace DynamoCoreWpfTests
             Open(@"UI\CoreUINodes.dyn");
 
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
-            var watchView = nodeView.ChildrenOfType<Watch3DView>().First();
-            Assert.Null(watchView.Points);
+            var watchView = nodeView.ChildrenOfType<Watch3DView>().FirstOrDefault();
+            Assert.NotNull(watchView);
         }
 
         [Test]
@@ -278,7 +278,8 @@ namespace DynamoCoreWpfTests
 
             var watch3DView = watch3ds.First();
 
-            Assert.AreEqual(1, watch3DView.Points.Positions.Count);
+            //Assert.AreEqual(1, watch3DView.Points.Positions.Count);
+            Assert.AreEqual(1, Model.CurrentWorkspace.TotalPointsToRender());
         }
 
         [Test]

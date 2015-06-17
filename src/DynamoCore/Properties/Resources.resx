@@ -602,4 +602,8 @@ value: bool = false</value>
     <value>variable;argument;parameter</value>
     <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
+  <data name="DefaultCustomNodeCategory" xml:space="preserve">
+    <value>Custom nodes</value>
+    <comment>Used for uncategorised custom nodes.</comment>
+  </data>
 </root>
