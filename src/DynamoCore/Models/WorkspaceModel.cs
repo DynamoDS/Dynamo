@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -95,14 +95,6 @@ namespace Dynamo.Models
                 RequestNodeCentered(this, e);
         }
 
-
-        public event NotifyCollectionChangedEventHandler NodeListChanged;
-
-        public virtual void OnNodeListChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (NodeListChanged != null)
-                NodeListChanged(sender, e);
-        }
 
         /// <summary>
         ///     Function that can be used to respond to a changed workspace Zoom amount.
@@ -301,7 +293,6 @@ namespace Dynamo.Models
             }            
 
             OnNodeAdded(node);
-
         }
 
         public void ClearNodes()
@@ -679,9 +670,6 @@ namespace Dynamo.Models
             {
                 if (!nodes.Remove(model)) return;                
             }
-
-            OnNodeListChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
-                new ArrayList() { model }));
 
             OnNodeRemoved(model);
             DisposeNode(model);
