@@ -1,4 +1,4 @@
-<Workspace Version="0.8.1.1671" X="-242.147045026029" Y="69.4106880719837" zoom="0.959788699581267" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+<Workspace Version="0.8.0.950" X="194.734037733382" Y="243.85903758356" zoom="0.538046297688571" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="80f6e70a-b6e4-452e-9ec3-dffa1106ee28" type="Dynamo.Nodes.DSFunction" nickname="Plane.XY" x="208.5" y="116.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Plane.XY" />
@@ -14,33 +14,32 @@
       <System.Int32>20</System.Int32>
       <Range min="0" max="100" step="1" />
     </DSCoreNodesUI.Input.IntegerSlider>
-    <Dynamo.Nodes.DSFunction guid="a0db9245-1b0d-4ea2-a125-ec63c69705d5" type="Dynamo.Nodes.DSFunction" nickname="Plane.Offset" x="589.753779697624" y="480.069114470842" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Plane.Offset@double">
-      <PortInfo index="1" default="True" />
-    </Dynamo.Nodes.DSFunction>
-    <Dynamo.Nodes.DSFunction guid="c0690f9e-00bc-4a20-b38c-10c8fae24fa9" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthLength" x="957.979320591054" y="307.068643391937" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@Autodesk.DesignScript.Geometry.Plane,double,double">
+    <Dynamo.Nodes.DSFunction guid="49f7b7e2-2e41-463f-9a2e-c77d902d5d97" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthHeight" x="855.230021598272" y="98.5345572354212" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight@Autodesk.DesignScript.Geometry.Plane,double,double">
       <PortInfo index="1" default="True" />
       <PortInfo index="2" default="True" />
     </Dynamo.Nodes.DSFunction>
-    <Dynamo.Nodes.DSFunction guid="04af33df-1fe8-4a81-b5b7-6a04c4e55e6a" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthLength" x="940.789972180125" y="111.861043371269" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@Autodesk.DesignScript.Geometry.Plane,double,double">
+    <Dynamo.Nodes.DSFunction guid="a0db9245-1b0d-4ea2-a125-ec63c69705d5" type="Dynamo.Nodes.DSFunction" nickname="Plane.Offset" x="589.753779697624" y="480.069114470842" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Plane.Offset@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="2e436c2f-88b6-461f-9208-9852ccf6e731" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthHeight" x="870.639308855291" y="378.577753779698" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight@Autodesk.DesignScript.Geometry.Plane,double,double">
       <PortInfo index="1" default="True" />
       <PortInfo index="2" default="True" />
     </Dynamo.Nodes.DSFunction>
   </Elements>
   <Connectors>
+    <Dynamo.Models.ConnectorModel start="80f6e70a-b6e4-452e-9ec3-dffa1106ee28" start_index="0" end="49f7b7e2-2e41-463f-9a2e-c77d902d5d97" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="80f6e70a-b6e4-452e-9ec3-dffa1106ee28" start_index="0" end="a0db9245-1b0d-4ea2-a125-ec63c69705d5" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="80f6e70a-b6e4-452e-9ec3-dffa1106ee28" start_index="0" end="04af33df-1fe8-4a81-b5b7-6a04c4e55e6a" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d80bdd96-890a-4f9a-8755-1c59f5269bf2" start_index="0" end="04af33df-1fe8-4a81-b5b7-6a04c4e55e6a" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d80bdd96-890a-4f9a-8755-1c59f5269bf2" start_index="0" end="c0690f9e-00bc-4a20-b38c-10c8fae24fa9" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="2f60636f-1754-4f95-a0aa-ce60d18dca3b" start_index="0" end="04af33df-1fe8-4a81-b5b7-6a04c4e55e6a" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="2f60636f-1754-4f95-a0aa-ce60d18dca3b" start_index="0" end="c0690f9e-00bc-4a20-b38c-10c8fae24fa9" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d80bdd96-890a-4f9a-8755-1c59f5269bf2" start_index="0" end="49f7b7e2-2e41-463f-9a2e-c77d902d5d97" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d80bdd96-890a-4f9a-8755-1c59f5269bf2" start_index="0" end="2e436c2f-88b6-461f-9208-9852ccf6e731" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f60636f-1754-4f95-a0aa-ce60d18dca3b" start_index="0" end="49f7b7e2-2e41-463f-9a2e-c77d902d5d97" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f60636f-1754-4f95-a0aa-ce60d18dca3b" start_index="0" end="2e436c2f-88b6-461f-9208-9852ccf6e731" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="e185e981-3cf8-4bbc-8b17-af6d405cff6b" start_index="0" end="a0db9245-1b0d-4ea2-a125-ec63c69705d5" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="a0db9245-1b0d-4ea2-a125-ec63c69705d5" start_index="0" end="c0690f9e-00bc-4a20-b38c-10c8fae24fa9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a0db9245-1b0d-4ea2-a125-ec63c69705d5" start_index="0" end="2e436c2f-88b6-461f-9208-9852ccf6e731" end_index="0" portType="0" />
   </Connectors>
   <Notes>
-    <Dynamo.Models.NoteModel guid="c30104c7-c217-4287-8011-4fa062e72b9d" text="Designate origin on the ground plane" x="143.5" y="67.5" />
-    <Dynamo.Models.NoteModel guid="832c434d-f426-4c2c-9d49-35a90923c92a" text="Draw ground rectangle" x="875.080335627013" y="57.9368990522192" />
-    <Dynamo.Models.NoteModel guid="e52985e8-b100-4d57-a19e-2ea41000c7ef" text="Offset plane in its +Z direction create roof plane" x="516.345777774326" y="605.248271587503" />
-    <Dynamo.Models.NoteModel guid="ccaf8c44-5c98-4e9d-a14d-61b23793ce41" text="Draw roof rectangle" x="901.979841126669" y="531.922908003644" />
+    <Dynamo.Models.NoteModel text="Designate origin on the ground plane" x="143.5" y="67.5" />
+    <Dynamo.Models.NoteModel text="Draw ground rectangle" x="875.080335627013" y="57.9368990522192" />
+    <Dynamo.Models.NoteModel text="Offset plane in its +Z direction create roof plane" x="516.345777774326" y="605.248271587503" />
+    <Dynamo.Models.NoteModel text="Draw roof rectangle" x="901.979841126669" y="531.922908003644" />
   </Notes>
-  <Annotations />
 </Workspace>
