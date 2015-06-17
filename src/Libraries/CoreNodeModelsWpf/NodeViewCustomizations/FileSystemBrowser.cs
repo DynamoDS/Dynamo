@@ -24,13 +24,13 @@ namespace DSCore.File
             };
 
             readFileButton.Click += readFileButton_Click;
-            readFileButton.Content = "Browse...";
+            readFileButton.Content = Dynamo.Wpf.Properties.Resources.BrowserNodeButtonLabel;
             readFileButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             readFileButton.VerticalAlignment = VerticalAlignment.Center;
 
             var tb = new TextBox();
             if (string.IsNullOrEmpty(model.Value))
-                model.Value = "No file selected.";
+                model.Value = Dynamo.Wpf.Properties.Resources.BrowserNodeNoFileSelected;
 
             tb.HorizontalAlignment = HorizontalAlignment.Stretch;
             tb.VerticalAlignment = VerticalAlignment.Center;

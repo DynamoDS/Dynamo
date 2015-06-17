@@ -1,0 +1,17 @@
+<Workspace Version="0.8.2.1465" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="556efc56-6043-4f96-8012-e5b716174d62" type="Dynamo.Nodes.DSFunction" nickname="+" x="431" y="70" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.DoubleInput guid="64105f76-a498-4e3d-a3d7-f1709441234b" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="133" y="58.0000000000004" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="8.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="505023ef-9b86-4220-a1f2-e0bf7cf415f1" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="271.333333333333" y="139.333333333334" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="64105f76-a498-4e3d-a3d7-f1709441234b" start_index="0" end="556efc56-6043-4f96-8012-e5b716174d62" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="64105f76-a498-4e3d-a3d7-f1709441234b" start_index="0" end="505023ef-9b86-4220-a1f2-e0bf7cf415f1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="505023ef-9b86-4220-a1f2-e0bf7cf415f1" start_index="0" end="556efc56-6043-4f96-8012-e5b716174d62" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

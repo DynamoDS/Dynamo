@@ -428,18 +428,17 @@ namespace Dynamo.Core
             var uiCulture = CultureInfo.CurrentUICulture.ToString();
             var galleryDirectory = Path.Combine(commonDataDir, "gallery", uiCulture);
 
-            // If the localized samples directory does not exist then fall back 
-            // to using the en-US samples folder. Do an additional check to see 
+            // If the localized gallery directory does not exist then fall back 
+            // to using the en-US gallery folder. Do an additional check to see 
             // if the localized folder is available but is empty.
             // 
             var di = new DirectoryInfo(galleryDirectory);
             if (!Directory.Exists(galleryDirectory) ||
-                !di.GetDirectories().Any() ||
-                !di.GetFiles().Any())
+                !di.GetFiles("*.xml",SearchOption.TopDirectoryOnly).Any())
             {
-                var neturalCommonSamples = Path.Combine(commonDataDir, "gallery", "en-US");
-                if (Directory.Exists(neturalCommonSamples))
-                    galleryDirectory = neturalCommonSamples;
+                var neutralCommonGallery = Path.Combine(commonDataDir, "gallery", "en-US");
+                if (Directory.Exists(neutralCommonGallery))
+                    galleryDirectory = neutralCommonGallery;
             }
 
             return galleryDirectory;

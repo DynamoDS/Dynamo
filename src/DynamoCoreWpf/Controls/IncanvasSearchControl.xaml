@@ -6,10 +6,11 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
-             Width="250"
+             MinWidth="250"
              IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,6 +25,16 @@
                    TargetType="{x:Type ListBoxItem}">
                 <EventSetter Event="PreviewMouseLeftButtonUp"
                              Handler="OnMouseLeftButtonUp" />
+                <EventSetter Event="MouseEnter"
+                             Handler="OnMouseEnter" />
+                <EventSetter Event="MouseLeave"
+                             Handler="OnMouseLeave" />
+            </Style>
+            
+            <Style TargetType="{x:Type ScrollViewer}"
+                   BasedOn="{StaticResource LibraryScrollViewerStyle}">
+                <Setter Property="Template"
+                        Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
 
         </ResourceDictionary>
@@ -106,29 +117,24 @@
                 Grid.Row="1"
                 Name="FoundMembers"
                 MaxHeight="250">
-            <ScrollViewer>
-                <ListBox Name="MembersListBox"
-                         Background="Transparent"
-                         BorderBrush="Transparent"
-                         ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                         ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
-                         TargetUpdated="OnMembersListBoxUpdated">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
-                                          Style="{StaticResource InCanvasScrollViewerStyle}"
-                                          CanContentScroll="True">
-                                <ContentControl Template="{StaticResource MemberControlTemplate}" />
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.Template>
-                        <ControlTemplate>
-                            <ItemsPresenter />
-                        </ControlTemplate>
-                    </ListBox.Template>
-                </ListBox>
-            </ScrollViewer>
+            <ListBox Name="MembersListBox"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{StaticResource SearchMemberStyle}"
+                     ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
+                     TargetUpdated="OnMembersListBoxUpdated"
+                     PreviewMouseWheel="OnMembersListBoxMouseWheel">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                                      Style="{StaticResource InCanvasScrollViewerStyle}"
+                                      CanContentScroll="True"
+                                      Width="250">
+                            <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                        </ScrollViewer>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
@@ -151,5 +157,16 @@
                 </Style>
             </Border.Style>
         </Border>
+
+
+        <Border Margin="-3,0,-3,0">
+            <Popup StaysOpen="True"
+                   AllowsTransparency="True"
+                   Placement="Right"
+                   x:Name="toolTipPopup">
+                <uicontrols:ToolTipWindow />
+            </Popup>
+        </Border>
+
     </Grid>
 </UserControl>
