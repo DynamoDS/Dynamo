@@ -438,7 +438,7 @@ namespace Dynamo.ViewModels
             PostNodeChangeActions();
         }
 
-        protected void PostNodeChangeActions()
+        void PostNodeChangeActions()
         {
             if (RunSettingsViewModel == null) return;
             CheckAndSetPeriodicRunCapability();
