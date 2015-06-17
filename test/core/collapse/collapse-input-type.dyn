@@ -1,0 +1,16 @@
+<Workspace Version="0.8.0.1671" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="fb066324-1ca0-400f-8dee-cbb0e1d27719" type="Dynamo.Nodes.DSFunction" nickname="Curve.Extrude" x="623.5" y="256.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Extrude@Autodesk.DesignScript.Geometry.Vector">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="155323bb-ebf0-4fa6-88f6-b2d606aa6acc" type="Dynamo.Nodes.DSFunction" nickname="Line.ByStartPointEndPoint" x="328.5" y="198.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="155323bb-ebf0-4fa6-88f6-b2d606aa6acc" start_index="0" end="fb066324-1ca0-400f-8dee-cbb0e1d27719" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>
