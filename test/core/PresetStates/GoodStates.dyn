@@ -23,20 +23,20 @@
       <Models ModelGuid="29e4e5c6-057d-4d77-85f9-3d2c41462572" />
     </Dynamo.Models.AnnotationModel>
   </Annotations>
-  <Dynamo.Models.PresetsModel>
-    <PresetState Name="state 1" Description="5" guid="6046b696-d64a-497c-8a98-89b852354230">
+  <Presets>
+    <PresetModel Name="state 1" Description="5" guid="6046b696-d64a-497c-8a98-89b852354230">
       <Dynamo.Nodes.CodeBlockNodeModel guid="c4c23fb5-5f1e-4531-82b4-a056d8a07918" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="194.460612949383" y="166.764557952306" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2;&#xA;3;" ShouldFocus="false" />
-    </PresetState>
-    <PresetState Name="state 2" Description="9" guid="ce38c1fa-fcf9-4389-be58-eb7d0822caf4">
+    </PresetModel>
+    <PresetModel Name="state 2" Description="9" guid="ce38c1fa-fcf9-4389-be58-eb7d0822caf4">
       <Dynamo.Nodes.CodeBlockNodeModel guid="c4c23fb5-5f1e-4531-82b4-a056d8a07918" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="194.460612949383" y="166.764557952306" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3;&#xA;4;" ShouldFocus="false" />
-    </PresetState>
-    <PresetState Name="state 3" Description="100" guid="f7a8780f-2a63-4f63-bcf7-5950e05a7164">
+    </PresetModel>
+    <PresetModel Name="state 3" Description="100" guid="f7a8780f-2a63-4f63-bcf7-5950e05a7164">
       <Dynamo.Nodes.CodeBlockNodeModel guid="c4c23fb5-5f1e-4531-82b4-a056d8a07918" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="194.460612949383" y="166.764557952306" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3;&#xA;100;" ShouldFocus="false" />
-    </PresetState>
-    <PresetState Name="state 4" Description="more stuff" guid="52b14fed-1251-4f96-9eca-9ab5e3d8f777">
+    </PresetModel>
+    <PresetModel Name="state 4" Description="more stuff" guid="52b14fed-1251-4f96-9eca-9ab5e3d8f777">
       <Dynamo.Nodes.CodeBlockNodeModel guid="c4c23fb5-5f1e-4531-82b4-a056d8a07918" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="194.460612949383" y="166.764557952306" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3;&#xA;100;&#xA;50;" ShouldFocus="false" />
-    </PresetState>
-    <PresetState Name="4/8/2015 2:57:02 PM" Description="some random state&#xD;&#xA;" guid="7a5a0b25-f4ba-4315-9375-849017f0005b">
+    </PresetModel>
+    <PresetModel Name="4/8/2015 2:57:02 PM" Description="some random state&#xD;&#xA;" guid="7a5a0b25-f4ba-4315-9375-849017f0005b">
       <Dynamo.Nodes.DSFunction guid="fbac2ab5-f8b2-42d9-a806-f63a49a0bce3" type="Dynamo.Nodes.DSFunction" nickname="+" x="400.48167539267" y="85.3403141361256" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@var[]..[],var[]..[]" />
       <Dynamo.Nodes.CodeBlockNodeModel guid="c4c23fb5-5f1e-4531-82b4-a056d8a07918" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="194.460612949383" y="166.764557952306" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2;&#xA;3;" ShouldFocus="false" />
       <Dynamo.Nodes.DSFunction guid="c5890f7d-872b-49e1-bcee-166552a8b2ff" type="Dynamo.Nodes.DSFunction" nickname="+" x="561.607449877842" y="196.831620488614" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@var[]..[],var[]..[]" />
@@ -44,6 +44,6 @@
       <Dynamo.Nodes.DoubleInput guid="29e4e5c6-057d-4d77-85f9-3d2c41462572" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="224.921537405764" y="51.5519965306443" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
         <System.Double value="0" />
       </Dynamo.Nodes.DoubleInput>
-    </PresetState>
-  </Dynamo.Models.PresetsModel>
+    </PresetModel>
+  </Presets>
 </Workspace>
