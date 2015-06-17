@@ -3528,6 +3528,44 @@ namespace DynamoCoreWpfTests
             });
 
         }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void PointDoesntUpdateProperlyWithRageChange_MAGN7635()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-67635
+
+            RunCommandsFromFile("7635_PointDoesntUpdateProperlyWithRageChange.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                string pointNodeID = "037a09ae-9fc0-4687-8ea5-6e29d4720bec";
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 10);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 5);
+                }
+                else if (commandTag == "FinalRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 10);
+                }
+            });
+
+        }
        
 
         #endregion
