@@ -3545,21 +3545,21 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
                     AssertPreviewCount(pointNodeID, 10);
                 }
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
                     AssertPreviewCount(pointNodeID, 5);
                 }
                 else if (commandTag == "FinalRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
                     AssertPreviewCount(pointNodeID, 10);
                 }
@@ -4037,7 +4037,7 @@ namespace DynamoCoreWpfTests
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "FirstRun")
                 {
-                    Assert.AreEqual(5, workspace.Nodes.Count);
+                    Assert.AreEqual(5, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());       
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("8042e93f-a000-49b0-8fc4-edcbc6fc767e");
@@ -4084,7 +4084,7 @@ namespace DynamoCoreWpfTests
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "FirstRun")
                 {   
-                    Assert.AreEqual(33, workspace.Nodes.Count);
+                    Assert.AreEqual(33, workspace.Nodes.Count());
                     //check the last two Line.BystartPointEndPoint
                     NodeModel line1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("39699a12-ab28-45c2-a213-3feee21e482a");
@@ -4144,7 +4144,7 @@ namespace DynamoCoreWpfTests
                 // In firstRun, Line.BystartPointEndPoint are with two same startpoints and endpoints, which should give a warning.
                 if (commandTag == "FirstRun")
                 {
-                    Assert.AreEqual(5, workspace.Nodes.Count);
+                    Assert.AreEqual(5, workspace.Nodes.Count());
                     Assert.AreEqual(7, workspace.Connectors.Count());
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("8eef399d-655d-4ca9-a8d8-d81d6c29e4f1");
@@ -4201,7 +4201,7 @@ namespace DynamoCoreWpfTests
                 // the correct connections, with no error. Cylinder.ByPointsRadius generates 10 cylinders
                 if (commandTag == "FirstRun")
                 {
-                    Assert.AreEqual(14, workspace.Nodes.Count);
+                    Assert.AreEqual(14, workspace.Nodes.Count());
                     Assert.AreEqual(19, workspace.Connectors.Count());
                     AssertPreviewCount("948ad0f5-82e8-4053-9568-db06d69f77e0", 10);
                     for (int i = 0; i < 10; i++)
@@ -4251,7 +4251,7 @@ namespace DynamoCoreWpfTests
                 // the correct connections, with no error. number range is from 0 to 10.
                 if (commandTag == "FirstRun")
                 {
-                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count());
                     Assert.AreEqual(4, workspace.Connectors.Count());
                     AssertPreviewCount("8a7591cf-0271-4c47-989f-583ab7c028ca", 6);
                     AssertPreviewValue("8a7591cf-0271-4c47-989f-583ab7c028ca", new object[] { 0, 2, 4, 6, 8, 10 });
