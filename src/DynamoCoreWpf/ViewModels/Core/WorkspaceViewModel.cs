@@ -315,6 +315,9 @@ namespace Dynamo.ViewModels
                 (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
+
+            
+            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
         //    Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
