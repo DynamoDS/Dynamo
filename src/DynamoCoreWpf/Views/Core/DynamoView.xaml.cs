@@ -386,7 +386,7 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
-            //DesignOptions Name Prompt
+            //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestDesignOptionsNamePrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
@@ -743,7 +743,7 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Handles the request for the presentation of the design options name prompt
+        /// Handles the request for the presentation of the preset name prompt
         /// </summary>
         /// <param name="e">a parameter object contains default Name and Description,
         /// and Success bool returned from the dialog</param>
@@ -753,8 +753,8 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Presents the design options name dialogue. Returns true if the user enters
-        /// a designoptions name/timestamp and description.
+        /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
+        /// a preset name/timestamp and description.
         /// </summary>
         public void ShowNewDesignOptionsDialog(PresetsNamePromptEventArgs e)
         {
@@ -925,19 +925,21 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
-        private void LoadStateMenus(object sender, RoutedEventArgs e)
+        private void LoadPresetsMenus(object sender, RoutedEventArgs e)
         {
-            //grab serialized designoptions from current workspace... hopefully this is loaded?
+            //grab serialized presets from current workspace
             var PresetSet = dynamoViewModel.Model.CurrentWorkspace.Presets;
             // now grab all the states off the set and create a menu item for each one
 
-           
+            var statesMenu = (sender as MenuItem);
+            var senderItems =  statesMenu.Items.OfType<MenuItem>().Select(x => x.Tag).ToList();
             //only update the states menus if the states have been updated or the user
-            // has switched workspace contexts, can check if designOptionsSet collection is different
-            if (!PresetSet.SequenceEqual(((MenuItem)(sender)).Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
+            // has switched workspace contexts, can check if stateItems List is different
+            //from the presets on the current workspace
+            if (!PresetSet.SequenceEqual(senderItems))
             {
                 //dispose all state items in the menu
-                ((MenuItem)sender).Items.Clear();
+                statesMenu.Items.Clear();
 
                 foreach (var state in PresetSet)
               {
@@ -947,7 +949,6 @@ namespace Dynamo.Controls
                         {
                             Header = state.Name,
                             Tag = state
-                               
                         };
                   //if the sender was the restoremenu then add restore delegates
                  if (sender == RestoreStateMenu)
@@ -959,12 +960,10 @@ namespace Dynamo.Controls
                      //else the sender was the delete menu
                      stateItem.Click += DeleteState_Click;
                  }
-                 
                  stateItem.ToolTip = state.Description;
                  ((MenuItem)sender).Items.Add(stateItem);
                 }
             }
-
         }
 
 

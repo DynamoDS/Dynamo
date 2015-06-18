@@ -355,11 +355,11 @@
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestoreState}"
-                                    MouseEnter="LoadStateMenus"
+                                    MouseEnter="LoadPresetsMenus"
                                       Name="RestoreStateMenu"
                                       Focusable="False" />
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeleteState}"
-                                    MouseEnter="LoadStateMenus"
+                                    MouseEnter="LoadPresetsMenus"
                                       Name="DeleteStateMenu"
                                       Focusable="False" />
                         </MenuItem>
