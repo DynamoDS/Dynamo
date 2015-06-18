@@ -259,7 +259,7 @@
                                Command="{Binding NodeFromSelectionCommand}" />
 
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuCreateState}"
-                              Command="{Binding DynamoViewModel.ShowNewDesignOptionDialogCommand}" />
+                              Command="{Binding DynamoViewModel.ShowNewPresetsDialogCommand}" />
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
                                Command="{Binding NodeToCodeCommand}" 

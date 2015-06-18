@@ -1661,7 +1661,7 @@ namespace Dynamo.Models
                 }
                 if (IDS.Count<1)
                 {
-                    throw new ArgumentNullException("No IDs were deserialized during load of designstate creation command");
+                    throw new ArgumentNullException("No IDs were deserialized during load of preset creation command");
                 }
                 
                 return new CreatePresetStateFromSelectionCommand(helper.ReadString("name"), helper.ReadString("description"),IDS);

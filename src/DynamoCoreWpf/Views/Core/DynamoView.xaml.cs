@@ -387,7 +387,7 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
             //Preset Name Prompt
-            dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestDesignOptionsNamePrompt;
+            dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestPresetNamePrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
@@ -747,16 +747,16 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="e">a parameter object contains default Name and Description,
         /// and Success bool returned from the dialog</param>
-        void DynamoViewModelRequestDesignOptionsNamePrompt (PresetsNamePromptEventArgs e)
+        void DynamoViewModelRequestPresetNamePrompt (PresetsNamePromptEventArgs e)
         {
-            ShowNewDesignOptionsDialog(e);
+            ShowNewPresetDialog(e);
         }
 
         /// <summary>
         /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
         /// a preset name/timestamp and description.
         /// </summary>
-        public void ShowNewDesignOptionsDialog(PresetsNamePromptEventArgs e)
+        public void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
         {
             string error = "";
 
@@ -859,8 +859,8 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
 
-            //DesignOptions Name Prompt
-            dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestDesignOptionsNamePrompt;
+            //Preset Name Prompt
+            dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestPresetNamePrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;

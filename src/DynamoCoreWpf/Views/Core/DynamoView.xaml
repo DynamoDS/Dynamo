@@ -167,7 +167,7 @@
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
         <KeyBinding Key="T"
                     Modifiers="Control"
-                    Command="{Binding ShowNewDesignOptionDialogCommand}"/>
+                    Command="{Binding ShowNewPresetsDialogCommand}"/>
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -350,8 +350,8 @@
                               Focusable= "False"
                               IsEnabled="True">
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreateState}"
-                                      Command="{Binding ShowNewDesignOptionDialogCommand}"
-                                      Name="newDesignOptions"
+                                      Command="{Binding ShowNewPresetsDialogCommand}"
+                                      Name="newPreset"
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestoreState}"

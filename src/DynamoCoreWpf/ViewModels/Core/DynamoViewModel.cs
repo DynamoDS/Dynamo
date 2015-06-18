@@ -1374,15 +1374,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Present the new designOption dialogue and add a new design 
-        /// option to the design option set on this graph
+        /// Present the new preset dialogue and add a new presetModel 
+        /// to the preset set on this graph
         /// </summary>
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
             //trigger the event to request the display
-            //of the design option name dialogue
+            //of the preset name dialogue
             var args = new PresetsNamePromptEventArgs();
-            this.Model.OnRequestsDesignOptionNamePrompt(args);
+            this.Model.OnRequestsPresetNamePrompt(args);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             if (args.Success)
             {
@@ -1391,7 +1391,6 @@ namespace Dynamo.ViewModels
         }
         private bool CanShowNewPresetStateDialog(object parameter)
         {
-            //TODO(mike) in future may want to return false if we're in a custom node, currently returns true. 
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
