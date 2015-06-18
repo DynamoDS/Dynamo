@@ -939,6 +939,11 @@ namespace FFITarget
                 return p;
             }
 
+            public static Point ByCoordinates(double x, double y, double z)
+            {
+                return XYZ(x, y, z);
+            }
+
             public double dX { get; set; }
             public double dY { get; set; }
             public double dZ { get; set; }

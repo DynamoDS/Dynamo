@@ -25,8 +25,6 @@ namespace Dynamo.Nodes
         private List<TSelection> selection = new List<TSelection>();
         private readonly SelectionType selectionType;
         private readonly SelectionObjectType selectionObjectType;
-
-        private const string SELECTION_SUGGESTION = "Select something in the model.";
         
         #region public properties
 
@@ -87,7 +85,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public virtual string SelectionSuggestion
         {
-            get { return SELECTION_SUGGESTION; }
+            get { return Resources.SelectionNodeSugestion; }
         }
 
         #endregion
@@ -123,7 +121,7 @@ namespace Dynamo.Nodes
         {
             return SelectionResults.Any()
                 ? string.Format("{0} : {1}", Prefix, FormatSelectionText(SelectionResults))
-                : "Nothing selected.";
+                : Resources.SelectionNodeNothingSelected;
         }
 
         public void ClearSelections()

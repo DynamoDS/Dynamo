@@ -997,6 +997,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing selected..
+        /// </summary>
+        internal static string SelectionNodeNothingSelected {
+            get {
+                return ResourceManager.GetString("SelectionNodeNothingSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select something in the model..
+        /// </summary>
+        internal static string SelectionNodeSugestion {
+            get {
+                return ResourceManager.GetString("SelectionNodeSugestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected elements..
         /// </summary>
         internal static string SelectionPortDataResultToolTip {

@@ -1,0 +1,16 @@
+<Workspace Version="0.8.2.1592" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="7335190b-f50b-4e99-8dc6-de9ff45426fe" type="Dynamo.Nodes.DSFunction" nickname="TestDefaultArgumentAttributes.ComputeCircle" x="375.5" y="319.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\bin\AnyCPU\Debug\FFITarget.dll" function="FFITarget.TestDefaultArgumentAttributes.ComputeCircle@FFITarget.DesignScript.Point,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="40623ca5-8bbb-427a-b014-a9ac40378b51" type="Dynamo.Nodes.DSFunction" nickname="TestDefaultArgumentAttributes.ComputeCircleConflict" x="181.5" y="509.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\bin\AnyCPU\Debug\FFITarget.dll" function="FFITarget.TestDefaultArgumentAttributes.ComputeCircleConflict@FFITarget.DesignScript.Point,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+</Workspace>

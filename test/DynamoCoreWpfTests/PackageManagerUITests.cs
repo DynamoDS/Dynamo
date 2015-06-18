@@ -10,6 +10,7 @@ using Dynamo.PackageManager.UI;
 
 using NUnit.Framework;
 
+
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
@@ -90,7 +91,6 @@ namespace DynamoCoreWpfTests
             AssertWindowClosedWithDynamoView<PublishPackageView>();
 
         }
-
         #endregion
 
         #region InstalledPackagesView

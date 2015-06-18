@@ -958,6 +958,43 @@ namespace Dynamo.Tests
             node.InPorts[0].UsingDefaultValue = false;
             Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0 (disabled)"));
         }
+        [Test]
+        public void Reorder_7573()
+        {
+            
+            // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7573
+
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\reorder.dyn");
+
+            RunModel(dynFilePath);
+
+            AssertPreviewValue("c739b941-ece7-4b87-ae69-9a16f04dbe5d", null);
+
+            // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
+            CurrentDynamoModel.ForceRun();
+
+            AssertPreviewValue("79d158b3-fa40-4069-8bb5-153e6fb13858", new object[] { 2, 3, 6, 5 });
+        }
+        [Test]
+        public void Removekey_7573()
+        {
+            
+            // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7573
+
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\removekey.dyn");
+
+            RunModel(dynFilePath);
+            // Fix expected result after MAGN-7639 is fixed.
+
+            AssertPreviewValue("bd89982a-c3e6-4a4e-898c-2bdc8f1f8c3e", false);
+
+            // Reset engine and mark all nodes as dirty. A.k.a., force re-execute.
+            CurrentDynamoModel.ForceRun();
+
+            // Fix expected result after MAGN-7639 is fixed.
+            AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", new object[] { new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false } });
+
+        }
     }
 
     [Category("DSCustomNode")]
@@ -1107,5 +1144,6 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
+        
     }
 }
