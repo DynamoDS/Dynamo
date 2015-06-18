@@ -350,6 +350,9 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\Operators.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BuiltInAndOperators\BuiltIn.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>
@@ -382,6 +385,7 @@ limitations under the License.
     <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
+	<Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
