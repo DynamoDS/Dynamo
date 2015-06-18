@@ -17,7 +17,7 @@ namespace Dynamo.PackageManager
 
         public string Name
         {
-            get { return fileInfo.Name;  }
+            get { return fileInfo.FullName;  }
         }
 
         public long Length
