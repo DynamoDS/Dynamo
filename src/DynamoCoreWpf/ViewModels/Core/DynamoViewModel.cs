@@ -21,6 +21,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.PackageManager;
 
 using DynamoUnits;
 
@@ -458,7 +459,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public VisualizationSettingsViewModel VisualizationSettings { get; set; }
+        public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
         #endregion
 
@@ -504,7 +505,8 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
+            var pmExtension = model.GetPackageManagerExtension();
+            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.
@@ -542,7 +544,20 @@ namespace Dynamo.ViewModels
 
             SubscribeDispatcherHandlers();
 
-            VisualizationSettings = new VisualizationSettingsViewModel(this);
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(this.VisualizationManager.RenderPackageFactory);
+            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+        }
+
+        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    Model.PreferenceSettings.ShowEdges =
+                        VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges;
+                    break;
+            }
+            VisualizationManager.UpdateAllNodeVisualsAndNotify();
         }
 
         internal event EventHandler NodeViewReady;
@@ -569,6 +584,7 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
+            RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
         }
 
         private void InitializeRecentFiles()

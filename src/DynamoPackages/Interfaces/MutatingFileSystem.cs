@@ -7,7 +7,7 @@ namespace Dynamo.PackageManager
     /// <summary>
     ///     An IFileSystem that actually mutates the underlying file system
     /// </summary>
-    internal class MutatingFileSystem : IFileSystem
+    public class MutatingFileSystem : IFileSystem
     {
         public void CopyFile(string filePath, string destinationPath)
         {

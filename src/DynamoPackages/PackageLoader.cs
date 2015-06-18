@@ -24,8 +24,8 @@ namespace Dynamo.PackageManager
     {
         internal event Action<Assembly> RequestLoadNodeLibrary;
         internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
-        internal event Action<Package> PackageAdded;
-        internal event Action<Package> PackageRemoved;
+        public event Action<Package> PackageAdded;
+        public event Action<Package> PackageRemoved;
 
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }

@@ -11,7 +11,7 @@ namespace DynamoCoreWpfTests
     public class PublishPackageViewModelTests: DynamoViewModelUnitTest
     {
 
-        [Test]
+        [Test, Category("Failure")]
         public void AddingDyfRaisesCanExecuteChangeOnDelegateCommand()
         {
             

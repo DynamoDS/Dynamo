@@ -46,6 +46,7 @@ namespace Dynamo.Core
         public const string PackagesDirectoryName = "packages";
         public const string LogsDirectoryName = "Logs";
         public const string NodesDirectoryName = "nodes";
+        public const string ExtensionsDirectoryName = "extensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
@@ -61,6 +62,7 @@ namespace Dynamo.Core
         private readonly string commonDefinitions;
         private readonly string logDirectory;
         private readonly string packagesDirectory;
+        private readonly string extensionsDirectory;
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
@@ -102,6 +104,11 @@ namespace Dynamo.Core
         public string PackagesDirectory
         {
             get { return packagesDirectory; }
+        }
+
+        public string ExtensionsDirectory
+        {
+            get { return extensionsDirectory; }
         }
 
         public string SamplesDirectory
@@ -244,6 +251,8 @@ namespace Dynamo.Core
                     "Dynamo core location in the DynamoBasePath variable in " +
                     "TestServices.dll.config.");
             }
+
+            extensionsDirectory = Path.Combine(dynamoCoreDir, ExtensionsDirectoryName);
 
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
@@ -419,18 +428,17 @@ namespace Dynamo.Core
             var uiCulture = CultureInfo.CurrentUICulture.ToString();
             var galleryDirectory = Path.Combine(commonDataDir, "gallery", uiCulture);
 
-            // If the localized samples directory does not exist then fall back 
-            // to using the en-US samples folder. Do an additional check to see 
+            // If the localized gallery directory does not exist then fall back 
+            // to using the en-US gallery folder. Do an additional check to see 
             // if the localized folder is available but is empty.
             // 
             var di = new DirectoryInfo(galleryDirectory);
             if (!Directory.Exists(galleryDirectory) ||
-                !di.GetDirectories().Any() ||
-                !di.GetFiles().Any())
+                !di.GetFiles("*.xml",SearchOption.TopDirectoryOnly).Any())
             {
-                var neturalCommonSamples = Path.Combine(commonDataDir, "gallery", "en-US");
-                if (Directory.Exists(neturalCommonSamples))
-                    galleryDirectory = neturalCommonSamples;
+                var neutralCommonGallery = Path.Combine(commonDataDir, "gallery", "en-US");
+                if (Directory.Exists(neutralCommonGallery))
+                    galleryDirectory = neutralCommonGallery;
             }
 
             return galleryDirectory;
