@@ -66,7 +66,7 @@ namespace Analysis
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
+        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             if (!Values.Any() || Values == null)
             {

@@ -400,6 +400,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public int MaxTessellationDivisions
+        {
+            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
+            set
+            {
+                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
+                model.OnRequestsRedraw(this, EventArgs.Empty);
+            }
+        }
+
         public bool VerboseLogging
         {
             get { return model.DebugSettings.VerboseLogging; }
