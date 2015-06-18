@@ -336,7 +336,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private int AllocateStringInternal(string str)
+        private StackValue AllocateStringInternal(string str, bool isConstant)
         {
             int index;
             if (!stringTable.TryGetPointer(str, out index))
@@ -344,7 +344,14 @@ namespace ProtoCore.DSASM
                 index = AllocateInternal(Enumerable.Empty<StackValue>(), PrimitiveType.kTypeString);
                 stringTable.AddString(index, str);
             }
-            return index;
+
+            if (isConstant)
+                fixedHeapElements.Add(index);
+
+            var svString = StackValue.BuildString(index);
+            DSString dsstring = ToHeapObject<DSString>(svString);
+            dsstring.SetPointer(svString);
+            return svString;
         }
 
         /// <summary>
@@ -354,14 +361,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocateFixedString(string str)
         {
-            int index = AllocateStringInternal(str);
-            fixedHeapElements.Add(index);
-            var svString = StackValue.BuildString(index);
-
-            DSString dsstring = ToHeapObject<DSString>(svString);
-            dsstring.SetPointer(svString);
-
-            return svString;
+            return AllocateStringInternal(str, true);
         }
 
         /// <summary>
@@ -371,13 +371,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocateString(string str)
         {
-            int index = AllocateStringInternal(str);
-            var svString = StackValue.BuildString(index);
-
-            DSString dsstring = ToHeapObject<DSString>(svString);
-            dsstring.SetPointer(svString);
-
-            return svString;
+            return AllocateStringInternal(str, false);
         }
 
         /// <summary>
