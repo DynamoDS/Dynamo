@@ -103,6 +103,7 @@ limitations under the License.
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -385,7 +386,7 @@ limitations under the License.
     <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
-	<Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
+    <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
