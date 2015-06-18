@@ -66,6 +66,9 @@ namespace Dynamo.ViewModels
         {
             var offset = direction == NavigationDirection.Backward ? -1 : 1;
 
+            if (!root.Any())
+                return;
+
             // First we update the selection index.
             selectedMemberIndex += offset;
 

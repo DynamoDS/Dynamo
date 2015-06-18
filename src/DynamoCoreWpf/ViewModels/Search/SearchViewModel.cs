@@ -695,11 +695,7 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
 
-            // Select first element, in first group, in first category.
-            if (foundNodes.Any())
-            {
-                selectionNavigator.UpdateRootCategories(SearchRootCategories);
-            }
+            selectionNavigator.UpdateRootCategories(SearchRootCategories);
         }
 
 
