@@ -21,6 +21,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.PackageManager;
 
 using DynamoUnits;
 
@@ -504,7 +505,8 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
+            var pmExtension = model.GetPackageManagerExtension();
+            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.

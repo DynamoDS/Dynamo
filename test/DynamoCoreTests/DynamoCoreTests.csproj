@@ -67,12 +67,9 @@
     <Compile Include="DSEvaluationUnitTestBase.cs" />
     <Compile Include="DynamoModelTestBase.cs" />
     <Compile Include="MessageLogTests.cs" />
+    <Compile Include="MockMaker.cs" />
     <Compile Include="NodeConstructionTests.cs" />
-    <Compile Include="PackageManager\MockMaker.cs" />
-    <Compile Include="PackageManager\PackageDirectoryBuilderTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
-    <Compile Include="PackageManager\PackageTests.cs" />
-    <Compile Include="PackageManager\RecordedFileSystem.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
@@ -91,10 +88,7 @@
     <Compile Include="Nodes\HigherOrder.cs" />
     <Compile Include="Nodes\IfTest.cs" />
     <Compile Include="AstBuildFailTest.cs" />
-    <Compile Include="PackageManager\PackageLoaderTests.cs" />
-    <Compile Include="PackageManager\PackageManagerClientTests.cs" />
     <Compile Include="ScopedNodeTest.cs" />
-    <Compile Include="PackageManager\PackageUtilitiesTests.cs" />
     <Compile Include="SchedulerTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="UnicodeTest.cs" />
@@ -110,7 +104,6 @@
     <Compile Include="Nodes\ListTests.cs" />
     <Compile Include="Nodes\LogicTests.cs" />
     <Compile Include="Nodes\StringTests.cs" />
-    <Compile Include="PackageManager\PackageUploadBuilderTests.cs" />
     <Compile Include="SearchModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
