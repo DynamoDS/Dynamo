@@ -16,11 +16,14 @@ namespace Dynamo.Wpf.Rendering
     {
         private const int MaxTessellationDivisionsDefault = 128;
 
-        public int MaxTessellationDivisions { get; set; }
+        public TessellationParameters TessellationParameters { get; set; }
 
         public HelixRenderPackageFactory()
         {
-            MaxTessellationDivisions = MaxTessellationDivisionsDefault;
+            TessellationParameters = new TessellationParameters()
+            {
+                MaxTessellationDivisions = MaxTessellationDivisionsDefault
+            };
         }
 
         public IRenderPackage CreateRenderPackage()

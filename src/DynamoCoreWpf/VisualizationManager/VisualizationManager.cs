@@ -191,6 +191,7 @@ namespace Dynamo
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
             renderPackageFactory = new HelixRenderPackageFactory();
+            RenderPackageFactory.TessellationParameters.ShowEdges = model.PreferenceSettings.ShowEdges;
 
             Start();
         }
@@ -570,8 +571,13 @@ namespace Dynamo
         public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
         {
             var renderPackage = renderPackageFactory.CreateRenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, renderPackageFactory.MaxTessellationDivisions);
+            gItem.Tessellate(renderPackage, renderPackageFactory.TessellationParameters);
             return renderPackage;
+        }
+
+        public void UpdateAllNodeVisualsAndNotify()
+        {
+            RequestNodeVisualUpdateAsync(null, renderPackageFactory);
         }
     }
 

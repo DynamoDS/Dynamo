@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structured vector analysis data.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class VectorData : IStructuredData<Point, Vector>
     {
         private const byte VectorColor = 120;

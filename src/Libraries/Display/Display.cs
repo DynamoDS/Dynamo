@@ -5,16 +5,24 @@ using Analysis;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using DSCore;
+using Math = DSCore.Math;
 
-namespace DSCore
+namespace Display
 {
     public class Display :  IGraphicItem
     {
+        #region private members
+
         private readonly Geometry geometry;
         private readonly Color singleColor;
-        private Color[][] colorMap;
-        private bool renderEdges = false;
-        private const int Samples = 64;
+        private readonly Color[][] colorMap;
+        private const int LowestPower = 3;
+        private const int HighestPower = 10;
+
+        #endregion
+
+        #region private constructors
 
         private Display(Geometry geometry, Color color)
         {
@@ -22,22 +30,15 @@ namespace DSCore
             this.singleColor = color;
         }
 
-        private Display(Surface surface, UV[] uvs, Color[] colors)
+        private Display(Surface surface, UV[] uvs, Color[] colors, int samples)
         {
-            this.geometry = surface;
-            this.colorMap = ComputeColorMap(surface, uvs, colors);
+            geometry = surface;
+            colorMap = ComputeColorMap(surface, uvs, colors, samples, samples);
         }
 
-        /// <summary>
-        /// Compute a set of color maps from a set of SurfaceData objects.
-        /// </summary>
-        /// <param name="surfaceDatas"></param>
-        /// <param name="colorRange"></param>
-        /// <returns></returns>
-        private Color[][] ComputeColorMap(Surface surface, UV[] uvs,  Color[] colors)
-        {
-            return Utils.CreateGradientColorMap(colors, uvs, Samples, Samples);
-        }
+        #endregion
+
+        #region static constructors
 
         /// <summary>
         /// Display geometry using a color.
@@ -61,12 +62,16 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Display interpolated color values on a surface from data stored in a SurfaceData object.
+        /// Display interpolated color values on a surface given a list of colors and a list of UVs .
         /// </summary>
-        /// <param name="surfaceData">The SurfaceData object.</param>
-        /// <param name="colorRange">A ColorRange1D object.</param>
+        /// <param name="surface">The surface on which to apply the colors.</param>
+        /// <param name="uvs">A set of UV locations on the surface corresponding to the colors.</param>
+        /// <param name="colors">A set of Colors corresponding to the uvs.</param>
+        /// <param name="precision">A value between 0.0 (low) and 1.0 (high) which defines the resolution.
+        /// The default value is 0.75. This value controls the number of samples at which interpolated color 
+        /// values are calculated.</param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors)
+        public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors, double precision = 0.75)
         {
             if (!uvs.Any())
             {
@@ -88,25 +93,61 @@ namespace DSCore
                 throw new ArgumentNullException("colors");
             }
 
-            return new Display(surface, uvs, colors);
+            if (precision < 0.0 || precision > 1.0)
+            {
+                throw new Exception("The precision must be in the range 0.0 to 1.0");
+            }
+
+            var samples = ComputeSamplesFromNormalizedValue(precision, LowestPower, HighestPower);
+
+            return new Display(surface, uvs, colors, samples);
         }
 
+        #endregion
+
+        #region public methods
+
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             if (singleColor != null)
             {
-                CreateGeometryRenderData(singleColor, package, tol, maxGridLines);
+                CreateGeometryRenderData(singleColor, package, parameters);
             }
             else if (colorMap != null)
             {
-                CreateColorMappedSurfaceRenderData(colorMap, package, tol, maxGridLines);
+                if (!colorMap.Any())
+                {
+                    return;
+                }
+
+                CreateColorMapOnSurface(colorMap, package, parameters);
             }
         }
 
-        private void CreateColorMappedSurfaceRenderData(Color[][] colorMap , IRenderPackage package, double tol, int maxGridLines)
+        public override string ToString()
         {
-            geometry.Tessellate(package, tol, maxGridLines);
+            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, singleColor != null ? singleColor.ToString() : "Multiple colors.");
+        }
+
+        #endregion
+
+        #region private helper methods
+
+        /// <summary>
+        /// Compute a set of color maps from a set of SurfaceData objects.
+        /// </summary>
+        /// <returns></returns>
+        private static Color[][] ComputeColorMap(Surface surface, IEnumerable<UV> uvs, Color[] colors, int samplesU, int samplesV)
+        {
+            return Utils.CreateGradientColorMap(colors, uvs, samplesU, samplesV);
+        }
+
+        private void CreateColorMapOnSurface(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
+        {
+            const byte gray = 80;
+ 
+            geometry.Tessellate(package, parameters);
 
             var colorBytes = new List<byte>();
 
@@ -122,10 +163,18 @@ namespace DSCore
             }
 
             package.SetColors(colorBytes.ToArray());
-            package.ColorsStride = colorMap.First().Length;
+            package.ColorsStride = colorMap.First().Length * 4;
+
+            TessellateEdges(package, parameters);
+
+            if (package.LineVertexCount > 0)
+            {
+                package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, gray, gray,
+                    gray, 255));
+            }
         }
 
-        private void CreateGeometryRenderData(Color color, IRenderPackage package, double tol, int maxGridLines)
+        private void CreateGeometryRenderData(Color color, IRenderPackage package, TessellationParameters parameters)
         {
             package.RequiresPerVertexColoration = true;
 
@@ -133,30 +182,9 @@ namespace DSCore
             // to keep track of the index where this coloration will 
             // start from.
 
-            geometry.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, parameters);
 
-            if (renderEdges)
-            {
-                var surf = geometry as Surface;
-                if (surf != null)
-                {
-                    foreach (var curve in surf.PerimeterCurves())
-                    {
-                        curve.Tessellate(package, tol, maxGridLines);
-                        curve.Dispose();
-                    }
-                }
-
-                var solid = geometry as Solid;
-                if (solid != null)
-                {
-                    foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
-                    {
-                        geom.Tessellate(package, tol, maxGridLines);
-                        geom.Dispose();
-                    }
-                }
-            }
+            TessellateEdges(package, parameters);
 
             if (package.LineVertexCount > 0)
             {
@@ -177,6 +205,31 @@ namespace DSCore
             }
         }
 
+        private void TessellateEdges(IRenderPackage package, TessellationParameters parameters)
+        {
+            if (!parameters.ShowEdges) return;
+
+            var surf = geometry as Surface;
+            if (surf != null)
+            {
+                foreach (var curve in surf.PerimeterCurves())
+                {
+                    curve.Tessellate(package, parameters);
+                    curve.Dispose();
+                }
+            }
+
+            var solid = geometry as Solid;
+            if (solid != null)
+            {
+                foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                {
+                    geom.Tessellate(package, parameters);
+                    geom.Dispose();
+                }
+            }
+        }
+
         private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
         {
             var arr = new byte[size * 4];
@@ -190,9 +243,16 @@ namespace DSCore
             return arr;
         }
 
-        public override string ToString()
+        private static int ComputeSamplesFromNormalizedValue(double value, int lowestPower, int highestPower)
         {
-            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, singleColor != null ? singleColor.ToString() : "Multiple colors.");
+            // Calculate the size of the image
+            // Samples range from 2^2 (4) - 2^9 (512)
+            var expRange = highestPower - lowestPower;
+            var t = expRange*value;
+            var finalExp = (int)Math.Pow(2, (int) (LowestPower + t));
+            return finalExp;
         }
+
+        #endregion
     }
 }

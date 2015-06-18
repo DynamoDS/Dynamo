@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structure point analysis data.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class PointData : IStructuredData<Point, double> //, IGraphicItem
     {
         /// <summary>
