@@ -12,4 +12,8 @@
     <oldName>Autodesk.DesignScript.Geometry.PolyCurve.FilletPlanarPolyCurve</oldName>
     <newName>Autodesk.DesignScript.Geometry.PolyCurve.Fillet</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight</oldName>
+    <newName>Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength</newName>
+  </priorNameHint>
 </migrations>
