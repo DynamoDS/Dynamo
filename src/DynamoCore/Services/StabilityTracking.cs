@@ -174,12 +174,13 @@ namespace Dynamo.Services
         }
 
         /// <summary>
-        /// To check whether the last shutdown is clean(no crash)
+        /// To check whether the last shutdown is clean(no crash or unexpected shutdown happens)
         /// </summary>
         private static bool IsLastShutdownClean()
         {
             var ret = Registry.GetValue(REG_KEY, SHUTDOWN_TYPE_NAME, CRASHING_SHUTDOWN_VALUE) as string;
-            if (null != ret && string.CompareOrdinal(ret, CRASHING_SHUTDOWN_VALUE) == 0)
+            if (null != ret && (string.CompareOrdinal(ret, CRASHING_SHUTDOWN_VALUE) == 0
+                || string.CompareOrdinal(ret, ASSUMING_CRASHING_SHUTDOWN_VALUE) == 0))
                 return false;
 
             return true;
