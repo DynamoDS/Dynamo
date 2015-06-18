@@ -557,20 +557,19 @@
             <returns></returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
-             <summary>
-             Exports the specified geometry to the given SAT file path
-             </summary>
-             <param name="filePath">The name of the file to export the geometry to</param>
-             <returns></returns>
-            WARNING: non-ascii characters are not supported in file nams.
+            <summary>
+            Exports the specified geometry to the given SAT file path
+            </summary>
+            <param name="filePath">The name of the file to export the geometry to</param>
+            <returns></returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String,System.Double)">
-             <summary>
-             Exports the specified geometry to the given SAT file path
-             </summary>
-             <param name="filePath">The name of the file to export the geometry to</param>
-             <returns></returns>
-            WARNING: non-ascii characters are not supported in file nams.
+            <summary>
+            Exports the specified geometry to the given SAT file path
+            </summary>
+            <param name="filePath">The name of the file to export the geometry to</param>
+            <param name="unitsMM">The units to use</param>
+            <returns></returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
             <summary>
@@ -2974,7 +2973,7 @@
             rectbypoints
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(System.Double,System.Double)">
              <summary>
              Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
              </summary>
@@ -2982,7 +2981,7 @@
             rectbylengths
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
              <summary>
              Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and (Plane Y axis length).
              </summary>
@@ -2990,7 +2989,7 @@
             rectangle,rectbylengths
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
              <summary>
              Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
              </summary>
