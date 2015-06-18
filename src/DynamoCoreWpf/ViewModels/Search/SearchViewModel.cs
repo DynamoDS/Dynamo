@@ -19,12 +19,6 @@ using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
-
-    public enum NavigationDirection
-    {
-        Backward, Forward
-    }
-
     public partial class SearchViewModel : NotificationObject
     {
         #region events
@@ -258,6 +252,8 @@ namespace Dynamo.ViewModels
             InsertClassesIntoTree(LibraryRootCategories);
 
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
+
+            selectionNavigator = new SelectionNavigator(SearchRootCategories);
         }
 
         private void OnDynamoViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -702,10 +698,7 @@ namespace Dynamo.ViewModels
             // Select first element, in first group, in first category.
             if (foundNodes.Any())
             {
-                selectedCategoryIndex = 0;
-                selectedMemberGroupIndex = 0;
-                selectedMemberIndex = 0;
-                SelectNewMember();
+                selectionNavigator.UpdateRootCategories(SearchRootCategories);
             }
         }
 
@@ -859,6 +852,8 @@ namespace Dynamo.ViewModels
 
         #region Selection
 
+        private SelectionNavigator selectionNavigator;
+
         /// <summary>
         /// Selected member is  library search view.
         /// </summary>
@@ -866,134 +861,16 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                NodeSearchElementViewModel selectedMember = null;
-                bool isSelectedMemberFound = false;
-
-                foreach (var category in SearchRootCategories)
-                {
-                    foreach (var group in category.MemberGroups)
-                    {
-                        foreach (var member in group.Members)
-                        {
-                            if (member.IsSelected)
-                            {
-                                selectedMember = member;
-                                isSelectedMemberFound = true;
-                                break;
-                            }
-
-                        }
-
-                        if (isSelectedMemberFound)
-                            break;
-                    }
-
-                    if (isSelectedMemberFound)
-                        break;
-                }
-
-                return selectedMember;
+                return selectionNavigator.CurrentlySelection;
             }
         }
-
-        /// <summary>
-        /// Used during library search key navigation. Indicates which item index is selected.
-        /// </summary>
-        private int selectedMemberIndex;
-
-        /// <summary>
-        /// Used during library search key navigation. Indicates which group index is selected.
-        /// </summary>
-        private int selectedMemberGroupIndex;
-
-        /// <summary>
-        /// Used during library search key navigation. Indicates which category index is selected.
-        /// </summary>
-        private int selectedCategoryIndex;
 
         /// <summary>
         /// Used during library search key navigation. Counts next selected member index.
         /// </summary>
         public void MoveSelection(NavigationDirection direction)
         {
-            // We should have at least one category, otherwise we can't move.
-            if (!SearchRootCategories.Any())
-                return;
-
-            var offset = direction == NavigationDirection.Backward ? -1 : 1;
-
-            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
-            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
-
-            // If it's not the first/last member, we can move further.
-            if ((selectedMemberIndex != selectedMemberGroup.Members.Count() - 1 || direction != NavigationDirection.Forward) &&
-                (selectedMemberIndex != 0 || direction != NavigationDirection.Backward))
-            {
-                UnSelectOldMember();
-                selectedMemberIndex += offset;
-                SelectNewMember();
-                return;
-            }
-
-            // If it's first/last member, we should jump to next member group.
-            if ((selectedMemberGroupIndex != selectedCategory.MemberGroups.Count() - 1 || direction != NavigationDirection.Forward) &&
-                (selectedMemberGroupIndex != 0 || direction != NavigationDirection.Backward))
-            {
-                UnSelectOldMember();
-                selectedMemberGroupIndex += offset;
-                if (direction == NavigationDirection.Forward)
-                    selectedMemberIndex = 0;
-                else
-                    // Select the last member.
-                    selectedMemberIndex = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
-                SelectNewMember();
-                return;
-            }
-
-            // If it's first/last member group, we should jump to next category.
-            if ((selectedCategoryIndex != SearchRootCategories.Count() - 1 || direction != NavigationDirection.Forward) &&
-                (selectedCategoryIndex != 0 || direction != NavigationDirection.Backward))
-            {
-                UnSelectOldMember();
-                selectedCategoryIndex += offset;
-
-                if (direction == NavigationDirection.Forward)
-                {
-                    selectedMemberGroupIndex = 0;
-                    selectedMemberIndex = 0;
-                }
-                else
-                {
-                    var memberGroups = SearchRootCategories[selectedCategoryIndex].MemberGroups;
-                    selectedMemberGroupIndex = memberGroups.Count() - 1;
-                    // Select last member in member group. We are moving from bottom to top.
-                    selectedMemberIndex = memberGroups.ElementAt(selectedMemberGroupIndex).Members.Count() - 1;
-                }
-                SelectNewMember();
-            }
-        }
-
-        private void SelectNewMember()
-        {
-            var selectedCategory = SearchRootCategories[selectedCategoryIndex];
-            if (selectedCategory == null)
-                return;
-
-            var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
-            if (selectedMemberGroup == null)
-                return;
-
-            var selectedMember = selectedMemberGroup.Members.ElementAt(selectedMemberIndex);
-            if (selectedMember == null)
-                return;
-
-            selectedMember.IsSelected = true;
-
-        }
-
-        private void UnSelectOldMember()
-        {
-            CurrentlySelectedMember.IsSelected = false;
+            selectionNavigator.MoveSelection(direction);
         }
 
         private void UpdateTopResult(SearchMemberGroup memberGroup)
