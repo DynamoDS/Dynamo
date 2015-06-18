@@ -9,14 +9,11 @@ namespace Dynamo
 {
     public class DefaultRenderPackageFactory : IRenderPackageFactory
     {
-        public TessellationParameters TessellationParameters { get; set; }
+        public int MaxTessellationDivisions { get; set; }
 
         public DefaultRenderPackageFactory()
         {
-            TessellationParameters = new TessellationParameters()
-            {
-                MaxTessellationDivisions = 32
-            };
+            MaxTessellationDivisions = 32;
         }
 
         public IRenderPackage CreateRenderPackage()

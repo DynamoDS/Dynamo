@@ -10,7 +10,11 @@ namespace Dynamo.Interfaces
     /// </summary>
     public interface IRenderPackageFactory
     {
-        TessellationParameters TessellationParameters { get; set; }
+        /// <summary>
+        /// The maximum number of subdivisions of a surface for tesselation.
+        /// Used only by methods that tessellate BReps.
+        /// </summary>
+        int MaxTessellationDivisions { get; set; }
 
         /// <summary>
         /// Create an IRenderPackage object of the type manufactured by this factory.

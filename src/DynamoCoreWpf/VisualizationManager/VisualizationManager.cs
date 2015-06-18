@@ -537,7 +537,7 @@ namespace Dynamo
         public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
         {
             var renderPackage = renderPackageFactory.CreateRenderPackage();
-            gItem.Tessellate(renderPackage, renderPackageFactory.TessellationParameters);
+            gItem.Tessellate(renderPackage, -1.0, renderPackageFactory.MaxTessellationDivisions);
             return renderPackage;
         }
     }
