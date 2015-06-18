@@ -35,7 +35,6 @@ namespace Dynamo.Library
                 // to be repopulated.
                 if (string.IsNullOrEmpty(summary))
                     summary = this.GetDescription();
-
                 return summary;
             }
         }
