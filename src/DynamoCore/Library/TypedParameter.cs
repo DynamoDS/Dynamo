@@ -32,8 +32,10 @@ namespace Dynamo.Library
             get
             {
                 // If 'summary' data member is 'null', it means its value has 
-                // to be repopulated. 
-                return summary ?? this.GetDescription();
+                // to be repopulated.
+                if (string.IsNullOrEmpty(summary))
+                    summary = this.GetDescription();
+                return summary;
             }
         }
 
@@ -41,11 +43,7 @@ namespace Dynamo.Library
         {
             get
             {
-                string description = string.Empty;
-                if (!string.IsNullOrEmpty(summary))
-                    description = description + summary + "\n\n";
-
-                description = description + DisplayTypeName;
+                string description = Summary + "\n\n" + DisplayTypeName;
 
                 if (DefaultValue != null)
                     description = String.Format("{0}\n{1} : {2}", 
