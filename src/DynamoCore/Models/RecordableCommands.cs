@@ -1693,7 +1693,7 @@ namespace Dynamo.Models
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("name", PresetStateName);
                 helper.SetAttribute("description", PresetStateDescription);
-                //add a new element for the ids we 
+                //add a new element for the ids we are storing 
                var idselement= element.OwnerDocument.CreateElement("IDS");
                element.AppendChild(idselement);
                 foreach(var ID in SelectedNodesIDs)

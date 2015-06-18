@@ -969,17 +969,15 @@ namespace Dynamo.Controls
 
         private void RestoreState_Click(object sender, RoutedEventArgs e)
         {
-            PresetModel state = ((MenuItem)sender).Tag as PresetModel;
-            var workspace = dynamoViewModel.HomeSpace;
-
-            dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
+            PresetModel state = (sender as MenuItem).Tag as PresetModel;
+            var workspace = dynamoViewModel.CurrentSpace;
             dynamoViewModel.ExecuteCommand(new DynamoModel.SetWorkSpaceToStateCommand(workspace.Guid, state.Guid));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)
         {
-            PresetModel state = ((MenuItem)sender).Tag as PresetModel;
-            var workspace = dynamoViewModel.HomeSpace;
+            PresetModel state = (sender as MenuItem).Tag as PresetModel;
+            var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
             dynamoViewModel.Model.CurrentWorkspace.RemoveState(state);
             
