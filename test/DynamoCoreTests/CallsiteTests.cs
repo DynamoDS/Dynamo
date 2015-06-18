@@ -130,7 +130,7 @@ namespace Dynamo.Tests
 
             // The number of connectors is less than what we would expect
             // beause several of the nodes load as un-commented dummy nodes.
-            Assert.AreEqual(46, ws.Connectors.Count());
+            Assert.AreEqual(49, ws.Connectors.Count());
 
             // The guard added around deserialization of types that
             // can't be resolved will prevent a crash. This test
