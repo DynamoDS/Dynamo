@@ -437,7 +437,7 @@ namespace Dynamo.Controls
             // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
             var sceneBounds = watch_view.FindBounds();
             var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
-            Camera.NearPlaneDistance = CalculateNearClipPlane(maxDim);
+            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
         }
 
         private double CalculateNearClipPlane(double maxDim)
