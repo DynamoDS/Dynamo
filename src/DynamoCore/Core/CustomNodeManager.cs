@@ -933,7 +933,7 @@ namespace Dynamo.Core
                         {
                             var dsFunc = inputReceiverNode as DSFunctionBase;
                             var funcDesc = dsFunc.Controller.Definition;
-                            parameters = dsFunc.Controller.Definition.Parameters.ToList();
+                            parameters = funcDesc.Parameters.ToList();
 
                             if (funcDesc.Type == DSEngine.FunctionType.InstanceMethod ||
                                 funcDesc.Type == DSEngine.FunctionType.InstanceProperty)
