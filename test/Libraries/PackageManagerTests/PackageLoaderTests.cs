@@ -13,7 +13,7 @@ namespace Dynamo.PackageManager.Tests
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "Custom Rounding");
-            var loader = this.CurrentDynamoModel.PackageLoader;
+            var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
             Assert.IsNotNull(pkg);
@@ -34,7 +34,7 @@ namespace Dynamo.PackageManager.Tests
         public void ScanPackageDirectoryReturnsNullForInvalidDirectory()
         {
             var pkgDir = "";
-            var loader = this.CurrentDynamoModel.PackageLoader;
+            var loader = GetPackageLoader();
             Assert.IsNull(loader.ScanPackageDirectory(pkgDir));
         }
 
@@ -144,6 +144,17 @@ namespace Dynamo.PackageManager.Tests
         {
             Assert.Inconclusive("Finish me");
 
+        }
+
+        private PackageLoader GetPackageLoader()
+        {
+            var extensions = CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
+            if (extensions.Count() > 0)
+            {
+                return extensions.First().PackageLoader;
+            }
+
+            return null;
         }
     }
 }

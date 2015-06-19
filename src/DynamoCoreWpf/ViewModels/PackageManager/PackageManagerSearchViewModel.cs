@@ -429,13 +429,14 @@ namespace Dynamo.PackageManager
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
+            var pmExt = PackageManagerClientViewModel.DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
                 var headers = version.full_dependency_ids.Select(dep => dep._id).Select((id) =>
                 {
                     PackageHeader pkgHeader;
-                    var res = this.PackageManagerClientViewModel.DynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                    var res = pmExt.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
 
                     if (!res.Success)
                         MessageBox.Show(String.Format(Resources.MessageFailedToDownloadPackage, id),
@@ -496,7 +497,7 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                var localPkgs = this.PackageManagerClientViewModel.DynamoViewModel.Model.PackageLoader.LocalPackages;
+                var localPkgs = pmExt.PackageLoader.LocalPackages;
 
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
