@@ -682,7 +682,7 @@ namespace Dynamo.PackageManager
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
-            var canLogin = PackageManagerClientViewModel.Model.HasAuthProvider;
+            var canLogin = PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider;
 
             if (!String.IsNullOrEmpty(query))
             {

@@ -987,8 +987,7 @@ namespace Dynamo.PackageManager
         {
             // Typically, this code should never be seen as the publish package dialogs should not 
             // be active when there is no authenticator
-            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-            if (dynamoViewModel == null || !pmExtension.PackageManagerClient.HasAuthProvider)
+            if (dynamoViewModel == null || !dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
                 ErrorString = string.Format(Resources.CannotSubmitPackage,dynamoViewModel.BrandingResourceProvider.ProductName);
                 return false;
