@@ -228,15 +228,13 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-
-            geometryDictionary = new Dictionary<string, Model3D>();
-            //InitializeHelix();
+            
+            InitializeHelix();
         }
 
         public Watch3DView(Guid id, IWatchViewModel dataContext)
         {
-            DataContext = dataContext;
-
+            DataContext = dataContext;          
             SetupScene();
 
             InitializeComponent();
@@ -245,9 +243,8 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-
-            geometryDictionary = new Dictionary<string, Model3D>();
-            //InitializeHelix();
+             
+            InitializeHelix();             
         }
 
         private void SetupScene()
@@ -348,7 +345,7 @@ namespace Dynamo.Controls
             if (geometryDictionary != null && !geometryDictionary.ContainsKey("Axes"))
             {
                 geometryDictionary.Add("Axes", axesModel3D);
-            }
+            }             
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -838,10 +835,12 @@ namespace Dynamo.Controls
             //check the id, if the id is meant for another watch,
             //then ignore it
             if (e.Id != _id)
-            {
+            {               
+                Attach();
+                NotifyPropertyChanged("");
                 return;
             }
-
+        
             // Don't render if the user's system is incapable.
             if (renderingTier == 0)
             {
@@ -1096,11 +1095,37 @@ namespace Dynamo.Controls
                 meshGeometry3D.Geometry = meshSet;
             }
 
+            Attach();
+        }
+       
+        private void Attach()
+        {
             foreach (var kvp in geometryDictionary)
             {
                 var model3d = kvp.Value;
-                model3d.Attach(View.RenderHost);                             
-            }          
+                if (model3d is GeometryModel3D)
+                {                  
+                    if (View != null && View.RenderHost != null)
+                    {
+                        model3d.Attach(View.RenderHost);
+                    }
+                }
+                else
+                {
+                    //This is for Directional Light. When a watch is attached,
+                    //Directional light has to be attached one more time.
+                    if (!model3d.IsAttached && View != null && View.RenderHost != null)
+                    {
+                        model3d.Attach(View.RenderHost);
+                    }
+                    //else
+                    //{
+                    //    model3d.Detach();
+                    //    model3d.Attach(View.RenderHost);
+                    //}
+                }
+
+            }   
         }
 
         #endregion
