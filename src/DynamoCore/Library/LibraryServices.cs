@@ -626,7 +626,8 @@ namespace Dynamo.DSEngine
                                                                 ReturnType = method.returntype,
                                                                 FunctionType = FunctionType.GenericFunction,
                                                                 IsVisibleInLibrary = visibleInLibrary,
-                                                                IsBuiltIn = true
+                                                                IsBuiltIn = true,
+                                                                Assembly = "BuiltIn"
                                                             });
 
             AddBuiltinFunctions(functions);
@@ -666,7 +667,8 @@ namespace Dynamo.DSEngine
                     Parameters = args,
                     PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction,
-                    IsBuiltIn = true
+                    IsBuiltIn = true,
+                    Assembly = "Operators"
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
@@ -674,7 +676,8 @@ namespace Dynamo.DSEngine
                     Parameters = GetUnaryFuncArgs(),
                     PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction,
-                    IsBuiltIn = true
+                    IsBuiltIn = true,
+                    Assembly = "Operators"
                 }).AsSingleton());
 
             AddBuiltinFunctions(functions);
