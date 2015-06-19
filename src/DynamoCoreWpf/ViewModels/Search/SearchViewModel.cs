@@ -211,6 +211,7 @@ namespace Dynamo.ViewModels
 
             MaxNumSearchResults = 15;
 
+            selectionNavigator = new SelectionNavigator(SearchRootCategories);
             InitializeCore();
         }
 
@@ -218,6 +219,7 @@ namespace Dynamo.ViewModels
         internal SearchViewModel(NodeSearchModel model)
         {
             Model = model;
+            selectionNavigator = new SelectionNavigator(SearchRootCategories);
             InitializeCore();
         }
 
@@ -252,8 +254,6 @@ namespace Dynamo.ViewModels
             InsertClassesIntoTree(LibraryRootCategories);
 
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
-
-            selectionNavigator = new SelectionNavigator(SearchRootCategories);
         }
 
         private void OnDynamoViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -885,7 +885,8 @@ namespace Dynamo.ViewModels
 
         internal void ExecuteSelectedMember()
         {
-            CurrentlySelectedMember.ClickedCommand.Execute(null);
+            if (CurrentlySelectedMember != null)
+                CurrentlySelectedMember.ClickedCommand.Execute(null);
         }
 
         #endregion

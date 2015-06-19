@@ -51,8 +51,11 @@ namespace Dynamo.ViewModels
         {
             root = rootTree;
 
-            if (!root.Any())
+            if (root == null || !root.Any())
+            {
+                selection = null;
                 return;
+            }
 
             selectedCategoryIndex = 0;
             selectedMemberGroupIndex = 0;
@@ -66,7 +69,7 @@ namespace Dynamo.ViewModels
         {
             var offset = direction == NavigationDirection.Backward ? -1 : 1;
 
-            if (!root.Any())
+            if (root == null || !root.Any())
                 return;
 
             // First we update the selection index.
