@@ -8,11 +8,11 @@ using System;
 namespace Dynamo.Nodes
 {
     /// <summary>
-    /// Interaction logic for PresetStatePrompt.xaml
+    /// Interaction logic for PresetPrompt.xaml
     /// </summary>
-    public partial class PresetStatePrompt : Window
+    public partial class PresetPrompt : Window
     {
-        public PresetStatePrompt()
+        public PresetPrompt()
         {
             InitializeComponent();
 

@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.AddPreset(
                 "state1",
                 "a state with 2 numbers", IDS);
             //assert that the preset has been created
@@ -71,7 +71,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.AddPreset(
                 "state1",
                 "a state with 2 numbers", IDS);
             //assert that the preset has been created
@@ -116,7 +116,7 @@ namespace Dynamo.Tests
            DynamoSelection.Instance.Selection.Add(numberNode2);
            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
            //create the preset from 2 nodes
-           model.CurrentWorkspace.CreatePresetStateFromSelection(
+           model.CurrentWorkspace.AddPreset(
                "state1",
                "3", IDS);
 
@@ -129,7 +129,7 @@ namespace Dynamo.Tests
            DynamoSelection.Instance.Selection.Add(numberNode2);
            IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
 
-           model.CurrentWorkspace.CreatePresetStateFromSelection(
+           model.CurrentWorkspace.AddPreset(
            "state2",
            "5", IDS);
 
@@ -181,7 +181,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-           model.CurrentWorkspace.CreatePresetStateFromSelection(
+           model.CurrentWorkspace.AddPreset(
                 "state1",
                 "3", IDS);
 
@@ -194,7 +194,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
 
-            model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.AddPreset(
             "state2",
             "5", IDS);
 
@@ -255,7 +255,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.AddPreset(
                  "state1",
                  "3", IDS);
 
@@ -268,7 +268,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
 
-            model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.AddPreset(
             "state2",
             "5", IDS);
 
@@ -399,7 +399,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.AddPreset(
                 "state1",
                 "3", IDS);
 
@@ -452,7 +452,7 @@ namespace Dynamo.Tests
               DynamoSelection.Instance.Selection.Add(numberNode2);
               var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
               //create the preset from 2 nodes
-              model.CurrentWorkspace.CreatePresetStateFromSelection(
+              model.CurrentWorkspace.AddPreset(
                   "state1",
                   "3", IDS);
 
@@ -465,7 +465,7 @@ namespace Dynamo.Tests
               DynamoSelection.Instance.Selection.Add(numberNode2);
               IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
 
-              model.CurrentWorkspace.CreatePresetStateFromSelection(
+              model.CurrentWorkspace.AddPreset(
               "state2",
               "5", IDS);
 
@@ -541,7 +541,7 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.Selection.Add(numberNode2);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            model.CurrentWorkspace.CreatePresetStateFromSelection(
+            model.CurrentWorkspace.AddPreset(
                  "state1",
                  "3", IDS);
 

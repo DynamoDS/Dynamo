@@ -1633,19 +1633,19 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class CreatePresetStateFromSelectionCommand : RecordableCommand
+        public class AddPresetCommand : RecordableCommand
         {
             #region Public Class Methods
 
             [JsonConstructor]
-            public CreatePresetStateFromSelectionCommand(string name, string description, List<Guid> currentSelectionIDS )
+            public AddPresetCommand(string name, string description, List<Guid> currentSelectionIDS )
             {
                 PresetStateName = name;
                 PresetStateDescription = description;
-                SelectedNodesIDs = currentSelectionIDS;
+                SelectedNodeIDs = currentSelectionIDS;
             }
 
-            internal static CreatePresetStateFromSelectionCommand DeserializeCore(XmlElement element)
+            internal static AddPresetCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
                 List<Guid> IDS = new List<Guid>();
@@ -1664,7 +1664,7 @@ namespace Dynamo.Models
                     throw new ArgumentNullException("No IDs were deserialized during load of preset creation command");
                 }
                 
-                return new CreatePresetStateFromSelectionCommand(helper.ReadString("name"), helper.ReadString("description"),IDS);
+                return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"),IDS);
             }
 
             #endregion
@@ -1676,7 +1676,7 @@ namespace Dynamo.Models
             [DataMember]
             internal string PresetStateDescription { get; set; }
             [DataMember]
-            internal List<Guid> SelectedNodesIDs { get; set; }
+            internal List<Guid> SelectedNodeIDs { get; set; }
 
              #endregion
 
@@ -1696,7 +1696,7 @@ namespace Dynamo.Models
                 //add a new element for the ids we are storing 
                var idselement= element.OwnerDocument.CreateElement("IDS");
                element.AppendChild(idselement);
-                foreach(var ID in SelectedNodesIDs)
+                foreach(var ID in SelectedNodeIDs)
                 {
                     idselement.AppendChild(idselement.OwnerDocument.CreateElement(ID.ToString()));
                 }
@@ -1706,22 +1706,22 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class SetWorkSpaceToStateCommand : RecordableCommand
+        public class ApplyPresetCommand : RecordableCommand
         {
             #region Public Class Methods
 
             [JsonConstructor]
-            public SetWorkSpaceToStateCommand(Guid workspaceID, Guid stateID)
+            public ApplyPresetCommand(Guid workspaceID, Guid stateID)
             {
                 StateID = stateID;
                 WorkSpaceID = workspaceID;
             }
 
-            internal static SetWorkSpaceToStateCommand DeserializeCore(XmlElement element)
+            internal static ApplyPresetCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
 
-                return new SetWorkSpaceToStateCommand(helper.ReadGuid("WorkspaceID"), helper.ReadGuid("StateID"));
+                return new ApplyPresetCommand(helper.ReadGuid("WorkspaceID"), helper.ReadGuid("StateID"));
             }
 
             #endregion

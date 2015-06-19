@@ -375,11 +375,11 @@ namespace Dynamo.Models
             CurrentWorkspace = Workspaces.ElementAt(command.WorkspaceModelIndex);
         }
 
-        void CreatePresetStateImpl(CreatePresetStateFromSelectionCommand command)
+        void CreatePresetStateImpl(AddPresetCommand command)
         {
-            this.CurrentWorkspace.CreatePresetStateFromSelection(command.PresetStateName,command.PresetStateDescription,command.SelectedNodesIDs);
+            this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.SelectedNodeIDs);
         }
-        void SetWorkSpaceToStateImpl(SetWorkSpaceToStateCommand command)
+        void SetWorkSpaceToStateImpl(ApplyPresetCommand command)
         {
             var workspaceToSet = this.Workspaces.Where(x => x.Guid == command.WorkSpaceID).First();
             if (workspaceToSet == null)

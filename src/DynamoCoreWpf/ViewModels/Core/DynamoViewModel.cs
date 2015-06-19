@@ -1398,11 +1398,11 @@ namespace Dynamo.ViewModels
             //trigger the event to request the display
             //of the preset name dialogue
             var args = new PresetsNamePromptEventArgs();
-            this.Model.OnRequestsPresetNamePrompt(args);
+            this.Model.OnRequestPresetNamePrompt(args);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             if (args.Success)
             {
-                this.ExecuteCommand(new DynamoModel.CreatePresetStateFromSelectionCommand(args.Name, args.Description, IDS));
+                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
             }
         }
         private bool CanShowNewPresetStateDialog(object parameter)

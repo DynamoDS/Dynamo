@@ -763,7 +763,7 @@ namespace Dynamo.Controls
 
             do
             {
-                var dialog = new PresetStatePrompt()
+                var dialog = new PresetPrompt()
                 {
                     DescriptionInput = { Text = e.Description },
                     nameView = { Text = "" },
@@ -972,7 +972,7 @@ namespace Dynamo.Controls
         {
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
-            dynamoViewModel.ExecuteCommand(new DynamoModel.SetWorkSpaceToStateCommand(workspace.Guid, state.Guid));
+            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.Guid));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)

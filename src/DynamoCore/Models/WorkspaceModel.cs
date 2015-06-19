@@ -804,7 +804,7 @@ namespace Dynamo.Models
         /// <param name="description">a description of what the state does</param>
         /// <param name="currentSelection">a set of NodeModels that are to be serialized in this state</param>
         /// <param name="id">a GUID id for the state, if not supplied, a new GUID will be generated, cannot be a duplicate</param>
-        private void addState(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
+        private void AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
         {
             if (currentSelection == null || currentSelection.Count() < 1)
             {
@@ -864,12 +864,12 @@ namespace Dynamo.Models
                 }
             }
         }
-        internal void CreatePresetStateFromSelection(string name, string description, List<Guid> IDSToSave)
+        internal void AddPreset(string name, string description, List<Guid> IDSToSave)
         {
             //lookup the nodes by their ID, can also check that we find all of them....
             var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID)).ToList();
  	        //access the presetsCollection and add a new state based on the current selection
-            this.addState(name, description, nodesFromIDs);
+            this.AddPresetCore(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
         }
         
