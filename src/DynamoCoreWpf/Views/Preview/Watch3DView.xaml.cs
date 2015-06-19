@@ -352,7 +352,7 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
-            UnRegisterModelEventHandlers(viewModel.Model);
+            UnregisterModelEventHandlers(viewModel.Model);
 
             UnRegisterWorkspaceEventHandlers(viewModel.Model);
         }
@@ -405,7 +405,7 @@ namespace Dynamo.Controls
             model.ShutdownStarted += Model_ShutdownStarted;
         }
 
-        private void UnRegisterModelEventHandlers(DynamoModel model)
+        private void UnregisterModelEventHandlers(DynamoModel model)
         {
             model.WorkspaceCleared -= Model_WorkspaceCleared;
             model.ShutdownStarted -= Model_ShutdownStarted;
