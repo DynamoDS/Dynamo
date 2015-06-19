@@ -167,22 +167,6 @@ namespace Dynamo.ViewModels
         public AuthenticationManager AuthenticationManager { get; set; }
         internal PackageManagerClient Model { get; private set; }
 
-        public LoginState LoginState
-        {
-            get
-            {
-                return AuthenticationManager.LoginState;
-            }
-        }
-
-        public string Username
-        {
-            get
-            {
-                return AuthenticationManager.Username;
-            }
-        }
-
         #endregion
 
         public ICommand ToggleLoginStateCommand { get; private set; }
@@ -206,19 +190,19 @@ namespace Dynamo.ViewModels
 
         private void ToggleLoginState()
         {
-            if (this.LoginState == LoginState.LoggedIn)
+            if (AuthenticationManager.LoginState == LoginState.LoggedIn)
             {
-                this.AuthenticationManager.Logout();
+                AuthenticationManager.Logout();
             }
             else
             {
-                this.AuthenticationManager.Login();
+                AuthenticationManager.Login();
             }
         }
 
         private bool CanToggleLoginState()
         {
-            return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
+            return AuthenticationManager.LoginState == LoginState.LoggedOut || AuthenticationManager.LoginState == LoginState.LoggedIn;
         }
 
         public void PublishCurrentWorkspace(object m)
