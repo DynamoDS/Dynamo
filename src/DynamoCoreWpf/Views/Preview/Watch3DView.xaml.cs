@@ -289,12 +289,7 @@ namespace Dynamo.Controls
             Model1Transform = new TranslateTransform3D(0, -0, 0);
             
             // camera setup
-            Camera = new PerspectiveCamera
-            {
-                UpDirection = new Vector3D(0, 1, 0),
-                NearPlaneDistance = .1,
-                FarPlaneDistance = 10000000,
-            };
+            Camera = new PerspectiveCamera();
 
             SetCameraToDefaultOrientation();
 
@@ -302,9 +297,12 @@ namespace Dynamo.Controls
         }
 
         private void SetCameraToDefaultOrientation()
-        {
+        {           
             Camera.LookDirection = new Vector3D(-10, -10, -10);
             Camera.Position = new Point3D(10, 15, 10);
+            Camera.UpDirection = new Vector3D(0, 1, 0);
+            Camera.NearPlaneDistance = .1;
+            Camera.FarPlaneDistance = 10000000;
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -343,18 +341,19 @@ namespace Dynamo.Controls
 
         private void UnregisterEventHandlers()
         {
+            UnregisterButtonHandlers();
+
             if (viewModel == null) return;
 
-            viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-            viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            UnregisterVisualizationManagerEventHandlers();
+
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
-            viewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
             UnregisterModelEventHandlers(viewModel.Model);
 
-            UnRegisterWorkspaceEventHandlers(viewModel.Model);
+            UnregisterWorkspaceEventHandlers(viewModel.Model);
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
@@ -363,30 +362,14 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
-            MouseLeftButtonDown += view_MouseButtonIgnore;
-            MouseLeftButtonUp += view_MouseButtonIgnore;
-            MouseRightButtonUp += view_MouseRightButtonUp;
-            PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
+            RegisterButtonHandlers();
 
-            var vm = DataContext as IWatchViewModel;
-            
             //check this for null so the designer can load the preview
             if (viewModel == null) return;
 
-            viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-            viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+            RegisterVisualizationManagerEventHandlers();
 
-            renderingTier = (RenderCapability.Tier >> 16);
-            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
-            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
-            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
-            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
-
-            viewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-            viewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
-            viewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
-            viewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-            viewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+            LogVisualizationCapabilities();
 
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -397,6 +380,53 @@ namespace Dynamo.Controls
             TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
 #endif
             
+        }
+
+        private void RegisterButtonHandlers()
+        {
+            MouseLeftButtonDown += view_MouseButtonIgnore;
+            MouseLeftButtonUp += view_MouseButtonIgnore;
+            MouseRightButtonUp += view_MouseRightButtonUp;
+            PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
+        }
+
+        private void UnregisterButtonHandlers()
+        {
+            MouseLeftButtonDown -= view_MouseButtonIgnore;
+            MouseLeftButtonUp -= view_MouseButtonIgnore;
+            MouseRightButtonUp -= view_MouseRightButtonUp;
+            PreviewMouseRightButtonDown -= view_PreviewMouseRightButtonDown;
+        }
+
+        private void LogVisualizationCapabilities()
+        {
+            renderingTier = (RenderCapability.Tier >> 16);
+            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
+            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
+            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+
+            viewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported),
+                LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported),
+                LogLevel.File);
+            viewModel.Model.Logger.Log(
+                string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize),
+                LogLevel.File);
+        }
+
+        private void RegisterVisualizationManagerEventHandlers()
+        {
+            viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+            viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+        }
+
+        private void UnregisterVisualizationManagerEventHandlers()
+        {
+            viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+            viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
         }
 
         private void RegisterModelEventhandlers(DynamoModel model)
@@ -411,12 +441,7 @@ namespace Dynamo.Controls
             model.ShutdownStarted -= Model_ShutdownStarted;
         }
 
-        void Model_WorkspaceCleared(object sender, EventArgs e)
-        {
-            SetCameraToDefaultOrientation();
-        }
-
-        private void UnRegisterWorkspaceEventHandlers(DynamoModel model)
+        private void UnregisterWorkspaceEventHandlers(DynamoModel model)
         {
             model.WorkspaceAdded -= Model_WorkspaceAdded;
             model.WorkspaceRemoved -= Model_WorkspaceRemoved;
@@ -438,6 +463,11 @@ namespace Dynamo.Controls
             {
                 ws.Saving += workspace_Saving;
             }
+        }
+
+        void Model_WorkspaceCleared(object sender, EventArgs e)
+        {
+            SetCameraToDefaultOrientation();
         }
 
         void Model_WorkspaceOpening(XmlDocument doc)
