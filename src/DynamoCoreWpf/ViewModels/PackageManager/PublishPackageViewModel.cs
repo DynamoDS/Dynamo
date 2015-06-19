@@ -655,14 +655,15 @@ namespace Dynamo.PackageManager
                                     Wpf.Properties.Resources.MessageUnsavedChanges1);
             }
 
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
             // omit files currently already under package control
             var files =
                 workspaces.Select(f => f.FileName)
                     .Where(
                         p =>
-                            (dynamoViewModel.Model.PackageLoader.IsUnderPackageControl(p)
-                                && (dynamoViewModel.Model.PackageLoader.GetOwnerPackage(p).Name == Name)
-                                || !dynamoViewModel.Model.PackageLoader.IsUnderPackageControl(p)));
+                            (pmExtension.PackageLoader.IsUnderPackageControl(p)
+                                && (pmExtension.PackageLoader.GetOwnerPackage(p).Name == Name)
+                                || !pmExtension.PackageLoader.IsUnderPackageControl(p)));
 
             // union with additional files
             files = files.Union(AdditionalFiles);
@@ -679,7 +680,8 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<PackageDependency> GetAllDependencies()
         {
-            var pkgLoader = dynamoViewModel.Model.PackageLoader;
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            var pkgLoader = pmExtension.PackageLoader;
 
             // all workspaces
             var workspaces = new List<CustomNodeWorkspaceModel>();
@@ -748,7 +750,8 @@ namespace Dynamo.PackageManager
 
         private IEnumerable<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
         {
-            var pkgLoader = dynamoViewModel.Model.PackageLoader;
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            var pkgLoader = pmExtension.PackageLoader;
 
             var workspaces = new List<CustomNodeWorkspaceModel>();
             foreach (var def in AllFuncDefs())
@@ -769,7 +772,7 @@ namespace Dynamo.PackageManager
                     .Where(
                         p =>
                             (pkgLoader.IsUnderPackageControl(p.FileName) && pkgLoader.GetOwnerPackage(p.FileName).Name == Name)
-                                || !dynamoViewModel.Model.PackageLoader.IsUnderPackageControl(p.FileName))
+                                || !pmExtension.PackageLoader.IsUnderPackageControl(p.FileName))
                     .Select(
                         x =>
                             new Tuple<string, string>(
@@ -949,16 +952,17 @@ namespace Dynamo.PackageManager
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
 
                 var files = GetAllFiles().ToList();
+                var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
 
                 if (isNewPackage)
                 {
-                    dynamoViewModel.Model.PackageLoader.Add(Package);
+                    pmExtension.PackageLoader.Add(Package);
                 }
 
                 Package.AddAssemblies(Assemblies);
 
                 // begin submission
-                var handle = dynamoViewModel.Model.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
 
                 // start upload
                 Uploading = true;
@@ -983,7 +987,8 @@ namespace Dynamo.PackageManager
         {
             // Typically, this code should never be seen as the publish package dialogs should not 
             // be active when there is no authenticator
-            if (dynamoViewModel == null || !dynamoViewModel.Model.PackageManagerClient.HasAuthProvider)
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            if (dynamoViewModel == null || !pmExtension.PackageManagerClient.HasAuthProvider)
             {
                 ErrorString = string.Format(Resources.CannotSubmitPackage,dynamoViewModel.BrandingResourceProvider.ProductName);
                 return false;

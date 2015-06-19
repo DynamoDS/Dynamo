@@ -86,10 +86,15 @@ namespace Dynamo.Interfaces
         string LogDirectory { get; }
 
         /// <summary>
-        /// The packages directory, which contains pacakages downloaded through
+        /// The packages directory, which contains packages downloaded through
         /// the package manager. This directory is specific to the current user.
         /// </summary>
         string PackagesDirectory { get; }
+
+        /// <summary>
+        /// The directory, which contains ExtensionDefinition .xml files
+        /// </summary>
+        string ExtensionsDirectory { get; }
 
         /// <summary>
         /// The root directory where all sample files are stored. This directory

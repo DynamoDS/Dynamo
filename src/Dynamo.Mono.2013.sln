@@ -138,6 +138,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocumentationsUtility", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoShapeManager", "Tools\DynamoShapeManager\DynamoShapeManager.csproj", "{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackages", "DynamoPackages\DynamoPackages.csproj", "{47533B7C-0E1A-44A4-8511-B438645F052A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -364,6 +366,10 @@ Global
 		{98692887-B389-4F73-A71A-9FC516738DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98692887-B389-4F73-A71A-9FC516738DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98692887-B389-4F73-A71A-9FC516738DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47533B7C-0E1A-44A4-8511-B438645F052A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47533B7C-0E1A-44A4-8511-B438645F052A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

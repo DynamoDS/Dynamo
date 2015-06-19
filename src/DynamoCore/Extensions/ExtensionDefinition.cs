@@ -7,7 +7,7 @@ using System.Text;
 namespace Dynamo.Extensions
 {
     [DataContract]
-    internal class ExtensionDefinition
+    public class ExtensionDefinition
     {
         [DataMember]
         public string AssemblyName { get; set; }

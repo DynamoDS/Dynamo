@@ -10,7 +10,7 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
-    internal class PackageManagerClient
+    public class PackageManagerClient
     {
         #region Properties/Fields
 
@@ -141,7 +141,7 @@ namespace Dynamo.PackageManager
             return ExecuteTermsOfUseCall(true);
         }
 
-        internal bool SetTermsOfUseAcceptanceStatus()
+        public bool SetTermsOfUseAcceptanceStatus()
         {
             return ExecuteTermsOfUseCall(false);
         }

@@ -71,6 +71,11 @@ namespace Dynamo.DSEngine
             DocumentElementType property,
             string paramName = "")
         {
+            //customNodeDefinitions typedParameters don't have functionDescriptors
+            if (function == null)
+            {
+                return string.Empty;
+            }
             var assemblyName = function.Assembly;
 
             if (string.IsNullOrEmpty(assemblyName))
