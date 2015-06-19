@@ -16084,7 +16084,7 @@
         32yAVKaa4V8rSCpzdLivrqrvFfAyq8wTmQCAiRA1TCcJj/vXMyAAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight.CoordinateSystem-double-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength.CoordinateSystem-double-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAASKSURBVHhe7ZxBThtBFEQ5AkfgCByBLCOx4AgcgSNw
@@ -16110,7 +16110,7 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight.CoordinateSystem-double-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength.CoordinateSystem-double-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEkSURBVFhH7ZXBDYJAEEUpgRIogRL0aOKBEizBEuzA
@@ -16121,7 +16121,7 @@
         GleKv2KAc2D+fHDlqh3e7ZHI75IkN4geLp8JQWAqAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight.double-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength.double-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAPBSURBVHhe7ZrhTVtBEIQpISVQQkrIXyR+UAIlUAId
@@ -16143,7 +16143,7 @@
         NwwY5zs0+nRUfo6fEEIIIYQQQgghhBBCCCEsysXFH5WcNl143H/bAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight.double-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength.double-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADGSURBVFhH7ZTBDYMwDEUzAiMwAiNwrdRDR2AERmCD
@@ -16153,7 +16153,7 @@
         SUVORK5CYII=
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight.Plane-double-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength.Plane-double-double.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAboSURBVHhe7Z3BiiRFEIbnEfYR5hHmEcbjwB4GwYMI
@@ -16189,7 +16189,7 @@
         6H3wsXX1AAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight.Plane-double-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength.Plane-double-double.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHmSURBVFhH7VY/S8NAHO1H6EfoR8hHiKPg0N0imYtC
