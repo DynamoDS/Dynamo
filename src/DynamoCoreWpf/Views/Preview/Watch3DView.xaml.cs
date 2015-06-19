@@ -291,15 +291,20 @@ namespace Dynamo.Controls
             // camera setup
             Camera = new PerspectiveCamera
             {
-                Position = new Point3D(10, 15, 10),
-                LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
                 NearPlaneDistance = .1,
                 FarPlaneDistance = 10000000,
-                
             };
 
+            SetCameraToDefaultOrientation();
+
             DrawGrid();
+        }
+
+        private void SetCameraToDefaultOrientation()
+        {
+            Camera.LookDirection = new Vector3D(-10, -10, -10);
+            Camera.Position = new Point3D(10, 15, 10);
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -347,6 +352,8 @@ namespace Dynamo.Controls
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
+            UnRegisterModelEventHandlers(viewModel.Model);
+
             UnRegisterWorkspaceEventHandlers(viewModel.Model);
         }
 
@@ -382,13 +389,31 @@ namespace Dynamo.Controls
             viewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
-            viewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+
+            RegisterModelEventhandlers(viewModel.Model);
 
             RegisterWorkspaceEventHandlers(viewModel.Model);
 #if DEBUG
             TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
 #endif
             
+        }
+
+        private void RegisterModelEventhandlers(DynamoModel model)
+        {
+            model.WorkspaceCleared += Model_WorkspaceCleared;
+            model.ShutdownStarted += Model_ShutdownStarted;
+        }
+
+        private void UnRegisterModelEventHandlers(DynamoModel model)
+        {
+            model.WorkspaceCleared -= Model_WorkspaceCleared;
+            model.ShutdownStarted -= Model_ShutdownStarted;
+        }
+
+        void Model_WorkspaceCleared(object sender, EventArgs e)
+        {
+            SetCameraToDefaultOrientation();
         }
 
         private void UnRegisterWorkspaceEventHandlers(DynamoModel model)
