@@ -67,13 +67,8 @@ namespace Dynamo.ViewModels
 
         internal void MoveSelection(NavigationDirection direction)
         {
-            var offset = direction == NavigationDirection.Backward ? -1 : 1;
-
             if (root == null || !root.Any())
                 return;
-
-            // First we update the selection index.
-            selectedMemberIndex += offset;
 
             var selectedCategory = root.ElementAt(selectedCategoryIndex);
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
@@ -82,41 +77,37 @@ namespace Dynamo.ViewModels
             selection.IsSelected = false;
             selection = null;
 
-            // It's first element. Can't move further. We need jump to previous member group.
-            if (selectedMemberIndex < 0)
+            if (direction == NavigationDirection.Backward)
             {
-                selectedMemberGroupIndex += offset;
-
-                // It's first element of first member group. We can't move further.
-                // We need jump to previous category.
-                if (selectedMemberGroupIndex < 0)
+                if (selectedMemberIndex != 0)
                 {
-                    selectedCategoryIndex += offset;
-
-                    // It's first element of first member group of first category. There is no place to move.
-                    if (selectedCategoryIndex < 0)
-                    {
-                        selectedCategoryIndex = 0;
-                        selectedMemberGroupIndex = 0;
-                        selectedMemberIndex = 0;
-                    }
-                    else
-                    {
-                        // Since we are moving from the bottom to the top, 
-                        // we should select last member and last group.
-                        var cat = root.ElementAt(selectedCategoryIndex);
-                        selectedMemberGroupIndex = cat.MemberGroups.Count() - 1;
-
-                        var group = cat.MemberGroups.ElementAt(selectedMemberGroupIndex);
-
-                        selectedMemberIndex = group.Members.Count() - 1;
-                    }
+                    selectedMemberIndex--;
                 }
                 else
                 {
-                    // Select last member of selected member group.
-                    var group = root.ElementAt(selectedCategoryIndex).MemberGroups.ElementAt(selectedMemberGroupIndex);
-                    selectedMemberIndex = group.Members.Count() - 1;
+                    if (selectedMemberGroupIndex != 0)
+                    {
+                        selectedMemberGroupIndex--;
+
+                        // Select last member of new member group.
+                        var category = root.ElementAt(selectedCategoryIndex);
+                        var group = category.MemberGroups.ElementAt(selectedMemberGroupIndex);
+                        selectedMemberIndex = group.Members.Count() - 1;
+                    }
+                    else
+                    {
+                        if (selectedCategoryIndex != 0)
+                        {
+                            selectedCategoryIndex--;
+
+                            // Select last group and last member of this group.
+                            var category = root.ElementAt(selectedCategoryIndex);
+                            selectedMemberGroupIndex = category.MemberGroups.Count() - 1;
+
+                            var group = category.MemberGroups.ElementAt(selectedMemberGroupIndex);
+                            selectedMemberIndex = group.Members.Count() - 1;
+                        }
+                    }
                 }
             }
             else
@@ -124,29 +115,23 @@ namespace Dynamo.ViewModels
                 // Determine the current group size.
                 var members = selectedMemberGroup.Members.Count();
 
-                // It's last member of member group. We can't move further.
-                // We need jump to next member group.
-                if (selectedMemberIndex >= members)
+                if (selectedMemberIndex < members - 1) // There's still next member.
                 {
-                    selectedMemberIndex = 0;
-                    selectedMemberGroupIndex += offset;
-
+                    selectedMemberIndex++;
+                }
+                else
+                {
                     var memberGroups = root.ElementAt(selectedCategoryIndex).MemberGroups.Count();
-
-                    // It's last member of last member group. We can't move further.
-                    // We need jump to next category.
-                    if (selectedMemberGroupIndex >= memberGroups)
+                    if (selectedMemberGroupIndex < memberGroups - 1) // There's still next group.
                     {
+                        selectedMemberIndex = 0;
+                        selectedMemberGroupIndex++;
+                    }
+                    else if (selectedCategoryIndex < root.Count() - 1) // There's still next category.
+                    {
+                        selectedMemberIndex = 0;
                         selectedMemberGroupIndex = 0;
-                        selectedCategoryIndex += offset;
-
-                        // It's last member of last member group of last category. There is no place to move.
-                        if (selectedCategoryIndex >= root.Count())
-                        {
-                            selectedCategoryIndex = root.Count() - 1;
-                            selectedMemberGroupIndex = root.Last().MemberGroups.Count() - 1;
-                            selectedMemberIndex = root.Last().MemberGroups.Last().Members.Count() - 1;
-                        }
+                        selectedCategoryIndex++;
                     }
                 }
             }
