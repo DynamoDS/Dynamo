@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,9 +10,13 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Xml;
+using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
+using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
@@ -21,6 +26,7 @@ using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
 using Quaternion = SharpDX.Quaternion;
+using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Controls
 {
@@ -59,6 +65,7 @@ namespace Dynamo.Controls
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
         private int renderingTier;
+        private DynamoViewModel viewModel;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -331,18 +338,22 @@ namespace Dynamo.Controls
 
         private void UnregisterEventHandlers()
         {
-            var vm = DataContext as IWatchViewModel;
-            if (vm == null) return;
+            if (viewModel == null) return;
 
-            vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-            vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+            viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            viewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
+
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
+
+            UnRegisterWorkspaceEventHandlers(viewModel.Model);
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
+            viewModel = DataContext as DynamoViewModel;
+
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             MouseLeftButtonDown += view_MouseButtonIgnore;
@@ -353,10 +364,10 @@ namespace Dynamo.Controls
             var vm = DataContext as IWatchViewModel;
             
             //check this for null so the designer can load the preview
-            if (vm == null) return;
+            if (viewModel == null) return;
 
-            vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-            vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+            viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+            viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
 
             renderingTier = (RenderCapability.Tier >> 16);
             var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
@@ -364,18 +375,87 @@ namespace Dynamo.Controls
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
             var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
 
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+            viewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
-            vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-            vm.ViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            viewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+
+            RegisterWorkspaceEventHandlers(viewModel.Model);
 #if DEBUG
             TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
 #endif
             
+        }
+
+        private void UnRegisterWorkspaceEventHandlers(DynamoModel model)
+        {
+            model.WorkspaceAdded -= Model_WorkspaceAdded;
+            model.WorkspaceRemoved -= Model_WorkspaceRemoved;
+            model.WorkspaceOpening -= Model_WorkspaceOpening;
+
+            foreach (var ws in model.Workspaces)
+            {
+                ws.Saving -= workspace_Saving;
+            }
+        }
+
+        private void RegisterWorkspaceEventHandlers(DynamoModel model)
+        {
+            model.WorkspaceAdded += Model_WorkspaceAdded;
+            model.WorkspaceRemoved += Model_WorkspaceRemoved;
+            model.WorkspaceOpening += Model_WorkspaceOpening;
+
+            foreach (var ws in model.Workspaces)
+            {
+                ws.Saving += workspace_Saving;
+            }
+        }
+
+        void Model_WorkspaceOpening(XmlDocument doc)
+        {
+            var vm = DataContext as DynamoViewModel;
+            if (vm == null)
+            {
+                return;
+            }
+
+            var camerasElements = doc.GetElementsByTagName("Cameras");
+            if (camerasElements.Count == 0)
+            {
+                return;
+            }
+
+            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
+            {
+                LoadCamera(cameraNode);
+            }
+        }
+
+        void Model_WorkspaceAdded(Models.WorkspaceModel workspace)
+        {
+            workspace.Saving += workspace_Saving;
+        }
+
+        void Model_WorkspaceRemoved(Models.WorkspaceModel workspace)
+        {
+            workspace.Saving -= workspace_Saving;
+        }
+
+        void workspace_Saving(XmlDocument doc)
+        {
+            var root = doc.DocumentElement;
+            if (root == null)
+            {
+                return;
+            }
+
+            var camerasElement = doc.CreateElement("Cameras");
+            SaveCamera(camerasElement);
+            root.AppendChild(camerasElement);
         }
 
         void Model_ShutdownStarted(Models.DynamoModel model)
@@ -902,6 +982,37 @@ namespace Dynamo.Controls
         }
 #endif
 
+        private void SaveCamera(XmlElement camerasElement)
+        {
+            var node = XmlHelper.AddNode(camerasElement, "Camera");
+            XmlHelper.AddAttribute(node, "Name", Name);
+            XmlHelper.AddAttribute(node, "eyeX", Camera.Position.X.ToString(CultureInfo.InvariantCulture));
+            XmlHelper.AddAttribute(node, "eyeY", Camera.Position.Y.ToString(CultureInfo.InvariantCulture));
+            XmlHelper.AddAttribute(node, "eyeZ", Camera.Position.Z.ToString(CultureInfo.InvariantCulture));
+            XmlHelper.AddAttribute(node, "lookX", Camera.LookDirection.X.ToString(CultureInfo.InvariantCulture));
+            XmlHelper.AddAttribute(node, "lookY", Camera.LookDirection.Y.ToString(CultureInfo.InvariantCulture));
+            XmlHelper.AddAttribute(node, "lookZ", Camera.LookDirection.Z.ToString(CultureInfo.InvariantCulture));
+            camerasElement.AppendChild(node);
+        }
+
+        private void LoadCamera(XmlNode cameraNode)
+        {
+            if (cameraNode.Attributes.Count == 0)
+            {
+                return;
+            }
+
+            Name = cameraNode.Attributes["Name"].Value;
+            var ex = float.Parse(cameraNode.Attributes["eyeX"].Value);
+            var ey = float.Parse(cameraNode.Attributes["eyeY"].Value);
+            var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value);
+            var lx = float.Parse(cameraNode.Attributes["lookX"].Value);
+            var ly = float.Parse(cameraNode.Attributes["lookY"].Value);
+            var lz = float.Parse(cameraNode.Attributes["lookZ"].Value);
+
+            Camera.LookDirection = new Vector3D(lx,ly,lz);
+            Camera.Position = new Point3D(ex, ey, ez);
+        }
     }
 
     internal class GraphicsUpdateParams

@@ -209,6 +209,20 @@ namespace Dynamo.Models
         /// </summary>
         public event Action Disposed;
 
+
+        /// <summary>
+        /// Event that is fired during the saving of the workspace.
+        /// 
+        /// Add additional XmlNode objects to the XmlDocument provided,
+        /// in order to save data to the file.
+        /// </summary>
+        public event Action<XmlDocument> Saving;
+        protected virtual void OnSaving(XmlDocument obj)
+        {
+            var handler = Saving;
+            if (handler != null) handler(obj);
+        }
+
         #endregion
 
         #region public properties
@@ -803,6 +817,8 @@ namespace Dynamo.Models
                 return false;
 
             SerializeSessionData(document, runtimeCore);
+
+            OnSaving(document);
 
             try
             {
