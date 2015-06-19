@@ -42,6 +42,30 @@ namespace Dynamo.UI.Views
             viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
             // When workspace was changed, we should hide tooltip. 
             viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
+            // During key navigation show tooltip.
+            viewModel.SelectionChanged += OnSelectionChanged;
+
+            // Show tooltip of first member.
+            CategoryTreeView.ItemContainerGenerator.StatusChanged += (s, args) =>
+            {
+                var categoriesContainer = s as ItemContainerGenerator;
+                if (categoriesContainer.Status == GeneratorStatus.ContainersGenerated)
+                {
+                    var firstCat = categoriesContainer.ContainerFromIndex(0) as TreeViewItem;
+                    if (firstCat == null)
+                        return;
+
+                    var firstGroup = firstCat.ItemContainerGenerator.ContainerFromIndex(0) as TreeViewItem;
+                    if (firstGroup == null)
+                        return;
+
+                    var firstMember = firstGroup.ItemContainerGenerator.ContainerFromIndex(0) as TreeViewItem;
+                    if (firstMember == null)
+                        return;
+
+                    ShowTooltip(firstMember);
+                }
+            };
         }
 
         private void OnPreviewMouseMove(object sender, MouseEventArgs e)
@@ -81,6 +105,28 @@ namespace Dynamo.UI.Views
         private void OnPrefixTextBlockMouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void OnSelectionChanged(int categoryIndex, int groupIndex, int memberIndex)
+        {
+            var container = CategoryTreeView.ItemContainerGenerator;
+            var category = container.ContainerFromIndex(categoryIndex) as TreeViewItem;
+            if (category == null)
+                return;
+
+            container = category.ItemContainerGenerator;
+            var group = container.ContainerFromIndex(groupIndex) as TreeViewItem;
+            if (group == null)
+                return;
+
+            container = group.ItemContainerGenerator;
+            var member = container.ContainerFromIndex(memberIndex) as TreeViewItem;
+            if (member == null)
+                return;
+
+            member.BringIntoView();
+
+            ShowTooltip(member);
         }
 
         #region ToolTip methods
