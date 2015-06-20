@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
@@ -520,6 +521,11 @@ namespace Dynamo.Controls
 
             foreach (var kvp in geometryModels)
             {
+                if (kvp.Value is GeometryModel3D)
+                {
+                    var geom3D = (GeometryModel3D)kvp.Value;
+                    geom3D.MouseDown3D -= meshGeometry3D_MouseDown3D;
+                }
                 GeometryDictionary.Remove(kvp.Key);
             }
 
@@ -700,14 +706,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private void Watch_view_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //Point mousePos = e.GetPosition(watch_view);
-            //PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
-            //VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
-            //e.Handled = true;
-        }
-
         #endregion
 
         #region private methods
@@ -865,14 +863,13 @@ namespace Dynamo.Controls
 
             AggregateRenderPackages(aggParams);
 
-
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
             renderTimer.Reset();
             renderTimer.Start();
 #endif        
-             
+            
             //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
             //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
             //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
@@ -947,8 +944,7 @@ namespace Dynamo.Controls
                             Color = SharpDX.Color.White,
                             Figure = PointGeometryModel3D.PointFigure.Ellipse,
                             Size = new Size(8, 8),
-                            IsHitTestVisible = false
-
+                            IsHitTestVisible = true
                         };
                         geometryDictionary.Add(id, pointGeometry3D);
                     }
@@ -978,6 +974,8 @@ namespace Dynamo.Controls
                     }
 
                     pointGeometry3D.Geometry = points;
+                    pointGeometry3D.Name = baseId;
+                    pointGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
                 }
 
                 var l = rp.Lines;
@@ -999,7 +997,7 @@ namespace Dynamo.Controls
                             Transform = Model1Transform,
                             Color = SharpDX.Color.White,
                             Thickness = 0.5,
-                            IsHitTestVisible = false
+                            IsHitTestVisible = true
                         };
 
                         geometryDictionary.Add(id, lineGeometry3D);
@@ -1030,6 +1028,8 @@ namespace Dynamo.Controls
                     }
 
                     lineGeometry3D.Geometry = lineSet;
+                    lineGeometry3D.Name = baseId;
+                    lineGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
                 }
 
                 var m = rp.Mesh;
@@ -1050,11 +1050,11 @@ namespace Dynamo.Controls
                         Geometry = HelixRenderPackage.InitMeshGeometry(),
                         Transform = Model1Transform,
                         Material = WhiteMaterial,
-                        IsHitTestVisible = false,
+                        IsHitTestVisible = true,
                         RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
                         IsSelected = rp.IsSelected,
                     };
-
+                    
                     if (rp.Colors != null)
                     {
                         var pf = PixelFormats.Bgra32;
@@ -1085,6 +1085,11 @@ namespace Dynamo.Controls
                 meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
                 meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
 
+                if (meshSet.Colors.Any(c => c.Alpha < 1.0))
+                {
+                    meshGeometry3D.HasTransparency = true;
+                }
+
                 if (rp.DisplayLabels)
                 {
                     var pt = meshSet.Positions[idxCount];
@@ -1093,9 +1098,27 @@ namespace Dynamo.Controls
                 }
 
                 meshGeometry3D.Geometry = meshSet;
+                meshGeometry3D.Name = baseId; 
+                meshGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
             }
 
             Attach();
+        }
+
+        void meshGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
+        {
+            var args = e as Mouse3DEventArgs;
+            if (args == null) return;
+            if (args.Viewport == null) return;
+
+            var viewModel = DataContext as DynamoViewModel;
+            foreach (var node in viewModel.Model.CurrentWorkspace.Nodes)
+            {
+                var foundNode = node.AstIdentifierBase.Contains(((GeometryModel3D) e.OriginalSource).Name);
+                if (!foundNode) continue;
+                DynamoSelection.Instance.ClearSelection();
+                viewModel.Model.AddToSelection(node);
+            }
         }
        
         private void Attach()
