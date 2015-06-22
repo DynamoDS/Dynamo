@@ -66,7 +66,10 @@ namespace Dynamo.Controls
         private double lightElevationDegrees = 35.0;
         private int renderingTier;
         private DynamoViewModel viewModel;
-
+        private const double NearPlaneDistanceFactor = 0.0001;
+        internal Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
+        internal Point3D defaultCameraPosition = new Point3D(10, 15, 10);
+        internal Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0); 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
 #endif
@@ -298,10 +301,10 @@ namespace Dynamo.Controls
 
         private void SetCameraToDefaultOrientation()
         {           
-            Camera.LookDirection = new Vector3D(-10, -10, -10);
-            Camera.Position = new Point3D(10, 15, 10);
-            Camera.UpDirection = new Vector3D(0, 1, 0);
-            Camera.NearPlaneDistance = .1;
+            Camera.LookDirection = defaultCameraLookDirection;
+            Camera.Position = defaultCameraPosition;
+            Camera.UpDirection = defaultCameraUpDirection;
+            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
             Camera.FarPlaneDistance = 10000000;
         }
 
@@ -553,6 +556,25 @@ namespace Dynamo.Controls
             {
                 DirectionalLightDirection = v; 
             }
+
+            UpdateNearClipPlaneForSceneBounds();
+        }
+
+        /// <summary>
+        /// This method attempts to maximize the near clip plane in order to 
+        /// achiever higher z-buffer precision.
+        /// </summary>
+        private void UpdateNearClipPlaneForSceneBounds()
+        {
+            // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+            var sceneBounds = watch_view.FindBounds();
+            var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
+            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+        }
+
+        private double CalculateNearClipPlane(double maxDim)
+        {
+            return maxDim * NearPlaneDistanceFactor;
         }
 
         /// <summary>
@@ -856,7 +878,7 @@ namespace Dynamo.Controls
 
             if (!mesh.Positions.Any())
                 mesh = null;
-
+        
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
@@ -1057,16 +1079,23 @@ namespace Dynamo.Controls
                 return;
             }
 
-            Name = cameraNode.Attributes["Name"].Value;
-            var ex = float.Parse(cameraNode.Attributes["eyeX"].Value);
-            var ey = float.Parse(cameraNode.Attributes["eyeY"].Value);
-            var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value);
-            var lx = float.Parse(cameraNode.Attributes["lookX"].Value);
-            var ly = float.Parse(cameraNode.Attributes["lookY"].Value);
-            var lz = float.Parse(cameraNode.Attributes["lookZ"].Value);
+            try
+            {
+                Name = cameraNode.Attributes["Name"].Value;
+                var ex = float.Parse(cameraNode.Attributes["eyeX"].Value);
+                var ey = float.Parse(cameraNode.Attributes["eyeY"].Value);
+                var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value);
+                var lx = float.Parse(cameraNode.Attributes["lookX"].Value);
+                var ly = float.Parse(cameraNode.Attributes["lookY"].Value);
+                var lz = float.Parse(cameraNode.Attributes["lookZ"].Value);
 
-            Camera.LookDirection = new Vector3D(lx,ly,lz);
-            Camera.Position = new Point3D(ex, ey, ez);
+                Camera.LookDirection = new Vector3D(lx, ly, lz);
+                Camera.Position = new Point3D(ex, ey, ez);
+            }
+            catch (Exception ex)
+            {
+                viewModel.Model.Logger.Log("Camera data could not be loaded.", LogLevel.Console);
+            }
         }
     }
 
