@@ -501,10 +501,10 @@ namespace Dynamo.Core
            
             var newWorkspace = new CustomNodeWorkspaceModel(
                 nodeFactory,
-                nodeGraph.Presets,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,                               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,              
                 workspaceInfo);
 
             
@@ -1071,10 +1071,10 @@ namespace Dynamo.Core
                 var newId = Guid.NewGuid();
                 newWorkspace = new CustomNodeWorkspaceModel(
                     nodeFactory,
-                    Enumerable.Empty<PresetModel>(),
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    newAnnotations,                
+                    newAnnotations,
+                    Enumerable.Empty<PresetModel>(),
                     new WorkspaceInfo()
                     {
                         X = 0,

@@ -1148,11 +1148,11 @@ namespace Dynamo.Models
                 EngineController,
                 Scheduler,
                 NodeFactory,
-                nodeGraph.Presets,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode

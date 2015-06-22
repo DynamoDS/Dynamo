@@ -36,18 +36,18 @@ namespace Dynamo.Models
             NodeFactory factory)
             : this(
                 factory,
-                Enumerable.Empty<PresetModel>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
             NodeFactory factory,
-            IEnumerable<PresetModel> presets,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
+            IEnumerable<PresetModel> presets,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
             : base(e, n,a, info, factory,presets)

@@ -1694,17 +1694,17 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ZeroTouchTypeShortString" xml:space="preserve">
     <value>DLL</value>
   </data>
-  <data name="DynamoViewEditMenuCreateState" xml:space="preserve">
-    <value>Create State From Selection</value>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>Create Preset From Selection</value>
   </data>
-  <data name="DynamoViewEditMenuDeleteState" xml:space="preserve">
-    <value>Delete State</value>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>Delete Preset</value>
   </data>
-  <data name="DynamoViewEditMenuRestoreState" xml:space="preserve">
-    <value>Restore State</value>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>Restore Preset</value>
   </data>
-  <data name="DynamoViewEditMenuStatesMenu" xml:space="preserve">
-    <value>States</value>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>Presets</value>
   </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
@@ -1718,7 +1718,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="BrowserNodeButtonLabel" xml:space="preserve">
     <value>Browse...</value>
   </data>
-   <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
     <value>No file selected.</value>
   </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">

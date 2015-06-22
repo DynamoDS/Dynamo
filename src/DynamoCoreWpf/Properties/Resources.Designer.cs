@@ -900,11 +900,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create State From Selection.
+        ///   Looks up a localized string similar to Create Preset From Selection.
         /// </summary>
-        public static string DynamoViewEditMenuCreateState {
+        public static string DynamoViewEditMenuCreatePreset {
             get {
-                return ResourceManager.GetString("DynamoViewEditMenuCreateState", resourceCulture);
+                return ResourceManager.GetString("DynamoViewEditMenuCreatePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Preset.
+        /// </summary>
+        public static string DynamoViewEditMenuDeletePreset {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuDeletePreset", resourceCulture);
             }
         }
         
@@ -918,20 +927,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete State.
-        /// </summary>
-        public static string DynamoViewEditMenuDeleteState {
-            get {
-                return ResourceManager.GetString("DynamoViewEditMenuDeleteState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Paste.
         /// </summary>
         public static string DynamoViewEditMenuPaste {
             get {
                 return ResourceManager.GetString("DynamoViewEditMenuPaste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presets.
+        /// </summary>
+        public static string DynamoViewEditMenuPresetsMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewEditMenuPresetsMenu", resourceCulture);
             }
         }
         
@@ -945,11 +954,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restore State.
+        ///   Looks up a localized string similar to Restore Preset.
         /// </summary>
-        public static string DynamoViewEditMenuRestoreState {
+        public static string DynamoViewEditMenuRestorePreset {
             get {
-                return ResourceManager.GetString("DynamoViewEditMenuRestoreState", resourceCulture);
+                return ResourceManager.GetString("DynamoViewEditMenuRestorePreset", resourceCulture);
             }
         }
         
@@ -968,15 +977,6 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewEditMenuSelectNeighbours {
             get {
                 return ResourceManager.GetString("DynamoViewEditMenuSelectNeighbours", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to States.
-        /// </summary>
-        public static string DynamoViewEditMenuStatesMenu {
-            get {
-                return ResourceManager.GetString("DynamoViewEditMenuStatesMenu", resourceCulture);
             }
         }
         

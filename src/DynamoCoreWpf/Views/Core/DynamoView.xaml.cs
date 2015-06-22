@@ -952,7 +952,7 @@ namespace Dynamo.Controls
                             Tag = state
                         };
                   //if the sender was the restoremenu then add restore delegates
-                 if (sender == RestoreStateMenu)
+                 if (sender == RestorePresetMenu)
                  {
                      stateItem.Click += RestoreState_Click;
                  }

@@ -258,7 +258,7 @@
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
 
-                    <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuCreateState}"
+                    <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuCreatePreset}"
                               Command="{Binding DynamoViewModel.ShowNewPresetsDialogCommand}" />
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"

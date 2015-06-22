@@ -345,22 +345,22 @@
                         <Separator />
 
                        
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuStatesMenu}"
-                              Name = "StatesMenu"
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuPresetsMenu}"
+                              Name = "PresetsMenu"
                               Focusable= "False"
                               IsEnabled="True">
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreateState}"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreatePreset}"
                                       Command="{Binding ShowNewPresetsDialogCommand}"
                                       Name="newPreset"
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestoreState}"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
                                     MouseEnter="LoadPresetsMenus"
-                                      Name="RestoreStateMenu"
+                                      Name="RestorePresetMenu"
                                       Focusable="False" />
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeleteState}"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
                                     MouseEnter="LoadPresetsMenus"
-                                      Name="DeleteStateMenu"
+                                      Name="DeletePresetMenu"
                                       Focusable="False" />
                         </MenuItem>
                         <Separator />
