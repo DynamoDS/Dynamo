@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dynamo.Models;
 
 namespace Dynamo.Interfaces
@@ -19,6 +20,7 @@ namespace Dynamo.Interfaces
         double WindowW { get; set; }
         int MaxNumRecentFiles { get; set; }
         List<string> RecentFiles { get; set; }
+        List<string> BackupFiles { get; set; }
         List<string> PackageDirectoriesToUninstall { get; set; }
 
         /// <summary>

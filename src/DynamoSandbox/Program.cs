@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using System.Windows;
-using System.Windows.Documents;
-using Dynamo;
+
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.DynamoSandbox;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-using DynamoUtilities;
+
+using Microsoft.Win32;
 
 namespace DynamoSandbox
 {
@@ -26,10 +32,14 @@ namespace DynamoSandbox
 
         internal PathResolver(string preloaderLocation)
         {
-            additionalResolutionPaths = new List<string>
-            {
-                preloaderLocation
-            };
+            // If a suitable preloader cannot be found on the system, then do 
+            // not add invalid path into additional resolution. The default 
+            // implementation of IPathManager in Dynamo insists on having valid 
+            // paths specified through "IPathResolver" implementation.
+            // 
+            additionalResolutionPaths = new List<string>();
+            if (Directory.Exists(preloaderLocation))
+                additionalResolutionPaths.Add(preloaderLocation);
 
             additionalNodeDirectories = new List<string>();
             preloadedLibraryPaths = new List<string>
@@ -74,6 +84,72 @@ namespace DynamoSandbox
         }
     }
 
+    struct CommandLineArguments
+    {
+        internal static CommandLineArguments FromArguments(string[] args)
+        {
+            // Running Dynamo sandbox with a command file:
+            // DynamoSandbox.exe /c "C:\file path\file.xml"
+            // 
+            var commandFilePath = string.Empty;
+
+            // Running Dynamo under a different locale setting:
+            // DynamoSandbox.exe /l "ja-JP"
+            //
+            var locale = string.Empty;
+
+            for (var i = 0; i < args.Length; ++i)
+            {
+                var arg = args[i];
+                if (arg.Length != 2 || (arg[0] != '/'))
+                {
+                    continue; // Not a "/x" type of command switch.
+                }
+
+                switch (arg[1])
+                {
+                    case 'c':
+                    case 'C':
+                        // If there's at least one more argument...
+                        if (i < args.Length - 1)
+                            commandFilePath = args[++i];
+                        break;
+
+                    case 'l':
+                    case 'L':
+                        if (i < args.Length - 1)
+                            locale = args[++i];
+                        break;
+                }
+            }
+
+            return new CommandLineArguments
+            {
+                Locale = locale,
+                CommandFilePath = commandFilePath
+            };
+        }
+
+        internal string Locale { get; set; }
+        internal string CommandFilePath { get; set; }
+    }
+
+    internal class SandboxLookUp : DynamoLookUp
+    {
+        public override IEnumerable<string> GetDynamoInstallLocations()
+        {
+            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
+            //Open HKLM for 64bit registry
+            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            //Open Windows/CurrentVersion/Uninstall registry key
+            regKey = regKey.OpenSubKey(regKey64);
+
+            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
+            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
+                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
+        }
+    }
+
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
@@ -84,20 +160,18 @@ namespace DynamoSandbox
             var preloaderLocation = string.Empty;
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
 
-            // TODO(PATHMANAGER): Do we really libg_xxx folder on resolution path?
-            // If not, PathResolver will be completely redundant so please remove it.
-            var pathResolver = new PathResolver(preloaderLocation);
-
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+
+            var umConfig = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
+            Debug.Assert(umConfig.DynamoLookUp != null);
 
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath
+                    PathResolver = new PathResolver(preloaderLocation),
+                    GeometryFactoryPath = geometryFactoryPath,
+                    UpdateManager = new UpdateManager(umConfig)
                 });
-
-            
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -155,6 +229,9 @@ namespace DynamoSandbox
             preloaderLocation = preloader.PreloaderLocation;
         }
 
+        [DllImport("msvcrt.dll")]
+        public static extern int _putenv(string env);
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -162,28 +239,38 @@ namespace DynamoSandbox
 
             try
             {
-                // Running Dynamo sandbox with a command file:
-                // DynamoSandbox.exe /c "C:\file path\file.xml"
-                // 
-                var commandFilePath = string.Empty;
+                var cmdLineArgs = CommandLineArguments.FromArguments(args);
+                var supportedLocale = new HashSet<string>(new[]
+                        {
+                            "cs-CZ", "de-DE", "en-US", "es-ES", "fr-FR", "it-IT",
+                            "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW"
+                        });
+                string libgLocale;
 
-                for (var i = 0; i < args.Length; ++i)
+                if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
                 {
-                    var arg = args[i];
-
-                    // Looking for '/c'
-                    if (arg.Length != 2 || (arg[0] != '/'))
-                        continue;
-
-                    if (arg[1] == 'c' || (arg[1] == 'C'))
-                    {
-                        // If there's at least one more argument...
-                        if (i < args.Length - 1)
-                            commandFilePath = args[i + 1];
-                    }
+                    // Change the application locale, if a locale information is supplied.
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
+                    libgLocale = cmdLineArgs.Locale;
+                }
+                else
+                {
+                    // In case no language is specified, libG's locale should be that of the OS.
+                    // There is no need to set Dynamo's locale in this case.
+                    libgLocale = CultureInfo.InstalledUICulture.ToString();
                 }
 
-                MakeStandaloneAndRun(commandFilePath, out viewModel);
+                // If locale is not supported by Dynamo, default to en-US.
+                if (!supportedLocale.Any(s => s.Equals(libgLocale, StringComparison.InvariantCultureIgnoreCase)))
+                    libgLocale = "en-US";
+
+                // Change the locale that LibG depends on.
+                StringBuilder sb = new StringBuilder("LANGUAGE=");
+                sb.Append(libgLocale.Replace("-", "_"));
+                _putenv(sb.ToString());
+
+                MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
             }
             catch (Exception e)
             {

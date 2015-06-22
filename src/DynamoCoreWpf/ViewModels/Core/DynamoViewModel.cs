@@ -21,12 +21,14 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.PackageManager;
 
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;
 
 namespace Dynamo.ViewModels
@@ -312,8 +314,22 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
-        public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
-        public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
+
+        public bool IsPanning
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
+            }
+        }
+
+        public bool IsOrbiting
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
+            }
+        }
 
         public ConnectorType ConnectorType
         {
@@ -385,16 +401,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTesselationDivisions
-        {
-            get { return model.MaxTesselationDivisions; }
-            set
-            {
-                model.MaxTesselationDivisions = value;
-                model.OnRequestsRedraw(this, EventArgs.Empty);
-            }
-        }
-
         public bool VerboseLogging
         {
             get { return model.DebugSettings.VerboseLogging; }
@@ -445,13 +451,15 @@ namespace Dynamo.ViewModels
 
         public bool ShowWatchSettingsControl
         {
-            get { return showWatchSettingsControl; }
+            get { return showWatchSettingsControl && !ShowStartPage; }
             set
             {
                 showWatchSettingsControl = value;
                 RaisePropertyChanged("ShowWatchSettingsControl");   
             }
         }
+
+        public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
         #endregion
 
@@ -494,11 +502,12 @@ namespace Dynamo.ViewModels
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
 
-            UsageReportingManager.Instance.InitializeCore(this.model);
+            UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
-            this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
+            var pmExtension = model.GetPackageManagerExtension();
+            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+            this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
@@ -534,6 +543,21 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
 
             SubscribeDispatcherHandlers();
+
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(this.VisualizationManager.RenderPackageFactory);
+            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+        }
+
+        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    Model.PreferenceSettings.ShowEdges =
+                        VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges;
+                    break;
+            }
+            VisualizationManager.UpdateAllNodeVisualsAndNotify();
         }
 
         internal event EventHandler NodeViewReady;
@@ -560,6 +584,7 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
+            RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
         }
 
         private void InitializeRecentFiles()
@@ -779,6 +804,8 @@ namespace Dynamo.ViewModels
             PublishSelectedNodesCommand.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
+            UngroupModelCommand.RaiseCanExecuteChanged();
+            AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -901,7 +928,33 @@ namespace Dynamo.ViewModels
 
         internal bool CanAddAnnotation(object parameter)
         {
-            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+            var groups = Model.CurrentWorkspace.Annotations;
+            //Create Group should be disabled when a group is selected
+            if (groups.Any(x => x.IsSelected))
+            {
+                return false;
+            }
+
+            //Create Group should be disabled when a node selected is already in a group
+            if (!groups.Any(x => x.IsSelected))
+            {
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                //If there are no nodes selected then return false
+                if (!modelSelected.Any())
+                {
+                    return false;
+                }
+
+                foreach (var model in modelSelected)
+                {
+                    if (groups.ContainsModel(model.GUID))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         internal void UngroupAnnotation(object parameters)
@@ -944,7 +997,31 @@ namespace Dynamo.ViewModels
 
         internal bool CanUngroupModel(object parameter)
         {
+            var tt = DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
             return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
+        internal bool CanAddModelsToGroup(object obj)
+        {          
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+        }
+
+        internal void AddModelsToGroup(object parameters)
+        {
+            if (null != parameters)
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+            {
+                if (!(modelb is AnnotationModel))
+                {
+                    var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
+                    this.ExecuteCommand(command);
+                }
+            }  
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
@@ -952,8 +1029,6 @@ namespace Dynamo.ViewModels
             if (item is HomeWorkspaceModel)
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
-                Model.RemoveWorkspace(HomeSpace);
-                Model.ResetEngine();
                 workspaces.Insert(0, newVm);
 
                 // The RunSettings control is a child of the DynamoView, 
@@ -990,9 +1065,10 @@ namespace Dynamo.ViewModels
 
             RecentFiles.Insert(0, path);
 
-            if (RecentFiles.Count > Model.PreferenceSettings.MaxNumRecentFiles)
+            int maxNumRecentFiles = Model.PreferenceSettings.MaxNumRecentFiles;
+            if (RecentFiles.Count > maxNumRecentFiles)
             {
-                RecentFiles = new ObservableCollection<string>(RecentFiles.Take(Model.PreferenceSettings.MaxNumRecentFiles));
+                RecentFiles.RemoveRange(maxNumRecentFiles, RecentFiles.Count - maxNumRecentFiles);
             }
         }
 
@@ -1027,15 +1103,30 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Open a definition or workspace.
         /// </summary>
-        /// <param name="parameters">The path the the file.</param>
+        /// <param name="parameters"></param>
+        /// For most cases, parameters variable refers to the file path to open
+        /// However, when this command is used in OpenFileDialog, the variable is
+        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
         private void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
             try
             {
-                var xmlFilePath = parameters as string;
-                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
+                string xmlFilePath = string.Empty;
+                bool forceManualMode = false;
+                var packedParams = parameters as Tuple<string, bool>;
+                if (packedParams != null)
+                {
+                    xmlFilePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    xmlFilePath = parameters as string;
+                }
+                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
             }
             catch (Exception e)
             {
@@ -1064,7 +1155,7 @@ namespace Dynamo.ViewModels
                     return;
             }
 
-            FileDialog _fileDialog = new OpenFileDialog()
+            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
             {
                 Filter = string.Format(Resources.FileDialogDynamoDefinitions,
                          BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
@@ -1092,7 +1183,9 @@ namespace Dynamo.ViewModels
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
-                    Open(_fileDialog.FileName);
+                {
+                    Open(new Tuple<string,bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                }
             }
         }
 
@@ -1153,7 +1246,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerCore);
+            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
         }
 
         /// <summary>
@@ -1167,7 +1260,7 @@ namespace Dynamo.ViewModels
             // crash sould always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerCore);
+                workspace.Save(EngineController.LiveRunnerRuntimeCore);
                 return true;
             }
             else
@@ -1178,7 +1271,7 @@ namespace Dynamo.ViewModels
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerCore);
+                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
                     return true;
                 }
             }

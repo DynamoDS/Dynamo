@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
-using Dynamo.DSEngine;
+
 using Dynamo.Models;
 
 namespace Dynamo
@@ -11,13 +11,12 @@ namespace Dynamo
         {
             var packages = dynamoModel.CurrentWorkspace.Nodes
                 .Where(node => node.HasRenderPackages)
-                .SelectMany(rp=>rp.RenderPackages)
-                .Cast<RenderPackage>()
-                .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
+                .SelectMany(node=>node.RenderPackages)
+                .Where(rp=>rp.HasRenderingData)
                 .ToList();
 
-            var n = packages.SelectMany(rp => rp.TriangleNormals).ToList();
-            var v = packages.SelectMany(rp => rp.TriangleVertices).ToList();
+            var n = packages.SelectMany(p => p.MeshNormals).ToList();
+            var v = packages.SelectMany(rp => rp.MeshVertices).ToList();
 
             using (TextWriter tw = new StreamWriter(path))
             {

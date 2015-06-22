@@ -219,7 +219,7 @@ namespace Dynamo.UI
 
         #endregion
 
-        #region StandardPanel
+        #region ClassInformationView
 
         public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
         public static string HeaderCreate = Resources.HeaderCreate;
@@ -227,11 +227,17 @@ namespace Dynamo.UI
         public static string HeaderQuery = Resources.HeaderQuery;
 
         #endregion
-    }
 
-    public class ResourceNames
-    {
-        public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
-        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
+        #region InCanvasSearch
+
+        public const double InCanvasSearchTextBoxHeight = 40.0;
+
+        #endregion
+
+        #region Backup
+
+        public static string BackupFileNamePrefix = "backup";
+
+        #endregion
     }
 }

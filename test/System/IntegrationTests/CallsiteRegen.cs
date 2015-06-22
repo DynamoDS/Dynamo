@@ -73,8 +73,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 TestFrameWork.AssertValue("mtcAWasTraced", false, astLiveRunner);
 
 
-                var core = astLiveRunner.Core;
-                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var core = astLiveRunner.RuntimeCore;
+                var ctorCallsites = core.RuntimeData.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 Guid guid = ctorCallsites.First().CallSiteID;
@@ -88,7 +88,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 TestFrameWork.AssertValue("mtcAWasTraced", true, astLiveRunner);
 
                 //Verify that the GUID has been adjusted
-                var ctorCallsites2 = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var ctorCallsites2 = core.RuntimeData.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites2.Count() == 1);
                 Guid guid2 = ctorCallsites2.First().CallSiteID;
@@ -127,8 +127,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 astLiveRunner.UpdateGraph(syncData);
 
                 //Get the callsite for the ctor
-                var core = astLiveRunner.Core;
-                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var core = astLiveRunner.RuntimeCore;
+                var ctorCallsites = core.RuntimeData.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();
@@ -171,8 +171,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 astLiveRunner.UpdateGraph(syncData);
 
                 //Get the callsite for the ctor
-                var core = astLiveRunner.Core;
-                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var core = astLiveRunner.RuntimeCore;
+                var ctorCallsites = core.RuntimeData.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();
@@ -234,8 +234,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 astLiveRunner.UpdateGraph(syncData);
 
                 //Get the callsite for the ctor
-                var core = astLiveRunner.Core;
-                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var core = astLiveRunner.RuntimeCore;
+                var ctorCallsites = core.RuntimeData.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();
@@ -304,8 +304,8 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 }, astLiveRunner);
 
                 //Get the callsite for the ctor
-                var core = astLiveRunner.Core;
-                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var core = astLiveRunner.RuntimeCore;
+                var ctorCallsites = core.RuntimeData.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();

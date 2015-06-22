@@ -1,0 +1,33 @@
+<Workspace Version="0.8.1.1177" X="714.802734347303" Y="-518.511486383484" zoom="1.01409031157563" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Autodesk.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="DSCore.Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="56be5b6d-1897-4383-a746-bf93cb17a090" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-645.969484198558" y="552.924811528083" isVisible="false" isUpstreamVisible="true" lacing="Disabled" CodeText="a=Autodesk.Point.ByCoordinates(0,0,0);&#xA;b=Autodesk.Point.ByCoordinates(5,-1,1);&#xA;c=Autodesk.Point.ByCoordinates(12,2,-1);&#xA;d=Autodesk.Point.ByCoordinates(20,1,10);&#xA;pts={a,b,c,d};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="d1ba3cd4-56f8-47af-bb4c-456fb522ff59" type="Dynamo.Nodes.DSFunction" nickname="NurbsCurve.ByPoints" x="-103.02573067084" y="742.182719638332" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],int">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleInput guid="aef16267-64b6-4429-bab9-30f447dd6953" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="-398.488948140022" y="833.058630374122" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput guid="eb18e69a-efa2-4e01-b490-aae94abc6a2d" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="-106.830314183459" y="913.004875353142" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..1..#count" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput guid="5313e32a-a242-4ec1-bbd5-2106f6cc1f74" type="Dynamo.Nodes.DoubleInput" nickname="Number of Planes" x="-347.740847462786" y="982.15008601498" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction guid="a9e17162-26d2-4961-9dd5-abc1c137d8fd" type="Dynamo.Nodes.DSFunction" nickname="Curve.PlaneAtParameter" x="464.214751027433" y="907.340254358794" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="56be5b6d-1897-4383-a746-bf93cb17a090" start_index="4" end="d1ba3cd4-56f8-47af-bb4c-456fb522ff59" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1ba3cd4-56f8-47af-bb4c-456fb522ff59" start_index="0" end="a9e17162-26d2-4961-9dd5-abc1c137d8fd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aef16267-64b6-4429-bab9-30f447dd6953" start_index="0" end="d1ba3cd4-56f8-47af-bb4c-456fb522ff59" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eb18e69a-efa2-4e01-b490-aae94abc6a2d" start_index="0" end="a9e17162-26d2-4961-9dd5-abc1c137d8fd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5313e32a-a242-4ec1-bbd5-2106f6cc1f74" start_index="0" end="eb18e69a-efa2-4e01-b490-aae94abc6a2d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

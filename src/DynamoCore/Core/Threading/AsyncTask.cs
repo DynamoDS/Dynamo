@@ -90,6 +90,11 @@ namespace Dynamo.Core.Threading
         /// 
         internal event AsyncTaskCompletedHandler Completed;
 
+        /// <summary>
+        /// Raised if the AsyncTask is discarded by an IScheduler and will not be executed
+        /// </summary>
+        internal event AsyncTaskCompletedHandler Discarded;
+
         #endregion
 
         #region Public Class Operational Methods
@@ -196,6 +201,15 @@ namespace Dynamo.Core.Threading
             // Notify registered event handlers of task completion.
             if (Completed != null)
                 Completed(this);
+        }
+
+
+        internal void HandleTaskDiscarded()
+        {
+            if (Discarded != null)
+            {
+                Discarded(this);
+            }
         }
 
         #endregion

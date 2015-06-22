@@ -160,7 +160,7 @@ temp = test(1, 2);
 @"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}		class g	{		gx : var;		gy : var;		constructor g()		{			// Construct a class within a class			gx = f.f();			gy = 678;		}	}	p = f.f();    a = p.fx;    b = p.fy;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 123);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 456);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 345);
         }
 
         [Test]
@@ -1544,6 +1544,20 @@ c = f(a<1L>,b<2>);";
         }
 
         [Test]
+        public void TestEq()
+        {
+            string code= @"
+class A {}
+a = A();
+b = 42;
+c = a == b;
+            ";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", false);
+        }
+
+        [Test]
         public void RangeExpr001()
         {
             String code =
@@ -1773,12 +1787,10 @@ b = 2.1 % 0;
         public void PopListWithDimension()
         {
             String code =
-                @"                class A                {	                x : var;	                y : var;	                z : var[];		                constructor A()	                {		                x = B.B(20, 30);		                y = 10;		                z = { B.B(40, 50), B.B(60, 70), B.B(80, 90) };	                }                }                class B                {	                m : var;	                n : var;		                constructor B(_m : int, _n : int)	                {		                m = _m;		                n = _n;	                }                }	            a = A.A();	            b = B.B(1, 2);	            c = { B.B(-1, -2), B.B(-3, -4) };	            a.z[-2] = b;	            watch1 = a.z[-2].n; // 2	            a.z[-2].m = 3;	            watch2 = a.z[-2].m; // 3	            a.x = b;	            watch3 = a.x.m; // 3	            a.z = c;	            watch4 = a.z[-1].m; // -3                ";
+                @"class A{	y : var;	z : var[];		constructor A()	{		y = 10;		z = { B.B(40, 50), B.B(60, 70) };	}}class B{	m : var;	n : var;	constructor B(i : int, j : int)	{		m = i;		n = j;	}}a = A.A();b = B.B(1, 2);a.z[1] = b;watch1 = a.z[1].m; watch2 = a.z[1].n; a.z[1].m = 10;                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("watch1", -2);
-            thisTest.Verify("watch2", 3);
-            thisTest.Verify("watch3", 3);
-            thisTest.Verify("watch4", -3);
+            thisTest.Verify("watch1", 10);
+            thisTest.Verify("watch2", 2);
         }
 
         [Test]
@@ -2326,7 +2338,7 @@ r3 = 'h' + 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
-            thisTest.Verify("r3", "h1");
+            thisTest.Verify("r3", null);
         }
 
         [Test]
@@ -3169,6 +3181,32 @@ c = [Associative]
             thisTest.Verify("b", false);
         }
 
+        [Test]
+        public void TestAddNullToString()
+        {
+            string code =
+@"
+a = ""hello"" + null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+        }
+        
+        [Test]
+        public void TestUndefinedTypedIdentifier()
+        {
+            string code =
+@"
+        a : UndefinedType;
+        b : UndefinedType2 = 2;
+        c : UndefinedType3 = null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", null);
+            thisTest.Verify("c", null);
 
+            thisTest.VerifyRuntimeWarningCount(3);
+        }
     }
 }

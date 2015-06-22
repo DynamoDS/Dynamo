@@ -1,0 +1,29 @@
+<Workspace Version="0.8.0.1097" X="-305.118429318055" Y="119.065654318616" zoom="0.847509967329043" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="b7286ba6-c7cd-4efc-b779-c677a84197a4" type="Dynamo.Nodes.DSFunction" nickname="ImportFromCSV" x="452.143425078383" y="108.124809684538" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="ImportFromCSV@string" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="deaada61-d26a-47b1-8a06-c6ae2390ddc2" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="664.779927125992" y="182.220072874008" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="ls[0];&#xA;ls[1];&#xA;ls[2];" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="8980c6be-1e52-43ee-86aa-45c467ca5530" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="791.6" y="188.4" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="7caf2032-141d-460a-a482-cc76ddd48ff1" type="Dynamo.Nodes.DSFunction" nickname="NurbsCurve.ByPoints" x="979.225452193599" y="190.617787428684" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],int">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <DSCore.File.Filename guid="0fb0e8d9-0cf6-4a99-bdf6-ed07a02a8143" type="DSCore.File.Filename" nickname="File Path" x="403.795267243145" y="356.359487851088" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\WorkflowTestFiles\01 Dynamo Basics\ecaade.csv</System.String>
+    </DSCore.File.Filename>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b7286ba6-c7cd-4efc-b779-c677a84197a4" start_index="0" end="deaada61-d26a-47b1-8a06-c6ae2390ddc2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="deaada61-d26a-47b1-8a06-c6ae2390ddc2" start_index="0" end="8980c6be-1e52-43ee-86aa-45c467ca5530" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="deaada61-d26a-47b1-8a06-c6ae2390ddc2" start_index="1" end="8980c6be-1e52-43ee-86aa-45c467ca5530" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="deaada61-d26a-47b1-8a06-c6ae2390ddc2" start_index="2" end="8980c6be-1e52-43ee-86aa-45c467ca5530" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8980c6be-1e52-43ee-86aa-45c467ca5530" start_index="0" end="7caf2032-141d-460a-a482-cc76ddd48ff1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0fb0e8d9-0cf6-4a99-bdf6-ed07a02a8143" start_index="0" end="b7286ba6-c7cd-4efc-b779-c677a84197a4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Browse to the file &quot;eCAADe.csv&quot;" x="185.888574701269" y="152.005173428907" />
+  </Notes>
+</Workspace>

@@ -33,7 +33,8 @@ namespace ProtoCore
             kTypeMismatch,
             kReplicationWarning,
             kInvalidIndexing,
-            kModuloByZero
+            kModuloByZero,
+            kInvalidType
         }
 
         public struct WarningEntry

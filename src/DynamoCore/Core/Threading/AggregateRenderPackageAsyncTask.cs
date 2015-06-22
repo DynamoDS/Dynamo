@@ -116,12 +116,12 @@ namespace Dynamo.Core.Threading
             foreach (var duplicatedNodeReference in duplicatedNodeReferences)
             {
                 var rps = duplicatedNodeReference.RenderPackages;
-                foreach (var renderPackage in rps.OfType<RenderPackage>())
+                foreach (var renderPackage in rps.OfType<IRenderPackage>())
                 {
-                    if (!renderPackage.IsNotEmpty())
+                    if (!renderPackage.HasRenderingData)
                         continue;
 
-                    if (renderPackage.Selected)
+                    if (renderPackage.IsSelected)
                         selectedRenderPackages.Add(renderPackage);
                     else
                         normalRenderPackages.Add(renderPackage);

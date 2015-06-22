@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExportToSATDescripiton" xml:space="preserve">
+    <value>Exports the specified geometry to the given SAT  file path.</value>
+  </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
     <value>File to export the geometry to.</value>
   </data>
@@ -125,5 +128,9 @@
   </data>
   <data name="ExportToSatGeometryInputDescription" xml:space="preserve">
     <value>Geometry to export into a SAT file.</value>
+  </data>
+  <data name="ExportWithUnitsSearchTags" xml:space="preserve">
+    <value>Export;SAT</value>
+    <comment>Search tags for ExportWithUnits node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
 </root>

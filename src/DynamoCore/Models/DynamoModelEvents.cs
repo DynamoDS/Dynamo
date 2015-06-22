@@ -43,10 +43,8 @@ namespace Dynamo.Models
                 action();
         }
 
-        // public delegate void SettingsMigrationHandler(object sender, SettingsMigrationEventArgs args);
         public static event SettingsMigrationHandler RequestMigrationStatusDialog;
-
-        public static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
+        internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
         {
             if (RequestMigrationStatusDialog != null)
                 RequestMigrationStatusDialog(args);
@@ -203,6 +201,17 @@ namespace Dynamo.Models
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
+        }
+
+        /// <summary>
+        /// An event triggered when all tasks in scheduler are completed.
+        /// </summary>
+        public event Action<HomeWorkspaceModel> RefreshCompleted;
+        public virtual void OnRefreshCompleted(object sender, EventArgs e)
+        {
+            var homeWorkspaceModel = sender as HomeWorkspaceModel;
+            if (RefreshCompleted != null && homeWorkspaceModel != null)
+                RefreshCompleted(homeWorkspaceModel);
         }
 
         #endregion

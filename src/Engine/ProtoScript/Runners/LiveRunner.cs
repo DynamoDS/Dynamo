@@ -1940,6 +1940,10 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
+            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
+            if (runtimeCore == null)
+                return ret;
+
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
             var warnings = runtimeCore.RuntimeStatus
@@ -1948,7 +1952,6 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
             foreach (var w in warnings)
             {
                 Guid guid = w.FirstOrDefault().GraphNodeGuid;
@@ -1964,6 +1967,10 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
         {
+            var ret = new Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>>();
+            if (runnerCore == null)
+                return ret;
+
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
             var warnings = runnerCore.BuildStatus
@@ -1972,7 +1979,6 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            var ret = new Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>>();
             foreach (var w in warnings)
             {
                 Guid guid = w.FirstOrDefault().GraphNodeGuid;

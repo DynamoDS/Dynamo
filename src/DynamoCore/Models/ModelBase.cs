@@ -111,7 +111,7 @@ namespace Dynamo.Models
         /// <summary>
         /// The height of the node.
         /// </summary>
-        public double Height
+        public virtual double Height
         {
             get { return height; }
             set
@@ -124,7 +124,7 @@ namespace Dynamo.Models
         /// <summary>
         /// The width of the node.
         /// </summary>
-        public double Width
+        public virtual double Width
         {
             get { return width; }
             set

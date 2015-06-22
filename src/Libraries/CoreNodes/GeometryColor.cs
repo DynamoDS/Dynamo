@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-
+using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-
-using Geometry = Autodesk.DesignScript.Geometry.Geometry;
 
 namespace DSCore
 {
@@ -42,93 +39,71 @@ namespace DSCore
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
+            package.RequiresPerVertexColoration = true;
+
             // As you add more data to the render package, you need
             // to keep track of the index where this coloration will 
             // start from.
-            var lineStripStartIndex = package.LineStripVertexColors.Count;
-            var pointVertexStartIndex = package.PointVertexColors.Count;
-            var triangleVertexStartIndex = package.TriangleVertexColors.Count;
 
-            geometry.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, parameters);
 
-            SetColorOnArray(package.LineStripVertexColors, color, lineStripStartIndex);
-            SetColorOnArray(package.PointVertexColors, color, pointVertexStartIndex);
-            SetColorOnArray(package.TriangleVertexColors, color, triangleVertexStartIndex);
-
-            var surf = geometry as Surface;
-            if (surf != null)
+            if (parameters.ShowEdges)
             {
-                var start = package.LineStripVertexColors.Count;
-                surf.PerimeterCurves().ForEach(
-                        e =>
-                            e.Tessellate(
-                                package,
-                                tol,
-                                maxGridLines));
-                var end = package.LineStripVertexColors.Count - 1;
-                ReColorVerticesFromTo(start, end, package);
+                var surf = geometry as Surface;
+                if (surf != null)
+                {
+                    foreach (var curve in surf.PerimeterCurves())
+                    {
+                        curve.Tessellate(package, parameters);
+                        curve.Dispose();
+                    }
+                }
+
+                var solid = geometry as Solid;
+                if (solid != null)
+                {
+                    foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                    {
+                        geom.Tessellate(package, parameters);
+                        geom.Dispose();
+                    }
+                }
             }
 
-            var solid = geometry as Solid;
-            if (solid != null)
+            if (package.LineVertexCount > 0)
             {
-                var start = package.LineStripVertexColors.Count;
-                solid.Edges.ForEach(
-                        e =>
-                            e.CurveGeometry.Tessellate(
-                                package,
-                                tol,
-                                maxGridLines));
-                var end = package.LineStripVertexColors.Count - 1;
-                ReColorVerticesFromTo(start, end, package);
+                package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, color.Red, color.Green, color.Blue, color.Alpha));
             }
 
-            for (var i = 0; i < package.TriangleVertices.Count; i += 3)
+            if (package.PointVertexCount > 0)
             {
-                NudgeVertexAlongVector(package.TriangleVertices, package.TriangleNormals, i, 0.001);
+                package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, color.Red, color.Green, color.Blue, color.Alpha));
             }
 
-        }
-
-        private void NudgeVertexAlongVector(IList<double> vertices, IList<double> normals, int i, double amount)
-        {
-            var x = (float)vertices[i];
-            var y = (float)vertices[i + 1];
-            var z = (float)vertices[i + 2];
-            var v = Vector.ByCoordinates(x, y, z);
-
-            var nx = (float)vertices[i];
-            var ny = (float)vertices[i + 1];
-            var nz = (float)vertices[i + 2];
-            var n = Vector.ByCoordinates(nx, ny, nz);
-
-            var nudge = v.Add(n.Normalized().Scale(amount));
-            vertices[i] = nudge.X;
-            vertices[i + 1] = nudge.Y;
-            vertices[i + 2] = nudge.Z;
-        }
-
-        private void ReColorVerticesFromTo(int start, int end, IRenderPackage package)
-        {
-            for (var i = start; i < end; i += 4)
+            if (package.MeshVertexCount > 0)
             {
-                package.LineStripVertexColors[i] = color.Red;
-                package.LineStripVertexColors[i + 1] = color.Green;
-                package.LineStripVertexColors[i + 2] = color.Blue;
+                package.ApplyMeshVertexColors(CreateColorByteArrayOfSize(package.MeshVertexCount, color.Red, color.Green, color.Blue, color.Alpha));
             }
         }
 
-        private void SetColorOnArray(IList<byte> array, Color color, int startIndex)
+        private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
         {
-            for (int i = startIndex; i < array.Count; i += 4)
+            var arr = new byte[size * 4];
+            for (var i = 0; i < arr.Count(); i+=4)
             {
-                array[i] = color.Red;
-                array[i + 1] = color.Green;
-                array[i + 2] = color.Blue;
-                array[i + 3] = color.Alpha;
+                arr[i] = red;
+                arr[i + 1] = green;
+                arr[i + 2] = blue;
+                arr[i + 3] = alpha;
             }
+            return arr;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, color);
         }
     }
 }

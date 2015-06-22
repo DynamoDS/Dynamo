@@ -1,0 +1,25 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>41d4aac0-0996-4816-b52e-14d694343906</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="41d4aac0-0996-4816-b52e-14d694343906" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="250.5" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>e7507020-b544-4e79-9ea9-ef6bee6ec563</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="e7507020-b544-4e79-9ea9-ef6bee6ec563" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="290.5" y="232" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <ModelGuid>fa10f84f-3eb8-4efc-81e0-ddb11fdc1c64</ModelGuid>
+    <Dynamo.Nodes.DoubleInput guid="fa10f84f-3eb8-4efc-81e0-ddb11fdc1c64" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="284.5" y="290" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <UpdateModelValueCommand Name="Value" Value="5" WorkspaceGuid="adf139b4-3aa6-4211-a843-ba318d1321c1">
+    <ModelGuid>41d4aac0-0996-4816-b52e-14d694343906</ModelGuid>
+    <ModelGuid>e7507020-b544-4e79-9ea9-ef6bee6ec563</ModelGuid>
+    <ModelGuid>fa10f84f-3eb8-4efc-81e0-ddb11fdc1c64</ModelGuid>
+  </UpdateModelValueCommand>
+</Commands>

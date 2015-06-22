@@ -857,23 +857,24 @@ namespace ProtoCore.AST.AssociativeAST
 
                 if (Enum.TryParse(nameWithoutPrefix, out op))
                 {
-                    bool needsParens = !FormalArguments[0].IsLiteral;
+                    var arg1 = FormalArguments[0];
+                    bool needsParens = !arg1.IsLiteral && !(arg1 is IdentifierNode);
                     if (needsParens)
                         buf.Append("(");
 
-                    buf.Append(FormalArguments[0]);
+                    buf.Append(arg1);
 
                     if (needsParens)
                         buf.Append(")");
 
-
                     buf.Append(" " + Op.GetOpSymbol(op) + " ");
 
-                    needsParens = !FormalArguments[1].IsLiteral;
+                    var arg2 = FormalArguments[1];
+                    needsParens = !arg2.IsLiteral && !(arg2 is IdentifierNode); ;
                     if (needsParens)
                         buf.Append("(");
 
-                    buf.Append(FormalArguments[1]);
+                    buf.Append(arg2);
 
                     if (needsParens)
                         buf.Append(")");
@@ -1773,19 +1774,21 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class BinaryExpressionNode : AssociativeNode
     {
+        public int ssaExpressionUID { get; set; }
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
         public Guid guid { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
         public bool isSSAAssignment { get; set; }
-        public bool isSSAPointerAssignment { get; set; }
         public bool isSSAFirstAssignment { get; set; }
         public bool isMultipleAssign { get; set; }
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
         public bool IsInputExpression { get; set; }
+        public bool isSSAPointerAssignment { get; set; }
+        public bool IsFirstIdentListNode { get; set; }
 
         // These properties are used only for the GraphUI ProtoAST
         public uint Guid { get; set; }
@@ -1806,6 +1809,7 @@ namespace ProtoCore.AST.AssociativeAST
             Optr = optr;
             RightNode = right;
             IsInputExpression = false;
+            IsFirstIdentListNode = false;
         }
 
         public BinaryExpressionNode(BinaryExpressionNode rhs) : base(rhs)
@@ -1827,6 +1831,7 @@ namespace ProtoCore.AST.AssociativeAST
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
             IsInputExpression = rhs.IsInputExpression;
+            IsFirstIdentListNode = rhs.IsFirstIdentListNode;
         }
 
         /// <summary>
@@ -1851,6 +1856,7 @@ namespace ProtoCore.AST.AssociativeAST
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
              IsInputExpression = false;
+             IsFirstIdentListNode = false;
              
          }
 
@@ -2187,7 +2193,15 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitRangeExprNode(this);
+        }
 
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitRangeExprNode(this);
+        }
     }
 
     public class ExprListNode : ArrayNameNode
@@ -2236,6 +2250,16 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(base.ToString());
 
             return buf.ToString();
+        }
+
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitExprListNode(this);
+        }
+
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitExprListNode(this);
         }
     }
 

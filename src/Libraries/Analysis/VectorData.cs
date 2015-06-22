@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
-using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structured vector analysis data.
     /// </summary>
-    public class VectorData : IStructuredData<Point, Vector>, IGraphicItem
+    public class VectorData : IStructuredData<Point, Vector>
     {
+        private const byte VectorColor = 120;
+
         /// <summary>
         /// A list of calculation locations.
         /// </summary>
@@ -64,38 +63,6 @@ namespace Analysis
             }
 
             return new VectorData(points, values);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
-        {
-            if (!Values.Any() || Values == null)
-            {
-                return;
-            }
-
-            var data = Values.Zip(ValueLocations, (v, p) => new Tuple<Vector, Point>(v, p));
-
-            foreach (var d in data)
-            {
-                DrawVector(d, package);
-            }
-        }
-
-        private void DrawVector(Tuple<Vector, Point> data, IRenderPackage package)
-        {
-            var p = data.Item2;
-            var v = data.Item1;
-
-            package.PushLineStripVertex(p.X, p.Y, p.Z);
-            package.PushLineStripVertexColor(120, 120, 120, 255);
-
-            var o = p.Add(v);
-
-            package.PushLineStripVertex(o.X, o.Y, o.Z);
-            package.PushLineStripVertexColor(120, 120, 120, 255);
-
-            package.PushLineStripVertexCount(2);
         }
     }
 }

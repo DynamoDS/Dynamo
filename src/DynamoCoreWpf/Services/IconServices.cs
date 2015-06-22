@@ -22,9 +22,9 @@ namespace Dynamo.Wpf.Services
             this.pathManager = pathManager;
         }
 
-        internal IconWarehouse GetForAssembly(string assemblyPath)
+        internal IconWarehouse GetForAssembly(string assemblyPath, bool useAdditionalPaths = true)
         {
-            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(assemblyPath, pathManager);
+            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(assemblyPath, pathManager, useAdditionalPaths);
             if (libraryCustomization == null)
                 return null;
 

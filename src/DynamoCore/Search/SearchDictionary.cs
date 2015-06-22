@@ -12,7 +12,7 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
-        private readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
+        protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
         /// <summary>
@@ -52,6 +52,14 @@ namespace Dynamo.Search
         protected virtual void OnEntryRemoved(V entry)
         {
             var handler = EntryRemoved;
+            if (handler != null) handler(entry);
+        }
+
+        public event Action<V> EntryUpdated;
+
+        protected virtual void OnEntryUpdated(V entry)
+        {
+            var handler = EntryUpdated;
             if (handler != null) handler(entry);
         }
 
@@ -222,19 +230,24 @@ namespace Dynamo.Search
         /// <returns></returns>
         private static bool MatchWithQueryString(string key, string[] subPatterns)
         {
-            int index = 0;
-            int currPattern = 0;
-            while (index < key.Length && currPattern < subPatterns.Length)
-            {
-                index = key.IndexOf(subPatterns[currPattern], index);
-                if (index == -1)
-                    return false;
+            int numberOfMatchSymbols = 0;
+            int numberOfAllSymbols = 0;
 
-                index += subPatterns[currPattern].Length;
-                currPattern++;
+            foreach (var subPattern in subPatterns)
+            {
+                for (int i = subPattern.Length; i >= 1; i--)
+                {
+                    var part = subPattern.Substring(0, i);
+                    if (key.IndexOf(part) != -1)
+                    {
+                        numberOfMatchSymbols += part.Length;
+                        break;
+                    }
+                }
+                numberOfAllSymbols += subPattern.Length;
             }
 
-            return currPattern == subPatterns.Length;
+            return (double)numberOfMatchSymbols / numberOfAllSymbols > 0.8;
         }
 
         private static string[] SplitOnWhiteSpace(string s)

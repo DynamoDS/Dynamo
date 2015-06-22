@@ -6,10 +6,12 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
+using Dynamo.Library;
 
 namespace Dynamo.Core
 {
@@ -18,7 +20,7 @@ namespace Dynamo.Core
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager : LogSourceBase, ICustomNodeSource
+    public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
     {
         public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
@@ -288,12 +290,17 @@ namespace Dynamo.Core
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
+        /// <param name="isPackageMember">
+        ///     Indicates whether custom node comes from package or not.
+        /// </param>
         /// <returns></returns>
-        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode)
+        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode, bool isPackageMember = false)
         {
             var result = new List<CustomNodeInfo>();
             foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode))
             {
+                info.IsPackageMember = isPackageMember;
+
                 SetNodeInfo(info);
                 result.Add(info);
             }
@@ -433,7 +440,7 @@ namespace Dynamo.Core
                 xmlDoc.Load(path);
 
                 WorkspaceInfo header;
-                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
+                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
                 {
                     Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                     info = null;
@@ -538,7 +545,9 @@ namespace Dynamo.Core
 
             newWorkspace.FunctionIdChanged += oldGuid =>
             {
-                Uninitialize(oldGuid);
+                loadedWorkspaceModels.Remove(oldGuid);
+                loadedCustomNodes.Remove(oldGuid);
+                loadOrder.Remove(oldGuid);
                 loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
             };
         }
@@ -569,6 +578,7 @@ namespace Dynamo.Core
                     xmlDoc,
                     xmlPath,
                     isTestMode,
+                    false,
                     AsLogger(),
                     out info) && info.IsCustomNodeWorkspace)
                 {
@@ -832,12 +842,13 @@ namespace Dynamo.Core
                 #region Transfer nodes and connectors to new workspace
 
                 var newNodes = new List<NodeModel>();
-
+                var newAnnotations = new List<AnnotationModel>();
+            
                 // Step 4: move all nodes to new workspace remove from old
                 // PB: This could be more efficiently handled by a copy paste, but we
                 // are preservering the node 
                 foreach (var node in selectedNodeSet)
-                {
+                {                   
                     undoRecorder.RecordDeletionForUndo(node);
                     currentWorkspace.RemoveNode(node);
 
@@ -850,9 +861,21 @@ namespace Dynamo.Core
                     // shift nodes
                     node.X = node.X - leftShift;
                     node.Y = node.Y - topMost;
-
+                 
                     newNodes.Add(node);
                 }
+
+                //Copy the group from newNodes
+                foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+                {
+                    undoRecorder.RecordDeletionForUndo(group);
+                    currentWorkspace.RemoveGroup(group);
+
+                    group.GUID = Guid.NewGuid();
+                    group.SelectedModels = group.DeletedModelBases;
+                    newAnnotations.Add(group);
+                }
+
 
                 foreach (var conn in fullySelectedConns)
                 {
@@ -899,6 +922,7 @@ namespace Dynamo.Core
                         // two kinds of nodes whose input type are available:
                         // function node and custom node. 
                         List<Library.TypedParameter> parameters = null;
+
                         if (inputReceiverNode is Function) 
                         {
                             var func = inputReceiverNode as Function; 
@@ -907,7 +931,16 @@ namespace Dynamo.Core
                         else if (inputReceiverNode is DSFunctionBase)
                         {
                             var dsFunc = inputReceiverNode as DSFunctionBase;
-                            parameters = dsFunc.Controller.Definition.Parameters.ToList(); 
+                            var funcDesc = dsFunc.Controller.Definition;
+                            parameters = funcDesc.Parameters.ToList();
+
+                            if (funcDesc.Type == DSEngine.FunctionType.InstanceMethod ||
+                                funcDesc.Type == DSEngine.FunctionType.InstanceProperty)
+                            {
+                                var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
+                                var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);
+                                parameters.Insert(0, instanceParam);
+                            }
                         }
 
                         // so the input of custom node has format 
@@ -1039,7 +1072,7 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    Enumerable.Empty<AnnotationModel>(),                
+                    newAnnotations,                
                     new WorkspaceInfo()
                     {
                         X = 0,

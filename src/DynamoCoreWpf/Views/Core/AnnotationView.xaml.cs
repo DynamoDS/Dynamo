@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
@@ -31,7 +32,7 @@ namespace Dynamo.Nodes
 
             InitializeComponent();
             Loaded += AnnotationView_Loaded;                      
-            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;          
+            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;            
         }
      
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
             }                                
         }
 
-        private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
+        private void OnUngroupAnnotation(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
             {
@@ -94,17 +95,42 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {         
-            if (GroupTextBlock.IsVisible)
+            if (GroupTextBlock.IsVisible ||
+                (!GroupTextBlock.IsVisible && !GroupTextBox.IsVisible))
             {
-                var annotationGuid = this.ViewModel.AnnotationModel.GUID;
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(annotationGuid, Dynamo.Utilities.ModifierKeys.Shift));
+                ViewModel.Select();
+            }
 
-                foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
+            //When Textbox is visible,clear the selection. That way, models will not be added to
+            //dragged nodes one more time. Ref: MAGN-7321
+            if (GroupTextBlock.IsVisible && e.ClickCount >= 2)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                //Set the panning mode to false if a group is in editing mode.
+                if (ViewModel.WorkspaceViewModel.IsPanning)
                 {
-                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                        new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.TogglePan(null);
                 }
+                e.Handled = true;
+            }
+
+            //When the Zoom * Fontsized factor is less than 7, then
+            //show the edit window
+            if (!GroupTextBlock.IsVisible && e.ClickCount >= 2)
+            {
+                var editWindow = new EditWindow(ViewModel.WorkspaceViewModel.DynamoViewModel, true)
+                {
+                    Title = Dynamo.Wpf.Properties.Resources.EditAnnotationTitle
+                };
+                editWindow.BindToProperty(DataContext, new Binding("AnnotationText")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Source = (DataContext as AnnotationViewModel),
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                });
+
+                editWindow.ShowDialog();
+                e.Handled = true;
             }
         }
      
@@ -125,15 +151,7 @@ namespace Dynamo.Nodes
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {             
             if (ViewModel != null)
-            {
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
-                        GroupTextBox.Text));
-
-                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();  
-
+            {               
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }           
@@ -148,9 +166,11 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="SizeChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ViewModel != null && !ViewModel.AnnotationModel.loadFromXML)
+            if (ViewModel != null && (e.HeightChanged || e.WidthChanged))
             {
-                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.ActualHeight;                
+                //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
+                //Actual height is same as previous size. used when the Font size changed during zoom
+                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;                
             }  
         }
 
@@ -165,6 +185,15 @@ namespace Dynamo.Nodes
             var textbox = sender as TextBox;
             if (textbox != null && textbox.Visibility == Visibility.Visible)
             {
+                //Record the value here, this is useful when title is poped from stack during undo
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                   new DynCmd.UpdateModelValueCommand(
+                       System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
+                       GroupTextBox.Text));
+
+                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+
                 textbox.Focus();
                 if (textbox.Text.Equals(Dynamo.Properties.Resources.GroupDefaultText))
                 {
@@ -184,9 +213,19 @@ namespace Dynamo.Nodes
             this.GroupTextBox.CaretIndex = Int32.MaxValue;
         }
 
-        private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        /// <summary>
+        /// This function will delete the group with modes
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
         {
-            
+            //Select the group and the models within that group
+            if (ViewModel != null)
+            {
+                ViewModel.Select();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
+            }
         }
     }
 }

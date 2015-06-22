@@ -5959,7 +5959,6 @@ r = a.x;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T99_1467469
             ()
         {

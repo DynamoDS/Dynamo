@@ -37,7 +37,8 @@ namespace DSCoreNodesUI.Logic
             // The second parameter, isDeltaExecution, is set to false so that
             // all AST nodes will be added to this IF graph node instead of 
             // adding to the corresponding graph node. 
-            var astNodes = builder.CompileToAstNodes(nodes, false, verboseLogging);
+            var allAstNodes = builder.CompileToAstNodes(nodes, Dynamo.DSEngine.AstBuilder.CompilationContext.None, verboseLogging);
+            var astNodes = allAstNodes.SelectMany(t => t.Item2).ToList();
             astNodes.Add(AstFactory.BuildReturnStatement(inputAstNodes[branch]));
             return astNodes;
         }

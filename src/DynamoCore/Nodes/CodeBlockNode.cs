@@ -283,12 +283,12 @@ namespace Dynamo.Nodes
             ProcessCodeDirect();
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             //Do not build if the node is in error.
             if (State == ElementState.Error)
             {
-                return null;
+                return Enumerable.Empty<AssociativeNode>();
             }
 
             var resultNodes = new List<AssociativeNode>();
@@ -302,7 +302,8 @@ namespace Dynamo.Nodes
                     (ident, rhs) =>
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
-                        MapIdentifiers(identNode);
+                        if (context != AstBuilder.CompilationContext.NodeToCode)
+                            MapIdentifiers(identNode);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
                 resultNodes.AddRange(initStatments);
@@ -310,14 +311,26 @@ namespace Dynamo.Nodes
 
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                MapIdentifiers(astNode);
+                if (context != AstBuilder.CompilationContext.NodeToCode)
+                    MapIdentifiers(astNode);
                 resultNodes.Add(astNode as AssociativeNode);
             }
 
             return resultNodes;
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int portIndex)
+        /// <summary>
+        /// For code block nodes, each output identifier of an output port is mapped.
+        /// For an example, "p = 1" would have its internal identifier renamed to 
+        /// "pXXXX", where "XXXX" is the GUID of the code block node. This mapping is 
+        /// done to ensure the uniqueness of the output variable name.
+        /// </summary>
+        /// <param name="portIndex">Output port index</param>
+        /// <param name="forRawName">Set this parameter to true to retrieve the 
+        /// original identifier name "p". If this parameter is false, the mapped 
+        /// identifer name "pXXXX" is returned instead.</param>
+        /// <returns></returns>
+        private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
         {
             if (State == ElementState.Error)
                 return null;
@@ -354,8 +367,21 @@ namespace Dynamo.Nodes
 
             var identNode = binExprNode.LeftNode as IdentifierNode;
             var mappedIdent = NodeUtils.Clone(identNode);
-            MapIdentifiers(mappedIdent);
+
+            if (!forRawName)
+                MapIdentifiers(mappedIdent);
+
             return mappedIdent as IdentifierNode;
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int portIndex)
+        {
+            return GetAstIdentifierForOutputIndexInternal(portIndex, false);
+        }
+
+        public IdentifierNode GetRawAstIdentifierForOutputIndex(int portIndex)
+        {
+            return GetAstIdentifierForOutputIndexInternal(portIndex, true);
         }
 
         #endregion

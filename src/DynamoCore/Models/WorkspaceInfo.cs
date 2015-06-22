@@ -15,12 +15,12 @@ namespace Dynamo.Models
             X = 0; 
             Y = 0;
             RunType = RunType.Automatic;
-            RunPeriod = 100;
+            RunPeriod = RunSettings.DefaultRunPeriod;
             HasRunWithoutCrash = true;
         }
 
         public static bool FromXmlDocument(
-            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceInfo workspaceInfo)
+            XmlDocument xmlDoc, string path, bool isTestMode, bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace Dynamo.Models
                 string description = "";
                 string version = "";
                 var runType = RunType.Manual;
-                int runPeriod = 100;
+                int runPeriod = RunSettings.DefaultRunPeriod;
                 bool hasRunWithoutCrash = false;
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");
@@ -69,7 +69,7 @@ namespace Dynamo.Models
                             version = att.Value;
                         else if (att.Name.Equals("RunType"))
                         {
-                            if (!Enum.TryParse(att.Value, false, out runType))
+                            if (forceManualExecutionMode || !Enum.TryParse(att.Value, false, out runType))
                             {
                                 runType = RunType.Manual;
                             }

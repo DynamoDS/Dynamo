@@ -4,9 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 
-using Dynamo.Selection;
-using Microsoft.CSharp.RuntimeBinder;
-
 namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
@@ -124,6 +121,7 @@ namespace Dynamo.ViewModels
                 case "UpdateModelValueCommand":
                 case "ConvertNodesToCodeCommand":
                 case "UngroupModelCommand":
+                case "AddModelToGroupCommand":
                     UndoCommand.RaiseCanExecuteChanged();
                     RedoCommand.RaiseCanExecuteChanged();
                     break;
@@ -178,6 +176,7 @@ namespace Dynamo.ViewModels
                 case "SwitchTabCommand":
                 case "MutateTestCommand":
                 case "UngroupModelCommand":
+                case "AddModelToGroupCommand":
                     // for this commands there is no need
                     // to do anything before execution
                     break;
@@ -189,7 +188,7 @@ namespace Dynamo.ViewModels
 
         private void MakeConnectionImpl(DynamoModel.MakeConnectionCommand command)
         {
-            Guid nodeId = command.NodeId;
+            Guid nodeId = command.ModelGuid;
 
             switch (command.ConnectionMode)
             {

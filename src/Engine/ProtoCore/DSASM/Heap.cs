@@ -500,9 +500,9 @@ namespace ProtoCore.DSASM
                 // TODO Jun/Jiong: Use build pointer utilities 
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
                 exe.rmem.Push(StackValue.BuildPointer(svPtr.opdata, svPtr.metaData));
-                exe.rmem.Push(StackValue.BuildBlockIndex(pn.runtimeIndex));
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
                 exe.rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
+                exe.rmem.Push(StackValue.BuildInt(1));
                 
                 ++exe.RuntimeCore.FunctionCallDepth;
 
@@ -510,7 +510,7 @@ namespace ProtoCore.DSASM
                 // fix for IDE-963 - pratapa
                 bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
-                exe.Callr(pn.procId, classIndex, 1, ref explicitCall);
+                exe.Callr(pn.runtimeIndex, pn.procId, classIndex, ref explicitCall);
 
                 exe.IsExplicitCall = tempFlag;
 

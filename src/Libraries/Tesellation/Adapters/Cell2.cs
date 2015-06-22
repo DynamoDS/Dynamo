@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 using MIConvexHull;
 
 using StarMathLib;
@@ -9,6 +10,7 @@ namespace Tessellation.Adapters
     /// <summary>
     /// A cell for a 2d tesselation
     /// </summary>
+    [SupressImportIntoVM]
     public class Cell2 : TriangulationCell<Vertex2, Cell2>
     {
         Point GetCircumcenter()

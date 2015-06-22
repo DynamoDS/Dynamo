@@ -32,10 +32,10 @@ namespace Analysis
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
-            package.PushPointVertex(point.X, point.Y, point.Z);
-            package.Tag = label;
+            package.AddPointVertex(point.X, point.Y, point.Z);
+            package.Description = label;
         }
     }
 }

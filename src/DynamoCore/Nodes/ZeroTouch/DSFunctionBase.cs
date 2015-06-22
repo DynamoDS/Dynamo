@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
         
         public override bool IsConvertible
         {
-            get { return true; }
+            get { return !IsPartiallyApplied; }
         }
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
             Controller.SyncNodeWithDefinition(this);
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             return Controller.BuildAst(this, inputAstNodes);
         }

@@ -20,6 +20,9 @@ namespace Dynamo.Search.SearchElements
             inputParameters = new List<System.Tuple<string, string>>();
             outputParameters = new List<string>();
             iconName = typeLoadData.Type.FullName;
+            ElementType = ElementTypes.ZeroTouch;
+            if(typeLoadData.IsPackageMember)
+                ElementType |= ElementTypes.Packaged;
         }
     }
 }

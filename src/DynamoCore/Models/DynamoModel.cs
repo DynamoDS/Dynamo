@@ -6,36 +6,36 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
-﻿using DSCoreNodesUI;
+using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using Dynamo.Extensions;
 using Dynamo.Interfaces;
-using Dynamo.Library;
+using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
+using Dynamo.Properties;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
-
 using DynamoServices;
-
 using DynamoUnits;
-using DynamoUtilities;
-using Greg; // Dynamo package manager
+using Greg;
 using ProtoCore;
-using Dynamo.Models.NodeLoaders;
-using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
-using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
-using Symbol = Dynamo.Nodes.Symbol;
+using ProtoCore.Runtime;
+using Compiler = ProtoAssociative.Compiler;
+// Dynamo package manager
 using Utils = Dynamo.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
+using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 
 namespace Dynamo.Models
 {
@@ -44,19 +44,18 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
-        public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
-
         #region private members
 
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
+        private Timer backupFilesTimer;
+        private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         #endregion
 
         #region events
-
 
         public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
@@ -181,19 +180,16 @@ namespace Dynamo.Models
         public readonly string Context;
 
         /// <summary>
+        ///     Manages all extensions for Dynamo
+        /// </summary>
+        public IExtensionManager ExtensionManager { get { return extensionManager; } }
+
+        private readonly ExtensionManager extensionManager;
+
+        /// <summary>
         ///     Manages all loaded NodeModel libraries.
         /// </summary>
         public readonly NodeModelAssemblyLoader Loader;
-
-        /// <summary>
-        ///     Manages loading of packages.
-        /// </summary>
-        public readonly PackageLoader PackageLoader;
-
-        /// <summary>
-        ///     Dynamo Package Manager Instance.
-        /// </summary>
-        public readonly PackageManagerClient PackageManagerClient;
 
         /// <summary>
         ///     Custom Node Manager instance, manages all loaded custom nodes.
@@ -210,11 +206,6 @@ namespace Dynamo.Models
         ///     threads.
         /// </summary>
         public DynamoScheduler Scheduler { get; private set; }
-
-        /// <summary>
-        ///     The maximum amount of tesselation divisions used for geometry visualization.
-        /// </summary>
-        public int MaxTesselationDivisions { get; set; }
 
         /// <summary>
         ///     The Dynamo Node Library, complete with Search.
@@ -308,6 +299,14 @@ namespace Dynamo.Models
             get { return _workspaces; } 
         }
 
+        /// <summary>
+        /// An object which implements the ITraceReconciliationProcessor interface,
+        /// and is used for handlling the results of a trace reconciliation.
+        /// </summary>
+        public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
+
+        public AuthenticationManager AuthenticationManager { get; set; }
+
         #endregion
 
         #region initialization and disposal
@@ -377,7 +376,7 @@ namespace Dynamo.Models
             ISchedulerThread SchedulerThread { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
-            string PackageManagerAddress { get; set; }
+            IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -394,7 +393,7 @@ namespace Dynamo.Models
             public ISchedulerThread SchedulerThread { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
-            public string PackageManagerAddress { get; set; }
+            public IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -420,11 +419,9 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
-            MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
             pathManager = new PathManager(new PathManagerParams
             {
@@ -465,8 +462,6 @@ namespace Dynamo.Models
             {
                 DynamoMigratorBase migrator = null;
 
-                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
@@ -497,14 +492,26 @@ namespace Dynamo.Models
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
 
+            extensionManager = new ExtensionManager();
+            extensionManager.MessageLogged += LogMessage;
+            var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
+
+            if (extensions.Any())
+            {
+                var startupParams = new StartupParams(config.AuthProvider,
+                    pathManager, CustomNodeManager);
+
+                foreach (var ext in extensions)
+                {
+                    ext.Startup(startupParams);
+                    ext.Load(preferences, pathManager);
+                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
+                    ExtensionManager.Add(ext);
+                }
+            }
+
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
-
-            PackageLoader = new PackageLoader(pathManager.PackagesDirectory);
-            PackageLoader.MessageLogged += LogMessage;
-            PackageLoader.RequestLoadNodeLibrary += LoadNodeLibrary;
-            PackageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode);
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -512,8 +519,8 @@ namespace Dynamo.Models
             var libraryCore =
                 new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
 
-            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kAssociative, new Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             LibraryServices = new LibraryServices(libraryCore, pathManager);
@@ -524,25 +531,106 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode)
+            {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
+            }
             
-            Logger.Log(
-                string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
-
-            var url = config.PackageManagerAddress ??
-                      AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
-
-            PackageManagerClient = InitializePackageManager(config.AuthProvider, url,
-                PackageLoader.RootPackagesDirectory, CustomNodeManager);
-
-            Logger.Log("Dynamo will use the package manager server at : " + url);
+            Logger.Log(string.Format("Dynamo -- Build {0}", 
+                                        Assembly.GetExecutingAssembly().GetName().Version));
 
             InitializeNodeLibrary(preferences);
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+
+            StartBackupFilesTimer();
+
+            TraceReconciliationProcessor = this; 
+            
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                try
+                {
+                    ext.Ready(new ReadyParams());
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.Message);
+                }
+            }
+        }
+            
+        private void RemoveExtension(IExtension ext)
+        {
+            ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
+            ExtensionManager.Remove(ext);
+        }
+
+        private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
+        {
+            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
+            
+            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
+            // This dictionary gets redistributed into a dictionary keyed by the workspace id.
+
+            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+
+            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
+            {
+                // Get the orphaned serializables to this workspace
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+
+                if (!wsOrphans.Any())
+                    continue;
+
+                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
+                {
+                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
+                }
+                else
+                {
+                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
+                }
+            }
+
+            foreach (var kvp in obj.CallsiteToOrphanMap)
+            {
+                if (!kvp.Value.Any()) continue;
+
+                var nodeGuid = EngineController.LiveRunnerRuntimeCore.RuntimeData.CallSiteToNodeMap[kvp.Key];
+
+                // TODO: MAGN-7314
+                // Find the owning workspace for a node.
+                var nodeSpace =
+                    Workspaces.FirstOrDefault(
+                        ws =>
+                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
+                                != null);
+
+                if (nodeSpace == null) continue;
+
+                // Add the node's orphaned serializables to the workspace
+                // orphan map.
+                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
+                {
+                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
+                }
+                else
+                {
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);  
+                }
+            }
+
+            TraceReconciliationProcessor.PostTraceReconciliation(workspaceOrphanMap);
+        }
+
+        public virtual void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            // Override in derived classes to deal with orphaned serializables.
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -593,7 +681,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Debug.WriteLine(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
+                        Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
 
                         ExecutionEvents.OnGraphPostExecution();
                     }
@@ -607,6 +695,16 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
+            EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
+
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
+            }
+
+            ExtensionManager.Dispose();
+            extensionManager.MessageLogged -= LogMessage;
+
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             
@@ -615,6 +713,13 @@ namespace Dynamo.Models
 
             EngineController.Dispose();
             EngineController = null;
+
+            if (backupFilesTimer != null)
+            {
+                backupFilesTimer.Dispose();
+                backupFilesTimer = null;
+                Logger.Log("Backup files timer is disposed");
+            }
 
             if (PreferenceSettings != null)
             {
@@ -626,28 +731,6 @@ namespace Dynamo.Models
             {
                 ws.Dispose(); 
             }
-        }
-
-        /// <summary>
-        ///     Validate the package manager url and initialize the PackageManagerClient object
-        /// </summary>
-        /// <param name="provider">A possibly null IAuthProvider</param>
-        /// <param name="url">The end point for the package manager server</param>
-        /// <param name="rootDirectory">The root directory for the package manager</param>
-        /// <param name="customNodeManager">A valid CustomNodeManager object</param>
-        /// <returns>Newly created object</returns>
-        private static PackageManagerClient InitializePackageManager(IAuthProvider provider, string url, string rootDirectory,
-            CustomNodeManager customNodeManager)
-        {
-            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            {
-                throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
-            }
-
-            return new PackageManagerClient(
-                new GregClient(provider, url),
-                rootDirectory,
-                customNodeManager);
         }
 
         private void InitializeCustomNodeManager()
@@ -666,7 +749,11 @@ namespace Dynamo.Models
                 CustomNodeManager.InfoUpdated += newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
+                    {
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
                         searchElement.SyncWithCustomNodeInfo(newInfo);
+                        SearchModel.Update(searchElement, isCategoryChanged);
+                    }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
                 {
@@ -767,19 +854,11 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            if (!DynamoModel.IsTestMode)
+            if (!IsTestMode)
                 AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
-
-            // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadAll(new LoadPackageParams
-            {
-                Preferences = preferences,
-                PathManager = pathManager
-            });
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
@@ -804,6 +883,7 @@ namespace Dynamo.Models
                 {
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
+                    type.IsPackageMember = true;
                     AddNodeTypeToSearch(type);
                 }
                 catch (Exception e)
@@ -872,7 +952,7 @@ namespace Dynamo.Models
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.kDefault, args.message);
         }
 
         #endregion
@@ -934,13 +1014,16 @@ namespace Dynamo.Models
         {
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
+            {
                 workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
+            }
         }
 
         protected void ResetEngineInternal()
         {
             if (EngineController != null)
             {
+                EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
                 EngineController.MessageLogged -= LogMessage;
                 EngineController.Dispose();
                 EngineController = null;
@@ -950,7 +1033,9 @@ namespace Dynamo.Models
                 LibraryServices,
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging);
+            
             EngineController.MessageLogged += LogMessage;
+            EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
@@ -962,7 +1047,9 @@ namespace Dynamo.Models
         public void ForceRun()
         {
             Logger.Log("Beginning engine reset");
+
             ResetEngine(true);
+
             Logger.Log("Reset complete");
 
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
@@ -976,20 +1063,54 @@ namespace Dynamo.Models
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath"></param>
-        public void OpenFileFromPath(string xmlPath)
+        public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
 
             WorkspaceInfo workspaceInfo;
-            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
+            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
             {
                 if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
                 {
                     WorkspaceModel ws;
                     if (OpenFile(workspaceInfo, xmlDoc, out ws))
                     {
+                        // TODO: #4258
+                        // The logic to remove all other home workspaces from the model
+                        // was moved from the ViewModel. When #4258 is implemented, we will need to
+                        // remove this step.
+                        var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
+                        if (currentHomeSpaces.Any())
+                        {
+                            // If the workspace we're opening is a home workspace,
+                            // then remove all the other home workspaces. Otherwise,
+                            // Remove all but the first home workspace.
+                            var end = ws is HomeWorkspaceModel ? 0 : 1;
+
+                            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
+                            {
+                                RemoveWorkspace(currentHomeSpaces[i]);
+                            }
+                        }
+
                         AddWorkspace(ws);
+
+                        // TODO: #4258
+                        // Remove this ResetEngine call when multiple home workspaces is supported.
+                        // This call formerly lived in DynamoViewModel
+                        ResetEngine();
+
+                        // TODO: #4258
+                        // The following logic to start periodic evaluation will need to be moved
+                        // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
+                        // as it causes an immediate crash due to the above ResetEngine call.
+                        var hws = ws as HomeWorkspaceModel;
+                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
+                        {
+                            hws.StartPeriodicEvaluation();
+                        }
+
                         CurrentWorkspace = ws;
                         return;
                     }
@@ -1034,7 +1155,7 @@ namespace Dynamo.Models
                );
 
             RegisterHomeWorkspace(newWorkspace);
-           
+
             workspace = newWorkspace;            
             return true;
         }
@@ -1042,10 +1163,79 @@ namespace Dynamo.Models
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
+            newWorkspace.RefreshCompleted += OnRefreshCompleted;
+
             newWorkspace.Disposed += () =>
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
+                newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
+        }
+
+        #endregion
+
+        #region backup/timer
+
+        /// <summary>
+        /// Backup all the files
+        /// </summary>
+        protected void SaveBackupFiles(object state)
+        {
+            OnRequestDispatcherBeginInvoke(() =>
+            {               
+                // tempDict stores the list of backup files and their corresponding workspaces IDs
+                // when the last auto-save operation happens. Now the IDs will be used to know
+                // whether some workspaces have already been backed up. If so, those workspaces won't be
+                // backed up again.
+                var tempDict = new Dictionary<Guid,string>(backupFilesDict);
+                backupFilesDict.Clear();
+                PreferenceSettings.BackupFiles.Clear();
+                foreach (var workspace in Workspaces)
+                {
+                    if (!workspace.HasUnsavedChanges)
+                    {
+                        if (workspace.Nodes.Count == 0 &&
+                            workspace.Notes.Count == 0)
+                            continue;
+
+                        if (tempDict.ContainsKey(workspace.Guid))
+                        {
+                            backupFilesDict.Add(workspace.Guid, tempDict[workspace.Guid]);
+                            continue;
+                        }
+                    }
+
+                    var savePath = pathManager.GetBackupFilePath(workspace);
+                    var oldFileName = workspace.FileName;
+                    var oldName = workspace.Name;
+                    workspace.SaveAs(savePath, null);
+                    workspace.FileName = oldFileName;
+                    workspace.Name = oldName;
+                    backupFilesDict.Add(workspace.Guid, savePath);
+                    Logger.Log("Backup file is saved: " + savePath);
+                }
+                PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
+            });
+        }
+
+        /// <summary>
+        /// Start the timer to backup files periodically
+        /// </summary>
+        private void StartBackupFilesTimer()
+        {
+            // When running test cases, the dispatcher may be null which will cause the timer to
+            // introduce a lot of threads. So the timer will not be started if test cases are running.
+            if (IsTestMode)
+                return;
+
+            if (backupFilesTimer != null)
+            {
+                throw new Exception("The timer to backup files has already been started!");
+            }
+
+            backupFilesTimer = new Timer(SaveBackupFiles);
+            backupFilesTimer.Change(PreferenceSettings.BackupInterval, PreferenceSettings.BackupInterval);
+            Logger.Log(String.Format("Backup files timer is started with an interval of {0} milliseconds", PreferenceSettings.BackupInterval));
         }
 
         #endregion
@@ -1054,7 +1244,7 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            Logger.Log(Properties.Resources.WelcomeMessage);
+            Logger.Log(Resources.WelcomeMessage);
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -1066,7 +1256,19 @@ namespace Dynamo.Models
             var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var annotation in annotations)
             {
-                if (!annotation.SelectedModels.Except(modelsToDelete).Any())
+                //record the annotation before the models in it are deleted.
+                foreach (var model in modelsToDelete)
+                {
+                    //If there is only one model, then deleting that model should delete the group. In that case, do not record 
+                    //the group for modification. Until we have one model in a group, group should be recorded for modification
+                    //otherwise, undo operation cannot get the group back.
+                    if (annotation.SelectedModels.Count() > 1 && annotation.SelectedModels.Where(x => x.GUID == model.GUID).Any())
+                    {
+                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                    }
+                }
+
+                if (annotation.SelectedModels.Any() && !annotation.SelectedModels.Except(modelsToDelete).Any())
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the 
@@ -1092,6 +1294,7 @@ namespace Dynamo.Models
 
         internal void UngroupModel(List<ModelBase> modelsToUngroup)
         {
+            var emptyGroup = new List<ModelBase>();
             var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var model in modelsToUngroup)
             {
@@ -1099,17 +1302,46 @@ namespace Dynamo.Models
                 {
                     if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
                     {
-                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                         var list = annotation.SelectedModels.ToList();
-                        if (list.Remove(model))
+
+                        if(list.Count > 1)
                         {
-                            annotation.SelectedModels = list;
-                            annotation.UpdateBoundaryFromSelection();
+                            CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                            if (list.Remove(model))
+                            {
+                                annotation.SelectedModels = list;
+                                annotation.UpdateBoundaryFromSelection();
+                            }
+                        }
+                        else
+                        {                          
+                            emptyGroup.Add(annotation);                            
                         }                        
                     }
                 }
             }
+           
+            if(emptyGroup.Any())
+            {
+                DeleteModelInternal(emptyGroup);
+            }
         }
+
+        internal void AddToGroup(List<ModelBase> modelsToAdd)
+        {
+            var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
+            if (selectedGroup != null)
+            {                      
+                foreach (var model in modelsToAdd)
+                {
+                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                    selectedGroup.AddToSelectedModels(model);
+                }
+            }
+
+        }
+
 
         internal void DumpLibraryToXml(object parameter)
         {
@@ -1118,7 +1350,7 @@ namespace Dynamo.Models
 
             SearchModel.DumpLibraryToXml(fullFileName);
 
-            Logger.Log(string.Format(Properties.Resources.LibraryIsDumped, fullFileName));
+            Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }
 
         internal bool CanDumpLibraryToXml(object obj)
@@ -1394,6 +1626,7 @@ namespace Dynamo.Models
                     Background = annotation.Background,
                     FontSize = annotation.FontSize
                 };
+              
                 newAnnotations.Add(annotationModel);
             }
 
@@ -1501,7 +1734,7 @@ namespace Dynamo.Models
 
         private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
         {
-            if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+            if (functionDescriptor.IsVisibleInLibrary)
             {
                 SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
             }
@@ -1554,10 +1787,10 @@ namespace Dynamo.Models
                 "ObsoleteFileMessage",
                 fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            string summary = Properties.Resources.FileCannotBeOpened;
+            string summary = Resources.FileCannotBeOpened;
             var description =
                 string.Format(
-                    Properties.Resources.ObsoleteFileDescription,
+                    Resources.ObsoleteFileDescription,
                     fullFilePath,
                     fileVersion,
                     currVersion);
@@ -1565,11 +1798,11 @@ namespace Dynamo.Models
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.ObsoleteFileTitle,
+                Resources.ObsoleteFileTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.OKButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Resources.OKButton);
 
             OnRequestTaskDialog(null, args);
         }
@@ -1590,21 +1823,21 @@ namespace Dynamo.Models
                 InstrumentationLogger.LogException(exception);
             }
 
-            string summary = Properties.Resources.UnhandledExceptionSummary;
+            string summary = Resources.UnhandledExceptionSummary;
 
             string description = (exception is HeapCorruptionException)
                 ? exception.Message
-                : @Properties.Resources.ExceptionIsNotHeapCorruptionDescription;
+                : Resources.DisplayEngineFailureMessageDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.UnhandledExceptionTitle,
+                Resources.UnhandledExceptionTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Submit, Properties.Resources.SubmitBugButton);
-            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.ArggOKButton);
+            args.AddRightAlignedButton((int)ButtonId.Submit, Resources.SubmitBugButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Resources.ArggOKButton);
             args.Exception = exception;
 
             OnRequestTaskDialog(null, args);
@@ -1623,23 +1856,23 @@ namespace Dynamo.Models
         /// <returns> true if the file must be opened and false otherwise </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Properties.Resources.UnknownVersion);
-            var currVer = ((currVersion != null) ? currVersion.ToString() : Properties.Resources.UnknownVersion);
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
+            var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
 
             InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            string summary = Properties.Resources.FutureFileSummary;
-            var description = string.Format(Properties.Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
+            string summary = Resources.FutureFileSummary;
+            var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
+                Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
 
-            args.AddRightAlignedButton((int)ButtonId.Cancel, Properties.Resources.CancelButton);
-            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Properties.Resources.DownloadLatestButton);
-            args.AddRightAlignedButton((int)ButtonId.Proceed, Properties.Resources.ProceedButton);
+            args.AddRightAlignedButton((int)ButtonId.Cancel, Resources.CancelButton);
+            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Resources.DownloadLatestButton);
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.ProceedButton);
 
             OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)ButtonId.DownloadLatest)

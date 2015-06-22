@@ -429,13 +429,14 @@ namespace Dynamo.PackageManager
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
+            var pmExt = PackageManagerClientViewModel.DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
                 var headers = version.full_dependency_ids.Select(dep => dep._id).Select((id) =>
                 {
                     PackageHeader pkgHeader;
-                    var res = this.PackageManagerClientViewModel.DynamoViewModel.Model.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
+                    var res = pmExt.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
 
                     if (!res.Success)
                         MessageBox.Show(String.Format(Resources.MessageFailedToDownloadPackage, id),
@@ -482,16 +483,11 @@ namespace Dynamo.PackageManager
                 // allowing them to cancel the package download
                 if (futureDeps.Any())
                 {
-                    var sb = new StringBuilder();
-                    foreach (var elem in futureDeps)
-                    {
-                        sb.AppendLine(elem.Item1.name + " " + elem.Item2);
-                    }
+                    var versionList = FormatPackageVersionList(futureDeps);
 
-                    // If the user
                     if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
-                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
-                        sb.ToString()),
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName,
+                        versionList),
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
                         PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
@@ -501,7 +497,7 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                var localPkgs = this.PackageManagerClientViewModel.DynamoViewModel.Model.PackageLoader.LocalPackages;
+                var localPkgs = pmExt.PackageLoader.LocalPackages;
 
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
@@ -527,8 +523,6 @@ namespace Dynamo.PackageManager
 
                     immediateUninstalls.Add(localPkg);
                 }
-
-                string msg;
 
                 if (uninstallRequiringUserModifications.Any())
                 {
@@ -574,6 +568,14 @@ namespace Dynamo.PackageManager
                         .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x));
 
             }
+        }
+
+        /// <summary>
+        ///     Returns a newline delimited string representing the package name and version of the argument
+        /// </summary>
+        public static string FormatPackageVersionList(IEnumerable<Tuple<PackageHeader, PackageVersion>> packages)
+        {
+            return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
         }
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -680,7 +682,7 @@ namespace Dynamo.PackageManager
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
-            var canLogin = PackageManagerClientViewModel.Model.HasAuthProvider;
+            var canLogin = PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider;
 
             if (!String.IsNullOrEmpty(query))
             {

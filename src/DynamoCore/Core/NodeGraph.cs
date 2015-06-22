@@ -112,7 +112,7 @@ namespace Dynamo.Core
 
         internal static AnnotationModel LoadAnnotationFromXml(XmlNode annotation, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {
-            var instance = new AnnotationModel(nodes,notes,true);             
+            var instance = new AnnotationModel(nodes,notes);             
             instance.Deserialize(annotation as XmlElement, SaveContext.File);
             return instance;
         }

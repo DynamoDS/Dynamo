@@ -237,9 +237,12 @@ namespace Dynamo
             
             FunctionId = functionId;
             Name = name;
-            Category = category;
             Description = description;
             Path = path;
+
+            Category = category;
+            if (String.IsNullOrWhiteSpace(Category))
+                Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
 
         public Guid FunctionId { get; set; }
@@ -247,5 +250,6 @@ namespace Dynamo
         public string Category { get; set; }
         public string Description { get; set; }
         public string Path { get; set; }
+        public bool IsPackageMember { get; set; }
     }
 }

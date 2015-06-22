@@ -12,6 +12,8 @@ namespace Dynamo.Search
 
         public string FullyQualifiedName { get; private set; }
 
+        public bool IsExpanded { get { return true; } }
+
         public string Prefix
         {
             get

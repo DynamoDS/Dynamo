@@ -594,7 +594,7 @@ m = m+n;
                 @"                a = ""["" + null +""]"";                    ";
             thisTest.RunScriptSource(code);
             thisTest.SetErrorMessage("1467263 - Concatenating a string with an integer throws method resolution error");
-            thisTest.Verify("a", "[null]");
+            thisTest.Verify("a", null);
         }
 
         [Test]

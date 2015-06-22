@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _gotoWorkspaceCommand;
         private DelegateCommand _createGroupCommand;
         private DelegateCommand _ungroupCommand;
+        private DelegateCommand _addToGroupCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -183,5 +184,18 @@ namespace Dynamo.ViewModels
                 return _ungroupCommand;
             }
         }
+
+        public DelegateCommand AddToGroupCommand
+        {
+            get
+            {
+                if (_addToGroupCommand == null)
+                    _addToGroupCommand =
+                        new DelegateCommand(AddToGroup, CanAddToGroup);
+
+                return _addToGroupCommand;
+            }
+        }
+        
     }
 }

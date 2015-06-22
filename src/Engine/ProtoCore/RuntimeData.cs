@@ -40,15 +40,25 @@ namespace ProtoCore
 
       
         private Dictionary<Guid, List<string>> uiNodeToSerializedDataMap = null;
-      
-
+        public IDictionary<string, CallSite> CallsiteCache { get; set; }
+        /// <summary>		
+        /// Map from a callsite's guid to a graph UI node. 		
+        /// </summary>
+        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
+ 		 
+        /// <summary>		
+        /// Map from a AST node's ID to a callsite.		
+        /// </summary>
+        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
 
 
  #endregion
 
         public RuntimeData()
         {
-            
+            CallsiteCache = new Dictionary<string, CallSite>();
+            CallSiteToNodeMap = new Dictionary<Guid, Guid>();
+            ASTToCallSiteMap = new Dictionary<int, CallSite>();
         }
 
       
@@ -89,7 +99,7 @@ namespace ProtoCore
                                           executable.FunctionTable,
                                           options.ExecutionMode);
             }
-            else if (!executable.CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
+            else if (!CallsiteCache.TryGetValue(graphNode.CallsiteIdentifier, out csInstance))
             {
                 // Attempt to retrieve a preloaded callsite data (optional).
                 var traceData = GetAndRemoveTraceDataForNode(graphNode.guid);
@@ -100,9 +110,9 @@ namespace ProtoCore
                                           options.ExecutionMode,
                                           traceData);
 
-                executable.CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
-                executable.CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
-                executable.ASTToCallSiteMap[graphNode.AstID] = csInstance;
+                CallsiteCache[graphNode.CallsiteIdentifier] = csInstance;
+                CallSiteToNodeMap[csInstance.CallSiteID] = graphNode.guid;
+                ASTToCallSiteMap[graphNode.AstID] = csInstance;
 
             }
 
@@ -170,7 +180,7 @@ namespace ProtoCore
                     continue;
 
                 // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in executable.CallsiteCache
+                var matchingCallSites = (from cs in CallsiteCache
                                          from gn in graphNodeIds
                                          where cs.Key == gn
                                          select cs.Value);
@@ -229,7 +239,7 @@ namespace ProtoCore
                     continue;
 
                 // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in executable.CallsiteCache
+                var matchingCallSites = (from cs in CallsiteCache
                                          from gn in matchingGraphNodes
                                          where string.Equals(cs.Key, gn.CallsiteIdentifier)
                                          select cs.Value);

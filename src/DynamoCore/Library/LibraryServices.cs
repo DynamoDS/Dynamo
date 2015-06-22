@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Utilities;
-using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
@@ -18,10 +14,10 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
 
-using RestSharp;
 
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
+using ProtoCore.Namespace;
 
 namespace Dynamo.DSEngine
 {
@@ -629,7 +625,9 @@ namespace Dynamo.DSEngine
                                                                 PathManager = pathManager,
                                                                 ReturnType = method.returntype,
                                                                 FunctionType = FunctionType.GenericFunction,
-                                                                IsVisibleInLibrary = visibleInLibrary
+                                                                IsVisibleInLibrary = visibleInLibrary,
+                                                                IsBuiltIn = true,
+                                                                Assembly = "BuiltIn"
                                                             });
 
             AddBuiltinFunctions(functions);
@@ -668,14 +666,18 @@ namespace Dynamo.DSEngine
                     FunctionName = op,
                     Parameters = args,
                     PathManager = pathManager,
-                    FunctionType = FunctionType.GenericFunction
+                    FunctionType = FunctionType.GenericFunction,
+                    IsBuiltIn = true,
+                    Assembly = "Operators"
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
                     FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
                     Parameters = GetUnaryFuncArgs(),
                     PathManager = pathManager,
-                    FunctionType = FunctionType.GenericFunction
+                    FunctionType = FunctionType.GenericFunction,
+                    IsBuiltIn = true,
+                    Assembly = "Operators"
                 }).AsSingleton());
 
             AddBuiltinFunctions(functions);
@@ -817,7 +819,11 @@ namespace Dynamo.DSEngine
                             defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
-
+                    if (defaultArgumentNode != null)
+                    {
+                        var rewriter = new ElementRewriter(LibraryManagementCore.ClassTable, LibraryManagementCore.BuildStatus.LogSymbolConflictWarning);
+                        defaultArgumentNode = defaultArgumentNode.Accept(rewriter);
+                    }
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode);
                 }).ToList();
 
@@ -843,7 +849,8 @@ namespace Dynamo.DSEngine
                 PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
                 ObsoleteMsg = obsoleteMessage,
-                CanUpdatePeriodically = canUpdatePeriodically
+                CanUpdatePeriodically = canUpdatePeriodically,
+                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
             });
 
             AddImportedFunctions(library, new[] { function });

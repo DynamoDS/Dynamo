@@ -304,11 +304,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to double;number;float;integer;slider.
+        /// </summary>
+        internal static string DoubleSliderSearchTags {
+            get {
+                return ResourceManager.GetString("DoubleSliderSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected {0}.
         /// </summary>
         internal static string DropDownPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("DropDownPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert;Units;Length;Area;Volume.
+        /// </summary>
+        internal static string DynamoConvertSearchTags {
+            get {
+                return ResourceManager.GetString("DynamoConvertSearchTags", resourceCulture);
             }
         }
         
@@ -570,6 +588,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string ListCreateDescription {
             get {
                 return ResourceManager.GetString("ListCreateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Index #{0}.
+        /// </summary>
+        internal static string ListCreateInPortToolTip {
+            get {
+                return ResourceManager.GetString("ListCreateInPortToolTip", resourceCulture);
             }
         }
         
@@ -966,6 +993,24 @@ namespace DSCoreNodesUI.Properties {
         internal static string SelectFromComboBoxToolTip {
             get {
                 return ResourceManager.GetString("SelectFromComboBoxToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing selected..
+        /// </summary>
+        internal static string SelectionNodeNothingSelected {
+            get {
+                return ResourceManager.GetString("SelectionNodeNothingSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select something in the model..
+        /// </summary>
+        internal static string SelectionNodeSugestion {
+            get {
+                return ResourceManager.GetString("SelectionNodeSugestion", resourceCulture);
             }
         }
         
