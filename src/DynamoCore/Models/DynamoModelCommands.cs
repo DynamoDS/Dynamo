@@ -377,7 +377,7 @@ namespace Dynamo.Models
 
         void CreatePresetStateImpl(AddPresetCommand command)
         {
-            this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.SelectedNodeIDs);
+            this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.ModelGuids);
         }
         void SetWorkSpaceToStateImpl(ApplyPresetCommand command)
         {

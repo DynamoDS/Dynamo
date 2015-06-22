@@ -864,10 +864,10 @@ namespace Dynamo.Models
                 }
             }
         }
-        internal void AddPreset(string name, string description, List<Guid> IDSToSave)
+        internal void AddPreset(string name, string description, IEnumerable<Guid> IDSToSave)
         {
             //lookup the nodes by their ID, can also check that we find all of them....
-            var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID)).ToList();
+            var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID));
  	        //access the presetsCollection and add a new state based on the current selection
             this.AddPresetCore(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
