@@ -105,7 +105,7 @@ namespace ProtoScript.Runners
             {
 
                 //a2. Record the old start PC for restore instructions
-                Core.watchStartPC = runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.Count;
+                Core.watchStartPC = runtimeCore.ExprInterpreterExe.GetInstructionStream(blockId).instrList.Count;
                 Core.GenerateExprExeInstructions(blockId);
                 
                 //a3. Record the old running block
@@ -129,7 +129,10 @@ namespace ProtoScript.Runners
                 {
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
-
+                    
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    
                     StackValue sv = runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.watchStartPC, stackFrame, locals);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
@@ -151,7 +154,7 @@ namespace ProtoScript.Runners
                 //r2. Restore the instructions in Core.ExprInterpreterExe
                 int from = Core.watchStartPC;
                 int elems = runtimeCore.ExprInterpreterExe.iStreamCanvas.instrList.Count;
-                runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.RemoveRange(from, elems);
+                runtimeCore.ExprInterpreterExe.GetInstructionStream(blockId).instrList.RemoveRange(from, elems);
 
                 //Restore the start PC
                 Core.watchStartPC = oldStartPC;

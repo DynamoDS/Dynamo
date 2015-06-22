@@ -337,7 +337,7 @@ namespace ProtoCore.Lang
                         blockCaller = runtimeCore.DebugProps.CurrentBlockId;
                         StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
 
-                        ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
+                        ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
                         runtimeCore.RunningBlock = oldRunningBlockId;
                         break;
@@ -752,7 +752,7 @@ namespace ProtoCore.Lang
 
             int pc = stackFrame.ReturnPC;
             int blockId = stackFrame.FunctionCallerBlock;
-            List<Instruction> instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
+            List<Instruction> instructions = runtimeCore.DSExecutable.GetInstructionStream(blockId).instrList;
 
             // Search instructions from DebugEntryPC onwards for the next breakpoint and add it to current list of breakpoints
             // if there is a bounce, then jump to new lang block and continue searching
@@ -767,7 +767,7 @@ namespace ProtoCore.Lang
                 else if (instructions[pc].opCode == OpCode.BOUNCE)
                 {
                     blockId = (int)instructions[pc].op1.opdata;
-                    instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
+                    instructions = runtimeCore.DSExecutable.GetInstructionStream(blockId).instrList;
                     pc = 0;
                     continue;
                 }

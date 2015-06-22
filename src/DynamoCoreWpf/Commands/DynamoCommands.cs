@@ -26,15 +26,17 @@ namespace Dynamo.ViewModels
 
         private void SaveRecordedCommands(object parameters)
         {
-            if (null != automationSettings)
-            {
-                string xmlFilePath = automationSettings.SaveRecordedCommands();
-                if (string.IsNullOrEmpty(xmlFilePath) == false)
-                {
-                    if (System.IO.File.Exists(xmlFilePath))
-                        System.Diagnostics.Process.Start(xmlFilePath);
-                }
-            }
+            //if (null != automationSettings)
+            //{
+            //    string xmlFilePath = automationSettings.SaveRecordedCommands();
+            //    if (string.IsNullOrEmpty(xmlFilePath) == false)
+            //    {
+            //        if (System.IO.File.Exists(xmlFilePath))
+            //            System.Diagnostics.Process.Start(xmlFilePath);
+            //    }
+            //}
+
+            model.EngineController.LiveRunnerRuntimeCore.RequestCancellation();
         }
 
         private bool CanSaveRecordedCommands(object parameters)

@@ -250,7 +250,8 @@ namespace ProtoScript.Runners
                 BinaryExpressionNode bNode = node as BinaryExpressionNode;
                 if (bNode != null)
                 {
-                    foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                    InstructionStream iStream = core.DSExecutable.GetInstructionStream(0);
+                    foreach (var gnode in iStream.dependencyGraph.GraphList)
                     {
                         if (gnode.OriginalAstID == bNode.OriginalAstID)
                         {
@@ -317,6 +318,11 @@ namespace ProtoScript.Runners
             this.core = core;
             this.runtimeCore = runtimeCore;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
+        }
+
+        public Dictionary<System.Guid, Subtree> GetProgramSnapshot()
+        {
+            return currentSubTreeList;
         }
 
         /// <summary>
@@ -1179,6 +1185,7 @@ namespace ProtoScript.Runners
 
         private ChangeSetComputer changeSetComputer;
         private ChangeSetApplier changeSetApplier;
+        private MacroBlockGenerator macroBlockGen;
 
         public LiveRunner()
             : this(new Configuration())
@@ -1272,6 +1279,8 @@ namespace ProtoScript.Runners
             vmState = null;
 
             CreateRuntimeCore();
+
+            macroBlockGen = new MacroBlockGenerator(runnerCore);
         }
 
         /// <summary>
@@ -1793,6 +1802,57 @@ namespace ProtoScript.Runners
             return cbnGuidList;
         }
 
+        /// <summary>
+        /// Generates a snapshot of the entire program 
+        /// A snapshot is the current list of nodes
+        /// </summary>
+        /// <returns></returns>
+        private List<Subtree> GenerateProgramSnapshot()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Generates the macroblock grouping
+        /// Assigns the macroblock Ids for each AST
+        /// The macroblocks are cached in the liverunner core
+        /// </summary>
+        /// <param name="syncData"></param>
+        /// <returns></returns>
+        private void GenerateMacroBlocksFromSnapshot(Dictionary<System.Guid, Subtree> snapshot)
+        {
+            List<AssociativeNode> astListToConvert = new List<AssociativeNode>();
+            if (snapshot == null)
+            {
+                return; 
+            }
+
+            foreach (KeyValuePair<System.Guid, Subtree> kvp in snapshot)
+            {
+                if (kvp.Value.AstNodes != null)
+                {
+                    astListToConvert.AddRange(kvp.Value.AstNodes);
+                }
+            }
+
+            const int globalMacroBlockID = 1;
+            macroBlockGen.GenerateMacroBlockIDForBinaryAST(astListToConvert, globalMacroBlockID);
+            macroBlockGen.GenerateMacroBlocks(astListToConvert);
+        }
+
+        /// <summary>
+        /// Generates a macroblock from DS code
+        /// This functionality only exists to support SynchronizeInternal(string) that processes DS code as strings
+        /// SynchronizeInternal(string) should be deprecated and we should only support SynchronizeInternal(GraphSyncData)
+        /// </summary>
+        /// <param name="astList"></param>
+        private void GenerateDefaultMacroBlock(List<AssociativeNode> astList)
+        {
+            const int macroBlockDefaultID = 0;
+            macroBlockGen.GenerateMacroBlockIDForBinaryAST(astList, macroBlockDefaultID);
+            macroBlockGen.GenerateDefaultMacroBlock();
+        }
+
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
@@ -1806,6 +1866,9 @@ namespace ProtoScript.Runners
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
             changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
+
+            // Get the snapshot of the program and use it to generate macroblocks
+            GenerateMacroBlocksFromSnapshot(changeSetComputer.GetProgramSnapshot());
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
             changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
@@ -1824,7 +1887,11 @@ namespace ProtoScript.Runners
             }
             else
             {
-                CompileAndExecuteForDeltaExecution(code);
+                //GenerateMacroBlocksFromCode(code);
+                //CompileAndExecuteForDeltaExecution(code);
+                var astNodes = CoreUtils.BuildASTList(runnerCore, code);
+                GenerateDefaultMacroBlock(astNodes);
+                CompileAndExecuteForDeltaExecution(astNodes);
             }
         }
 
