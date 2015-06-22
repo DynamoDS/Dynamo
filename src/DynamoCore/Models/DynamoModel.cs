@@ -305,6 +305,8 @@ namespace Dynamo.Models
         /// </summary>
         public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
 
+        public AuthenticationManager AuthenticationManager { get; set; }
+
         #endregion
 
         #region initialization and disposal
@@ -528,6 +530,8 @@ namespace Dynamo.Models
             ResetEngineInternal();
 
             AddHomeWorkspace();
+
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;

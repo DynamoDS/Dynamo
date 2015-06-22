@@ -21,8 +21,8 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
-using DynamoUtilities;
 
 using String = System.String;
 using System.Windows.Data;
@@ -49,6 +49,7 @@ namespace Dynamo.Controls
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
+        private LoginService loginService;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -108,6 +109,10 @@ namespace Dynamo.Controls
             }
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
+
+            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
         }
 
         #region NodeViewCustomization
@@ -190,7 +195,7 @@ namespace Dynamo.Controls
 
         void InitializeLogin()
         {
-            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            if ( dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
                 var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
                 loginGrid.Children.Add(login);

@@ -26,7 +26,6 @@ namespace Dynamo.PackageManager
             "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
         private readonly IGregClient client;
-        private readonly IAuthProvider authProvider;
         private readonly IPackageUploadBuilder uploadBuilder;
 
         /// <summary>
@@ -34,38 +33,12 @@ namespace Dynamo.PackageManager
         /// </summary>
         private readonly string packagesDirectory;
        
-        public event Action<LoginState> LoginStateChanged;
-
-        /// <summary>
-        ///     Specifies whether the user is logged in or not.
-        /// </summary>
-        public LoginState LoginState
-        {
-            get { return HasAuthProvider ? this.authProvider.LoginState : Greg.AuthProviders.LoginState.LoggedOut; }
-        }
-
-        /// <summary>
-        ///     The username of the current user, if logged in.  Otherwise null
-        /// </summary>
-        public string Username
-        {
-            get { return HasAuthProvider ? this.authProvider.Username : ""; }
-        }
-
         /// <summary>
         ///     The URL of the package manager website
         /// </summary>
         public string BaseUrl
         {
             get { return this.client.BaseUrl; }
-        }
-        
-        /// <summary>
-        ///     Determines if the this.client has login capabilities
-        /// </summary>
-        public bool HasAuthProvider
-        {
-            get { return authProvider != null; }
         }
 
         #endregion
@@ -75,23 +48,6 @@ namespace Dynamo.PackageManager
             this.packagesDirectory = packagesDirectory;
             this.uploadBuilder = builder;
             this.client = client;
-
-            this.authProvider = this.client.AuthProvider;
-
-            // The lack of AuthProvider indicates that the user cannot login for this
-            // session.  Hence, we do not subscribe to this event.
-            if (this.authProvider != null)
-            {
-                this.authProvider.LoginStateChanged += OnLoginStateChanged;
-            }
-        }
-
-        private void OnLoginStateChanged(LoginState status)
-        {
-            if (LoginStateChanged != null)
-            {
-                LoginStateChanged(status);
-            }
         }
 
         internal bool Upvote(string packageId)
@@ -241,18 +197,6 @@ namespace Dynamo.PackageManager
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, PackageEngineName));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
-        }
-
-        internal void Logout()
-        {
-            if (!HasAuthProvider) return; 
-            this.authProvider.Logout();
-        }
-
-        internal void Login()
-        {
-            if (!HasAuthProvider) return;
-            this.authProvider.Login();
         }
     }
 }
