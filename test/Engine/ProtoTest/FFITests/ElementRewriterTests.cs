@@ -553,6 +553,28 @@ namespace ProtoTest.FFITests
         }
 
         [Test]
+        public void LookupResolvedName_ForFunctionDefinition_RewriteAst()
+        {
+            const string code = @"import (""FFITarget.dll"");";
+            var mirror = thisTest.RunScriptSource(code);
+
+            var testCore = thisTest.GetTestCore();
+            var astNodes = CoreUtils.BuildASTList(testCore, 
+                "def foo()" +
+                "{" +
+                "   return = Point.ByCoordinates();" +
+                "}");
+
+            var elementResolver = new ElementResolver();
+            elementResolver.AddToResolutionMap("Point", "Autodesk.DesignScript.Geometry.Point", "Protogeometry.dll");
+
+            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes).ToList();
+
+            Assert.AreEqual("return = Autodesk.DesignScript.Geometry.Point.ByCoordinates();\n", 
+                ((FunctionDefinitionNode)newNodes[0]).FunctionBody.ToString());
+        }
+
+        [Test]
         public void SkipResolvingName_ForPrimitiveTypedIdentifier_RetainAst()
         {
             var astNodes = CoreUtils.BuildASTList(core, "p : int;");
