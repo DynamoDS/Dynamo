@@ -555,20 +555,18 @@ namespace ProtoTest.FFITests
         [Test]
         public void LookupResolvedName_ForFunctionDefinition_RewriteAst()
         {
-            const string code = @"import (""FFITarget.dll"");";
-            var mirror = thisTest.RunScriptSource(code);
-
-            var testCore = thisTest.GetTestCore();
-            var astNodes = CoreUtils.BuildASTList(testCore, 
+            var code =
                 "def foo()" +
                 "{" +
-                "   return = Point.ByCoordinates();" +
-                "}");
-
+                "   return = Autodesk.DesignScript.Geometry.Point.ByCoordinates();" +
+                "}" +
+                "a = foo();";
+            
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Point", "Autodesk.DesignScript.Geometry.Point", "Protogeometry.dll");
 
-            var newNodes = ElementRewriter.RewriteElementNames(testCore.ClassTable, elementResolver, astNodes).ToList();
+            var astNodes = CoreUtils.BuildASTList(core, code);
+            var newNodes = ElementRewriter.RewriteElementNames(core.ClassTable, elementResolver, astNodes).ToList();
 
             Assert.AreEqual("return = Autodesk.DesignScript.Geometry.Point.ByCoordinates();\n", 
                 ((FunctionDefinitionNode)newNodes[0]).FunctionBody.ToString());
