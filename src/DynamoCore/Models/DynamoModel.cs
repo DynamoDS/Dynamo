@@ -65,6 +65,13 @@ namespace Dynamo.Models
                 RequestsFunctionNamePrompt(this, e);
         }
 
+
+        public event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
+        public void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
+        {
+            if (RequestPresetsNamePrompt != null)
+                RequestPresetsNamePrompt(e);
+        }
         public event WorkspaceHandler WorkspaceSaved;
         internal void OnWorkspaceSaved(WorkspaceModel model)
         {
@@ -1140,7 +1147,7 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
+            
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
@@ -1148,7 +1155,8 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
