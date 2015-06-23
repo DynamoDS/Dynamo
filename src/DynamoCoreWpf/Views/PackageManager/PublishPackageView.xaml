@@ -134,7 +134,7 @@
         </Border>
 
         <StackPanel Grid.Row="2" Background="#444">
-            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" Content="{x:Static p:Resources.PublishPackage}"></Button>
+            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="auto" MinWidth="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" Content="{x:Static p:Resources.PublishPackage}"></Button>
         </StackPanel>
  
         <Grid Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1">

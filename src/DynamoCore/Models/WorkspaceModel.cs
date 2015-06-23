@@ -62,7 +62,7 @@ namespace Dynamo.Models
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly ObservableCollection<AnnotationModel> annotations;
-        private readonly PresetsModel presetsCollection;
+        private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
 
@@ -223,7 +223,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     A set of input parameter states, this can be used to set the graph to a serialized state.
         /// </summary>
-        public PresetsModel PresetsCollection { get { return presetsCollection;} }
+        public IEnumerable<PresetModel> Presets { get { return presets;} }
 
         /// <summary>
         ///     The date of the last save.
@@ -452,7 +452,7 @@ namespace Dynamo.Models
             IEnumerable<AnnotationModel> a,
             WorkspaceInfo info, 
             NodeFactory factory,
-            PresetsModel presets)
+            IEnumerable<PresetModel> presets)
         {
             guid = Guid.NewGuid();
 
@@ -476,7 +476,7 @@ namespace Dynamo.Models
 
             NodeFactory = factory;
 
-            presetsCollection = presets;
+            this.presets = new List<PresetModel>(presets);
             // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
             ElementResolver = new ElementResolver();
             foreach (var node in nodes)
@@ -801,7 +801,42 @@ namespace Dynamo.Models
             }
         }
 
-        internal void SetWorkspaceToState(PresetState state)
+        #endregion
+
+        #region Presets
+        /// <summary>
+        ///  this method creates a new preset state from a set of NodeModels and adds this new state to this presets collection
+        /// </summary>
+        /// <param name="name">the name of preset state</param>
+        /// <param name="description">a description of what the state does</param>
+        /// <param name="currentSelection">a set of NodeModels that are to be serialized in this state</param>
+        /// <param name="id">a GUID id for the state, if not supplied, a new GUID will be generated, cannot be a duplicate</param>
+        private void AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
+        {
+            if (currentSelection == null || currentSelection.Count() < 1)
+            {
+                throw new ArgumentException("currentSelection is empty or null");
+            }
+            var inputs = currentSelection;
+
+            if (Presets.Any(x => x.Guid == id))
+            {
+                throw new ArgumentException("duplicate id in collection");
+            }
+
+            var newstate = new PresetModel(name, description, inputs, id);
+            presets.Add(newstate);
+        }
+
+        public void RemoveState(PresetModel state)
+        {
+            if (Presets.Contains(state))
+            {
+                presets.Remove(state);
+            }
+        }
+
+        internal void ApplyPreset(PresetModel state)
         {
             if (state == null)
             {
@@ -811,7 +846,6 @@ namespace Dynamo.Models
             //start an undoBeginGroup
             using (var undoGroup = this.undoRecorder.BeginActionGroup())
             {
-               
                //reload each node, and record each each modification in the undogroup
                 foreach (var node in state.Nodes)
                 {
@@ -827,29 +861,29 @@ namespace Dynamo.Models
 
                         this.undoRecorder.RecordModificationForUndo(node);
                         this.ReloadModel(serializedNode);
-                        
                     }
                 }
                 //select all the modified nodes in the UI
                 DynamoSelection.Instance.ClearSelection();
-                state.Nodes.ToList().ForEach(x => DynamoSelection.Instance.Selection.Add(x));
-                
+                foreach(var node in state.Nodes)
+                {
+                    DynamoSelection.Instance.Selection.Add(node);
+                }
             }
-            
         }
-        internal void CreatePresetStateFromSelection(string name, string description, List<Guid> IDSToSave)
+        internal void AddPreset(string name, string description, IEnumerable<Guid> IDSToSave)
         {
             //lookup the nodes by their ID, can also check that we find all of them....
-            var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID)).ToList();
+            var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID));
  	        //access the presetsCollection and add a new state based on the current selection
-            presetsCollection.AddState(name, description, nodesFromIDs);
+            this.AddPresetCore(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
         }
-
+        
         #endregion
 
         #region private/internal methods
-        
+
         private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
         {
             // Create the xml document to write to.
@@ -964,10 +998,15 @@ namespace Dynamo.Models
                     annotationList.AppendChild(annotation);                   
                 }
 
-                //save the presetsCollection into the dyn file as a seperate element on the root
-                var presetsModel =  presetsCollection.Serialize(xmlDoc,SaveContext.File);
-                root.AppendChild(presetsModel);
-               
+                //save the presets into the dyn file as a seperate element on the root
+                var presetsElement = xmlDoc.CreateElement("Presets");
+                root.AppendChild(presetsElement);
+                foreach (var preset in Presets)
+                {
+                    var presetState = preset.Serialize(xmlDoc, SaveContext.File);
+                    presetsElement.AppendChild(presetState);
+                }
+
                 return true;
             }
             catch (Exception ex)

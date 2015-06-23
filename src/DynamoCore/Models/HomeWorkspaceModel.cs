@@ -126,16 +126,16 @@ namespace Dynamo.Models
         #region Constructors
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
-            NodeFactory factory, PresetsModel designOptions, bool verboseLogging, bool isTestMode, string fileName="")
+            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
                 engine,
                 scheduler,
                 factory,
-                designOptions,
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
                 new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
                 isTestMode) { }
@@ -144,15 +144,15 @@ namespace Dynamo.Models
             EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
-            PresetsModel designOptions,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
+            IEnumerable<PresetModel> presets,
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n,a, info, factory,designOptions)
+            : base(e, n,a, info, factory,presets)
         {
             EvaluationCount = 0;
 

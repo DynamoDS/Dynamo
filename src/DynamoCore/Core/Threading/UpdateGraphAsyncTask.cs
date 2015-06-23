@@ -20,7 +20,7 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private bool verboseLogging;
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.AboveNormal; }
         }

@@ -191,6 +191,12 @@ namespace Dynamo.Models
                     case "UngroupModelCommand":
                         command = UngroupModelCommand.DeserializeCore(element);
                         break;
+                    case "AddPresetCommand":
+                        command = AddPresetCommand.DeserializeCore(element);
+                        break;
+                    case "ApplyPresetCommand":
+                        command = ApplyPresetCommand.DeserializeCore(element);
+                        break;
                 }
 
                 if (null != command)
@@ -1633,38 +1639,27 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class CreatePresetStateFromSelectionCommand : RecordableCommand
+        public class AddPresetCommand : ModelBasedRecordableCommand
         {
             #region Public Class Methods
 
-            [JsonConstructor]
-            public CreatePresetStateFromSelectionCommand(string name, string description, List<Guid> currentSelectionIDS )
+            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIDS )
+                :base(currentSelectionIDS)
             {
                 PresetStateName = name;
                 PresetStateDescription = description;
-                SelectedNodesIDs = currentSelectionIDS;
             }
 
-            internal static CreatePresetStateFromSelectionCommand DeserializeCore(XmlElement element)
+            internal static AddPresetCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                List<Guid> IDS = new List<Guid>();
-                foreach (XmlElement child in element.ChildNodes)
+                var modelGuids = DeserializeGuid(element, helper);
+                if (modelGuids.Count()<1)
                 {
-                    if (child.Name == "IDS")
-                    {
-                        foreach(var idstring in child)
-                        {
-                            IDS.Add( Guid.Parse(idstring.ToString()));
-                        }
-                    }
-                }
-                if (IDS.Count<1)
-                {
-                    throw new ArgumentNullException("No IDs were deserialized during load of designstate creation command");
+                    throw new ArgumentNullException("No IDs were deserialized during load of preset creation command");
                 }
                 
-                return new CreatePresetStateFromSelectionCommand(helper.ReadString("name"), helper.ReadString("description"),IDS);
+                return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"),modelGuids);
             }
 
             #endregion
@@ -1675,14 +1670,11 @@ namespace Dynamo.Models
             internal string PresetStateName { get; set; }
             [DataMember]
             internal string PresetStateDescription { get; set; }
-            [DataMember]
-            internal List<Guid> SelectedNodesIDs { get; set; }
-
              #endregion
 
             #region Protected Overridable Methods
 
-                        protected override void ExecuteCore(DynamoModel dynamoModel)
+            protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 dynamoModel.CreatePresetStateImpl(this);
 
@@ -1690,38 +1682,31 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
+                base.SerializeCore(element);
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("name", PresetStateName);
                 helper.SetAttribute("description", PresetStateDescription);
-                //add a new element for the ids we 
-               var idselement= element.OwnerDocument.CreateElement("IDS");
-               element.AppendChild(idselement);
-                foreach(var ID in SelectedNodesIDs)
-                {
-                    idselement.AppendChild(idselement.OwnerDocument.CreateElement(ID.ToString()));
-                }
                
             }
               #endregion
         }
 
         [DataContract]
-        public class SetWorkSpaceToStateCommand : RecordableCommand
+        public class ApplyPresetCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            [JsonConstructor]
-            public SetWorkSpaceToStateCommand(Guid workspaceID, Guid stateID)
+            public ApplyPresetCommand(Guid workspaceID, Guid stateID)
             {
                 StateID = stateID;
                 WorkSpaceID = workspaceID;
             }
 
-            internal static SetWorkSpaceToStateCommand DeserializeCore(XmlElement element)
+            internal static ApplyPresetCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
 
-                return new SetWorkSpaceToStateCommand(helper.ReadGuid("WorkspaceID"), helper.ReadGuid("StateID"));
+                return new ApplyPresetCommand(helper.ReadGuid("WorkspaceID"), helper.ReadGuid("StateID"));
             }
 
             #endregion

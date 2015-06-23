@@ -114,7 +114,6 @@
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
-    <Compile Include="Rendering\PerVertexMeshGeometryModel3D.cs" />
     <Compile Include="Rendering\RenderPackageExtensions.cs" />
     <Compile Include="Services\IconServices.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
@@ -134,8 +133,8 @@
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
-    <Compile Include="UI\Prompts\PresetStatePrompt.xaml.cs">
-      <DependentUpon>PresetStatePrompt.xaml</DependentUpon>
+    <Compile Include="UI\Prompts\PresetPrompt.xaml.cs">
+      <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -231,7 +230,8 @@
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="ViewModels\Search\SearchCategory.cs" />
     <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
-    <Compile Include="ViewModels\VisualizationSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
+    <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -989,7 +989,7 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Include="UI\Prompts\PresetStatePrompt.xaml">
+    <Page Include="UI\Prompts\PresetPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1111,6 +1111,10 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
+      <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
+      <Name>DynamoPackages</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>

@@ -167,7 +167,7 @@
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
         <KeyBinding Key="T"
                     Modifiers="Control"
-                    Command="{Binding ShowNewDesignOptionDialogCommand}"/>
+                    Command="{Binding ShowNewPresetsDialogCommand}"/>
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -345,22 +345,22 @@
                         <Separator />
 
                        
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuStatesMenu}"
-                              Name = "StatesMenu"
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuPresetsMenu}"
+                              Name = "PresetsMenu"
                               Focusable= "False"
                               IsEnabled="True">
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreateState}"
-                                      Command="{Binding ShowNewDesignOptionDialogCommand}"
-                                      Name="newDesignOptions"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreatePreset}"
+                                      Command="{Binding ShowNewPresetsDialogCommand}"
+                                      Name="newPreset"
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestoreState}"
-                                    MouseEnter="LoadStateMenus"
-                                      Name="RestoreStateMenu"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
+                                    MouseEnter="LoadPresetsMenus"
+                                      Name="RestorePresetMenu"
                                       Focusable="False" />
-                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeleteState}"
-                                    MouseEnter="LoadStateMenus"
-                                      Name="DeleteStateMenu"
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
+                                    MouseEnter="LoadPresetsMenus"
+                                      Name="DeletePresetMenu"
                                       Focusable="False" />
                         </MenuItem>
                         <Separator />
@@ -622,14 +622,14 @@
                                 <Slider Width="100"
                                         Minimum="12"
                                         Maximum="512"
-                                        Value="{Binding VisualizationSettings.MaxTessellationDivisions, Mode=TwoWay}"></Slider>
+                                        Value="{Binding Path=RenderPackageFactoryViewModel.MaxTessellationDivisions, Mode=TwoWay}"></Slider>
                                 <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                            Margin="10,0,0,0"></TextBlock>
                             </StackPanel>
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   IsCheckable="True"
-                                  IsChecked="{Binding VisualizationSettings.ShowEdges}"
+                                  IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
                     </MenuItem>
 

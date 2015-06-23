@@ -1,0 +1,86 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="270" Y="296" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>037a09ae-9fc0-4687-8ea5-6e29d4720bec</ModelGuid>
+    <Dynamo.Nodes.DSFunction guid="037a09ae-9fc0-4687-8ea5-6e29d4720bec" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="394" y="211" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>037a09ae-9fc0-4687-8ea5-6e29d4720bec</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="345" Y="383" DragOperation="0" />
+  <DragSelectionCommand X="469" Y="298" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="167" Y="235" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="167" Y="235" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>cbc5a1b7-1721-4276-ae58-4fceb846d036</ModelGuid>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="cbc5a1b7-1721-4276-ae58-4fceb846d036" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="75" y="204" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..10;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1..10" WorkspaceGuid="77048113-c45b-4e5e-bb09-769fad5665cc">
+    <ModelGuid>cbc5a1b7-1721-4276-ae58-4fceb846d036</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="210" Y="334" Width="0" Height="0" IsCrossSelection="false" />
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>cbc5a1b7-1721-4276-ae58-4fceb846d036</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>037a09ae-9fc0-4687-8ea5-6e29d4720bec</ModelGuid>
+  </MakeConnectionCommand>
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>037a09ae-9fc0-4687-8ea5-6e29d4720bec</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="506" Y="336" DragOperation="0" />
+  <DragSelectionCommand X="506" Y="336" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1..5;" WorkspaceGuid="77048113-c45b-4e5e-bb09-769fad5665cc">
+    <ModelGuid>cbc5a1b7-1721-4276-ae58-4fceb846d036</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="229" Y="441" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="182" Y="456" Width="0" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="198" Y="403" Width="0" Height="0" IsCrossSelection="false" />
+  <UndoRedoCommand CmdOperation="0" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>037a09ae-9fc0-4687-8ea5-6e29d4720bec</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="507" Y="341" DragOperation="0" />
+  <DragSelectionCommand X="507" Y="341" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>037a09ae-9fc0-4687-8ea5-6e29d4720bec</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="505" Y="335" DragOperation="0" />
+  <DragSelectionCommand X="505" Y="335" DragOperation="1" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="158" Y="424" Width="0" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="FinalRun" PauseDurationInMs="20" />
+</Commands>
