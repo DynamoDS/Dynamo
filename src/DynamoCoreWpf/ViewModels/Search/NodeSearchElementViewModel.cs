@@ -74,6 +74,11 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.Name; }
         }
 
+        public string UserFriendlyName
+        {
+            get { return Model.UserFriendlyName; }
+        }
+
         public string FullName
         {
             get { return Model.FullName; }

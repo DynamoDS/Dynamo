@@ -21,6 +21,7 @@ namespace Dynamo.Search.SearchElements
         private string fullCategoryName;
         private string description;
         private string name;
+        private string userFriendlyName;
         private SearchElementGroup group;
         private string assembly;
         private bool isVisibleInSearch = true;
@@ -112,6 +113,26 @@ namespace Dynamo.Search.SearchElements
                 if (value == name) return;
                 name = value;
                 OnPropertyChanged("Name");
+            }
+        }
+
+        /// <summary>
+        /// User friendly name, that is used in InCanvasSearch.
+        /// </summary>
+        public string UserFriendlyName
+        {
+            get
+            {
+                if (!String.IsNullOrWhiteSpace(userFriendlyName))
+                    return userFriendlyName;
+                else
+                    return name;
+            }
+            set
+            {
+                if (value == userFriendlyName) return;
+                userFriendlyName = value;
+                OnPropertyChanged("UserFriendlyName");
             }
         }
 
