@@ -2841,6 +2841,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Periodic Update.
+        /// </summary>
+        public static string NodeContextMenuEnablePeriodicUpdate {
+            get {
+                return ResourceManager.GetString("NodeContextMenuEnablePeriodicUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help....
         /// </summary>
         public static string NodeContextMenuHelp {

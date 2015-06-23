@@ -1727,6 +1727,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="WatchNodeRawDataMenu" xml:space="preserve">
     <value>Show Raw Data</value>
   </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>Enable Periodic Update</value>
+  </data>
   <data name="PackageUploadNoDependency" xml:space="preserve">
     <value>None</value>
   </data>
