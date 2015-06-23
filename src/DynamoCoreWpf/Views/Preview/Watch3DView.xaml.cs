@@ -1047,7 +1047,6 @@ namespace Dynamo.Controls
                 {
                     meshGeometry3D = new DynamoGeometryModel3D()
                     {
-                        Geometry = HelixRenderPackage.InitMeshGeometry(),
                         Transform = Model1Transform,
                         Material = WhiteMaterial,
                         IsHitTestVisible = true,
@@ -1075,29 +1074,30 @@ namespace Dynamo.Controls
                     ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
                     geometryDictionary.Add(id, meshGeometry3D);
                 }
-                var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
-                var idxCount = meshSet.Positions.Count;
 
-                meshSet.Positions.AddRange(m.Positions);
+                var mesh = meshGeometry3D.Geometry == null ? HelixRenderPackage.InitMeshGeometry() : meshGeometry3D.Geometry as MeshGeometry3D;
+                var idxCount = mesh.Positions.Count;
 
-                meshSet.Colors.AddRange(m.Colors);
-                meshSet.Normals.AddRange(m.Normals);
-                meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
-                meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
+                mesh.Positions.AddRange(m.Positions);
 
-                if (meshSet.Colors.Any(c => c.Alpha < 1.0))
+                mesh.Colors.AddRange(m.Colors);
+                mesh.Normals.AddRange(m.Normals);
+                mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
+                mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
+
+                if (mesh.Colors.Any(c => c.Alpha < 1.0))
                 {
                     meshGeometry3D.HasTransparency = true;
                 }
 
                 if (rp.DisplayLabels)
                 {
-                    var pt = meshSet.Positions[idxCount];
+                    var pt = mesh.Positions[idxCount];
                     parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     Text = parameters.Text;
                 }
 
-                meshGeometry3D.Geometry = meshSet;
+                meshGeometry3D.Geometry = mesh;
                 meshGeometry3D.Name = baseId; 
                 meshGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
             }
