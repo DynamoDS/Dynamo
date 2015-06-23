@@ -35,7 +35,7 @@ namespace ProtoCore.Runtime
             int exeblock,
             int entry,
             StackFrame stackFrame, int locals = 0)
-        {
+        { 
             Validity.Assert(exec != null);
 
             macroBlockList = exec.exe.MacroBlockList;

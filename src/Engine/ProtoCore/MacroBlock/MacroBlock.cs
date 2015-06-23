@@ -41,6 +41,10 @@ namespace ProtoCore.Runtime
             GraphNodeList = new List<AssociativeGraph.GraphNode>();
         }
 
+        /// <summary>
+        /// Generates and returns the entrypoint pc of the macroblock
+        /// </summary>
+        /// <returns></returns>
         public int GenerateEntryPoint()
         {
             int entryPoint = Constants.kInvalidPC;
