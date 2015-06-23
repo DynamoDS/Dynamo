@@ -365,7 +365,7 @@ namespace ProtoFFI
             }
 
             var csDict = (IDictionary)Activator.CreateInstance(instanceType);
-            var dsDict = ArrayUtils.ToDictionary(dsObject, dsi.runtime.RuntimeCore);
+            var dsDict = dsi.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(dsObject).ToDictionary();
             return AddToDictionary(context, dsi, csDict, dsDict, keyType, valueType);
         }
 
@@ -456,19 +456,17 @@ namespace ProtoFFI
         {
             var runtimeCore = dsi.runtime.RuntimeCore;
 
-            var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-            HeapElement ho = ArrayUtils.GetHeapElement(array, runtimeCore);
-            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
-
+            var svArray = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
+            DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
             foreach (var key in dictionary.Keys)
             {
                 var value = dictionary[key];
                 StackValue dsKey = MarshalToStackValue(key, context, dsi);
                 StackValue dsValue = MarshalToStackValue(value, context, dsi);
-                ho.Dict[dsKey] = dsValue;
+                array.SetValueForIndex(dsKey, dsValue, dsi.runtime.RuntimeCore);
             }
 
-            return array;
+            return svArray;
         }
 
         #endregion
@@ -484,8 +482,12 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.RuntimeCore);
             var result = new List<T>();
+            var heap = dsi.runtime.RuntimeCore.Heap;
+            if (!dsObject.IsArray)
+                return result.ToArray();
+
+            var dsElements = heap.ToHeapObject<DSArray>(dsObject).Values;
             Type objType = typeof(T);
 
             foreach (var elem in dsElements)
@@ -537,7 +539,7 @@ namespace ProtoFFI
                 }
             }
 
-            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject);
+            var dsArray = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(dsObject);
 
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
@@ -546,7 +548,7 @@ namespace ProtoFFI
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
-            foreach (var sv in hs.VisibleItems)
+            foreach (var sv in dsArray.VisibleItems)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, context, dsi, elementType);
                 arrList.Add(obj);
@@ -575,7 +577,10 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return dsi.runtime.rmem.Heap.GetString(dsObject);
+            var dsString = dsi.runtime.rmem.Heap.ToHeapObject<DSString>(dsObject);
+            if (dsString == null)
+                return null;
+            return dsString.Value;
         }
     }
 
@@ -1079,7 +1084,7 @@ namespace ProtoFFI
                 return;
 
             var runtimeCore = dsi.runtime.RuntimeCore;
-            StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).Stack;
+            StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).VisibleItems.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];

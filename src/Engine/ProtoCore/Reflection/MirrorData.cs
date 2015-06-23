@@ -100,10 +100,9 @@ namespace ProtoCore
                         values.Add(sv);
                         break;
                     case ProtoCore.DSASM.AddressType.ArrayPointer:
-                        var stackValues = ArrayUtils.GetValues(sv, runtimeCore);
-                        foreach (var item in stackValues)
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+                        foreach (var item in array.Values)
                             GetPointersRecursively(item, values);
-
                         break;
                     default:
                         break;
@@ -161,7 +160,8 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, runtimeCore).Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
+                var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
+                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
             }
 
             /// <summary>

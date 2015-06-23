@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1546,6 +1546,18 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
+  <data name="PresetsWindowDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>Enter a description for this preset.</value>
+  </data>
+  <data name="PresetsWindowName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>Preset State Properties</value>
+  </data>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
     <value>Run is not available when running Automatically or Periodically.</value>
   </data>
@@ -1682,6 +1694,18 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ZeroTouchTypeShortString" xml:space="preserve">
     <value>DLL</value>
   </data>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>Create Preset From Selection</value>
+  </data>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>Delete Preset</value>
+  </data>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>Restore Preset</value>
+  </data>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>Presets</value>
+  </data>
   <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
     <value>Show Edges</value>
   </data>
@@ -1693,6 +1717,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="BrowserNodeButtonLabel" xml:space="preserve">
     <value>Browse...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>No file selected.</value>
   </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">
     <value>Edit...</value>
