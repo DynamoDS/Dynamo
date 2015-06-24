@@ -256,6 +256,13 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunEnabled");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
+                        dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();
+                        dynamoViewModel.OpenRecentCommand.RaiseCanExecuteChanged();
+                        dynamoViewModel.CloseHomeWorkspaceCommand.RaiseCanExecuteChanged();
+                    }));
                     break;
                 case "RunPeriod":
                 case "RunType":

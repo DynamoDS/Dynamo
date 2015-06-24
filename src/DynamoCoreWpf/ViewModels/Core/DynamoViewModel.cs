@@ -1192,7 +1192,7 @@ namespace Dynamo.ViewModels
 
         private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         private void OpenRecent(object path)
@@ -1202,7 +1202,7 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenRecent(object path)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         /// <summary>
@@ -1574,7 +1574,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         private void CloseHomeWorkspace(object parameter)
@@ -1589,7 +1589,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         /// <summary>
