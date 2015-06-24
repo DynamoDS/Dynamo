@@ -67,6 +67,21 @@ namespace Dynamo.Controls
         private int renderingTier;
         private static readonly Size DefaultPointSize = new Size(8,8);
 
+        private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
+        private Dictionary<string, Model3D> Model3DDictionary
+        {
+            get
+            {
+                return model3DDictionary;
+            }
+
+            set
+            {
+                model3DDictionary = value;
+            }
+        }
+
+
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
 #endif
@@ -168,22 +183,7 @@ namespace Dynamo.Controls
             get { return lightElevationDegrees; }
             set { lightElevationDegrees = value; }
         }
-
-        private Dictionary<string, Model3D> model3DDictionary= new Dictionary<string, Model3D>();
-
-        public Dictionary<string, Model3D> Model3DDictionary
-        {
-            get
-            {
-                return model3DDictionary;
-            }
-
-            set
-            {
-                model3DDictionary = value;
-            }
-        }
-
+      
         public List<Model3D> Model3DValues
         {
             get
@@ -192,18 +192,7 @@ namespace Dynamo.Controls
                    Model3DDictionary.Select(x => x.Value).ToList();
             }
         }
-
-        public List<Model3D> Model3DValuesWithoutConstants
-        {
-            get
-            {
-                List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
-
-                return Model3DDictionary.Keys.Except(keysList).ToList().Select(key => Model3DDictionary[key] as GeometryModel3D)
-                    .Cast<Model3D>().ToList();              
-            }
-        }
-
+       
         #endregion
 
         #region constructors
