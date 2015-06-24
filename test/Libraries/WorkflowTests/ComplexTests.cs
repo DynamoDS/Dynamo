@@ -18,7 +18,6 @@ namespace Dynamo.Tests
             libraries.Add("VMDataBridge.dll");  // Required for Watch node.
             libraries.Add("ProtoGeometry.dll"); // Required for Surface.
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
-            libraries.Add("DSIronPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
             base.GetLibrariesToPreload(libraries);
             

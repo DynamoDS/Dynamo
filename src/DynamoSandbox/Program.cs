@@ -48,7 +48,6 @@ namespace DynamoSandbox
                 "ProtoGeometry.dll",
                 "DSCoreNodes.dll",
                 "DSOffice.dll",
-                "DSIronPython.dll",
                 "FunctionObject.ds",
                 "Optimize.ds",
                 "DynamoConversions.dll",

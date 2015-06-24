@@ -1978,7 +1978,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, workspace.Nodes.AsQueryable().Count(x => x is DSCoreNodesUI.DummyNode));
 
             // check that the node is migrated to a PythonNode which retains the old script
-            StringAssert.Contains("OUT = OUT", workspace.NodeFromWorkspace<DSIronPythonNode.PythonNode>(
+            StringAssert.Contains("OUT = OUT", workspace.NodeFromWorkspace<PythonNode>(
                 "caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7").Script);
         }
 

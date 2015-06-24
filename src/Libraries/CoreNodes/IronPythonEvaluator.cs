@@ -132,10 +132,10 @@ namespace DSIronPython
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(  ScriptEngine engine, 
-                                                ScriptScope scope, 
-                                                string code, 
-                                                IList bindingValues )
+        private static void OnEvaluationBegin(ScriptEngine engine,
+                                                ScriptScope scope,
+                                                string code,
+                                                IList bindingValues)
         {
             if (EvaluationBegin != null)
             {
@@ -151,7 +151,7 @@ namespace DSIronPython
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationEnd( bool isSuccessful,
+        private static void OnEvaluationEnd(bool isSuccessful,
                                             ScriptEngine engine,
                                             ScriptScope scope,
                                             string code,
@@ -159,7 +159,7 @@ namespace DSIronPython
         {
             if (EvaluationEnd != null)
             {
-                EvaluationEnd( isSuccessful ? EvaluationState.Success : EvaluationState.Failed, 
+                EvaluationEnd(isSuccessful ? EvaluationState.Success : EvaluationState.Failed,
                     engine, scope, code, bindingValues);
             }
         }
