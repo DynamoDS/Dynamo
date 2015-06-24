@@ -26,7 +26,6 @@ namespace ProtoCore.DSASM
     {
         private const int kInitialSize = 5;
         private const double kReallocFactor = 0.5;
-        private Heap heap;
 
         protected Heap heap;
         private int allocated;
@@ -81,7 +80,7 @@ namespace ProtoCore.DSASM
 
             // We should move StackValue list to heap. That is, heap
             // manages StackValues instead of HeapElement itself.
-            heap.ReportAllocation(newAllocatedSize - AllocSize);
+            heap.ReportAllocation(size - allocated);
 
             allocated = newSize;
             Validity.Assert(size <= allocated);
@@ -147,7 +146,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                for (int i = 0; i < VisibleSize; ++i)
+                for (int i = 0; i < this.VisibleSize; ++i)
                 {
                     yield return this.items[i];
                 }
@@ -248,7 +247,7 @@ namespace ProtoCore.DSASM
 
         internal bool TryRemoveString(int pointer)
         {
-            string stringToBeRemoved;
+            string stringToBeRemoved = null;
             if (!pointerToStringTable.TryGetValue(pointer, out stringToBeRemoved))
                 return false;
 
@@ -561,22 +560,12 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="hp"></param>
         /// <returns></returns>
-        private int TraverseArray(HeapElement hp)
+        private int TraverseArray(DSArray array)
         {
-            int size = hp.Stack.Count();
-            for (int i = 0; i < hp.Stack.Count(); i++)
-            {
-                var s = hp.Stack[i];
-                if (s.IsReferenceType)
-                    size += PropagateMark(s);
-            }
+            var dict = array.ToDictionary();
+            int size = dict.Count();
 
-            if (hp.Dict == null)
-                return size;
-
-            size += hp.Dict.Keys.Count;
-            size += hp.Dict.Values.Count;
-            foreach (var pair in hp.Dict)
+            foreach (var pair in array.ToDictionary())
             {
                 var key = pair.Key;
                 if (key.IsReferenceType)
@@ -585,6 +574,19 @@ namespace ProtoCore.DSASM
                 var value = pair.Value;
                 if (value.IsReferenceType)
                     size += PropagateMark(value);
+            }
+
+            return size;
+        }
+
+        private int TraverseObject(DSObject obj)
+        {
+            int size = obj.VisibleSize;
+
+            foreach (var item in obj.VisibleItems)
+            {
+                if (item.IsReferenceType)
+                    size += PropagateMark(item);
             }
 
             return size;
@@ -599,8 +601,8 @@ namespace ProtoCore.DSASM
         private int PropagateMark(StackValue value)
         {
             Validity.Assert(value.IsReferenceType);
-            int rawPtr = (int)value.RawIntValue;
 
+            int rawPtr = (int)value.RawIntValue;
             var hp = heapElements[rawPtr];
             if (hp.Mark == GCMark.Black)
                 return 0;
@@ -608,16 +610,13 @@ namespace ProtoCore.DSASM
             hp.Mark = GCMark.Black;
 
             int size = 0;
-            int metatType = hp.MetaData.type;
-            switch (metatType)
+            if (value.IsArray)
             {
-                case (int)PrimitiveType.kTypeArray:
-                case (int)PrimitiveType.kTypePointer:
-                    size = TraverseArray(hp);
-                    break;
-                case (int)PrimitiveType.kTypeString:
-                    // string are in string table
-                    break;
+                size = TraverseArray(ToHeapObject<DSArray>(value));
+            }
+            else if (value.IsPointer)
+            {
+                size = TraverseObject(ToHeapObject<DSObject>(value));
             }
 
             return size;
@@ -694,13 +693,11 @@ namespace ProtoCore.DSASM
                 {
                     var objPointer = StackValue.BuildPointer(ptr, metaData);
                     GCDisposeObject(objPointer, executive);
+                    totalAllocated -= hp.VisibleSize;
                 }
-
-                totalAllocated -= hp.Stack.Count();
-                if (hp.Dict != null)
+                else if (metaData.type == (int)PrimitiveType.kTypeArray)
                 {
-                    totalAllocated -= hp.Dict.Keys.Count;
-                    totalAllocated -= hp.Dict.Values.Count;
+                    totalAllocated -= (hp as DSArray).ToDictionary().Count();
                 }
 
                 heapElements[ptr] = null;
@@ -874,13 +871,14 @@ namespace ProtoCore.DSASM
                     }
 
                     heapElements[i] = null;
-
+#if !HEAP_VERIFICATION
                     freeList.Add(i);
+#endif
                 }
             }
             finally
             {
-                isGarbageCollecting = false;
+                IsGCRunning = false;
             }
         }
 
@@ -933,6 +931,7 @@ namespace ProtoCore.DSASM
                     }
                 }
             }
+            return false;
         }
         #endregion
     }
