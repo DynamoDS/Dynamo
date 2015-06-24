@@ -363,7 +363,7 @@ namespace Dynamo
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
-            OnNodeDeletedFromWorkspace(node);
+            OnNodeDeletionHandled(node);
         }
 
         private void NodeAddedToHomeWorkspace(NodeModel node)
@@ -387,26 +387,26 @@ namespace Dynamo
             }
         }
 
-        public event Action<IEnumerable> RenderSelection;
+        public event Action<IEnumerable> SelectionHandled;
         protected virtual void OnSelectionChanged(IEnumerable items)
         {
-            if (RenderSelection != null)
-                RenderSelection(items);
+            if (SelectionHandled != null)
+                SelectionHandled(items);
         }
 
 
-        public event Action<NodeModel> UpdateGeometryOnNodeDeletion;
-        protected virtual void OnNodeDeletedFromWorkspace(NodeModel node)
+        public event Action<NodeModel> DeletionHandled;
+        protected virtual void OnNodeDeletionHandled(NodeModel node)
         {
-            if (UpdateGeometryOnNodeDeletion != null)
-                UpdateGeometryOnNodeDeletion(node);
+            if (DeletionHandled != null)
+                DeletionHandled(node);
         }
 
-        public event Action InitializeGeomtery;
-        protected virtual void OnInitializeGeometry()
+        public event Action WorkspaceOpenedClosedHandled;
+        protected virtual void WorkspaceOpenedClosed()
         {
-            if (InitializeGeomtery != null)
-                InitializeGeomtery();
+            if (WorkspaceOpenedClosedHandled != null)
+                WorkspaceOpenedClosedHandled();
         }
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -551,7 +551,7 @@ namespace Dynamo
 
         private void ClearVisualizationsAndRestart(object sender, EventArgs e)
         {
-            OnInitializeGeometry();
+            WorkspaceOpenedClosed();
             Clear();
             Start();
         }

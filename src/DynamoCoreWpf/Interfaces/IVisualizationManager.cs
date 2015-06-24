@@ -70,17 +70,17 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// An event triggered on the Selection of model.
         /// </summary>
-        event Action<IEnumerable> RenderSelection;
+        event Action<IEnumerable> SelectionHandled;
 
         /// <summary>
         /// An event triggered on the Deletion of model.
         /// </summary>
-        event Action<NodeModel> UpdateGeometryOnNodeDeletion;
+        event Action<NodeModel> DeletionHandled;
 
         /// <summary>
         /// An event triggered when a workspace is closed / open.
         /// </summary>
-        event Action InitializeGeomtery;
+        event Action WorkspaceOpenedClosedHandled;
 
         /// Update all Node RenderPackages and raise notification.
         /// </summary>

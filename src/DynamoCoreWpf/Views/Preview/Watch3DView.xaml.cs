@@ -65,6 +65,7 @@ namespace Dynamo.Controls
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
         private int renderingTier;
+        private static readonly Size DefaultPointSize = new Size(8,8);
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -168,37 +169,37 @@ namespace Dynamo.Controls
             set { lightElevationDegrees = value; }
         }
 
-        private Dictionary<string, Model3D> geometryDictionary= new Dictionary<string, Model3D>();
+        private Dictionary<string, Model3D> model3DDictionary= new Dictionary<string, Model3D>();
 
-        public Dictionary<string, Model3D> GeometryDictionary
+        public Dictionary<string, Model3D> Model3DDictionary
         {
             get
             {
-                return geometryDictionary;
+                return model3DDictionary;
             }
 
             set
             {
-                geometryDictionary = value;
+                model3DDictionary = value;
             }
         }
 
-        public List<Model3D> GeometryValues
+        public List<Model3D> Model3DValues
         {
             get
             {
-                return GeometryDictionary == null ? new List<Model3D>() :
-                   GeometryDictionary.Select(x => x.Value).ToList();
+                return Model3DDictionary == null ? new List<Model3D>() :
+                   Model3DDictionary.Select(x => x.Value).ToList();
             }
         }
 
-        public List<Model3D> GeometryValuesWithoutConstants
+        public List<Model3D> Model3DValuesWithoutConstants
         {
             get
             {
                 List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
 
-                return GeometryDictionary.Keys.Except(keysList).ToList().Select(key => GeometryDictionary[key] as GeometryModel3D)
+                return Model3DDictionary.Keys.Except(keysList).ToList().Select(key => Model3DDictionary[key] as GeometryModel3D)
                     .Cast<Model3D>().ToList();              
             }
         }
@@ -314,9 +315,9 @@ namespace Dynamo.Controls
                 Direction = directionalLightDirection
             };
 
-            if (geometryDictionary != null && !geometryDictionary.ContainsKey("DirectionalLight"))
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("DirectionalLight"))
             {
-                geometryDictionary.Add("DirectionalLight", directionalLight);
+                model3DDictionary.Add("DirectionalLight", directionalLight);
             }
 
             LineGeometryModel3D gridModel3D = new LineGeometryModel3D
@@ -328,9 +329,9 @@ namespace Dynamo.Controls
                 IsHitTestVisible = false
             };
 
-            if (geometryDictionary != null && !geometryDictionary.ContainsKey("Grid"))
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Grid"))
             {
-                geometryDictionary.Add("Grid", gridModel3D);
+                model3DDictionary.Add("Grid", gridModel3D);
             }
 
             LineGeometryModel3D axesModel3D = new LineGeometryModel3D
@@ -342,9 +343,9 @@ namespace Dynamo.Controls
                 IsHitTestVisible = false
             };
 
-            if (geometryDictionary != null && !geometryDictionary.ContainsKey("Axes"))
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Axes"))
             {
-                geometryDictionary.Add("Axes", axesModel3D);
+                model3DDictionary.Add("Axes", axesModel3D);
             }             
         }
 
@@ -416,9 +417,9 @@ namespace Dynamo.Controls
             vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
-            vm.VisualizationManager.RenderSelection -= VisualizationManager_RenderSelection;
-            vm.VisualizationManager.UpdateGeometryOnNodeDeletion -= VisualizationManager_UpdateGeometryOnNodeDeletion;
-            vm.VisualizationManager.InitializeGeomtery -= VisualizationManager_InitializeGeomtery;
+            vm.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
+            vm.VisualizationManager.DeletionHandled -= VisualizationManager_DeletionHandled;
+            vm.VisualizationManager.WorkspaceOpenedClosedHandled -= VisualizationManager_WorkspaceOpenedClosedHandled;
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
             vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
@@ -429,9 +430,9 @@ namespace Dynamo.Controls
             vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-            vm.VisualizationManager.RenderSelection += VisualizationManager_RenderSelection;
-            vm.VisualizationManager.UpdateGeometryOnNodeDeletion += VisualizationManager_UpdateGeometryOnNodeDeletion;
-            vm.VisualizationManager.InitializeGeomtery += VisualizationManager_InitializeGeomtery;
+            vm.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
+            vm.VisualizationManager.DeletionHandled += VisualizationManager_DeletionHandled;
+            vm.VisualizationManager.WorkspaceOpenedClosedHandled += VisualizationManager_WorkspaceOpenedClosedHandled;
             CompositionTarget.Rendering += CompositionTarget_Rendering;
             vm.ViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
         }
@@ -441,18 +442,18 @@ namespace Dynamo.Controls
         /// Always, keep these DirectionalLight,Grid,Axes. These values are rendered
         /// only once by helix, attaching them again will make no effect on helix 
         /// </summary> 
-        private void VisualizationManager_InitializeGeomtery()
+        private void VisualizationManager_WorkspaceOpenedClosedHandled()
         {
             List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText"};
             if (Text != null && Text.TextInfo.Any())
             {
                 Text.TextInfo.Clear();               
             }
-            foreach (var key in GeometryDictionary.Keys.Except(keysList).ToList())
+            foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
             {
-                var model = GeometryDictionary[key] as GeometryModel3D;
+                var model = Model3DDictionary[key] as GeometryModel3D;
                 model.Detach();
-                GeometryDictionary.Remove(key);
+                Model3DDictionary.Remove(key);
             }
 
             NotifyPropertyChanged("");
@@ -464,7 +465,7 @@ namespace Dynamo.Controls
         /// If any of the model is in selected mode, then unselect that model
         /// </summary>
         /// <param name="items">The items.</param>
-        private void VisualizationManager_RenderSelection(IEnumerable items)
+        private void VisualizationManager_SelectionHandled(IEnumerable items)
         {
             if (items == null)
             {
@@ -509,7 +510,7 @@ namespace Dynamo.Controls
         /// and notify helix        
         /// </summary>
         /// <param name="node">The node.</param>
-        private void VisualizationManager_UpdateGeometryOnNodeDeletion(NodeModel node)
+        private void VisualizationManager_DeletionHandled(NodeModel node)
         {
             var geometryModels = FindGeometryModel3DsForNode(node);
 
@@ -520,7 +521,7 @@ namespace Dynamo.Controls
 
             foreach (var kvp in geometryModels)
             {
-                GeometryDictionary.Remove(kvp.Key);
+                Model3DDictionary.Remove(kvp.Key);
             }
 
             NotifyPropertyChanged("");
@@ -535,7 +536,7 @@ namespace Dynamo.Controls
         private KeyValuePair<string, Model3D>[] FindGeometryModel3DsForNode(NodeModel node)
         {
             var geometryModels =
-                GeometryDictionary
+                Model3DDictionary
                     .Where(x => x.Key.Contains(node.AstIdentifierBase))
                     .Where(x => x.Value is GeometryModel3D)
                     .Select(x => x).ToArray();
@@ -885,12 +886,12 @@ namespace Dynamo.Controls
                     Transform = Model1Transform
                 };
 
-                if (geometryDictionary != null && !geometryDictionary.ContainsKey("BillBoardText"))
+                if (model3DDictionary != null && !model3DDictionary.ContainsKey("BillBoardText"))
                 {
-                    geometryDictionary.Add("BillBoardText", billboardText3D);
+                    model3DDictionary.Add("BillBoardText", billboardText3D);
                 }
 
-                var billBoardModel3D = geometryDictionary["BillBoardText"] as BillboardTextModel3D;
+                var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
                 billBoardModel3D.Geometry = Text;
                 if (!billBoardModel3D.IsAttached)
                 {
@@ -899,9 +900,9 @@ namespace Dynamo.Controls
             }
             else
             {               
-                if (geometryDictionary != null && geometryDictionary.ContainsKey("BillBoardText"))
+                if (model3DDictionary != null && model3DDictionary.ContainsKey("BillBoardText"))
                 {
-                    var billBoardModel3D = geometryDictionary["BillBoardText"] as BillboardTextModel3D;
+                    var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
                     billBoardModel3D.Geometry = Text;                   
                 }                
             }
@@ -913,7 +914,7 @@ namespace Dynamo.Controls
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
             //Clear the geometry values before adding the package.
-            VisualizationManager_InitializeGeomtery();
+            VisualizationManager_WorkspaceOpenedClosedHandled();
 
             foreach (var rp in parameters.Packages)
             {
@@ -934,9 +935,9 @@ namespace Dynamo.Controls
 
                     PointGeometryModel3D pointGeometry3D;
 
-                    if (geometryDictionary.ContainsKey(id))
+                    if (model3DDictionary.ContainsKey(id))
                     {
-                        pointGeometry3D = geometryDictionary[id] as PointGeometryModel3D;
+                        pointGeometry3D = model3DDictionary[id] as PointGeometryModel3D;
                     }
                     else
                     {
@@ -946,11 +947,11 @@ namespace Dynamo.Controls
                             Transform = Model1Transform,
                             Color = SharpDX.Color.White,
                             Figure = PointGeometryModel3D.PointFigure.Ellipse,
-                            Size = new Size(8, 8),
+                            Size = DefaultPointSize,
                             IsHitTestVisible = false
 
                         };
-                        geometryDictionary.Add(id, pointGeometry3D);
+                        model3DDictionary.Add(id, pointGeometry3D);
                     }
 
                     var points = pointGeometry3D.Geometry as PointGeometry3D;
@@ -987,9 +988,9 @@ namespace Dynamo.Controls
 
                     LineGeometryModel3D lineGeometry3D;
 
-                    if (geometryDictionary.ContainsKey(id))
+                    if (model3DDictionary.ContainsKey(id))
                     {
-                        lineGeometry3D = geometryDictionary[id] as LineGeometryModel3D;
+                        lineGeometry3D = model3DDictionary[id] as LineGeometryModel3D;
                     }
                     else
                     {
@@ -1002,7 +1003,7 @@ namespace Dynamo.Controls
                             IsHitTestVisible = false
                         };
 
-                        geometryDictionary.Add(id, lineGeometry3D);
+                        model3DDictionary.Add(id, lineGeometry3D);
                     }
 
                     var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
@@ -1039,9 +1040,9 @@ namespace Dynamo.Controls
 
                 DynamoGeometryModel3D meshGeometry3D;
 
-                if (geometryDictionary.ContainsKey(id))
+                if (model3DDictionary.ContainsKey(id))
                 {
-                    meshGeometry3D = geometryDictionary[id] as DynamoGeometryModel3D;
+                    meshGeometry3D = model3DDictionary[id] as DynamoGeometryModel3D;
                 }
                 else
                 {
@@ -1073,7 +1074,7 @@ namespace Dynamo.Controls
                         meshGeometry3D.Material = diffMat;
                     }
                     ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
-                    geometryDictionary.Add(id, meshGeometry3D);
+                    model3DDictionary.Add(id, meshGeometry3D);
                 }
                 var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
                 var idxCount = meshSet.Positions.Count;
@@ -1100,7 +1101,7 @@ namespace Dynamo.Controls
        
         private void Attach()
         {
-            foreach (var kvp in geometryDictionary)
+            foreach (var kvp in model3DDictionary)
             {
                 var model3d = kvp.Value;
                 if (model3d is GeometryModel3D)
