@@ -20,5 +20,5 @@
   </Connectors>
   <Notes />
   <Annotations />
-  <Dynamo.Models.PresetsModel />
+  <Presets/>
 </Workspace>

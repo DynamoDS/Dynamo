@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo;
-using ProtoCore;
 using Dynamo.Models;
 using System.Xml;
 using System.Threading;
 using System.IO;
+using DynamoUtilities;
+using Dynamo.Core;
 
-namespace Dynamo.Core
+namespace DynamoSandbox
 {
     public struct CommandLineArguments
     {
-        internal static CommandLineArguments FromArguments(string[] args)
+        public static CommandLineArguments FromArguments(string[] args)
         {
             // Running Dynamo sandbox with a command file:
             // DynamoSandbox.exe /c "C:\file path\file.xml"
@@ -135,11 +136,19 @@ namespace Dynamo.Core
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
             if (!string.IsNullOrEmpty(cmdLineArgs.PresetFilePath))
             {
-                //load the states contained in this file, it should be structured so
-                //that there is a PresetsModel element containing multiple PresetStates elements
-                //load it pointing to the file we opened so that states will point to the correct nodes
-                model.CurrentWorkspace.PresetsCollection.ImportStates(
-                    PresetsModel.LoadFromXmlPaths(cmdLineArgs.PresetFilePath, cmdLineArgs.OpenFilePath, model.NodeFactory));
+                //first load the openfile nodegraph
+                var originalGraphdoc = XmlHelper.CreateDocument("tempworkspace");
+                originalGraphdoc.Load(cmdLineArgs.OpenFilePath);
+                var graph = NodeGraph.LoadGraphFromXml(originalGraphdoc, model.NodeFactory);
+                
+                //then load the presetsfile nodegraph (this should only contain presets),
+                var presetsDoc = XmlHelper.CreateDocument("presetstempworkspace");
+                presetsDoc.Load(cmdLineArgs.PresetFilePath);
+                //when we load the presets we need to pass in the nodeModels from the original graph
+                var presets = NodeGraph.LoadPresetsFromXml(presetsDoc,graph.Nodes, model.NodeFactory.AsLogger());
+
+                //load the presets contained in the presetsfile into the workspace,
+                model.CurrentWorkspace.ImportPresets(presets);
             }
 
             //build a list of states, for now, none, a single state, or all of them
@@ -149,7 +158,7 @@ namespace Dynamo.Core
             {
                 if (cmdLineArgs.PresetStateID == "all")
                 {
-                    foreach (var state in model.CurrentWorkspace.PresetsCollection.PresetStates)
+                    foreach (var state in model.CurrentWorkspace.Presets)
                     {
                         stateNames.Add(state.Name);
                     }
@@ -168,7 +177,7 @@ namespace Dynamo.Core
             XmlDocument doc = null;
             foreach (var stateName in stateNames)
             {
-                model.CurrentWorkspace.SetWorkspaceToState(stateName);
+                model.CurrentWorkspace.ApplyPreset(stateName);
                 model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
 
                 while (evalComplete == false)

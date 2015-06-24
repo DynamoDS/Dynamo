@@ -793,14 +793,7 @@ namespace Dynamo.Models
         {
             this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
-        internal void SetWorkspaceToState(string stateName)
-        {
-            var state = presetsCollection.PresetStates.Where(x=>x.Name == stateName).FirstOrDefault();
-            {
-                SetWorkspaceToState(state);
-            }
-        }
-
+        
         #endregion
 
         #region Presets
@@ -835,6 +828,16 @@ namespace Dynamo.Models
                 presets.Remove(state);
             }
         }
+
+        //this overload is used to search for state by name
+        internal void ApplyPreset(string stateName)
+        {
+            var state = this.Presets.Where(x => x.Name == stateName).FirstOrDefault();
+            {
+                ApplyPreset(state);
+            }
+        }
+
 
         internal void ApplyPreset(PresetModel state)
         {
@@ -879,7 +882,12 @@ namespace Dynamo.Models
             this.AddPresetCore(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
         }
-        
+
+        public void ImportPresets(IEnumerable<PresetModel> presetCollection)
+        {
+            presets.AddRange(presetCollection);
+        }
+
         #endregion
 
         #region private/internal methods
