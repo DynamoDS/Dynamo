@@ -134,7 +134,7 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual void VisitFunctionDefinitionNode(FunctionDefinitionNode node)
         {
-            DefaultVisit(node); ;
+            DefaultVisit(node);
         }
 
         public virtual void VisitIfStatementNode(IfStatementNode node)
@@ -346,7 +346,7 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual TResult VisitFunctionDefinitionNode(FunctionDefinitionNode node)
         {
-            return DefaultVisit(node); ;
+            return DefaultVisit(node);
         }
 
         public virtual TResult VisitIfStatementNode(IfStatementNode node)
@@ -474,6 +474,13 @@ namespace ProtoCore.SyntaxAnalysis
                     node.ArrayDimensions = newArrayDimensions as ArrayNode;
             }
 
+            return node;
+        }
+
+        public override AssociativeNode VisitFunctionDefinitionNode(FunctionDefinitionNode node)
+        {
+            var nodeList = node.FunctionBody.Body.Select(astNode => astNode.Accept(this)).ToList();
+            node.FunctionBody.Body = nodeList;
             return node;
         }
 

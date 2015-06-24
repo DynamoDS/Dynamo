@@ -462,48 +462,5 @@ namespace Dynamo.PackageManager.Tests
 
         #endregion
 
-        #region Logout
-
-        [Test]
-        public void Logout_CausesLogoutMethodToBeInvokedOnAuthProvider()
-        {
-            var logoutCalled = false;
-
-            var ap = new Mock<IAuthProvider>();
-            ap.Setup(x => x.Logout()).Callback(() => logoutCalled = true);
-
-            var gc = new Mock<IGregClient>();
-            gc.Setup(x => x.AuthProvider).Returns(ap.Object);
-
-            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            pc.Logout();
-
-            Assert.IsTrue(logoutCalled);
-        }
-        
-        #endregion
-
-        #region Login
-
-        [Test]
-        public void Login_CausesLoginMethodToBeInvokedOnAuthProvider()
-        {
-            var called = false;
-
-            var ap = new Mock<IAuthProvider>();
-            ap.Setup(x => x.Login()).Callback(() => called = true);
-
-            var gc = new Mock<IGregClient>();
-            gc.Setup(x => x.AuthProvider).Returns(ap.Object);
-
-            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            pc.Login();
-
-            Assert.IsTrue(called);
-        }
-
-        #endregion
     }
 }

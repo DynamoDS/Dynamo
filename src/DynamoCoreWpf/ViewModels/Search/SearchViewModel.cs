@@ -211,6 +211,7 @@ namespace Dynamo.ViewModels
 
             MaxNumSearchResults = 15;
 
+            selectionNavigator = new SelectionNavigator(SearchRootCategories);
             InitializeCore();
         }
 
@@ -218,6 +219,8 @@ namespace Dynamo.ViewModels
         internal SearchViewModel(NodeSearchModel model)
         {
             Model = model;
+            selectionNavigator = new SelectionNavigator(SearchRootCategories);
+            InitializeCore();
         }
 
         private void InitializeCore()
@@ -691,6 +694,8 @@ namespace Dynamo.ViewModels
 
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
+
+            selectionNavigator.UpdateRootCategories(SearchRootCategories);
         }
 
 
@@ -843,12 +848,25 @@ namespace Dynamo.ViewModels
 
         #region Selection
 
-        /// <summary>
-        ///     Increments the selected element by 1, unless it is the last element already
-        /// </summary>
-        public void SelectNext()
-        {
+        private SelectionNavigator selectionNavigator;
 
+        /// <summary>
+        /// Selected member is  library search view.
+        /// </summary>
+        public NodeSearchElementViewModel CurrentlySelectedMember
+        {
+            get
+            {
+                return selectionNavigator.CurrentlySelection;
+            }
+        }
+
+        /// <summary>
+        /// Used during library search key navigation. Counts next selected member index.
+        /// </summary>
+        public void MoveSelection(NavigationDirection direction)
+        {
+            selectionNavigator.MoveSelection(direction);
         }
 
         private void UpdateTopResult(SearchMemberGroup memberGroup)
@@ -863,6 +881,12 @@ namespace Dynamo.ViewModels
             topMemberGroup.AddMember(memberGroup.Members.First());
 
             TopResult = topMemberGroup;
+        }
+
+        internal void ExecuteSelectedMember()
+        {
+            if (CurrentlySelectedMember != null)
+                CurrentlySelectedMember.ClickedCommand.Execute(null);
         }
 
         #endregion

@@ -79,3 +79,5 @@ src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 /src/Libraries/IronPython/*.resources
 /src/Libraries/Tesellation/*.resources
 /src/Libraries/UnitsUI/*.resources
+/src/DynamoCore/BuiltInAndOperators/BuiltInImages.resources
+/src/DynamoCore/BuiltInAndOperators/OperatorsImages.resources

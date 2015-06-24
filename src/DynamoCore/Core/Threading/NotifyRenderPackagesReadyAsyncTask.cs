@@ -11,7 +11,7 @@
     /// 
     class NotifyRenderPackagesReadyAsyncTask : AsyncTask
     {
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }

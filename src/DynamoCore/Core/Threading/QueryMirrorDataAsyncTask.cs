@@ -21,7 +21,7 @@ namespace Dynamo.Core.Threading
         private MirrorData cachedMirrorData;
         private readonly EngineController engineController;
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }

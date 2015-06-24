@@ -64,7 +64,7 @@ namespace Dynamo.Controls
         private Color4 defaultPointColor;
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
-        private int renderingTier;
+        private int renderingTier; 
         private static readonly Size DefaultPointSize = new Size(8,8);
 
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
@@ -80,7 +80,9 @@ namespace Dynamo.Controls
                 model3DDictionary = value;
             }
         }
-
+ 
+        private const double NearPlaneDistanceFactor = 0.0001;
+ 
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -280,13 +282,11 @@ namespace Dynamo.Controls
             // camera setup
             Camera = new PerspectiveCamera
             {
-                Position = new Point3D(10, 15, 10),
-                LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
-                NearPlaneDistance = .1,
                 FarPlaneDistance = 10000000,
-                
             };
+
+            ResetCamera();
 
             DrawGrid();
         }
@@ -335,7 +335,14 @@ namespace Dynamo.Controls
             if (model3DDictionary != null && !model3DDictionary.ContainsKey("Axes"))
             {
                 model3DDictionary.Add("Axes", axesModel3D);
-            }             
+            }
+        }
+
+        private void ResetCamera()
+        {
+            Camera.Position = new Point3D(10, 15, 10);
+            Camera.LookDirection = new Vector3D(-10, -10, -10);
+            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -580,6 +587,25 @@ namespace Dynamo.Controls
             {
                 directionalLight.Direction = v;
             }
+
+            UpdateNearClipPlaneForSceneBounds();
+        }
+
+        /// <summary>
+        /// This method attempts to maximize the near clip plane in order to 
+        /// achiever higher z-buffer precision.
+        /// </summary>
+        private void UpdateNearClipPlaneForSceneBounds()
+        {
+            // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+            var sceneBounds = watch_view.FindBounds();
+            var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
+            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+        }
+
+        private double CalculateNearClipPlane(double maxDim)
+        {
+            return maxDim * NearPlaneDistanceFactor;
         }
 
         /// <summary>
@@ -857,7 +883,6 @@ namespace Dynamo.Controls
             };
 
             AggregateRenderPackages(aggParams);
-
 
 #if DEBUG
             renderTimer.Stop();

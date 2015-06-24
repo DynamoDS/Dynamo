@@ -71,10 +71,15 @@ namespace Dynamo.DSEngine
             DocumentElementType property,
             string paramName = "")
         {
+            //customNodeDefinitions typedParameters don't have functionDescriptors
+            if (function == null)
+            {
+                return string.Empty;
+            }
             var assemblyName = function.Assembly;
 
-            if (string.IsNullOrEmpty(assemblyName) || (function.Type == FunctionType.GenericFunction))
-                return String.Empty; // Operators, or generic global function in DS script.
+            if (string.IsNullOrEmpty(assemblyName))
+                return String.Empty;
 
             var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
                 (assemblyName, GetMemberElementName(function));
@@ -190,6 +195,9 @@ namespace Dynamo.DSEngine
 
                 case FunctionType.StaticProperty:
                     goto case FunctionType.InstanceProperty;
+                    break;
+                case FunctionType.GenericFunction:
+                    return member.FunctionName;
                     break;
 
                 default:
