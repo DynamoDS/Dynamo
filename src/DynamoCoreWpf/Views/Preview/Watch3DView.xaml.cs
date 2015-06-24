@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Dynamo.UI;
 using Dynamo.ViewModels;
-using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -23,7 +20,7 @@ using ColorConverter = System.Windows.Media.ColorConverter;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
-using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+using Quaternion = SharpDX.Quaternion;
 
 namespace Dynamo.Controls
 {
@@ -55,21 +52,20 @@ namespace Dynamo.Controls
         private PerspectiveCamera camera;
         private Color4 selectionColor;
         private Color4 materialColor;
-        private bool showShadows;
         private Vector3 directionalLightDirection;
         private Color4 directionalLightColor;
         private Color4 defaultLineColor;
         private Color4 defaultPointColor;
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
+        private int renderingTier;
+        private const double NearPlaneDistanceFactor = 0.0001;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
 #endif
 
         #endregion
-
-        #region public properties
 
         /// <summary>
         /// The LeftClickCommand is set according to the
@@ -92,6 +88,8 @@ namespace Dynamo.Controls
                 return null;
             }
         }
+
+        #region public properties
 
         public LineGeometry3D Grid
         {
@@ -119,11 +117,9 @@ namespace Dynamo.Controls
 
         public LineGeometry3D LinesSelected { get; set; }
 
+        public MeshGeometry3D DynamoMesh { get; set; }
+
         public MeshGeometry3D Mesh { get; set; }
-
-        public MeshGeometry3D PerVertexMesh { get; set; }
-
-        public MeshGeometry3D MeshSelected { get; set; }
 
         public BillboardText3D Text { get; set; }
 
@@ -132,20 +128,14 @@ namespace Dynamo.Controls
             get { return watch_view; }
         }
 
-        /// <summary>
-        /// Used for testing to track the number of meshes that are merged
-        /// during render.
-        /// </summary>
-        public int MeshCount { get; set; }
+        public PhongMaterial WhiteMaterial { get; set; }
 
-        public PhongMaterial WhiteMaterial { get; private set; }
-
-        public PhongMaterial SelectedMaterial { get; private set; }
+        public PhongMaterial SelectedMaterial { get; set; }
 
         public Vector3 DirectionalLightDirection
         {
             get { return directionalLightDirection; }
-            private set
+            set
             {
                 directionalLightDirection = value;
                 NotifyPropertyChanged("DirectionalLightDirection");
@@ -155,15 +145,15 @@ namespace Dynamo.Controls
         public Color4 DirectionalLightColor
         {
             get { return directionalLightColor; }
-            private set
+            set
             {
                 directionalLightColor = value;
                 NotifyPropertyChanged("DirectionalLightColor");
             }
         }
 
-        public Transform3D Model1Transform { get; private set; }
-        
+        public Transform3D Model1Transform { get; set; }
+
         public RenderTechnique RenderTechnique
         {
             get
@@ -184,7 +174,7 @@ namespace Dynamo.Controls
                 return this.camera;
             }
 
-            protected set
+            set
             {
                 camera = value;
                 NotifyPropertyChanged("Camera");
@@ -295,15 +285,20 @@ namespace Dynamo.Controls
             // camera setup
             Camera = new PerspectiveCamera
             {
-                Position = new Point3D(10, 15, 10),
-                LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
-                NearPlaneDistance = .1,
                 FarPlaneDistance = 10000000,
-                
             };
 
+            ResetCamera();
+
             DrawGrid();
+        }
+
+        private void ResetCamera()
+        {
+            Camera.Position = new Point3D(10, 15, 10);
+            Camera.LookDirection = new Vector3D(-10, -10, -10);
+            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -336,13 +331,20 @@ namespace Dynamo.Controls
 
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
+            Detach(true);
+            UnregisterEventHandlers();
+        }
+
+        private void UnregisterEventHandlers()
+        {
             var vm = DataContext as IWatchViewModel;
             if (vm == null) return;
+
             vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
@@ -362,7 +364,7 @@ namespace Dynamo.Controls
             vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
 
-            var renderingTier = (RenderCapability.Tier >> 16);
+            renderingTier = (RenderCapability.Tier >> 16);
             var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
             var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
@@ -375,10 +377,17 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
 
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
+            vm.ViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
 #if DEBUG
             TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
 #endif
+            
+        }
+
+        void Model_ShutdownStarted(Models.DynamoModel model)
+        {
+            Detach(true);
+            UnregisterEventHandlers();
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -407,16 +416,34 @@ namespace Dynamo.Controls
             var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
             var right = Vector3.Cross(cf, cu);
 
-            var qel = SharpDX.Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
-            var qaz = SharpDX.Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
+            var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
+            var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
             var v = Vector3.Transform(cf, qaz*qel);
 
             if (!DirectionalLightDirection.Equals(v))
             {
                 DirectionalLightDirection = v; 
             }
+
+            UpdateNearClipPlaneForSceneBounds();
         }
 
+        /// <summary>
+        /// This method attempts to maximize the near clip plane in order to 
+        /// achiever higher z-buffer precision.
+        /// </summary>
+        private void UpdateNearClipPlaneForSceneBounds()
+        {
+            // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+            var sceneBounds = watch_view.FindBounds();
+            var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
+            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+        }
+
+        private double CalculateNearClipPlane(double maxDim)
+        {
+            return maxDim * NearPlaneDistanceFactor;
+        }
 
         /// <summary>
         /// Handler for the visualization manager's ResultsReadyToVisualize event.
@@ -668,17 +695,16 @@ namespace Dynamo.Controls
                 return;
             }
 
+            // Don't render if the user's system is incapable.
+            if (renderingTier == 0)
+            {
+                return;
+            }
+
 #if DEBUG
             renderTimer.Start();
 #endif
-            Points = null;
-            Lines = null;
-            LinesSelected = null;
-            Mesh = null;
-            PerVertexMesh = null;
-            MeshSelected = null;
-            Text = null;
-            MeshCount = 0;
+            Detach(false);
 
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
@@ -686,9 +712,8 @@ namespace Dynamo.Controls
             var points = HelixRenderPackage.InitPointGeometry();
             var lines = HelixRenderPackage.InitLineGeometry();
             var linesSel = HelixRenderPackage.InitLineGeometry();
+            var dynamoMesh = HelixRenderPackage.InitMeshGeometry();
             var mesh = HelixRenderPackage.InitMeshGeometry();
-            var meshSel = HelixRenderPackage.InitMeshGeometry();
-            var perVertexMesh = HelixRenderPackage.InitMeshGeometry();
             var text = HelixRenderPackage.InitText3D();
 
             var aggParams = new PackageAggregationParams
@@ -697,9 +722,8 @@ namespace Dynamo.Controls
                 Points = points,
                 Lines = lines,
                 SelectedLines = linesSel,
+                DynamoMesh = dynamoMesh,
                 Mesh = mesh,
-                PerVertexMesh = perVertexMesh,
-                SelectedMesh = meshSel,
                 Text = text
             };
 
@@ -717,15 +741,12 @@ namespace Dynamo.Controls
             if (!text.TextInfo.Any())
                 text = null;
 
+            if (!dynamoMesh.Positions.Any())
+                dynamoMesh = null;
+
             if (!mesh.Positions.Any())
                 mesh = null;
-
-            if (!meshSel.Positions.Any())
-                meshSel = null;
-
-            if (!perVertexMesh.Positions.Any())
-                perVertexMesh = null;
-
+        
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
@@ -738,9 +759,8 @@ namespace Dynamo.Controls
                 Points = points,
                 Lines = lines,
                 SelectedLines = linesSel,
+                DynamoMesh = dynamoMesh,
                 Mesh = mesh,
-                SelectedMesh = meshSel,
-                PerVertexMesh = perVertexMesh,
                 Text = text
             };
 
@@ -751,9 +771,6 @@ namespace Dynamo.Controls
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-
-
-            MeshCount = 0;
             foreach (var rp in parameters.Packages)
             {
                 var p = rp.Points;
@@ -821,15 +838,14 @@ namespace Dynamo.Controls
                     // colors goes into the per vertex mesh. Everything else
                     // goes into the plain mesh.
 
-                    var meshSet = rp.IsSelected ? 
-                        parameters.SelectedMesh :
-                        rp.RequiresPerVertexColoration ? parameters.PerVertexMesh : parameters.Mesh;
+                    var meshSet = rp.IsSelected || rp.RequiresPerVertexColoration ? 
+                        parameters.DynamoMesh : parameters.Mesh;
 
                     var idxCount = meshSet.Positions.Count;
-
+                    
                     meshSet.Positions.AddRange(m.Positions);
 
-                    meshSet.Colors.AddRange(m.Colors);
+                    meshSet.Colors.AddRange(rp.IsSelected ? Enumerable.Repeat(selectionColor,m.Positions.Count): m.Colors);
                     meshSet.Normals.AddRange(m.Normals);
                     meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
                     meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
@@ -839,10 +855,28 @@ namespace Dynamo.Controls
                         var pt = meshSet.Positions[idxCount];
                         parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
-
-                    MeshCount++;
                 }
             }
+        }
+
+        private void Detach(bool detachPersistentObjects)
+        {
+            linesView.Detach();
+            linesSelectedView.Detach();
+            pointsView.Detach();
+            dynamoMeshView.Detach();
+            meshView.Detach();
+            textView.Detach();
+
+            if (detachPersistentObjects)
+            {
+                key.Detach();
+                gridView.Detach();
+                axesView.Detach();
+                watch_view.Detach();
+            }
+
+            GC.Collect();
         }
 
         private void SendGraphicsToView(GraphicsUpdateParams parameters)
@@ -850,13 +884,26 @@ namespace Dynamo.Controls
             Points = parameters.Points;
             Lines = parameters.Lines;
             LinesSelected = parameters.SelectedLines;
+            DynamoMesh = parameters.DynamoMesh;
             Mesh = parameters.Mesh;
-            MeshSelected = parameters.SelectedMesh;
-            PerVertexMesh = parameters.PerVertexMesh;
             Text = parameters.Text;
+
+            linesView.Attach(watch_view.RenderHost);
+            linesSelectedView.Attach(watch_view.RenderHost);
+            pointsView.Attach(watch_view.RenderHost);
+            dynamoMeshView.Attach(watch_view.RenderHost);
+            meshView.Attach(watch_view.RenderHost);
+            textView.Attach(watch_view.RenderHost);
 
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
+
+            Points = null;
+            Lines = null;
+            LinesSelected = null;
+            DynamoMesh = null;
+            Mesh = null;
+            Text = null;
         }
 
         #endregion
@@ -887,9 +934,8 @@ namespace Dynamo.Controls
         public PointGeometry3D Points { get; set; }
         public LineGeometry3D Lines { get; set; }
         public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D DynamoMesh { get; set; }
         public MeshGeometry3D Mesh { get; set; }
-        public MeshGeometry3D SelectedMesh { get; set; }
-        public MeshGeometry3D PerVertexMesh { get; set; }
         public BillboardText3D Text { get; set; }
     }
 
@@ -899,9 +945,8 @@ namespace Dynamo.Controls
         public PointGeometry3D Points { get; set; }
         public LineGeometry3D Lines { get; set; }
         public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D DynamoMesh { get; set; }
         public MeshGeometry3D Mesh { get; set; }
-        public MeshGeometry3D PerVertexMesh { get; set; }
-        public MeshGeometry3D SelectedMesh { get; set; }
         public BillboardText3D Text { get; set; }
     }
 }

@@ -94,6 +94,7 @@
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
+    <controls:PackageUploadStateToStringConverter x:Key="PackageUploadStateToStringConverter" />
     <controls:PackageDownloadStateToStringConverter x:Key="PackageDownloadStateToStringConverter" />
     <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter" />
     <controls:PortTypeToMarginConverter x:Key="PortTypeToMarginConverter" />
@@ -150,4 +151,5 @@
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter"/>
     <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
+    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />
 </ResourceDictionary>

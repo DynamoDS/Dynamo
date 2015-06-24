@@ -41,7 +41,6 @@ namespace Dynamo.Core.Threading
         private const byte DefB = 130;
         private const byte DefA = 255;
         private const byte MidTone = 180;
-        private bool renderEdges = false;
 
         #region Class Data Members and Properties
 
@@ -60,7 +59,7 @@ namespace Dynamo.Core.Threading
             get { return renderPackages; }
         }
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }
@@ -169,16 +168,16 @@ namespace Dynamo.Core.Threading
 
                 try
                 {
-                    graphicItem.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                    graphicItem.Tessellate(package, factory.TessellationParameters);
 
-                    if (renderEdges)
+                    if (factory.TessellationParameters.ShowEdges)
                     {
                         var surf = graphicItem as Surface;
                         if (surf != null)
                         {
                             foreach (var curve in surf.PerimeterCurves())
                             {
-                                curve.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                                curve.Tessellate(package, factory.TessellationParameters);
                                 curve.Dispose();
                             }
                         }
@@ -188,7 +187,7 @@ namespace Dynamo.Core.Threading
                         {
                             foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
                             {
-                                geom.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                                geom.Tessellate(package, factory.TessellationParameters);
                                 geom.Dispose();
                             }
                         }

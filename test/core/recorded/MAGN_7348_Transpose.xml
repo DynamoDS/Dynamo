@@ -1,0 +1,73 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="317" Y="312" Width="0" Height="3" IsCrossSelection="false" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DoubleInput guid="644ebb42-2c8a-426e-bfc4-642f94508b0f" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="178" y="79" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..9" />
+    </Dynamo.Nodes.DoubleInput>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="644ebb42-2c8a-426e-bfc4-642f94508b0f" Modifiers="0" />
+  <DragSelectionCommand X="573" Y="281" DragOperation="0" />
+  <DragSelectionCommand X="211" Y="101" DragOperation="1" />
+  <UpdateModelValueCommand Name="Value" Value="0..9" WorkspaceGuid="64a97893-e126-45a9-af96-be59d78d15c7">
+    <ModelGuid>644ebb42-2c8a-426e-bfc4-642f94508b0f</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="8d8be654-f5ba-4cac-87a8-0f795a22a483" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="301" y="43" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="8d8be654-f5ba-4cac-87a8-0f795a22a483" Modifiers="0" />
+  <DragSelectionCommand X="661" Y="303" DragOperation="0" />
+  <DragSelectionCommand X="398" Y="63" DragOperation="1" />
+  <MakeConnectionCommand NodeId="644ebb42-2c8a-426e-bfc4-642f94508b0f" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8d8be654-f5ba-4cac-87a8-0f795a22a483" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="644ebb42-2c8a-426e-bfc4-642f94508b0f" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="8d8be654-f5ba-4cac-87a8-0f795a22a483" PortIndex="1" Type="0" ConnectionMode="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="6e6ef08e-e743-493d-9941-293e3eee00e9" type="Dynamo.Nodes.DSFunction" nickname="List.Transpose" x="513" y="245" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="6e6ef08e-e743-493d-9941-293e3eee00e9" Modifiers="0" />
+  <DragSelectionCommand X="675" Y="328" DragOperation="0" />
+  <DragSelectionCommand X="624" Y="83" DragOperation="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" type="Dynamo.Nodes.DSFunction" nickname="NurbsCurve.ByPoints" x="494" y="37" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" Modifiers="0" />
+  <DragSelectionCommand X="725" Y="353" DragOperation="0" />
+  <DragSelectionCommand X="625" Y="21" DragOperation="1" />
+  <SelectModelCommand ModelGuid="6e6ef08e-e743-493d-9941-293e3eee00e9" Modifiers="0" />
+  <DragSelectionCommand X="598" Y="90" DragOperation="0" />
+  <DragSelectionCommand X="574" Y="273" DragOperation="1" />
+  <SelectModelCommand ModelGuid="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" Modifiers="0" />
+  <DragSelectionCommand X="585" Y="15" DragOperation="0" />
+  <DragSelectionCommand X="567" Y="53" DragOperation="1" />
+  <MakeConnectionCommand NodeId="8d8be654-f5ba-4cac-87a8-0f795a22a483" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="8d8be654-f5ba-4cac-87a8-0f795a22a483" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="6e6ef08e-e743-493d-9941-293e3eee00e9" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="6e6ef08e-e743-493d-9941-293e3eee00e9" Modifiers="0" />
+  <DragSelectionCommand X="617" Y="319" DragOperation="0" />
+  <DragSelectionCommand X="617" Y="319" DragOperation="1" />
+  <SelectModelCommand ModelGuid="8d8be654-f5ba-4cac-87a8-0f795a22a483" Modifiers="0" />
+  <DragSelectionCommand X="414" Y="167" DragOperation="0" />
+  <DragSelectionCommand X="414" Y="167" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="909" Y="249" Width="0" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="f4d5ef15-fb8f-49c4-a606-702286cc3d0c" Modifiers="0" />
+  <DragSelectionCommand X="643" Y="110" DragOperation="0" />
+  <DragSelectionCommand X="643" Y="110" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="239" Y="626" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="8d8be654-f5ba-4cac-87a8-0f795a22a483" Modifiers="0" />
+  <UpdateModelValueCommand Name="ArgumentLacing" Value="CrossProduct" WorkspaceGuid="00000000-0000-0000-0000-000000000000">
+    <ModelGuid>8d8be654-f5ba-4cac-87a8-0f795a22a483</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="92" Y="563" Width="0" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+</Commands>

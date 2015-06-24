@@ -1,0 +1,42 @@
+<Workspace Version="0.8.2.1521" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="ef396008-29ce-4d2f-8996-904cb941238c" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthHeight" x="364.5" y="270.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight@Autodesk.DesignScript.Geometry.CoordinateSystem,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="51bbc69d-6c09-4388-a37c-7c4f3560b0db" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthHeight" x="455.5" y="432.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight@Autodesk.DesignScript.Geometry.Plane,double,double">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="2cc8eefa-9f30-4001-8c37-5e2ecd3c20f5" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthHeight" x="455.5" y="594.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.Watch3D guid="c6ed7503-c194-464b-bbff-ac6dc44f94f2" type="Dynamo.Nodes.Watch3D" nickname="Watch 3D" x="812.5" y="431.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="243" height="332">
+        <camera pos_x="10" pos_y="-10" pos_z="10" look_x="-1" look_y="1" look_z="-1" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.DSFunction guid="2c6733aa-5581-4a73-8180-e399498d4fce" type="Dynamo.Nodes.DSFunction" nickname="Plane.YZ" x="268.5" y="432.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Plane.YZ" />
+    <Dynamo.Nodes.Watch3D guid="84bb7f40-9f02-4f5f-9b69-5c70c7dc0e7e" type="Dynamo.Nodes.Watch3D" nickname="Watch 3D" x="1148" y="592" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="253" height="395">
+        <camera pos_x="10" pos_y="-10" pos_z="10" look_x="-1" look_y="1" look_z="-1" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.Watch3D guid="702b0289-15ca-4428-8529-83cbfd59e774" type="Dynamo.Nodes.Watch3D" nickname="Watch 3D" x="1147" y="112" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="253" height="395">
+        <camera pos_x="10" pos_y="-10" pos_z="10" look_x="-1" look_y="1" look_z="-1" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ef396008-29ce-4d2f-8996-904cb941238c" start_index="0" end="702b0289-15ca-4428-8529-83cbfd59e774" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="51bbc69d-6c09-4388-a37c-7c4f3560b0db" start_index="0" end="c6ed7503-c194-464b-bbff-ac6dc44f94f2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2cc8eefa-9f30-4001-8c37-5e2ecd3c20f5" start_index="0" end="84bb7f40-9f02-4f5f-9b69-5c70c7dc0e7e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2c6733aa-5581-4a73-8180-e399498d4fce" start_index="0" end="51bbc69d-6c09-4388-a37c-7c4f3560b0db" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

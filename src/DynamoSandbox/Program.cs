@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using System.Windows;
-using System.Windows.Documents;
-using Dynamo;
+
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.DynamoSandbox;
@@ -16,9 +19,6 @@ using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-using DynamoUtilities;
-using System.Threading;
-using System.Globalization;
 
 using Microsoft.Win32;
 
@@ -229,6 +229,9 @@ namespace DynamoSandbox
             preloaderLocation = preloader.PreloaderLocation;
         }
 
+        [DllImport("msvcrt.dll")]
+        public static extern int _putenv(string env);
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -237,13 +240,35 @@ namespace DynamoSandbox
             try
             {
                 var cmdLineArgs = CommandLineArguments.FromArguments(args);
+                var supportedLocale = new HashSet<string>(new[]
+                        {
+                            "cs-CZ", "de-DE", "en-US", "es-ES", "fr-FR", "it-IT",
+                            "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW"
+                        });
+                string libgLocale;
 
                 if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
                 {
                     // Change the application locale, if a locale information is supplied.
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
                     Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
+                    libgLocale = cmdLineArgs.Locale;
                 }
+                else
+                {
+                    // In case no language is specified, libG's locale should be that of the OS.
+                    // There is no need to set Dynamo's locale in this case.
+                    libgLocale = CultureInfo.InstalledUICulture.ToString();
+                }
+
+                // If locale is not supported by Dynamo, default to en-US.
+                if (!supportedLocale.Any(s => s.Equals(libgLocale, StringComparison.InvariantCultureIgnoreCase)))
+                    libgLocale = "en-US";
+
+                // Change the locale that LibG depends on.
+                StringBuilder sb = new StringBuilder("LANGUAGE=");
+                sb.Append(libgLocale.Replace("-", "_"));
+                _putenv(sb.ToString());
 
                 MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
             }

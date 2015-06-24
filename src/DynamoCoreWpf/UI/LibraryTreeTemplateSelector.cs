@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Search;
 
 namespace Dynamo.Controls
 {
@@ -21,6 +22,28 @@ namespace Dynamo.Controls
 
             if (item is NodeCategoryViewModel)
                 return NestedCategoryTemplate;
+
+            const string message = "Unknown object bound to collection";
+            throw new InvalidOperationException(message);
+        }
+    }
+
+    public class LibrarySearchTreeTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate CategoryTemplate { get; set; }
+        public DataTemplate MemberGroupsTemplate { get; set; }
+        public DataTemplate MemberTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            if (item is NodeSearchElementViewModel)
+                return MemberTemplate;
+
+            if (item is SearchMemberGroup)
+                return MemberGroupsTemplate;
+
+            if (item is SearchCategory)
+                return CategoryTemplate;
 
             const string message = "Unknown object bound to collection";
             throw new InvalidOperationException(message);

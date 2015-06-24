@@ -135,6 +135,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
                 new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
                 isTestMode) { }
@@ -147,10 +148,11 @@ namespace Dynamo.Models
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
+            IEnumerable<PresetModel> presets,
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n,a, info, factory)
+            : base(e, n,a, info, factory,presets)
         {
             EvaluationCount = 0;
 
@@ -458,17 +460,6 @@ namespace Dynamo.Models
         /// </summary>
         public void Run()
         {
-            // If the RunSettings.RunEnabled is set to false for some contexts, this
-            // method will not run if it is in the manual mode because the run button
-            // is disabled. But it is not the case in the automatic mode, even if the
-            // running of the graph will cause issues for some contexts. This is why
-            // the condition is added here so that if RunSettings.RunEnabled is set to
-            // false, this method will return.
-            if (!RunSettings.RunEnabled)
-            {
-                return;
-            }
-
             graphExecuted = true;
 
             // When Dynamo is shut down, the workspace is cleared, which results

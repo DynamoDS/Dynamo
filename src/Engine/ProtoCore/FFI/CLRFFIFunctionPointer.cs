@@ -349,9 +349,9 @@ namespace ProtoFFI
 
             string msg = (ex == null) ? "" : ex.Message;
             if (string.IsNullOrEmpty(msg) || msg.Contains("operation failed"))
-                return string.Format("{0}.{1} operation failed.", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                return string.Format(Resources.OperationFailType1, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
 
-            return string.Format("{0}.{1} operation failed. \n{2}", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
+            return string.Format(Resources.OperationFailType2, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
         }
 
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
@@ -505,10 +505,12 @@ namespace ProtoFFI
                 {
                     var runtimeCore = dsi.runtime.RuntimeCore;
                     int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
-                    StackValue oldValue = dsi.runtime.rmem.Heap.GetHeapElement(thisObject).GetValue(idx, runtimeCore);
+
+                    var obj = runtimeCore.Heap.ToHeapObject<DSObject>(thisObject);
+                    StackValue oldValue = obj.GetValueFromIndex(idx, runtimeCore);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
-                        dsi.runtime.rmem.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);
+                        obj.SetValueAtIndex(idx, propValue, runtimeCore);
                     }
                 }
             }

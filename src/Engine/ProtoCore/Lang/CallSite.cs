@@ -1181,13 +1181,12 @@ namespace ProtoCore
             {
                 //If this has failed, we have multiple feps, which can't be distiquished by class hiearchy. Emit a warning and select one
                 StringBuilder possibleFuncs = new StringBuilder();
-                possibleFuncs.Append(
-                    "Couldn't decide which function to execute. Please provide more specific type information. Possible functions were: ");
+                possibleFuncs.Append(Resources.MultipleFunctionsFound);
                 foreach (FunctionEndPoint fep in feps)
                     possibleFuncs.AppendLine("\t" + fep.ToString());
 
 
-                possibleFuncs.AppendLine("Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
+                possibleFuncs.AppendLine(string.Format(Resources.ErrorCode, "{DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}"));
 
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
             }
@@ -1654,7 +1653,7 @@ namespace ProtoCore
                         break;
 
                     default:
-                        throw new ReplicationCaseNotCurrentlySupported("Selected algorithm not supported");
+                        throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
                 }
 
 
@@ -1665,7 +1664,7 @@ namespace ProtoCore
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], runtimeCore).ToArray();
+                        subParameters = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[repIndex]).Values.ToArray();
                     }
                     else
                     {
@@ -1769,7 +1768,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
             }
             else
@@ -1790,7 +1789,8 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], runtimeCore).ToArray();
+                    DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[cartIndex]);
+                    parameters = array.Values.ToArray();
                     retSize = parameters.Length;
                 }
                 else
@@ -1882,7 +1882,7 @@ namespace ProtoCore
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
 
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
 
             }
@@ -1908,8 +1908,8 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure,
-                                              "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, 
+                    string.Format(Resources.FunctionDispatchFailed, "{2EB39E1B-557C-4819-94D8-CF7C9F933E8A}"));
                 return StackValue.Null;
             }
 
@@ -2050,7 +2050,7 @@ namespace ProtoCore
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv }, null);
+                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv });
                     oldSv = newSV;
                 }
 

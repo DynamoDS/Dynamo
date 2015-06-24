@@ -148,13 +148,8 @@ namespace SampleLibraryZeroTouch.Examples
         /// you to specify what is drawn when dynamo's visualization is
         /// updated.
         /// </summary>
-        /// <param name="package">The IRenderPackage object into which you push your render data</param>
-        /// <param name="tol">An optional tessellation tolerance which defines the resolution
-        /// of generated meshes for surfaces.</param>
-        /// <param name="maxGridLines">An optional tesselation tolerance which specifies the maximum number
-        /// of surface subdivisions to be used for tesselation.</param>
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             // This example contains information to draw a point
             package.AddPointVertex(point.X, point.Y, point.Z);

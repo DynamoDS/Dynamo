@@ -39,17 +39,18 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
-            NodeFactory factory, 
+            NodeFactory factory,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
+            IEnumerable<PresetModel> presets,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
-            : base(e, n,a,info, factory)
-
+            : base(e, n,a, info, factory,presets)
         {
             HasUnsavedChanges = false;
 
@@ -61,7 +62,6 @@ namespace Dynamo.Models
             {
                 ElementResolver.CopyResolutionMap(elementResolver);
             }
-
             PropertyChanged += OnPropertyChanged;
         }
 

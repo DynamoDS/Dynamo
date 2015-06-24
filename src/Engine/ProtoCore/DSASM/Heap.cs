@@ -28,71 +28,68 @@ namespace ProtoCore.DSASM
         private const double kReallocFactor = 0.5;
         private Heap heap;
 
-        private int AllocSize { get; set; }
+        protected Heap heap;
+        private int allocated;
+        private StackValue[] items;
+
         public int VisibleSize { get; set; }
-        public Dictionary<StackValue, StackValue> Dict;
-        private StackValue[] Stack;
         public MetaData MetaData { get; set; }
         public GCMark Mark { get; set; }
 
-        public int GetAllocatedSize()
-        {
-            return AllocSize;
-        }
-
         public HeapElement(int size, Heap heap)
         {
-            AllocSize = VisibleSize = size;
-            Dict = null; 
-            Stack = new StackValue[AllocSize];
+            allocated = VisibleSize = size;
+            items = new StackValue[allocated];
             this.heap = heap;
 
-            for (int n = 0; n < AllocSize; ++n)
+            for (int n = 0; n < allocated; ++n)
             {
-                Stack[n] = StackValue.BuildInvalid();
+                items[n] = StackValue.BuildInvalid();
             }
         }
 
-        private int GetNewSize(int size)
+        //
+        // TODO Jun: Optimize the reallocation routines
+        //      1. Copying the temps can be optimized.
+        //      2. Explore using List for the HeapStack stack. In this case we take advantage of .Net List arrays
+        //
+        private void ReAllocate(int size)
         {
-            Validity.Assert(size > AllocSize);
-            int nextSize = kInitialSize;
+            int newSize = kInitialSize;
             if (size > kInitialSize)
             {
                 // Determine the next allocation size
-                nextSize = (int)(AllocSize * kReallocFactor) + AllocSize;
+                newSize = (int)(allocated * kReallocFactor) + allocated;
 
                 // If the requested index is greater than the computed next allocation size, 
                 // then the requested index is the next allocation size
-                nextSize = (size >= nextSize) ? size : nextSize;
+                newSize = (size >= newSize) ? size : newSize;
             }
-            return nextSize;
-        }
-
-        private void ReAllocate(int size)
-        {
-            int newAllocatedSize = GetNewSize(size);
 
             // Copy current contents into a temp array
-            StackValue[] tempstack = new StackValue[newAllocatedSize];
-            Stack.CopyTo(tempstack, 0);
-            Stack = tempstack;
-            for (int i = AllocSize; i < newAllocatedSize; ++i)
+            StackValue[] tempstack = new StackValue[allocated];
+            items.CopyTo(tempstack, 0);
+
+            // Reallocate the array and copy the temp contents to it
+            items = new StackValue[newSize];
+            tempstack.CopyTo(items, 0);
+
+            for (int i = allocated; i < newSize; ++i)
             {
-                Stack[i] = StackValue.Null;
+                items[i] = StackValue.Null;
             }
 
             // We should move StackValue list to heap. That is, heap
             // manages StackValues instead of HeapElement itself.
             heap.ReportAllocation(newAllocatedSize - AllocSize);
 
-            AllocSize = newAllocatedSize;
-            Validity.Assert(size <= AllocSize);
+            allocated = newSize;
+            Validity.Assert(size <= allocated);
         }
 
         private void RightShiftElements(int size)
         {
-            Validity.Assert(VisibleSize + size <= AllocSize);
+            Validity.Assert(VisibleSize + size <= allocated);
             if (size <= 0)
             {
                 return;
@@ -101,14 +98,14 @@ namespace ProtoCore.DSASM
             for (int pos = VisibleSize - 1; pos >= 0; pos--)
             {
                 int targetPos = pos + size;
-                Stack[targetPos] = Stack[pos];
-                Stack[pos] = StackValue.Null;
+                items[targetPos] = items[pos];
+                items[pos] = StackValue.Null;
             }
 
             VisibleSize = VisibleSize + size;
         }
 
-        public int ExpandByAcessingAt(int index)
+        protected int ExpandByAcessingAt(int index)
         {
             int retIndex = index;
 
@@ -119,7 +116,7 @@ namespace ProtoCore.DSASM
                     int size = -index;
                     int shiftSize = size - (VisibleSize == 0 ? size : VisibleSize);
 
-                    if (size > GetAllocatedSize())
+                    if (size > allocated)
                     {
                         ReAllocate(size);
                     }
@@ -133,7 +130,7 @@ namespace ProtoCore.DSASM
                     retIndex = index + VisibleSize;
                 }
             }
-            else if (index >= GetAllocatedSize())
+            else if (index >= allocated)
             {
                 ReAllocate(index + 1);
                 VisibleSize = index + 1;
@@ -145,16 +142,26 @@ namespace ProtoCore.DSASM
             }
             return retIndex;
         }
-        
+
         public IEnumerable<StackValue> VisibleItems
         {
             get
             {
                 for (int i = 0; i < VisibleSize; ++i)
                 {
-                    yield return Stack[i];
+                    yield return this.items[i];
                 }
             }
+        }
+
+        protected StackValue GetItemAt(int index)
+        {
+            return items[index];
+        }
+
+        public void SetItemAt(int index, StackValue value)
+        {
+            items[index] = value;
         }
     }
 
@@ -176,7 +183,7 @@ namespace ProtoCore.DSASM
         {
             if (value.IsString)
             {
-                string s = runtimeCore.Heap.GetString(value);
+                string s = runtimeCore.Heap.ToHeapObject<DSString>(value).Value;
                 return s.GetHashCode();
             }
             else
@@ -275,18 +282,28 @@ namespace ProtoCore.DSASM
             IsGCRunning = false;
         }
 
+        public T ToHeapObject<T>(StackValue heapObject) where T : HeapElement
+        {
+            HeapElement heapElement;
+            if (!TryGetHeapElement(heapObject, out heapElement))
+                return null;
+
+            if (!(heapElement is T))
+                throw new InvalidCastException();
+
+            return heapElement as T; 
+        }
+
         /// <summary>
         /// Allocate an array.
         /// </summary>
         /// <param name="values">Array elements whose indices are integer</param>
         /// <param name="dict">Array elements whose indices are not integer</param>
         /// <returns></returns>
-        public StackValue AllocateArray(IEnumerable<StackValue> values, 
-                                        Dictionary<StackValue, StackValue> dict = null)
+        public StackValue AllocateArray(IEnumerable<StackValue> values)
         {
-            int index = AllocateInternal(values);
+            int index = AllocateInternal(values, PrimitiveType.kTypeArray);
             var heapElement = heapElements[index];
-            heapElement.Dict = dict;
             heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
             return StackValue.BuildArrayPointer(index);
         }
@@ -300,7 +317,7 @@ namespace ProtoCore.DSASM
         public StackValue AllocatePointer(IEnumerable<StackValue> values, 
                                           MetaData metaData)
         {
-            int index = AllocateInternal(values);
+            int index = AllocateInternal(values, PrimitiveType.kTypePointer);
             var heapElement = heapElements[index];
             heapElement.MetaData = metaData;
             return StackValue.BuildPointer(index, metaData);
@@ -326,7 +343,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocatePointer(int size, MetaData metadata)
         {    
-            int index = AllocateInternal(size);
+            int index = AllocateInternal(size, PrimitiveType.kTypePointer);
             var hpe = heapElements[index];
             hpe.MetaData = metadata;
             return StackValue.BuildPointer(index, metadata);
@@ -349,16 +366,22 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private int AllocateStringInternal(string str)
+        private StackValue AllocateStringInternal(string str, bool isConstant)
         {
             int index;
             if (!stringTable.TryGetPointer(str, out index))
             {
-                index = AllocateInternal(Enumerable.Empty<StackValue>());
+                index = AllocateInternal(Enumerable.Empty<StackValue>(), PrimitiveType.kTypeString);
                 stringTable.AddString(index, str);
-                heapElements[index].MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
             }
-            return index;
+
+            if (isConstant)
+                fixedHeapElements.Add(index);
+
+            var svString = StackValue.BuildString(index);
+            DSString dsstring = ToHeapObject<DSString>(svString);
+            dsstring.SetPointer(svString);
+            return svString;
         }
 
         /// <summary>
@@ -368,9 +391,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocateFixedString(string str)
         {
-            int index = AllocateStringInternal(str);
-            fixedHeapElements.Add(index);
-            return StackValue.BuildString(index);
+            return AllocateStringInternal(str, true);
         }
 
         /// <summary>
@@ -380,8 +401,7 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue AllocateString(string str)
         {
-            int index = AllocateStringInternal(str);
-            return StackValue.BuildString(index);
+            return AllocateStringInternal(str, false);
         }
 
         /// <summary>
@@ -389,12 +409,9 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="pointer"></param>
         /// <returns></returns>
-        public string GetString(StackValue pointer)
+        public string GetString(DSString dsString)
         {
-            if (!pointer.IsString)
-                return null;
-
-            int index = (int)pointer.opdata;
+            int index = (int)dsString.Pointer.opdata;
             Validity.Assert(index >= 0 && index < heapElements.Count);
 
             string s;
@@ -404,19 +421,7 @@ namespace ProtoCore.DSASM
                 return null;
         }
 
-        /// <summary>
-        /// Get HeapElement that pointer represents.
-        /// </summary>
-        /// <param name="pointer"></param>
-        /// <returns></returns>
-        public HeapElement GetHeapElement(StackValue pointer)
-        {
-            int index = (int)pointer.opdata;
-            var heapElement = heapElements[index];
-            return heapElement;
-        }
-
-        public bool TryGetHeapElement(StackValue pointer, out HeapElement heapElement)
+        private bool TryGetHeapElement(StackValue pointer, out HeapElement heapElement)
         {
             heapElement = null;
             int index = (int)pointer.opdata;
@@ -434,24 +439,43 @@ namespace ProtoCore.DSASM
             freeList.Clear();
         }
 
-        private int AllocateInternal(int size)
+        private int AllocateInternal(int size, PrimitiveType type)
         {
-            HeapElement hpe = new HeapElement(size, this);
+            HeapElement hpe = null;
+
+            switch (type)
+            {
+                case PrimitiveType.kTypeArray:
+                    hpe = new DSArray(size, this);
+                    break;
+
+                case PrimitiveType.kTypePointer:
+                    hpe = new DSObject(size, this);
+                    break;
+
+                case PrimitiveType.kTypeString:
+                    hpe = new DSString(size, this);
+                    break;
+
+                default:
+                    throw new ArgumentException("type");
+            }
+            
             hpe.Mark = GCMark.White;
             totalAllocated += size;
             return AddHeapElement(hpe);
         }
 
-        private int AllocateInternal(IEnumerable<StackValue> values)
+        private int AllocateInternal(IEnumerable<StackValue> values, PrimitiveType type)
         {
             int size = values.Count();
-            int index = AllocateInternal(size);
+            int index = AllocateInternal(size, type);
             var heapElement = heapElements[index];
 
             int i = 0;
             foreach (var item in values)
             {
-                heapElement.Stack[i] = item;
+                heapElement.SetItemAt(i, item);
                 i++;
             }
             return index;
@@ -532,7 +556,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        #region GC
         /// <summary>
         /// Mark all items in the array.
         /// </summary>
@@ -808,11 +831,17 @@ namespace ProtoCore.DSASM
                     markBits.Set(ptr, true);
 
                     var heapElement = heapElements[ptr];
-                    var subElements = heapElement.VisibleItems;
-                    if (heapElement.Dict != null)
+                    IEnumerable<StackValue> subElements = Enumerable.Empty<StackValue>();
+
+                    if (pointer.IsArray)
                     {
-                        subElements = subElements.Concat(heapElement.Dict.Keys)
-                            .Concat(heapElement.Dict.Values);
+                        var array = ToHeapObject<DSArray>(pointer);
+                        var dict = array.ToDictionary();
+                        subElements = subElements.Concat(dict.Keys).Concat(dict.Values);
+                    }
+                    else
+                    {
+                        subElements = heapElement.VisibleItems;
                     }
 
                     foreach (var subElement in subElements)
@@ -851,7 +880,58 @@ namespace ProtoCore.DSASM
             }
             finally
             {
-                IsGCRunning = false;
+                isGarbageCollecting = false;
+            }
+        }
+
+
+        #region Reference counting APIs
+        /// <summary>
+        /// Checks if the heap contains at least 1 pointer element that points to itself
+        /// This function is used as a diagnostic tool for detecting heap cycles and should never return true
+        /// </summary>
+        /// <returns> Returns true if the heap contains at least one cycle</returns>
+        public bool IsHeapCyclic()
+        {
+            for (int n = 0; n < heapElements.Count; ++n)
+            {
+                HeapElement heapElem = heapElements[n];
+                if (IsHeapCyclic(heapElem, n))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the heap element is cyclic. 
+        /// Traverses the pointer element and determines it points to itself
+        /// </summary>
+        /// <param name="heapElement"></param>
+        /// <param name="core"></param>
+        /// <returns> Returns true if the array contains a cycle </returns>
+        private bool IsHeapCyclic(HeapElement heapElement, int HeapID)
+        {
+            if (heapElement.VisibleSize > 0)
+            {
+                // Traverse each element in the heap
+                foreach (StackValue sv in heapElement.VisibleItems)
+                {
+                    // Is it a pointer
+                    if (sv.IsReferenceType)
+                    {
+                        // Check if the current element in the heap points to the original pointer
+                        if (sv.opdata == HeapID)
+                        {
+                            return true;
+                        }
+
+                        HeapElement hpe;
+                        TryGetHeapElement(sv, out hpe);
+                        return IsHeapCyclic(hpe, HeapID);
+                    }
+                }
             }
         }
         #endregion
