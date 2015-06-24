@@ -511,7 +511,9 @@ namespace Dynamo.Controls
 
             foreach (var kvp in geometryModels)
             {
-                Model3DDictionary.Remove(kvp.Key);
+                var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
+                if (model != null) model.Detach();
+                Model3DDictionary.Remove(kvp.Key);                
             }
 
             NotifyPropertyChanged("");
