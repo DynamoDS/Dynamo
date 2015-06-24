@@ -226,7 +226,11 @@ namespace Dynamo
 #if DEBUG
             Debug.WriteLine("Visualization manager started.");
 #endif
-            updatingPaused = false;           
+            updatingPaused = false;  
+
+            //This should be removed after MAGN-7747 gets fixed.
+            if(update)
+                OnRenderComplete();
         }
 
         /// <summary>
