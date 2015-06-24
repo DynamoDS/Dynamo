@@ -458,15 +458,15 @@ namespace Dynamo.Controls
         {
             if (items == null)
             {
-                foreach (var item in watch_view.Items)
+                var geom3dList =
+                    watch_view.Items.Cast<object>().Where(x => x is GeometryModel3D).Cast<GeometryModel3D>().ToList();
+
+                var list = geom3dList.Select(y =>
                 {
-                    var geom = item as GeometryModel3D;
-                    if (geom != null)
-                    {
-                        if (geom.IsSelected)
-                            geom.IsSelected = false;
-                    }
-                }
+                    y.IsSelected = false;
+                    return y;
+                }).ToList();
+               
             }
             else
             {
@@ -485,11 +485,12 @@ namespace Dynamo.Controls
                         continue;
                     }
 
-                    foreach (var kvp in geometryModels)
+                    var modelValues = geometryModels.Select(x => x.Value);
+                    var selectedGeom = modelValues.Cast<GeometryModel3D>().Select(z =>
                     {
-                        var model3D = (GeometryModel3D)kvp.Value;
-                        model3D.IsSelected = !model3D.IsSelected;
-                    }
+                        z.IsSelected = !z.IsSelected;
+                        return z;
+                    }).ToList();                    
                 }
             }            
         }

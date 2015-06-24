@@ -229,8 +229,10 @@ namespace Dynamo
             updatingPaused = false;  
 
             //This should be removed after MAGN-7747 gets fixed.
-            if(update)
+            if (update)
+            {              
                 OnRenderComplete();
+            }                
         }
 
         /// <summary>
@@ -403,7 +405,7 @@ namespace Dynamo
         }
 
         public event Action WorkspaceOpenedClosedHandled;
-        protected virtual void WorkspaceOpenedClosed()
+        protected virtual void OnWorkspaceOpenedClosed()
         {
             if (WorkspaceOpenedClosedHandled != null)
                 WorkspaceOpenedClosedHandled();
@@ -551,7 +553,7 @@ namespace Dynamo
 
         private void ClearVisualizationsAndRestart(object sender, EventArgs e)
         {
-            WorkspaceOpenedClosed();
+            OnWorkspaceOpenedClosed();
             Clear();
             Start();
         }
