@@ -43,16 +43,6 @@ namespace Dynamo.Interfaces
         event Action<VisualizationEventArgs> ResultsReadyToVisualize;
 
         /// <summary>
-        /// Stop the visualization manager.
-        /// </summary>
-        void Stop();
-
-        /// <summary>
-        /// Unpause the visualization manager.
-        /// </summary>
-        void Start(bool update = false);
-
-        /// <summary>
         /// Request updated visuals for a branch of the graph.
         /// </summary>
         void RequestBranchUpdate(NodeModel node);

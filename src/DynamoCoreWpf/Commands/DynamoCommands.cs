@@ -89,7 +89,6 @@ namespace Dynamo.ViewModels
             {
                 case "OpenFileCommand":
                     this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
-                    this.VisualizationManager.Start();
                     break;
 
                 case "MutateTestCommand":
@@ -150,14 +149,11 @@ namespace Dynamo.ViewModels
             var name = command.GetType().Name;
             switch (name)
             {
-                case "OpenFileCommand":
-                    this.VisualizationManager.Stop();
-                    break;
-
                 case "MakeConnectionCommand":
                     MakeConnectionImpl(command as DynamoModel.MakeConnectionCommand);
                     break;
 
+                case "OpenFileCommand":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":

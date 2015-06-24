@@ -168,13 +168,11 @@ namespace Dynamo
         {
             dynamoModel = model;
 
-            dynamoModel.WorkspaceClearing += Stop;
-            dynamoModel.WorkspaceCleared += ClearVisualizationsAndRestart;
-            
+            dynamoModel.WorkspaceCleared += ClearVisualizations;
+       
             dynamoModel.WorkspaceAdded += WorkspaceAdded;
             dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
 
-            dynamoModel.DeletionStarted += Stop;
             dynamoModel.DeletionComplete += dynamoModel_DeletionComplete; 
 
             dynamoModel.CleaningUp += Clear;
@@ -192,48 +190,11 @@ namespace Dynamo
 
             renderPackageFactory = new HelixRenderPackageFactory();
             RenderPackageFactory.TessellationParameters.ShowEdges = model.PreferenceSettings.ShowEdges;
-
-            Start();
         }
 
         #endregion
 
         #region public methods
-
-        /// <summary>
-        /// Stop the visualization manager.
-        /// When the visualization manager is stopped, no rendering
-        /// will occur.
-        /// </summary>
-        public void Stop()
-        {
-#if DEBUG
-            Debug.WriteLine("Visualization manager stopped.");
-#endif
-            updatingPaused = true;
-        }
-
-        /// <summary>
-        /// Start the visualization manager.
-        /// When the visualization manager is started, the visualization
-        /// manager begins rendering again.
-        /// </summary>
-        /// <param name="update">If update is True, after starting, the
-        /// visualization manager will immediately update render pacakage. The
-        /// default is False.</param>
-        public void Start(bool update = false)
-        {
-#if DEBUG
-            Debug.WriteLine("Visualization manager started.");
-#endif
-            updatingPaused = false;  
-
-            //This should be removed after MAGN-7747 gets fixed.
-            if (update)
-            {              
-                OnRenderComplete();
-            }                
-        }
 
         /// <summary>
         /// Display a label for one or several render packages 
@@ -317,12 +278,11 @@ namespace Dynamo
 
             UnregisterEventListeners();
 
-            dynamoModel.WorkspaceCleared -= ClearVisualizationsAndRestart;
+            dynamoModel.WorkspaceCleared -= ClearVisualizations;
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
 
-            dynamoModel.DeletionStarted -= Stop;
             dynamoModel.DeletionComplete -= dynamoModel_DeletionComplete;
 
             dynamoModel.CleaningUp -= Clear;
@@ -396,7 +356,6 @@ namespace Dynamo
                 SelectionHandled(items);
         }
 
-
         public event Action<NodeModel> DeletionHandled;
         protected virtual void OnNodeDeletionHandled(NodeModel node)
         {
@@ -458,12 +417,9 @@ namespace Dynamo
                     hws.RunSettings.RunType == RunType.Periodic)
                 {
                     // We need to force a visualization update.
-                    Start(true);
-                    return;
+                    OnRenderComplete();
                 }
             }
-
-            Start();
         }
 
         private void UnregisterEventListeners()
@@ -551,11 +507,11 @@ namespace Dynamo
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, new List<IRenderPackage>{}, Guid.Empty));
         }
 
-        private void ClearVisualizationsAndRestart(object sender, EventArgs e)
+        private void ClearVisualizations(object sender, EventArgs e)
         {
             OnWorkspaceOpenedClosed();
             Clear();
-            Start();
+            OnRenderComplete();
         }
 
         #endregion
