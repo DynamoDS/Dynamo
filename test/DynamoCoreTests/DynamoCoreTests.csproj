@@ -62,7 +62,6 @@
     <Compile Include="AsyncTaskExtensionsTests.cs" />
     <Compile Include="AuthenticationManagerTests.cs" />
     <Compile Include="CallsiteTests.cs" />
-    <Compile Include="CommandLineTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
     <Compile Include="DefaultArgumentMigrationTests.cs" />
     <Compile Include="DefaultArgumentTests.cs" />
