@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -35,6 +36,8 @@ using Dynamo.Wpf.Utilities;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
+using Dynamo.Wpf.Extensions;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Controls
 {
@@ -50,6 +53,8 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
+        private IEnumerable<IViewExtension> viewExtensions;
+        private IViewExtensionManager extensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -113,6 +118,8 @@ namespace Dynamo.Controls
             loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+
+
         }
 
         #region NodeViewCustomization
@@ -1414,6 +1421,11 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
+        }
+
+        private void LogMessage(ILogMessage obj)
+        {
+            dynamoViewModel.Model.Logger.Log(obj);
         }
     }
 }

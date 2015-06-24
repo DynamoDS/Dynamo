@@ -102,8 +102,11 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
+    <Compile Include="Extensions\ViewExtensionLoader.cs" />
+    <Compile Include="Extensions\ViewExtensionManager.cs" />
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
     <Compile Include="Extensions\ViewStartupParams.cs" />
