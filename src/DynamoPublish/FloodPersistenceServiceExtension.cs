@@ -11,7 +11,7 @@ namespace Dynamo.Publish
 
         public string UniqueId
         {
-            get { throw new NotImplementedException(); }
+            get { return "BCABC211-D56B-4109-AF18-F434DFE48139"; }
         }
 
         public string Name
@@ -21,22 +21,22 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams p)
         {
-            throw new NotImplementedException();
+            // Some start up stuff.
         }
 
         public void Loaded(ViewLoadedParams p)
         {
-            throw new NotImplementedException();
+            // Some loaded stuff.
         }
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
+            // Some shutdown stuff.
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            // Some dispose stuff.
         }
 
         #endregion

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Xml;
 
@@ -30,7 +31,7 @@ namespace Dynamo.Wpf.Extensions
             var document = new XmlDocument();
             document.Load(extensionPath);
 
-            var topNode = document.GetElementsByTagName("ExtensionDefinition");
+            var topNode = document.GetElementsByTagName("ViewExtensionDefinition");
 
             if (topNode.Count == 0)
             {
@@ -57,7 +58,22 @@ namespace Dynamo.Wpf.Extensions
 
         public IEnumerable<IViewExtension> LoadDirectory(string extensionsPath)
         {
-            throw new NotImplementedException();
+            var result = new List<IViewExtension>();
+
+            if (Directory.Exists(extensionsPath))
+            {
+                var files = Directory.GetFiles(extensionsPath, "*_ViewExtensionDefinition.xml");
+                foreach (var file in files)
+                {
+                    var extension = Load(file);
+                    if (extension != null)
+                    {
+                        result.Add(extension);
+                    }
+                }
+            }
+
+            return result;
         }
 
         public event Action<ILogMessage> MessageLogged;

@@ -15,6 +15,11 @@ namespace Dynamo.Wpf.Extensions
             viewExtensionLoader.MessageLogged += Log;
         }
 
+        public ViewExtensionLoader ExtensionLoader
+        {
+            get { return viewExtensionLoader; }
+        }
+
         #region IViewExtensionManager implementation
 
         public void Add(IViewExtension extension)

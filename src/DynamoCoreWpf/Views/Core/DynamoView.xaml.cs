@@ -53,8 +53,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private IEnumerable<IViewExtension> viewExtensions;
-        private IViewExtensionManager extensionManager = new ViewExtensionManager();
+        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -119,7 +118,15 @@ namespace Dynamo.Controls
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
 
+            var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
+            viewExtensionManager.MessageLogged += LogMessage;
 
+            foreach (var ext in viewExtensions)
+            {
+                ext.Startup(null);
+                viewExtensionManager.Add(ext);
+            }
+            
         }
 
         #region NodeViewCustomization
@@ -427,6 +434,12 @@ namespace Dynamo.Controls
             dynamoViewModel.BeginCommandPlayback(this);
 
             watchSettingsControl.DataContext = background_preview;
+
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                ext.Loaded(null);
+            }
+
         }
 
         /// <summary>
@@ -895,6 +908,11 @@ namespace Dynamo.Controls
 
             //SHOW or HIDE GALLERY
             dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
+
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                ext.Shutdown();
+            }
         }
 
         // the key press event is being intercepted before it can get to
