@@ -13,14 +13,12 @@ namespace Dynamo.Search.SearchElements
     /// <summary>
     ///     Base class for all Dynamo Node search elements.
     /// </summary>
-    public abstract class NodeSearchElement : INotifyPropertyChanged, ISearchEntry, ISource<NodeModel>
+    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>
     {
         protected string iconName;
 
         private readonly HashSet<string> keywords = new HashSet<string>();
-        private string fullCategoryName;
         private string description;
-        private string name;
         private string userFriendlyName;
         private SearchElementGroup group;
         private string assembly;
@@ -29,16 +27,10 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     Specified whether or not this entry should appear in search.
         /// </summary>
-        //TODO(Steve): This should exist only on the ViewModel -- MAGN-5716
         public bool IsVisibleInSearch
         {
             get { return isVisibleInSearch; }
-            set
-            {
-                if (value.Equals(isVisibleInSearch)) return;
-                isVisibleInSearch = value;
-                OnPropertyChanged("IsVisibleInSearch");
-            }
+            set { isVisibleInSearch = value; }
         }
 
         /// <summary>
@@ -84,14 +76,8 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public string FullCategoryName
         {
-            get { return fullCategoryName; }
-            set
-            {
-                if (value == fullCategoryName) return;
-                fullCategoryName = value;
-                OnPropertyChanged("FullCategoryName");
-                OnPropertyChanged("Categories");
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -107,13 +93,8 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public string Name
         {
-            get { return name; }
-            set
-            {
-                if (value == name) return;
-                name = value;
-                OnPropertyChanged("Name");
-            }
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -126,13 +107,11 @@ namespace Dynamo.Search.SearchElements
                 if (!String.IsNullOrWhiteSpace(userFriendlyName))
                     return userFriendlyName;
                 else
-                    return name;
+                    return Name;
             }
-            set
-            {
-                if (value == userFriendlyName) return;
-                userFriendlyName = value;
-                OnPropertyChanged("UserFriendlyName");
+            protected set
+            {                
+                userFriendlyName = value;                
             }
         }
 
@@ -163,9 +142,7 @@ namespace Dynamo.Search.SearchElements
             }
             set
             {
-                if (value == description) return;
                 description = value;
-                OnPropertyChanged("Description");
             }
         }
 
@@ -201,9 +178,8 @@ namespace Dynamo.Search.SearchElements
                 // Icons for these members are in DynamoCore project.
                 return Configurations.DefaultAssembly;
             }
-            set
+            protected set
             {
-                if (value == assembly) return;
                 assembly = value;
             }
         }
@@ -278,15 +254,6 @@ namespace Dynamo.Search.SearchElements
             {
                 return SearchKeywords.ToList();
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected virtual IEnumerable<string> GenerateOutputParameters()

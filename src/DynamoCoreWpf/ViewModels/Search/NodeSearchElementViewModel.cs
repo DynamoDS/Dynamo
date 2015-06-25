@@ -38,7 +38,6 @@ namespace Dynamo.Wpf.ViewModels
             Model = element;
             searchViewModel = svm;
 
-            Model.PropertyChanged += ModelOnPropertyChanged;
             if (searchViewModel != null)
                 Clicked += searchViewModel.OnSearchElementClicked;
             ClickedCommand = new DelegateCommand(OnClicked);
@@ -48,23 +47,6 @@ namespace Dynamo.Wpf.ViewModels
         {
             if (searchViewModel != null)
                 Clicked -= searchViewModel.OnSearchElementClicked;
-            Model.PropertyChanged -= ModelOnPropertyChanged;
-        }
-
-        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            switch (propertyChangedEventArgs.PropertyName)
-            {
-                case "Name":
-                    RaisePropertyChanged("Name");
-                    break;
-                case "IsVisibleInSearch":
-                    RaisePropertyChanged("Visibility");
-                    break;
-                case "Description":
-                    RaisePropertyChanged("Description");
-                    break;
-            }
         }
 
         public NodeSearchElement Model { get; set; }
@@ -230,7 +212,6 @@ namespace Dynamo.Wpf.ViewModels
         public CustomNodeSearchElementViewModel(CustomNodeSearchElement element, SearchViewModel svm)
             : base(element, svm)
         {
-            Model.PropertyChanged += ModelOnPropertyChanged;
             Path = Model.Path;
         }
 
@@ -243,12 +224,6 @@ namespace Dynamo.Wpf.ViewModels
                 path = value;
                 RaisePropertyChanged("Path");
             }
-        }
-
-        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs.PropertyName == "Path")
-                RaisePropertyChanged("Path");
         }
 
         public new CustomNodeSearchElement Model
