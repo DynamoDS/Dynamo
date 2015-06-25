@@ -25,7 +25,7 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Create an array and populate it with input values.
+        /// Create an array and populuate with input values
         /// </summary>
         /// <param name="values"></param>
         /// <param name="heap"></param>
@@ -56,7 +56,7 @@ namespace ProtoCore.DSASM
         {
             get
             {
-                return Values.Concat(Dict.Values);
+                return base.Values.Concat(Dict.Values);
             }
         }
 
