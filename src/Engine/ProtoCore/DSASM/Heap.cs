@@ -638,6 +638,7 @@ namespace ProtoCore.DSASM
         {
             sweepSet = new HashSet<int>(Enumerable.Range(0, heapElements.Count));
             sweepSet.ExceptWith(freeList);
+            sweepSet.ExceptWith(fixedHeapElements);
 
             grayList = new LinkedList<StackValue>();
             foreach (var heapPointer in roots)
