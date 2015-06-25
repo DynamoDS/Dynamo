@@ -409,12 +409,12 @@ namespace ProtoCore.DSASM
             var obj1 = rtCore1.Heap.ToHeapObject<DSObject>(sv1);
             var obj2 = rtCore1.Heap.ToHeapObject<DSObject>(sv2);
 
-            if (obj1.VisibleSize != obj2.VisibleSize)
+            if (obj1.Count != obj2.Count)
             {
                 return false;
             }
 
-            for (int i = 0; i < obj1.VisibleSize; i++)
+            for (int i = 0; i < obj1.Count; i++)
             {
                 if (!CompareStackValues(obj1.GetValueFromIndex(i, rtCore1), 
                                         obj2.GetValueFromIndex(i, rtCore2), 

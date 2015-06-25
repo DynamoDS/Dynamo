@@ -671,7 +671,7 @@ namespace ProtoCore.DSASM
                 if (svDimensionCount.opdata > 0)
                 {
                     var dimArray = rmem.Heap.ToHeapObject<DSArray>(svArrayPtrDimesions);
-                    Validity.Assert(dimArray.VisibleSize == svDimensionCount.opdata);
+                    Validity.Assert(dimArray.Count == svDimensionCount.opdata);
                     dotCallDimensions.AddRange(dimArray.Values);
                 }
             }
@@ -1272,7 +1272,7 @@ namespace ProtoCore.DSASM
             StringBuilder arrayelements = new StringBuilder();
             var array = rmem.Heap.ToHeapObject<DSArray>(pointer);
 
-            for (int n = 0; n < array.VisibleSize; ++n)
+            for (int n = 0; n < array.Count; ++n)
             {
                 StackValue sv = array.GetValueFromIndex(n, runtimeCore);
                 if (sv.IsArray)
@@ -1293,7 +1293,7 @@ namespace ProtoCore.DSASM
                     arrayelements.Append(UnboxArray(array.GetValueFromIndex(n, runtimeCore), blockId, index));
                 }
 
-                if (n < array.VisibleSize - 1)
+                if (n < array.Count - 1)
                 {
                     arrayelements.Append(",");
                 }
@@ -2988,7 +2988,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    StackValue svArray = rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
+                    StackValue svArray = rmem.Heap.AllocateArray(new StackValue[] {});
                     rmem.SetSymbolValue(symbolnode, svArray);
 
                     var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
@@ -3588,7 +3588,7 @@ namespace ProtoCore.DSASM
                 arglist = new List<Type>();
                 StackValue argArraySv = rmem.Pop();
                 DSArray array = rmem.Heap.ToHeapObject<DSArray>(argArraySv);
-                for (int i = 0; i < array.VisibleSize; ++i)
+                for (int i = 0; i < array.Count; ++i)
                 {
                     StackValue sv = array.GetValueFromIndex(i, runtimeCore);
                     argSvList.Add(sv); //actual arguments
@@ -4943,8 +4943,8 @@ namespace ProtoCore.DSASM
             else
             {
                 var pointer = rmem.Heap.ToHeapObject<DSObject>(tryPointer);
-                var firstItem = pointer.VisibleSize == 1 ? pointer.GetValueFromIndex(0, runtimeCore) : StackValue.Null;
-                if (pointer.VisibleSize == 1 && !firstItem.IsPointer && !firstItem.IsArray)
+                var firstItem = pointer.Count == 1 ? pointer.GetValueFromIndex(0, runtimeCore) : StackValue.Null;
+                if (pointer.Count == 1 && !firstItem.IsPointer && !firstItem.IsArray)
                 {
                     // TODO Jun:
                     // Spawn GC here
@@ -6094,7 +6094,7 @@ namespace ProtoCore.DSASM
 
                 if (runtimeCore.ContinuationStruct.Done)
                 {
-                    RX = rmem.Heap.AllocateArray(runtimeCore.ContinuationStruct.RunningResult);
+                    RX = rmem.Heap.AllocateArray(runtimeCore.ContinuationStruct.RunningResult.ToArray());
 
                     runtimeCore.ContinuationStruct.RunningResult.Clear();
                     runtimeCore.ContinuationStruct.IsFirstCall = true;
