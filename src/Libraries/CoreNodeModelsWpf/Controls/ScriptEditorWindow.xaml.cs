@@ -47,7 +47,6 @@ namespace DSCoreNodesUI
             editText.TextArea.TextEntered += OnTextAreaTextEntered;
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
-            var x = GetType().Assembly.GetManifestResourceNames();
             var elem = GetType().Assembly.GetManifestResourceStream(
                         "Dynamo.Wpf.Resources." + highlighting);
 
