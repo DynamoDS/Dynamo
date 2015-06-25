@@ -157,7 +157,7 @@ namespace ProtoCore.DSASM
             return values[index];
         }
 
-        public void SetValueAt(int index, StackValue value)
+        protected void SetValueAt(int index, StackValue value)
         {
             values[index] = value;
         }
