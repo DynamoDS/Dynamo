@@ -15,7 +15,7 @@
     d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
     mc:Ignorable="d" 
     Height="350" 
-    Width="500" 
+    Width="540" 
     Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
@@ -31,7 +31,7 @@
     
     <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
