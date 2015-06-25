@@ -21,7 +21,11 @@ namespace ProtoCore.DSASM
         private StackValue[] values;
         public virtual IEnumerable<StackValue> Values
         {
-            get { return values; }
+            get 
+            { 
+                for (int i = 0; i < Count; ++i)
+                    yield return values[i]; 
+            }
         }
 
         public int Count { get; protected set; }
