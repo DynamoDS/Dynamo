@@ -162,6 +162,14 @@ namespace ProtoCore.DSASM
         {
             items[index] = value;
         }
+
+        public virtual int MemorySize
+        {
+            get
+            {
+                return VisibleSize;
+            }
+        }
     }
 
     public class StackValueComparer : IEqualityComparer<StackValue>
@@ -563,7 +571,7 @@ namespace ProtoCore.DSASM
         private int TraverseArray(DSArray array)
         {
             var dict = array.ToDictionary();
-            int size = dict.Count();
+            int size = array.MemorySize;
 
             foreach (var pair in array.ToDictionary())
             {
@@ -581,7 +589,7 @@ namespace ProtoCore.DSASM
 
         private int TraverseObject(DSObject obj)
         {
-            int size = obj.VisibleSize;
+            int size = obj.MemorySize;
 
             foreach (var item in obj.VisibleItems)
             {
@@ -684,22 +692,17 @@ namespace ProtoCore.DSASM
                 if (hp.Mark != GCMark.White)
                     continue;
 
-                var metaData = hp.MetaData;
-                if (metaData.type == (int)PrimitiveType.kTypeString)
+                if (hp is DSString)
                 {
                     stringTable.TryRemoveString(ptr);
                 }
-                else if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
+                else if (hp is DSObject)
                 {
-                    var objPointer = StackValue.BuildPointer(ptr, metaData);
+                    var objPointer = StackValue.BuildPointer(ptr, hp.MetaData);
                     GCDisposeObject(objPointer, executive);
-                    totalAllocated -= hp.VisibleSize;
-                }
-                else if (metaData.type == (int)PrimitiveType.kTypeArray)
-                {
-                    totalAllocated -= (hp as DSArray).ToDictionary().Count();
                 }
 
+                totalAllocated -= hp.MemorySize;
                 heapElements[ptr] = null;
                 freeList.Add(ptr);
             }
