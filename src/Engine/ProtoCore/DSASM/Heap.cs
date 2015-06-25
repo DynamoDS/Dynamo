@@ -160,6 +160,7 @@ namespace ProtoCore.DSASM
 
         public void SetItemAt(int index, StackValue value)
         {
+            heap.WriteBarrierForward(this, value);
             items[index] = value;
         }
 
