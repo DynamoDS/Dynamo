@@ -374,10 +374,10 @@ namespace DSCore.IO
 
         private static IEnumerable<byte> PixelsFromColor(Color color)
         {
-            yield return color.Alpha;
-            yield return color.Red;
-            yield return color.Green;
             yield return color.Blue;
+            yield return color.Green;
+            yield return color.Red;
+            yield return color.Alpha;
         }
 
         /// <summary>
