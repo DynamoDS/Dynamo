@@ -22,127 +22,19 @@ using DynamoShapeManager;
 
 using Microsoft.Win32;
 
+using Dynamo.Applications.StartupUtils;
+
 namespace DynamoSandbox
 {
-    internal class PathResolver : IPathResolver
-    {
-        private readonly List<string> additionalResolutionPaths;
-        private readonly List<string> additionalNodeDirectories;
-        private readonly List<string> preloadedLibraryPaths;
-
-        internal PathResolver(string preloaderLocation)
-        {
-            // If a suitable preloader cannot be found on the system, then do 
-            // not add invalid path into additional resolution. The default 
-            // implementation of IPathManager in Dynamo insists on having valid 
-            // paths specified through "IPathResolver" implementation.
-            // 
-            additionalResolutionPaths = new List<string>();
-            if (Directory.Exists(preloaderLocation))
-                additionalResolutionPaths.Add(preloaderLocation);
-
-            additionalNodeDirectories = new List<string>();
-            preloadedLibraryPaths = new List<string>
-            {
-                "VMDataBridge.dll",
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "DSOffice.dll",
-                "DSIronPython.dll",
-                "FunctionObject.ds",
-                "Optimize.ds",
-                "DynamoConversions.dll",
-                "DynamoUnits.dll",
-                "Tessellation.dll",
-                "Analysis.dll"
-            };
-        }
-
-        public IEnumerable<string> AdditionalResolutionPaths
-        {
-            get { return additionalResolutionPaths; }
-        }
-
-        public IEnumerable<string> AdditionalNodeDirectories
-        {
-            get { return additionalNodeDirectories; }
-        }
-
-        public IEnumerable<string> PreloadedLibraryPaths
-        {
-            get { return preloadedLibraryPaths; }
-        }
-
-        public string UserDataRootFolder 
-        {
-            get { return string.Empty; }
-        }
-
-        public string CommonDataRootFolder
-        { 
-            get { return string.Empty; }
-        }
-    }
-
-    internal class SandboxLookUp : DynamoLookUp
-    {
-        public override IEnumerable<string> GetDynamoInstallLocations()
-        {
-            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
-            //Open HKLM for 64bit registry
-            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-            //Open Windows/CurrentVersion/Uninstall registry key
-            regKey = regKey.OpenSubKey(regKey64);
-
-            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
-            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
-                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
-        }
-    }
-
+   
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
-
-        private static DynamoModel makeModel()
-        {
-            var geometryFactoryPath = string.Empty;
-            var preloaderLocation = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
-
-            DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-
-            var umConfig = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
-            Debug.Assert(umConfig.DynamoLookUp != null);
-
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    PathResolver = new PathResolver(preloaderLocation),
-                    GeometryFactoryPath = geometryFactoryPath,
-                    UpdateManager = new UpdateManager(umConfig)
-                });
-            return model;
-        }
-
+        
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            var geometryFactoryPath = string.Empty;
-            var preloaderLocation = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
-
+            var model = Dynamo.Applications.StartupUtils.Preloading.MakeModel(false,Dynamo.Applications.StartupUtils.Preloading.SandBoxLibraries);
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-
-            var umConfig = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
-            Debug.Assert(umConfig.DynamoLookUp != null);
-
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    PathResolver = new PathResolver(preloaderLocation),
-                    GeometryFactoryPath = geometryFactoryPath,
-                    UpdateManager = new UpdateManager(umConfig)
-                });
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -182,23 +74,6 @@ namespace DynamoSandbox
             }
         }
 
-        private static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
-        {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
-
-            var versions = new[]
-            {
-                LibraryVersion.Version219,
-                LibraryVersion.Version220,
-                LibraryVersion.Version221
-            };
-
-            var preloader = new Preloader(rootFolder, versions);
-            preloader.Preload();
-            geometryFactoryPath = preloader.GeometryFactoryPath;
-            preloaderLocation = preloader.PreloaderLocation;
-        }
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -207,52 +82,13 @@ namespace DynamoSandbox
         public static void Main(string[] args)
         {
             DynamoViewModel viewModel = null;
-            string result = string.Empty;
-
             try
             {
                 var cmdLineArgs = CommandLineArguments.FromArguments(args);
-                var supportedLocale = new HashSet<string>(new[]
-                        {
-                            "cs-CZ", "de-DE", "en-US", "es-ES", "fr-FR", "it-IT",
-                            "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW"
-                        });
-                string libgLocale;
-
-                if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
-                {
-                    // Change the application locale, if a locale information is supplied.
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
-                    Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
-                    libgLocale = cmdLineArgs.Locale;
-                }
-                else
-                {
-                    // In case no language is specified, libG's locale should be that of the OS.
-                    // There is no need to set Dynamo's locale in this case.
-                    libgLocale = CultureInfo.InstalledUICulture.ToString();
-                }
-
-                //if we have an openfilepath arg then open headless, and determine behavior from other flags '/s, /p, /v' 
-                if (!string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
-                {
-                    var runner = new CommandLineRunner(makeModel());
-                    runner.Run(cmdLineArgs);
-                }
-                else
-                {
-                    // If locale is not supported by Dynamo, default to en-US.
-                    if (!supportedLocale.Any(s => s.Equals(libgLocale, StringComparison.InvariantCultureIgnoreCase)))
-                    {
-                        libgLocale = "en-US";
-                    }
-                    // Change the locale that LibG depends on.
-                    StringBuilder sb = new StringBuilder("LANGUAGE=");
-                    sb.Append(libgLocale.Replace("-", "_"));
-                    _putenv(sb.ToString());
+                var locale = Dynamo.Applications.StartupUtils.Locale.SetLocale(cmdLineArgs);
+                    _putenv(locale);
 
                     MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
-                }
             }
             catch (Exception e)
             {

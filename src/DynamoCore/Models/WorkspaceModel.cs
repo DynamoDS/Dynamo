@@ -829,16 +829,6 @@ namespace Dynamo.Models
             }
         }
 
-        //this overload is used to search for state by name
-        internal void ApplyPreset(string stateName)
-        {
-            var state = this.Presets.Where(x => x.Name == stateName).FirstOrDefault();
-            {
-                ApplyPreset(state);
-            }
-        }
-
-
         internal void ApplyPreset(PresetModel state)
         {
             if (state == null)
