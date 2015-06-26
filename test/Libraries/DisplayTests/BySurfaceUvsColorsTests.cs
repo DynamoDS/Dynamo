@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 using DSCore;
 using NUnit.Framework;
@@ -13,50 +12,43 @@ namespace DisplayTests
         [Test]
         public void BySurfaceUVsColors_Construction_AllGood()
         {
-            Assert.DoesNotThrow(()=>Display.Display.BySurfaceUvsColors(
-                CreateOneSurface(), CreateThreeUvs(), CreateThreeColors())); 
+            Assert.DoesNotThrow(() => Display.Display.BySurfaceColors(
+                CreateOneSurface(), CreateTwoRowsOfColors()));
         }
 
         [Test]
         public void BySurfaceUvsColors_Construction_NullSurface_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceUvsColors(
-                null, CreateThreeUvs(), CreateThreeColors()));
+            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceColors(
+                null, CreateTwoRowsOfColors()));
         }
 
         [Test]
-        public void BySurfaceUvsColors_Construction_NullUvs_ThrowsException()
+        public void BySurfaceUvsColors_Construction_NullColors_ThrowsException()
         {
-            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceUvsColors(
-                CreateOneSurface(), null, CreateThreeColors())); 
+            Assert.Throws<ArgumentNullException>(() => Display.Display.BySurfaceColors(
+                CreateOneSurface(), null));
         }
 
         [Test]
-        public void BySurfaceUvsColors_Construction_EmptyUvs_ThrowsException()
+        public void BySurfaceUvsColors_Construction_NoColors_ThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceUvsColors(
-                CreateOneSurface(), new UV[]{}, CreateThreeColors())); 
+            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceColors(
+                CreateOneSurface(), new Color[][]{}));
         }
 
         [Test]
-        public void BySurfaceUvsColors_Construction_PrecisionTooLow_ThrowsException()
+        public void BySurfaceUvsColors_Construction_SingleDimensionColors_ThrowsException()
         {
-            Assert.Throws<Exception>(() => Display.Display.BySurfaceUvsColors(
-                CreateOneSurface(), CreateThreeUvs(), CreateThreeColors(), -42.0)); 
+            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceColors(
+                CreateOneSurface(), CreateOneRowOfColors()));
         }
 
         [Test]
-        public void BySurfaceUvsColors_Construction_PrecisionTooHigh_ThrowsException()
+        public void BySurfaceUvsColors_Construction_JaggedArrayColors_ThrowsException()
         {
-            Assert.Throws<Exception>(() => Display.Display.BySurfaceUvsColors(
-                CreateOneSurface(), CreateThreeUvs(), CreateThreeColors(), 42.0)); 
-        }
-
-        [Test]
-        public void BySurfaceUvsColors_Construction_UvsColorsCountMismatch_ThrowsException()
-        {
-            Assert.Throws<Exception>(() => Display.Display.BySurfaceUvsColors(
-                CreateOneSurface(), CreateTwoUvs(), CreateThreeColors(), 42.0)); 
+            Assert.Throws<ArgumentException>(() => Display.Display.BySurfaceColors(
+                CreateOneSurface(), CreateOneRowOfColors()));
         }
 
         private static Surface CreateOneSurface()
@@ -66,36 +58,57 @@ namespace DisplayTests
             return surface;
         }
 
-        private static UV[] CreateThreeUvs()
-        {
-            var uvs = new[]
-            {
-                UV.ByCoordinates(0.2, 0.5),
-                UV.ByCoordinates(0.1, 0.9),
-                UV.ByCoordinates(0.9, 0.3)
-            };
-
-            return uvs;
-        }
-
-        private static UV[] CreateTwoUvs()
-        {
-            var uvs = new[]
-            {
-                UV.ByCoordinates(0.2, 0.5),
-                UV.ByCoordinates(0.1, 0.9),
-            };
-
-            return uvs;
-        }
-
-        private static Color[] CreateThreeColors()
+        private static Color[][] CreateOneRowOfColors()
         {
             var colors = new[]
             {
-                Color.ByARGB(255, 255, 0, 0),
-                Color.ByARGB(255, 0, 255, 0),
-                Color.ByARGB(0, 0, 255)
+                new []
+                {
+                    Color.ByARGB(255, 255, 0, 0),
+                    Color.ByARGB(255, 0, 255, 0),
+                    Color.ByARGB(0, 0, 255)
+                },
+            };
+
+            return colors;
+        }
+
+        private static Color[][] CreateTwoRowsOfColors()
+        {
+            var colors = new[]
+            {
+                new []
+                {
+                    Color.ByARGB(255, 255, 0, 0),
+                    Color.ByARGB(255, 0, 255, 0),
+                    Color.ByARGB(0, 0, 255)
+                },
+                new []
+                {
+                    Color.ByARGB(0, 0, 255),
+                    Color.ByARGB(255, 0, 255, 0),
+                    Color.ByARGB(255, 255, 0, 0),
+                }
+            };
+
+            return colors;
+        }
+
+        private static Color[][] CreateJaggedArrayOfColors()
+        {
+            var colors = new[]
+            {
+                new []
+                {
+                    Color.ByARGB(255, 255, 0, 0),
+                    Color.ByARGB(255, 0, 255, 0),
+                    Color.ByARGB(0, 0, 255)
+                },
+                new []
+                {
+                    Color.ByARGB(0, 0, 255),
+                    Color.ByARGB(255, 0, 255, 0),
+                }
             };
 
             return colors;
