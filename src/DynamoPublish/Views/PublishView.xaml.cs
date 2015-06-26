@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.Publish.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,9 +19,18 @@ namespace Dynamo.Publish.Views
     /// </summary>
     public partial class PublishView : Window
     {
-        public PublishView()
+        public PublishViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as PublishViewModel;
+            }
+        }
+
+        public PublishView(PublishViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Dynamo.Interfaces;
+using Dynamo.Publish.ViewModels;
 using Dynamo.Publish.Views;
 using Dynamo.Wpf.Extensions;
 using System;
@@ -24,7 +25,7 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams p)
         {
-            publishWindow = new PublishView();
+            publishWindow = new PublishView(new PublishViewModel());
         }
 
         public void Loaded(ViewLoadedParams p)

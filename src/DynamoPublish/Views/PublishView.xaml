@@ -37,7 +37,7 @@
 
                 <TextBox Name="textBoxName"
                          Grid.Row="1"
-                         Background="Transparent" />
+                         Text="{Binding Name, Mode=TwoWay}" />
                 <TextBlock Name="textBlockDefaultName"
                            Text="defaults to file name"
                            Grid.Row="1"
@@ -88,7 +88,7 @@
                          MinHeight="150"
                          Grid.Row="1"
                          Grid.ColumnSpan="2"
-                         Background="Transparent" />
+                         Text="{Binding Description, Mode=TwoWay}" />
                 <TextBlock Name="textBlockDefaultDescription"
                            Text="enter description here"
                            Grid.Row="1"
@@ -146,7 +146,8 @@
             <TextBlock Text="Share Link:"
                        Grid.Row="0" />
             <TextBox Name="textBoxShareLink"
-                     Grid.Row="1" />
+                     Grid.Row="1"
+                     Text="{Binding ShareLink, Mode=TwoWay}" />
             <Button Name="buttonCopyLink"
                     Content="Copy Link"
                     Grid.Row="1"

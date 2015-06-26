@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="FloodPersistenceServiceExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\PublishViewModel.cs" />
     <Compile Include="Views\PublishView.xaml.cs">
       <DependentUpon>PublishView.xaml</DependentUpon>
     </Compile>
@@ -64,7 +65,9 @@
   <ItemGroup>
     <Content Include="FloodPersistenceServiceExtension_ViewExtensionDefinition.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Views\PublishView.xaml">
       <SubType>Designer</SubType>
