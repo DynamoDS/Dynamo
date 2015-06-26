@@ -102,6 +102,20 @@ namespace Display
                 throw new ArgumentException("You must supply some colors");
             }
 
+            if (colors.Length == 1)
+            {
+                throw new ArgumentException("You must supply a two dimensional list of Colors.");
+            }
+
+            var size = colors[0].Count();
+            foreach (var list in colors)
+            {
+                if (list.Count() != size)
+                {
+                    throw new ArgumentException("The list of colors must not be a jagged list.");
+                }
+            }
+
             return new Display(surface, colors);
         }
 
