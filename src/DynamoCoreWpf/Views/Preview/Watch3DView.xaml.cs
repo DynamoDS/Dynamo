@@ -1079,7 +1079,7 @@ namespace Dynamo.Controls
                         var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
                         try
                         {
-                            var diffMap = BitmapSource.Create(rp.ColorsStride/4, rp.ColorsStride/4, 96.0, 96.0, pf, null,
+                            var diffMap = BitmapSource.Create(rp.ColorsStride/4, rp.Colors.Count()/rp.ColorsStride, 96.0, 96.0, pf, null,
                                 rp.Colors.ToArray(), stride);
                             var diffMat = new PhongMaterial
                             {
