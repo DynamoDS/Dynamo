@@ -1,4 +1,5 @@
 ﻿using Dynamo.Interfaces;
+using Dynamo.Publish.Views;
 using Dynamo.Wpf.Extensions;
 using System;
 
@@ -6,6 +7,8 @@ namespace Dynamo.Publish
 {
     public class FloodPersistenceServiceExtension : IViewExtension, ILogSource
     {
+
+        private PublishView publishWindow;
 
         #region IViewExtension implementation
 
@@ -21,12 +24,12 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams p)
         {
-            // Some start up stuff.
+            publishWindow = new PublishView();
         }
 
         public void Loaded(ViewLoadedParams p)
         {
-            // Some loaded stuff.
+            publishWindow.Show();
         }
 
         public void Shutdown()
