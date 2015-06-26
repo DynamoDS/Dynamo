@@ -54,7 +54,8 @@ namespace DynamoSandbox
                 "DynamoConversions.dll",
                 "DynamoUnits.dll",
                 "Tessellation.dll",
-                "Analysis.dll"
+                "Analysis.dll",
+                "Display.dll"
             };
         }
 
