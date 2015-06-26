@@ -59,7 +59,7 @@ namespace Dynamo.Core.Threading
             get { return renderPackages; }
         }
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }

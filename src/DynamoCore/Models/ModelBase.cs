@@ -9,7 +9,7 @@ using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
-    public enum SaveContext { File, Copy, Undo };
+    public enum SaveContext { File, Copy, Undo, Preset };
 
     /// <summary>
     /// This class encapsulates the input parameters that need to be passed into nodes

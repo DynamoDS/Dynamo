@@ -114,34 +114,6 @@ namespace Dynamo.Views
             }
         }
 
-        /// <summary>
-        /// Handler for the state machine's drag start event.
-        /// Instructs the visualization manager to bypass updating the visualization.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void OnViewModelDragSelectionEnded(object sender, EventArgs e)
-        {
-            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(true))
-            {
-                ViewModel.UnPauseVisualizationManagerCommand.Execute(true);
-            }
-        }
-
-        /// <summary>
-        /// Handler for the state machine's drag end event.
-        /// Instructs the visualization manager to update visualizations and begin tracking selections again.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void OnViewModelDragSelectionStarted(object sender, EventArgs e)
-        {
-            if (ViewModel.PauseVisualizationManagerCommand.CanExecute(true))
-            {
-                ViewModel.PauseVisualizationManagerCommand.Execute(true);
-            }
-        }
-
         private void LoadCursorState()
         {
             cursorSet = new Dictionary<CursorState, string>
@@ -201,8 +173,6 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-                oldViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
-                oldViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
             }
 
             if (ViewModel != null)
@@ -218,8 +188,6 @@ namespace Dynamo.Views
                 ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
-                ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
-                ViewModel.DragSelectionEnded += OnViewModelDragSelectionEnded;
 
                 ViewModel.Loaded();
             }

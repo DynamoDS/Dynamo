@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Geometry;
@@ -99,6 +100,7 @@ namespace Analysis
         {
             var num = 0.0;
             var totalArea = 0.0;
+
             foreach (var loc in locations)
             {
                 var t = loc.Location;
@@ -124,7 +126,36 @@ namespace Analysis
         {
             var num = new double[4];
             var totalArea = 0.0;
-            foreach (var loc in locations)
+
+            //var sw = new Stopwatch();
+            //sw.Start();
+
+            var locationArr = locations.ToArray();
+
+            // Find uvs in the locations set that are within a certain domain
+            // around p. Start with something small like +-0.1. If you don't
+            // find enough sample points, keep increasing the size of the search
+            // domain until you do.
+
+            ValueLocation<Color>[] searchLocations = null;
+            var s = 0.025;
+            const double step = 0.025;
+            while (s <= 1.0)
+            {
+                searchLocations = locationArr.Where(
+                    l => l.Location.U < p.U + s &&
+                         l.Location.U > p.U - s &&
+                         l.Location.V < p.V + s &&
+                         l.Location.V > p.V - s).ToArray();
+
+                if (searchLocations.Count() >= 5)
+                {
+                    break;
+                }
+                s += step;
+            }
+
+            foreach (var loc in searchLocations)
             {
                 var t = loc.Location;
                 var d = DSCore.Math.Pow(t.U - p.U, 2) + DSCore.Math.Pow(t.V - p.V, 2);
@@ -144,6 +175,9 @@ namespace Analysis
                 num[3] += loc.Value.Blue * w;
                 totalArea += w;
             }
+
+            //sw.Stop();
+            //Debug.WriteLine("{0} elapsed for interpolation at {1}.", sw.Elapsed, p);
 
             return Color.ByARGB((int)(num[0] / totalArea),
                 (int)(num[1] / totalArea),

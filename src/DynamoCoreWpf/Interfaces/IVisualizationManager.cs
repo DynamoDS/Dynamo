@@ -43,16 +43,6 @@ namespace Dynamo.Interfaces
         event Action<VisualizationEventArgs> ResultsReadyToVisualize;
 
         /// <summary>
-        /// Stop the visualization manager.
-        /// </summary>
-        void Stop();
-
-        /// <summary>
-        /// Unpause the visualization manager.
-        /// </summary>
-        void Start(bool update = false);
-
-        /// <summary>
         /// Request updated visuals for a branch of the graph.
         /// </summary>
         void RequestBranchUpdate(NodeModel node);
@@ -70,17 +60,17 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// An event triggered on the Selection of model.
         /// </summary>
-        event Action<IEnumerable> RenderSelection;
+        event Action<IEnumerable> SelectionHandled;
 
         /// <summary>
         /// An event triggered on the Deletion of model.
         /// </summary>
-        event Action<NodeModel> UpdateGeometryOnNodeDeletion;
+        event Action<NodeModel> DeletionHandled;
 
         /// <summary>
         /// An event triggered when a workspace is closed / open.
         /// </summary>
-        event Action InitializeGeomtery;
+        event Action WorkspaceOpenedClosedHandled;
 
         /// Update all Node RenderPackages and raise notification.
         /// </summary>

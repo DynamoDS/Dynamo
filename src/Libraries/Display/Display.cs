@@ -17,8 +17,6 @@ namespace Display
         private readonly Geometry geometry;
         private readonly Color singleColor;
         private readonly Color[][] colorMap;
-        private const int LowestPower = 3;
-        private const int HighestPower = 10;
 
         #endregion
 
@@ -30,10 +28,30 @@ namespace Display
             this.singleColor = color;
         }
 
-        private Display(Surface surface, UV[] uvs, Color[] colors, int samples)
+        private Display(Surface surface, Color[][] colors)
         {
             geometry = surface;
-            colorMap = ComputeColorMap(surface, uvs, colors, samples, samples);
+
+            // Transpose the colors array. This is required
+            // to correctly align the colors on the surface with
+            // the UV space of the surface.
+
+            var rows = colors.GetLength(0);
+            var columns = colors[0].Count();
+
+            colorMap = new Color[columns][];
+            for (var c = 0; c < columns; c++)
+            {
+                colorMap[c] = new Color[rows];
+            }
+
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < columns; j++)
+                {
+                    colorMap[j][i] = colors[i][j];
+                }
+            } 
         }
 
         #endregion
@@ -62,27 +80,13 @@ namespace Display
         }
 
         /// <summary>
-        /// Display interpolated color values on a surface given a list of colors and a list of UVs .
+        /// Display color values on a surface.
         /// </summary>
         /// <param name="surface">The surface on which to apply the colors.</param>
-        /// <param name="uvs">A set of UV locations on the surface corresponding to the colors.</param>
-        /// <param name="colors">A set of Colors corresponding to the uvs.</param>
-        /// <param name="precision">A value between 0.0 (low) and 1.0 (high) which defines the resolution.
-        /// The default value is 0.75. This value controls the number of samples at which interpolated color 
-        /// values are calculated.</param>
+        /// <param name="colors">A two dimensional list of Colors.</param>
         /// <returns>A Display object.</returns>
-        public static Display BySurfaceUvsColors(Surface surface, UV[] uvs, Color[] colors, double precision = 0.75)
+        public static Display BySurfaceColors(Surface surface, Color[][] colors)
         {
-            if (!uvs.Any())
-            {
-                throw new ArgumentException("uvs");
-            }
-
-            if (uvs == null)
-            {
-                throw new ArgumentNullException("uvs");
-            }
-
             if (surface == null)
             {
                 throw new ArgumentNullException("surface");
@@ -93,14 +97,26 @@ namespace Display
                 throw new ArgumentNullException("colors");
             }
 
-            if (precision < 0.0 || precision > 1.0)
+            if (!colors.Any())
             {
-                throw new Exception("The precision must be in the range 0.0 to 1.0");
+                throw new ArgumentException("You must supply some colors");
             }
 
-            var samples = ComputeSamplesFromNormalizedValue(precision, LowestPower, HighestPower);
+            if (colors.Length == 1)
+            {
+                throw new ArgumentException("You must supply a two dimensional list of Colors.");
+            }
 
-            return new Display(surface, uvs, colors, samples);
+            var size = colors[0].Count();
+            foreach (var list in colors)
+            {
+                if (list.Count() != size)
+                {
+                    throw new ArgumentException("The list of colors must not be a jagged list.");
+                }
+            }
+
+            return new Display(surface, colors);
         }
 
         #endregion
@@ -243,13 +259,16 @@ namespace Display
             return arr;
         }
 
+        /// <summary>
+        /// This method remaps a number between 0.0 and 1.0 to an integer value between lowestPower and highestPower
+        /// </summary>
         private static int ComputeSamplesFromNormalizedValue(double value, int lowestPower, int highestPower)
         {
             // Calculate the size of the image
             // Samples range from 2^2 (4) - 2^9 (512)
             var expRange = highestPower - lowestPower;
             var t = expRange*value;
-            var finalExp = (int)Math.Pow(2, (int) (LowestPower + t));
+            var finalExp = (int)Math.Pow(2, (int)(lowestPower + t));
             return finalExp;
         }
 

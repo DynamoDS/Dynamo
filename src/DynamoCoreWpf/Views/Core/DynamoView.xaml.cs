@@ -21,8 +21,8 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Controls;
-using DynamoUtilities;
 
 using String = System.String;
 using System.Windows.Data;
@@ -49,6 +49,7 @@ namespace Dynamo.Controls
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
+        private LoginService loginService;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -108,6 +109,10 @@ namespace Dynamo.Controls
             }
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
+
+            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
         }
 
         #region NodeViewCustomization
@@ -190,7 +195,7 @@ namespace Dynamo.Controls
 
         void InitializeLogin()
         {
-            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            if ( dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
             {
                 var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
                 loginGrid.Children.Add(login);
@@ -386,6 +391,9 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
+            //Preset Name Prompt
+            dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestPresetNamePrompt;
+
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
             dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
@@ -540,8 +548,9 @@ namespace Dynamo.Controls
         {
             if (_installedPkgsView == null)
             {
+                var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
                 _installedPkgsView = new InstalledPackagesView(new InstalledPackagesViewModel(dynamoViewModel,
-                    dynamoViewModel.Model.PackageLoader))
+                    pmExtension.PackageLoader))
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -739,6 +748,62 @@ namespace Dynamo.Controls
             e.Success = true;
         }
 
+        /// <summary>
+        /// Handles the request for the presentation of the preset name prompt
+        /// </summary>
+        /// <param name="e">a parameter object contains default Name and Description,
+        /// and Success bool returned from the dialog</param>
+        void DynamoViewModelRequestPresetNamePrompt (PresetsNamePromptEventArgs e)
+        {
+            ShowNewPresetDialog(e);
+        }
+
+        /// <summary>
+        /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
+        /// a preset name/timestamp and description.
+        /// </summary>
+        public void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
+        {
+            string error = "";
+
+            do
+            {
+                var dialog = new PresetPrompt()
+                {
+                    DescriptionInput = { Text = e.Description },
+                    nameView = { Text = "" },
+                    nameBox = { Text = e.Name },
+                    // center the prompt
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+               
+                if (dialog.ShowDialog() != true)
+                {
+                    e.Success = false;
+                    return;
+                }
+
+                if (String.IsNullOrEmpty(dialog.Text))
+                {
+                   //if the name is empty, then default to the current time
+                    e.Name = System.DateTime.Now.ToString();
+                    break;
+                }
+                else
+                {
+                    error = "";
+                }
+
+                e.Name = dialog.Text;
+                e.Description = dialog.Description;
+
+            } while (!error.Equals(""));
+
+            e.Success = true;
+        }
+        
         private bool PerformShutdownSequenceOnViewModel()
         {
             // Test cases that make use of views (e.g. recorded tests) have 
@@ -799,6 +864,9 @@ namespace Dynamo.Controls
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
+
+            //Preset Name Prompt
+            dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestPresetNamePrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
@@ -862,6 +930,66 @@ namespace Dynamo.Controls
         {
             LogScroller.ScrollToBottom();
         }
+
+        private void LoadPresetsMenus(object sender, RoutedEventArgs e)
+        {
+            //grab serialized presets from current workspace
+            var PresetSet = dynamoViewModel.Model.CurrentWorkspace.Presets;
+            // now grab all the states off the set and create a menu item for each one
+
+            var statesMenu = (sender as MenuItem);
+            var senderItems =  statesMenu.Items.OfType<MenuItem>().Select(x => x.Tag).ToList();
+            //only update the states menus if the states have been updated or the user
+            // has switched workspace contexts, can check if stateItems List is different
+            //from the presets on the current workspace
+            if (!PresetSet.SequenceEqual(senderItems))
+            {
+                //dispose all state items in the menu
+                statesMenu.Items.Clear();
+
+                foreach (var state in PresetSet)
+              {
+                //create a new menu item for each state in the options set
+                //when any of this buttons are clicked we'll call the SetWorkSpaceToStateCommand(state)
+                 var stateItem = new MenuItem
+                        {
+                            Header = state.Name,
+                            Tag = state
+                        };
+                  //if the sender was the restoremenu then add restore delegates
+                 if (sender == RestorePresetMenu)
+                 {
+                     stateItem.Click += RestoreState_Click;
+                 }
+                 else
+                 {
+                     //else the sender was the delete menu
+                     stateItem.Click += DeleteState_Click;
+                 }
+                 stateItem.ToolTip = state.Description;
+                 ((MenuItem)sender).Items.Add(stateItem);
+                }
+            }
+        }
+
+
+        private void RestoreState_Click(object sender, RoutedEventArgs e)
+        {
+            PresetModel state = (sender as MenuItem).Tag as PresetModel;
+            var workspace = dynamoViewModel.CurrentSpace;
+            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.Guid));
+        }
+
+        private void DeleteState_Click(object sender, RoutedEventArgs e)
+        {
+            PresetModel state = (sender as MenuItem).Tag as PresetModel;
+            var workspace = dynamoViewModel.CurrentSpace;
+            workspace.HasUnsavedChanges = true;
+            dynamoViewModel.Model.CurrentWorkspace.RemoveState(state);
+            
+        }
+        
+
 
 #if !__NO_SAMPLES_MENU
         /// <summary>

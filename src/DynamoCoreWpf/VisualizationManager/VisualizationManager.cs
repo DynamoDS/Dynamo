@@ -168,13 +168,11 @@ namespace Dynamo
         {
             dynamoModel = model;
 
-            dynamoModel.WorkspaceClearing += Stop;
-            dynamoModel.WorkspaceCleared += ClearVisualizationsAndRestart;
-            
+            dynamoModel.WorkspaceCleared += ClearVisualizations;
+       
             dynamoModel.WorkspaceAdded += WorkspaceAdded;
             dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
 
-            dynamoModel.DeletionStarted += Stop;
             dynamoModel.DeletionComplete += dynamoModel_DeletionComplete; 
 
             dynamoModel.CleaningUp += Clear;
@@ -192,42 +190,11 @@ namespace Dynamo
 
             renderPackageFactory = new HelixRenderPackageFactory();
             RenderPackageFactory.TessellationParameters.ShowEdges = model.PreferenceSettings.ShowEdges;
-
-            Start();
         }
 
         #endregion
 
         #region public methods
-
-        /// <summary>
-        /// Stop the visualization manager.
-        /// When the visualization manager is stopped, no rendering
-        /// will occur.
-        /// </summary>
-        public void Stop()
-        {
-#if DEBUG
-            Debug.WriteLine("Visualization manager stopped.");
-#endif
-            updatingPaused = true;
-        }
-
-        /// <summary>
-        /// Start the visualization manager.
-        /// When the visualization manager is started, the visualization
-        /// manager begins rendering again.
-        /// </summary>
-        /// <param name="update">If update is True, after starting, the
-        /// visualization manager will immediately update render pacakage. The
-        /// default is False.</param>
-        public void Start(bool update = false)
-        {
-#if DEBUG
-            Debug.WriteLine("Visualization manager started.");
-#endif
-            updatingPaused = false;           
-        }
 
         /// <summary>
         /// Display a label for one or several render packages 
@@ -311,12 +278,11 @@ namespace Dynamo
 
             UnregisterEventListeners();
 
-            dynamoModel.WorkspaceCleared -= ClearVisualizationsAndRestart;
+            dynamoModel.WorkspaceCleared -= ClearVisualizations;
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
 
-            dynamoModel.DeletionStarted -= Stop;
             dynamoModel.DeletionComplete -= dynamoModel_DeletionComplete;
 
             dynamoModel.CleaningUp -= Clear;
@@ -359,7 +325,7 @@ namespace Dynamo
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
-            OnNodeDeletedFromWorkspace(node);
+            OnNodeDeletionHandled(node);
         }
 
         private void NodeAddedToHomeWorkspace(NodeModel node)
@@ -383,26 +349,25 @@ namespace Dynamo
             }
         }
 
-        public event Action<IEnumerable> RenderSelection;
+        public event Action<IEnumerable> SelectionHandled;
         protected virtual void OnSelectionChanged(IEnumerable items)
         {
-            if (RenderSelection != null)
-                RenderSelection(items);
+            if (SelectionHandled != null)
+                SelectionHandled(items);
         }
 
-
-        public event Action<NodeModel> UpdateGeometryOnNodeDeletion;
-        protected virtual void OnNodeDeletedFromWorkspace(NodeModel node)
+        public event Action<NodeModel> DeletionHandled;
+        protected virtual void OnNodeDeletionHandled(NodeModel node)
         {
-            if (UpdateGeometryOnNodeDeletion != null)
-                UpdateGeometryOnNodeDeletion(node);
+            if (DeletionHandled != null)
+                DeletionHandled(node);
         }
 
-        public event Action InitializeGeomtery;
-        protected virtual void OnInitializeGeometry()
+        public event Action WorkspaceOpenedClosedHandled;
+        protected virtual void OnWorkspaceOpenedClosed()
         {
-            if (InitializeGeomtery != null)
-                InitializeGeomtery();
+            if (WorkspaceOpenedClosedHandled != null)
+                WorkspaceOpenedClosedHandled();
         }
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -452,12 +417,9 @@ namespace Dynamo
                     hws.RunSettings.RunType == RunType.Periodic)
                 {
                     // We need to force a visualization update.
-                    Start(true);
-                    return;
+                    OnRenderComplete();
                 }
             }
-
-            Start();
         }
 
         private void UnregisterEventListeners()
@@ -545,11 +507,11 @@ namespace Dynamo
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, new List<IRenderPackage>{}, Guid.Empty));
         }
 
-        private void ClearVisualizationsAndRestart(object sender, EventArgs e)
+        private void ClearVisualizations(object sender, EventArgs e)
         {
-            OnInitializeGeometry();
+            OnWorkspaceOpenedClosed();
             Clear();
-            Start();
+            OnRenderComplete();
         }
 
         #endregion

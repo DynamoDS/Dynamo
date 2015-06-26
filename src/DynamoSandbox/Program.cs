@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using System.Windows;
-using System.Windows.Documents;
-using Dynamo;
+
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.DynamoSandbox;
@@ -16,11 +19,7 @@ using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-using DynamoUtilities;
-using System.Threading;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Text;
+
 using Microsoft.Win32;
 
 namespace DynamoSandbox

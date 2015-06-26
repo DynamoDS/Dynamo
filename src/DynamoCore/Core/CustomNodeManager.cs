@@ -6,7 +6,6 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;
@@ -21,7 +20,7 @@ namespace Dynamo.Core
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager : LogSourceBase, ICustomNodeSource
+    public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
     {
         public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
@@ -504,7 +503,8 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,                               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,              
                 workspaceInfo);
 
             
@@ -1073,7 +1073,8 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    newAnnotations,                
+                    newAnnotations,
+                    Enumerable.Empty<PresetModel>(),
                     new WorkspaceInfo()
                     {
                         X = 0,
@@ -1085,7 +1086,7 @@ namespace Dynamo.Core
                         FileName = string.Empty
                     },
                     currentWorkspace.ElementResolver);
-
+                
                 newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);

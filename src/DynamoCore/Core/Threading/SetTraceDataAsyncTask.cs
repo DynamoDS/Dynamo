@@ -12,7 +12,7 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<KeyValuePair<Guid, List<string>>> traceData;
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Highest; }
         }
