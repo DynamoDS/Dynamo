@@ -1,3 +1,7 @@
+
+
+#define __GENERATE_TEST_MACROBLOCKS
+
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -75,10 +79,22 @@ namespace ProtoCore
             cachedMacroBlocks = new List<CompileTime.MacroBlock>(); 
         }
 
+        /// <summary>
+        /// Implements a simple algorithm that traverses an AST list and generates macroblocks given ast connections
+        /// Currently, an ast connected to another ast is grouped in a single macroblock
+        /// </summary>
+        /// <param name="astList"></param>
+        public void GenerateTestMacroBlocks(List<AssociativeNode> astList)
+        {
+        }
+
         public void GenerateMacroBlocks(List<AssociativeNode> astList)
         {
+#if __GENERATE_TEST_MACROBLOCKS
+            GenerateTestMacroBlocks(astList);
+#else
             // For now there are 2 macroblocks:
-            //  0 - Dummy macroblock for DS code processed as strings
+            //  0 - Macroblock for DS code processed as strings
             //  1 - global macroblock
             const int totalMacroBlocks = 2;
 
@@ -95,7 +111,7 @@ namespace ProtoCore
             // -------------------------------------------------
 
             // The number of macroblocks allocated for the entire program
-            // This does not include the dummy macroblock 
+            // This does not include the macroblock associated with strings
             int numMacroBlocks = 1;
 
             // Generate the macroblocks
@@ -132,6 +148,7 @@ namespace ProtoCore
             {
                 core.RuntimeMacroBlockList.Add(new ProtoCore.Runtime.MacroBlock());
             }
+#endif
         }
 
         /// <summary>
@@ -154,7 +171,7 @@ namespace ProtoCore
         public void GenerateMacroBlockIDForBinaryAST(List<AssociativeNode> astList, int macroBlockID)
         {
             // The default macroblock ID is at 1. 
-            // 0 is reserved for dummy macroblock that represetn DS code processed as strings 
+            // 0 is reserved for macroblock that represent DS code processed as strings 
             foreach (AssociativeNode node in astList)
             {
                 BinaryExpressionNode bnode = node as BinaryExpressionNode;
