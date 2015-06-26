@@ -503,7 +503,8 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,                               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,              
                 workspaceInfo);
 
             
@@ -1072,7 +1073,8 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    newAnnotations,                
+                    newAnnotations,
+                    Enumerable.Empty<PresetModel>(),
                     new WorkspaceInfo()
                     {
                         X = 0,
@@ -1084,7 +1086,7 @@ namespace Dynamo.Core
                         FileName = string.Empty
                     },
                     currentWorkspace.ElementResolver);
-
+                
                 newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);

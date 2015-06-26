@@ -489,12 +489,10 @@ namespace ProtoCore.Lang.Replication
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
-                            HeapElement he = ArrayUtils.GetHeapElement(basicList[index], runtimeCore);
-
-                            Validity.Assert(he.Stack != null);
+                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
 
                             //The elements of the array are still type structures
-                            if (he.VisibleSize == 0)
+                            if (array.VisibleSize == 0)
                                 reducedSV = StackValue.Null;
                             else
                             {
@@ -545,17 +543,15 @@ namespace ProtoCore.Lang.Replication
                     {
 
                         //Array arr = formalParams[index].Payload as Array;
-                        HeapElement he = ArrayUtils.GetHeapElement(basicList[index], runtimeCore);
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
 
 
 
                         //It is a collection, so cast it to an array and pull the type of the first element
                         //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
 
-                        Validity.Assert(he.Stack != null);
-
                         //The elements of the array are still type structures
-                        if (he.VisibleSize == 0)
+                        if (array.VisibleSize == 0)
                             reducedSV = StackValue.Null;
                         else
                         {
@@ -628,20 +624,15 @@ namespace ProtoCore.Lang.Replication
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
-                            HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], runtimeCore);
-
+                            var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
 
 
                             //It is a collection, so cast it to an array and pull the type of the first element
-                            //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
-
-                            Validity.Assert(he.Stack != null);
-
                             //The elements of the array are still type structures
-                            if (he.VisibleSize == 0)
+                            if (array.VisibleSize == 0)
                                 reducedSV = StackValue.Null;
                             else
-                                reducedSV = he.Stack[0];
+                                reducedSV = array.GetValueFromIndex(0, runtimeCore);
                         }
                         else
                         {
@@ -663,22 +654,14 @@ namespace ProtoCore.Lang.Replication
                     if (target.IsArray)
                     {
                         //ProtoCore.DSASM.Mirror.DsasmArray arr = formalParams[index].Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-                        HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], runtimeCore);
-
-                        //It is a collection, so cast it to an array and pull the type of the first element
-                        //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
-                        //Validity.Assert(arr != null);
-                        //Validity.Assert(arr.members[0] != null);
-                        Validity.Assert(he.Stack != null);
-
-
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(reducedParamTypes[index]);
 
                         //The elements of the array are still type structures
                         //reducedType = arr.members[0].Type;
-                        if (he.VisibleSize == 0)
+                        if (array.VisibleSize == 0)
                             reducedSV = StackValue.Null;
                         else
-                            reducedSV = he.Stack[0];
+                            reducedSV = array.GetValueFromIndex(0, runtimeCore);
 
                     }
                     else
@@ -935,8 +918,8 @@ namespace ProtoCore.Lang.Replication
             int maxReduction = 0;
 
             //De-ref the sv
-            HeapElement he = ProtoCore.Utils.ArrayUtils.GetHeapElement(sv, runtimeCore);
-            foreach (var subSv in he.VisibleItems)
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+            foreach (var subSv in array.VisibleItems)
             {
                 maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, runtimeCore, depthCount + 1));
             }

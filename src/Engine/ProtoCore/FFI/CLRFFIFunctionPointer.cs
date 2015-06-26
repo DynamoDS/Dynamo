@@ -505,10 +505,12 @@ namespace ProtoFFI
                 {
                     var runtimeCore = dsi.runtime.RuntimeCore;
                     int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
-                    StackValue oldValue = dsi.runtime.rmem.Heap.GetHeapElement(thisObject).GetValue(idx, runtimeCore);
+
+                    var obj = runtimeCore.Heap.ToHeapObject<DSObject>(thisObject);
+                    StackValue oldValue = obj.GetValueFromIndex(idx, runtimeCore);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
-                        dsi.runtime.rmem.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);
+                        obj.SetValueAtIndex(idx, propValue, runtimeCore);
                     }
                 }
             }
