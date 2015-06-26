@@ -120,6 +120,7 @@
                 <Button Name="buttonPublish"
                         Grid.Row="2"
                         Content="Publish"
+                        Command="{Binding PublishCommand}"
                         Width="100"
                         Grid.Column="1"
                         Margin="0,10,0,0" />

@@ -1,4 +1,5 @@
 ﻿using Dynamo.Interfaces;
+using Dynamo.Publish.Models;
 using Dynamo.Publish.ViewModels;
 using Dynamo.Publish.Views;
 using Dynamo.Wpf.Extensions;
@@ -10,6 +11,8 @@ namespace Dynamo.Publish
     {
 
         private PublishView publishWindow;
+        private PublishViewModel publishVM;
+        private PublishModel publishM;
 
         #region IViewExtension implementation
 
@@ -23,13 +26,15 @@ namespace Dynamo.Publish
             get { return "FloodPersistenceService"; }
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams param)
         {
-            publishWindow = new PublishView(new PublishViewModel());
+            publishM = new PublishModel(param.AuthenticationManager);
+            publishVM = new PublishViewModel(publishM);
         }
 
         public void Loaded(ViewLoadedParams p)
         {
+            publishWindow = new PublishView(publishVM);
             publishWindow.Show();
         }
 

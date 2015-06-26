@@ -32,6 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\greg\Greg.dll</HintPath>
+    </Reference>
+    <Reference Include="GregStandaloneAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\GregStandaloneAuth.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -46,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FloodPersistenceServiceExtension.cs" />
+    <Compile Include="Models\PublishModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\PublishViewModel.cs" />
     <Compile Include="Views\PublishView.xaml.cs">
@@ -65,9 +74,7 @@
   <ItemGroup>
     <Content Include="FloodPersistenceServiceExtension_ViewExtensionDefinition.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Views\PublishView.xaml">
       <SubType>Designer</SubType>

@@ -121,9 +121,14 @@ namespace Dynamo.Controls
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += LogMessage;
 
+            var startupParams = new ViewStartupParams()
+            {
+                AuthenticationManager = dynamoViewModel.Model.AuthenticationManager
+            };
+
             foreach (var ext in viewExtensions)
             {
-                ext.Startup(null);
+                ext.Startup(startupParams);
                 viewExtensionManager.Add(ext);
             }
             

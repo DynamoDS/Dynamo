@@ -1,4 +1,5 @@
 ﻿using Dynamo.Core;
+using Dynamo.Publish.Models;
 using Dynamo.UI.Commands;
 using System;
 using System.Windows.Input;
@@ -42,6 +43,12 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
+        private PublishModel model;
+        public PublishModel Model
+        {
+            get { return model; }
+        }
+
         #endregion
 
         #region Click commands
@@ -52,8 +59,10 @@ namespace Dynamo.Publish.ViewModels
 
         #region Initialization
 
-        public PublishViewModel()
+        public PublishViewModel(PublishModel model)
         {
+            this.model = model;
+
             PublishCommand = new DelegateCommand(OnPublish);
         }
 
@@ -64,7 +73,7 @@ namespace Dynamo.Publish.ViewModels
 
         private void OnPublish(object obj)
         {
-            
+            model.Authenticate();
         }
 
         #endregion
