@@ -159,6 +159,7 @@
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{4a964723-c7a9-45a9-b448-e1d042ec8820}</Project>
       <Name>PythonNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>

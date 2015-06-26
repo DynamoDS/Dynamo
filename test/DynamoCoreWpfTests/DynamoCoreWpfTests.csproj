@@ -177,6 +177,7 @@
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{4a964723-c7a9-45a9-b448-e1d042ec8820}</Project>
       <Name>PythonNodeModels</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
       <Project>{c67a7e80-73e6-4bbf-9d3f-dcd86ce306be}</Project>
