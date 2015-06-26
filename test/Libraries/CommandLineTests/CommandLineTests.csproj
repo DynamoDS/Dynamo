@@ -59,6 +59,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoApplications\DynamoApplications.csproj">
+      <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
+      <Name>DynamoApplications</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\DynamoCLI\DynamoCLI.csproj">
+      <Project>{5f9ae581-6781-4a4c-a262-1b06cd27208b}</Project>
+      <Name>DynamoCLI</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
