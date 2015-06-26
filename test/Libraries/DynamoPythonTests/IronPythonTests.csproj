@@ -88,15 +88,19 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DSIronPython\IronPythonEval.csproj">
+    <ProjectReference Include="..\..\..\src\Libraries\DSIronPython\DSIronPython.csproj">
       <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
-      <Name>IronPythonEval</Name>
+      <Name>DSIronPython</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
       <Name>PythonNodeModelsWpf</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{4a964723-c7a9-45a9-b448-e1d042ec8820}</Project>
+      <Name>PythonNodeModels</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>

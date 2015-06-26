@@ -12,7 +12,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
-namespace DSIronPythonNode
+namespace PythonNodeModelsWpf
 {
     /// <summary>
     /// Interaction logic for ScriptEditorWindow.xaml
@@ -48,7 +48,7 @@ namespace DSIronPythonNode
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
-                        "DSIronPythonNode.Resources." + highlighting);
+                        "PythonNodeModelsWpf.Resources." + highlighting);
 
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
