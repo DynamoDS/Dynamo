@@ -1,15 +1,15 @@
-﻿<Window x:Class="DSIronPythonNode.ScriptEditorWindow"
+﻿<Window x:Class="DSCoreNodesUI.ScriptEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        xmlns:p="clr-namespace:DSIronPythonNode.Properties"
+        xmlns:p="clr-namespace:DSCoreNodesUI.Properties;assembly=DSCoreNodesUI"
         Title="{x:Static p:Resources.PythonScriptEditorCaption}" Height="500" Width="600">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
+                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

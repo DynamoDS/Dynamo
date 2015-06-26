@@ -6,7 +6,8 @@ using System.Xml;
 
 using SystemTestServices;
 
-using DSIronPythonNode;
+using DSCoreNodesUI;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -1054,7 +1055,7 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }

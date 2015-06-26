@@ -3311,7 +3311,7 @@ r = Equals(x, {41, 42});
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""DSIronPython.dll"");",
+                @"import(""DSCoreNodes.dll"");",
                 @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.

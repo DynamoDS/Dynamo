@@ -40,7 +40,15 @@
     <DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronPython">
+      <HintPath>..\..\..\extern\IronPython\IronPython.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\..\..\extern\IronPython\Microsoft.Scripting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
@@ -73,6 +81,7 @@
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
     <Compile Include="GeometryColor.cs" />
+    <Compile Include="IronPythonEvaluator.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
@@ -91,6 +100,11 @@
     <Compile Include="Web.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>

@@ -5,10 +5,13 @@
     </assembly>
     <namespaces>
         <namespace name="DSCore">
-            <category>Core</category>
+          <category>Core</category>
         </namespace>
         <namespace name="DSCore.IO">
           <category>Core.File</category>
+        </namespace>
+        <namespace name="DSIronPython">
+          <category>Core.Scripting</category>
         </namespace>
     </namespaces>
 </doc>

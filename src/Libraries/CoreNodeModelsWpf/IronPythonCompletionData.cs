@@ -96,7 +96,7 @@ namespace Dynamo.Python
 
         private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
-            var name = string.Format(@"DSIronPythonNode.Resources.{0}", resourceFileName);
+            var name = string.Format(@"CoreNodeModelsWpf.Resources.{0}", resourceFileName);
 
             var bitmapImage = new BitmapImage();
 

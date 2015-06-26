@@ -84,7 +84,6 @@ namespace DynamoPythonTests
 
             var resolutionPaths = new[]
             {
-                // These tests need "DSIronPythonNode.dll" under "nodes" folder.
                 Path.Combine(moduleRootFolder, "nodes")
             };
 
