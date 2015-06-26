@@ -1077,18 +1077,27 @@ namespace Dynamo.Controls
                     {
                         var pf = PixelFormats.Bgra32;
                         var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
-                        var diffMap = BitmapSource.Create(rp.ColorsStride/4, rp.ColorsStride/4, 96.0, 96.0, pf, null, rp.Colors.ToArray(), stride);
-                        var diffMat = new PhongMaterial
+                        try
                         {
-                            Name = "White",
-                            AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                            DiffuseColor = materialColor,
-                            SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
-                            EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
-                            SpecularShininess = 12.8f,
-                            DiffuseMap = diffMap
-                        };
-                        meshGeometry3D.Material = diffMat;
+                            var diffMap = BitmapSource.Create(rp.ColorsStride/4, rp.ColorsStride/4, 96.0, 96.0, pf, null,
+                                rp.Colors.ToArray(), stride);
+                            var diffMat = new PhongMaterial
+                            {
+                                Name = "White",
+                                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                                DiffuseColor = materialColor,
+                                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                                SpecularShininess = 12.8f,
+                                DiffuseMap = diffMap
+                            };
+                            meshGeometry3D.Material = diffMat;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
+                        }
                     }
                     ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
                     model3DDictionary.Add(id, meshGeometry3D);
