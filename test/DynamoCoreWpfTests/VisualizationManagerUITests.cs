@@ -635,7 +635,6 @@ namespace DynamoCoreWpfTests
         private void Open(string relativePath)
         {
             OpenDynamoDefinition(relativePath);
-            DispatcherUtil.DoEvents();
         }
     }
 
