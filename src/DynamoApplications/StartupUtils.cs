@@ -79,11 +79,13 @@ namespace Dynamo.Applications.StartupUtils
                 (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
         }
     }
-
+    //this class is left unimplemented,unclear how to
+    //lookup installation locations on nix/mac
     internal class CLILookUp : DynamoLookUp
     {
         public override IEnumerable<string> GetDynamoInstallLocations()
         {
+            throw new NotImplementedException();
             int p = (int)Environment.OSVersion.Platform;
             if ((p == 4) || (p == 6) || (p == 128))
             {
