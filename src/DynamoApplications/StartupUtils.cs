@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Threading;
 using System.Globalization;
+using NDesk.Options;
 
 namespace Dynamo.Applications.StartupUtils
 {
@@ -131,54 +132,24 @@ namespace Dynamo.Applications.StartupUtils
             //
             var verbose = string.Empty;
 
-            for (var i = 0; i < args.Length; ++i)
+
+            var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
+            .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path", c => commandFilePath = c)
+            .Add("l=|L=", "Running Dynamo under a different locale setting", l => locale = l)
+            .Add("p=|P=", "PresetFile, Instruct Dynamo to import the presets at this path into the opened .dyn", p => presetFile = p)
+            .Add("s=|S=", "PresetStateID, Instruct Dynamo to set the graph to the specified preset by name,"+
+            "this can be set to a statename or 'all', which will evaluate all states in the dyn", s => presetStateid = s)
+            .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v);
+
+            optionsSet.Parse(args);
+
+            //check for incompatabile parameters
+            if ((!string.IsNullOrEmpty(presetStateid) || (!string.IsNullOrEmpty(presetFile) || (!string.IsNullOrEmpty(verbose)))) && string.IsNullOrEmpty(openfilepath))
             {
-                var arg = args[i];
-                if (arg.Length != 2 || (arg[0] != '/'))
-                {
-                    continue; // Not a "/x" type of command switch.
-                }
-
-                switch (arg[1])
-                {
-                    case 'c':
-                    case 'C':
-                        // If there's at least one more argument...
-                        if (i < args.Length - 1)
-                            commandFilePath = args[++i];
-                        break;
-
-                    case 'l':
-                    case 'L':
-                        if (i < args.Length - 1)
-                            locale = args[++i];
-                        break;
-
-                    case 'o':
-                    case 'O':
-                        if (i < args.Length - 1)
-                            openfilepath = args[++i];
-                        break;
-
-                    case 's':
-                    case 'S':
-                        if (i < args.Length - 1)
-                            presetStateid = args[++i];
-                        break;
-
-                    case 'p':
-                    case 'P':
-                        if (i < args.Length - 1)
-                            presetFile = args[++i];
-                        break;
-
-                    case 'v':
-                    case 'V':
-                        if (i < args.Length - 1)
-                            verbose = args[++i];
-                        break;
-                }
+                Console.WriteLine("you must supply a file to open if you want to load a preset or presetFile, or want to save an evaluation output ");
+                
             }
+
 
             return new CommandLineArguments
             {
