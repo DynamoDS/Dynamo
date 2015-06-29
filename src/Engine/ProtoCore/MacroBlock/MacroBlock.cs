@@ -71,34 +71,104 @@ namespace ProtoCore
         ProtoCore.Core core = null;
         private List<AssociativeNode> cachedASTList = null;
         private List<ProtoCore.CompileTime.MacroBlock> cachedMacroBlocks = null;
+        public List<ProtoCore.Runtime.MacroBlock> RuntimeMacroBlockList { get; set; }
+
+        /// <summary>
+        /// Increment this counter for every new macroblock
+        /// </summary>
+        private int generatedMacroblocks;
 
         public MacroBlockGenerator(ProtoCore.Core core)
         {
             this.core = core;
             cachedASTList = new List<AssociativeNode>();
-            cachedMacroBlocks = new List<CompileTime.MacroBlock>(); 
+            cachedMacroBlocks = new List<CompileTime.MacroBlock>();
+            generatedMacroblocks = 0;
+        }
+
+        /// <summary>
+        /// Check is the graphnode is an input node where the lhs is in the format "__aaa" to "__fff"
+        /// </summary>
+        /// <param name="graphnode"></param>
+        /// <returns></returns>
+        private bool IsInputGraphNode(AssociativeGraph.GraphNode graphnode)
+        {
+            Validity.Assert(graphnode.updateNodeRefList[0].nodeList[0].symbol.name != null);
+
+            string name = graphnode.updateNodeRefList[0].nodeList[0].symbol.name.Substring(0, 5);
+            return name.Equals("__aaa")
+                || name.Equals("__bbb")
+                || name.Equals("__ccc")
+                || name.Equals("__ddd")
+                || name.Equals("__eee")
+                || name.Equals("__fff");
         }
 
         /// <summary>
         /// Generate test macroblocks
-        /// A test macroblock start with a variable where the lhs is in the format "__aaa" to "__zzz"
+        /// A test macroblock starts with an input node
+        /// The macroblock ID is set for each graphnode 
         /// </summary>
-        /// <param name="astList"></param>
-        public static void GenerateTestMacroBlocks(List<AssociativeGraph.GraphNode> graphNodeList)
+        /// <param name="programSnapshot"></param>
+        public void GenerateTestMacroBlocks(List<AssociativeGraph.GraphNode> programSnapshot, int macroBlockID = -1)
         {
+            Validity.Assert(programSnapshot != null);
+            foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
+            {
+                if (!graphnode.Visited)
+                {
+                    if (IsInputGraphNode(graphnode))
+                    {
+                        graphnode.Visited = true;
+                        generatedMacroblocks++;
+                        int newID = macroBlockID + 1;
+                        graphnode.MacroblockID = newID;
+                        GenerateTestMacroBlocks(programSnapshot, newID);
+                    }
+                    else
+                    {
+                        foreach (AssociativeGraph.GraphNode connectedNode in graphnode.graphNodesToExecute)
+                        {
+                            connectedNode.MacroblockID = macroBlockID;
+                            graphnode.Visited = true;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Generates the macroblock groupings of the given list of graphnodes
+        /// Generates the macroblock groupings of the given list of graphnodes (the program snapshot)
         /// </summary>
-        /// <param name="graphNodeList"></param>
-        public static void GenerateMacroBlocks(List<AssociativeGraph.GraphNode> graphNodeList)
+        /// <param name="programSnapshot"></param>
+        public void GenerateMacroBlocks(List<AssociativeGraph.GraphNode> programSnapshot)
         {
+            generatedMacroblocks = 0;
 #if __GENERATE_TEST_MACROBLOCKS
-            GenerateTestMacroBlocks(graphNodeList);
+
+            foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
+            {
+                graphnode.Visited = false;
+            }
+            GenerateTestMacroBlocks(programSnapshot);
 #else
             // Implement the algorithm to generate macroblocks
 #endif
+            // Reinitialize the macroblock list
+            RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
+            for (int n = 0; n < generatedMacroblocks; ++n)
+            {
+                RuntimeMacroBlockList.Add(new Runtime.MacroBlock());
+            }
+
+            foreach (AssociativeGraph.GraphNode graphNode in programSnapshot)
+            {
+                if (graphNode.MacroblockID != Constants.kInvalidIndex)
+                {
+                    RuntimeMacroBlockList[graphNode.MacroblockID].GraphNodeList.Add(graphNode);
+                }
+            }
+            core.RuntimeMacroBlockList = RuntimeMacroBlockList;
         }
 
         public void GenerateMacroBlocks(List<AssociativeNode> astList)

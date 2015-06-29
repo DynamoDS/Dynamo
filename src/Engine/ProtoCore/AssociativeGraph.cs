@@ -942,6 +942,9 @@ namespace ProtoCore.AssociativeGraph
         public int SSASubscript { get; set; }
         public bool IsLastNodeInSSA { get; set; }
 
+        public int MacroblockID { get; set; }
+        public bool Visited { get; set; }
+
         public GraphNode()
         {
             IsModifier = false;
@@ -981,6 +984,9 @@ namespace ProtoCore.AssociativeGraph
             reExecuteExpression = false;
             SSASubscript = Constants.kInvalidIndex;
             IsLastNodeInSSA = false;
+
+            MacroblockID = Constants.kInvalidIndex;
+            Visited = false;
         }
 
 
