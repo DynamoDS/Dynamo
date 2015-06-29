@@ -2656,7 +2656,6 @@ namespace ProtoCore.DSASM
                 {
                     Execute(scope, entry, null);
                 }
-
                 catch (ProtoCore.Exceptions.ExecutionCancelledException)
                 {
                 }

@@ -4234,10 +4234,10 @@ namespace ProtoAssociative
 
             ResolveFinalNodeRefs();
             ResolveSSADependencies();
-            
-            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
-                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope));
-        
+
+            List<GraphNode> nodesInScope = codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(nodesInScope);
+            ProtoCore.MacroBlockGenerator.GenerateMacroBlocks(nodesInScope);
             
             if (codeBlock.parent == null)  // top-most langauge block
             {

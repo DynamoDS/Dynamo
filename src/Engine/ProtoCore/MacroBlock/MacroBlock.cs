@@ -80,19 +80,29 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Implements a simple algorithm that traverses an AST list and generates macroblocks given ast connections
-        /// Currently, an ast connected to another ast is grouped in a single macroblock
+        /// Generate test macroblocks
+        /// A test macroblock start with a variable where the lhs is in the format "__aaa" to "__zzz"
         /// </summary>
         /// <param name="astList"></param>
-        public void GenerateTestMacroBlocks(List<AssociativeNode> astList)
+        public static void GenerateTestMacroBlocks(List<AssociativeGraph.GraphNode> graphNodeList)
         {
+        }
+
+        /// <summary>
+        /// Generates the macroblock groupings of the given list of graphnodes
+        /// </summary>
+        /// <param name="graphNodeList"></param>
+        public static void GenerateMacroBlocks(List<AssociativeGraph.GraphNode> graphNodeList)
+        {
+#if __GENERATE_TEST_MACROBLOCKS
+            GenerateTestMacroBlocks(graphNodeList);
+#else
+            // Implement the algorithm to generate macroblocks
+#endif
         }
 
         public void GenerateMacroBlocks(List<AssociativeNode> astList)
         {
-#if __GENERATE_TEST_MACROBLOCKS
-            GenerateTestMacroBlocks(astList);
-#else
             // For now there are 2 macroblocks:
             //  0 - Macroblock for DS code processed as strings
             //  1 - global macroblock
@@ -148,7 +158,6 @@ namespace ProtoCore
             {
                 core.RuntimeMacroBlockList.Add(new ProtoCore.Runtime.MacroBlock());
             }
-#endif
         }
 
         /// <summary>
