@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,7 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
@@ -17,7 +20,9 @@ using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
+using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
 using Quaternion = SharpDX.Quaternion;
@@ -54,11 +59,30 @@ namespace Dynamo.Controls
         private Color4 materialColor;
         private Vector3 directionalLightDirection;
         private Color4 directionalLightColor;
+        private DirectionalLight3D directionalLight;
         private Color4 defaultLineColor;
         private Color4 defaultPointColor;
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
-        private int renderingTier;
+        private int renderingTier; 
+        private static readonly Size DefaultPointSize = new Size(8,8);
+
+        private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
+        private Dictionary<string, Model3D> Model3DDictionary
+        {
+            get
+            {
+                return model3DDictionary;
+            }
+
+            set
+            {
+                model3DDictionary = value;
+            }
+        }
+ 
+        private const double NearPlaneDistanceFactor = 0.0001;
+ 
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -110,16 +134,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public PointGeometry3D Points { get; set; }
-
-        public LineGeometry3D Lines { get; set; }
-
-        public LineGeometry3D LinesSelected { get; set; }
-
-        public MeshGeometry3D DynamoMesh { get; set; }
-
-        public MeshGeometry3D Mesh { get; set; }
-
         public BillboardText3D Text { get; set; }
 
         public Viewport3DX View
@@ -131,28 +145,8 @@ namespace Dynamo.Controls
 
         public PhongMaterial SelectedMaterial { get; set; }
 
-        public Vector3 DirectionalLightDirection
-        {
-            get { return directionalLightDirection; }
-            set
-            {
-                directionalLightDirection = value;
-                NotifyPropertyChanged("DirectionalLightDirection");
-            }
-        }
-
-        public Color4 DirectionalLightColor
-        {
-            get { return directionalLightColor; }
-            set
-            {
-                directionalLightColor = value;
-                NotifyPropertyChanged("DirectionalLightColor");
-            }
-        }
-
-        public Transform3D Model1Transform { get; set; }
-
+        public Transform3D Model1Transform { get; private set; }
+        
         public RenderTechnique RenderTechnique
         {
             get
@@ -191,16 +185,16 @@ namespace Dynamo.Controls
             get { return lightElevationDegrees; }
             set { lightElevationDegrees = value; }
         }
-
-#if DEBUG
-        /// <summary>
-        /// The TestSelectionCommand is used in the WatchSettingsControl
-        /// to test the ability to toggle a boolean effect variable
-        /// representing the selection state.
-        /// </summary>
-        public Dynamo.UI.Commands.DelegateCommand TestSelectionCommand { get; set; }
-#endif
-
+      
+        public List<Model3D> Model3DValues
+        {
+            get
+            {
+                return Model3DDictionary == null ? new List<Model3D>() :
+                   Model3DDictionary.Select(x => x.Value).ToList();
+            }
+        }
+       
         #endregion
 
         #region constructors
@@ -213,11 +207,11 @@ namespace Dynamo.Controls
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
             Unloaded += OnViewUnloaded;
+            InitializeHelix();
         }
 
         public Watch3DView(Guid id)
         {
-
             SetupScene();
 
             InitializeComponent();
@@ -226,13 +220,13 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
-
+            
+            InitializeHelix();
         }
 
         public Watch3DView(Guid id, IWatchViewModel dataContext)
         {
-            DataContext = dataContext;
-
+            DataContext = dataContext;          
             SetupScene();
 
             InitializeComponent();
@@ -241,6 +235,8 @@ namespace Dynamo.Controls
             Unloaded += OnViewUnloaded;
 
             _id = id;
+             
+            InitializeHelix();             
         }
 
         private void SetupScene()
@@ -251,12 +247,14 @@ namespace Dynamo.Controls
             var lineColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
             defaultLineColor = new Color4(lineColor.R/255.0f, lineColor.G/255.0f, lineColor.B/255.0f, lineColor.A/255.0f);
 
-            DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
-            DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+            directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+            directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
 
             var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
-            RenderTechnique = Techniques.RenderPhong;
+            
+            RenderTechnique = Techniques.RenderDynamo;
+
             WhiteMaterial = new PhongMaterial
             {
                 Name = "White",
@@ -284,15 +282,67 @@ namespace Dynamo.Controls
             // camera setup
             Camera = new PerspectiveCamera
             {
-                Position = new Point3D(10, 15, 10),
-                LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
-                NearPlaneDistance = .1,
                 FarPlaneDistance = 10000000,
-                
             };
 
+            ResetCamera();
+
             DrawGrid();
+        }
+
+        /// <summary>
+        /// Initialize the Helix with these values. These values should be attached before the 
+        /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
+        /// So they are initialized before the process starts.
+        /// </summary>
+        private void InitializeHelix()
+        {
+            directionalLight = new DirectionalLight3D
+            {
+                Color = directionalLightColor,
+                Direction = directionalLightDirection
+            };
+
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("DirectionalLight"))
+            {
+                model3DDictionary.Add("DirectionalLight", directionalLight);
+            }
+
+            LineGeometryModel3D gridModel3D = new LineGeometryModel3D
+            {
+                Geometry = Grid,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false
+            };
+
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Grid"))
+            {
+                model3DDictionary.Add("Grid", gridModel3D);
+            }
+
+            LineGeometryModel3D axesModel3D = new LineGeometryModel3D
+            {
+                Geometry = Axes,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false
+            };
+
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Axes"))
+            {
+                model3DDictionary.Add("Axes", axesModel3D);
+            }
+        }
+
+        private void ResetCamera()
+        {
+            Camera.Position = new Point3D(10, 15, 10);
+            Camera.LookDirection = new Vector3D(-10, -10, -10);
+            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -325,26 +375,11 @@ namespace Dynamo.Controls
 
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
-            Detach(true);
             UnregisterEventHandlers();
-        }
-
-        private void UnregisterEventHandlers()
-        {
-            var vm = DataContext as IWatchViewModel;
-            if (vm == null) return;
-
-            vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-            vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-
             MouseLeftButtonDown += view_MouseButtonIgnore;
             MouseLeftButtonUp += view_MouseButtonIgnore;
             MouseRightButtonUp += view_MouseRightButtonUp;
@@ -354,9 +389,7 @@ namespace Dynamo.Controls
             
             //check this for null so the designer can load the preview
             if (vm == null) return;
-
-            vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-            vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+            RegisterEventHandlers(vm);
 
             renderingTier = (RenderCapability.Tier >> 16);
             var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
@@ -368,19 +401,150 @@ namespace Dynamo.Controls
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
             vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File); 
+        }
 
+        private void UnregisterEventHandlers()
+        {
+            var vm = DataContext as IWatchViewModel;
+            if (vm == null) return;
+
+            vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+
+            vm.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
+            vm.VisualizationManager.DeletionHandled -= VisualizationManager_DeletionHandled;
+            vm.VisualizationManager.WorkspaceOpenedClosedHandled -= VisualizationManager_WorkspaceOpenedClosedHandled;
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            vm.ViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
+        }
+
+        private void RegisterEventHandlers(IWatchViewModel vm)
+        {
+            vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            vm.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
+            vm.VisualizationManager.DeletionHandled += VisualizationManager_DeletionHandled;
+            vm.VisualizationManager.WorkspaceOpenedClosedHandled += VisualizationManager_WorkspaceOpenedClosedHandled;
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
             vm.ViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
-#if DEBUG
-            TestSelectionCommand = new Dynamo.UI.Commands.DelegateCommand(TestSelection, CanTestSelection);
-#endif
-            
+        }
+
+        /// <summary>
+        /// Initialize the Geometry everytime a workspace is opened or closed. 
+        /// Always, keep these DirectionalLight,Grid,Axes. These values are rendered
+        /// only once by helix, attaching them again will make no effect on helix 
+        /// </summary> 
+        private void VisualizationManager_WorkspaceOpenedClosedHandled()
+        {
+            List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText"};
+            if (Text != null && Text.TextInfo.Any())
+            {
+                Text.TextInfo.Clear();               
+            }
+            foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
+            {
+                var model = Model3DDictionary[key] as GeometryModel3D;
+                model.Detach();
+                Model3DDictionary.Remove(key);
+            }
+
+            NotifyPropertyChanged("");
+            View.InvalidateRender();
+        }
+
+        /// <summary>
+        /// When a model is selected,then select only that Geometry
+        /// If any of the model is in selected mode, then unselect that model
+        /// </summary>
+        /// <param name="items">The items.</param>
+        private void VisualizationManager_SelectionHandled(IEnumerable items)
+        {
+            if (items == null)
+            {
+                var geom3dList =
+                    watch_view.Items.Cast<object>().Where(x => x is GeometryModel3D).Cast<GeometryModel3D>().ToList();
+
+                var list = geom3dList.Select(y =>
+                {
+                    y.IsSelected = false;
+                    return y;
+                }).ToList();
+               
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    var node = item as NodeModel;
+                    if (node == null)
+                    {
+                        continue;
+                    }
+
+                    var geometryModels = FindGeometryModel3DsForNode(node);
+
+                    if (!geometryModels.Any())
+                    {
+                        continue;
+                    }
+
+                    var modelValues = geometryModels.Select(x => x.Value);
+                    var selectedGeom = modelValues.Cast<GeometryModel3D>().Select(z =>
+                    {
+                        z.IsSelected = !z.IsSelected;
+                        return z;
+                    }).ToList();                    
+                }
+            }            
+        }
+
+        /// <summary>
+        /// when a node is deleted, then update the Geometry 
+        /// and notify helix        
+        /// </summary>
+        /// <param name="node">The node.</param>
+        private void VisualizationManager_DeletionHandled(NodeModel node)
+        {
+            var geometryModels = FindGeometryModel3DsForNode(node);
+
+            if (!geometryModels.Any())
+            {
+                return;
+            }
+
+            foreach (var kvp in geometryModels)
+            {
+                var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
+                if (model != null) model.Detach();
+                Model3DDictionary.Remove(kvp.Key);                
+            }
+
+            NotifyPropertyChanged("");
+        }
+
+        /// <summary>
+        /// A utility method for finding all the geometry model objects in the geometry
+        /// dictionary which correspond to a node.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <returns></returns>
+        private KeyValuePair<string, Model3D>[] FindGeometryModel3DsForNode(NodeModel node)
+        {
+            var geometryModels =
+                Model3DDictionary
+                    .Where(x => x.Key.Contains(node.AstIdentifierBase))
+                    .Where(x => x.Value is GeometryModel3D)
+                    .Select(x => x).ToArray();
+
+            return geometryModels;   
         }
 
         void Model_ShutdownStarted(Models.DynamoModel model)
         {
-            Detach(true);
             UnregisterEventHandlers();
         }
 
@@ -405,6 +569,10 @@ namespace Dynamo.Controls
                 renderTimer.Reset();
             }
 #endif
+            if (directionalLight == null)
+            {
+                return;
+            }
 
             var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
             var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
@@ -413,11 +581,31 @@ namespace Dynamo.Controls
             var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
             var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
             var v = Vector3.Transform(cf, qaz*qel);
+            directionalLightDirection = v;
 
-            if (!DirectionalLightDirection.Equals(v))
+            if ( !directionalLight.Direction.Equals(directionalLightDirection))
             {
-                DirectionalLightDirection = v; 
+                directionalLight.Direction = v;
             }
+
+            UpdateNearClipPlaneForSceneBounds();
+        }
+
+        /// <summary>
+        /// This method attempts to maximize the near clip plane in order to 
+        /// achiever higher z-buffer precision.
+        /// </summary>
+        private void UpdateNearClipPlaneForSceneBounds()
+        {
+            // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+            var sceneBounds = watch_view.FindBounds();
+            var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
+            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+        }
+
+        private double CalculateNearClipPlane(double maxDim)
+        {
+            return maxDim * NearPlaneDistanceFactor;
         }
 
         /// <summary>
@@ -666,10 +854,12 @@ namespace Dynamo.Controls
             //check the id, if the id is meant for another watch,
             //then ignore it
             if (e.Id != _id)
-            {
+            {               
+                Attach();
+                NotifyPropertyChanged("");
                 return;
             }
-
+        
             // Don't render if the user's system is incapable.
             if (renderingTier == 0)
             {
@@ -678,86 +868,115 @@ namespace Dynamo.Controls
 
 #if DEBUG
             renderTimer.Start();
-#endif
-            Detach(false);
+#endif                  
+            Text = null;
 
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
-
-            var points = HelixRenderPackage.InitPointGeometry();
-            var lines = HelixRenderPackage.InitLineGeometry();
-            var linesSel = HelixRenderPackage.InitLineGeometry();
-            var dynamoMesh = HelixRenderPackage.InitMeshGeometry();
-            var mesh = HelixRenderPackage.InitMeshGeometry();
+    
             var text = HelixRenderPackage.InitText3D();
 
             var aggParams = new PackageAggregationParams
             {
-                Packages = packages,
-                Points = points,
-                Lines = lines,
-                SelectedLines = linesSel,
-                DynamoMesh = dynamoMesh,
-                Mesh = mesh,
+                Packages = packages,                          
                 Text = text
             };
 
             AggregateRenderPackages(aggParams);
-
-            if (!points.Positions.Any())
-                points = null;
-
-            if (!lines.Positions.Any())
-                lines = null;
-
-            if (!linesSel.Positions.Any())
-                linesSel = null;
-
-            if (!text.TextInfo.Any())
-                text = null;
-
-            if (!dynamoMesh.Positions.Any())
-                dynamoMesh = null;
-
-            if (!mesh.Positions.Any())
-                mesh = null;
 
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
             renderTimer.Reset();
             renderTimer.Start();
-#endif
-
-            var updateGraphicsParams = new GraphicsUpdateParams
+#endif        
+             
+            //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
+            //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
+            //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
+            //Instead, only the geometry gets updated every time. Once it is attached (after the geometry), helix
+            // renders the text at the right position.
+            if (Text != null && Text.TextInfo.Any())
             {
-                Points = points,
-                Lines = lines,
-                SelectedLines = linesSel,
-                DynamoMesh = dynamoMesh,
-                Mesh = mesh,
-                Text = text
-            };
+                BillboardTextModel3D billboardText3D = new BillboardTextModel3D
+                {
+                    Transform = Model1Transform
+                };
 
-            SendGraphicsToView(updateGraphicsParams);
+                if (model3DDictionary != null && !model3DDictionary.ContainsKey("BillBoardText"))
+                {
+                    model3DDictionary.Add("BillBoardText", billboardText3D);
+                }
 
-            //DrawTestMesh();
+                var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                billBoardModel3D.Geometry = Text;
+                if (!billBoardModel3D.IsAttached)
+                {
+                    billBoardModel3D.Attach(View.RenderHost);
+                }
+            }
+            else
+            {               
+                if (model3DDictionary != null && model3DDictionary.ContainsKey("BillBoardText"))
+                {
+                    var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                    billBoardModel3D.Geometry = Text;                   
+                }                
+            }
+
+            //This is required for Dynamo to send property changed notifications to helix.          
+            NotifyPropertyChanged("");
         }
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
+            //Clear the geometry values before adding the package.
+            VisualizationManager_WorkspaceOpenedClosedHandled();
+
             foreach (var rp in parameters.Packages)
             {
+                //Node ID gets updated with a ":" everytime this function is called.
+                //For example, if the same point node is called multiple times (CBN), the ID has a ":"
+                //and this makes the dictionary to have multiple entries for the same node. 
+                var baseId = rp.Description;
+                if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
+                {
+                    baseId = baseId.Split(':')[0];
+                }
+                var id = baseId;
+
                 var p = rp.Points;
                 if (p.Positions.Any())
                 {
-                    var points = parameters.Points;
+                    id = baseId + ":points";
 
+                    PointGeometryModel3D pointGeometry3D;
+
+                    if (model3DDictionary.ContainsKey(id))
+                    {
+                        pointGeometry3D = model3DDictionary[id] as PointGeometryModel3D;
+                    }
+                    else
+                    {
+                        pointGeometry3D = new PointGeometryModel3D
+                        {
+                            Geometry = HelixRenderPackage.InitPointGeometry(),
+                            Transform = Model1Transform,
+                            Color = SharpDX.Color.White,
+                            Figure = PointGeometryModel3D.PointFigure.Ellipse,
+                            Size = DefaultPointSize,
+                            IsHitTestVisible = false
+
+                        };
+                        model3DDictionary.Add(id, pointGeometry3D);
+                    }
+
+                    var points = pointGeometry3D.Geometry as PointGeometry3D;
                     var startIdx = points.Positions.Count;
 
                     points.Positions.AddRange(p.Positions);
                     points.Colors.AddRange(p.Colors.Any() ? p.Colors : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
-                    points.Indices.AddRange(p.Indices.Select(i=> i + startIdx));
+                    points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
 
                     var endIdx = points.Positions.Count;
 
@@ -773,20 +992,43 @@ namespace Dynamo.Controls
                     {
                         var pt = p.Positions[0];
                         parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        Text = parameters.Text;
                     }
+
+                    pointGeometry3D.Geometry = points;
                 }
 
                 var l = rp.Lines;
                 if (l.Positions.Any())
                 {
-                    // Choose a collection to store the line data.
-                    var lineSet = rp.IsSelected ? parameters.SelectedLines : parameters.Lines;
+                    id = baseId + ":lines";
 
+                    LineGeometryModel3D lineGeometry3D;
+
+                    if (model3DDictionary.ContainsKey(id))
+                    {
+                        lineGeometry3D = model3DDictionary[id] as LineGeometryModel3D;
+                    }
+                    else
+                    {
+                        lineGeometry3D = new LineGeometryModel3D()
+                        {
+                            Geometry = HelixRenderPackage.InitLineGeometry(),
+                            Transform = Model1Transform,
+                            Color = SharpDX.Color.White,
+                            Thickness = 0.5,
+                            IsHitTestVisible = false
+                        };
+
+                        model3DDictionary.Add(id, lineGeometry3D);
+                    }
+
+                    var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
                     var startIdx = lineSet.Positions.Count;
 
                     lineSet.Positions.AddRange(l.Positions);
                     lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
-                    lineSet.Indices.AddRange(l.Indices.Any()? l.Indices.Select(i=>i + startIdx) : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
+                    lineSet.Indices.AddRange(l.Indices.Any() ? l.Indices.Select(i => i + startIdx) : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
 
                     var endIdx = lineSet.Positions.Count;
 
@@ -802,126 +1044,123 @@ namespace Dynamo.Controls
                     {
                         var pt = lineSet.Positions[startIdx];
                         parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        Text = parameters.Text;
                     }
+
+                    lineGeometry3D.Geometry = lineSet;
                 }
 
                 var m = rp.Mesh;
-                if (m.Positions.Any())
+                if (!m.Positions.Any()) continue;
+
+                id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + ":mesh";
+
+                DynamoGeometryModel3D meshGeometry3D;
+
+                if (model3DDictionary.ContainsKey(id))
                 {
-                    // Pick a mesh to use to store the data. Selected geometry
-                    // goes into the selected mesh. Geometry with
-                    // colors goes into the per vertex mesh. Everything else
-                    // goes into the plain mesh.
-
-                    var meshSet = rp.IsSelected || rp.RequiresPerVertexColoration ? 
-                        parameters.DynamoMesh : parameters.Mesh;
-
-                    var idxCount = meshSet.Positions.Count;
-                    
-                    meshSet.Positions.AddRange(m.Positions);
-
-                    meshSet.Colors.AddRange(rp.IsSelected ? Enumerable.Repeat(selectionColor,m.Positions.Count): m.Colors);
-                    meshSet.Normals.AddRange(m.Normals);
-                    meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
-                    meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
-
-                    if (rp.DisplayLabels)
+                    meshGeometry3D = model3DDictionary[id] as DynamoGeometryModel3D;
+                }
+                else
+                {
+                    meshGeometry3D = new DynamoGeometryModel3D()
                     {
-                        var pt = meshSet.Positions[idxCount];
-                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        Geometry = HelixRenderPackage.InitMeshGeometry(),
+                        Transform = Model1Transform,
+                        Material = WhiteMaterial,
+                        IsHitTestVisible = false,
+                        RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                        IsSelected = rp.IsSelected,
+                    };
+
+                    if (rp.Colors != null)
+                    {
+                        var pf = PixelFormats.Bgra32;
+                        var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
+                        try
+                        {
+                            var diffMap = BitmapSource.Create(rp.ColorsStride/4, rp.Colors.Count()/rp.ColorsStride, 96.0, 96.0, pf, null,
+                                rp.Colors.ToArray(), stride);
+                            var diffMat = new PhongMaterial
+                            {
+                                Name = "White",
+                                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                                DiffuseColor = materialColor,
+                                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                                SpecularShininess = 12.8f,
+                                DiffuseMap = diffMap
+                            };
+                            meshGeometry3D.Material = diffMat;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
+                        }
+                    }
+                    ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
+                    model3DDictionary.Add(id, meshGeometry3D);
+                }
+                var meshSet = meshGeometry3D.Geometry as MeshGeometry3D;
+                var idxCount = meshSet.Positions.Count;
+
+                meshSet.Positions.AddRange(m.Positions);
+
+                meshSet.Colors.AddRange(m.Colors);
+                meshSet.Normals.AddRange(m.Normals);
+                meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
+                meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
+
+                if (rp.DisplayLabels)
+                {
+                    var pt = meshSet.Positions[idxCount];
+                    parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    Text = parameters.Text;
+                }
+
+                meshGeometry3D.Geometry = meshSet;
+            }
+
+            Attach();
+        }
+       
+        private void Attach()
+        {
+            foreach (var kvp in model3DDictionary)
+            {
+                var model3d = kvp.Value;
+                if (model3d is GeometryModel3D)
+                {                  
+                    if (View != null && View.RenderHost != null)
+                    {
+                        model3d.Attach(View.RenderHost);
                     }
                 }
-            }
-        }
+                else
+                {
+                    //This is for Directional Light. When a watch is attached,
+                    //Directional light has to be attached one more time.
+                    if (!model3d.IsAttached && View != null && View.RenderHost != null)
+                    {
+                        model3d.Attach(View.RenderHost);
+                    }
+                    //else
+                    //{
+                    //    model3d.Detach();
+                    //    model3d.Attach(View.RenderHost);
+                    //}
+                }
 
-        private void Detach(bool detachPersistentObjects)
-        {
-            linesView.Detach();
-            linesSelectedView.Detach();
-            pointsView.Detach();
-            dynamoMeshView.Detach();
-            meshView.Detach();
-            textView.Detach();
-
-            if (detachPersistentObjects)
-            {
-                key.Detach();
-                gridView.Detach();
-                axesView.Detach();
-                watch_view.Detach();
-            }
-
-            GC.Collect();
-        }
-
-        private void SendGraphicsToView(GraphicsUpdateParams parameters)
-        {
-            Points = parameters.Points;
-            Lines = parameters.Lines;
-            LinesSelected = parameters.SelectedLines;
-            DynamoMesh = parameters.DynamoMesh;
-            Mesh = parameters.Mesh;
-            Text = parameters.Text;
-
-            linesView.Attach(watch_view.RenderHost);
-            linesSelectedView.Attach(watch_view.RenderHost);
-            pointsView.Attach(watch_view.RenderHost);
-            dynamoMeshView.Attach(watch_view.RenderHost);
-            meshView.Attach(watch_view.RenderHost);
-            textView.Attach(watch_view.RenderHost);
-
-            // Send property changed notifications for everything
-            NotifyPropertyChanged(string.Empty);
-
-            Points = null;
-            Lines = null;
-            LinesSelected = null;
-            DynamoMesh = null;
-            Mesh = null;
-            Text = null;
+            }   
         }
 
         #endregion
-
-#if DEBUG
-        private bool CanTestSelection(object parameters)
-        {
-            return true;
-        }
-
-        private void TestSelection(object parameters)
-        {
-            foreach (var item in watch_view.Items)
-            {
-                var geom = item as HelixToolkit.Wpf.SharpDX.GeometryModel3D;
-                if (geom != null)
-                {
-                    geom.IsSelected = !geom.IsSelected;
-                }
-            }
-        }
-#endif
-
-    }
-
-    internal class GraphicsUpdateParams
-    {
-        public PointGeometry3D Points { get; set; }
-        public LineGeometry3D Lines { get; set; }
-        public LineGeometry3D SelectedLines { get; set; }
-        public MeshGeometry3D DynamoMesh { get; set; }
-        public MeshGeometry3D Mesh { get; set; }
-        public BillboardText3D Text { get; set; }
     }
 
     internal class PackageAggregationParams
     {
         public IEnumerable<HelixRenderPackage> Packages { get; set; } 
-        public PointGeometry3D Points { get; set; }
-        public LineGeometry3D Lines { get; set; }
-        public LineGeometry3D SelectedLines { get; set; }
-        public MeshGeometry3D DynamoMesh { get; set; }
-        public MeshGeometry3D Mesh { get; set; }
         public BillboardText3D Text { get; set; }
     }
 }

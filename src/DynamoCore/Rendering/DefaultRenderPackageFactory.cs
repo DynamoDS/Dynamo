@@ -42,7 +42,8 @@ namespace Dynamo
         private List<int> meshIndices = new List<int>();
  
         private List<int> lineStripVertexCounts = new List<int>();
- 
+        private byte[] colors;
+
         public void AddPointVertex(double x, double y, double z)
         {
             pointVertices.Add(x);
@@ -125,6 +126,11 @@ namespace Dynamo
         {
             meshColors.Clear();
             meshColors.AddRange(colors);
+        }
+
+        public void SetColors(byte[] colors)
+        {
+            this.colors = colors;
         }
 
         public void Clear()
@@ -238,5 +244,9 @@ namespace Dynamo
         {
             get { return pointIndices; }
         }
+
+        public IEnumerable<byte> Colors { get; private set; }
+
+        public int ColorsStride { get; set; }
     }
 }
