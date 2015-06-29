@@ -407,7 +407,7 @@ namespace ProtoCore.DSASM
         private static bool ComparePointerFromHeap(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context)
         {
             var obj1 = rtCore1.Heap.ToHeapObject<DSObject>(sv1);
-            var obj2 = rtCore1.Heap.ToHeapObject<DSObject>(sv2);
+            var obj2 = rtCore2.Heap.ToHeapObject<DSObject>(sv2);
 
             if (obj1.VisibleSize != obj2.VisibleSize)
             {

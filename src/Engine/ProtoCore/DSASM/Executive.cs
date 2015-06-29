@@ -6945,7 +6945,7 @@ namespace ProtoCore.DSASM
                     while (workingList.Any())
                     {
                         blockId = workingList.Pop();
-                        var block = exe.CompleteCodeBlocks[blockId];
+                        var block = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId];
 
                         foreach (var child in block.children)
                         {
@@ -6983,15 +6983,18 @@ namespace ProtoCore.DSASM
 #if DEBUG
                 gcRootSymbolNames.Add("__thisptr");
 #endif
-                gcRoots.Add(stackFrame.ThisPtr);
+                if (stackFrame.ThisPtr.IsReferenceType)
+                    gcRoots.Add(stackFrame.ThisPtr);
                 blockId = stackFrame.FunctionCallerBlock;
                 currentFramePointer = stackFrame.FramePointer;
             }
 
-            gcRoots.Add(RX);
+            if (RX.IsReferenceType)
+                gcRoots.Add(RX);
 
 #if TRACING_GC
-            gcRoots.AddRange(runtimeCore.ReplicationRoots);
+            gcRoots.AddRange(runtimeCore.ReplicationRoots.Where(r => r.IsReferenceType));
+            gcRoots.AddRange(rmem.Stack.Where(s => s.IsReferenceType));
 #endif
 
             return gcRoots;

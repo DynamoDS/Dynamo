@@ -770,7 +770,11 @@ namespace ProtoCore.DSASM
             if (!IsWaitingForRoots())
                 return false;
 
-            roots = new List<StackValue>(gcroots.Where(r => r.IsReferenceType));
+            var validPointers = gcroots.Where(r => r.IsReferenceType && 
+                                                   r.RawIntValue < heapElements.Count() && 
+                                                   r.RawIntValue >= 0 && 
+                                                   heapElements[(int)r.RawIntValue] != null);
+            roots = new List<StackValue>(validPointers);
             if (!roots.Any())
                 return false;
 
