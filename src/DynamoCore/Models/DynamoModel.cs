@@ -503,20 +503,6 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
 
-            if (extensions.Any())
-            {
-                var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, CustomNodeManager);
-
-                foreach (var ext in extensions)
-                {
-                    ext.Startup(startupParams);
-                    ext.Load(preferences, pathManager);
-                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
-                    ExtensionManager.Add(ext);
-                }
-            }
-
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
@@ -551,6 +537,20 @@ namespace Dynamo.Models
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
             InitializeNodeLibrary(preferences);
+
+            if (extensions.Any())
+            {
+                var startupParams = new StartupParams(config.AuthProvider,
+                    pathManager, CustomNodeManager);
+
+                foreach (var ext in extensions)
+                {
+                    ext.Startup(startupParams);
+                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
+                    ext.Load(preferences, pathManager);
+                    ExtensionManager.Add(ext);
+                }
+            }
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
