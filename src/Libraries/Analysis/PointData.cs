@@ -34,6 +34,7 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of Points.</param>
         /// <param name="values">A list of double values.</param>
+        [Obsolete("Use Point nodes and Number nodes as direct inputs to nodes which previously used PointData nodes.")]
         public static PointData ByPointsAndValues(IEnumerable<Point> points, IList<double> values)
         {
             if (points == null)
