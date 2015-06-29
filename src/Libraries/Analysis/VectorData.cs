@@ -35,6 +35,7 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of Points.</param>
         /// <param name="values">A list of Vector values.</param>
+        [Obsolete("Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes.")]
         public static VectorData ByPointsAndValues(
             IEnumerable<Point> points, IList<Vector> values)
         {
