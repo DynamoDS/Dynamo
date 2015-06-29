@@ -7,6 +7,9 @@
              mc:Ignorable="d" 
              MinWidth="200">
     <Grid>
-        <xctk:DateTimePicker Value="{Binding DateTimeCore}"></xctk:DateTimePicker>
+        <xctk:DateTimePicker 
+            Value="{Binding Value}" 
+            Kind="Local" 
+            DisplayDefaultValueOnEmptyText="True" DefaultValue="04/12/1977 12:12:00" />
     </Grid>
 </UserControl>
