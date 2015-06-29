@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="Dynamo.Wpf.Controls.DateTimeInputControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d" 
+             MinWidth="200">
+    <Grid>
+        <xctk:DateTimePicker Value="{Binding DateTimeCore}"></xctk:DateTimePicker>
+    </Grid>
+</UserControl>
