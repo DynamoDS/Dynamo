@@ -281,6 +281,7 @@ namespace ProtoCore.DSASM
         private HashSet<int> sweepSet;
         private List<StackValue> roots;
         private Executive executive;
+        private bool isDisposing = false;
 
         public bool IsGCRunning { get; private set; }
         public GCState gcState = GCState.Pause;
@@ -655,7 +656,7 @@ namespace ProtoCore.DSASM
         /// Move gc a step forward.
         /// </summary>
         private void SingleStep()
-        { 
+        {
             switch (gcState)
             {
                 case GCState.Pause:
@@ -701,7 +702,9 @@ namespace ProtoCore.DSASM
                 else if (hp is DSObject)
                 {
                     var objPointer = StackValue.BuildPointer(ptr, hp.MetaData);
+                    isDisposing = true;
                     GCDisposeObject(objPointer, executive);
+                    isDisposing = false;
                 }
 
                 totalAllocated -= hp.MemorySize;
@@ -716,6 +719,19 @@ namespace ProtoCore.DSASM
             {
                 if (hp != null)
                     hp.Mark = GCMark.White;
+            }
+        }
+
+        // TODO: re-visit to make sure if it is needed or not.
+        public void MarkAsGray(StackValue value)
+        {
+            if (!value.IsReferenceType)
+                return;
+
+            HeapElement valueHp;
+            if (TryGetHeapElement(value, out valueHp))
+            {
+                totalTraversed += PropagateMark(value);
             }
         }
 
@@ -770,6 +786,10 @@ namespace ProtoCore.DSASM
         /// </summary>
         public void GC()
         {
+            // GC disabled when the object is being disposed.
+            if (isDisposing)
+                return;
+
             SingleStep();
         }
 

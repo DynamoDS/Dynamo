@@ -1508,6 +1508,7 @@ namespace ProtoCore
 
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
 
+            runtimeCore.RemoveCallSiteReplicationRoot(CallSiteID);
             return ret;
         }
 
@@ -1762,7 +1763,7 @@ namespace ProtoCore
                     retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
-
+                    runtimeCore.AddCallSiteReplicateionRoot(CallSiteID, retSVs[i]);
 
                     retTrace.NestedData[i] = cleanRetTrace;
 
@@ -1877,10 +1878,11 @@ namespace ProtoCore
                     retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
-
+                    runtimeCore.AddCallSiteReplicateionRoot(CallSiteID, retSVs[i]);
 
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
+
 
                 StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;

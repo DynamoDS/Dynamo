@@ -674,7 +674,12 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
+            foreach (var argument in arguments)
+            {
+                runtimeCore.AddCallSiteReplicateionRoot(callsite.CallSiteID, argument);
+            }
             StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, runtimeCore);
+            runtimeCore.RemoveCallSiteReplicationRoot(callsite.CallSiteID);
 
             // Restore debug properties after returning from a CALL/CALLR
             if (runtimeCore.Options.IDEDebugMode &&

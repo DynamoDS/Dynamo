@@ -81,7 +81,7 @@ namespace ProtoCore.DSASM
         public bool IsExplicitCall { get; set; }
 
         public List<AssociativeGraph.GraphNode> deferedGraphNodes {get; private set;}
-        
+
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;
@@ -4533,6 +4533,8 @@ namespace ProtoCore.DSASM
                 tempSvData = coercedValue;
                 EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
+                rmem.Heap.MarkAsGray(coercedValue);
+
                 if (runtimeCore.Options.ExecuteSSA)
                 {
                     if (!isSSANode)
@@ -6367,8 +6369,8 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            var gcroots = CollectRootPointers();
 #if !TRACING_GC
+            var gcroots = CollectRootPointers();
             rmem.Heap.GCMarkAndSweep(gcroots, this);
 #endif
             return;
@@ -6987,6 +6989,11 @@ namespace ProtoCore.DSASM
             }
 
             gcRoots.Add(RX);
+
+#if TRACING_GC
+            gcRoots.AddRange(runtimeCore.ReplicationRoots);
+#endif
+
             return gcRoots;
         }
     }
