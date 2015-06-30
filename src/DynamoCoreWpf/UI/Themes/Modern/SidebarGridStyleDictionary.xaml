@@ -7,7 +7,7 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
-    <!-- Region Control Templates-->
+   <!-- Region Control Templates-->
 
     <!-- Region LibraryView + LibrarySearchView-->
 
@@ -229,44 +229,6 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="MemberControlTemplate">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Image HorizontalAlignment="Left"
-                   Height="32"
-                   Margin="16,0,16,0"
-                   VerticalAlignment="Center"
-                   Width="32"
-                   Source="{Binding SmallIcon}" />
-            <Border Grid.Column="1"
-                    Margin="5,10,0,10">
-                <Rectangle Fill="#3E464C"
-                           HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch">
-                    <Rectangle.Margin>
-                        <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
-                            <Binding ElementName="memberName" />
-                            <Binding Path="DataContext"
-                                     RelativeSource="{RelativeSource Mode=FindAncestor, 
-                                                                     AncestorType={x:Type UserControl}}" />
-                        </MultiBinding>
-                    </Rectangle.Margin>
-                </Rectangle>
-            </Border>
-            <TextBlock Grid.Column="1"
-                       Name="memberName"
-                       HorizontalAlignment="Left"
-                       Text="{Binding Name}"
-                       VerticalAlignment="Top"
-                       Margin="5,10,0,0"
-                       Foreground="{StaticResource CommonSidebarTextColor}"
-                       FontSize="13" />
-        </Grid>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="InCanvasMemberControlTemplate">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

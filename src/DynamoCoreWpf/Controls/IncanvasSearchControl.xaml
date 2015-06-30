@@ -130,7 +130,7 @@
                                       Style="{StaticResource InCanvasScrollViewerStyle}"
                                       CanContentScroll="True"
                                       Width="250">
-                            <ContentControl Template="{StaticResource InCanvasMemberControlTemplate}" />
+                            <ContentControl Template="{StaticResource MemberControlTemplate}" />
                         </ScrollViewer>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
