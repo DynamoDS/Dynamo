@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Date Time")]
-    [NodeDescription("Create a DateTime object by selecting a date and time.")]
+    [NodeName("Date Time Offset")]
+    [NodeDescription("Create a DateTimeOffset object by specifying a date, a time, and an offset from UTC.")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [IsDesignScriptCompatible]
-    public class DateTime : BasicInteractive<System.DateTime>
+    public class DateTimeOffset : BasicInteractive<System.DateTimeOffset>
     {
-        public DateTime()
+        private const string format = "dd MMMM yyyy h:mm tt zzz";
+
+        public DateTimeOffset()
         {
-            Value = System.DateTime.Now;
+            Value = System.DateTimeOffset.Now;
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
         }
@@ -30,9 +31,11 @@ namespace DSCoreNodesUI
             var minuteNode = AstFactory.BuildIntNode(Value.Minute);
             var secondNode = AstFactory.BuildIntNode(Value.Second);
             var msNode = AstFactory.BuildIntNode(Value.Millisecond);
+            var offHoursNode = AstFactory.BuildIntNode(Value.Offset.Hours);
+            var offMinutesNodes = AstFactory.BuildIntNode(Value.Offset.Minutes);
 
             var funcNode =
-                AstFactory.BuildFunctionCall(new Func<int, int, int, int, int, int, int, System.DateTime>(DSCore.DateTime.ByDateAndTime),
+                AstFactory.BuildFunctionCall(new Func<int, int, int, int, int, int, int, int, int, System.DateTimeOffset>(DSCore.DateTimeOffset.ByDateTimeOffset),
                     new List<AssociativeNode>
                     {
                         yearNode,
@@ -41,7 +44,9 @@ namespace DSCoreNodesUI
                         hourNode,
                         minuteNode,
                         secondNode,
-                        msNode
+                        msNode,
+                        offHoursNode,
+                        offMinutesNodes
                     });
 
             return new[]
@@ -50,15 +55,15 @@ namespace DSCoreNodesUI
             };
         }
 
-        protected override System.DateTime DeserializeValue(string val)
+        protected override System.DateTimeOffset DeserializeValue(string val)
         {
-            System.DateTime result;
-            return System.DateTime.TryParse(val, out result) ? result : new System.DateTime();
+            System.DateTimeOffset result;
+            return System.DateTimeOffset.TryParseExact(val, format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out result) ? result : new System.DateTimeOffset();
         }
 
         protected override string SerializeValue()
         {
-            return Value.ToString(CultureInfo.InvariantCulture);
+            return Value.ToString(format,CultureInfo.InvariantCulture);
         }
     }
 }

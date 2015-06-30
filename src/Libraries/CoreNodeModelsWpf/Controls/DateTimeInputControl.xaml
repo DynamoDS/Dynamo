@@ -3,13 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:converters="clr-namespace:Dynamo.Wpf.Converters"
              mc:Ignorable="d" 
-             MinWidth="200">
+             Width="200">
+    <UserControl.Resources>
+        <converters:StringToDateTimeOffsetConverter x:Key="StringToDateTimeOffsetConverter"/>
+    </UserControl.Resources>
     <Grid>
-        <xctk:DateTimePicker 
-            Value="{Binding Value}" 
-            Kind="Local" 
-            DisplayDefaultValueOnEmptyText="True" DefaultValue="04/12/1977 12:12:00" />
+        <TextBox Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeOffsetConverter}}"
+                     ToolTip="Ented time and date in the format 'dd MMMM yyyy h:mm tt zzz'" 
+                     VerticalAlignment="Stretch" 
+                     VerticalContentAlignment="Center"
+                     HorizontalAlignment="Stretch"/>
+        
     </Grid>
 </UserControl>

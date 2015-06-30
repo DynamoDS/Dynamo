@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using System.Windows.Forms;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -22,6 +12,15 @@ namespace Dynamo.Wpf.Controls
         public DateTimeInputControl()
         {
             InitializeComponent();
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var picker = new DateTimePicker
+            {
+                Format = DateTimePickerFormat.Time,
+                ShowUpDown = true,
+            };
         }
     }
 }
