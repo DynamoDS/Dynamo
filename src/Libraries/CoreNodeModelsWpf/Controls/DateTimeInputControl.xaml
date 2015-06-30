@@ -11,7 +11,7 @@
     </UserControl.Resources>
     <Grid>
         <TextBox Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeOffsetConverter}}"
-                     ToolTip="Ented time and date in the format 'dd MMMM yyyy h:mm tt zzz'" 
+                     ToolTip="Ented time and date in the format 'dd MMMM yyyy h:mm tt'" 
                      VerticalAlignment="Stretch" 
                      VerticalContentAlignment="Center"
                      HorizontalAlignment="Stretch"/>

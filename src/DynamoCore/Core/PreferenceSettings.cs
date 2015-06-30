@@ -24,6 +24,7 @@ namespace Dynamo
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
+        public const string DefaultDateFormat = "MMMM dd, yyyy h:mm tt"; 
         
         // Variables of the settings that will be persistent
 
@@ -185,7 +186,7 @@ namespace Dynamo
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
-            BackupFiles = new List<string>();
+            BackupFiles = new List<string>();     
         }
 
         /// <summary>

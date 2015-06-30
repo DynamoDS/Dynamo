@@ -3,9 +3,9 @@ using Dynamo.Wpf.Controls;
 
 namespace Dynamo.Wpf.NodeViewCustomizations
 {
-    public class DateTimeOffsetNodeViewCustomization : INodeViewCustomization<DSCoreNodesUI.DateTimeOffset>
+    public class DateTimeOffsetNodeViewCustomization : INodeViewCustomization<DSCoreNodesUI.DateTime>
     {
-        public void CustomizeView(DSCoreNodesUI.DateTimeOffset model, NodeView nodeView)
+        public void CustomizeView(DSCoreNodesUI.DateTime model, NodeView nodeView)
         {
             var dtInputControl = new DateTimeInputControl {DataContext = model};
             nodeView.inputGrid.Children.Add(dtInputControl);
