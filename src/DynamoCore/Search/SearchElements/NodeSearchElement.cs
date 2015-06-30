@@ -25,11 +25,11 @@ namespace Dynamo.Search.SearchElements
         private bool isVisibleInSearch = true;
 
 
-        public Action<bool> VisibilityChanged;
-        private void OnVisibilityChanged(bool visible)
+        public Action VisibilityChanged;
+        private void OnVisibilityChanged()
         {
             if (VisibilityChanged != null)
-                VisibilityChanged(visible);
+                VisibilityChanged();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Dynamo.Search.SearchElements
                     return;
 
                 isVisibleInSearch = value;
-                OnVisibilityChanged(isVisibleInSearch);
+                OnVisibilityChanged();
             }
         }
 

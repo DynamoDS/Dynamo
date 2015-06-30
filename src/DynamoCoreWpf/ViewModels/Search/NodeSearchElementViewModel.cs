@@ -38,14 +38,14 @@ namespace Dynamo.Wpf.ViewModels
             Model = element;
             searchViewModel = svm;
 
+            Model.VisibilityChanged += ModelOnVisibilityChanged;
             if (searchViewModel != null)
                 Clicked += searchViewModel.OnSearchElementClicked;
-            ClickedCommand = new DelegateCommand(OnClicked);
-            Model.VisibilityChanged += ModelOnVisibilityChanged;
+            ClickedCommand = new DelegateCommand(OnClicked);            
         }
 
-        private void ModelOnVisibilityChanged(bool visibility)
-        {
+        private void ModelOnVisibilityChanged()
+        {           
             RaisePropertyChanged("Visibility");
         }
 
