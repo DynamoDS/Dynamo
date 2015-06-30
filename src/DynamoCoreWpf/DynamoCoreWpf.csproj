@@ -1115,6 +1115,7 @@
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>

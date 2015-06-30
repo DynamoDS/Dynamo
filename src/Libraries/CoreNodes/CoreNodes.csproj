@@ -72,7 +72,6 @@
     <Compile Include="DateTime.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
-    <Compile Include="GeometryColor.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
