@@ -573,7 +573,6 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("Failure")]
         public void T021_DotOp_Nested_03()
         {
             String code =

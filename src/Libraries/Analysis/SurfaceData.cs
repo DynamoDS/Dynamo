@@ -43,6 +43,7 @@ namespace Analysis
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
         /// <returns></returns>
+        [Obsolete("Use Surface and UV nodes as direct inputs to nodes which previously used SurfaceData nodes.")]
         public static SurfaceData BySurfaceAndPoints(Surface surface, IEnumerable<UV> uvs)
         {
             if (surface == null)
@@ -69,6 +70,7 @@ namespace Analysis
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
         /// <param name="values">A list of double values.</param>
+        [Obsolete("Use Surface, UV, and Number nodes as direct inputs to nodes which previously used SurfaceData nodes.")]
         public static SurfaceData BySurfacePointsAndValues(Surface surface, IEnumerable<UV> uvs, IList<double> values)
         {
             if (surface == null)
