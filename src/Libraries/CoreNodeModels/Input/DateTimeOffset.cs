@@ -58,7 +58,7 @@ namespace DSCoreNodesUI
         protected override System.DateTimeOffset DeserializeValue(string val)
         {
             System.DateTimeOffset result;
-            return System.DateTimeOffset.TryParseExact(val, format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out result) ? result : new System.DateTimeOffset();
+            return System.DateTimeOffset.TryParseExact(val, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ? result : new System.DateTimeOffset();
         }
 
         protected override string SerializeValue()

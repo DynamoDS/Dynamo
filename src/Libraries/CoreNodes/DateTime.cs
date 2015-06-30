@@ -383,7 +383,7 @@ namespace DSCore
     {
         public static System.DateTimeOffset ByDateTimeOffset(int year, int month, int day, int hour=0, int minute=0, int second=0, int millisecond=0, int hoursOffset=0, int minutesOffset=0)
         {
-            var dateTime = new System.DateTime(year, month, day, hour, minute, second, millisecond, DateTimeKind.Local);
+            var dateTime = new System.DateTime(year, month, day, hour, minute, second, millisecond, DateTimeKind.Unspecified);
             return new System.DateTimeOffset(dateTime, new System.TimeSpan(hoursOffset, minutesOffset,0));
         }
     }
