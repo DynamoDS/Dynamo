@@ -101,6 +101,7 @@ namespace Dynamo.Search
                 entryDictionary[value] = keys;
                 OnEntryAdded(value);
             }
+            tags = AddPlural(tags);
             foreach (var tag in tags.Select(x => x.ToLower()))
                 keys[tag] = weight;
         }
@@ -230,25 +231,19 @@ namespace Dynamo.Search
         /// <returns></returns>
         private static bool MatchWithQueryString(string key, string[] subPatterns)
         {
-            int numberOfMatchSymbols = 0;
-            int numberOfAllSymbols = 0;
-
-            foreach (var subPattern in subPatterns)
+            int index = 0;
+            int currPattern = 0;
+            while (index < key.Length && currPattern < subPatterns.Length)
             {
-                for (int i = subPattern.Length; i >= 1; i--)
-                {
-                    var part = subPattern.Substring(0, i);
-                    if (key.IndexOf(part) != -1)
-                    {
-                        numberOfMatchSymbols += part.Length;
-                        break;
-                    }
-                }
-                numberOfAllSymbols += subPattern.Length;
+                index = key.IndexOf(subPatterns[currPattern], index);
+                if (index == -1)
+                    return false;
+                index += subPatterns[currPattern].Length;
+                currPattern++;
             }
-
-            return (double)numberOfMatchSymbols / numberOfAllSymbols > 0.8;
+            return currPattern == subPatterns.Length;
         }
+
 
         private static string[] SplitOnWhiteSpace(string s)
         {
@@ -335,6 +330,27 @@ namespace Dynamo.Search
             if (entryDictionary.ContainsKey(element))
                 return entryDictionary[element].Keys;
             return null;
+        }
+
+        private readonly string pluralEnding1 = "s";
+        private readonly string pluralEnding2 = "es";
+
+        /// <summary>
+        /// Adds plural tags by adding "-s" and "-es".
+        /// E.g. point -> points.
+        /// </summary>        
+        private IEnumerable<string> AddPlural(IEnumerable<string> tags)
+        {
+            List<string> result = new List<string>();
+
+            foreach (var tag in tags)
+            {
+                result.Add(tag);
+                result.Add(tag + pluralEnding1);
+                result.Add(tag + pluralEnding2);
+            }
+
+            return result;
         }
     }
 }
