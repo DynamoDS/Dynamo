@@ -40,18 +40,20 @@ namespace ProtoCore.Runtime
 
             macroBlockList = exec.exe.MacroBlockList;
 
-            List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlockList);
-            if (validBlocks.Count == 0)
-            {
-                return;
-            }
+            //List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlockList);
+            //if (validBlocks.Count == 0)
+            //{
+            //    return;
+            //}
 
             Setup(exec, exeblock, entry, stackFrame, locals);
 
-            foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
-            {
-                executive.Execute(macroBlock);
-            }
+            //foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
+            //{
+            //    executive.Execute(macroBlock);
+            //}
+
+            executive.Execute(exeblock, entry, null);
         }
 
         /// <summary>

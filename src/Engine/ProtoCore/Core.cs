@@ -146,6 +146,7 @@ namespace ProtoCore
         public bool IsDeltaExecution { get; set; }
         public InterpreterMode RunMode { get; set; }
 
+
         /// <summary>
         /// TODO: Aparajit: This flag is true for Delta AST compilation
         /// This will be removed once we make this the default and deprecate "deltaCompileStartPC" 
@@ -394,6 +395,8 @@ namespace ProtoCore
         public int newEntryPoint { get; private set; }
 
         public int CurrentMacroBlockID { get; set; }
+
+        public ProtoCore.MacroBlockGenerator MacroblockGen { get; set; }
 
         public void SetNewEntryPoint(int pc)
         {
@@ -681,6 +684,7 @@ namespace ProtoCore
             newEntryPoint = Constants.kInvalidIndex;
             CurrentMacroBlockID = Constants.kInvalidIndex;
             RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
+            MacroblockGen = new MacroBlockGenerator(this);
         }
 
         // The unique subscript for SSA temporaries
@@ -975,6 +979,7 @@ namespace ProtoCore
         {
             Validity.Assert(CodeBlockList.Count >= 0);
             DSExecutable = new Executable();
+
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
             DSExecutable.CodeBlocks.AddRange(CodeBlockList);
