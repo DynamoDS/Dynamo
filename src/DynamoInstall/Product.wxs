@@ -65,6 +65,7 @@
              Level="1">
       <ComponentGroupRef Id="RELEASE"/>
       <ComponentGroupRef Id="DEFINITIONS"/>
+      <ComponentGroupRef Id="GALLERY"/>
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ProductRegistry" />
       <Feature Id="DYNAMO_CORE_SAMPLES"

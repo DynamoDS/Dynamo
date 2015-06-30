@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 using Dynamo.Models;
@@ -89,11 +90,11 @@ namespace Dynamo.Core
                 }
 
                 // When it gets here, an evaluation is guaranteed.
-                BeginRunExpression();
+                BeginRun();
             }
         }
 
-        internal void OnRunExpressionCompleted(object sender,
+        internal void OnRefreshCompleted(object sender,
             EvaluationCompletedEventArgs evaluationCompletedEventArgs)
         {
             lock (stateMutex)
@@ -110,11 +111,11 @@ namespace Dynamo.Core
 
                 // Further evaluation was requested.
                 evaluationRequestPending = false;
-                BeginRunExpression();
+                BeginRun();
             }
         }
 
-        private void BeginRunExpression()
+        private void BeginRun()
         {
             // Here we know for a fact that the evaluation will begin at one 
             // point in the near future. Mark it as in progress because from 

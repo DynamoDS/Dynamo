@@ -33,7 +33,6 @@ namespace ProtoCore.Utils
 
             foreach (ClassNode cn in typeStats.Keys)
             {
-//<<<<<<< .mine
                 List<int> chain = ClassUtils.GetClassUpcastChain(cn, runtimeCore);
 
                 //Now add in the other conversions - as we don't have a common superclass yet
@@ -42,9 +41,6 @@ namespace ProtoCore.Utils
                     if (!chain.Contains(id))
                         chain.Add((id));
 
-//=======
-//                List<int> chain = GetConversionChain(cn, core);
-//>>>>>>> .r2886
                 chains.Add(chain);
 
                 foreach (int nodeId in chain)
@@ -187,8 +183,8 @@ namespace ProtoCore.Utils
             Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.VisibleItems)
             {
                 if (!usageFreq.ContainsKey(sv.metaData.type))
                     usageFreq.Add(sv.metaData.type, sv);
@@ -216,8 +212,8 @@ namespace ProtoCore.Utils
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode,int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.VisibleItems)
             {
                 ClassNode cn = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
                 if (!usageFreq.ContainsKey(cn))
@@ -247,8 +243,8 @@ namespace ProtoCore.Utils
             Dictionary<ClassNode, int> usageFreq = new Dictionary<ClassNode, int>();
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.VisibleItems)
             {
                 if (sv.IsArray)
                 {
@@ -291,27 +287,12 @@ namespace ProtoCore.Utils
             int largestSub = 0;
 
             //This is the element on the heap that manages the data structure
-            HeapElement heapElement = GetHeapElement(array, runtimeCore);
-            foreach (var sv in heapElement.VisibleItems)
+            foreach (var sv in runtimeCore.Heap.ToHeapObject<DSArray>(array).Values)
             {
                 if (sv.IsArray)
                 {
                     int subArrayRank = GetMaxRankForArray(sv, runtimeCore, tracer + 1);
-
                     largestSub = Math.Max(subArrayRank, largestSub);
-                }
-            }
-
-            var dict = heapElement.Dict;
-            if (dict != null)
-            {
-                foreach (var sv in dict.Values)
-                {
-                    if (sv.IsArray)
-                    {
-                        int subArrayRank = GetMaxRankForArray(sv, runtimeCore, tracer + 1);
-                        largestSub = Math.Max(subArrayRank, largestSub);
-                    }
                 }
             }
 
@@ -336,7 +317,8 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return exe.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
-            return ArrayUtils.GetValues(sv, runtimeCore).Any(
+            DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+            return array.Values.Any(
                         v => (v.IsArray && ContainsDoubleElement(v, runtimeCore)) ||
                              (exe.TypeSystem.GetType(v) == (int)PrimitiveType.kTypeDouble));
         }
@@ -353,24 +335,8 @@ namespace ProtoCore.Utils
             if (!sv.IsArray)
                 return true;
 
-            var values = ArrayUtils.GetValues(sv, runtimeCore);
-            return values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
-        }
-
-        /// <summary>
-        /// Pull the heap element out of a heap object
-        /// </summary>
-        /// <param name="heapObject"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static HeapElement GetHeapElement(StackValue heapObject, RuntimeCore runtimeCore)
-        {
-            if (!heapObject.IsArray && !heapObject.IsPointer)
-            {
-                return null;
-            }
-
-            return runtimeCore.RuntimeMemory.Heap.GetHeapElement(heapObject);
+            var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+            return array.Values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
         }
 
         public static bool IsUniform(StackValue sv, RuntimeCore runtimeCore)
@@ -399,42 +365,55 @@ namespace ProtoCore.Utils
                 return false;
             }
 
-            HeapElement he = rmem.Heap.GetHeapElement(svArray);
-            if (null == he.Stack || he.Stack.Length == 0)
+            var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
+            if (!array.VisibleItems.Any())
             {
                 return false;
             }
 
-            while (he.Stack[0].IsArray)
+            while (array.GetValueFromIndex(0, runtimeCore).IsArray)
             {
-                he = rmem.Heap.GetHeapElement(he.Stack[0]);
+                array = rmem.Heap.ToHeapObject<DSArray>(array.GetValueFromIndex(0, runtimeCore));
 
                 // Handle the case where the array is valid but empty
-                if (he.Stack.Length == 0)
+                if (!array.VisibleItems.Any())
                 {
                     return false;
                 }
             }
 
-            sv = he.Stack[0].ShallowClone();
+            sv = array.GetValueFromIndex(0, runtimeCore).ShallowClone();
             return true;
         }
 
-        /// <summary>
-        /// Return the element size of an array
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static int GetElementSize(StackValue array, RuntimeCore runtimeCore)
+        private static StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)
         {
-            Validity.Assert(array.IsArray);
+            Queue<StackValue> workingSet = new Queue<StackValue>();
+            List<StackValue> flattenValues = new List<StackValue>();
+
             if (!array.IsArray)
             {
-                return Constants.kInvalidIndex;
+                return null;
             }
 
-            return GetHeapElement(array, runtimeCore).VisibleSize;
+            workingSet.Enqueue(array);
+            while (workingSet.Count > 0)
+            {
+                array = workingSet.Dequeue();
+                foreach (var value in runtimeCore.Heap.ToHeapObject<DSArray>(array).Values)
+                {
+                    if (value.IsArray)
+                    {
+                        workingSet.Enqueue(value);
+                    }
+                    else
+                    {
+                        flattenValues.Add(value);
+                    }
+                }
+            }
+
+            return flattenValues.ToArray();
         }
 
         /// <summary>
@@ -470,7 +449,7 @@ namespace ProtoCore.Utils
         /// <param name="indices"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        private static StackValue[][] GetZippedIndices(List<StackValue> indices, RuntimeCore runtimeCore)
+        public static StackValue[][] GetZippedIndices(List<StackValue> indices, RuntimeCore runtimeCore)
         {
             List<StackValue[]> allFlattenValues = new List<StackValue[]>();
 
@@ -540,669 +519,5 @@ namespace ProtoCore.Utils
                 return zippedIndices;
             }
         }
-
-        /// <summary>
-        /// array[index] = value. The array will be expanded if necessary.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        /// <param name="value"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray);
-
-            HeapElement arrayHeap = GetHeapElement(array, runtimeCore);
-            index = arrayHeap.ExpandByAcessingAt(index);
-            StackValue oldValue = arrayHeap.SetValue(index, value);
-            return oldValue;
-        }
-
-        /// <summary>
-        /// array[index] = value. Here index can be any type. 
-        /// 
-        /// Note this function doesn't support the replication of array indexing.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        /// <param name="value"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue SetValueForIndex(StackValue array, StackValue index, StackValue value, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray);
-
-            if (index.IsNumeric)
-            {
-                index = index.ToInteger();
-                return SetValueForIndex(array, (int)index.opdata, value, runtimeCore);
-            }
-            else
-            {
-                HeapElement he = GetHeapElement(array, runtimeCore);
-                if (he.Dict == null)
-                {
-                    he.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
-                }
-
-                StackValue oldValue;
-                if (!he.Dict.TryGetValue(index, out oldValue))
-                {
-                    oldValue = StackValue.Null;
-                }
-                he.Dict[index] = value;
-
-                return oldValue;
-            }
-        }
-
-        /// <summary>
-        /// array[index1][index2][...][indexN] = value, and
-        /// indices = {index1, index2, ..., indexN}
-        ///
-        /// Note this function doesn't support the replication of array indexing.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="indices"></param>
-        /// <param name="value"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue SetValueForIndices(StackValue array, StackValue[] indices, StackValue value, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray);
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
-
-            for (int i = 0; i < indices.Length - 1; ++i)
-            {
-                StackValue index = indices[i];
-                HeapElement he = GetHeapElement(array, runtimeCore);
-
-                StackValue subArray;
-
-                if (index.IsNumeric)
-                {
-                    index = index.ToInteger();
-                    int absIndex = he.ExpandByAcessingAt((int)index.opdata);
-                    subArray = he.Stack[absIndex];
-                }
-                else
-                {
-                    subArray = GetValueFromIndex(array, index, runtimeCore);
-                }
-
-                // auto-promotion
-                if (!subArray.IsArray)
-                {
-                    subArray = rmem.Heap.AllocateArray(new StackValue[] { subArray }, null);
-                    SetValueForIndex(array, index, subArray, runtimeCore);
-                }
-
-                array = subArray;
-            }
-
-            return SetValueForIndex(array, indices[indices.Length - 1], value, runtimeCore);
-        }
-
-        /// <summary>
-        /// array[index1][index2][...][indexN] = value, and
-        /// indices = {index1, index2, ..., indexN}
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="indices"></param>
-        /// <param name="value"></param>
-        /// <param name="t"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue SetValueForIndices(StackValue array, List<StackValue> indices, StackValue value, Type t, RuntimeCore runtimeCore)
-        {
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
-            StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
-            if (zippedIndices == null || zippedIndices.Length == 0)
-            {
-                return StackValue.Null;
-            }
-
-            if (zippedIndices.Length == 1)
-            {
-                StackValue coercedData = TypeSystem.Coerce(value, t, runtimeCore);
-                return ArrayUtils.SetValueForIndices(array, zippedIndices[0], coercedData, runtimeCore);
-            }
-
-            if (t.rank > 0)
-            {
-                t.rank = t.rank - 1;
-            }
-
-            if (value.IsArray)
-            {
-                // Replication happens on both side.
-                HeapElement dataHeapElement = GetHeapElement(value, runtimeCore);
-                int length = Math.Min(zippedIndices.Length, dataHeapElement.VisibleSize);
-
-                StackValue[] oldValues = new StackValue[length];
-                for (int i = 0; i < length; ++i)
-                {
-                    StackValue coercedData = TypeSystem.Coerce(dataHeapElement.Stack[i], t, runtimeCore);
-                    oldValues[i] = SetValueForIndices(array, zippedIndices[i], coercedData, runtimeCore);
-                }
-
-                // The returned old values shouldn't have any key-value pairs
-                return rmem.Heap.AllocateArray(oldValues, null);
-            }
-            else
-            {
-                // Replication is only on the LHS, so collect all old values 
-                // and return them in an array. 
-                StackValue coercedData = TypeSystem.Coerce(value, t, runtimeCore);
-
-                StackValue[] oldValues = new StackValue[zippedIndices.Length];
-                for (int i = 0; i < zippedIndices.Length; ++i)
-                {
-                    oldValues[i] = SetValueForIndices(array, zippedIndices[i], coercedData, runtimeCore);
-                }
-
-                // The returned old values shouldn't have any key-value pairs
-                return rmem.Heap.AllocateArray(oldValues, null);
-            }
-        }
-
-        /// <summary>
-        /// = array[index]
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue GetValueFromIndex(StackValue array, int index, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray || array.IsString);
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
-
-            if (array.IsString)
-            {
-                string str = rmem.Heap.GetString(array);
-                if (str == null)
-                    return StackValue.Null;
-
-                if (index < 0)
-                {
-                    index = index + str.Length;
-                }
-
-                if (index >= str.Length || index < 0)
-                {
-                    runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
-                    return StackValue.Null;
-                }
-
-                return rmem.Heap.AllocateString(str.Substring(index, 1));
-            }
-            else
-            {
-                HeapElement he = GetHeapElement(array, runtimeCore);
-                return StackUtils.GetValue(he, index, runtimeCore);
-            }
-        }
-
-        /// <summary>
-        /// = array[index].
-        /// 
-        /// Note this function doesn't support the replication of array indexing.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue GetValueFromIndex(StackValue array, StackValue index, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray || array.IsString);
-            if (!array.IsArray && !array.IsString)
-            {
-                return StackValue.Null;
-            }
-
-            if (index.IsNumeric)
-            {
-                index = index.ToInteger();
-                return GetValueFromIndex(array, (int)index.opdata, runtimeCore);
-            }
-            else if (index.IsArrayKey)
-            {
-                int fullIndex = (int)index.opdata;
-                if (array.IsString)
-                {
-                    return GetValueFromIndex(array, fullIndex, runtimeCore);
-                }
-
-                HeapElement he = GetHeapElement(array, runtimeCore);
-
-                if (he.VisibleSize > fullIndex)
-                {
-                    return GetValueFromIndex(array, fullIndex, runtimeCore);
-                }
-                else
-                {
-                    fullIndex = fullIndex - he.VisibleSize;
-                    if (he.Dict != null && he.Dict.Count > fullIndex)
-                    {
-                        int count = 0;
-                        foreach (var key in he.Dict.Keys)
-                        {
-                            if (count == fullIndex)
-                            {
-                                return he.Dict[key];
-                            }
-                            count = count + 1;
-                        }
-                    }
-                }
-
-                return StackValue.Null;
-            }
-            else
-            {
-                HeapElement he = GetHeapElement(array, runtimeCore);
-                StackValue value = StackValue.Null;
-
-                if (he.Dict != null && he.Dict.TryGetValue(index, out value))
-                {
-                    return value;
-                }
-                else
-                {
-                    return StackValue.Null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// = array[index1][index2][...][indexN], and
-        /// indices = {index1, index2, ..., indexN}
-        /// 
-        /// Note this function doesn't support the replication of array indexing.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="indices"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray || array.IsString);
-            for (int i = 0; i < indices.Length - 1; ++i)
-            {
-                StackValue index = indices[i];
-                if (index.IsNumeric)
-                {
-                    index = index.ToInteger();
-                    array = GetValueFromIndex(array, (int)index.opdata, runtimeCore);
-                }
-                else
-                {
-                    if (!array.IsArray)
-                    {
-                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
-                        return StackValue.Null;
-                    }
-                    array = GetValueFromIndex(array, index, runtimeCore);
-                }
-
-                if (!array.IsArray)
-                {
-                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
-                    return StackValue.Null;
-                }
-            }
-
-            return GetValueFromIndex(array, indices[indices.Length - 1], runtimeCore);
-        }
-
-        /// <summary>
-        /// = array[index1][index2][...][indexN], and
-        /// indices = {index1, index2, ..., indexN}
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="indices"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue GetValueFromIndices(StackValue array, List<StackValue> indices, RuntimeCore runtimeCore)
-        {
-            if (indices.Count == 0)
-            {
-                return array;
-            }
-            else if (!array.IsArray && !array.IsString)
-            {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
-                return StackValue.Null;
-            }
-
-            StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, runtimeCore);
-            if (zippedIndices == null || zippedIndices.Length == 0)
-            {
-                return StackValue.Null;
-            }
-
-            StackValue[] values = new StackValue[zippedIndices.Length];
-            for (int i = 0; i < zippedIndices.Length; ++i)
-            {
-                values[i] = GetValueFromIndices(array, zippedIndices[i], runtimeCore);
-            }
-
-            if (zippedIndices.Length > 1)
-            {
-                if (array.IsString)
-                {
-                    string result = string.Join(string.Empty, values.Select(v => runtimeCore.RuntimeMemory.Heap.GetString(v)));
-                    return runtimeCore.RuntimeMemory.Heap.AllocateString(result);
-                }
-                else
-                {
-                    return runtimeCore.RuntimeMemory.Heap.AllocateArray(values, null);
-                }
-            }
-            else
-            {
-                return values[0];
-            }
-        }
-
-        /// <summary>
-        /// Simply copy an array.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue CopyArray(StackValue array, RuntimeCore runtimeCore)
-        {
-            Type anyType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
-            return CopyArray(array, anyType, runtimeCore);
-        }
-
-        /// <summary>
-        /// Copy an array and coerce its elements/values to target type
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="type"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue CopyArray(StackValue array, Type type, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray);
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
-            if (!array.IsArray)
-            {
-                return StackValue.Null;
-            }
-
-            HeapElement he = GetHeapElement(array, runtimeCore);
-            Validity.Assert(he != null);
-
-            int elementSize = GetElementSize(array, runtimeCore);
-            StackValue[] elements = new StackValue[elementSize];
-            for (int i = 0; i < elementSize; i++)
-            {
-                StackValue coercedValue = TypeSystem.Coerce(he.Stack[i], type, runtimeCore);
-                elements[i] = coercedValue;
-            }
-
-            Dictionary<StackValue, StackValue> dict = null;
-            if (he.Dict != null)
-            {
-                dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
-                foreach (var pair in he.Dict)
-                {
-                    StackValue key = pair.Key;
-                    StackValue value = pair.Value;
-                    StackValue coercedValue = TypeSystem.Coerce(value, type, runtimeCore);
-
-                    dict[key] = coercedValue;
-                }
-            }
-
-            return rmem.Heap.AllocateArray(elements, dict);
-        }
-
-        /// <summary>
-        /// Get all values that stored in the array, including in dictionary
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static IEnumerable<StackValue> GetValues(StackValue array, RuntimeCore runtimeCore)
-        {
-            if (!array.IsArray && !array.IsString)
-            {
-                return Enumerable.Empty<StackValue>();
-            }
-
-            HeapElement he = GetHeapElement(array, runtimeCore);
-            return (he.Dict == null) ? he.VisibleItems : he.VisibleItems.Concat(he.Dict.Values);
-        }
-
-        private static StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)
-        {
-            Queue<StackValue> workingSet = new Queue<StackValue>();
-            List<StackValue> flattenValues = new List<StackValue>();
-
-            if (!array.IsArray)
-            {
-                return null;
-            }
-
-            workingSet.Enqueue(array);
-            while (workingSet.Count > 0)
-            {
-                array = workingSet.Dequeue();
-                HeapElement he = GetHeapElement(array, runtimeCore);
-                foreach (var value in he.VisibleItems)
-                {
-                    if (value.IsArray)
-                    {
-                        workingSet.Enqueue(value);
-                    }
-                    else
-                    {
-                        flattenValues.Add(value);
-                    }
-                }
-
-                if (he.Dict != null)
-                {
-                    foreach (var value in he.Dict.Values)
-                    {
-                        if (value.IsArray)
-                        {
-                            workingSet.Enqueue(value);
-                        }
-                        else
-                        {
-                            flattenValues.Add(value);
-                        }
-                    }
-                }
-            }
-
-            return flattenValues.ToArray();
-        }
-
-        /// <summary>
-        /// Get all keys from an array
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue[] GetKeys(StackValue array, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return null;
-            }
-
-            HeapElement he = GetHeapElement(array, runtimeCore);
-            var keys = Enumerable.Range(0, he.VisibleSize).Select(i => StackValue.BuildInt(i)).ToList(); 
-            if (he.Dict != null)
-            {
-                keys.AddRange(he.Dict.Keys);
-            }
-
-            return keys.ToArray();
-        }
-
-        /// <summary>
-        /// Check if an array contain key
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="key"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static bool ContainsKey(StackValue array, StackValue key, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return false;
-            }
-
-            HeapElement he = GetHeapElement(array, runtimeCore);
-            if (key.IsNumeric)
-            {
-                long index = key.ToInteger().opdata;
-                if (index < 0)
-                {
-                    index = index + he.VisibleSize;
-                }
-                return (index >= 0 && index < he.VisibleSize);
-            }
-            else
-            {
-                return he.Dict != null && he.Dict.ContainsKey(key);
-            }
-        }
-
-        public static bool RemoveKey(StackValue array, StackValue key, RuntimeCore runtimeCore)
-        {
-            Validity.Assert(array.IsArray);
-            if (!array.IsArray)
-            {
-                return false;
-            }
-
-            HeapElement he = GetHeapElement(array, runtimeCore);
-
-            if (key.IsNumeric)
-            {
-                long index = key.ToInteger().opdata;
-                if (index < 0)
-                {
-                    index = index + he.VisibleSize;
-                }
-
-                if (index >= 0 && index < he.VisibleSize)
-                {
-                    he.Stack[index] = StackValue.Null;
-
-                    if (index == he.VisibleSize - 1)
-                    {
-                        he.VisibleSize -= 1;
-                    }
-                    return true;
-                }
-            }
-            else
-            {
-                if (he.Dict != null && he.Dict.ContainsKey(key))
-                {
-                    he.Dict.Remove(key);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Get an array's next key
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static StackValue GetNextKey(StackValue key, RuntimeCore runtimeCore)
-        {
-            StackValue array;
-            int index;
-
-            if (!key.TryGetArrayKey(out array, out index))
-            {
-                return StackValue.Null;
-            }
-
-            int nextIndex = Constants.kInvalidIndex;
-            if (array.IsString)
-            {
-                var str = runtimeCore.Heap.GetString(array);
-                if (str.Length > index + 1)
-                    nextIndex = index + 1;
-            }
-            else
-            {
-                HeapElement he = GetHeapElement(array, runtimeCore);
-                if ((he.VisibleSize > index + 1) ||
-                    (he.Dict != null && he.Dict.Count + he.VisibleSize > index + 1))
-                    nextIndex = index + 1;
-            }
-
-            return nextIndex == Constants.kInvalidIndex ? StackValue.Null : StackValue.BuildArrayKey(array, nextIndex);
-        }
-
-        /// <summary>
-        /// Try to get value for key from nested dictionaries. This function is
-        /// used in the case that indexing into dictionaries that returned from
-        /// a replicated function whose return type is dictionary.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public static bool TryGetValueFromNestedDictionaries(StackValue array, StackValue key, out StackValue value, RuntimeCore runtimeCore)
-        {
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
-            if (!array.IsArray)
-            {
-                value = StackValue.Null;
-                return false;
-            }
-
-            HeapElement he = GetHeapElement(array, runtimeCore);
-            if (he.Dict != null && he.Dict.TryGetValue(key, out value))
-            {
-                return true;
-            }
-
-            var values = new List<StackValue>();
-            bool hasValue = false;
-            foreach (var element in he.VisibleItems)
-            {
-                StackValue valueInElement;
-                if (TryGetValueFromNestedDictionaries(element, key, out valueInElement, runtimeCore))
-                {
-                    hasValue = true;
-                    values.Add(valueInElement);
-                }
-            }
-
-            if (hasValue)
-            {
-                value = rmem.Heap.AllocateArray(values, null);
-                return true;
-            }
-            else
-            {
-                value = StackValue.Null;
-                return false;
-            }
-        }
-    }
+   }
 }

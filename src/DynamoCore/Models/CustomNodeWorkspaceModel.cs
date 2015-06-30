@@ -39,17 +39,18 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
-            NodeFactory factory, 
+            NodeFactory factory,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
+            IEnumerable<PresetModel> presets,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
-            : base(e, n,a,info, factory)
-
+            : base(e, n,a, info, factory,presets)
         {
             HasUnsavedChanges = false;
 
@@ -61,7 +62,6 @@ namespace Dynamo.Models
             {
                 ElementResolver.CopyResolutionMap(elementResolver);
             }
-
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -194,12 +194,9 @@ namespace Dynamo.Models
             if (handler != null) handler(oldId);
         }
 
-        public override bool SaveAs(string newPath, ProtoCore.Core core)
+        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
         {
             var originalPath = FileName;
-
-            if (!base.SaveAs(newPath, core))
-                return false;
 
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
@@ -214,7 +211,7 @@ namespace Dynamo.Models
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return true;
+            return base.SaveAs(newPath, runtimeCore);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
@@ -234,7 +231,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
+        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
         {
             // Since custom workspace does not have any runtime data to persist,
             // do not allow base class to serialize any session data.

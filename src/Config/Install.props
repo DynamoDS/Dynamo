@@ -7,6 +7,7 @@
     <DYNAMO_HARVEST_PATH Condition=" '$(DYNAMO_HARVEST_PATH)' == '' ">$(MSBuildProjectDirectory)\harvest</DYNAMO_HARVEST_PATH>
     <DYNAMO_MIGRATION_NODES_PATH Condition=" '$(DYNAMO_MIGRATION_NODES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\doc\distrib\migration_nodes</DYNAMO_MIGRATION_NODES_PATH>
     <DYNAMO_SAMPLES_PATH Condition=" '$(DYNAMO_SAMPLES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\samples</DYNAMO_SAMPLES_PATH>
+    <DYNAMO_GALLERY_PATH Condition=" '$(DYNAMO_GALLERY_PATH)' == '' ">$(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\gallery</DYNAMO_GALLERY_PATH>
     <DYNAMO_REVIT_SIGN_TOOLS Condition=" '$(DYNAMO_REVIT_SIGN_TOOLS)' == '' ">$(MSBuildProjectDirectory)\sign</DYNAMO_REVIT_SIGN_TOOLS>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +24,7 @@
     <DYNAMO_HARVEST_PATH Condition=" '$(DYNAMO_HARVEST_PATH)' == '' ">$(MSBuildProjectDirectory)\harvest</DYNAMO_HARVEST_PATH>
     <DYNAMO_MIGRATION_NODES_PATH Condition=" '$(DYNAMO_MIGRATION_NODES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\doc\distrib\migration_nodes</DYNAMO_MIGRATION_NODES_PATH>
     <DYNAMO_SAMPLES_PATH Condition=" '$(DYNAMO_SAMPLES_PATH)' == '' ">$(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\samples</DYNAMO_SAMPLES_PATH>
+    <DYNAMO_GALLERY_PATH Condition=" '$(DYNAMO_GALLERY_PATH)' == '' ">$(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\gallery</DYNAMO_GALLERY_PATH>
     <DYNAMO_REVIT_SIGN_TOOLS Condition=" '$(DYNAMO_REVIT_SIGN_TOOLS)' == '' ">$(MSBuildProjectDirectory)\sign</DYNAMO_REVIT_SIGN_TOOLS>
     <BaseIntermediateOutputPath>$(OutputPath)\int\</BaseIntermediateOutputPath>
     <DebugType>pdbonly</DebugType>

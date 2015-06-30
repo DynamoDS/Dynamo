@@ -1,0 +1,25 @@
+﻿using Dynamo.Wpf.ViewModels.Core;
+using System.Windows.Controls;
+
+namespace Dynamo.Wpf.Views.Gallery
+{
+    /// <summary>
+    /// Interaction logic for GalleryView.xaml
+    /// </summary>
+    public partial class GalleryView : UserControl
+    {
+        public GalleryViewModel ViewModel { get; private set; }
+
+        public GalleryView(GalleryViewModel galleryViewModel)
+        {
+            InitializeComponent();
+            DataContext = galleryViewModel;
+            ViewModel = galleryViewModel;
+        }
+
+        private void GalleryView_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            e.Handled = true; //So that the clicking doesn't bubble-up to the galleryBackground.
+        }
+    }
+}

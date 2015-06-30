@@ -68,8 +68,8 @@ namespace DynamoCoreWpfTests
             Open(@"UI\CoreUINodes.dyn");
 
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
-            var watchView = nodeView.ChildrenOfType<Watch3DView>().First();
-            Assert.Null(watchView.Points);
+            var watchView = nodeView.ChildrenOfType<Watch3DView>().FirstOrDefault();
+            Assert.NotNull(watchView);
         }
 
         [Test]
@@ -278,7 +278,8 @@ namespace DynamoCoreWpfTests
 
             var watch3DView = watch3ds.First();
 
-            Assert.AreEqual(1, watch3DView.Points.Positions.Count);
+            //Assert.AreEqual(1, watch3DView.Points.Positions.Count);
+            Assert.AreEqual(1, Model.CurrentWorkspace.TotalPointsToRender());
         }
 
         [Test]
@@ -320,6 +321,69 @@ namespace DynamoCoreWpfTests
 
             inPortGrid = nodeView.inPortGrid;
             Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
+        }
+
+        [Test]
+        public void TestColorRangeNodeOnMultipleFilesWithoutClosing()
+        {
+            Open(@"UI\UIColorRange.dyn");
+
+            var nodeView = NodeViewWithGuid("72a66222-5a7d-4dce-b695-5e18b5a93bc3");
+            var image = nodeView.inputGrid.ChildrenOfType<Image>().FirstOrDefault();
+            Assert.IsNotNull(image);
+            Assert.IsNotNull(image.Source);
+
+            //Open another or same ColorRange file
+            Open(@"UI\UIColorRange2.dyn");
+
+            nodeView = NodeViewWithGuid("19b8c58f-e518-41e3-979b-811a029c1ddf");
+            image = nodeView.inputGrid.ChildrenOfType<Image>().FirstOrDefault();
+            Assert.IsNotNull(image);
+            Assert.IsNotNull(image.Source);
+        }
+
+        [Test]
+        public void InvalidInputShouldNotCrashColorRangeNode()
+        {
+            Open(@"UI\ColorRangeInvalidInputCrash.dyn");
+
+            // Update the code block node from "Color.FromRGBA" to "5.6", making 
+            // it a double value type. After the fix this should not have caused 
+            // any crash in ColorRange node.
+            //
+            var guid = System.Guid.Parse("c1d3a92a-e4d4-47a8-8533-bf19e63e0bf9");
+            Model.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                Model.CurrentWorkspace.Guid, guid, "Code", "5.6"));
+        }
+
+        [Test]
+        public void ArrayExprShouldNotCrashColorRangeNode()
+        {
+            var guid = System.Guid.Parse("c90f5c20-8c63-4708-bd1a-289647bae471");
+
+            OpenAndRun(@"UI\ArrayExprShouldNotCrashColorRangeNode.dyn");
+            var nodes = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid);
+            var node = nodes.ElementAt(0) as CodeBlockNodeModel;
+            node.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+
+            Assert.Pass(); // We should reach here safely without exception.
+        }
+
+        [Test]
+        public void InvalidValueShouldNotCrashColorRangeNode()
+        {
+            var guid0 = System.Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
+            var guid1 = System.Guid.Parse("cece298a-22de-4f4a-a323-fdb04af406a4");
+
+            OpenAndRun(@"UI\InvalidValueShouldNotCrashColorRangeNode.dyn");
+            var nodes0 = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid0);
+            var nodes1 = Model.CurrentWorkspace.Nodes.Where(n => n.GUID == guid0);
+            var node0 = nodes0.ElementAt(0) as CodeBlockNodeModel;
+            var node1 = nodes0.ElementAt(0) as CodeBlockNodeModel;
+            node0.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+            node1.OnNodeModified(); // Mark node as dirty to tigger an immediate run.
+
+            Assert.Pass(); // We should reach here safely without exception.
         }
     }
 }

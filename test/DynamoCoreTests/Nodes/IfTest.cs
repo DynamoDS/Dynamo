@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class IfTest : DSEvaluationViewModelUnitTest
+    class IfTest : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -20,22 +20,16 @@ namespace Dynamo.Tests
         [Test]
         public void TestIFBasic()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfBasic.dyn");
             RunModel(testFilePath);
 
             AssertPreviewValue("7d6e8c70-3abf-4fc4-864e-948f548e7ba2", 5.0);
-            AssertPreviewValue("d5f5336d-3569-4a88-9a59-5538d6914037",
-                               new object[] { 1, 1, 1, 1, 
-                                              new object[] {-3, -2, -1, 0, 1, 2, 3},
-                                              new object[] {-3, -2, -1, 0, 1, 2, 3},
-                                              new object[] {-3, -2, -1, 0, 1, 2, 3}});
+            AssertPreviewValue("d5f5336d-3569-4a88-9a59-5538d6914037", new object[] { 1.0, 1.0, 1.0, 1.0, 1, 2, 3}); 
         }
 
         [Test]
         public void TestIfAsFunctionObject()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFAsFunctionObject.dyn");
             RunModel(testFilePath);
 
@@ -46,7 +40,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode1()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIfInCustomNode1.dyn");
             RunModel(testFilePath);
 
@@ -57,7 +50,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestIfInCustomNode2()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testIFInCustomNode2.dyn");
             RunModel(testFilePath);
 
@@ -69,7 +61,6 @@ namespace Dynamo.Tests
         [Test]
         public void TestScopeIfForFactorial()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "callFactorial.dyn");
             RunModel(testFilePath);
 
@@ -80,7 +71,6 @@ namespace Dynamo.Tests
         [Category("SmokeTest")]
         public void TestScopeIfForPreview()
         {
-            DynamoModel model = ViewModel.Model;
             string testFilePath = Path.Combine(testFolder, "testScopeIf.dyn");
             RunModel(testFilePath);
             AssertPreviewValue("9fe8e82f-760d-43a6-90b2-5f9c252139d7", 42);

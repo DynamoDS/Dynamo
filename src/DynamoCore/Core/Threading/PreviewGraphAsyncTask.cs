@@ -23,7 +23,7 @@ namespace Dynamo.Core.Threading
         private bool verboseLogging;
         public List<Guid> previewGraphData;
         
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }

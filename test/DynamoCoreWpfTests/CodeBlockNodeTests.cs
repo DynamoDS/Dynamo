@@ -45,7 +45,7 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA]
         public void CodeBlockNode_ReassignInput()
         {
-            RunCommandsFromFile("CodeBlockNode_ReassignInput.xml", false, (commandTag) =>
+            RunCommandsFromFile("CodeBlockNode_ReassignInput.xml", (commandTag) =>
             {
                 if (commandTag == "InitialRun")
                 {
@@ -73,7 +73,7 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA]
         public void CodeBlockNode_ReassignInput_2()
         {
-            RunCommandsFromFile("CodeBlockNode_ReassignInput_2.xml", false, (commandTag) =>
+            RunCommandsFromFile("CodeBlockNode_ReassignInput_2.xml", (commandTag) =>
             {
                 if (commandTag == "InitialRun")
                 {
@@ -99,7 +99,7 @@ namespace DynamoCoreWpfTests
         [Test, RequiresSTA, Category("Failure")]
         public void CodeBlockNode_ReassignCyclic()
         {
-            RunCommandsFromFile("CodeBlockNode_ReassignCyclic.xml", true, (commandTag) =>
+            RunCommandsFromFile("CodeBlockNode_ReassignCyclic.xml", (commandTag) =>
             {
                 var nodeA = GetNode("2e0d1d7e-7ef3-4cf5-9884-93ac77697e5f") as NodeModel;
                 var nodeB = GetNode("9699d07d-ec4e-48ad-9a3d-170154a4a106") as NodeModel;

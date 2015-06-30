@@ -1233,9 +1233,9 @@
                         <StackPanel Orientation="Horizontal">
                             <ContentControl />
                             <Label x:Name="label"
-                                   Content="{x:Static p:Resources.StartPageShowSamples}"
                                    Foreground="#888888"
                                    FontSize="12"
+                                   Content="{TemplateBinding Content}"
                                    FontFamily="{StaticResource OpenSansRegular}"/>
                         </StackPanel>
                     </Border>

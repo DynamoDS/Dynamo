@@ -70,6 +70,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity">
       <HintPath>..\..\extern\System.Windows.Interactivity\System.Windows.Interactivity.dll</HintPath>
@@ -80,6 +81,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
+      <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -92,19 +96,25 @@
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\StandardPanel.xaml.cs">
-      <DependentUpon>StandardPanel.xaml</DependentUpon>
+    <Compile Include="Controls\ClassInformationView.xaml.cs">
+      <DependentUpon>ClassInformationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="HelixRenderPackage.cs" />
+    <Compile Include="Extensions\IViewExtension.cs" />
+    <Compile Include="Extensions\IViewExtensionManager.cs" />
+    <Compile Include="Extensions\ViewLoadedParams.cs" />
+    <Compile Include="Extensions\ViewExtensionDefinition.cs" />
+    <Compile Include="Extensions\ViewStartupParams.cs" />
+    <Compile Include="Interfaces\IShellCom.cs" />
+    <Compile Include="Rendering\HelixRenderPackage.cs" />
     <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\CoreNodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizationLoader.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations.cs" />
-    <Compile Include="PerVertexMeshGeometryModel3D.cs" />
+    <Compile Include="Rendering\RenderPackageExtensions.cs" />
     <Compile Include="Services\IconServices.cs" />
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
@@ -123,6 +133,9 @@
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
+    <Compile Include="UI\Prompts\PresetPrompt.xaml.cs">
+      <DependentUpon>PresetPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
@@ -205,6 +218,7 @@
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
+    <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
@@ -216,8 +230,14 @@
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\VariableInputNodeViewCustomization.cs" />
     <Compile Include="ViewModels\Search\SearchCategory.cs" />
     <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
+    <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
+    <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
+    <Compile Include="Views\Gallery\GalleryView.xaml.cs">
+      <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
@@ -326,6 +346,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\InCanvasSearchControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -348,7 +372,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\StandardPanel.xaml">
+    <Page Include="Controls\ClassInformationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -965,12 +989,20 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Include="UI\Prompts\PresetPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\About\AboutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Gallery\GalleryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\TermsOfUseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1080,6 +1112,11 @@
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
+      <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
+      <Name>DynamoPackages</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
@@ -1138,6 +1175,10 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\drag_move.cur" />
+    <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
+    <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
+    <Resource Include="UI\Images\Gallery\gallery-button-next-prev-states.png" />
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

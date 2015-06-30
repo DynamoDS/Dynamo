@@ -19,9 +19,11 @@ namespace Dynamo
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences
     {
+        public const int DefaultMaxNumRecentFiles = 10;
         public static string DynamoTestPath = null;
         private string numberFormat;
         private string lastUpdateDownloadPath;
+        private int maxNumRecentFiles;
         
         // Variables of the settings that will be persistent
 
@@ -74,14 +76,30 @@ namespace Dynamo
         /// </summary>
         public int MaxNumRecentFiles
         {
-            get { return 10; }
-            set { }
+            get { return maxNumRecentFiles; }
+            set
+            {
+                if (value > 0)
+                {
+                    maxNumRecentFiles = value;
+                }
+                else
+                {
+                    maxNumRecentFiles = DefaultMaxNumRecentFiles;
+                }
+                RaisePropertyChanged("MaxNumRecentFiles");
+            }
         }
 
         /// <summary>
         /// A list of recently opened file paths.
         /// </summary>
         public List<string> RecentFiles { get; set; }
+
+        /// <summary>
+        /// A list of backup file paths.
+        /// </summary>
+        public List<string> BackupFiles { get; set; }
 
         /// <summary>
         /// A list of packages used by the Package Manager to determine
@@ -130,6 +148,17 @@ namespace Dynamo
         /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
 
+        /// <summary>
+        /// Indicates whether surface and solid edges will 
+        /// be rendered.
+        /// </summary>
+        public bool ShowEdges { get; set; }
+
+        /// Indicates the default state of the "Open in Manual Mode"
+        /// checkbox in OpenFileDialog
+        /// </summary>
+        public bool OpenFileInManualExecutionMode { get; set; }
+
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -150,9 +179,13 @@ namespace Dynamo
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
+            maxNumRecentFiles = DefaultMaxNumRecentFiles;
+            ShowEdges = false;
+            OpenFileInManualExecutionMode = false;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
+            BackupFiles = new List<string>();
         }
 
         /// <summary>

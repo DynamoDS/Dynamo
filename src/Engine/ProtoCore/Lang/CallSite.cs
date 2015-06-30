@@ -87,7 +87,6 @@ namespace ProtoCore
                 {
                     Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
 
-
                     IFormatter formatter = new SoapFormatter();
                     MemoryStream s = new MemoryStream(data);
                     formatter.Binder = new TraceBinder();
@@ -218,6 +217,11 @@ namespace ProtoCore
             }
         }
 
+        /// <summary>
+        /// TraceBinder is used to find assemblies to be used for
+        /// deserialization in cases where the exact assemlby that was
+        /// used in the serialization is not available. 
+        /// </summary>
         private class TraceBinder : SerializationBinder
         {
             // Use a custom serialization binder to make the serializer more permissive
@@ -264,9 +268,23 @@ namespace ProtoCore
                 int noElements = info.GetInt32("NumberOfElements");
                 for (int i = 0; i < noElements; i++)
                 {
-                    SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
-                        info, context, i, "Base-");
-                    TraceData.Add(srtd);
+                    try
+                    {
+                        SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
+                            info, context, i, "Base-");
+                        TraceData.Add(srtd);
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        // If deserialization fails, continue to the next 
+                        // element. Deserialization will throw an exception in
+                        // contexts where the assembly used do do the serialization,
+                        // or any of its referenced assemblies cannot be resolved.
+#if DEBUG
+                        Debug.WriteLine("Deserialization of trace data failed.");
+#endif
+                        continue;
+                    }
                 }
 
             }
@@ -283,14 +301,32 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// Create a TraceSerialiserHelper from CallSiteData.
+            /// </summary>
+            /// <param name="callSiteData">A string repsenting the CallSiteData </param>
+            /// <returns>A TraceSerialiserHelper or null if deserialization fails.</returns>
             internal static TraceSerialiserHelper FromCallSiteData(string callSiteData)
             {
-                Validity.Assert(!String.IsNullOrEmpty(callSiteData));
-                var data = Convert.FromBase64String(callSiteData);
-                var formatter = new SoapFormatter();
-                var s = new MemoryStream(data);
-                var helper = (TraceSerialiserHelper)formatter.Deserialize(s);
-                return helper;
+                try
+                {
+                    Validity.Assert(!String.IsNullOrEmpty(callSiteData));
+                    var data = Convert.FromBase64String(callSiteData);
+                    var formatter = new SoapFormatter();
+                    formatter.Binder = new TraceBinder();
+                    var s = new MemoryStream(data);
+                    var helper = (TraceSerialiserHelper) formatter.Deserialize(s);
+                    return helper;
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debug.WriteLine("Constructing a TraceSerialiserHelper from CallSiteData failed.");
+                    Debug.WriteLine(ex.Message);
+#endif
+                    return null;
+                }
+                
             }
 
             public List<SingleRunTraceData> TraceData { get; set; }
@@ -398,6 +434,12 @@ namespace ProtoCore
         public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
         {
             var helper = TraceSerialiserHelper.FromCallSiteData(serializedTraceData);
+            if (helper == null)
+            {
+                beforeFirstRunSerializables =  new List<ISerializable>();
+                return;
+            }
+
             this.traceData = helper.TraceData;
 
             // Cache the historical trace data for comparison
@@ -1139,13 +1181,12 @@ namespace ProtoCore
             {
                 //If this has failed, we have multiple feps, which can't be distiquished by class hiearchy. Emit a warning and select one
                 StringBuilder possibleFuncs = new StringBuilder();
-                possibleFuncs.Append(
-                    "Couldn't decide which function to execute. Please provide more specific type information. Possible functions were: ");
+                possibleFuncs.Append(Resources.MultipleFunctionsFound);
                 foreach (FunctionEndPoint fep in feps)
                     possibleFuncs.AppendLine("\t" + fep.ToString());
 
 
-                possibleFuncs.AppendLine("Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
+                possibleFuncs.AppendLine(string.Format(Resources.ErrorCode, "{DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}"));
 
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
             }
@@ -1612,7 +1653,7 @@ namespace ProtoCore
                         break;
 
                     default:
-                        throw new ReplicationCaseNotCurrentlySupported("Selected algorithm not supported");
+                        throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
                 }
 
 
@@ -1623,7 +1664,7 @@ namespace ProtoCore
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], runtimeCore).ToArray();
+                        subParameters = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[repIndex]).Values.ToArray();
                     }
                     else
                     {
@@ -1727,7 +1768,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
             }
             else
@@ -1748,7 +1789,8 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], runtimeCore).ToArray();
+                    DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[cartIndex]);
+                    parameters = array.Values.ToArray();
                     retSize = parameters.Length;
                 }
                 else
@@ -1840,7 +1882,7 @@ namespace ProtoCore
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
 
-                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
 
             }
@@ -1866,8 +1908,8 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure,
-                                              "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, 
+                    string.Format(Resources.FunctionDispatchFailed, "{2EB39E1B-557C-4819-94D8-CF7C9F933E8A}"));
                 return StackValue.Null;
             }
 
@@ -2008,7 +2050,7 @@ namespace ProtoCore
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv }, null);
+                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv });
                     oldSv = newSV;
                 }
 
@@ -2093,6 +2135,11 @@ namespace ProtoCore
             string callSiteData)
         {
             var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData);
+            if (helper == null)
+            {
+                return new List<ISerializable>();
+            }
+
             var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData()).ToList();
             return serializables;
         }

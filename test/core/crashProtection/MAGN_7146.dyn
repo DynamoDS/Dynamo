@@ -1,0 +1,10 @@
+<Workspace Version="0.8.1.1265" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="79daa050-3582-474b-aced-86898606af57" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="88" y="237" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="def foo(a:int)&#xA;{&#xA;&#xA;return=a;&#xA;};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="2b9828f3-223a-4a60-85ed-1fefe5941947" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="208.8" y="88" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="foo(1..10);" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+</Workspace>

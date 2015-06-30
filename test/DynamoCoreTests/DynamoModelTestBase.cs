@@ -3,24 +3,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Tests;
-using Dynamo.ViewModels;
+using Dynamo.Utilities;
 using DynamoShapeManager;
+
 using NUnit.Framework;
-using ProtoCore.Mirror;
 using TestServices;
 
 namespace Dynamo
 {
-    public class DynamoModelTestBase : UnitTestBase
+    public class DynamoModelTestBase : DSEvaluationUnitTestBase
     {
         protected DynamoModel CurrentDynamoModel { get; private set; }
 
         protected Preloader preloader;
         protected TestPathResolver pathResolver;
+
+        protected override DynamoModel GetModel()
+        {
+            return CurrentDynamoModel;
+        }
 
         [SetUp]
         public override void Setup()
@@ -36,11 +41,11 @@ namespace Dynamo
                 preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
-                if (this.CurrentDynamoModel == null)
-                    return;
-
-                this.CurrentDynamoModel.ShutDown(false);
-                this.CurrentDynamoModel = null;
+                if (this.CurrentDynamoModel != null)
+                {
+                    this.CurrentDynamoModel.ShutDown(false);
+                    this.CurrentDynamoModel = null;
+                }
             }
             catch (Exception ex)
             {
@@ -56,7 +61,6 @@ namespace Dynamo
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
-            TestPathResolver pathResolver = null;
             var preloadedLibraries = new List<string>();
             GetLibrariesToPreload(preloadedLibraries);
 
@@ -66,7 +70,14 @@ namespace Dynamo
                 // created, otherwise DynamoModel gets created without preloading 
                 // any library.
                 // 
-                pathResolver = new TestPathResolver();
+
+                var pathResolverParams = new TestPathResolverParams()
+                {
+                    UserDataRootFolder = GetUserUserDataRootFolder(),
+                    CommonDataRootFolder = GetCommonDataRootFolder()
+                };
+
+                pathResolver = new TestPathResolver(pathResolverParams);
                 foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
                     pathResolver.AddPreloadLibraryPath(preloadedLibrary);
@@ -80,15 +91,6 @@ namespace Dynamo
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
-        }
-
-        protected virtual void GetLibrariesToPreload(List<string> libraries)
-        {
-            // Nothing here by design. If you find yourself having to add 
-            // anything here, something must be wrong. DynamoViewModelUnitTest
-            // is designed to contain no test cases, so it does not need any 
-            // preloaded library, all of which should only be specified in the
-            // derived class.
         }
 
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel
@@ -111,105 +113,44 @@ namespace Dynamo
             }
         }
 
-        protected void AssertNoDummyNodes()
+        protected void OpenModel(string relativeFilePath)
         {
-            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            string openPath = Path.Combine(TestDirectory, relativeFilePath);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
+        }
 
-            var dummyNodes = nodes.OfType<DSCoreNodesUI.DummyNode>();
-            string logs = string.Empty;
-            foreach (var node in dummyNodes)
+        protected void OpenSampleModel(string relativeFilePath)
+        {
+            string openPath = Path.Combine(SampleDirectory, relativeFilePath);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
+        }
+
+        protected void RunModel(string relativeDynFilePath)
+        {
+            OpenModel(relativeDynFilePath);
+            Assert.DoesNotThrow(BeginRun);
+        }
+
+        protected void RunCurrentModel() // Run currently loaded model.
+        {
+            Assert.DoesNotThrow(BeginRun);
+        }
+
+        protected WorkspaceModel GetWorkspaceById(string idStr)
+        {
+            Guid guidValue = Guid.Parse(idStr);
+            var workspace = CurrentDynamoModel.Workspaces.FirstOrDefault(ws => ws.Guid == guidValue);
+            return workspace ?? CurrentDynamoModel.CustomNodeManager.GetWorkspaceById(guidValue);
+        }
+
+        protected void SelectTabByGuid(Guid guid)
+        {
+            var workspaceToSwitch = GetWorkspaceById(guid.ToString());
+            if (workspaceToSwitch != null && CurrentDynamoModel.CurrentWorkspace != workspaceToSwitch)
             {
-                logs += string.Format("{0} is a {1} node\n", node.NickName, node.NodeNature);
-            }
-
-            double dummyNodesCount = dummyNodes.Count();
-            if (dummyNodesCount >= 1)
-            {
-                Assert.Fail(logs + "Number of dummy nodes found in Sample: " + dummyNodesCount);
+                var index = CurrentDynamoModel.Workspaces.IndexOf(workspaceToSwitch);
+                CurrentDynamoModel.ExecuteCommand(new DynamoModel.SwitchTabCommand(index));
             }
         }
-
-        protected IEnumerable<object> GetPreviewValues()
-        {
-            List<object> objects = new List<object>();
-            foreach(var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
-            {
-                objects.Add(GetPreviewValue(node.GUID));
-            }
-            return objects;
-        }
-
-        protected void AssertNullValues()
-        {
-            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
-            {
-                string varname = GetVarName(node.GUID);
-                var mirror = GetRuntimeMirror(varname);
-                Assert.IsNull(mirror);
-            }
-            
-        }
-
-        protected object GetPreviewValue(System.Guid guid)
-        {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-
-            return mirror.GetData().Data;
-        }
-
-        protected string GetVarName(System.Guid guid)
-        {
-            var model = CurrentDynamoModel;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-
-            int outportCount = node.OutPorts.Count;
-            Assert.IsTrue(outportCount > 0);
-
-            if(outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
-                return node.GetAstIdentifierForOutputIndex(0).Value;
-
-        }
-
-        protected string GetVarName(string guid)
-        {
-            var model = CurrentDynamoModel;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-
-            int outportCount = node.OutPorts.Count;
-            Assert.IsTrue(outportCount > 0);
-
-            if (outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
-                return node.GetAstIdentifierForOutputIndex(0).Value;
-
-        }
-
-        /// <summary>
-        ///     Used to reflect on runtime data such as values of a variable
-        /// </summary>
-        protected RuntimeMirror GetRuntimeMirror(string varName)
-        {
-            RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = CurrentDynamoModel.EngineController.GetMirror(varName));
-            return mirror;
-        }
-
-        /// <summary>
-        ///     Used to reflect on static data such as classes and class members
-        /// </summary>
-        protected ClassMirror GetClassMirror(string className)
-        {
-            ProtoCore.Core core = CurrentDynamoModel.EngineController.LiveRunnerCore;
-            var classMirror = new ClassMirror(className, core);
-            return classMirror;
-        }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -733,6 +733,18 @@ It does not contain your graph or any personal data</value>
   <data name="StartPageCode" xml:space="preserve">
     <value>CODE</value>
   </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>RECOVER FROM BACKUP</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>BACKUP</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>Backup location</value>
+  </data>
+  <data name="StartPageOpenAll" xml:space="preserve">
+    <value>Open all</value>
+  </data>
   <data name="StartPageDiscussionForum" xml:space="preserve">
     <value>Discussion forum</value>
   </data>
@@ -1015,6 +1027,10 @@ You will get a chance to save your work.</value>
   </data>
   <data name="EditNodeWindowTitle" xml:space="preserve">
     <value>Edit Node Name</value>
+    <comment>Dialog for editing a node's name</comment>
+  </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>Edit Group Title</value>
     <comment>Dialog for editing a node's name</comment>
   </data>
   <data name="EditWindowAcceptButton" xml:space="preserve">
@@ -1530,6 +1546,18 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
+  <data name="PresetsWindowDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>Enter a description for this preset.</value>
+  </data>
+  <data name="PresetsWindowName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>Preset State Properties</value>
+  </data>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
     <value>Run is not available when running Automatically or Periodically.</value>
   </data>
@@ -1624,6 +1652,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackage" xml:space="preserve">
     <value>Publish Package !</value>
   </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>What's New</value>
+  </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
     <value>I Accept</value>
   </data>
@@ -1632,6 +1663,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
+  </data>
+  <data name="GalleryDynamoVersion" xml:space="preserve">
+    <value>Version {0}.{1}</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
@@ -1647,5 +1681,62 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
     <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>PKG</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>Create Preset From Selection</value>
+  </data>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>Delete Preset</value>
+  </data>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>Restore Preset</value>
+  </data>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>Visualization Settings</value>
+  </data>
+  <data name="FileDialogManualMode" xml:space="preserve">
+    <value>Open in Manual Execution Mode</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>No file selected.</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>Edit...</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>Show Raw Data</value>
+  </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>Enable Periodic Update</value>
+  </data>
+  <data name="PackageUploadNoDependency" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
+    <value>A description that helps people understand what the package might be used for.</value>
+  </data>
+  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
+    <value>A unique name for the package.</value>
   </data>
 </root>

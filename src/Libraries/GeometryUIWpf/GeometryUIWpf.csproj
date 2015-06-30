@@ -122,13 +122,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProtoGeometryImages.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
+    <!-- Get System.Drawing.dll -->
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <!-- Get ProtoGeometry -->
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)..\ProtoGeometry.dll">
+      <Output TaskParameter="Assemblies" ItemName="ProtoGeometryInfo" />
+    </GetAssemblyIdentity>
+    <!-- Generate customization dll for ProtoGeometry -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)ProtoGeometryImages.resx" OutputResources="$(ProjectDir)ProtoGeometryImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)ProtoGeometryImages.resources" OutputAssembly="$(OutDir)..\ProtoGeometry.customization.dll" Version="%(ProtoGeometryInfo.Version)" />
   </Target>
-  -->
 </Project>

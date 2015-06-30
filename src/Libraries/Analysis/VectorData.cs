@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
@@ -11,7 +9,8 @@ namespace Analysis
     /// <summary>
     /// A class for storing structured vector analysis data.
     /// </summary>
-    public class VectorData : IStructuredData<Point, Vector>, IGraphicItem
+    [IsVisibleInDynamoLibrary(false)]
+    public class VectorData : IStructuredData<Point, Vector>
     {
         private const byte VectorColor = 120;
 
@@ -36,6 +35,7 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of Points.</param>
         /// <param name="values">A list of Vector values.</param>
+        [Obsolete("Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes.")]
         public static VectorData ByPointsAndValues(
             IEnumerable<Point> points, IList<Vector> values)
         {
@@ -66,38 +66,6 @@ namespace Analysis
             }
 
             return new VectorData(points, values);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
-        {
-            if (!Values.Any() || Values == null)
-            {
-                return;
-            }
-
-            var data = Values.Zip(ValueLocations, (v, p) => new Tuple<Vector, Point>(v, p));
-
-            foreach (var d in data)
-            {
-                DrawVector(d, package);
-            }
-        }
-
-        private void DrawVector(Tuple<Vector, Point> data, IRenderPackage package)
-        {
-            var p = data.Item2;
-            var v = data.Item1;
-
-            package.AddLineStripVertex(p.X, p.Y, p.Z);
-            package.AddLineStripVertexColor(VectorColor, VectorColor, VectorColor, 255);
-
-            var o = p.Add(v);
-
-            package.AddLineStripVertex(o.X, o.Y, o.Z);
-            package.AddLineStripVertexColor(VectorColor, VectorColor, VectorColor, 255);
-
-            package.AddLineStripVertexCount(2);
         }
     }
 }

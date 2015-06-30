@@ -59,7 +59,7 @@ namespace Dynamo.Core.Threading
             get { return renderPackages; }
         }
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }
@@ -168,27 +168,31 @@ namespace Dynamo.Core.Threading
 
                 try
                 {
-                    graphicItem.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
+                    graphicItem.Tessellate(package, factory.TessellationParameters);
 
-                    var surf = graphicItem as Surface;
-                    if (surf != null)
+                    if (factory.TessellationParameters.ShowEdges)
                     {
-                        foreach (var curve in surf.PerimeterCurves())
+                        var surf = graphicItem as Surface;
+                        if (surf != null)
                         {
-                            curve.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
-                            curve.Dispose();
+                            foreach (var curve in surf.PerimeterCurves())
+                            {
+                                curve.Tessellate(package, factory.TessellationParameters);
+                                curve.Dispose();
+                            }
+                        }
+
+                        var solid = graphicItem as Solid;
+                        if (solid != null)
+                        {
+                            foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                            {
+                                geom.Tessellate(package, factory.TessellationParameters);
+                                geom.Dispose();
+                            }
                         }
                     }
-
-                    var solid = graphicItem as Solid;
-                    if (solid != null)
-                    {
-                        foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
-                            geom.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
-                            geom.Dispose();
-                        }
-                    }
-
+                    
                     var plane = graphicItem as Plane;
                     if (plane != null)
                     {

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using Dynamo.Models;
 using System;
+using System.Windows.Input;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -226,6 +227,20 @@ namespace Dynamo.ViewModels
                     this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
             }
-        }      
+        }
+
+        /// <summary>
+        /// Selects this group and models within it.
+        /// </summary>
+        internal void Select()
+        {
+            var annotationGuid = this.AnnotationModel.GUID;
+            this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            //Select all the models inside the group - This avoids some performance bottleneck 
+            //with many nodes selected at the same time - which makes moving the group very slow
+            DynamoSelection.Instance.Selection.AddRange(this.AnnotationModel.SelectedModels);
+        }
     }
 }

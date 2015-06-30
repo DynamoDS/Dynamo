@@ -511,10 +511,6 @@ namespace ProtoTestFx.TD
                         Assert.Fail(String.Format("\t{0} is not a heap element, it doesn't sense to verify its reference count. Should always be 0", dsVariable));
                     }
                 }
-                else
-                {
-                    ProtoCore.DSASM.HeapElement he = testMirror.MirrorTarget.rmem.Heap.GetHeapElement(sv);
-                }
             }
             catch (NotImplementedException)
             {

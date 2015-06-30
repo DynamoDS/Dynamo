@@ -1,0 +1,30 @@
+<Workspace Version="0.7.5.3327" X="395.180683212069" Y="98.0573865902999" zoom="0.877381358403644" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="9eb43bcf-77c1-49ce-b591-c776767b7f42" nickname="Code Block" x="0" y="414.936666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..5;&#xA;6..10;&#xA;11..15;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="4b56a76f-01a1-48e2-8f33-256219f9ddc7" nickname="List.Reverse" x="421" y="0" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Reverse@var[]..[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="9f1be6ab-3caa-4bc5-ab26-169caab275d9" nickname="Watch" x="655" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="db9066eb-5fd0-4e71-9f6d-69c293b72753" nickname="List.Create" x="195" y="406.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="10be37ae-4a54-49a2-aaf3-60c7c14ddac5" nickname="List.Reverse" x="421" y="210" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Reverse@var[]..[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="39c222fa-bd75-4272-880c-96c1979f1276" nickname="Watch" x="655" y="210" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.Map type="DSCore.Map" guid="45ea27b6-a33c-429d-bf20-6d147d3c5893" nickname="List.Map" x="413.533496462127" y="660.31573054443" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="bdafc9f9-d668-4bc1-b952-a49317d13748" nickname="List.Reverse" x="224.552503212083" y="713.569819727789" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Reverse@var[]..[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e22afe2e-4273-4e3d-904c-9ca4e53aca47" nickname="Watch" x="658.439986811035" y="640.839854921381" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9eb43bcf-77c1-49ce-b591-c776767b7f42" start_index="0" end="4b56a76f-01a1-48e2-8f33-256219f9ddc7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9eb43bcf-77c1-49ce-b591-c776767b7f42" start_index="0" end="db9066eb-5fd0-4e71-9f6d-69c293b72753" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9eb43bcf-77c1-49ce-b591-c776767b7f42" start_index="1" end="db9066eb-5fd0-4e71-9f6d-69c293b72753" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9eb43bcf-77c1-49ce-b591-c776767b7f42" start_index="2" end="db9066eb-5fd0-4e71-9f6d-69c293b72753" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4b56a76f-01a1-48e2-8f33-256219f9ddc7" start_index="0" end="9f1be6ab-3caa-4bc5-ab26-169caab275d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="db9066eb-5fd0-4e71-9f6d-69c293b72753" start_index="0" end="10be37ae-4a54-49a2-aaf3-60c7c14ddac5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="db9066eb-5fd0-4e71-9f6d-69c293b72753" start_index="0" end="45ea27b6-a33c-429d-bf20-6d147d3c5893" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="10be37ae-4a54-49a2-aaf3-60c7c14ddac5" start_index="0" end="39c222fa-bd75-4272-880c-96c1979f1276" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="45ea27b6-a33c-429d-bf20-6d147d3c5893" start_index="0" end="e22afe2e-4273-4e3d-904c-9ca4e53aca47" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bdafc9f9-d668-4bc1-b952-a49317d13748" start_index="0" end="45ea27b6-a33c-429d-bf20-6d147d3c5893" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Reversing a one-dimensional list does exactly what you'd expect. It puts the objects in reverse order." x="334.53164556962" y="-61.2784810126582" />
+    <Dynamo.Models.NoteModel text="Reversing a two-dimensional list reverses the order of the internal lists." x="330.075949367089" y="144.177215189873" />
+    <Dynamo.Models.NoteModel text="Mapping the Reverse operation over a two-dimensional list, conducts a reverse operation on each of the internal lists." x="323.311104429281" y="587.851724157943" />
+  </Notes>
+</Workspace>

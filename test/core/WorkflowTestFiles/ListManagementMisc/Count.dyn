@@ -1,0 +1,23 @@
+<Workspace Version="0.7.5.3327" X="146.27186128355" Y="348.686655645285" zoom="1.53678654133381" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="aa6dcc18-7eee-4ba0-a5a7-f660f2a76273" nickname="Number" x="0" y="246.063218390805" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..42" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6e2bc5c1-a774-4c54-b7e4-9f1dc87360d1" nickname="Count" x="221" y="151" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Count@var[]..[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="54895559-3c76-4195-aa07-798b6cf13ed3" nickname="List.OfRepeatedItem" x="433" y="125" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.OfRepeatedItem@var[]..[],int" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="65c6292c-60ee-4380-83f4-949448c4624d" nickname="Code Block" x="3.83908045977012" y="28.6838505747126" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;foo&quot;;" ShouldFocus="false" />
+    <DSCore.Combine type="DSCore.Combine" guid="2595c54d-2d72-4050-93ff-457ad3003bab" nickname="List.Combine" x="675.83908045977" y="169.063218390805" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e08f7d27-1df6-423a-ab07-b9e2cbc35d16" nickname="+" x="450.132183908046" y="-2.87931034482756" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="aa6dcc18-7eee-4ba0-a5a7-f660f2a76273" start_index="0" end="6e2bc5c1-a774-4c54-b7e4-9f1dc87360d1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aa6dcc18-7eee-4ba0-a5a7-f660f2a76273" start_index="0" end="2595c54d-2d72-4050-93ff-457ad3003bab" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6e2bc5c1-a774-4c54-b7e4-9f1dc87360d1" start_index="0" end="54895559-3c76-4195-aa07-798b6cf13ed3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="54895559-3c76-4195-aa07-798b6cf13ed3" start_index="0" end="2595c54d-2d72-4050-93ff-457ad3003bab" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="65c6292c-60ee-4380-83f4-949448c4624d" start_index="0" end="54895559-3c76-4195-aa07-798b6cf13ed3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e08f7d27-1df6-423a-ab07-b9e2cbc35d16" start_index="0" end="2595c54d-2d72-4050-93ff-457ad3003bab" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Count is useful when you want to use the length of a list as an input to another node. In this example, we use the Count of the series 0..42 as the amount input to the List.OfRepeatedItem. By using count in this way, we ensure that the list of repeated items will always have the same number of elements as the original series." x="-4.79410330329478" y="-135.295513419864" />
+  </Notes>
+</Workspace>

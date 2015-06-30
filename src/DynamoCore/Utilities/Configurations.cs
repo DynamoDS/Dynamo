@@ -219,7 +219,7 @@ namespace Dynamo.UI
 
         #endregion
 
-        #region StandardPanel
+        #region ClassInformationView
 
         public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
         public static string HeaderCreate = Resources.HeaderCreate;
@@ -228,9 +228,15 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region InCanvasSearch
+
+        public const double InCanvasSearchTextBoxHeight = 40.0;
+
+        #endregion
+
         #region Backup
 
-        public static string BackupFileNamePrefix = "recent_new_file_";
+        public static string BackupFileNamePrefix = "backup";
 
         #endregion
     }

@@ -68,7 +68,7 @@ namespace Dynamo.Nodes
 
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
-            var mi = new MenuItem { Header = "Zoom to Fit" };
+            var mi = new MenuItem { Header = DynamoWatch3D.Properties.Resources.ZoomToFit };
             mi.Click += mi_Click;
 
             nodeView.MainContextMenu.Items.Add(mi);
@@ -97,6 +97,14 @@ namespace Dynamo.Nodes
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
                         obj));
+
+            View.Loaded += View_Loaded;
+           
+        }
+
+        void View_Loaded(object sender, RoutedEventArgs e)
+        {
+            watch3dModel.GetBranchVisualization(null);
         }
 
         private void UpdateLatestCameraPosition()

@@ -9,7 +9,15 @@ Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim
 
 ## Build ###
 
-You will need Visual Studio and a git client to build Dynamo.  Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
+You will need the following to build Dynamo:
+
+- Microsoft Visual Studio 2013
+- [GitHub for Windows](https://windows.github.com/)
+- [Microsoft .NET Framework 3.5 with SP1](http://www.microsoft.com/en-sg/download/details.aspx?id=25150)
+- Microsoft .NET Framework 4.0 and above (included with Visual Studio 2013)
+- Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
+
+Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
 
 
 ## Contribute ##
@@ -18,6 +26,44 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 
 ## Releases ##
+
+### 0.8.1 ###
+
+New Graphics pipeline
+- Modernized geometry visualization capabilities to take more advantage of graphics hardware.
+- Color: Dynmo now can represent colored geometry.  Check out the Display.ByGeometryColor capabilities. 
+- See http://dynamoprimer.com/04_The-Building-Blocks-of-Programs/4-5_color.html
+- Known issues for graphics hardware https://github.com/DynamoDS/Dynamo/wiki/Known-Issues
+
+Graph Management
+- Add Groups to your graph organization from the right click menu
+- See http://dynamoprimer.com/03_Anatomy-of-a-Dynamo-Definition/3-4_best_practices.html 
+
+Excel
+- Improved handling of Excel.Read, including more robust management of null values and ragged lists
+- Excel.Read now has a ReadFromFileAsString toggle, to preserve text imputs if desired
+- Excel.Write now has the option to completely overwrite data in a sheet, or only the affected cells
+- Excel.Write ignores popup messages 
+
+Lists
+- List.Transpose now keeps indices of lists consistent
+- List.Clean removes null and empty lists from a given list, with or without preserving indices
+- IF nodes will now lace over test input. Example, list with inputs {true, false, true}, {1,2,3}, {a,b,c} will result in {1,b,3}.  Previously, result would be {{1,2,3},{a,b,c},{1,2,3}}.  See submission https://github.com/DynamoDS/Dynamo/pull/4464
+
+Revit
+- FamilyInstance.SetRotation node
+
+UI
+- Control the preview state of multiple nodes at once in right-click menu
+- Node port tooltips now show default inputs
+- In canvas search available via Shift-DoubleClick (still working on additional access points)
+- Drag and drop nodes from the browser
+- ExportToSAT now has units control
+- Backup files are now created to recover lost work.  Backup folder location available in the Start page
+
+Known Issues
+- Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
+
 
 ### 0.8.0 ###
 

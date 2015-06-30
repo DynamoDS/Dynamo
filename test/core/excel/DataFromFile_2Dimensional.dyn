@@ -1,7 +1,7 @@
 <Workspace Version="0.7.4.3075" X="22.8520590721014" Y="133.31060015873" zoom="0.81325" Description="" Category="" Name="Home">
   <Elements>
     <DSCore.File.Filename type="DSCore.File.Filename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="50.8571428571429" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>E:\Github\Dynamo\Dynamo\test\core\excel\2Dimensional.xlsx</System.String>
+      <System.String>..\..\..\test\core\excel\2Dimensional.xlsx</System.String>
     </DSCore.File.Filename>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" nickname="Excel.ReadExcelFile" x="360.143047998821" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSOffice.dll" function="DSOffice.Excel.ReadExcelFile@var" />
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="38db63c6-b7a6-4126-bfc8-3ef033f620ac" nickname="Excel.GetWorksheetsFromExcelWorkbook" x="557.285905141679" y="80.0914285714285" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSOffice.dll" function="DSOffice.Excel.GetWorksheetsFromExcelWorkbook@DSOffice.WorkBook" />

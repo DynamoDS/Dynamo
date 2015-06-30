@@ -280,4 +280,14 @@ namespace Dynamo.Search.SearchElements
             return inputParameters;
         }
     }
+
+    public class DragDropNodeSearchElementInfo
+    {
+        public NodeSearchElement SearchElement { get; private set; }
+
+        public DragDropNodeSearchElementInfo(NodeSearchElement searchElement)
+        {
+            this.SearchElement = searchElement;
+        }
+    }
 }

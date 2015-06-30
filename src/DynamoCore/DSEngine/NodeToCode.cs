@@ -8,6 +8,7 @@ using ProtoCore.DSASM;
 using Dynamo.Utilities;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Mirror;
+using Dynamo.Core;
 
 namespace Dynamo.DSEngine
 {
@@ -43,6 +44,85 @@ namespace Dynamo.DSEngine
             OutputMap = outputMap;
         }
     }
+
+    /// <summary>
+    /// An undo helper class that is used in node-to-code conversion. It helps to 
+    /// avoid recording redundant user actions (e.g. deletion right after creation 
+    /// will not be recorded). This typically happens when there are multiple code 
+    /// block nodes being created as part of node-to-code conversion, during which 
+    /// some connectors will be created and later on deleted all within the same 
+    /// conversion process.
+    /// </summary>
+    public class NodeToCodeUndoHelper
+    {
+        private List<Tuple<ModelBase, UndoRedoRecorder.UserAction>> recordedActions;
+
+        public NodeToCodeUndoHelper()
+        {
+            recordedActions = new List<Tuple<ModelBase, UndoRedoRecorder.UserAction>>();
+        }
+
+        /// <summary>
+        /// Add a creation action.
+        /// </summary>
+        /// <param name="model"></param>
+        public void RecordCreation(ModelBase model)
+        {
+            recordedActions.Add(Tuple.Create(model, UndoRedoRecorder.UserAction.Creation));
+        }
+
+        /// <summary>
+        /// Add a deletion action. If a creation action for the same model has
+        /// been added, that creation action will be removed and this deletion
+        /// action won't be added.
+        /// </summary>
+        /// <param name="model"></param>
+        public void RecordDeletion(ModelBase model)
+        {
+            for (int i = 0; i < recordedActions.Count; ++i)
+            {
+                var recordedAction = recordedActions[i];
+                if (recordedAction.Item1.GUID.Equals(model.GUID) &&
+                    recordedAction.Item2 == UndoRedoRecorder.UserAction.Creation)
+                {
+                    recordedActions.RemoveAt(i);
+                    return;
+                }
+            }
+            recordedActions.Add(Tuple.Create(model, UndoRedoRecorder.UserAction.Deletion));
+        }
+
+        /// <summary>
+        /// Record all actions in recorder.
+        /// </summary>
+        /// <param name="recorder"></param>
+        public void ApplyActions(UndoRedoRecorder recorder)
+        {
+            using (recorder.BeginActionGroup())
+            {
+                foreach (var item in recordedActions)
+                {
+                    var model = item.Item1;
+                    var action = item.Item2;
+
+                    if (action == UndoRedoRecorder.UserAction.Creation)
+                        recorder.RecordCreationForUndo(model);
+                    else if (action == UndoRedoRecorder.UserAction.Deletion)
+                        recorder.RecordDeletionForUndo(model);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Return the count of recorded actions.
+        /// </summary>
+        /// <returns></returns>
+        public int ActionCount()
+        {
+            return recordedActions.Count();
+        }
+    }
+
     public class NodeToCodeUtils
     {
         /// <summary>
@@ -70,7 +150,7 @@ namespace Dynamo.DSEngine
             public override void VisitIdentifierListNode(IdentifierListNode node)
             {
                 if ((node.LeftNode is IdentifierNode ||
-                    node.RightNode is IdentifierListNode) &&
+                    node.LeftNode is IdentifierListNode) &&
                     node.RightNode is FunctionCallNode)
                 {
                     var lhs = node.LeftNode.ToString();
@@ -554,6 +634,27 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        /// Check if this identifier is a temporary variable that output from
+        /// other code block node. 
+        /// </summary>
+        /// <param name="ident"></param>
+        /// <param name="renamingMap"></param>
+        /// <returns></returns>
+        private static bool IsTempVarFromCodeBlockNode(string ident,
+            Dictionary<string, string> renamingMap)
+        {
+            if (!ident.StartsWith(Constants.kTempVarForNonAssignment))
+                return false;
+
+            string renamedVariable = string.Empty;
+            // ident is: Constants.TempVarForNonAssignment_guid
+            if (!renamingMap.TryGetValue(ident, out renamedVariable))
+                return false;
+
+            return renamedVariable.StartsWith(Constants.kTempVarForNonAssignment);
+        }
+
+        /// <summary>
         /// Renumber variables used in astNode.
         /// </summary>
         /// <param name="astNode"></param>
@@ -573,9 +674,11 @@ namespace Dynamo.DSEngine
             {
                 var ident = n.Value;
 
-                // This ident is from other node's output port, it is not necessary to 
-                // do renumbering.
-                if (inputMap.ContainsKey(ident))
+                // This ident is from external non-code block node's output 
+                // port, or it is from a temporary variable in code block node,
+                // it is not necessary to do renumbering because the name is 
+                // unique.
+                if (inputMap.ContainsKey(ident) || /*IsTempVarFromCodeBlockNode(ident, renamingMap)*/ renamingMap.ContainsKey(ident))
                     return;
 
                 NumberingState ns; 

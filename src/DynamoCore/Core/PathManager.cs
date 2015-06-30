@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
 using System.Globalization;
+using Dynamo.Models;
+using Dynamo.UI;
 
 namespace Dynamo.Core
 {
@@ -44,9 +46,11 @@ namespace Dynamo.Core
         public const string PackagesDirectoryName = "packages";
         public const string LogsDirectoryName = "Logs";
         public const string NodesDirectoryName = "nodes";
+        public const string ExtensionsDirectoryName = "extensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
+        public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
@@ -58,9 +62,11 @@ namespace Dynamo.Core
         private readonly string commonDefinitions;
         private readonly string logDirectory;
         private readonly string packagesDirectory;
+        private readonly string extensionsDirectory;
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
+        private readonly string galleryFilePath;
 
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
@@ -100,6 +106,11 @@ namespace Dynamo.Core
             get { return packagesDirectory; }
         }
 
+        public string ExtensionsDirectory
+        {
+            get { return extensionsDirectory; }
+        }
+
         public string SamplesDirectory
         {
             get { return samplesDirectory; }
@@ -113,6 +124,11 @@ namespace Dynamo.Core
         public string PreferenceFilePath
         {
             get { return preferenceFilePath; }
+        }
+
+        public string GalleryFilePath
+        {
+            get { return galleryFilePath; }
         }
 
         public IEnumerable<string> NodeDirectories
@@ -236,6 +252,8 @@ namespace Dynamo.Core
                     "TestServices.dll.config.");
             }
 
+            extensionsDirectory = Path.Combine(dynamoCoreDir, ExtensionsDirectoryName);
+
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
             minorFileVersion = pathManagerParams.MinorFileVersion;
@@ -260,6 +278,8 @@ namespace Dynamo.Core
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
+            var galleryDirectory = GetGalleryDirectory(commonDataDir);
+            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
             nodeDirectories = new HashSet<string>
             {
@@ -288,6 +308,33 @@ namespace Dynamo.Core
             // Common data folders for all users.
             CreateFolderIfNotExist(commonDataDir);
             CreateFolderIfNotExist(commonDefinitions);
+        }
+
+        /// <summary>
+        /// Get the backup file path for a workspace
+        /// </summary>
+        /// <param name="workspace"></param>
+        /// <returns></returns>
+        internal string GetBackupFilePath(WorkspaceModel workspace)
+        {
+            string fileName;
+            if (string.IsNullOrEmpty(workspace.FileName))
+            {
+                if (workspace is HomeWorkspaceModel)
+                {
+                    fileName = Configurations.BackupFileNamePrefix + ".DYN";
+                }
+                else
+                {
+                    fileName = workspace.Name + ".DYF";
+                }
+            }
+            else
+            {
+                fileName = Path.GetFileName(workspace.FileName);
+            }
+
+            return Path.Combine(BackupDirectory, fileName);
         }
 
         #endregion
@@ -374,6 +421,27 @@ namespace Dynamo.Core
             }
 
             return sampleDirectory;
+        }
+
+        private static string GetGalleryDirectory(string commonDataDir)
+        {
+            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var galleryDirectory = Path.Combine(commonDataDir, "gallery", uiCulture);
+
+            // If the localized gallery directory does not exist then fall back 
+            // to using the en-US gallery folder. Do an additional check to see 
+            // if the localized folder is available but is empty.
+            // 
+            var di = new DirectoryInfo(galleryDirectory);
+            if (!Directory.Exists(galleryDirectory) ||
+                !di.GetFiles("*.xml",SearchOption.TopDirectoryOnly).Any())
+            {
+                var neutralCommonGallery = Path.Combine(commonDataDir, "gallery", "en-US");
+                if (Directory.Exists(neutralCommonGallery))
+                    galleryDirectory = neutralCommonGallery;
+            }
+
+            return galleryDirectory;
         }
 
         private IEnumerable<string> LibrarySearchPaths(string library)

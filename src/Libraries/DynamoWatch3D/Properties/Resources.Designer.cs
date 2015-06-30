@@ -95,5 +95,14 @@ namespace DynamoWatch3D.Properties {
                 return ResourceManager.GetString("Watch3DSearchTags", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom to Fit.
+        /// </summary>
+        internal static string ZoomToFit {
+            get {
+                return ResourceManager.GetString("ZoomToFit", resourceCulture);
+            }
+        }
     }
 }

@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class ScopedNodeTest : DSEvaluationViewModelUnitTest
+    internal class ScopedNodeTest : DynamoModelTestBase
     {
         private string TestFolder
         {
             get
             {
                 return Path.Combine(TestDirectory, "core", "scopednode"); 
-                
             }
         }
 
@@ -47,11 +43,10 @@ namespace Dynamo.Tests
             // For s1, n1, n2, n3, n4 in its scope (for input port 0)
             //         n5 in its scope (for input port 1)
             // For s2, s1, n6, n7 in its scope for input port 0
-            DynamoModel model = ViewModel.Model;
 
 
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, 0, 0, model.LibraryServices);
+                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices);
 
             var cbn1 = createCbn("n1;");
 
@@ -114,9 +109,9 @@ namespace Dynamo.Tests
             //          n3                                 
             // 
             // For s1, none is in its scope 
-            DynamoModel model = ViewModel.Model;
+
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, 0, 0, model.LibraryServices);
+                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices);
 
             var cbn1 = createCbn("n1;");
 
@@ -151,9 +146,8 @@ namespace Dynamo.Tests
             //          n3                                 
             // 
             // For s1, n3, n4 are in its scope
-            DynamoModel model = ViewModel.Model;
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, 0, 0, model.LibraryServices);
+                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices);
 
             var cbn1 = createCbn("n1;");
 

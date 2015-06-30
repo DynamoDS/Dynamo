@@ -183,6 +183,19 @@ namespace Dynamo.Models
         }
     }
 
+    public class PresetsNamePromptEventArgs : EventArgs
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool Success { get; set; }
+
+        public PresetsNamePromptEventArgs()
+        {
+            Name = System.DateTime.Now.ToString();
+            Description = "";
+        }
+    }
+
     public class ViewOperationEventArgs : EventArgs
     {
         public enum Operation
