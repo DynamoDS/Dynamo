@@ -168,7 +168,6 @@ var
   j: Cardinal;
   sUnInstPath: String;
   sUninstallString: String;
-  sUnInstallParam: String;
   revision: Cardinal;
   iResultCode: Integer;
   exeVersion: String;
@@ -230,12 +229,23 @@ begin
 				MsgBox(sMsg + #13#10#13#10 + sMsg2, mbInformation, MB_OK);
 				result := false
 			end
-		else
-			begin
-				RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallParam', sUninstallParam);
-				Exec(sUnInstallString, sUnInstallParam, '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
-			end
 	end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var 
+  sUnInstPath: String;
+  sUninstallString: String;
+  sUnInstallParam: String;
+  iResultCode: Integer;
+begin
+  if (CurStep=ssInstall) then
+    begin
+        sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}');
+        RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallString', sUninstallString);
+        RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallParam', sUninstallParam);
+        Exec(sUnInstallString, sUnInstallParam, '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
+    end;
 end;
 
 // check if the components exists, if they do enable the component for installation
