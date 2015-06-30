@@ -1,4 +1,4 @@
-<Workspace Version="0.8.2.1730" X="-42.5591273379023" Y="-78.6148592031159" zoom="0.849190847281921" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Workspace Version="0.8.1.1730" X="-42.5591273379023" Y="-78.6148592031159" zoom="0.849190847281921" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <Dynamo.Nodes.DSFunction guid="dd1857b4-a08d-4195-9694-b831530ece61" type="Dynamo.Nodes.DSFunction" nickname="NoDeriv1-1" x="421" y="167.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="BuiltIn" function="NewtonRootFind1DNoDeriv@_FunctionObject,double,int" />
