@@ -9,7 +9,7 @@ namespace ProtoTest
     class ModifierStackTests : ProtoTestBase
     {
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void SimpleExpr()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -22,7 +22,7 @@ namespace ProtoTest
                         ", core, out runtimeCore);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void SimpleFuncDef()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -39,7 +39,7 @@ namespace ProtoTest
                         ", core, out runtimeCore);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void SimpleExprInModifierStack()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -58,7 +58,7 @@ a;
 
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void TwoSimpleExprInModifierStack()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -77,7 +77,7 @@ a;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 20);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")]
         public void TwoExprInModifierStackWithOp()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -99,7 +99,7 @@ a;
 
 
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void ModifierStackWithName()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -121,7 +121,7 @@ a;a@init;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 6);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void ModifierStackWithTwoNames()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -144,7 +144,7 @@ a;a@init;a@first;
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 16);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")]
         public void ModifierStackWithArray()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -172,7 +172,7 @@ a@first;
             Assert.IsTrue((Int64)mirror.GetValue("a@first", 0).Payload == 1);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -203,7 +203,7 @@ a@first;
         }
 
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunction2()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -228,7 +228,7 @@ a@first;
             Assert.IsTrue((Int64)mirror.GetValue("b", 0).Payload == 10);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void ModifierStackWithArrayAndFunctionReplication()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -268,7 +268,7 @@ a@first;
             Assert.IsTrue((Int64)os[2].Payload == 5);
         }
         [Test]
-        [Category("ModifierBlock")] [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void ClassTest()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
