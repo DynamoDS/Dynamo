@@ -24,13 +24,28 @@ namespace Dynamo.Search.SearchElements
         private string assembly;
         private bool isVisibleInSearch = true;
 
+
+        public Action<bool> VisibilityChanged;
+        private void OnVisibilityChanged(bool visible)
+        {
+            if (VisibilityChanged != null)
+                VisibilityChanged(visible);
+        }
+
         /// <summary>
         ///     Specified whether or not this entry should appear in search.
         /// </summary>
         public bool IsVisibleInSearch
         {
             get { return isVisibleInSearch; }
-            set { isVisibleInSearch = value; }
+            set
+            {
+                if (isVisibleInSearch == value)
+                    return;
+
+                isVisibleInSearch = value;
+                OnVisibilityChanged(isVisibleInSearch);
+            }
         }
 
         /// <summary>

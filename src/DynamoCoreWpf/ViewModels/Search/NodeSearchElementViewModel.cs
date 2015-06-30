@@ -41,6 +41,12 @@ namespace Dynamo.Wpf.ViewModels
             if (searchViewModel != null)
                 Clicked += searchViewModel.OnSearchElementClicked;
             ClickedCommand = new DelegateCommand(OnClicked);
+            Model.VisibilityChanged += ModelOnVisibilityChanged;
+        }
+
+        private void ModelOnVisibilityChanged(bool visibility)
+        {
+            RaisePropertyChanged("Visibility");
         }
 
         public void Dispose()

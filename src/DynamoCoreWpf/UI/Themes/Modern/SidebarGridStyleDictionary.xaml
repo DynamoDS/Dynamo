@@ -7,7 +7,7 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
 
-   <!-- Region Control Templates-->
+    <!-- Region Control Templates-->
 
     <!-- Region LibraryView + LibrarySearchView-->
 
