@@ -97,6 +97,14 @@ namespace Dynamo.Nodes
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
                         obj));
+
+            View.Loaded += View_Loaded;
+           
+        }
+
+        void View_Loaded(object sender, RoutedEventArgs e)
+        {
+            watch3dModel.GetBranchVisualization(null);
         }
 
         private void UpdateLatestCameraPosition()
