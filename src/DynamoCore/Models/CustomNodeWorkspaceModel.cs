@@ -194,7 +194,7 @@ namespace Dynamo.Models
             if (handler != null) handler(oldId);
         }
 
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
+        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
         {
             var originalPath = FileName;
 
