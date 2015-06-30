@@ -202,6 +202,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModels", "Libraries\PythonNodeModels\PythonNodeModels.csproj", "{4A964723-C7A9-45A9-B448-E1D042EC8820}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Display", "Libraries\Display\Display.csproj", "{A50C198C-DA6E-4081-BC53-0F44D287F207}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayTests", "..\test\Libraries\DisplayTests\DisplayTests.csproj", "{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}"
