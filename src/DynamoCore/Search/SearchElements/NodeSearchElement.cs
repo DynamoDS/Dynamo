@@ -40,8 +40,7 @@ namespace Dynamo.Search.SearchElements
             get { return isVisibleInSearch; }
             set
             {
-                if (isVisibleInSearch == value)
-                    return;
+                if (value.Equals(isVisibleInSearch)) return;
 
                 isVisibleInSearch = value;
                 OnVisibilityChanged();
