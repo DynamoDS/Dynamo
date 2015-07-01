@@ -22,7 +22,7 @@ namespace InstallUpdate {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace InstallUpdate {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("InstallUpdate.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace InstallUpdate {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to Dynamo Update.
         /// </summary>
-        internal static string CheckHostProcessWindowTitle {
+        public static string CheckHostProcessWindowTitle {
             get {
                 return ResourceManager.GetString("CheckHostProcessWindowTitle", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to  must be closed before continuing installation. When the application is closed, select OK to continue updating, or Cancel to quit updating..
         /// </summary>
-        internal static string CloseContinuationMessage {
+        public static string CloseContinuationMessage {
             get {
                 return ResourceManager.GetString("CloseContinuationMessage", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to The host application process id could not be parsed from the specified input..
         /// </summary>
-        internal static string HostApplicationIdParseErrorMessage {
+        public static string HostApplicationIdParseErrorMessage {
             get {
                 return ResourceManager.GetString("HostApplicationIdParseErrorMessage", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to Please reinstall Dynamo manually..
         /// </summary>
-        internal static string ManualReinstallMessage {
+        public static string ManualReinstallMessage {
             get {
                 return ResourceManager.GetString("ManualReinstallMessage", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to The Dynamo certificate could not be found. Update cancelled..
         /// </summary>
-        internal static string MissingDynamoCertificateMessage {
+        public static string MissingDynamoCertificateMessage {
             get {
                 return ResourceManager.GetString("MissingDynamoCertificateMessage", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to A signature file could not be found to verify this update..
         /// </summary>
-        internal static string MissingSignatureFileMessage {
+        public static string MissingSignatureFileMessage {
             get {
                 return ResourceManager.GetString("MissingSignatureFileMessage", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to Press any key to quit..
         /// </summary>
-        internal static string ProcessQuitMessage {
+        public static string ProcessQuitMessage {
             get {
                 return ResourceManager.GetString("ProcessQuitMessage", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to There was a problem with the security certificate. Update cancelled..
         /// </summary>
-        internal static string SecurityCertificateErrorMessage {
+        public static string SecurityCertificateErrorMessage {
             get {
                 return ResourceManager.GetString("SecurityCertificateErrorMessage", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to The update could not be verified against the signature file..
         /// </summary>
-        internal static string SignatureVerificationFailureMessage {
+        public static string SignatureVerificationFailureMessage {
             get {
                 return ResourceManager.GetString("SignatureVerificationFailureMessage", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to Update was cancelled..
         /// </summary>
-        internal static string UpdateCancellationMessage {
+        public static string UpdateCancellationMessage {
             get {
                 return ResourceManager.GetString("UpdateCancellationMessage", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to Could not verify the update download.
         /// </summary>
-        internal static string UpdateDownloadVerificationFailedMessage {
+        public static string UpdateDownloadVerificationFailedMessage {
             get {
                 return ResourceManager.GetString("UpdateDownloadVerificationFailedMessage", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to The specified file path does not exist..
         /// </summary>
-        internal static string UpdaterPathNotFoundMessage {
+        public static string UpdaterPathNotFoundMessage {
             get {
                 return ResourceManager.GetString("UpdaterPathNotFoundMessage", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace InstallUpdate {
         /// <summary>
         ///   Looks up a localized string similar to You must specify the path of the update..
         /// </summary>
-        internal static string UpdaterPathRequiredMessage {
+        public static string UpdaterPathRequiredMessage {
             get {
                 return ResourceManager.GetString("UpdaterPathRequiredMessage", resourceCulture);
             }

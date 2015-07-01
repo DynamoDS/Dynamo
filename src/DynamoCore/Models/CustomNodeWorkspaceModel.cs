@@ -194,7 +194,7 @@ namespace Dynamo.Models
             if (handler != null) handler(oldId);
         }
 
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
+        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
         {
             var originalPath = FileName;
 
@@ -202,6 +202,7 @@ namespace Dynamo.Models
             // custom node with a new function id
             if (originalPath != newPath)
             {
+                FileName = newPath;
                 // If it is a newly created node, no need to generate a new guid
                 if (!string.IsNullOrEmpty(originalPath))
                     CustomNodeId = Guid.NewGuid();
