@@ -554,14 +554,16 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="newPath">The path to save to</param>
         /// <param name="core"></param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
+        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        /// we should add it to recent files. Otherwise leave it.</param>
+        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore))
+                if (SaveInternal(newPath, runtimeCore) && !isBackup)
                     OnWorkspaceSaved();
             }
             catch (Exception ex)
