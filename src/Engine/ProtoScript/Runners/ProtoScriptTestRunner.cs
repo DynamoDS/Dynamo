@@ -181,13 +181,31 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// Use the sequencer to execute a list of macroblocks
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
+        private void ExecuteSequence(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
+        {
+           
+        }
+
+        private void ExecuteMacroblock(ProtoCore.Runtime.MacroBlock macroblock)
+        {
+
+        }
+
+        /// <summary>
         /// ExecuteLive is called by the liverunner where a persistent RuntimeCore is provided
         /// ExecuteLive assumes only a single global scope
         /// </summary>
         /// <param name="core"></param>
         /// <param name="runtimeCore"></param>
+        /// <param name="runningBlock"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="runtimeContext"></param>
         /// <returns></returns>
-        public ProtoCore.RuntimeCore __ExecuteLive_Macroblock_ToDeprecate(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
+        public ProtoCore.RuntimeCore __ExecuteLive_CurrentVersion(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             try
             {
@@ -207,40 +225,22 @@ namespace ProtoScript.Runners
                 StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
                 stackFrame.TX = svCallConvention;
 
-                // This is the global scope, there are no locals
-                int locals = 0;
-
                 // Initialize the entry point interpreter
+                int locals = 0; // This is the global scope, there are no locals
                 if (runtimeCore.CurrentExecutive.CurrentDSASMExec == null)
                 {
                     ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
-                runtimeCore.CurrentExecutive.CurrentDSASMExec.exe = exe;
-                ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer(exe.MacroBlockList);
 
-                //sequencer.Setup(
-                //    runtimeCore.CurrentExecutive.CurrentDSASMExec,
-                //    codeBlock.codeBlockId,
-                //    runtimeCore.StartPC,
-                //    stackFrame,
-                //    locals);
-
-                sequencer.Execute(
+                runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
                     runtimeCore.CurrentExecutive.CurrentDSASMExec,
                     codeBlock.codeBlockId,
                     runtimeCore.StartPC,
                     stackFrame,
                     locals);
 
-                //runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
-                //    codeBlock.codeBlockId,
-                //    runtimeCore.StartPC,
-                //    stackFrame,
-                //    locals);
-
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
-
             }
             catch
             {
@@ -249,6 +249,7 @@ namespace ProtoScript.Runners
             }
             return runtimeCore;
         }
+
 
         /// <summary>
         /// ExecuteLive is called by the liverunner where a persistent RuntimeCore is provided
