@@ -4614,6 +4614,7 @@ namespace ProtoCore.DSASM
 
                 svData = rmem.Pop();
                 StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
+                rmem.Heap.MarkAsGray(coercedValue);
                 PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
             }
             else
@@ -4630,6 +4631,9 @@ namespace ProtoCore.DSASM
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
+#if TRACING_GC
+            rmem.Heap.GC();
+#endif
             ++pc;
         }
 
@@ -6867,12 +6871,12 @@ namespace ProtoCore.DSASM
 
         public List<StackValue> CollectRootPointers()
         {
+            var gcRoots = new List<StackValue>();
+#if !TRACING_GC
             var currentFramePointer = rmem.FramePointer;
             var frames = rmem.GetStackFrames();
             var blockId = executingBlock;
-            var gcRoots = new List<StackValue>();
 
-#if !TRACING_GC
             // Now garbage collection only happens on the top most block. 
             // We will loose this limiation soon.
             if (blockId != 0 || 
@@ -6880,13 +6884,11 @@ namespace ProtoCore.DSASM
             {
                 return gcRoots;
             }
-#endif
 
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
 
-#if !TRACING_GC
             var isInNestedImperativeBlock = frames.Any(f =>
                 {
                     var callerBlockId = f.FunctionCallerBlock;
@@ -6898,7 +6900,6 @@ namespace ProtoCore.DSASM
             {
                 return gcRoots;
             }
-#endif
 
             foreach (var stackFrame in frames)
             {
@@ -6988,7 +6989,7 @@ namespace ProtoCore.DSASM
                 blockId = stackFrame.FunctionCallerBlock;
                 currentFramePointer = stackFrame.FramePointer;
             }
-
+#endif
             if (RX.IsReferenceType)
                 gcRoots.Add(RX);
 

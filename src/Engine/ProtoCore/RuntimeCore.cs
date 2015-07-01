@@ -217,25 +217,25 @@ namespace ProtoCore
         public List<SymbolNode> WatchSymbolList { get; set; }
 #endregion 
         
-        public Dictionary<Guid, List<StackValue>> callsiteReplicationRoots = new Dictionary<Guid, List<StackValue>>();
+        public Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
 
         public IEnumerable<StackValue> ReplicationRoots
         {
-            get { return callsiteReplicationRoots.Values.SelectMany(x => x);  }
+            get { return callsiteGCRoots.Values.SelectMany(x => x);  }
         }
 
-        public void AddCallSiteReplicateionRoot(Guid callSiteID, StackValue sv)
+        public void AddCallSiteGCRoot(Guid callSiteID, StackValue sv)
         {
-            if (!callsiteReplicationRoots.ContainsKey(callSiteID))
-                callsiteReplicationRoots[callSiteID] = new List<StackValue>();
+            if (!callsiteGCRoots.ContainsKey(callSiteID))
+                callsiteGCRoots[callSiteID] = new List<StackValue>();
 
-            List<StackValue> svs = callsiteReplicationRoots[callSiteID];
+            List<StackValue> svs = callsiteGCRoots[callSiteID];
             svs.Add(sv);
         }
 
-        public void RemoveCallSiteReplicationRoot(Guid callSiteID)
+        public void RemoveCallSiteGCRoot(Guid callSiteID)
         {
-            callsiteReplicationRoots.Remove(callSiteID);
+            callsiteGCRoots.Remove(callSiteID);
         }
 
         public void ResetForDeltaExecution()
