@@ -1286,15 +1286,23 @@ namespace Dynamo.Controls
 
         private void SaveCamera(XmlElement camerasElement)
         {
-            var node = XmlHelper.AddNode(camerasElement, "Camera");
-            XmlHelper.AddAttribute(node, "Name", Name);
-            XmlHelper.AddAttribute(node, "eyeX", Camera.Position.X.ToString(CultureInfo.InvariantCulture));
-            XmlHelper.AddAttribute(node, "eyeY", Camera.Position.Y.ToString(CultureInfo.InvariantCulture));
-            XmlHelper.AddAttribute(node, "eyeZ", Camera.Position.Z.ToString(CultureInfo.InvariantCulture));
-            XmlHelper.AddAttribute(node, "lookX", Camera.LookDirection.X.ToString(CultureInfo.InvariantCulture));
-            XmlHelper.AddAttribute(node, "lookY", Camera.LookDirection.Y.ToString(CultureInfo.InvariantCulture));
-            XmlHelper.AddAttribute(node, "lookZ", Camera.LookDirection.Z.ToString(CultureInfo.InvariantCulture));
-            camerasElement.AppendChild(node);
+            try
+            {
+                var node = XmlHelper.AddNode(camerasElement, "Camera");
+                XmlHelper.AddAttribute(node, "Name", Name);
+                XmlHelper.AddAttribute(node, "eyeX", Camera.Position.X.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "eyeY", Camera.Position.Y.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "eyeZ", Camera.Position.Z.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "lookX", Camera.LookDirection.X.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "lookY", Camera.LookDirection.Y.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "lookZ", Camera.LookDirection.Z.ToString(CultureInfo.InvariantCulture));
+                camerasElement.AppendChild(node);
+            }
+            catch (Exception ex)
+            {
+                const string msg = "CAMERA: Camera position information could not be saved.";
+                LogCameraWarning(msg, ex);
+            }
         }
 
         private void LoadCamera(XmlNode cameraNode)
@@ -1320,10 +1328,15 @@ namespace Dynamo.Controls
             catch (Exception ex)
             {
                 const string msg = "CAMERA: Camera position information could not be loaded from the file.";
-                viewModel.Model.Logger.Log(msg, LogLevel.Console);
-                viewModel.Model.Logger.Log(msg, LogLevel.File);
-                viewModel.Model.Logger.Log(ex.Message, LogLevel.File);
+                LogCameraWarning(msg, ex);
             }
+        }
+
+        private void LogCameraWarning(string msg, Exception ex)
+        {
+            viewModel.Model.Logger.Log(msg, LogLevel.Console);
+            viewModel.Model.Logger.Log(msg, LogLevel.File);
+            viewModel.Model.Logger.Log(ex.Message, LogLevel.File);
         }
 
         #endregion
