@@ -22,7 +22,7 @@ using DynamoShapeManager;
 
 using Microsoft.Win32;
 
-using Dynamo.Applications.StartupUtils;
+using Dynamo.Applications;
 
 namespace DynamoSandbox
 {
@@ -33,7 +33,7 @@ namespace DynamoSandbox
         
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            var model = Dynamo.Applications.StartupUtils.Preloading.MakeModel(false,Dynamo.Applications.StartupUtils.Preloading.SandBoxLibraries);
+            var model = Dynamo.Applications.StartupUtils.MakeModel(false);
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
 
             viewModel = DynamoViewModel.Start(
@@ -84,8 +84,8 @@ namespace DynamoSandbox
             DynamoViewModel viewModel = null;
             try
             {
-                var cmdLineArgs = CommandLineArguments.FromArguments(args);
-                var locale = Dynamo.Applications.StartupUtils.Locale.SetLocale(cmdLineArgs);
+                var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
+                var locale = Dynamo.Applications.StartupUtils.SetLocale(cmdLineArgs);
                     _putenv(locale);
 
                     MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);

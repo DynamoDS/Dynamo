@@ -8,7 +8,7 @@ using System.IO;
 using Dynamo.Models;
 using Dynamo.Core;
 using DynamoUtilities;
-using Dynamo.Applications.StartupUtils;
+using Dynamo.Applications;
 
 namespace DynamoCLI
 {
@@ -28,9 +28,18 @@ namespace DynamoCLI
             this.model = model;
         }
 
-        private static XmlDocument RunCommandLineArgs(DynamoModel model, CommandLineArguments cmdLineArgs)
+        private static XmlDocument RunCommandLineArgs(DynamoModel model, StartupUtils.CommandLineArguments cmdLineArgs)
         {
             var evalComplete = false;
+            if (string.IsNullOrEmpty(cmdLineArgs.OpenFilePath))
+            {
+                return null;
+            }
+            if (!string.IsNullOrEmpty(cmdLineArgs.Locale) || !(string.IsNullOrEmpty(cmdLineArgs.CommandFilePath)))
+            {
+                Console.WriteLine("locale and commandFile options are only available when running DynamoSandbox, not DynamoCLI");
+            }
+
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
@@ -147,7 +156,7 @@ namespace DynamoCLI
             }
         }
 
-        public void Run(CommandLineArguments args)
+        public void Run(StartupUtils.CommandLineArguments args)
         {
             var doc = RunCommandLineArgs(this.model, args);
             if (doc != null && Directory.Exists(new FileInfo(args.Verbose).Directory.FullName))

@@ -8,7 +8,7 @@ using DynamoSandbox;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Dynamo;
-using Dynamo.Applications.StartupUtils;
+using Dynamo.Applications;
 using DynamoCLI;
 
 namespace Dynamo.Tests
@@ -20,10 +20,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");  // Required for Watch node.
-            libraries.Add("ProtoGeometry.dll"); // Required for Surface.
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
-            libraries.Add("DSIronPython.dll");  // Required for Python tests.
-            libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -51,17 +48,17 @@ namespace Dynamo.Tests
             }
         }
 
-        protected static CommandLineArguments commandstringToArgs(string commandstring)
+        protected static StartupUtils.CommandLineArguments CommandstringToArgs(string commandString)
         {
-            var argarray = commandstringToStringArray(commandstring);
-            var args = CommandLineArguments.FromArguments(argarray);
+            var argarray = CommandStringToStringArray(commandString);
+            var args = StartupUtils.CommandLineArguments.Parse(argarray);
             return args;
         }
 
-        protected static string[] commandstringToStringArray(string commandstring)
+        protected static string[] CommandStringToStringArray(string commandString)
         {
             //convert string to commandlineargs, 
-            var m = Regex.Matches(commandstring, "([^\"]\\S*|\".+?\")\\s*");
+            var m = Regex.Matches(commandString, "([^\"]\\S*|\".+?\")\\s*");
             var list = m.Cast<Match>().Select(match => match.Value).ToList();
 
             //strip trailing whitespace
@@ -72,11 +69,11 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenAndRunDynamoModelWithCommandLineRunner()
         {
-            string openPath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
             var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openPath;
+            string commandstring = "/o" + " " + openpath;
 
-            runner.Run(commandstringToArgs(commandstring));
+            runner.Run(CommandstringToArgs(commandstring));
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
         }
 
@@ -84,11 +81,11 @@ namespace Dynamo.Tests
         public void CanOpenAndSetSpecifcStateInDynWithCommandLineRunner()
         {
 
-            string openPath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
+            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
             var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openPath + " " + "/s" + " " + "state2";
+            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2";
 
-            runner.Run(commandstringToArgs(commandstring));
+            runner.Run(CommandstringToArgs(commandstring));
             AssertPreviewValue("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", 31);
         }
 
@@ -96,24 +93,24 @@ namespace Dynamo.Tests
         public void CanOpenAndSetSpecifcStateFromImportedPresetsFileWithCommandLineRunner()
         {
 
-            string openPath = Path.Combine(TestDirectory, @"core\commandline\addmultwithoutstates.dyn");
-            string presetsPath = Path.Combine(TestDirectory, @"core\commandline\statesOnly.xml");
+            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithoutstates.dyn");
+            string presetspath = Path.Combine(TestDirectory, @"core\commandline\statesOnly.xml");
             var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openPath + " " + "/s" + " " + "state2" + " " + "/p" + " " + presetsPath;
+            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2" + " " + "/p" + " " + presetspath;
 
-            runner.Run(commandstringToArgs(commandstring));
+            runner.Run(CommandstringToArgs(commandstring));
             AssertPreviewValue("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", 31);
         }
 
         [Test]
         public void CanOpenAndRunSpecifcStateAndOutputToFileWithCommandLineRunner()
         {
-            string openPath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
+            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
             var newPath = GetNewFileNameOnTempPath("xml");
 
             var runner = new CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openPath + " " + "/s" + " " + "state2" + " " + "/v" + " " + newPath;
-            runner.Run(commandstringToArgs(commandstring));
+            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2" + " " + "/v" + " " + newPath;
+            runner.Run(CommandstringToArgs(commandstring));
 
             var output = new XmlDocument();
             output.Load(newPath);
@@ -130,7 +127,7 @@ namespace Dynamo.Tests
 
             var runner = new CommandLineRunner(this.CurrentDynamoModel);
             string commandstring = "/o" + " " + openPath + " " + "/s" + " " + "all" + " " + "/p" + " " + presetsPath + " " + "/v" + " " + newPath;
-            runner.Run(commandstringToArgs(commandstring));
+            runner.Run(CommandstringToArgs(commandstring));
 
             var output = new XmlDocument();
             output.Load(newPath);
@@ -141,12 +138,12 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenAndRunAllImportedStatesFromDynamoCLIexe()
         {
-            string openPath = Path.Combine(TestDirectory, @"core\commandline\addmultwithoutstates.dyn");
-            string presetsPath = Path.Combine(TestDirectory, @"core\commandline\statesOnly.xml");
+            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithoutstates.dyn");
+            string presetspath = Path.Combine(TestDirectory, @"core\commandline\statesOnly.xml");
             var newPath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openPath + " " + "/s" + " " + "all" + " " + "/p" + " " + presetsPath + " " + "/v" + " " + newPath;
+            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "all" + " " + "/p" + " " + presetspath + " " + "/v" + " " + newPath;
 
-            DynamoCLI.Program.Main(commandstringToStringArray(commandstring));
+            DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
             var output = new XmlDocument();
             output.Load(newPath);
             AssertOutputValuesForGuid("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", new List<Tuple<int, string>> { Tuple.Create(0, "10"), Tuple.Create(0, "31"), Tuple.Create(0, "20") }, output);
@@ -156,13 +153,13 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenAndRunSpecifcStateAndOutputToFileFromDynamoCLIexe()
         {
-            string openPath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
-            var newPath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openPath + " " + "/s" + " " + "state2" + " " + "/v" + " " + newPath;
+            string openpath = Path.Combine(TestDirectory, @"core\commandline\addmultwithstatesindyn.dyn");
+            var newpath = GetNewFileNameOnTempPath("xml");
+            string commandstring = "/o" + " " + openpath + " " + "/s" + " " + "state2" + " " + "/v" + " " + newpath;
 
-            DynamoCLI.Program.Main(commandstringToStringArray(commandstring));
+            DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
             var output = new XmlDocument();
-            output.Load(newPath);
+            output.Load(newpath);
             AssertOutputValuesForGuid("6e2d89d1-d5e8-4030-b065-f9d98b3adb45", new List<Tuple<int, string>> { Tuple.Create(0, "31") }, output);
 
         }
