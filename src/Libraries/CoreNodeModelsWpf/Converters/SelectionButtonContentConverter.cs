@@ -13,10 +13,10 @@ namespace Dynamo.Wpf.Converters
             if (value is IEnumerable<object>)
             {
                 if (!(value as IEnumerable<object>).Any())
-                    return "Select";
+                    return Properties.Resources.SelectNodeButtonSelect;
             }
 
-            return "Change";
+            return Properties.Resources.SelectNodeButtonChange;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
