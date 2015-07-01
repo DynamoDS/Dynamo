@@ -1087,7 +1087,8 @@ namespace Dynamo.Controls
                             Color = SharpDX.Color.White,
                             Figure = PointGeometryModel3D.PointFigure.Ellipse,
                             Size = DefaultPointSize,
-                            IsHitTestVisible = true
+                            IsHitTestVisible = true,
+                            IsSelected = rp.IsSelected
                         };
                         model3DDictionary.Add(id, pointGeometry3D);
                     }
@@ -1098,16 +1099,6 @@ namespace Dynamo.Controls
                     points.Positions.AddRange(p.Positions);
                     points.Colors.AddRange(p.Colors.Any() ? p.Colors : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
                     points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
-
-                    var endIdx = points.Positions.Count;
-
-                    if (rp.IsSelected)
-                    {
-                        for (var i = startIdx; i < endIdx; i++)
-                        {
-                            points.Colors[i] = selectionColor;
-                        }
-                    }
 
                     if (rp.DisplayLabels)
                     {
@@ -1140,7 +1131,8 @@ namespace Dynamo.Controls
                             Transform = Model1Transform,
                             Color = SharpDX.Color.White,
                             Thickness = 0.5,
-                            IsHitTestVisible = true
+                            IsHitTestVisible = true,
+                            IsSelected = rp.IsSelected
                         };
 
                         model3DDictionary.Add(id, lineGeometry3D);
@@ -1152,16 +1144,6 @@ namespace Dynamo.Controls
                     lineSet.Positions.AddRange(l.Positions);
                     lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
                     lineSet.Indices.AddRange(l.Indices.Any() ? l.Indices.Select(i => i + startIdx) : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
-
-                    var endIdx = lineSet.Positions.Count;
-
-                    if (rp.IsSelected)
-                    {
-                        for (var i = startIdx; i < endIdx; i++)
-                        {
-                            lineSet.Colors[i] = selectionColor;
-                        }
-                    }
 
                     if (rp.DisplayLabels)
                     {

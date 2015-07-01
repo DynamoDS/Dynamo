@@ -15,11 +15,13 @@ namespace Analysis
         /// <summary>
         /// A list of Points.
         /// </summary>
+        [Obsolete("Use the Points available elsewhere in your graph.")]
         public IEnumerable<Point> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of lists of double values.
         /// </summary>
+        [Obsolete("Use the values provided by the node conducting the analysis.")]
         public IList<double> Values { get; internal set; }
 
         protected PointData(
