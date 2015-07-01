@@ -907,8 +907,6 @@ namespace Dynamo.Models
 
             SerializeSessionData(document, runtimeCore);
 
-            OnSaving(document);
-
             try
             {
                 Utils.SetDocumentXmlPath(document, string.Empty);
@@ -1016,6 +1014,8 @@ namespace Dynamo.Models
                     var presetState = preset.Serialize(xmlDoc, SaveContext.File);
                     presetsElement.AppendChild(presetState);
                 }
+
+                OnSaving(xmlDoc);
 
                 return true;
             }
