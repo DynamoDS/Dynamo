@@ -334,7 +334,8 @@ namespace Dynamo.Core
         {
             var guids = NodeInfos.Where(x =>
                         {
-                            return string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                            return !string.IsNullOrEmpty(x.Value.Path) &&
+                                string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
                         }).Select(x => x.Key).ToList();
 
             foreach (var guid in guids)
