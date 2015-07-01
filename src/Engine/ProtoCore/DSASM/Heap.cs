@@ -722,19 +722,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        // TODO: re-visit to make sure if it is needed or not.
-        public void MarkAsGray(StackValue value)
-        {
-            if (!value.IsReferenceType)
-                return;
-
-            HeapElement valueHp;
-            if (TryGetHeapElement(value, out valueHp))
-            {
-                totalTraversed += PropagateMark(value);
-            }
-        }
-
         public void WriteBarrierForward(HeapElement hp, StackValue value)
         {
             if (hp.Mark == GCMark.Black && value.IsReferenceType)

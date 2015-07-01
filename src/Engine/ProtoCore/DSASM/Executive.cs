@@ -4533,8 +4533,6 @@ namespace ProtoCore.DSASM
                 tempSvData = coercedValue;
                 EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
-                rmem.Heap.MarkAsGray(coercedValue);
-
                 if (runtimeCore.Options.ExecuteSSA)
                 {
                     if (!isSSANode)
@@ -4614,7 +4612,6 @@ namespace ProtoCore.DSASM
 
                 svData = rmem.Pop();
                 StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
-                rmem.Heap.MarkAsGray(coercedValue);
                 PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
             }
             else
