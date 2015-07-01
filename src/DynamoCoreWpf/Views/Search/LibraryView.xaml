@@ -287,9 +287,49 @@
                 </StackPanel>
             </DataTemplate>
 
+            <!-- This data template is used to show 2nd level subcategory.
+            This helps in controlling the margin in the tree view.-->
+            <DataTemplate  x:Key="ClassDetailsDataTemplate">
+                <StackPanel Orientation="Horizontal"                           
+                            VerticalAlignment="Center">
+                    <Image Margin="16,0,16,0"
+                           Height="36"
+                           Width="24"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Source="{Binding SmallIcon}"/>
+                    <TextBlock HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"
+                               Foreground="{StaticResource CommonSidebarTextColor}"
+                               FontSize="13"
+                               Text="{Binding Name}" />
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="Width">
+                                <Setter.Value>
+                                    <Binding Path="ActualWidth"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource LibraryMemberOnHover}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                </StackPanel>
+            </DataTemplate>
+
             <!-- This data template is used to show one subcategory. -->
             <HierarchicalDataTemplate  x:Key="ClassObjectDataTemplate"
-                                       ItemsSource="{Binding Entries}">
+                                       ItemsSource="{Binding Entries}"
+                                       ItemTemplate="{StaticResource ClassDetailsDataTemplate }">
                 <StackPanel Name ="SubClassTreeNodes" Orientation="Horizontal"
                             VerticalAlignment="Center">
                     <Image Margin="-25,0,16,0"
