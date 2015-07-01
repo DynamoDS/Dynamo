@@ -63,7 +63,7 @@ namespace Dynamo.UI.Views
 
         private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
         {
-            var classButton = sender as ListViewItem;
+            var classButton = sender as TreeViewItem;
             if ((classButton == null) || !classButton.IsSelected) return;
 
             classButton.IsSelected = false;
@@ -98,7 +98,9 @@ namespace Dynamo.UI.Views
 
             FrameworkElement fromSender = sender as FrameworkElement;
             libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            var nodeVM = fromSender.DataContext as NodeSearchElementViewModel;
+            if (nodeVM != null)
+                libraryToolTipPopup.SetDataContext(nodeVM);
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
