@@ -775,9 +775,6 @@ namespace ProtoCore.DSASM
                                                    r.RawIntValue >= 0 && 
                                                    heapElements[(int)r.RawIntValue] != null);
             roots = new List<StackValue>(validPointers);
-            if (!roots.Any())
-                return false;
-
             executive = exe;
             StartCollection();
             gcState = GCState.Propagate;
@@ -811,15 +808,11 @@ namespace ProtoCore.DSASM
                 throw new ArgumentNullException("exe");
 
             while (gcState != GCState.WaitingForRoots)
-            {
                 SingleStep();
-            } 
-            SetRoots(gcroots, exe);
 
+            SetRoots(gcroots, exe);
             while (gcState != GCState.Pause)
-            {
                 SingleStep();
-            }
         }
 
         public void ReportAllocation(int newSize)

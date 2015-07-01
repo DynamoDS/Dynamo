@@ -5918,6 +5918,11 @@ namespace ProtoCore.DSASM
                 }
             }
             Properties = PopInterpreterProps();
+
+            if (type == StackFrameType.kTypeLanguage && executingBlock == 0)
+            {
+                rmem.Heap.FullGC(new List<StackValue>(), this);
+            }
         }
 
         private void RETCN_Handler(Instruction instruction)
