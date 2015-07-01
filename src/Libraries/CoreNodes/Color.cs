@@ -355,9 +355,6 @@ namespace DSCore
         public static ColorRange1D ByColorsAndParameters(
             List<Color> colors, List<double> parameters)
         {
-            var blue = Color.ByARGB(255, 0, 0, 255);
-            var red = Color.ByARGB(255, 255, 0, 0);
-
             if (colors == null)
                 colors = new List<Color>();
 
@@ -415,7 +412,8 @@ namespace DSCore
                 var diff = colors.Count() - parameters.Count();
                 for (var i = 0; i < diff; i++)
                 {
-                    parameters.Add(1.0);
+                    // Put the color in the middle
+                    parameters.Add(0.5);
                 }
             }
             // If the number of parameters is greater than the
@@ -425,7 +423,7 @@ namespace DSCore
                 var diff = parameters.Count() - colors.Count();
                 for (var i = 0; i < diff; i++)
                 {
-                    colors.Add(blue);
+                    colors.Add(DefaultColorRanges.Analysis.Last());
                 }
             }
 
