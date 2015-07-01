@@ -332,6 +332,16 @@ namespace Dynamo.Core
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
+            var guids = NodeInfos.Where(x =>
+                        {
+                            return string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                        }).Select(x => x.Key).ToList();
+
+            foreach (var guid in guids)
+            {
+                NodeInfos.Remove(guid);
+            }
+
             NodeInfos[newInfo.FunctionId] = newInfo;
             OnInfoUpdated(newInfo);
         }
