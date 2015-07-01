@@ -217,7 +217,7 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
                 runtimeCore.CurrentExecutive.CurrentDSASMExec.exe = exe;
-                ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer();
+                ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer(exe.MacroBlockList);
 
                 //sequencer.Setup(
                 //    runtimeCore.CurrentExecutive.CurrentDSASMExec,
@@ -288,14 +288,7 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
 
-                //runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
-                //    runtimeCore.CurrentExecutive.CurrentDSASMExec,
-                //    codeBlock.codeBlockId,
-                //    runtimeCore.StartPC,
-                //    stackFrame,
-                //    locals);
-
-                ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer();
+                ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer(exe.MacroBlockList);
                 sequencer.Execute(
                     runtimeCore.CurrentExecutive.CurrentDSASMExec,
                     codeBlock.codeBlockId,

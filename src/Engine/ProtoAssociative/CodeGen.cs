@@ -4237,7 +4237,7 @@ namespace ProtoAssociative
 
             List<GraphNode> nodesInScope = codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
             ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(nodesInScope);
-            //core.MacroblockGen.GenerateMacroBlocks(nodesInScope);
+            core.MacroblockGen.GenerateMacroBlocks(nodesInScope);
             
             if (codeBlock.parent == null)  // top-most langauge block
             {

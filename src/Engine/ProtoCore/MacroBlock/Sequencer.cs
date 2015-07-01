@@ -9,21 +9,19 @@ namespace ProtoCore.Runtime
 {
     public class MacroblockSequencer
     {
-        private ProtoCore.DSASM.Executive executive = null;
         private List<ProtoCore.Runtime.MacroBlock> macroBlockList = null;
 
-        public MacroblockSequencer()
+        public MacroblockSequencer(List<Runtime.MacroBlock> macroBlocks)
         {
-            macroBlockList = new List<Runtime.MacroBlock>();
+            macroBlockList = macroBlocks;
         }
 
-        public void Setup(
-            ProtoCore.DSASM.Executive exec, 
+        public void SetupExecutive(
+            ProtoCore.DSASM.Executive executive,
             int exeblock, 
             int entry, 
             StackFrame stackFrame, int locals = 0)
         {
-            executive = exec;
             executive.SetupBounce(exeblock, entry, stackFrame, locals);
         }
 
@@ -31,29 +29,28 @@ namespace ProtoCore.Runtime
         /// Begin excution of macroblocks
         /// </summary>
         public void Execute(
-            ProtoCore.DSASM.Executive exec,
+            ProtoCore.DSASM.Executive executive,
             int exeblock,
             int entry,
-            StackFrame stackFrame, int locals = 0)
-        { 
-            Validity.Assert(exec != null);
+            StackFrame stackFrame, 
+            int locals = 0
+            )
+        {
+            Validity.Assert(executive != null);
+            Validity.Assert(macroBlockList != null);
 
-            macroBlockList = exec.exe.MacroBlockList;
+            // Get the list of macroblocks that will be executed in the current run
+            List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlockList);
+            if (validBlocks.Count == 0)
+            {
+                return;
+            }
 
-            //List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlockList);
-            //if (validBlocks.Count == 0)
-            //{
-            //    return;
-            //}
-
-            Setup(exec, exeblock, entry, stackFrame, locals);
-
-            //foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
-            //{
-            //    executive.Execute(macroBlock);
-            //}
-
-            executive.Execute(exeblock, entry, null);
+            foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
+            {
+                SetupExecutive(executive, exeblock, entry, stackFrame, locals);
+                executive.Execute(macroBlock);
+            }
         }
 
         /// <summary>
