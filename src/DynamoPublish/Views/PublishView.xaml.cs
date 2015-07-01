@@ -31,6 +31,7 @@ namespace Dynamo.Publish.Views
         {
             InitializeComponent();
             DataContext = viewModel;
+            viewModel.PublishView = this;
         }
     }
 }

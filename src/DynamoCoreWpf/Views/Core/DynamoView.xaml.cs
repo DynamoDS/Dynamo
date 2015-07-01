@@ -121,10 +121,7 @@ namespace Dynamo.Controls
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += LogMessage;
 
-            var startupParams = new ViewStartupParams()
-            {
-                AuthenticationManager = dynamoViewModel.Model.AuthenticationManager
-            };
+            var startupParams = new ViewStartupParams();
 
             foreach (var ext in viewExtensions)
             {
@@ -440,9 +437,14 @@ namespace Dynamo.Controls
 
             watchSettingsControl.DataContext = background_preview;
 
+            var loadedParams = new ViewLoadedParams()
+            {
+                WorkSpaces = dynamoViewModel.Workspaces,
+            };
+
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
-                ext.Loaded(null);
+                ext.Loaded(loadedParams);
             }
 
         }

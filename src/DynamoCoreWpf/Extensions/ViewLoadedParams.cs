@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.UI.Controls;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -57,5 +58,7 @@ namespace Dynamo.Wpf.Extensions
         //{
             
         //}
+
+        public IEnumerable<WorkspaceViewModel> WorkSpaces;
     }
 }

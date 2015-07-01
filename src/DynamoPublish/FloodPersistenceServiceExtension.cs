@@ -28,12 +28,13 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams param)
         {
-            publishM = new PublishModel(param.AuthenticationManager);
+            publishM = new PublishModel();
             publishVM = new PublishViewModel(publishM);
         }
 
         public void Loaded(ViewLoadedParams p)
         {
+            publishVM.WorkSpaces = p.WorkSpaces;
             publishWindow = new PublishView(publishVM);
             publishWindow.Show();
         }
