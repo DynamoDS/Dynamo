@@ -72,10 +72,10 @@ namespace Dynamo.Controls
         private int renderingTier;
         private DynamoViewModel viewModel;
         private const double NearPlaneDistanceFactor = 0.0001;
-        internal Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
-        internal Point3D defaultCameraPosition = new Point3D(10, 15, 10);
-        internal Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0); 
-        private static readonly Size DefaultPointSize = new Size(8,8);
+        internal readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
+        internal readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
+        internal readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0); 
+        private readonly Size defaultPointSize = new Size(8,8);
 
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
         private Dictionary<string, Model3D> Model3DDictionary
@@ -1086,7 +1086,7 @@ namespace Dynamo.Controls
                             Transform = Model1Transform,
                             Color = SharpDX.Color.White,
                             Figure = PointGeometryModel3D.PointFigure.Ellipse,
-                            Size = DefaultPointSize,
+                            Size = defaultPointSize,
                             IsHitTestVisible = true,
                             IsSelected = rp.IsSelected
                         };
