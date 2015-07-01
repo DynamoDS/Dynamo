@@ -497,6 +497,11 @@ namespace ProtoCore.Lang
                     var fullName = StringUtils.GetStringValue(nodeFullName, runtimeCore);
                     ret = StackValue.Null;
                     break;
+                case BuiltInMethods.MethodID.kGC:
+                    var gcRoots = interpreter.runtime.RuntimeCore.CurrentExecutive.CurrentDSASMExec.CollectRootPointers();
+                    rmem.Heap.FullGC(gcRoots, interpreter.runtime);
+                    ret = StackValue.Null;
+                    break;
                 default:
                     throw new ProtoCore.Exceptions.CompilerInternalException("Unknown built-in method. {AAFAE85A-2AEB-4E8C-90D1-BCC83F27C852}");
             }

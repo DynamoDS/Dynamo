@@ -13705,7 +13705,7 @@ b = 0;
 {
     a = A.A();
 }
-
+__GC();
 c = 2;
 ", runnerConfig);
 
@@ -13726,6 +13726,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
+            vms = fsr.StepOver();
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
@@ -13761,6 +13762,7 @@ def foo()
    
 b = 0;
 foo();
+__GC();
 c = 2;
 ", runnerConfig);
 
@@ -13783,6 +13785,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
+            vms = fsr.StepOver();
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
@@ -13817,6 +13820,7 @@ def foo(i : int)
 b = 0;
 g = { 1, 2, 3 };
 foo(g);
+__GC();
 c = 2;
 ", runnerConfig);
 
@@ -13842,6 +13846,7 @@ c = 2;
             Assert.IsTrue((Int64)lo[2].Payload == 3);
 
             vms = fsr.StepOver();   // c = 2;
+            vms = fsr.StepOver(); 
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
@@ -13879,6 +13884,8 @@ p = A.A();
 
 p.foo();
 
+__GC();
+
 c = 2;
 ", runnerConfig);
 
@@ -13910,6 +13917,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
+            vms = fsr.StepOver();
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();
@@ -14162,7 +14170,7 @@ b = 0;
 {
     a = A.A();	
 }
-
+__GC();
 c = 2;
 ", runnerConfig);
 
@@ -14185,6 +14193,7 @@ c = 2;
             Assert.AreEqual(mirror.GetType(objExecVal), "A");
 
             vms = fsr.StepOver();   // c = 2;
+            vms = fsr.StepOver();
             watchRunner = new ExpressionInterpreterRunner(core, fsr.runtimeCore);
             mirror = watchRunner.Execute(@"b");
             objExecVal = mirror.GetWatchValue();

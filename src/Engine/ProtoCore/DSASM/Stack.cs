@@ -337,8 +337,12 @@ namespace ProtoCore.DSASM
         {
             if (sv1.optype != sv2.optype)
                 return false;
+
             switch (sv1.optype)
             {
+                case AddressType.Invalid:
+                    return true;
+
                 case AddressType.Int:
                 case AddressType.Char:
                     return sv1.opdata == sv2.opdata;

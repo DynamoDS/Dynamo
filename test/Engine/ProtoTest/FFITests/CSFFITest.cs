@@ -883,6 +883,7 @@ p11;
                             dv = DisposeVerify.CreateObject();
                             m = dv.SetValue(1);
                             a = foo();
+                            __GC();
                             b = dv.GetValue();
                             ";
             thisTest.RunScriptSource(code);
@@ -909,6 +910,7 @@ p11;
                             m = dv.SetValue(1);
                             a = BClass.CreateObject(-1);
                             b = foo(a);
+                            __GC();
                             c = dv.GetValue();
                             ";
             thisTest.RunScriptSource(code);
@@ -934,7 +936,7 @@ p11;
                             def foo : int()
                             {
                                 fb = BClass.CreateObject(9);
-                                fa = AClass.CreateObject(8);
+                                fa = BClass.CreateObject(8);
                                 ff = Foo.Foo(fa, fb);
                                 return = 3;
                             }
@@ -942,11 +944,12 @@ p11;
                             dv = DisposeVerify.CreateObject();
                             m = dv.SetValue(1);
                             a = foo();
+                            __GC();
                             b = dv.GetValue();
                             ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("a", 3);
-            thisTest.Verify("b", 17);
+            thisTest.Verify("b", 18);
         }
 
         [Test]
@@ -1043,6 +1046,7 @@ p11;
                                 m = f2.foo(b3);
                                 v2 = dv.GetValue();
                             }
+                            __GC();
                             v3 = dv.GetValue();
                             ";
             thisTest.RunScriptSource(code);
@@ -1093,6 +1097,7 @@ p11;
                                 f = f2;
                                 v3 = dv.GetValue();
                             }
+                            __GC();
                             v4 = dv.GetValue();
                             ";
 
