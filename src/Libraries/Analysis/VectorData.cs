@@ -17,11 +17,13 @@ namespace Analysis
         /// <summary>
         /// A list of calculation locations.
         /// </summary>
+        [Obsolete("Use the Points available elsewhere in your graph.")]
         public IEnumerable<Point> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of results.
         /// </summary>
+        [Obsolete("Use the values provided by the node conducting the analysis.")]
         public IList<Vector> Values { get; internal set; }
 
         protected VectorData(IEnumerable<Point> points, IList<Vector> values)
