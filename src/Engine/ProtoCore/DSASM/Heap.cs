@@ -23,8 +23,7 @@ namespace ProtoCore.DSASM
         {
             get 
             { 
-                for (int i = 0; i < Count; ++i)
-                    yield return values[i]; 
+                return values.Take(Count);
             }
         }
 
@@ -39,13 +38,8 @@ namespace ProtoCore.DSASM
         public HeapElement(int size, Heap heap)
         {
             allocated = Count = size;
-            values = new StackValue[allocated];
             this.heap = heap;
-
-            for (int n = 0; n < allocated; ++n)
-            {
-                values[n] = StackValue.BuildInvalid();
-            }
+            values = Enumerable.Repeat(StackValue.BuildInvalid(), allocated).ToArray();
         }
 
         /// <summary>
@@ -58,11 +52,7 @@ namespace ProtoCore.DSASM
             allocated = Count = values.Count();
             this.values = new StackValue[allocated];
             this.heap = heap;
-
-            for (int n = 0; n < allocated; ++n)
-            {
-                this.values[n] = values[n];
-            }
+            Array.Copy(values, this.values, allocated);
         }
 
         //
