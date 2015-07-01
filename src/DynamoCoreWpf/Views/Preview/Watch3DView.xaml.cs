@@ -1319,7 +1319,10 @@ namespace Dynamo.Controls
             }
             catch (Exception ex)
             {
-                viewModel.Model.Logger.Log("Camera data could not be loaded.", LogLevel.Console);
+                const string msg = "CAMERA: Camera position information could not be loaded from the file.";
+                viewModel.Model.Logger.Log(msg, LogLevel.Console);
+                viewModel.Model.Logger.Log(msg, LogLevel.File);
+                viewModel.Model.Logger.Log(ex.Message, LogLevel.File);
             }
         }
 
