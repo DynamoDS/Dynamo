@@ -186,6 +186,38 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
+        /// Bounce to an existing executive
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="fepRun"></param>
+        /// <param name="exec"></param>
+        /// <param name="breakpoints"></param>
+        /// <returns></returns>
+        public StackValue BounceUsingExecutive(
+           DSASM.Executive executive,
+           int exeblock,
+           int entry,
+           StackFrame stackFrame,
+           int locals = 0,
+           bool fepRun = false,
+           DSASM.Executive exec = null,
+           List<Instruction> breakpoints = null)
+        {
+            if (stackFrame != null)
+            {
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
+                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+            }
+            executive.Execute(exeblock, entry, breakpoints);
+            return executive.RX;
+        }
+
+
+        /// <summary>
         /// Determines if the runtime is not inside a function 
         /// Will also return true if within a nested language block
         /// </summary>

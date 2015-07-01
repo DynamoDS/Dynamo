@@ -16,13 +16,14 @@ namespace ProtoCore.Runtime
             macroBlockList = macroBlocks;
         }
 
-        public void SetupExecutive(
+        private void SetupExecutive(
             ProtoCore.DSASM.Executive executive,
             int exeblock, 
             int entry, 
             StackFrame stackFrame, int locals = 0)
         {
-            executive.SetupBounce(exeblock, entry, stackFrame, locals);
+            //executive.SetupBounce(exeblock, entry, stackFrame, locals);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace ProtoCore.Runtime
 
             foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
             {
-                SetupExecutive(executive, exeblock, entry, stackFrame, locals);
+                executive.SetupBounce(exeblock, entry, stackFrame, locals);
                 executive.Execute(macroBlock);
             }
         }
