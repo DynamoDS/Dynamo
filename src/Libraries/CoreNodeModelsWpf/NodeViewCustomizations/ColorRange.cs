@@ -42,28 +42,60 @@ namespace Dynamo.Wpf.Nodes
         {
             model.DispatchOnUIThread(delegate
             {
-                if (!model.InPorts[0].Connectors.Any() ||
-                    !model.InPorts[1].Connectors.Any())
+                WriteableBitmap bmp;
+                List<Color> colors;
+                List<double> parameters;
+
+                // If there are colors supplied
+                if (model.InPorts[0].Connectors.Any())
                 {
-                    return;
+                    var colorsNode = model.InPorts[0].Connectors[0].Start.Owner;
+                    var colorsIndex = model.InPorts[0].Connectors[0].Start.Index;
+                    var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
+                    var colorsMirror = dm.EngineController.GetMirror(startId);
+                    colors = GetColorsFromMirrorData(colorsMirror);
+                }
+                else
+                {
+                    colors = new List<Color>()
+                    {
+                        Color.ByARGB(255,255,100,100), // orange
+                        Color.ByARGB(255,255,255,0), // yellow
+                        Color.ByARGB(255,0,255,255) // cyan
+                    };
                 }
 
-                var colorsNode = model.InPorts[0].Connectors[0].Start.Owner;
-                var colorsIndex = model.InPorts[0].Connectors[0].Start.Index;
-                var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
-                var colorsMirror = dm.EngineController.GetMirror(startId);
-                var colors = GetColorsFromMirrorData(colorsMirror);
+                // If there are indices supplied
+                if (model.InPorts[1].Connectors.Any())
+                {
+                    var valuesNode = model.InPorts[1].Connectors[0].Start.Owner;
+                    var valuesIndex = model.InPorts[1].Connectors[0].Start.Index;
+                    var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
+                    var valuesMirror = dm.EngineController.GetMirror(endId);
+                    parameters = GetValuesFromMirrorData(valuesMirror);
+                }
+                else
+                {
+                    parameters = CreateParametersForColors(colors);
+                }
 
-                var valuesNode = model.InPorts[1].Connectors[0].Start.Owner;
-                var valuesIndex = model.InPorts[1].Connectors[0].Start.Index;
-                var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
-                var valuesMirror = dm.EngineController.GetMirror(endId);
-                var values = GetValuesFromMirrorData(valuesMirror);
+                bmp = CreateColorRangeBitmap(colors, parameters); 
 
-                var bmp = CreateColorRangeBitmap(colors, values);
                 drawPlane.Source = bmp;
-
             });
+        }
+
+        private static List<double> CreateParametersForColors(List<Color> colors)
+        {
+            var parameters = new List<double>();
+
+            var step = 1.0 / (colors.Count() - 1);
+            for (var i = 0; i < colors.Count(); i++)
+            {
+                parameters.Add(i * step);
+            }
+
+            return parameters;
         }
 
         private static List<double> GetValuesFromMirrorData(RuntimeMirror valuesMirror)
