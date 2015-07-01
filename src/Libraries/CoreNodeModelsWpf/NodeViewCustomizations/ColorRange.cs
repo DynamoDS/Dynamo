@@ -7,12 +7,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using DSCore;
 using Dynamo.Controls;
 using Dynamo.UI;
 
 using DSCoreNodesUI;
+using Dynamo.Core.Threading;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 using ProtoCore.Mirror;
 using Color = DSCore.Color;
 
@@ -20,66 +23,88 @@ namespace Dynamo.Wpf.Nodes
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {
+        private DynamoViewModel dynamoViewModel;
+        private DispatcherSynchronizationContext syncContext;
+        private ColorRange colorRangeNode;
+        private DynamoModel dynamoModel;
+        private System.Windows.Controls.Image gradientImage;
+        private ColorRange1D colorRange;
+
         public void CustomizeView(ColorRange model, NodeView nodeView)
         {
-            var drawPlane = new Image
+            dynamoModel = nodeView.ViewModel.DynamoViewModel.Model;
+            dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
+            colorRangeNode = model;
+
+            gradientImage = new Image
             {
                 Stretch = Stretch.Fill,
                 Width = 200,
                 Height = Configurations.PortHeightInPixels * 3
             };
 
-            var dm = nodeView.ViewModel.DynamoViewModel.Model;
+            nodeView.inputGrid.Children.Add(gradientImage);
 
-            nodeView.inputGrid.Children.Add(drawPlane);
+            colorRangeNode.RequestChangeColorRange += UpdateColorRange;
 
-            model.RequestChangeColorRange += delegate { UpdateColorRange(model, dm, drawPlane); };
-
-            UpdateColorRange(model, dm, drawPlane);
+            UpdateColorRange();
         }
 
-        private void UpdateColorRange(ColorRange model, DynamoModel dm, Image drawPlane)
+        private void UpdateColorRange()
         {
-            model.DispatchOnUIThread(delegate
+            var s = dynamoViewModel.Model.Scheduler;
+
+            // prevent data race by running on scheduler
+            var t = new DelegateBasedAsyncTask(s, () =>
             {
-                WriteableBitmap bmp;
-                List<Color> colors;
-                List<double> parameters;
-
-                // If there are colors supplied
-                if (model.InPorts[0].Connectors.Any())
-                {
-                    var colorsNode = model.InPorts[0].Connectors[0].Start.Owner;
-                    var colorsIndex = model.InPorts[0].Connectors[0].Start.Index;
-                    var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
-                    var colorsMirror = dm.EngineController.GetMirror(startId);
-                    colors = GetColorsFromMirrorData(colorsMirror);
-                }
-                else
-                {
-                    colors = DefaultColorRanges.Analysis;
-                }
-
-                // If there are indices supplied
-                if (model.InPorts[1].Connectors.Any())
-                {
-                    var valuesNode = model.InPorts[1].Connectors[0].Start.Owner;
-                    var valuesIndex = model.InPorts[1].Connectors[0].Start.Index;
-                    var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
-                    var valuesMirror = dm.EngineController.GetMirror(endId);
-                    parameters = GetValuesFromMirrorData(valuesMirror);
-                }
-                else
-                {
-                    parameters = CreateParametersForColors(colors);
-                }
-
-                var colorRange = ColorRange1D.ByColorsAndParameters(colors, parameters);
-
-                bmp = CreateColorRangeBitmap(colorRange); 
-
-                drawPlane.Source = bmp;
+                colorRange = ComputeColorRange();
             });
+
+            // then update on the ui thread
+            t.ThenPost((_) =>
+            {
+                var bmp = CreateColorRangeBitmap(colorRange);
+                gradientImage.Source = bmp;
+            }, syncContext);
+
+            s.ScheduleForExecution(t);
+        }
+
+        private ColorRange1D ComputeColorRange()
+        {
+            List<Color> colors;
+            List<double> parameters;
+
+            // If there are colors supplied
+            if (colorRangeNode.InPorts[0].Connectors.Any())
+            {
+                var colorsNode = colorRangeNode.InPorts[0].Connectors[0].Start.Owner;
+                var colorsIndex = colorRangeNode.InPorts[0].Connectors[0].Start.Index;
+                var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
+                var colorsMirror = dynamoModel.EngineController.GetMirror(startId);
+                colors = GetColorsFromMirrorData(colorsMirror);
+            }
+            else
+            {
+                colors = DefaultColorRanges.Analysis;
+            }
+
+            // If there are indices supplied
+            if (colorRangeNode.InPorts[1].Connectors.Any())
+            {
+                var valuesNode = colorRangeNode.InPorts[1].Connectors[0].Start.Owner;
+                var valuesIndex = colorRangeNode.InPorts[1].Connectors[0].Start.Index;
+                var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
+                var valuesMirror = dynamoModel.EngineController.GetMirror(endId);
+                parameters = GetValuesFromMirrorData(valuesMirror);
+            }
+            else
+            {
+                parameters = CreateParametersForColors(colors);
+            }
+
+            return ColorRange1D.ByColorsAndParameters(colors, parameters);
         }
 
         private static List<double> CreateParametersForColors(List<Color> colors)

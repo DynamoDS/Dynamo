@@ -64,8 +64,6 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            OnRequestChangeColorRange();
-
             var buildColorRangeNode =
                 AstFactory.BuildFunctionCall(
                     new Func<List<Color>, List<double>, ColorRange1D>(ColorRange1D.ByColorsAndParameters),
