@@ -79,7 +79,9 @@ namespace Dynamo.Wpf.Nodes
                     parameters = CreateParametersForColors(colors);
                 }
 
-                bmp = CreateColorRangeBitmap(colors, parameters); 
+                var colorRange = ColorRange1D.ByColorsAndParameters(colors, parameters);
+
+                bmp = CreateColorRangeBitmap(colorRange); 
 
                 drawPlane.Source = bmp;
             });
@@ -151,15 +153,13 @@ namespace Dynamo.Wpf.Nodes
         public void Dispose() {}
 
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
-        private WriteableBitmap CreateColorRangeBitmap(List<Color> colors, List<double> parameters)
+        private WriteableBitmap CreateColorRangeBitmap(ColorRange1D colorRange)
         {
             const int width = 64;
             const int height = 1;
 
             var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var pixels = new uint[width * height];
-
-            var colorRange = DSCore.ColorRange1D.ByColorsAndParameters(colors, parameters);
 
             for (var i = 1; i <= width; i++)
             {
