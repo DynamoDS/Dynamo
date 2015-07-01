@@ -30,7 +30,6 @@
 
         <!-- The top banner image -->
         <Rectangle Grid.ColumnSpan="2"
-                   Width="544"
                    Height="100"
                    Stroke="Transparent"
                    VerticalAlignment="Top"

@@ -68,7 +68,7 @@ namespace ProtoCore.Lang
                 var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
                 args.RemoveRange(paramCount - 1, varParamCount);
 
-                var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams, null);
+                var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams);
                 args.Add(packedParams);
             }
 

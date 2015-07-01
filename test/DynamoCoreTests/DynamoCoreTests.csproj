@@ -71,6 +71,7 @@
     <Compile Include="MockMaker.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
+    <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
