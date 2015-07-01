@@ -291,7 +291,7 @@
             This helps in controlling the margin in the tree view.-->
             <DataTemplate  x:Key="ClassDetailsDataTemplate">
                 <StackPanel Orientation="Horizontal"                           
-                            VerticalAlignment="Center">
+                            VerticalAlignment="Center" Margin="0,0,0,-10">
                     <Image Margin="16,0,16,0"
                            Height="36"
                            Width="24"
