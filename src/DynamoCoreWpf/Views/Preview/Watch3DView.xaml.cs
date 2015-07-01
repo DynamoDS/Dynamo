@@ -976,13 +976,7 @@ namespace Dynamo.Controls
 
                     var endIdx = points.Positions.Count;
 
-                    if (rp.IsSelected)
-                    {
-                        for (var i = startIdx; i < endIdx; i++)
-                        {
-                            points.Colors[i] = selectionColor;
-                        }
-                    }
+                    pointGeometry3D.IsSelected = rp.IsSelected;
 
                     if (rp.DisplayLabels)
                     {
@@ -1030,13 +1024,7 @@ namespace Dynamo.Controls
 
                     var endIdx = lineSet.Positions.Count;
 
-                    if (rp.IsSelected)
-                    {
-                        for (var i = startIdx; i < endIdx; i++)
-                        {
-                            lineSet.Colors[i] = selectionColor;
-                        }
-                    }
+                    lineGeometry3D.IsSelected = rp.IsSelected;
 
                     if (rp.DisplayLabels)
                     {
