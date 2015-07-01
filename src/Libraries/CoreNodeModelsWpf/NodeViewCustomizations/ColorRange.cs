@@ -57,12 +57,7 @@ namespace Dynamo.Wpf.Nodes
                 }
                 else
                 {
-                    colors = new List<Color>()
-                    {
-                        Color.ByARGB(255,255,100,100), // orange
-                        Color.ByARGB(255,255,255,0), // yellow
-                        Color.ByARGB(255,0,255,255) // cyan
-                    };
+                    colors = DefaultColorRanges.Analysis;
                 }
 
                 // If there are indices supplied
