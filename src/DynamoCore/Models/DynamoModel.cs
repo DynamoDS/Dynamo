@@ -72,11 +72,11 @@ namespace Dynamo.Models
             if (RequestPresetsNamePrompt != null)
                 RequestPresetsNamePrompt(e);
         }
-        public event WorkspaceHandler WorkspaceSaved;
-        internal void OnWorkspaceSaved(WorkspaceModel model)
+        public event WorkspaceSavedHandler WorkspaceSaved;
+        internal void OnWorkspaceSaved(WorkspaceEventArgs args)
         {
             if (WorkspaceSaved != null)
-                WorkspaceSaved(model);
+                WorkspaceSaved(args);
         }
 
         /// <summary>
@@ -1755,8 +1755,9 @@ namespace Dynamo.Models
         private void AddWorkspace(WorkspaceModel workspace)
         {
             if (workspace == null) return;
-            
-            Action savedHandler = () => OnWorkspaceSaved(workspace);
+
+            WorkspaceSavedHandler savedHandler = (args) =>
+                OnWorkspaceSaved(args);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
             workspace.PropertyChanged += OnWorkspacePropertyChanged;
