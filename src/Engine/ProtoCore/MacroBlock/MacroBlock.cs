@@ -91,7 +91,7 @@ namespace ProtoCore
         /// </summary>
         /// <param name="graphnode"></param>
         /// <returns></returns>
-        private bool IsInputGraphNode(AssociativeGraph.GraphNode graphnode)
+        private bool __IsInputGraphNode_Deprecate(AssociativeGraph.GraphNode graphnode)
         {
             Validity.Assert(graphnode.updateNodeRefList[0].nodeList[0].symbol.name != null);
 
@@ -102,6 +102,18 @@ namespace ProtoCore
                 || name.Equals("__ddd")
                 || name.Equals("__eee")
                 || name.Equals("__fff");
+        }
+
+        /// <summary>
+        /// Check is the graphnode is an input node
+        /// A macroblock starts with an input graphnode
+        /// </summary>
+        /// <param name="graphnode"></param>
+        /// <returns></returns>
+        private bool IsInputGraphNode(AssociativeGraph.GraphNode graphnode)
+        {
+            Validity.Assert(graphnode != null);
+            return graphnode.IsInput;
         }
 
         /// <summary>

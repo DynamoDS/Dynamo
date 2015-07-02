@@ -942,8 +942,15 @@ namespace ProtoCore.AssociativeGraph
         public int SSASubscript { get; set; }
         public bool IsLastNodeInSSA { get; set; }
 
+
         public int MacroblockID { get; set; }
         public bool Visited { get; set; }
+
+        /// <summary>
+        /// A graphnode is an input if it represents a variable that was initially allocated on the DS stack or heap
+        /// i.e. the graphndoe associated with a variable declaration
+        /// </summary>
+        public bool IsInput { get; set; }
 
         public GraphNode()
         {
@@ -987,6 +994,7 @@ namespace ProtoCore.AssociativeGraph
 
             MacroblockID = Constants.kInvalidIndex;
             Visited = false;
+            IsInput = false;
         }
 
 
