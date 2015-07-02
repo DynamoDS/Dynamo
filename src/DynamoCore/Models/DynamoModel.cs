@@ -741,6 +741,22 @@ namespace Dynamo.Models
                 if (customNodeSearchRegistry.Contains(info.FunctionId))
                     return;
 
+                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+                                x =>
+                                {
+                                    return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                                }).ToList();
+
+                if (elements.Any())
+                {
+                    foreach (var element in elements)
+                    {
+                        element.SyncWithCustomNodeInfo(info);
+                        SearchModel.Update(element);
+                    }
+                    return;
+                }
+
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
