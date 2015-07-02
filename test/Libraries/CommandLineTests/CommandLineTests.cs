@@ -19,8 +19,6 @@ namespace Dynamo.Tests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("VMDataBridge.dll");  // Required for Watch node.
-            libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
             base.GetLibrariesToPreload(libraries);
         }
 
