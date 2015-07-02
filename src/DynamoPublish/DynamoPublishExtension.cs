@@ -36,7 +36,9 @@ namespace Dynamo.Publish
         {
             publishVM.WorkSpaces = p.WorkSpaces;
             publishWindow = new PublishView(publishVM);
-            publishWindow.Show();
+
+            // This should be called when user clicks on menu item.
+            //publishWindow.Show();
         }
 
         public void Shutdown()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -14,5 +15,16 @@ namespace Dynamo.Wpf.Extensions
 
         [DataMember]
         public string TypeName { get; set; }
+
+        public string ExtensionPath { get; set; }
+
+        public string AssemblyLocation
+        {
+            get
+            {
+                var path = Path.GetDirectoryName(ExtensionPath);
+                return Path.Combine(path, AssemblyName, AssemblyName + ".dll");                 
+            }
+        }
     }
 }

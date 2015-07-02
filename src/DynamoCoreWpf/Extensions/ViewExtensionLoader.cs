@@ -14,7 +14,7 @@ namespace Dynamo.Wpf.Extensions
         {
             try
             {
-                var assembly = Assembly.Load(viewExtension.AssemblyName);
+                var assembly = Assembly.LoadFrom(viewExtension.AssemblyLocation);
                 var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
                 return result;
             }
@@ -40,6 +40,7 @@ namespace Dynamo.Wpf.Extensions
             }
 
             var definition = new ViewExtensionDefinition();
+            definition.ExtensionPath = extensionPath;
             foreach (XmlNode item in topNode[0].ChildNodes)
             {
                 if (item.Name == "AssemblyName")

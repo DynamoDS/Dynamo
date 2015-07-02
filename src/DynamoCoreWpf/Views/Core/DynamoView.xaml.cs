@@ -127,7 +127,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    ext.Startup(null);
+                    ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
                 }
                 catch (Exception exc)
@@ -453,7 +453,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    ext.Loaded(null);
+                    ext.Loaded(loadedParams);
                 }
                 catch (Exception exc)
                 {
