@@ -503,20 +503,6 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
 
-            if (extensions.Any())
-            {
-                var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, CustomNodeManager);
-
-                foreach (var ext in extensions)
-                {
-                    ext.Startup(startupParams);
-                    ext.Load(preferences, pathManager);
-                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
-                    ExtensionManager.Add(ext);
-                }
-            }
-
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
@@ -551,6 +537,20 @@ namespace Dynamo.Models
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
             InitializeNodeLibrary(preferences);
+
+            if (extensions.Any())
+            {
+                var startupParams = new StartupParams(config.AuthProvider,
+                    pathManager, CustomNodeManager);
+
+                foreach (var ext in extensions)
+                {
+                    ext.Startup(startupParams);
+                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
+                    ext.Load(preferences, pathManager);
+                    ExtensionManager.Add(ext);
+                }
+            }
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
@@ -749,6 +749,22 @@ namespace Dynamo.Models
             {
                 if (customNodeSearchRegistry.Contains(info.FunctionId))
                     return;
+
+                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+                                x =>
+                                {
+                                    return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                                }).ToList();
+
+                if (elements.Any())
+                {
+                    foreach (var element in elements)
+                    {
+                        element.SyncWithCustomNodeInfo(info);
+                        SearchModel.Update(element);
+                    }
+                    return;
+                }
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1216,7 +1232,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null);
+                    workspace.SaveAs(savePath, null, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict.Add(workspace.Guid, savePath);

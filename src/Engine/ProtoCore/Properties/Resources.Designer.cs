@@ -106,6 +106,16 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value cannot be null.
+        ///Parameter name: {0}.
+        /// </summary>
+        public static string ArgumentNullException {
+            get {
+                return ResourceManager.GetString("ArgumentNullException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Array with no common superclass not yet supported: {0}.
         /// </summary>
         public static string ArrayWithNotSupported {
@@ -381,6 +391,15 @@ namespace ProtoCore.Properties {
         public static string ErrorCode {
             get {
                 return ResourceManager.GetString("ErrorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Null value cannot be cast to {0}.
+        /// </summary>
+        public static string FailedToCastFromNull {
+            get {
+                return ResourceManager.GetString("FailedToCastFromNull", resourceCulture);
             }
         }
         

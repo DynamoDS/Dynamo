@@ -1,3 +1,5 @@
+![Image](https://ci.appveyor.com/api/projects/status/github/DynamoDS/Dynamo?branch=master) ![Image](https://travis-ci.org/DynamoDS/Dynamo.svg?branch=master)
+
 ![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png)
 Dynamo is a visual programming tool that aims to be accessible to both non-programmers and programmers alike. It gives users the ability to visually script behavior, define custom pieces of logic, and script using various textual programming languages.
 
@@ -16,6 +18,8 @@ You will need the following to build Dynamo:
 - [Microsoft .NET Framework 3.5 with SP1](http://www.microsoft.com/en-sg/download/details.aspx?id=25150)
 - Microsoft .NET Framework 4.0 and above (included with Visual Studio 2013)
 - Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
+
+Directions for building Dynamo on other platforms (e.g. Linux or OS X) can be found [here](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-on-Linux,-Mac).  
 
 Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki).
 
