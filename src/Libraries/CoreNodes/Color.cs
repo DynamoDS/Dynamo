@@ -16,7 +16,7 @@ namespace DSCore
         /// <summary>
         ///     Find the red component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the red component.</returns>
+        /// <returns name="red">int between 0 and 255 inclusive.</returns>
         public byte Red
         {
             get { return color.R; }
@@ -25,7 +25,7 @@ namespace DSCore
         /// <summary>
         ///     Find the green component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the green component.</returns>
+        /// <returns name="green">int between 0 and 255 inclusive.</returns>
         public byte Green
         {
             get { return color.G; }
@@ -34,7 +34,7 @@ namespace DSCore
         /// <summary>
         ///     Find the blue component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the blue component.</returns>
+        /// <returns name="blue">int between 0 and 255 inclusive.</returns>
         public byte Blue
         {
             get { return color.B; }
@@ -43,7 +43,7 @@ namespace DSCore
         /// <summary>
         ///     Find the alpha component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the alpha component.</returns>
+        /// <returns name="alpha">int between 0 and 255 inclusive.</returns>
         public byte Alpha
         {
             get { return color.A; }
@@ -91,7 +91,7 @@ namespace DSCore
         /// <summary>
         ///     Gets the brightness value for this color.
         /// </summary>
-        /// <returns name="val">Brightness value for the color.</returns>
+        /// <returns name="brightness">double between 0 and 1 inclusive.</returns>
         public static float Brightness(Color c)
         {
             return c.color.GetBrightness();
@@ -100,7 +100,7 @@ namespace DSCore
         /// <summary>
         ///     Gets the saturation value for this color.
         /// </summary>
-        /// <returns name="val">Saturation value for the color.</returns>
+        /// <returns name="saturation">double between 0 and 1 inclusive.</returns>
         public static float Saturation(Color c)
         {
             return c.color.GetSaturation();
@@ -109,7 +109,7 @@ namespace DSCore
         /// <summary>
         ///     Gets the hue value for this color.
         /// </summary>
-        /// <returns name="val">Hue value for the color.</returns>
+        /// <returns name="hue">double between 0 and 1 inclusive.</returns>
         public static float Hue(Color c)
         {
             return c.color.GetHue();
