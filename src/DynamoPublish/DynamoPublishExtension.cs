@@ -26,7 +26,7 @@ namespace Dynamo.Publish
             get { return "DynamoPublishExtension"; }
         }
 
-        public void Startup(ViewStartupParams param)
+        public void Startup(ViewStartupParams p)
         {
             publishM = new PublishModel();
             publishVM = new PublishViewModel(publishM);
@@ -38,7 +38,7 @@ namespace Dynamo.Publish
             publishWindow = new PublishView(publishVM);
 
             // This should be called when user clicks on menu item.
-            //publishWindow.Show();
+            publishWindow.Show();
         }
 
         public void Shutdown()

@@ -22,6 +22,5 @@ namespace Dynamo.Wpf.Extensions
         // and minimize exposing unnecessary innards.
         //
         // It is expected that this class will be extended in the future, so it should stay as minimal as possible.
-
     }
 }

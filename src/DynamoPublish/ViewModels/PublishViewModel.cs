@@ -55,7 +55,7 @@ namespace Dynamo.Publish.ViewModels
         }
 
         /// <summary>
-        /// Used as parent window for authentication.
+        /// Used as parent window for authentication window.
         /// </summary>
         public Views.PublishView PublishView { get; set; }
 
