@@ -934,6 +934,8 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+
+            viewExtensionManager.MessageLogged -= Log;
         }
 
         // the key press event is being intercepted before it can get to
