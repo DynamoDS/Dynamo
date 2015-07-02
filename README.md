@@ -53,6 +53,9 @@ Lists
 Revit
 - FamilyInstance.SetRotation node
 
+Localization
+- Dynamo for Revit is now localized based on the Operating System locale.  
+
 UI
 - Control the preview state of multiple nodes at once in right-click menu
 - Node port tooltips now show default inputs
