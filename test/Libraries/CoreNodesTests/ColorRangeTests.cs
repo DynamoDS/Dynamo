@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Linq;
 using DSCore;
 
 using NUnit.Framework;
@@ -32,12 +32,12 @@ namespace Dynamo.Tests
         public void ColorRange1D_ByColorsAndParameters_HasSomeColorsIfNoneProvided()
         {
             var colors = new List<Color>();
-            var parameters = new List<double>{ 0.0, 1.0 };
+            var parameters = new List<double>{ 0.0, 0.5, 1.0 };
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
-            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), DefaultColorRanges.Analysis.First());
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), DefaultColorRanges.Analysis.Last());
         }
 
         [Test]
@@ -60,8 +60,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
-            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), DefaultColorRanges.Analysis.First());
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), DefaultColorRanges.Analysis.Last());
         }
 
         [Test]
@@ -107,8 +107,8 @@ namespace Dynamo.Tests
 
             var range = ColorRange1D.ByColorsAndParameters(null, parameters);
 
-            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), red);
-            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), blue);
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,0), DefaultColorRanges.Analysis.First());
+            Assert.AreEqual(ColorRange1D.GetColorAtParameter(range,1), DefaultColorRanges.Analysis.Last());
         }
 
     }
