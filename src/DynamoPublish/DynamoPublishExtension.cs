@@ -7,7 +7,7 @@ using System;
 
 namespace Dynamo.Publish
 {
-    public class FloodPersistenceServiceExtension : IViewExtension, ILogSource
+    public class DynamoPublishExtension : IViewExtension, ILogSource
     {
 
         private PublishView publishWindow;
@@ -23,7 +23,7 @@ namespace Dynamo.Publish
 
         public string Name
         {
-            get { return "FloodPersistenceService"; }
+            get { return "DynamoPublishExtension"; }
         }
 
         public void Startup(ViewStartupParams param)

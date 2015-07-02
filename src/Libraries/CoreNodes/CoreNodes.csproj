@@ -72,7 +72,6 @@
     <Compile Include="DateTime.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Formula.cs" />
-    <Compile Include="GeometryColor.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
@@ -122,22 +121,17 @@
   <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
-  
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
-	<!-- Get System.Drawing.dll -->
-	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    	</GetReferenceAssemblyPaths>
-	
-	<!-- Get assembly -->
-	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
-	</GetAssemblyIdentity>
-	
-	<!-- Generate customization dll -->
-	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    	<AL TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesImages.resources" OutputAssembly="$(OutDir)DSCoreNodes.customization.dll" Version="%(AssemblyInfo.Version)" />
-
+    <!-- Get System.Drawing.dll -->
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <!-- Get assembly -->
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <!-- Generate customization dll -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSCoreNodesImages.resx" OutputResources="$(ProjectDir)DSCoreNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DSCoreNodesImages.resources" OutputAssembly="$(OutDir)DSCoreNodes.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>
-

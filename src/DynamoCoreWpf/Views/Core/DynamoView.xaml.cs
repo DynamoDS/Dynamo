@@ -119,16 +119,23 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
-            viewExtensionManager.MessageLogged += LogMessage;
+            viewExtensionManager.MessageLogged += Log;
 
             var startupParams = new ViewStartupParams();
 
             foreach (var ext in viewExtensions)
             {
-                ext.Startup(startupParams);
-                viewExtensionManager.Add(ext);
+                try
+                {
+                    ext.Startup(null);
+                    viewExtensionManager.Add(ext);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
             }
-            
+
         }
 
         #region NodeViewCustomization
@@ -444,7 +451,14 @@ namespace Dynamo.Controls
 
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
-                ext.Loaded(loadedParams);
+                try
+                {
+                    ext.Loaded(null);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
             }
 
         }
@@ -918,8 +932,17 @@ namespace Dynamo.Controls
 
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
-                ext.Shutdown();
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
             }
+
+            viewExtensionManager.MessageLogged -= Log;
         }
 
         // the key press event is being intercepted before it can get to
@@ -1448,9 +1471,14 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private void LogMessage(ILogMessage obj)
+        private void Log(ILogMessage obj)
         {
             dynamoViewModel.Model.Logger.Log(obj);
+        }
+
+        private void Log(string message)
+        {
+            Log(LogMessage.Info(message));
         }
     }
 }

@@ -533,4 +533,10 @@
   <data name="SelectionNodeSugestion" xml:space="preserve">
     <value>Select something in the model.</value>
   </data>
+  <data name="UnitNodeFromPortTooltip" xml:space="preserve">
+    <value>A numeric value for conversion.</value>
+  </data>
+  <data name="UnitNodeToPortToolTip" xml:space="preserve">
+    <value>A converted numeric value.</value>
+  </data>
 </root>

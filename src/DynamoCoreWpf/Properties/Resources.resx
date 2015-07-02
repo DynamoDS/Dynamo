@@ -1727,4 +1727,97 @@ Do you want to install the latest Dynamo update?</value>
   <data name="WatchNodeRawDataMenu" xml:space="preserve">
     <value>Show Raw Data</value>
   </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>Enable Periodic Update</value>
+  </data>
+  <data name="PackageUploadNoDependency" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
+    <value>A description that helps people understand what the package might be used for.</value>
+  </data>
+  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
+    <value>A unique name for the package.</value>
+  </data>
+  <data name="UnitAcres" xml:space="preserve">
+    <value>Acres</value>
+  </data>
+  <data name="UnitCentimeters" xml:space="preserve">
+    <value>Centimeters</value>
+  </data>
+  <data name="UnitCubicCentimeter" xml:space="preserve">
+    <value>CubicCentimeter</value>
+  </data>
+  <data name="UnitCubicFoot" xml:space="preserve">
+    <value>CubicFoot</value>
+  </data>
+  <data name="UnitCubicInches" xml:space="preserve">
+    <value>CubicInches</value>
+  </data>
+  <data name="UnitCubicMeters" xml:space="preserve">
+    <value>CubicMeters</value>
+  </data>
+  <data name="UnitCubicMillimeter" xml:space="preserve">
+    <value>CubicMillimeter</value>
+  </data>
+  <data name="UnitCubicYards" xml:space="preserve">
+    <value>CubicYards</value>
+  </data>
+  <data name="UnitDecimeters" xml:space="preserve">
+    <value>Decimeters</value>
+  </data>
+  <data name="UnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="UnitHectares" xml:space="preserve">
+    <value>Hectares</value>
+  </data>
+  <data name="UnitInches" xml:space="preserve">
+    <value>Inches</value>
+  </data>
+  <data name="UnitLitres" xml:space="preserve">
+    <value>Litres</value>
+  </data>
+  <data name="UnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="UnitMillimeters" xml:space="preserve">
+    <value>Millimeters</value>
+  </data>
+  <data name="UnitSquareCentimeter" xml:space="preserve">
+    <value>SquareCentimeter</value>
+  </data>
+  <data name="UnitSquareFoot" xml:space="preserve">
+    <value>SquareFoot</value>
+  </data>
+  <data name="UnitSquareInch" xml:space="preserve">
+    <value>SquareInch</value>
+  </data>
+  <data name="UnitSquareMeter" xml:space="preserve">
+    <value>SquareMeter</value>
+  </data>
+  <data name="UnitSquareMillimeter" xml:space="preserve">
+    <value>SquareMillimeter</value>
+  </data>
+  <data name="UnitUSGallons" xml:space="preserve">
+    <value>USGallons</value>
+  </data>
+  <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
+    <value>A description that helps people understand what the node might be used for.</value>
+  </data>
+  <data name="CustomNodePromptNameTooltip" xml:space="preserve">
+    <value>A unique name for the node.</value>
+  </data>
+  <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
+    <value>A description of the preset state.</value>
+  </data>
+  <data name="PresetPromptNameTooltip" xml:space="preserve">
+    <value>A unique name for the preset.</value>
+  </data>
+  <data name="SelectNodeButtonChange" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="SelectNodeButtonSelect" xml:space="preserve">
+    <value>Select</value>
+  </data>
 </root>
