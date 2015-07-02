@@ -90,7 +90,7 @@ namespace DSIronPythonNode
         }
     }
 
-    public class PythonString : MigrationNode
+    public class PythonStringNode : MigrationNode
     {
         [NodeMigration(from: "0.8.2.0", to: "0.8.3.0")]
         public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
