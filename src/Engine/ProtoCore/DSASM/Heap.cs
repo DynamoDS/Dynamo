@@ -170,7 +170,7 @@ namespace ProtoCore.DSASM
 
         public virtual int MemorySize
         {
-            get { return VisibleSize; }
+            get { return allocated; }
         }
     }
 
@@ -274,9 +274,11 @@ namespace ProtoCore.DSASM
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
         private readonly StringTable stringTable = new StringTable();
 
+        private const int kGCThreshold = 65536;
         // Totaly allocated StackValues
         private int totalAllocated = 0;
         private int totalTraversed = 0;
+        private int gcDebt = kGCThreshold;
 
         private LinkedList<StackValue> grayList;
         private HashSet<int> sweepSet;
@@ -362,7 +364,7 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Allocate an object pointer.
         /// </summary>
-        /// <param name="size"></param>
+        /// <param name="size"></parame
         /// <returns></returns>
         public StackValue AllocatePointer(int size)
         {
@@ -472,7 +474,7 @@ namespace ProtoCore.DSASM
             }
             
             hpe.Mark = GCMark.White;
-            totalAllocated += size;
+            ReportAllocation(size);
             return AddHeapElement(hpe);
         }
 
@@ -657,12 +659,13 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Move gc a step forward.
         /// </summary>
-        private void SingleStep()
+        private void SingleStep(bool forceGC)
         {
             switch (gcState)
             {
                 case GCState.Pause:
-                    gcState = GCState.WaitingForRoots;
+                    if (gcDebt <= 0 || forceGC)
+                        gcState = GCState.WaitingForRoots;
                     break;
 
                 case GCState.WaitingForRoots:
@@ -713,6 +716,8 @@ namespace ProtoCore.DSASM
                 heapElements[ptr] = null;
                 freeList.Add(ptr);
             }
+
+            gcDebt = totalAllocated > kGCThreshold ? totalAllocated : kGCThreshold;
         }
 
         private void MarkAllWhite()
@@ -780,7 +785,7 @@ namespace ProtoCore.DSASM
             if (isDisposing)
                 return;
 
-            SingleStep();
+            SingleStep(false);
         }
 
         /// <summary>
@@ -797,15 +802,16 @@ namespace ProtoCore.DSASM
                 throw new ArgumentNullException("exe");
 
             while (gcState != GCState.WaitingForRoots)
-                SingleStep();
+                SingleStep(true);
 
             SetRoots(gcroots, exe);
             while (gcState != GCState.Pause)
-                SingleStep();
+                SingleStep(true);
         }
 
         public void ReportAllocation(int newSize)
         {
+            gcDebt -= newSize;
             totalAllocated += newSize;
         }
 #endif
