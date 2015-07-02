@@ -206,6 +206,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoApplications", "DynamoApplications\DynamoApplications.csproj", "{AA782772-FE61-4226-BAA4-EB529FA1646B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineTests", "..\test\Libraries\CommandLineTests\CommandLineTests.csproj", "{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPublish", "DynamoPublish\DynamoPublish.csproj", "{8EDA9F32-9D7D-4D55-9950-52FD695970A9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPublishTests", "DynamoPublishTests\DynamoPublishTests.csproj", "{A6E8F8D6-A068-4E09-AAA6-7426729D56F6}"

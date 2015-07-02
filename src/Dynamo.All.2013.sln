@@ -215,6 +215,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCLI", "DynamoCLI\DynamoCLI.csproj", "{5F9AE581-6781-4A4C-A262-1B06CD27208B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoApplications", "DynamoApplications\DynamoApplications.csproj", "{AA782772-FE61-4226-BAA4-EB529FA1646B}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackages", "DynamoPackages\DynamoPackages.csproj", "{47533B7C-0E1A-44A4-8511-B438645F052A}"
 EndProject
 Global
