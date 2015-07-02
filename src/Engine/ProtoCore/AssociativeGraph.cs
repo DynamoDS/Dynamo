@@ -947,10 +947,10 @@ namespace ProtoCore.AssociativeGraph
         public bool Visited { get; set; }
 
         /// <summary>
-        /// A graphnode is an input if it represents a variable that was initially allocated on the DS stack or heap
-        /// i.e. the graphndoe associated with a variable declaration
+        /// A graphnode is flagged as an allocation represents a variable that was initially allocated on the DS stack or heap
+        /// i.e. the graphnode associated with a variable declaration
         /// </summary>
-        public bool IsInput { get; set; }
+        public bool IsAllocation { get; set; }
 
         public GraphNode()
         {
@@ -994,7 +994,7 @@ namespace ProtoCore.AssociativeGraph
 
             MacroblockID = Constants.kInvalidIndex;
             Visited = false;
-            IsInput = false;
+            IsAllocation = false;
         }
 
 

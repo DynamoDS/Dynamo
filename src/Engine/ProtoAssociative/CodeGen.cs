@@ -8704,7 +8704,7 @@ namespace ProtoAssociative
                             // It is an input graphnode if the variable is allocated on the stack and is not compiler generated
                             if (!CoreUtils.IsCompilerGenerated(symbolnode.name))
                             {
-                                graphNode.IsInput = true;
+                                graphNode.IsAllocation = true;
                             }
 
                             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)

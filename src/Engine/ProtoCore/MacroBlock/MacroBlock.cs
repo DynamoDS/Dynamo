@@ -105,15 +105,24 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Check is the graphnode is an input node
-        /// A macroblock starts with an input graphnode
+        /// Check if the graphnode is the start of a new macroblock
         /// </summary>
         /// <param name="graphnode"></param>
         /// <returns></returns>
-        private bool IsInputGraphNode(AssociativeGraph.GraphNode graphnode)
+        private bool IsMacroblockEntryPoint(AssociativeGraph.GraphNode graphnode)
         {
             Validity.Assert(graphnode != null);
-            return graphnode.IsInput;
+
+            //
+            // Determining if the graphnode is the start of a new block
+            //
+            //      NoDependent = graphnode.dependentList.Count == 0
+            //      HasMoreThanOneDependent = graphnode.dependentList.Count > 1
+            //      StartofNewBlock = NoDependent or HasMoreThanOneDependent
+            //
+
+            // The above condition is condensed by just checking if the graphnode has exactly one dependent
+            return !graphnode.isReturn && !(graphnode.dependentList.Count == 1);
         }
 
         /// <summary>
@@ -127,9 +136,16 @@ namespace ProtoCore
             Validity.Assert(programSnapshot != null);
             foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
             {
+                if (!graphnode.isActive)
+                {
+                    continue;
+                }
+
                 if (!graphnode.Visited)
                 {
-                    if (IsInputGraphNode(graphnode))
+                    // Determine if it is the start of a new macroblock
+                    bool isNewMacroblock = IsMacroblockEntryPoint(graphnode);
+                    if (isNewMacroblock)
                     {
                         graphnode.Visited = true;
                         generatedMacroblocks++;
