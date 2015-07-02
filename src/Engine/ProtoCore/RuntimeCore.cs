@@ -217,7 +217,8 @@ namespace ProtoCore
         public List<SymbolNode> WatchSymbolList { get; set; }
 #endregion 
         
-        public Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
+#if TRACING_GC
+        private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
 
         public IEnumerable<StackValue> ReplicationRoots
         {
@@ -237,6 +238,7 @@ namespace ProtoCore
         {
             callsiteGCRoots.Remove(callSiteID);
         }
+#endif
 
         public void ResetForDeltaExecution()
         {

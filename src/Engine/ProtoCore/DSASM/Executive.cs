@@ -6372,7 +6372,8 @@ namespace ProtoCore.DSASM
 
 #if !TRACING_GC
             var gcroots = CollectRootPointers();
-            rmem.Heap.GCMarkAndSweep(gcroots, this);
+            if (gcroots != null)
+                rmem.Heap.GCMarkAndSweep(gcroots, this);
 #endif
             return;
         }
@@ -6879,7 +6880,7 @@ namespace ProtoCore.DSASM
             if (blockId != 0 || 
                 rmem.CurrentStackFrame.StackFrameType != StackFrameType.kTypeLanguage)
             {
-                return gcRoots;
+                return null;
             }
 
 #if DEBUG
@@ -6895,7 +6896,7 @@ namespace ProtoCore.DSASM
 
             if (isInNestedImperativeBlock)
             {
-                return gcRoots;
+                return null;
             }
 
             foreach (var stackFrame in frames)

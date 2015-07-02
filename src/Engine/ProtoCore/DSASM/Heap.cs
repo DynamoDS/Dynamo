@@ -78,9 +78,11 @@ namespace ProtoCore.DSASM
                 items[i] = StackValue.Null;
             }
 
+#if TRACING_GC
             // We should move StackValue list to heap. That is, heap
             // manages StackValues instead of HeapElement itself.
             heap.ReportAllocation(size - allocated);
+#endif
 
             allocated = newSize;
             Validity.Assert(size <= allocated);
@@ -160,16 +162,15 @@ namespace ProtoCore.DSASM
 
         public void SetItemAt(int index, StackValue value)
         {
+#if TRACING_GC
             heap.WriteBarrierForward(this, value);
+#endif
             items[index] = value;
         }
 
         public virtual int MemorySize
         {
-            get
-            {
-                return VisibleSize;
-            }
+            get { return VisibleSize; }
         }
     }
 
@@ -565,6 +566,7 @@ namespace ProtoCore.DSASM
             }
         }
 
+#if TRACING_GC
         /// <summary>
         /// Mark all items in the array.
         /// </summary>
@@ -806,6 +808,7 @@ namespace ProtoCore.DSASM
         {
             totalAllocated += newSize;
         }
+#endif
 
         public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
         {
