@@ -101,15 +101,31 @@
             />
 
         <!-- Close button -->
-        <dynui:ImageButton 
-            Width="86" Height="21"
-            Grid.Column="1" Grid.Row="0"
+        <TextBlock 
+            FontFamily="{StaticResource OpenSansRegular}"
+            Text="{Binding Path=CloseButton}"
+            FontSize="14"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Margin="0,0,16,0"
-            Command="{Binding Path=CloseGalleryCommand}"
-            StateImage="/DynamoCoreWpf;component/UI/Images/Gallery/gallery-button-close-states.png"/>
-
+            Grid.Column="1" Grid.Row="0" >
+            <TextBlock.InputBindings>
+                <MouseBinding  Command="{Binding Path=CloseGalleryCommand}" MouseAction="LeftClick" />
+            </TextBlock.InputBindings>
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property= "Foreground" Value="#ff0000"/>
+                    <Style.Triggers>
+                        <Trigger Property ="IsMouseOver" Value="True">
+                            <Setter Property= "Foreground" Value="Green"/>
+                            <Setter Property="Cursor" Value="Hand" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+            
+       
         <!-- Left button -->
         <dynui:ImageButton 
             Focusable="False"
