@@ -355,9 +355,6 @@ namespace DSCore
         public static ColorRange1D ByColorsAndParameters(
             List<Color> colors, List<double> parameters)
         {
-            var blue = Color.ByARGB(255, 0, 0, 255);
-            var red = Color.ByARGB(255, 255, 0, 0);
-
             if (colors == null)
                 colors = new List<Color>();
 
@@ -372,7 +369,7 @@ namespace DSCore
             // a red->blue gradient.
             if (!colors.Any())
             {
-                colors = new List<Color>(){ red, blue};
+                colors = DefaultColorRanges.Analysis;
             }
 
             // If there's no parameters supplied, then set the parameters
@@ -415,7 +412,8 @@ namespace DSCore
                 var diff = colors.Count() - parameters.Count();
                 for (var i = 0; i < diff; i++)
                 {
-                    parameters.Add(1.0);
+                    // Put the color in the middle
+                    parameters.Add(0.5);
                 }
             }
             // If the number of parameters is greater than the
@@ -425,7 +423,7 @@ namespace DSCore
                 var diff = parameters.Count() - colors.Count();
                 for (var i = 0; i < diff; i++)
                 {
-                    colors.Add(blue);
+                    colors.Add(DefaultColorRanges.Analysis.Last());
                 }
             }
 
@@ -474,6 +472,18 @@ namespace DSCore
 
             return Color.Lerp(c1.Color, c2.Color, (parameter - c1.Parameter) / (c2.Parameter - c1.Parameter));
         }
+
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public static class DefaultColorRanges
+    {
+        public static List<Color> Analysis = new List<Color>
+        {
+            Color.ByARGB(255,255,100,100), // orange
+            Color.ByARGB(255,255,255,0), // yellow
+            Color.ByARGB(255,0,255,255) // cyan
+        };
     }
 
     [IsVisibleInDynamoLibrary(true)]
