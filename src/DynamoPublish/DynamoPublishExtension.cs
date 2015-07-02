@@ -16,7 +16,7 @@ namespace Dynamo.Publish
 
         public string Name
         {
-            get { return "FloodPersistenceService"; }
+            get { return "DynamoPublishExtension"; }
         }
 
         public void Startup(ViewStartupParams p)
@@ -26,7 +26,7 @@ namespace Dynamo.Publish
 
         public void Loaded(ViewLoadedParams p)
         {
-            // Some loaded stuff.
+            // Some loaded stuff.            
         }
 
         public void Shutdown()

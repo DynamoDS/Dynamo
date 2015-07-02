@@ -130,10 +130,10 @@ namespace Dynamo.Controls
                 }
                 catch (Exception exc)
                 {
-                    Log(exc.Message);
+                    Log(ext.Name + ": " + exc.Message);
                 }
             }
-            
+
         }
 
         #region NodeViewCustomization
@@ -450,7 +450,7 @@ namespace Dynamo.Controls
                 }
                 catch (Exception exc)
                 {
-                    Log(exc.Message);
+                    Log(ext.Name + ": " + exc.Message);
                 }
             }
 
@@ -931,7 +931,7 @@ namespace Dynamo.Controls
                 }
                 catch (Exception exc)
                 {
-                    Log(exc.Message);
+                    Log(ext.Name + ": " + exc.Message);
                 }
             }
         }
