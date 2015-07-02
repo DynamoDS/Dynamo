@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FloodPersistenceServiceExtension.cs" />
+    <Compile Include="DynamoPublishExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,13 +53,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FloodPersistenceServiceExtension_ViewExtensionDefinition.xml" />
+    <Content Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-	<Target Name="AfterBuild">
-		<ItemGroup>
-			<ExtensionDefinition Include="FloodPersistenceServiceExtension_ViewExtensionDefinition.xml"/>
-		</ItemGroup>
-		<Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions" />
-	</Target>
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <ExtensionDefinition Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions" />
+  </Target>
 </Project>

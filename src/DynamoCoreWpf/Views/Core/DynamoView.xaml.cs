@@ -119,12 +119,19 @@ namespace Dynamo.Controls
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
-            viewExtensionManager.MessageLogged += LogMessage;
+            viewExtensionManager.MessageLogged += Log;
 
             foreach (var ext in viewExtensions)
             {
-                ext.Startup(null);
-                viewExtensionManager.Add(ext);
+                try
+                {
+                    ext.Startup(null);
+                    viewExtensionManager.Add(ext);
+                }
+                catch (Exception exc)
+                {
+                    Log(exc.Message);
+                }
             }
             
         }
@@ -437,7 +444,14 @@ namespace Dynamo.Controls
 
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
-                ext.Loaded(null);
+                try
+                {
+                    ext.Loaded(null);
+                }
+                catch (Exception exc)
+                {
+                    Log(exc.Message);
+                }
             }
 
         }
@@ -911,7 +925,14 @@ namespace Dynamo.Controls
 
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
-                ext.Shutdown();
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Log(exc.Message);
+                }
             }
         }
 
@@ -1441,9 +1462,14 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        private void LogMessage(ILogMessage obj)
+        private void Log(ILogMessage obj)
         {
             dynamoViewModel.Model.Logger.Log(obj);
+        }
+
+        private void Log(string message)
+        {
+            Log(LogMessage.Info(message));
         }
     }
 }

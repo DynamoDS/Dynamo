@@ -1,4 +1,4 @@
 <ViewExtensionDefinition>
   <AssemblyName>DynamoPublish</AssemblyName>
-  <TypeName>Dynamo.Publish.FloodPersistenceServiceExtension</TypeName>
+  <TypeName>Dynamo.Publish.DynamoPublishExtension</TypeName>
 </ViewExtensionDefinition>

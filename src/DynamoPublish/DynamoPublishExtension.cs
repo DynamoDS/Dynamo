@@ -4,7 +4,7 @@ using System;
 
 namespace Dynamo.Publish
 {
-    public class FloodPersistenceServiceExtension : IViewExtension, ILogSource
+    public class DynamoPublishExtension : IViewExtension, ILogSource
     {
 
         #region IViewExtension implementation
