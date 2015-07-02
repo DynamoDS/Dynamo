@@ -688,5 +688,52 @@ namespace Dynamo.Tests
             Assert.IsNotNull(node);
             Assert.IsNotNull(node as DSVarArgFunction);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ValidateWrongConnectionIsNotCreated()
+        {
+            //MAGN-7334 Add test case for checking wrong connector is not created
+
+            var numberGuid = Guid.NewGuid().ToString();
+            var numberName = "Number";
+            var pointGuid = Guid.NewGuid().ToString();
+            var pointName = "List.Create";
+            var unexistingNodeGuid = Guid.NewGuid().ToString();
+
+            var commands = new List<DynamoModel.ModelBasedRecordableCommand>
+            {
+                new DynamoModel.CreateNodeCommand(numberGuid,
+                    numberName, 0, 0, false, false),
+                new DynamoModel.CreateNodeCommand(pointGuid,
+                    pointName, 0, 0, false, false),
+                new DynamoModel.ModelEventCommand(pointGuid, "AddInPort"),
+            
+                new DynamoModel.MakeConnectionCommand(numberGuid, 0, PortType.Output,
+                    DynamoModel.MakeConnectionCommand.Mode.Begin),
+                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, 
+                    PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+
+                new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, 
+                    PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                new DynamoModel.MakeConnectionCommand(pointGuid, 0, PortType.Input, 
+                    DynamoModel.MakeConnectionCommand.Mode.End)
+            };
+
+            commands.ForEach(c => 
+            {
+                try
+                {
+                    CurrentDynamoModel.ExecuteCommand(c);
+                }
+                catch 
+                {
+                    // Make sure that only MakeConnectionCommand throws an exception
+                    Assert.IsInstanceOf<DynamoModel.MakeConnectionCommand>(c);
+                }
+            });
+
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Connectors.Any());
+        }
     }
 }
