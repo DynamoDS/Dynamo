@@ -7,16 +7,19 @@ namespace DynamoUnits
         /// <summary>
         /// The Location's name.
         /// </summary>
+        /// <returns name="name">string</returns>
         public string Name { get; set; }
 
         /// <summary>
         /// The Location's latitude in degrees between -90.0 and 90.0;
         /// </summary>
+        /// <returns name="latitude">double</returns>
         public double Latitude { get; set; }
 
         /// <summary>
         /// The Location's Longitude in degrees between -180.0 and 180.0
         /// </summary>
+        /// <returns name="longitude">double</returns>
         public double Longitude { get; set; }
 
         private Location(double latitude, double longitude, string name)

@@ -100,7 +100,7 @@
     </Compile>
     <Compile Include="NodeViewCustomizations\SelectionBase.cs" />
     <Compile Include="Converters\SelectionButtonContentConverter.cs" />
-    <Compile Include="Converters\SelectionToTextConverter.cs" />
+    <Compile Include="Converters\UnitToTextConverter.cs" />
     <Compile Include="NodeViewCustomizations\StringInput.cs" />
     <Compile Include="NodeViewCustomizations\WatchImage.cs" />
     <Compile Include="NodeViewCustomizations\Watch.cs" />
