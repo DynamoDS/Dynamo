@@ -88,7 +88,7 @@ namespace Dynamo.Publish.ViewModels
             if (!model.IsLoggedIn)
             {
                 model.LoginService = new LoginService(PublishView, new WindowsFormsSynchronizationContext());
-                model.Authenticate();                
+                model.Authenticate();
             }
 
             if (!model.IsLoggedIn)

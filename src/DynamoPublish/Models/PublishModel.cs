@@ -1,5 +1,6 @@
 ﻿using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Publish.Configurations;
 using Dynamo.Wpf.Authentication;
 using Greg.AuthProviders;
 using Reach;
@@ -40,8 +41,7 @@ namespace Dynamo.Publish.Models
             {
                 ProcessConfigurations(xml_configurations);
                 manager = new AuthenticationManager(new OxygenProvider(provider));
-            }            
-
+            }
         }
 
         #endregion
@@ -49,7 +49,7 @@ namespace Dynamo.Publish.Models
         internal void Authenticate()
         {
             if (manager == null)
-                throw new Exception("Authentication manager is not found. Please, provide correct authentication manager.");
+                throw new Exception(Resource.AuthenticationErrorMessage);
 
             if (manager.HasAuthProvider && LoginService != null)
             {
@@ -58,18 +58,20 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        /// <summary>
+        /// Sends workspace and its' dependencies to Flood.
+        /// </summary>
+        /// <param name="workspaces"></param>
         internal void SendWorkspaces(IEnumerable<WorkspaceModel> workspaces)
         {
-            string address = "http://10.39.165.198:3000/ws";
-            var reachClient = new WorkspaceStorageClient(address, manager.Username);
+            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(manager.Username))
+                return;
 
+            var reachClient = new WorkspaceStorageClient(serverUrl, manager.Username);
             var result = reachClient.Send(workspaces.OfType<HomeWorkspaceModel>().First(), workspaces.OfType<CustomNodeWorkspaceModel>());
         }
 
         #region XML Configurations
-
-        private string error_message = "Malformed configuration file.";
-
 
         /// <summary>
         /// Loads configuration document. 
@@ -99,7 +101,7 @@ namespace Dynamo.Publish.Models
 
             if (topNode == null)
             {
-                throw new Exception(error_message);
+                throw new Exception(Resource.BadXMLConfigurationFileMessage);
             }
 
             foreach (XmlNode node in topNode.ChildNodes)
@@ -120,7 +122,7 @@ namespace Dynamo.Publish.Models
                         break;
 
                     default:
-                        throw new Exception(error_message);
+                        throw new Exception(Resource.BadXMLConfigurationFileMessage);
                 }
             }
         }

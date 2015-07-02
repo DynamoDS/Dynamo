@@ -93,6 +93,11 @@
     <Compile Include="Models\PublishModel.cs" />
     <Compile Include="DynamoPublishExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Configurations\Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\PublishViewModel.cs" />
     <Compile Include="Views\PublishView.xaml.cs">
       <DependentUpon>PublishView.xaml</DependentUpon>
@@ -114,7 +119,12 @@
     <Resource Include="Configurations\Configurations.xml" />
     <Content Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Configurations\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Page Include="Views\PublishView.xaml">
       <SubType>Designer</SubType>
