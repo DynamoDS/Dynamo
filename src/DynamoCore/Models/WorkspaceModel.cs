@@ -1192,7 +1192,10 @@ namespace Dynamo.Models
                     #region Step II. Create the new code block node
                     var outputVariables = externalOutputConnections.Values;
                     var newResult = NodeToCodeUtils.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
-                    NodeToCodeUtils.ReplaceWithUnqualifiedName(engineController.LibraryServices.LibraryManagementCore, newResult.AstNodes);
+
+                    // Rewrite the AST using the shortest unique name in case of namespace conflicts
+                    NodeToCodeUtils.ReplaceWithShortestQualifiedName(
+                        engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, ElementResolver);
                     var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                     var code = codegen.GenerateCode();
 

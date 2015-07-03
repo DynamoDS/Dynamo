@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
@@ -30,6 +31,12 @@ namespace FFITarget
         public ElementResolverTarget Method(ElementResolverTarget target)
         {
             return null;
+        }
+
+        public static int StaticMethod(
+            [DefaultArgumentAttribute("ElementResolverTarget.Create().StaticProperty")] ElementResolverTarget ert)
+        {
+            return 999;
         }
     }
 
