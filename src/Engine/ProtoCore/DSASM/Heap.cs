@@ -474,7 +474,9 @@ namespace ProtoCore.DSASM
             }
             
             hpe.Mark = GCMark.White;
+#if TRACING_GC
             ReportAllocation(size);
+#endif
             return AddHeapElement(hpe);
         }
 
