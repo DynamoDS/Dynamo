@@ -20,6 +20,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -302,9 +303,12 @@ namespace Dynamo.Tests
                                      .Skip(1)
                                      .Select(n => n.RightNode.ToString())
                                      .ToList();
-            
-            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[0]);
-            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[1]);
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(x, 0)", rhs[0]);
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(x, 0)", rhs[1]);
         }
 
         [Test]
@@ -402,12 +406,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
             var rhs = result.AstNodes.Cast<BinaryExpressionNode>().Select(n => n.RightNode.ToString());
-            Assert.AreEqual("Point.ByCoordinates(1, 2)", rhs.First());
-            Assert.AreEqual("Point.ByCoordinates(1, 3)", rhs.Last());
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2)", rhs.First());
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 3)", rhs.Last());
         }
 
         [Test]
-        public void TestUnqualifiedNameReplacer1()
+        public void TestShortestQualifiedNameReplacer1()
         {
             var functionCall = AstFactory.BuildFunctionCall(
                 "Autodesk.DesignScript.Geometry.Point", 
@@ -420,11 +428,14 @@ namespace Dynamo.Tests
                 CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore.ClassTable, 
                 new [] { ast });
 
-            Assert.AreEqual("Point.ByCoordinates(1, 2)", ast.RightNode.ToString());
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2)", ast.RightNode.ToString());
         }
 
         [Test]
-        public void TestUnqualifiedNameReplacer2()
+        public void TestShortestQualifiedNameReplacer2()
         {
             // Point.ByCoordinates(1,2); 
             OpenModel(@"core\node2code\unqualifiedName1.dyn");
@@ -439,11 +450,15 @@ namespace Dynamo.Tests
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
-            Assert.AreEqual("Point.ByCoordinates(1, 2)", expr.RightNode.ToString());
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2)", expr.RightNode.ToString());
         }
 
         [Test]
-        public void TestUnqualifiedNameReplacer3()
+        public void TestShortestQualifiedNameReplacer3()
         {
             // 1 -> Point.ByCoordinates(x, y); 
             OpenModel(@"core\node2code\unqualifiedName2.dyn");
@@ -458,11 +473,15 @@ namespace Dynamo.Tests
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
-            Assert.AreEqual("Point.ByCoordinates(x, x)", expr.RightNode.ToString());
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(x, x)", expr.RightNode.ToString());
         }
 
         [Test]
-        public void TestUnqualifiedNameReplacer4()
+        public void TestShortestQualifiedNameReplacer4()
         {
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName3.dyn");
@@ -477,11 +496,15 @@ namespace Dynamo.Tests
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
-            Assert.AreEqual("Point.ByCoordinates(x, x)", expr.RightNode.ToString());
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(x, x)", expr.RightNode.ToString());
         }
 
         [Test]
-        public void TestUnqualifiedNameReplacer5()
+        public void TestShortestQualifiedNameReplacer5()
         {
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName4.dyn");
@@ -499,12 +522,16 @@ namespace Dynamo.Tests
 
             Assert.IsNotNull(expr1);
             Assert.IsNotNull(expr2);
-            Assert.AreEqual("Point.ByCoordinates(0, 0)", expr1.RightNode.ToString());
-            Assert.AreEqual("Point.ByCoordinates(0, 0)", expr2.RightNode.ToString());
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(0, 0)", expr1.RightNode.ToString());
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(0, 0)", expr2.RightNode.ToString());
         }
 
         [Test]
-        public void TestUnqualifiedNameReplacer6()
+        public void TestShortestQualifiedNameReplacer6()
         {
             OpenModel(@"core\node2code\unqualifiedName5.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
@@ -522,7 +549,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestUnqualifiedNameReplacer7()
+        public void TestShortestQualifiedNameReplacer7()
         {
             // Point.ByCoordinates(1,2,3);
             // Point.ByCoordinates(1,2,3);
@@ -541,8 +568,12 @@ namespace Dynamo.Tests
 
             Assert.IsNotNull(expr1);
             Assert.IsNotNull(expr2);
-            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr1.RightNode.ToString());
-            Assert.AreEqual("Point.ByCoordinates(1, 2, 3)", expr2.RightNode.ToString());
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2, 3)", expr1.RightNode.ToString());
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2, 3)", expr2.RightNode.ToString());
         }
 
         [Test]
@@ -655,7 +686,11 @@ namespace Dynamo.Tests
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
 
             Assert.IsNotNull(expr);
-            Assert.AreEqual("Point.ByCoordinates(t1, 0)", expr.RightNode.ToString());
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Autodesk.Point.ByCoordinates(t1, 0)", expr.RightNode.ToString());
         }
 
         private void TestNodeToCodeUndoBase(string filePath)
