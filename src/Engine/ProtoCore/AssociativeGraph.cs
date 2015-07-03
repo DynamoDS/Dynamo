@@ -1632,6 +1632,29 @@ namespace ProtoCore.AssociativeGraph
             return null;
         }
 
+        /// <summary>
+        /// Gets the first dirty graphnode at the global and macroblock scope
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="macroBlockID"></param>
+        /// <returns></returns>
+        public GraphNode GetFirstDirtyGraphNodeAtGlobalScope(int pc, int macroBlockID)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+
+            IEnumerable<GraphNode> macroBlockScope = gnodeList.Where(
+                g => g.MacroblockID == macroBlockID).Where(
+                g => g.isActive).Where(
+                g => g.isDirty).Where(
+                g => g.updateBlock.startpc >= pc);
+            if (macroBlockScope == null || macroBlockScope.Count() < 1)
+            {
+                return null;
+            }
+
+            return macroBlockScope.First();
+        }
+
 
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {

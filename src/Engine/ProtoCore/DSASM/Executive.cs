@@ -6389,6 +6389,10 @@ namespace ProtoCore.DSASM
                     Properties.executingGraphNode.isDirty = false;
                     pc = Properties.executingGraphNode.updateBlock.startpc;
                 }
+                else
+                {
+                    pc = Constants.kInvalidPC;
+                }
             }
             GC();
             return;
@@ -6416,14 +6420,14 @@ namespace ProtoCore.DSASM
                     // On delta execution, it is possible that the next graphnode is clean
                     // Retrieve the next dirty graphnode given the pc
                     // Associative update is handled when ApplyUpdate = true
-                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(nextPC, ci, fi);
+                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNodeAtGlobalScope(nextPC, exe.ExecutingMacroBlock);
                 }
                 else
                 {
                     // Allow immediate update if we are in a local scope.
                     nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
                 }
-            }
+            }      
             else
             {
                 // On normal execution, just retrieve the graphnode associated with pc
