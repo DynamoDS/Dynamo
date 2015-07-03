@@ -20,7 +20,6 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -304,11 +303,8 @@ namespace Dynamo.Tests
                                      .Select(n => n.RightNode.ToString())
                                      .ToList();
 
-            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
-            // node to code generates the shortest unique name, which in this case will be
-            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
-            Assert.AreEqual("Autodesk.Point.ByCoordinates(x, 0)", rhs[0]);
-            Assert.AreEqual("Autodesk.Point.ByCoordinates(x, 0)", rhs[1]);
+            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[0]);
+            Assert.AreEqual("Point.ByCoordinates(x, 0)", rhs[1]);
         }
 
         [Test]
@@ -407,16 +403,19 @@ namespace Dynamo.Tests
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
             var rhs = result.AstNodes.Cast<BinaryExpressionNode>().Select(n => n.RightNode.ToString());
 
-            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
-            // node to code generates the shortest unique name, which in this case will be
-            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
-            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2)", rhs.First());
-            Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 3)", rhs.Last());
+            Assert.AreEqual("Point.ByCoordinates(1, 2)", rhs.First());
+            Assert.AreEqual("Point.ByCoordinates(1, 3)", rhs.Last());
         }
 
         [Test]
         public void TestShortestQualifiedNameReplacer1()
         {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
             var functionCall = AstFactory.BuildFunctionCall(
                 "Autodesk.DesignScript.Geometry.Point", 
                 "ByCoordinates", 
@@ -437,6 +436,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestShortestQualifiedNameReplacer2()
         {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
             // Point.ByCoordinates(1,2); 
             OpenModel(@"core\node2code\unqualifiedName1.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
@@ -460,6 +465,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestShortestQualifiedNameReplacer3()
         {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
             // 1 -> Point.ByCoordinates(x, y); 
             OpenModel(@"core\node2code\unqualifiedName2.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
@@ -483,6 +494,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestShortestQualifiedNameReplacer4()
         {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName3.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
@@ -506,6 +523,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestShortestQualifiedNameReplacer5()
         {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
             // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
             OpenModel(@"core\node2code\unqualifiedName4.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
@@ -551,6 +574,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestShortestQualifiedNameReplacer7()
         {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
             // Point.ByCoordinates(1,2,3);
             // Point.ByCoordinates(1,2,3);
             OpenModel(@"core\node2code\unqualifiedName6.dyn");
@@ -574,6 +603,93 @@ namespace Dynamo.Tests
             // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
             Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2, 3)", expr1.RightNode.ToString());
             Assert.AreEqual("Autodesk.Point.ByCoordinates(1, 2, 3)", expr2.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerWithDefaultArgument()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\SphereDefaultArg.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+            
+            Assert.IsNotNull(expr1);
+            
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("Sphere.ByCenterPointRadius(Autodesk.Point.ByCoordinates(0, 0, 0), 1)", expr1.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerWithDefaultArgument2()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortenNodeNameWithDefaultArg.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("ElementResolverTarget.StaticMethod(ElementResolverTarget.Create().StaticProperty)", expr1.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerWithStaticProperty()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortenNodeNameWithStaticProperty.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+
+            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
+            // node to code generates the shortest unique name, which in this case will be
+            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
+            Assert.AreEqual("ElementResolverTarget.StaticProperty", expr1.RightNode.ToString());
         }
 
         [Test]
@@ -674,6 +790,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestShortName1()
         {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
             OpenModel(@"core\node2code\shortName1.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
