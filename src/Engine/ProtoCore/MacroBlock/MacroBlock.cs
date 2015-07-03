@@ -131,7 +131,7 @@ namespace ProtoCore
         /// The macroblock ID is set for each graphnode 
         /// </summary>
         /// <param name="programSnapshot"></param>
-        public void GenerateTestMacroBlocks(List<AssociativeGraph.GraphNode> programSnapshot, int macroBlockID = -1)
+        public void __GenerateTestMacroBlocks_Deprecate(List<AssociativeGraph.GraphNode> programSnapshot, int macroBlockID = -1)
         {
             Validity.Assert(programSnapshot != null);
             foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
@@ -151,7 +151,7 @@ namespace ProtoCore
                         generatedMacroblocks++;
                         int newID = macroBlockID + 1;
                         graphnode.MacroblockID = newID;
-                        GenerateTestMacroBlocks(programSnapshot, newID);
+                        __GenerateTestMacroBlocks_Deprecate(programSnapshot, newID);
                     }
                     else
                     {
@@ -161,6 +161,45 @@ namespace ProtoCore
                             graphnode.Visited = true;
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generate test macroblocks
+        /// A test macroblock starts with an input node
+        /// The macroblock ID is set for each graphnode 
+        /// </summary>
+        /// <param name="programSnapshot"></param>
+        public int GenerateMacroblocks(List<AssociativeGraph.GraphNode> programSnapshot)
+        {
+            Validity.Assert(programSnapshot != null);
+            int macroBlockID = 0;
+            foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
+            {
+                if (!graphnode.isActive)
+                {
+                    continue;
+                }
+
+                if (IsMacroblockEntryPoint(graphnode))
+                {
+                    graphnode.MacroblockID = macroBlockID++;
+                    BuildMacroblock(graphnode, programSnapshot);
+                }
+            }
+            return macroBlockID;
+        }
+
+        private void BuildMacroblock(AssociativeGraph.GraphNode currentNode, List<AssociativeGraph.GraphNode> programSnapshot)
+        {
+            foreach (AssociativeGraph.GraphNode node in programSnapshot)
+            {
+                AssociativeGraph.GraphNode depNode = null;
+                if (node.DependsOn(currentNode.updateNodeRefList[0], ref depNode))
+                {
+                    node.MacroblockID = currentNode.MacroblockID;
+                    BuildMacroblock(node, programSnapshot);
                 }
             }
         }
@@ -178,7 +217,8 @@ namespace ProtoCore
             {
                 graphnode.Visited = false;
             }
-            GenerateTestMacroBlocks(programSnapshot);
+           // __GenerateTestMacroBlocks_Deprecate(programSnapshot);
+            generatedMacroblocks = GenerateMacroblocks(programSnapshot);
 #else
             // Implement the algorithm to generate macroblocks
 #endif
