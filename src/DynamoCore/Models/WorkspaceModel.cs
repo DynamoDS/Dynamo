@@ -1194,9 +1194,8 @@ namespace Dynamo.Models
                     var newResult = NodeToCodeUtils.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
 
                     // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                    var er = this.ElementResolver;
                     NodeToCodeUtils.ReplaceWithShortestQualifiedName(
-                        engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes);
+                        engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, ElementResolver);
                     var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                     var code = codegen.GenerateCode();
 

@@ -213,10 +213,12 @@ namespace Dynamo.DSEngine
         private class ShortestQualifiedNameReplacer : AstReplacer
         {
             private readonly ClassTable classTable;
+            private readonly ElementResolver resolver;
 
-            public ShortestQualifiedNameReplacer(ClassTable classTable)
+            public ShortestQualifiedNameReplacer(ClassTable classTable, ElementResolver resolver)
             {
                 this.classTable = classTable;
+                this.resolver = resolver;
             }
 
             public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
@@ -317,13 +319,19 @@ namespace Dynamo.DSEngine
                 }
                 else
                 {
-                    // Use the namespace list as input to derive the list of shortest unique names
-                    var symbolList =
-                        matchingClasses.Select(matchingClass => new ProtoCore.Namespace.Symbol(matchingClass)).ToList();
-                    var shortNames = ProtoCore.Namespace.Symbol.GetShortestUniqueNames(symbolList);
+                    shortName = resolver != null ? resolver.LookupShortName(qualifiedName) : null;
 
-                    // Get the shortest name corresponding to the fully qualified name
-                    shortName = shortNames[new ProtoCore.Namespace.Symbol(qualifiedName)];
+                    if (string.IsNullOrEmpty(shortName))
+                    {
+                        // Use the namespace list as input to derive the list of shortest unique names
+                        var symbolList =
+                            matchingClasses.Select(matchingClass => new ProtoCore.Namespace.Symbol(matchingClass))
+                                .ToList();
+                        var shortNames = ProtoCore.Namespace.Symbol.GetShortestUniqueNames(symbolList);
+
+                        // Get the shortest name corresponding to the fully qualified name
+                        shortName = shortNames[new ProtoCore.Namespace.Symbol(qualifiedName)];
+                    }
                 }
                 // Rewrite the AST using the shortest name
                 var newIdentList = CoreUtils.CreateNodeFromString(shortName);
@@ -993,9 +1001,10 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="classTable"></param>
         /// <param name="asts">Input ASTs</param>
-        public static void ReplaceWithShortestQualifiedName(ClassTable classTable, IEnumerable<AssociativeNode> asts)
+        /// <param name="resolver"></param>
+        public static void ReplaceWithShortestQualifiedName(ClassTable classTable, IEnumerable<AssociativeNode> asts, ElementResolver resolver = null)
         {
-            ShortestQualifiedNameReplacer replacer = new ShortestQualifiedNameReplacer(classTable);
+            ShortestQualifiedNameReplacer replacer = new ShortestQualifiedNameReplacer(classTable, resolver);
             foreach (var ast in asts)
             {
                 ast.Accept(replacer);
