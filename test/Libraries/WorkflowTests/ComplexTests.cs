@@ -8,6 +8,7 @@ using Autodesk.DesignScript.Geometry;
 using Dynamo.Models;
 using NUnit.Framework;
 
+
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -1253,5 +1254,29 @@ namespace Dynamo.Tests
             Assert.AreEqual(root, 3.38848974754171, EPS);
         }
         #endregion
+
+
+        [Test]
+        public void Test_WorkFlowTestForCSV()
+        {
+            //Create automation for Dynamo file :WorkflowtestForCSV
+            //This is a training file to import file from CSV and
+            // we check the NurbsCurve.ByPoint won't cause Dynamo crash when
+            // the input degree is negative
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\01 Dynamo Basics\WorkflowtestForCSV.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+
+            //check NurbsCurve.ByPoints with negative input value: degree is -3
+            var curveID = "7caf2032-141d-460a-a482-cc76ddd48ff1";         
+            var nurbsCurve = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(curveID);
+            Assert.AreEqual(ElementState.Warning, nurbsCurve.State);   
+        }
     }
 }
