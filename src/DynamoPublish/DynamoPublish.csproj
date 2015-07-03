@@ -53,10 +53,9 @@
     <Reference Include="PresentationFramework">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Reach, Version=0.7.0.21569, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Reach, Version=0.7.0.17656, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\Reach.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\extern\Reach\Reach.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>

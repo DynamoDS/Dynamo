@@ -67,7 +67,8 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(manager.Username))
                 return;
 
-            var reachClient = new WorkspaceStorageClient(serverUrl, manager.Username);
+            string fullServerAdress = serverUrl + ":" + port;
+            var reachClient = new WorkspaceStorageClient(manager.AuthProvider, fullServerAdress);
             var result = reachClient.Send(workspaces.OfType<HomeWorkspaceModel>().First(), workspaces.OfType<CustomNodeWorkspaceModel>());
         }
 
