@@ -718,7 +718,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(undo);
 
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -738,13 +738,13 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(command);
 
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             CurrentDynamoModel.ExecuteCommand(undo);
 
             Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -758,13 +758,13 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(command);
 
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             CurrentDynamoModel.ExecuteCommand(undo);
 
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -778,13 +778,13 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(command);
 
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             CurrentDynamoModel.ExecuteCommand(undo);
 
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]

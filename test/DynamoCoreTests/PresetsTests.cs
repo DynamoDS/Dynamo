@@ -37,7 +37,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(numberNode1, false);
             model.CurrentWorkspace.AddNode(numberNode2, false);
        
-            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 2);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
 
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
@@ -65,7 +65,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.AddNode(numberNode1, false);
             model.CurrentWorkspace.AddNode(numberNode2, false);
 
-            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 2);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
 
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
@@ -108,7 +108,7 @@ namespace Dynamo.Tests
            ConnectorModel.Make(numberNode1,addNode, 0, 0);
            ConnectorModel.Make(numberNode2,addNode, 0, 1);
 
-           Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+           Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 3);
            Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
             //create the first state with the numbers selected
@@ -173,7 +173,7 @@ namespace Dynamo.Tests
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
             ConnectorModel.Make(numberNode2, addNode, 0, 1);
 
-            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 3);
             Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
             //create the first state with the numbers selected
@@ -247,7 +247,7 @@ namespace Dynamo.Tests
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
             ConnectorModel.Make(numberNode2, addNode, 0, 1);
 
-            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 3);
             Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
             //create the first state with the numbers selected
@@ -317,7 +317,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\PresetStates\GoodStates.dyn");
             OpenModel(openPath);
            
-            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 5);
 
         }
@@ -329,7 +329,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\PresetStates\NoStates.dyn");
             OpenModel(openPath);
            
-            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 0);
 
         }
@@ -342,7 +342,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\PresetStates\MalformedStates.dyn");
             Assert.DoesNotThrow(() => {OpenModel(openPath);});
 
-            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count());
               //assert all the states are loadead even if the GUID and nodetypes are malformed
             Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 5);
 
@@ -355,7 +355,7 @@ namespace Dynamo.Tests
               string openPath = Path.Combine(TestDirectory, @"core\PresetStates\MissingNodesInGraph.dyn");
               Assert.DoesNotThrow(() => { OpenModel(openPath); });
 
-              Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+              Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
               Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 5);
 
               var stateWithMissingNodes = model.CurrentWorkspace.Presets.Where(x => x.Name == "4/8/2015 2:57:02 PM").First();
@@ -391,7 +391,7 @@ namespace Dynamo.Tests
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
             ConnectorModel.Make(numberNode2, addNode, 0, 1);
 
-            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 3);
             Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
             //create the first state with the numbers selected
@@ -421,7 +421,7 @@ namespace Dynamo.Tests
             //now check that numbernode2 has been set to correct value in state 1
             Assert.AreEqual(numberNode2.Value, "2");
             //check that node 1 has actually been deleted
-            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 2);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
         }
 
         [Test]
@@ -444,7 +444,7 @@ namespace Dynamo.Tests
               ConnectorModel.Make(numberNode1, addNode, 0, 0);
               ConnectorModel.Make(numberNode2, addNode, 0, 1);
 
-              Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+              Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 3);
               Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
               //create the first state with the numbers selected
@@ -486,7 +486,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\PresetStates\GoodStates.dyn");
             OpenModel(openPath);
 
-            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 5);
 
             var allSerializedNodesInAllStates = model.CurrentWorkspace.Presets.SelectMany(x => x.SerializedNodes);
@@ -504,7 +504,7 @@ namespace Dynamo.Tests
             //and open this new dyn
             OpenModel(newPath);
             //now only 4 nodes
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 5);
             
             //make sure we have the same number of serialized nodes in this newly loaded presets state
@@ -533,7 +533,7 @@ namespace Dynamo.Tests
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
             ConnectorModel.Make(numberNode2, addNode, 0, 1);
 
-            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 3);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 3);
             Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
 
             //create the first state with the numbers selected
