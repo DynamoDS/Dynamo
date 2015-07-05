@@ -671,7 +671,7 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Removes a node from this workspace. 
-        /// This method does not raise a NodesModified event.
+        /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model"></param>
         public void RemoveNode(NodeModel model)
@@ -689,7 +689,6 @@ namespace Dynamo.Models
         {
             model.ConnectorAdded -= OnConnectorAdded;
             model.Modified -= NodeModified;
-            OnNodeRemoved(model);
             model.Dispose();
         }
 
