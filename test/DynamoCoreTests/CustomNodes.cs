@@ -865,5 +865,46 @@ namespace Dynamo.Tests
             //Check whether the group is copied to custom workspace
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Annotations.Count); 
         }
+
+        [Test]
+        public void TestCustomNodeInputType2()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\collapse\collapse-input-type.dyn");
+            OpenModel(openPath);
+
+            var nodesToCollapse = new[]
+            {
+                "fb066324-1ca0-400f-8dee-cbb0e1d27719", 
+            };
+
+            foreach (
+                var node in
+                    nodesToCollapse.Select(CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace))
+            {
+                CurrentDynamoModel.AddToSelection(node);
+            }
+
+            var ws = CurrentDynamoModel.CustomNodeManager.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                CurrentDynamoModel.CurrentWorkspace,
+                true,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTestForInputType1__",
+                    Success = true
+                });
+
+            CurrentDynamoModel.AddCustomNodeWorkspace(ws);
+            CurrentDynamoModel.OpenCustomNodeWorkspace(ws.CustomNodeId);
+            var inputs = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Symbol>();
+            Assert.IsNotNull(inputs);
+
+            var curveParam = inputs.FirstOrDefault();
+            Assert.IsNotNull(curveParam);
+
+            Assert.AreEqual("Curve", curveParam.Parameter.DisplayTypeName);
+        }
     }
 }

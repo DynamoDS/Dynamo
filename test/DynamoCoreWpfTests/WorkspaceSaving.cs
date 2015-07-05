@@ -940,6 +940,41 @@ namespace Dynamo.Tests
                 Assert.AreEqual(node.ID, newId);
             }
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CustomNodeWorkspaceSavedToSamePlaceNotCausingDuplicatedLibraryItems()
+        {
+            // open file
+            // save to the temporary folder
+            // save to another temporary folder
+            // save to the old temporary folder
+            // there should be only two library items instead of three
+
+            var dynamoModel = ViewModel.Model;
+            var nodeName = Guid.NewGuid().ToString();
+            var catName = "Custom Nodes";
+
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+
+            var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
+            var tempPath2 = Path.Combine(TempFolder, nodeName, nodeName + ".dyf");
+
+            var res = def.SaveAs(tempPath1, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            Assert.IsTrue(res);
+            Thread.Sleep(1);
+
+            res = def.SaveAs(tempPath2, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            Assert.IsTrue(res);
+            Thread.Sleep(1);
+
+            res = def.SaveAs(tempPath1, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            Assert.IsTrue(res);
+
+            var count = dynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+                            x => string.CompareOrdinal(x.Name, nodeName) == 0).Count();
+            Assert.AreEqual(count, 2);
+        }
         #endregion
     }
 }

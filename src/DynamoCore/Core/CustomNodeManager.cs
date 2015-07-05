@@ -6,12 +6,12 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
+using Dynamo.Library;
 
 namespace Dynamo.Core
 {
@@ -20,7 +20,7 @@ namespace Dynamo.Core
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager : LogSourceBase, ICustomNodeSource
+    public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
     {
         public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
@@ -331,6 +331,17 @@ namespace Dynamo.Core
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
+            var guids = NodeInfos.Where(x =>
+                        {
+                            return !string.IsNullOrEmpty(x.Value.Path) &&
+                                string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                        }).Select(x => x.Key).ToList();
+
+            foreach (var guid in guids)
+            {
+                NodeInfos.Remove(guid);
+            }
+
             NodeInfos[newInfo.FunctionId] = newInfo;
             OnInfoUpdated(newInfo);
         }
@@ -503,7 +514,8 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,                               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,              
                 workspaceInfo);
 
             
@@ -922,6 +934,7 @@ namespace Dynamo.Core
                         // two kinds of nodes whose input type are available:
                         // function node and custom node. 
                         List<Library.TypedParameter> parameters = null;
+
                         if (inputReceiverNode is Function) 
                         {
                             var func = inputReceiverNode as Function; 
@@ -930,7 +943,16 @@ namespace Dynamo.Core
                         else if (inputReceiverNode is DSFunctionBase)
                         {
                             var dsFunc = inputReceiverNode as DSFunctionBase;
-                            parameters = dsFunc.Controller.Definition.Parameters.ToList(); 
+                            var funcDesc = dsFunc.Controller.Definition;
+                            parameters = funcDesc.Parameters.ToList();
+
+                            if (funcDesc.Type == DSEngine.FunctionType.InstanceMethod ||
+                                funcDesc.Type == DSEngine.FunctionType.InstanceProperty)
+                            {
+                                var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
+                                var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);
+                                parameters.Insert(0, instanceParam);
+                            }
                         }
 
                         // so the input of custom node has format 
@@ -1062,7 +1084,8 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    newAnnotations,                
+                    newAnnotations,
+                    Enumerable.Empty<PresetModel>(),
                     new WorkspaceInfo()
                     {
                         X = 0,
@@ -1074,7 +1097,7 @@ namespace Dynamo.Core
                         FileName = string.Empty
                     },
                     currentWorkspace.ElementResolver);
-
+                
                 newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);

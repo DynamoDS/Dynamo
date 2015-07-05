@@ -1,0 +1,10 @@
+<Workspace Version="0.8.2.1831" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="db5867c3-7246-4b8e-bb3e-16e2b3d7de14" type="Dynamo.Nodes.DSFunction" nickname="ElementResolverTarget.StaticProperty" x="509.5" y="283.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\bin\AnyCPU\Debug\FFITarget.dll" function="FFITarget.ElementResolverTarget.StaticProperty" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

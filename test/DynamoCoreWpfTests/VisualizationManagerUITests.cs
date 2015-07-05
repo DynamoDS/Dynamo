@@ -27,6 +27,8 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("Display.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -632,15 +634,63 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, ws.TotalLinesToRender());
         }
 
+        [Test]
+        public void Display_ByGeometryColor_HasColoredMesh()
+        {
+            var openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\Display.ByGeometryColor.dyn");
+            OpenAndRunDynamoDefinition(openPath);
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+
+            Assert.True(ws.HasAnyVertexColoredMeshesOfColor(new Color4(new Color3(1.0f,0,1.0f))));
+        }
+
+        [Test]
+        public void Display_BySurfaceColors_HasColoredMesh()
+        {
+            var openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\Display.BySurfaceColors.dyn");
+            OpenAndRunDynamoDefinition(openPath);
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+
+            Assert.True(ws.HasAnyColorMappedMeshes());
+        }
+
         private void Open(string relativePath)
         {
             OpenDynamoDefinition(relativePath);
-            DispatcherUtil.DoEvents();
         }
     }
 
     internal static class WorkspaceExtensions
     {
+        public static bool HasAnyVertexColoredMeshesOfColor(this WorkspaceModel workspace, Color4 color)
+        {
+            var colorMeshCount = workspace.Nodes.
+                SelectMany(n => n.RenderPackages).
+                Where(rp => rp.RequiresPerVertexColoration).
+                Where(rp => rp.MeshVertexColors.IsArrayOfColor(color));
+
+            return colorMeshCount.Any();
+        }
+
+        public static bool HasAnyColorMappedMeshes(this WorkspaceModel workspace)
+        {
+            var colorMeshCount = workspace.Nodes.
+                SelectMany(n => n.RenderPackages).
+                Where(rp => rp.Colors != null);
+
+            return colorMeshCount.Any();
+        }
+
         public static int TotalLinesOfColorToRender(this WorkspaceModel workspace, Color4 color)
         {
             var colorLineCount = workspace.Nodes.

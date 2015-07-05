@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyName>DynamoPublish</AssemblyName>
+  <TypeName>Dynamo.Publish.DynamoPublishExtension</TypeName>
+</ViewExtensionDefinition>

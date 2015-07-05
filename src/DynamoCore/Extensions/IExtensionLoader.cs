@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Dynamo.PackageManager;
 
 namespace Dynamo.Extensions
 {
     /// <summary>
-    /// Handles loading extensions given an extension definition file
+    /// Handles loading extensions given an extension definition files path
     /// </summary>
-    internal interface IExtensionLoader
+    public interface IExtensionLoader
     {
-        IExtension Load(ExtensionDefinition extension);
+        IExtension Load(string extensionPath);
+        IEnumerable<IExtension> LoadDirectory(string extensionsPath);
     }
 }

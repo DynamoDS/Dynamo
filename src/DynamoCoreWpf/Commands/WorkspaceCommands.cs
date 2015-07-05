@@ -163,28 +163,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand PauseVisualizationManagerCommand
-        {
-            get
-            {
-                if (_pauseVisualizationManagerUpdateCommand == null)
-                    _pauseVisualizationManagerUpdateCommand = new DelegateCommand(PauseVisualizationManagerUpdates, CanPauseVisualizationManagerUpdates);
-
-                return _pauseVisualizationManagerUpdateCommand;
-            }
-        }
-
-        public DelegateCommand UnPauseVisualizationManagerCommand
-        {
-            get
-            {
-                if (_unpauseVisualizationManagerUpdateCommand == null)
-                    _unpauseVisualizationManagerUpdateCommand = new DelegateCommand(UnPauseVisualizationManagerUpdates, CanUnPauseVisualizationManagerUpdates);
-
-                return _unpauseVisualizationManagerUpdateCommand;
-            }
-        }
-
         public DelegateCommand ShowHideAllGeometryPreviewCommand
         {
             get

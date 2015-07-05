@@ -11,8 +11,9 @@ namespace Dynamo.Library
     public class TypedParameter
     {
         private string summary = null; // Indicating that it is not initialized.
+        private readonly string defaultValueString;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null)
+        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null, string shortArgumentName = null)
         {
             if (parameter == null)
                 throw new ArgumentNullException("parameter");
@@ -20,6 +21,8 @@ namespace Dynamo.Library
             Name = parameter;
             Type = type;
             DefaultValue = defaultValue;
+
+            defaultValueString = shortArgumentName;
         }
 
         public FunctionDescriptor Function { get; private set; }
@@ -33,7 +36,10 @@ namespace Dynamo.Library
             {
                 // If 'summary' data member is 'null', it means its value has 
                 // to be repopulated. 
-                return summary ?? this.GetDescription();
+                if (summary == null)
+                    summary = this.GetDescription();
+
+                return summary;
             }
         }
 
@@ -42,16 +48,18 @@ namespace Dynamo.Library
             get
             {
                 string description = string.Empty;
-                if (!string.IsNullOrEmpty(summary))
-                    description = description + summary + "\n\n";
+                if (!string.IsNullOrEmpty(Summary))
+                    description = description + Summary + "\n\n";
 
                 description = description + DisplayTypeName;
 
-                if (DefaultValue != null)
-                    description = String.Format("{0}\n{1} : {2}", 
-                                                description, 
-                                                Properties.Resources.DefaultValue, 
-                                                DefaultValue.ToString());
+                if (defaultValueString != null)
+                {
+                    description = String.Format("{0}\n{1} : {2}",
+                        description,
+                        Properties.Resources.DefaultValue,
+                        defaultValueString);
+                }
 
                 return description;
             }
@@ -74,9 +82,9 @@ namespace Dynamo.Library
         public override string ToString()
         {
             string str = Name + ": " + DisplayTypeName;
-            if (DefaultValue != null)
+            if (defaultValueString != null)
             {
-                str = str + " = " + DefaultValue.ToString();
+                str = str + " = " + defaultValueString;
             }
 
             return str;

@@ -1141,27 +1141,6 @@ namespace Dynamo.ViewModels
             this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
         }
 
-        private void PauseVisualizationManagerUpdates(object parameter)
-        {
-            DynamoViewModel.VisualizationManager.Stop();
-        }
-
-        private static bool CanPauseVisualizationManagerUpdates(object parameter)
-        {
-            return true;
-        }
-
-        private void UnPauseVisualizationManagerUpdates(object parameter)
-        {
-            var update = (bool)parameter;
-            DynamoViewModel.VisualizationManager.Start(update);
-        }
-
-        private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
-        {
-            return true;
-        }
-
         private void RefreshViewOnSelectionChange()
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
