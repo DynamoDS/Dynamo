@@ -1159,7 +1159,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(56, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             double EPS = 1E-9;
             object prev;
@@ -1271,7 +1271,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check NurbsCurve.ByPoints with negative input value: degree is -3
             var curveID = "7caf2032-141d-460a-a482-cc76ddd48ff1";         
