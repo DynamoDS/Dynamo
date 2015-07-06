@@ -21,6 +21,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.PackageManager;
 
 using DynamoUnits;
 
@@ -504,7 +505,8 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
+            var pmExtension = model.GetPackageManagerExtension();
+            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.
@@ -804,6 +806,7 @@ namespace Dynamo.ViewModels
             DeleteCommand.RaiseCanExecuteChanged();
             UngroupModelCommand.RaiseCanExecuteChanged();
             AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
+            ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1189,7 +1192,7 @@ namespace Dynamo.ViewModels
 
         private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         private void OpenRecent(object path)
@@ -1199,7 +1202,7 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenRecent(object path)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         /// <summary>
@@ -1386,6 +1389,27 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Present the new preset dialogue and add a new presetModel 
+        /// to the preset set on this graph
+        /// </summary>
+        private void ShowNewPresetStateDialogAndMakePreset(object parameter)
+        {
+            //trigger the event to request the display
+            //of the preset name dialogue
+            var args = new PresetsNamePromptEventArgs();
+            this.Model.OnRequestPresetNamePrompt(args);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            if (args.Success)
+            {
+                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+            }
+        }
+        private bool CanShowNewPresetStateDialog(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = this;
@@ -1550,7 +1574,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         private void CloseHomeWorkspace(object parameter)
@@ -1565,7 +1589,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         /// <summary>

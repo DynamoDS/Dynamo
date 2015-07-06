@@ -24,13 +24,12 @@ limitations under the License.
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</ProjectGuid>
-    <OutputType>library</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoCore</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -115,8 +114,12 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
+    <Compile Include="Interfaces\ICustomNodeManager.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Extensions\ExtensionLoader.cs" />
+    <Compile Include="Extensions\ExtensionManager.cs" />
     <Compile Include="Rendering\DefaultRenderPackageFactory.cs" />
     <Compile Include="Extensions\ExtensionDefinition.cs" />
     <Compile Include="Extensions\IExtensionLoader.cs" />
@@ -127,21 +130,11 @@ limitations under the License.
     <Compile Include="Interfaces\IRenderPackageFactory.cs" />
     <Compile Include="Models\AnnotationModel.cs" />
     <Compile Include="Core\PathManager.cs" />
+    <Compile Include="Models\PresetModel.cs" />
     <Compile Include="Library\MemberDocumentNode.cs" />
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
     <Compile Include="Interfaces\IPathResolver.cs" />
-    <Compile Include="PackageManager\Interfaces\IFileCompressor.cs" />
-    <Compile Include="PackageManager\Interfaces\IDirectoryInfo.cs" />
-    <Compile Include="PackageManager\Interfaces\IFileInfo.cs" />
-    <Compile Include="PackageManager\Interfaces\IFileSystem.cs" />
-    <Compile Include="PackageManager\MutatingFileCompressor.cs" />
-    <Compile Include="PackageManager\MutatingFileSystem.cs" />
-    <Compile Include="PackageManager\CustomNodePathRemapper.cs" />
-    <Compile Include="PackageManager\PackageManagerResult.cs" />
-    <Compile Include="PackageManager\PackageUploadBuilder.cs" />
-    <Compile Include="PackageManager\RealDirectoryInfo.cs" />
-    <Compile Include="PackageManager\RealFileInfo.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
@@ -151,6 +144,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
+    <Compile Include="Core\AuthenticationManager.cs" />
     <Compile Include="Utilities\AssemblyConfiguration.cs" />
     <Compile Include="Utilities\FailFunc.cs" />
     <Compile Include="Utilities\OrderedSet.cs" />
@@ -206,7 +200,6 @@ limitations under the License.
     <Compile Include="Models\TypeLoadData.cs" />
     <Compile Include="Models\WorkspaceInfo.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
-    <Compile Include="PackageManager\PackageFileInfo.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
     <Compile Include="Nodes\VariableInputNode.cs" />
     <Compile Include="Nodes\ZeroTouch\DSVarArgFunction.cs" />
@@ -214,7 +207,6 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallNodeController.cs" />
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
-    <Compile Include="PackageManager\PackageUtilities.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
@@ -230,15 +222,11 @@ limitations under the License.
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
-    <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
     <Compile Include="Services\Heartbeat.cs" />
     <Compile Include="Services\Log.cs" />
     <Compile Include="Services\Logger.cs" />
-    <Compile Include="PackageManager\Package.cs" />
-    <Compile Include="PackageManager\PackageDirectoryBuilder.cs" />
-    <Compile Include="PackageManager\PackageUploadHandle.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\NoteModel.cs" />
@@ -257,15 +245,12 @@ limitations under the License.
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
-    <Compile Include="PackageManager\PackageDownloadHandle.cs" />
-    <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />
     <Compile Include="Utilities\Guid.cs" />
-    <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
     <Compile Include="Search\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
@@ -289,6 +274,12 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
+    <EmbeddedResource Include="BuiltInAndOperators\BuiltInImages.resx">
+      <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BuiltInAndOperators\OperatorsImages.resx">
+      <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="DynamoCoreImages.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -341,7 +332,12 @@ limitations under the License.
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="BuiltInAndOperators\Operators.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="BuiltInAndOperators\BuiltIn.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>
@@ -373,6 +369,8 @@ limitations under the License.
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
     <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
+    <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
+    <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
   </Target>
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get System.Drawing.dll -->
@@ -386,5 +384,11 @@ limitations under the License.
     <!-- Generate customization dll for DynamoCore -->
     <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <!-- Generate customization dll for Operators -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+    <!-- Generate customization dll for BuiltIn -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
 </Project>

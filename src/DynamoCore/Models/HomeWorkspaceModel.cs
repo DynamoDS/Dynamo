@@ -135,6 +135,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
                 new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
                 isTestMode) { }
@@ -147,10 +148,11 @@ namespace Dynamo.Models
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
+            IEnumerable<PresetModel> presets,
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n,a, info, factory)
+            : base(e, n,a, info, factory,presets)
         {
             EvaluationCount = 0;
 

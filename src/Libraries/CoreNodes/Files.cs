@@ -297,7 +297,7 @@ namespace DSCore.IO
         ///     Loads the file as a bitmap.
         /// </summary>
         /// <param name="file">File object to load image from.</param>
-        /// <returns name="bitmap">Bitmap</returns>
+        /// <returns name="image">Image</returns>
         public static Bitmap ReadFromFile(FileInfo file)
         {
             using (var fs = new FileStream(file.FullName, FileMode.Open))
@@ -332,6 +332,7 @@ namespace DSCore.IO
         ///     Constructs an image from a 2d list of pixels.
         /// </summary>
         /// <param name="colors">2d rectangular list of colors representing the pixels.</param>
+        /// <returns name="image">Image</returns>
         public static Bitmap FromPixels(Color[][] colors)
         {
             var height = colors.Length;
@@ -348,6 +349,7 @@ namespace DSCore.IO
         /// <param name="colors">List of colors representing the pixels.</param>
         /// <param name="width">Width of the new image, in pixels.</param>
         /// <param name="height">Height of the new image, in pixels.</param>
+        /// <returns name="image">Image</returns>
         public static Bitmap FromPixels(Color[] colors, int width, int height)
         {
             return FromPixelsHelper(colors, width, height);
@@ -374,10 +376,10 @@ namespace DSCore.IO
 
         private static IEnumerable<byte> PixelsFromColor(Color color)
         {
-            yield return color.Alpha;
-            yield return color.Red;
-            yield return color.Green;
             yield return color.Blue;
+            yield return color.Green;
+            yield return color.Red;
+            yield return color.Alpha;
         }
 
         /// <summary>
