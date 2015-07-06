@@ -3473,6 +3473,7 @@ namespace DynamoCoreWpfTests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
+        [Category("Failure")]
         public void EqualEqualTest_Defect6694()
         {
             // Details are available in defect 
