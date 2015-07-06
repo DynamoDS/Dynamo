@@ -126,11 +126,6 @@ namespace ProtoCore.DSASM
                 fi = rmem.CurrentStackFrame.FunctionScope;
             }
             graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
-
-            //int classIndex = Constants.kInvalidIndex;
-            //int functionIndex = Constants.kGlobalScope;
-            //bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
-            //graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(classIndex, functionIndex);
         }
 
         /// <summary>
@@ -418,7 +413,6 @@ namespace ProtoCore.DSASM
             //  Entering a nested block requires all the nodes of that block to be executed
             if (executingBlock > 0)
             {
-                //istream.dependencyGraph.MarkAllGraphNodesDirty(executingBlock, ci, fi);
                 ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(executingBlock, graphNodesInProgramScope);
             }
 
@@ -1350,7 +1344,9 @@ namespace ProtoCore.DSASM
             }
 
             bool isUpdated = false;
+
             List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
+            //List<AssociativeGraph.GraphNode> graphNodes = graphNodesInProgramScope;
             if (graphNodes != null)
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
@@ -1727,21 +1723,24 @@ namespace ProtoCore.DSASM
         {
             int setentry = entry;
             bool isFirstGraphSet = false;
-            foreach (AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+            if (graphNodesInProgramScope != null)
             {
-                graphNode.isDirty = true;
-                if (!isFirstGraphSet)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodesInProgramScope)
                 {
-                    // Setting the first graph of this function to be in executed (not dirty) state
-                    isFirstGraphSet = true;
-                    graphNode.isDirty = false;
-                }
+                    graphNode.isDirty = true;
+                    if (!isFirstGraphSet)
+                    {
+                        // Setting the first graph of this function to be in executed (not dirty) state
+                        isFirstGraphSet = true;
+                        graphNode.isDirty = false;
+                    }
 
-                if (Constants.kInvalidIndex == setentry)
-                {
-                    // Set the entry point as this graph and mark this graph as executed 
-                    setentry = graphNode.updateBlock.startpc;
-                    graphNode.isDirty = false;
+                    if (Constants.kInvalidIndex == setentry)
+                    {
+                        // Set the entry point as this graph and mark this graph as executed 
+                        setentry = graphNode.updateBlock.startpc;
+                        graphNode.isDirty = false;
+                    }
                 }
             }
             return setentry;
@@ -3985,15 +3984,6 @@ namespace ProtoCore.DSASM
         {
             exe.instrStreamList[blockId].entrypoint = pc;
         }
-
-        public AssociativeGraph.GraphNode GetLastGraphNode(string varName)
-        {
-            return istream.dependencyGraph.GraphList.Last(x =>
-                    null != x.updateNodeRefList && x.updateNodeRefList.Count > 0
-                && null != x.updateNodeRefList[0].nodeList && x.updateNodeRefList[0].nodeList.Count > 0
-                && x.updateNodeRefList[0].nodeList[0].symbol.name == varName);
-        }
-
 
         public AssociativeGraph.GraphNode GetFirstGraphNode(string varName, out int blockId)
         {
@@ -6421,13 +6411,11 @@ namespace ProtoCore.DSASM
                     // On delta execution, it is possible that the next graphnode is clean
                     // Retrieve the next dirty graphnode given the pc
                     // Associative update is handled when ApplyUpdate = true
-                    //nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(nextPC, ci, fi);
                     nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstDirtyGraphNodeFromPC(nextPC, graphNodesInProgramScope);
                 }
                 else
                 {
                     // Allow immediate update if we are in a local scope.
-                    //nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
                     nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstDirtyGraphNodeFromPC(Constants.kInvalidIndex, graphNodesInProgramScope);
                 }
             }
@@ -6435,7 +6423,6 @@ namespace ProtoCore.DSASM
             {
                 // On normal execution, just retrieve the graphnode associated with pc
                 // Associative update is handled in jdep
-                //nextGraphNode = istream.dependencyGraph.GetGraphNode(nextPC, ci, fi);
                 nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetGraphNodeAtPC(nextPC, graphNodesInProgramScope);
             }
             return nextGraphNode;
