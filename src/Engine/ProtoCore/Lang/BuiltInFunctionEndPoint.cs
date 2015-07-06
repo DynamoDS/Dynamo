@@ -498,10 +498,8 @@ namespace ProtoCore.Lang
                     ret = StackValue.Null;
                     break;
                 case BuiltInMethods.MethodID.kGC:
-#if TRACING_GC
                     var gcRoots = interpreter.runtime.RuntimeCore.CurrentExecutive.CurrentDSASMExec.CollectGCRoots();
                     rmem.Heap.FullGC(gcRoots, interpreter.runtime);
-#endif
                     ret = StackValue.Null;
                     break;
                 default:
@@ -681,13 +679,9 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
-#if TRACING_GC
             arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(callsite.CallSiteID, x));
-#endif
             StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, runtimeCore);
-#if TRACING_GC
             runtimeCore.RemoveCallSiteGCRoot(callsite.CallSiteID);
-#endif
 
             // Restore debug properties after returning from a CALL/CALLR
             if (runtimeCore.Options.IDEDebugMode &&

@@ -63,11 +63,9 @@ namespace ProtoCore.DSASM
                 items[i] = StackValue.Null;
             }
 
-#if TRACING_GC
             // We should move StackValue list to heap. That is, heap
             // manages StackValues instead of HeapElement itself.
             heap.ReportAllocation(size - allocated);
-#endif
 
             allocated = newSize;
             Validity.Assert(size <= allocated);
@@ -147,9 +145,7 @@ namespace ProtoCore.DSASM
 
         public void SetItemAt(int index, StackValue value)
         {
-#if TRACING_GC
             heap.WriteBarrierForward(this, value);
-#endif
             items[index] = value;
         }
 
@@ -364,7 +360,7 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Allocate an object pointer.
         /// </summary>
-        /// <param name="size"></parame
+        /// <param name="size">The size of object properties.</parame
         /// <returns></returns>
         public StackValue AllocatePointer(int size)
         {
@@ -474,9 +470,7 @@ namespace ProtoCore.DSASM
             }
             
             hpe.Mark = GCMark.White;
-#if TRACING_GC
             ReportAllocation(size);
-#endif
             return AddHeapElement(hpe);
         }
 
@@ -570,7 +564,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-#if TRACING_GC
         /// <summary>
         /// Mark all items in the array.
         /// </summary>
@@ -785,7 +778,7 @@ namespace ProtoCore.DSASM
             if (exe == null)
                 throw new ArgumentNullException("exe");
 
-            if (!IsWaitingForRoots())
+            if (!IsWaitingForRoots)
                 return false;
 
             var validPointers = gcroots.Where(r => r.IsReferenceType && 
@@ -838,7 +831,6 @@ namespace ProtoCore.DSASM
             gcDebt -= newSize;
             totalAllocated += newSize;
         }
-#endif
 
         public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
         {

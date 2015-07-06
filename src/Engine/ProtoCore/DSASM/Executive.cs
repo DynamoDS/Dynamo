@@ -4566,7 +4566,7 @@ namespace ProtoCore.DSASM
                 PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
-#if TRACING_GC
+#if !NAIVE_MARK_AND_SWEEP
             rmem.Heap.GC();
 #endif
             ++pc;
@@ -4628,7 +4628,7 @@ namespace ProtoCore.DSASM
                 PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
-#if TRACING_GC
+#if !NAIVE_MARK_AND_SWEEP
             rmem.Heap.GC();
 #endif
             ++pc;
@@ -6370,7 +6370,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-#if !TRACING_GC
+#if NAIVE_MARK_AND_SWEEP 
             GC();
 #endif
             return;
@@ -6570,7 +6570,7 @@ namespace ProtoCore.DSASM
 
         private void Exec(Instruction instruction)
         {
-#if TRACING_GC
+#if !NAIVE_MARK_AND_SWEEP
             if (rmem.Heap.IsWaitingForRoots)
             {
                 var gcroots = CollectGCRoots();
@@ -6867,16 +6867,12 @@ namespace ProtoCore.DSASM
 
         public List<StackValue> CollectGCRoots()
         {
-#if TRACING_GC
             var gcRoots = new List<StackValue>();
             if (RX.IsReferenceType)
                 gcRoots.Add(RX);
-            gcRoots.AddRange(runtimeCore.ReplicationRoots);
+            gcRoots.AddRange(runtimeCore.CallSiteGCRoots);
             gcRoots.AddRange(rmem.Stack.Where(s => s.IsReferenceType));
             return gcRoots;
-#else
-            return new List<StackValue>{};
-#endif
         }
 
         private void GC()
