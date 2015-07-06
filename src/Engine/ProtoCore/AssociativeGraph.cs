@@ -16,6 +16,25 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Marks all graphnodes ditry within the specified block
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="graphNodesInScope"></param>
+        public static void MarkAllGraphNodesDirty(int block, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Builds the dependencies within the list of graphNodes
         /// </summary>
         /// <param name="graphNodeScopeToCheck"></param>

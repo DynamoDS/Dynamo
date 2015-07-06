@@ -80,7 +80,13 @@ namespace ProtoCore.DSASM
 
         public bool IsExplicitCall { get; set; }
 
-        public List<AssociativeGraph.GraphNode> deferedGraphNodes {get; private set;}
+        public List<AssociativeGraph.GraphNode> deferedGraphNodes { get; private set; }
+
+        /// <summary>
+        /// This is the list of graphnodes that are reachable from the current state
+        /// This is updated for every bounce and function call
+        /// </summary>
+        private List<AssociativeGraph.GraphNode> graphNodesInProgramScope;
         
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
@@ -105,6 +111,21 @@ namespace ProtoCore.DSASM
             bounceType = CallingConvention.BounceType.kImplicit;
 
             deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
+        }
+
+        /// <summary>
+        /// Cache the graphnodes in scope
+        /// </summary>
+        private void SetupGraphNodesInScope()
+        {
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kInvalidIndex;
+            if (!IsGlobalScope())
+            {
+                ci = rmem.CurrentStackFrame.ClassScope;
+                fi = rmem.CurrentStackFrame.FunctionScope;
+            }
+            graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
         }
 
         /// <summary>
@@ -392,7 +413,8 @@ namespace ProtoCore.DSASM
             //  Entering a nested block requires all the nodes of that block to be executed
             if (executingBlock > 0)
             {
-                istream.dependencyGraph.MarkAllGraphNodesDirty(executingBlock, ci, fi);
+                //istream.dependencyGraph.MarkAllGraphNodesDirty(executingBlock, ci, fi);
+                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(executingBlock, graphNodesInProgramScope);
             }
 
             if (fepRun)
@@ -445,6 +467,8 @@ namespace ProtoCore.DSASM
             Validity.Assert(null != istream);
 
             Validity.Assert(null != istream.instrList);
+
+            SetupGraphNodesInScope();
 
             if (!fepRun)
             {
@@ -499,6 +523,8 @@ namespace ProtoCore.DSASM
             istream = exe.instrStreamList[exeblock];
             Validity.Assert(null != istream);
             Validity.Assert(null != istream.instrList);
+
+            SetupGraphNodesInScope();
 
             pc = entry;
 
@@ -1412,28 +1438,26 @@ namespace ProtoCore.DSASM
         /// <param name="entrypoint"></param>
         /// <param name="isGlobalScope"></param>
         private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
-        { 
-            List<AssociativeGraph.GraphNode> graphNodeList = null;
+        {
+            if (graphNodesInProgramScope == null)
+            {
+                return;
+            }
+
             if (runtimeCore.Options.ApplyUpdate && isGlobalScope)
             {
-                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
-
-                Validity.Assert(graphNodeList.Count > 0);
+                Validity.Assert(graphNodesInProgramScope.Count > 0);
 
                 // The default entry point on ApplyUpdate is the first graphNode
-                entrypoint = graphNodeList[0].updateBlock.startpc;
-            }
-            else
-            {
-                graphNodeList = istream.dependencyGraph.GraphList;
+                entrypoint = graphNodesInProgramScope[0].updateBlock.startpc;
             }
 
-            if (graphNodeList.Count > 0)
+            if (graphNodesInProgramScope.Count > 0)
             {
-                Properties.executingGraphNode = graphNodeList[0];
+                Properties.executingGraphNode = graphNodesInProgramScope[0];
             }
 
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
+            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodesInProgramScope)
             {
                 if (runtimeCore.Options.IsDeltaExecution)
                 {
@@ -2366,6 +2390,8 @@ namespace ProtoCore.DSASM
 
             List<Instruction> instructions = istream.instrList;
             Validity.Assert(null != instructions);
+
+            SetupGraphNodesInScope();
 
             // Restore the previous state
             //rmem = runtimeCore.RuntimeMemory;
