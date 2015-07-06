@@ -126,6 +126,11 @@ namespace ProtoCore.DSASM
                 fi = rmem.CurrentStackFrame.FunctionScope;
             }
             graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
+
+            //int classIndex = Constants.kInvalidIndex;
+            //int functionIndex = Constants.kGlobalScope;
+            //bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
+            //graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(classIndex, functionIndex);
         }
 
         /// <summary>
@@ -1580,7 +1585,7 @@ namespace ProtoCore.DSASM
         private bool UpdatePropertyChangedGraphNode()
         {
             bool propertyChanged = false;
-            var graphNodes = istream.dependencyGraph.GraphList;
+            var graphNodes = graphNodesInProgramScope;
             foreach (var node in graphNodes)
             {
                 if (node.propertyChanged)
@@ -5861,11 +5866,9 @@ namespace ProtoCore.DSASM
             {
                 DebugReturn(procNode, pc);
             }
-            // This resotring execution states is only permitted if the current scope is still in a function
-            //if (currentScopeFunction != Constants.kGlobalScope)
-            {
-                RestoreGraphNodeExecutionStates(procNode, execStateRestore);
-            }
+
+            SetupGraphNodesInScope();   
+            RestoreGraphNodeExecutionStates(procNode, execStateRestore);
         }
 
         private void RETB_Handler()
@@ -5939,6 +5942,7 @@ namespace ProtoCore.DSASM
                 }
             }
             Properties = PopInterpreterProps();
+            SetupGraphNodesInScope();   
         }
 
         private void RETCN_Handler(Instruction instruction)
@@ -6064,6 +6068,7 @@ namespace ProtoCore.DSASM
             }
 
 
+
             terminate = !explicitCall;
 
             // Comment Jun: Dispose calls are always implicit and need to terminate
@@ -6103,6 +6108,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
+            SetupGraphNodesInScope();          
             RestoreGraphNodeExecutionStates(procNode, execStateRestore);
         }
 
@@ -6415,19 +6421,22 @@ namespace ProtoCore.DSASM
                     // On delta execution, it is possible that the next graphnode is clean
                     // Retrieve the next dirty graphnode given the pc
                     // Associative update is handled when ApplyUpdate = true
-                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(nextPC, ci, fi);
+                    //nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(nextPC, ci, fi);
+                    nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstDirtyGraphNodeFromPC(nextPC, graphNodesInProgramScope);
                 }
                 else
                 {
                     // Allow immediate update if we are in a local scope.
-                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
+                    //nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
+                    nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstDirtyGraphNodeFromPC(Constants.kInvalidIndex, graphNodesInProgramScope);
                 }
             }
             else
             {
                 // On normal execution, just retrieve the graphnode associated with pc
                 // Associative update is handled in jdep
-                nextGraphNode = istream.dependencyGraph.GetGraphNode(nextPC, ci, fi);
+                //nextGraphNode = istream.dependencyGraph.GetGraphNode(nextPC, ci, fi);
+                nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetGraphNodeAtPC(nextPC, graphNodesInProgramScope);
             }
             return nextGraphNode;
         }
