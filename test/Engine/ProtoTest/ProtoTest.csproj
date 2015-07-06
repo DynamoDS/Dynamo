@@ -139,6 +139,7 @@
     <Compile Include="LiveRunnerTests\MemoryConsumptionTests.cs" />
     <Compile Include="LiveRunnerTests\MicroFeatureTests.cs" />
     <Compile Include="LiveRunnerTests\PreviewChangeSetTests.cs" />
+    <Compile Include="MacroblockTests\MicroFeatureTests.cs" />
     <Compile Include="MinimalClassTests.cs" />
     <Compile Include="ModifierStack.cs" />
     <Compile Include="MultiLangTests\AssociativeToImperative.cs" />

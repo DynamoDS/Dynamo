@@ -1641,18 +1641,20 @@ namespace ProtoCore.AssociativeGraph
         public GraphNode GetFirstDirtyGraphNodeAtGlobalScope(int pc, int macroBlockID)
         {
             List<GraphNode> gnodeList = GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-
-            IEnumerable<GraphNode> macroBlockScope = gnodeList.Where(
-                g => g.MacroblockID == macroBlockID).Where(
-                g => g.isActive).Where(
-                g => g.isDirty).Where(
-                g => g.updateBlock.startpc >= pc);
-            if (macroBlockScope == null || macroBlockScope.Count() < 1)
+            if (gnodeList == null || gnodeList.Count < 1)
             {
                 return null;
             }
 
-            return macroBlockScope.First();
+            foreach (GraphNode gnode in gnodeList)
+            {
+                if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc && gnode.MacroblockID == macroBlockID)
+                {
+                    return gnode;
+                }
+            }
+
+            return null;
         }
 
 

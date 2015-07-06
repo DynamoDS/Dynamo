@@ -39,8 +39,9 @@ namespace ProtoCore.Runtime
         public ExecuteState State { get; set; }
         public List<AssociativeGraph.GraphNode> GraphNodeList { get; set; }
 
-        public MacroBlock()
+        public MacroBlock(int ID)
         {
+            UID = ID;
             State = ExecuteState.Ready;
             GraphNodeList = new List<AssociativeGraph.GraphNode>();
         }
@@ -226,7 +227,7 @@ namespace ProtoCore
             RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
             for (int n = 0; n < generatedMacroblocks; ++n)
             {
-                RuntimeMacroBlockList.Add(new Runtime.MacroBlock());
+                RuntimeMacroBlockList.Add(new Runtime.MacroBlock(n));
             }
 
             foreach (AssociativeGraph.GraphNode graphNode in programSnapshot)
@@ -237,96 +238,6 @@ namespace ProtoCore
                 }
             }
             core.RuntimeMacroBlockList = RuntimeMacroBlockList;
-        }
-
-        public void GenerateMacroBlocks(List<AssociativeNode> astList)
-        {
-            // For now there are 2 macroblocks:
-            //  0 - Macroblock for DS code processed as strings
-            //  1 - global macroblock
-            const int totalMacroBlocks = 2;
-
-            // Initialize macroblocks
-            int allocateSize = totalMacroBlocks - cachedMacroBlocks.Count;
-            for (int n = 0; n < allocateSize; ++n)
-            {
-                cachedMacroBlocks.Add(new ProtoCore.CompileTime.MacroBlock());
-            }
-
-
-            // -------------------------------------------------
-            // --------------------- Begin ---------------------
-            // -------------------------------------------------
-
-            // The number of macroblocks allocated for the entire program
-            // This does not include the macroblock associated with strings
-            int numMacroBlocks = 1;
-
-            // Generate the macroblocks
-            // Replace this logic with the real macroblock generator
-            List<List<AssociativeNode>> generatedMacroBlockList = new List<List<AssociativeNode>>();
-            for (int n = 0; n < numMacroBlocks; ++n)
-            {
-                List<AssociativeNode> singleMacroBlock = new List<AssociativeNode>(astList);
-                generatedMacroBlockList.Add(singleMacroBlock);
-            }
-
-            // Cache the macroblocks 
-            for (int mBlockID = 0; mBlockID < numMacroBlocks; ++mBlockID)
-            {
-                List<AssociativeNode> macroBlock = generatedMacroBlockList[mBlockID];
-                foreach (AssociativeNode node in macroBlock)
-                {
-                    // The macroBlockID is the index in which the macroblock is stored in core
-                    int macroBlockID = mBlockID + 1;
-                    Validity.Assert(cachedMacroBlocks[macroBlockID] != null);
-                    cachedMacroBlocks[macroBlockID].AstList.Add(node);
-                }
-            }
-
-            core.MacroBlockList = cachedMacroBlocks;
-
-            // -------------------------------------------------
-            // --------------------- End -----------------------
-            // -------------------------------------------------
-
-
-            // Allocate space for runtime macroblock
-            for (int n = 0; n < allocateSize; ++n)
-            {
-                core.RuntimeMacroBlockList.Add(new ProtoCore.Runtime.MacroBlock());
-            }
-        }
-
-        /// <summary>
-        /// Temporary support for DS code that need to be processed as strings
-        /// </summary>
-        /// <param name=></param>
-        /// <returns></returns>
-        public void GenerateDefaultMacroBlock()
-        {
-            // Initialize macroblocks
-            if (cachedMacroBlocks.Count == 0)
-            {
-                cachedMacroBlocks.Add(new ProtoCore.CompileTime.MacroBlock());
-                core.RuntimeMacroBlockList.Add(new ProtoCore.Runtime.MacroBlock());
-            }
-
-            core.MacroBlockList = cachedMacroBlocks;
-        }
-
-        public void GenerateMacroBlockIDForBinaryAST(List<AssociativeNode> astList, int macroBlockID)
-        {
-            // The default macroblock ID is at 1. 
-            // 0 is reserved for macroblock that represent DS code processed as strings 
-            foreach (AssociativeNode node in astList)
-            {
-                BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                if (bnode != null)
-                {
-                    bnode.MacroBlockID = macroBlockID;
-                }
-            }
         }
     }
 }

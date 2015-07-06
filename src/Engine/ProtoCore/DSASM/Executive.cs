@@ -417,7 +417,7 @@ namespace ProtoCore.DSASM
                 if (!runtimeCore.Options.IsDeltaExecution)
                 {
                     pc = SetupGraphNodesForEntry(pc);
-                    SetupGraphEntryPoint(pc, IsGlobalScope());
+                    SetupGraphEntryPoint(pc, IsGlobalScope(), exe.ExecutingMacroBlock);
                 }
                 else
                 {
@@ -428,7 +428,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        SetupGraphEntryPoint(pc, IsGlobalScope());
+                        SetupGraphEntryPoint(pc, IsGlobalScope(), exe.ExecutingMacroBlock);
                     }
                 }
             }
@@ -1424,7 +1424,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="entrypoint"></param>
         /// <param name="isGlobalScope"></param>
-        private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
+        private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope, int macroblockID)
         { 
             List<AssociativeGraph.GraphNode> graphNodeList = null;
             if (runtimeCore.Options.ApplyUpdate && isGlobalScope)
@@ -6428,6 +6428,33 @@ namespace ProtoCore.DSASM
                     nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
                 }
             }      
+            else
+            {
+                // On normal execution, just retrieve the graphnode associated with pc
+                // Associative update is handled in jdep
+                //nextGraphNode = istream.dependencyGraph.GetGraphNode(nextPC, ci, fi);
+                nextGraphNode = GetNextGraphNodeToExecute(nextPC, ci, fi, exe.ExecutingMacroBlock);
+
+            }
+            return nextGraphNode;
+        }
+
+
+        /// <summary>
+        /// Get the first dirty graphnode to execute within the macroblock scope
+        /// </summary>
+        /// <param name="nextPC"></param>
+        /// <param name="ci"></param>
+        /// <param name="fi"></param>
+        /// <param name="macroblockID"></param>
+        /// <returns></returns>
+        private AssociativeGraph.GraphNode GetNextGraphNodeToExecute(int nextPC, int ci, int fi, int macroblockID)
+        {
+            AssociativeGraph.GraphNode nextGraphNode = null;
+            if (IsGlobalScope())
+            {
+                nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNodeAtGlobalScope(nextPC, exe.ExecutingMacroBlock);
+            }
             else
             {
                 // On normal execution, just retrieve the graphnode associated with pc

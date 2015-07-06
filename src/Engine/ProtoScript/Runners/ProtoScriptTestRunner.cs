@@ -1,3 +1,6 @@
+
+#define __MACROBLOCK_CORE_EXECUTION
+
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -151,7 +154,7 @@ namespace ProtoScript.Runners
 
             try
             {
-                foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
+                foreach (ProtoCore.DSASM.CodeBlock codeBlock in core.CodeBlockList)
                 {
                     // Comment Jun:
                     // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
@@ -168,7 +171,20 @@ namespace ProtoScript.Runners
                     int locals = 0; // This is the global scope, there are no locals
                     ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, stackFrame, locals);
+                    
+#if __MACROBLOCK_CORE_EXECUTION
+
+                    Executable exe = runtimeCore.DSExecutable;
+                    ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer(exe.MacroBlockList);
+                    sequencer.Execute(
+                        runtimeCore.CurrentExecutive.CurrentDSASMExec,
+                        codeBlock.codeBlockId,
+                        runtimeCore.StartPC,
+                        stackFrame,
+                        locals);
+#else
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeBlock.codeBlockId, codeBlock.instrStream.entrypoint, stackFrame, locals);
+#endif
                 }
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
@@ -180,20 +196,6 @@ namespace ProtoScript.Runners
             return runtimeCore;
         }
 
-        /// <summary>
-        /// Use the sequencer to execute a list of macroblocks
-        /// </summary>
-        /// <param name="core"></param>
-        /// <param name="runtimeCore"></param>
-        private void ExecuteSequence(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
-        {
-           
-        }
-
-        private void ExecuteMacroblock(ProtoCore.Runtime.MacroBlock macroblock)
-        {
-
-        }
 
         /// <summary>
         /// ExecuteLive is called by the liverunner where a persistent RuntimeCore is provided
