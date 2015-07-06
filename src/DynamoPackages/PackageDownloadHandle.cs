@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Linq;
 using Dynamo.Core;
 using Dynamo.Models;
 
@@ -75,8 +75,9 @@ namespace Dynamo.PackageManager
                 throw new Exception(Properties.Resources.PackageEmpty);
             }
 
-            var packagesDirectory = dynamoModel.PathManager.PackagesDirectory;
-            var installedPath = BuildInstallDirectoryString(packagesDirectory);
+            var packagesDirectories = dynamoModel.PathManager.PackagesDirectories;
+            var defaultPackageDirectory = packagesDirectories.ElementAt(0);
+            var installedPath = BuildInstallDirectoryString(defaultPackageDirectory);
             Directory.CreateDirectory(installedPath);
 
             // Now create all of the directories

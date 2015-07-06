@@ -86,10 +86,14 @@ namespace Dynamo.Interfaces
         string LogDirectory { get; }
 
         /// <summary>
-        /// The packages directory, which contains packages downloaded through
-        /// the package manager. This directory is specific to the current user.
+        /// Directories from where packages are to be loaded. The implementor
+        /// of this interface method should always guarantee that a non-empty 
+        /// list is returned, and that the first entry represents the default 
+        /// package directory. Packages downloaded through package manager are 
+        /// stored in the default package directory, which is specific to the 
+        /// current user.
         /// </summary>
-        string PackagesDirectory { get; }
+        IEnumerable<string> PackagesDirectories { get; }
 
         /// <summary>
         /// The directory, which contains ExtensionDefinition .xml files

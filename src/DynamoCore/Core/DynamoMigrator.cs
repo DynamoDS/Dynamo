@@ -79,7 +79,9 @@ namespace Dynamo.Core
         {
             get
             {
-                return this.pathManager.PackagesDirectory;
+                // Only return the default package directory.
+                var packagesDirectories = pathManager.PackagesDirectories;
+                return packagesDirectories.ElementAt(0);
             }
         }
 

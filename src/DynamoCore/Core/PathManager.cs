@@ -62,7 +62,6 @@ namespace Dynamo.Core
         private readonly string userDefinitions;
         private readonly string commonDefinitions;
         private readonly string logDirectory;
-        private readonly string packagesDirectory;
         private readonly string extensionsDirectory;
         private readonly string viewExtensionsDirectory;
         private readonly string samplesDirectory;
@@ -70,6 +69,7 @@ namespace Dynamo.Core
         private readonly string preferenceFilePath;
         private readonly string galleryFilePath;
 
+        private readonly List<string> packageDirectories;
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
         private readonly HashSet<string> preloadedLibraries;
@@ -103,9 +103,9 @@ namespace Dynamo.Core
             get { return logDirectory; }
         }
 
-        public string PackagesDirectory
+        public IEnumerable<string> PackagesDirectories
         {
-            get { return packagesDirectory; }
+            get { return packageDirectories; }
         }
 
         public string ExtensionsDirectory
@@ -277,7 +277,6 @@ namespace Dynamo.Core
 
             userDefinitions = Path.Combine(userDataDir, DefinitionsDirectoryName);
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
-            packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
             backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
 
@@ -288,6 +287,11 @@ namespace Dynamo.Core
             samplesDirectory = GetSamplesFolder(commonDataDir);
             var galleryDirectory = GetGalleryDirectory(commonDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
+
+            packageDirectories = new List<string>
+            {
+                Path.Combine(userDataDir, PackagesDirectoryName)
+            };
 
             nodeDirectories = new HashSet<string>
             {
@@ -306,11 +310,17 @@ namespace Dynamo.Core
         /// </summary>
         internal void EnsureDirectoryExistence()
         {
+            if (packageDirectories.Count <= 0)
+            {
+                throw new InvalidOperationException(
+                    "At least one package directorie must be specified");
+            }
+
             // User specific data folders.
             CreateFolderIfNotExist(userDataDir);
             CreateFolderIfNotExist(userDefinitions);
             CreateFolderIfNotExist(logDirectory);
-            CreateFolderIfNotExist(packagesDirectory);
+            CreateFolderIfNotExist(packageDirectories[0]);
             CreateFolderIfNotExist(backupDirectory);
 
             // Common data folders for all users.
