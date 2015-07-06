@@ -30,9 +30,8 @@ namespace Dynamo.PackageManager
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
-        private readonly List<string> packagesDirectories;
-
-        public string RootPackagesDirectory
+        private readonly List<string> packagesDirectories = new List<string>();
+        public string DefaultPackagesDirectory
         {
             get { return packagesDirectories[0]; }
         }
@@ -47,9 +46,9 @@ namespace Dynamo.PackageManager
             if (packagesDirectories == null || (!packagesDirectories.Any()))
                 throw new ArgumentNullException("packagesDirectories");
 
-            this.packagesDirectories = new List<string>(packagesDirectories);
-            if (!Directory.Exists(RootPackagesDirectory))
-                Directory.CreateDirectory(RootPackagesDirectory);
+            this.packagesDirectories.AddRange(packagesDirectories);
+            if (!Directory.Exists(DefaultPackagesDirectory))
+                Directory.CreateDirectory(DefaultPackagesDirectory);
         }
 
         private void OnPackageAdded(Package pkg)
@@ -218,7 +217,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                Log(String.Format(Properties.Resources.ExceptionEncountered, this.RootPackagesDirectory), WarningLevel.Error);
+                Log(String.Format(Properties.Resources.ExceptionEncountered, directory), WarningLevel.Error);
                 Log(e);
             }
 

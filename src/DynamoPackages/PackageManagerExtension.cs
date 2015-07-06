@@ -106,7 +106,7 @@ namespace Dynamo.PackageManager
 
             packageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageLoader.RootPackagesDirectory);
+                uploadBuilder, packageLoader.DefaultPackagesDirectory);
         }
 
         public void Ready(ReadyParams sp) { }
