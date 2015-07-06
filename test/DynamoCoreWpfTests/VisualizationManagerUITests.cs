@@ -27,6 +27,8 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("Display.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -131,7 +133,7 @@ namespace DynamoCoreWpfTests
                 return;
             }
 
-            Assert.AreEqual(0, args.Packages.Sum(rp=>rp.PointVertexCount));
+            Assert.AreEqual(0, args.Packages.Sum(rp => rp.PointVertexCount));
         }
 
         [Test]
@@ -197,7 +199,7 @@ namespace DynamoCoreWpfTests
             Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -253,7 +255,7 @@ namespace DynamoCoreWpfTests
             ws.RunSettings.RunType = RunType.Automatic;
 
             // Ensure we have some geometry
-            Assert.Greater(ws.TotalPointsToRender(),0);
+            Assert.Greater(ws.TotalPointsToRender(), 0);
 
             // Open a new file. It doesn't matter if the new file
             // is saved in Manual or Automatic, the act of clearing
@@ -321,7 +323,7 @@ namespace DynamoCoreWpfTests
             ws.RunSettings.RunType = RunType.Automatic;
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -365,7 +367,7 @@ namespace DynamoCoreWpfTests
             Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count());
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -507,7 +509,7 @@ namespace DynamoCoreWpfTests
             //number of pieces of geometry in the collection
             Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, ws.TotalMeshVerticesToRender());
 
-            var testColor = new Color4(0, 0, 0, 10.0f/255.0f);
+            var testColor = new Color4(0, 0, 0, 10.0f / 255.0f);
             Assert.True(ws.HasMeshVerticesAllOfColor(testColor));
 
             // Increase the number of planes
@@ -600,7 +602,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            var homeColor = (Color) SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+            var homeColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
 
             Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor.ToColor4());
 
@@ -632,6 +634,36 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, ws.TotalLinesToRender());
         }
 
+        [Test]
+        public void Display_ByGeometryColor_HasColoredMesh()
+        {
+            var openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\Display.ByGeometryColor.dyn");
+            OpenAndRunDynamoDefinition(openPath);
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+
+            Assert.True(ws.HasAnyVertexColoredMeshesOfColor(new Color4(new Color3(1.0f,0,1.0f))));
+        }
+
+        [Test]
+        public void Display_BySurfaceColors_HasColoredMesh()
+        {
+            var openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\Display.BySurfaceColors.dyn");
+            OpenAndRunDynamoDefinition(openPath);
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+
+            Assert.True(ws.HasAnyColorMappedMeshes());
+        }
+
         private void Open(string relativePath)
         {
             OpenDynamoDefinition(relativePath);
@@ -640,11 +672,30 @@ namespace DynamoCoreWpfTests
 
     internal static class WorkspaceExtensions
     {
+        public static bool HasAnyVertexColoredMeshesOfColor(this WorkspaceModel workspace, Color4 color)
+        {
+            var colorMeshCount = workspace.Nodes.
+                SelectMany(n => n.RenderPackages).
+                Where(rp => rp.RequiresPerVertexColoration).
+                Where(rp => rp.MeshVertexColors.IsArrayOfColor(color));
+
+            return colorMeshCount.Any();
+        }
+
+        public static bool HasAnyColorMappedMeshes(this WorkspaceModel workspace)
+        {
+            var colorMeshCount = workspace.Nodes.
+                SelectMany(n => n.RenderPackages).
+                Where(rp => rp.Colors != null);
+
+            return colorMeshCount.Any();
+        }
+
         public static int TotalLinesOfColorToRender(this WorkspaceModel workspace, Color4 color)
         {
             var colorLineCount = workspace.Nodes.
-                SelectMany(n=>n.RenderPackages).
-                Where(rp=>rp.LineVertexCount > 0).
+                SelectMany(n => n.RenderPackages).
+                Where(rp => rp.LineVertexCount > 0).
                 Sum(rp => rp.TotalCurvesOfColor(color));
 
             return colorLineCount;
@@ -663,17 +714,17 @@ namespace DynamoCoreWpfTests
         {
             var labelledPackages = workspace.Nodes.
                 SelectMany(n => n.RenderPackages).
-                Where(rp=>rp.DisplayLabels).ToArray();
+                Where(rp => rp.DisplayLabels).ToArray();
 
             int total = 0;
 
             total += labelledPackages.
-                Where(rp=>rp.PointVertexCount > 0).
+                Where(rp => rp.PointVertexCount > 0).
                 Sum(rp => rp.PointVertexCount);
 
             total += labelledPackages.
-                Where(rp=>rp.LineVertexCount > 0).
-                Sum(rp => rp.LineStripVertexCounts.Count(c => c >0));
+                Where(rp => rp.LineVertexCount > 0).
+                Sum(rp => rp.LineStripVertexCounts.Count(c => c > 0));
 
             total += labelledPackages.Count(rp => rp.MeshVertexCount > 0);
 
@@ -705,7 +756,7 @@ namespace DynamoCoreWpfTests
         {
             return workspace.Nodes.
                 SelectMany(n => n.RenderPackages).
-                Where(rp=>rp.LineStripVertexCounts.Any()).
+                Where(rp => rp.LineStripVertexCounts.Any()).
                 Sum(rp => rp.LineStripVertexCounts.Count(c => c > 0));
         }
 
@@ -726,12 +777,12 @@ namespace DynamoCoreWpfTests
                 var currCount = package.LineStripVertexCounts.ElementAt(i);
                 if (currCount == 0) continue;
 
-                var colorBytes = package.LineStripVertexColors.Skip(idx).Take(currCount*4);
+                var colorBytes = package.LineStripVertexColors.Skip(idx).Take(currCount * 4);
                 if (colorBytes.IsArrayOfColor(color))
                 {
                     count++;
                 }
-                idx += currCount*4;
+                idx += currCount * 4;
             }
 
             return count;
@@ -744,15 +795,15 @@ namespace DynamoCoreWpfTests
             for (var i = 0; i < colorArr.Count(); i += 4)
             {
                 var r = colorArr[i] == (byte)(color.Red * 255);
-                var g = colorArr[i+1] == (byte)(color.Green * 255);
-                var b = colorArr[i+2] == (byte)(color.Blue * 255);
-                var a = colorArr[i+3] == (byte)(color.Alpha * 255);
+                var g = colorArr[i + 1] == (byte)(color.Green * 255);
+                var b = colorArr[i + 2] == (byte)(color.Blue * 255);
+                var a = colorArr[i + 3] == (byte)(color.Alpha * 255);
                 if (!a || !r || !g || !b)
                 {
                     return false;
                 }
             }
-            
+
             return true;
         }
     }

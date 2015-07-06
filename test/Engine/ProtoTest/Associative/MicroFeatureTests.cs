@@ -152,7 +152,6 @@ temp = test(1, 2);
         }
 
         [Test]
-        [Category("Failure")]
         [Category("Class")]
         public void TestClasses01()
         {

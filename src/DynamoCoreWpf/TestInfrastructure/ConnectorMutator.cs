@@ -57,7 +57,7 @@ namespace Dynamo.TestInfrastructure
 
             Thread.Sleep(100);
 
-            IList<NodeModel> nodesAfterMutate = DynamoViewModel.Model.CurrentWorkspace.Nodes;
+            IEnumerable<NodeModel> nodesAfterMutate = DynamoViewModel.Model.CurrentWorkspace.Nodes;
 
             if (nodesAfterMutate.Contains(node))
             {
@@ -81,7 +81,7 @@ namespace Dynamo.TestInfrastructure
             }
             Thread.Sleep(100);
 
-            IList<NodeModel> nodesAfterUndo = DynamoViewModel.Model.CurrentWorkspace.Nodes;
+            IEnumerable<NodeModel> nodesAfterUndo = DynamoViewModel.Model.CurrentWorkspace.Nodes;
 
             NodeModel nodeAfterUndo = nodesAfterUndo.FirstOrDefault(t => t.GUID.Equals(node.GUID));
 
