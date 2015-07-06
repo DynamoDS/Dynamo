@@ -741,6 +741,22 @@ namespace Dynamo.Models
                 if (customNodeSearchRegistry.Contains(info.FunctionId))
                     return;
 
+                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+                                x =>
+                                {
+                                    return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                                }).ToList();
+
+                if (elements.Any())
+                {
+                    foreach (var element in elements)
+                    {
+                        element.SyncWithCustomNodeInfo(info);
+                        SearchModel.Update(element);
+                    }
+                    return;
+                }
+
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
@@ -1211,7 +1227,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null);
+                    workspace.SaveAs(savePath, null, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict.Add(workspace.Guid, savePath);
