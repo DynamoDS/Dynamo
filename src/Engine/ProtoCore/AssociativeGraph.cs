@@ -16,6 +16,69 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Gets the dirty graphnode of the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public static AssociativeGraph.GraphNode GetGraphNodeAtPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null && graphNodesInScope.Count > 0)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc == pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the first dirty graphnode starting from the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public static AssociativeGraph.GraphNode GetFirstDirtyGraphNodeFromPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null && graphNodesInScope.Count > 0)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
+                    {
+                        return gnode;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Marks all graphnodes ditry within the specified block
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="graphNodesInScope"></param>
+        public static void MarkAllGraphNodesDirty(int block, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Builds the dependencies within the list of graphNodes
         /// </summary>
         /// <param name="graphNodeScopeToCheck"></param>
