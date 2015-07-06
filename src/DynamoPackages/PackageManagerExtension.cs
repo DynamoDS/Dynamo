@@ -90,8 +90,7 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            var packagesDirectories = startupParams.PathManager.PackagesDirectories;
-            packageLoader = new PackageLoader(packagesDirectories.ElementAt(0));
+            packageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
             packageLoader.MessageLogged += OnMessageLogged;
             packageLoader.RequestLoadNodeLibrary += OnRequestLoadNodeLibrary;
             packageLoader.RequestLoadCustomNodeDirectory +=
