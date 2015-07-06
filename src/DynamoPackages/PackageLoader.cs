@@ -30,11 +30,24 @@ namespace Dynamo.PackageManager
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
-        public string RootPackagesDirectory { get; private set; }
+        private readonly List<string> packagesDirectories;
+
+        public string RootPackagesDirectory
+        {
+            get { return packagesDirectories[0]; }
+        }
 
         public PackageLoader(string overridePackageDirectory)
+            : this(new[] { overridePackageDirectory })
         {
-            RootPackagesDirectory = overridePackageDirectory;
+        }
+
+        public PackageLoader(IEnumerable<string> packagesDirectories)
+        {
+            if (packagesDirectories == null || (!packagesDirectories.Any()))
+                throw new ArgumentNullException("packagesDirectories");
+
+            this.packagesDirectories = new List<string>(packagesDirectories);
             if (!Directory.Exists(RootPackagesDirectory))
                 Directory.CreateDirectory(RootPackagesDirectory);
         }
@@ -157,9 +170,17 @@ namespace Dynamo.PackageManager
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
-        { 
-            foreach (var dir in 
-                Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
+        {
+            foreach (var packagesDirectory in packagesDirectories)
+            {
+                ScanPackageDirectories(packagesDirectory, preferences);
+            }
+        }
+
+        private void ScanPackageDirectories(string root, IPreferences preferences)
+        {
+            foreach (var dir in
+                Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);
                 if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir)) 
