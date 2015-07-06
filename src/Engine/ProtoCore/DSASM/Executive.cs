@@ -6371,9 +6371,7 @@ namespace ProtoCore.DSASM
             }
 
 #if !TRACING_GC
-            var gcroots = CollectRootPointers();
-            if (gcroots != null)
-                rmem.Heap.GCMarkAndSweep(gcroots, this);
+            GC();
 #endif
             return;
         }
@@ -6573,9 +6571,9 @@ namespace ProtoCore.DSASM
         private void Exec(Instruction instruction)
         {
 #if TRACING_GC
-            if (rmem.Heap.IsWaitingForRoots())
+            if (rmem.Heap.IsWaitingForRoots)
             {
-                var gcroots = CollectRootPointers();
+                var gcroots = CollectGCRoots();
                 rmem.Heap.SetRoots(gcroots, this);
             }
 #endif
@@ -6867,20 +6865,33 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public List<StackValue> CollectRootPointers()
+        public List<StackValue> CollectGCRoots()
         {
+#if TRACING_GC
             var gcRoots = new List<StackValue>();
-#if !TRACING_GC
+            if (RX.IsReferenceType)
+                gcRoots.Add(RX);
+            gcRoots.AddRange(runtimeCore.ReplicationRoots);
+            gcRoots.AddRange(rmem.Stack.Where(s => s.IsReferenceType));
+            return gcRoots;
+#else
+            return new List<StackValue>{};
+#endif
+        }
+
+        private void GC()
+        {
             var currentFramePointer = rmem.FramePointer;
             var frames = rmem.GetStackFrames();
             var blockId = executingBlock;
+            var gcRoots = new List<StackValue>();
 
             // Now garbage collection only happens on the top most block. 
             // We will loose this limiation soon.
             if (blockId != 0 || 
                 rmem.CurrentStackFrame.StackFrameType != StackFrameType.kTypeLanguage)
             {
-                return null;
+                return;
             }
 
 #if DEBUG
@@ -6896,7 +6907,7 @@ namespace ProtoCore.DSASM
 
             if (isInNestedImperativeBlock)
             {
-                return null;
+                return;
             }
 
             foreach (var stackFrame in frames)
@@ -6982,21 +6993,13 @@ namespace ProtoCore.DSASM
 #if DEBUG
                 gcRootSymbolNames.Add("__thisptr");
 #endif
-                if (stackFrame.ThisPtr.IsReferenceType)
-                    gcRoots.Add(stackFrame.ThisPtr);
+                gcRoots.Add(stackFrame.ThisPtr);
                 blockId = stackFrame.FunctionCallerBlock;
                 currentFramePointer = stackFrame.FramePointer;
             }
-#endif
-            if (RX.IsReferenceType)
-                gcRoots.Add(RX);
+            gcRoots.Add(RX);
 
-#if TRACING_GC
-            gcRoots.AddRange(runtimeCore.ReplicationRoots.Where(r => r.IsReferenceType));
-            gcRoots.AddRange(rmem.Stack.Where(s => s.IsReferenceType));
-#endif
-
-            return gcRoots;
+            rmem.Heap.GCMarkAndSweep(gcRoots, this);
         }
     }
 }

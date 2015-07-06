@@ -227,11 +227,14 @@ namespace ProtoCore
 
         public void AddCallSiteGCRoot(Guid callSiteID, StackValue sv)
         {
+            if (!sv.IsReferenceType)
+                return;
+
             if (!callsiteGCRoots.ContainsKey(callSiteID))
                 callsiteGCRoots[callSiteID] = new List<StackValue>();
 
             List<StackValue> svs = callsiteGCRoots[callSiteID];
-            svs.Add(sv);
+            svs.Add(sv); 
         }
 
         public void RemoveCallSiteGCRoot(Guid callSiteID)

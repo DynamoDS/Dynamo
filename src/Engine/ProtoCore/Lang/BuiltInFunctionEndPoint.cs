@@ -499,7 +499,7 @@ namespace ProtoCore.Lang
                     break;
                 case BuiltInMethods.MethodID.kGC:
 #if TRACING_GC
-                    var gcRoots = interpreter.runtime.RuntimeCore.CurrentExecutive.CurrentDSASMExec.CollectRootPointers();
+                    var gcRoots = interpreter.runtime.RuntimeCore.CurrentExecutive.CurrentDSASMExec.CollectGCRoots();
                     rmem.Heap.FullGC(gcRoots, interpreter.runtime);
 #endif
                     ret = StackValue.Null;

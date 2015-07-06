@@ -7,25 +7,10 @@ using ProtoCore.Utils;
 
 namespace ProtoCore.DSASM
 {
-    public enum GCState
-    {
-        Pause,
-        WaitingForRoots,
-        Propagate,
-        Sweep,
-    }
-
-    public enum GCMark
-    {
-        White,
-        Gray,
-        Black
-    }
-
     public class HeapElement
     {
-        private const int kInitialSize = 5;
-        private const double kReallocFactor = 0.5;
+        private const int INITIAL_SIZE = 5;
+        private const double REALLOC_FACTOR = 0.5;
 
         protected Heap heap;
         private int allocated;
@@ -33,7 +18,7 @@ namespace ProtoCore.DSASM
 
         public int VisibleSize { get; set; }
         public MetaData MetaData { get; set; }
-        public GCMark Mark { get; set; }
+        public Heap.GCMark Mark { get; set; }
 
         public HeapElement(int size, Heap heap)
         {
@@ -54,11 +39,11 @@ namespace ProtoCore.DSASM
         //
         private void ReAllocate(int size)
         {
-            int newSize = kInitialSize;
-            if (size > kInitialSize)
+            int newSize = INITIAL_SIZE;
+            if (size > INITIAL_SIZE)
             {
                 // Determine the next allocation size
-                newSize = (int)(allocated * kReallocFactor) + allocated;
+                newSize = (int)(allocated * REALLOC_FACTOR) + allocated;
 
                 // If the requested index is greater than the computed next allocation size, 
                 // then the requested index is the next allocation size
@@ -269,16 +254,31 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
+        private enum GCState
+        {
+            Pause,
+            WaitingForRoots,
+            Propagate,
+            Sweep,
+        }
+
+        public enum GCMark
+        {
+            White,
+            Gray,
+            Black
+        }
+
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
         private readonly StringTable stringTable = new StringTable();
 
-        private const int kGCThreshold = 65536;
+        private const int GC_THRESHOLD = 1024*1024;
         // Totaly allocated StackValues
         private int totalAllocated = 0;
         private int totalTraversed = 0;
-        private int gcDebt = kGCThreshold;
+        private int gcDebt = GC_THRESHOLD;
 
         private LinkedList<StackValue> grayList;
         private HashSet<int> sweepSet;
@@ -287,7 +287,7 @@ namespace ProtoCore.DSASM
         private bool isDisposing = false;
 
         public bool IsGCRunning { get; private set; }
-        public GCState gcState = GCState.Pause;
+        private GCState gcState = GCState.Pause;
 
         public Heap()
         {
@@ -574,8 +574,8 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Mark all items in the array.
         /// </summary>
-        /// <param name="hp"></param>
-        /// <returns></returns>
+        /// <param name="array">Array</param>
+        /// <returns>Return the size of memory that referenced by the array</returns>
         private int TraverseArray(DSArray array)
         {
             var dict = array.ToDictionary();
@@ -585,16 +585,21 @@ namespace ProtoCore.DSASM
             {
                 var key = pair.Key;
                 if (key.IsReferenceType)
-                    size += PropagateMark(key);
+                    size += RecursiveMark(key);
 
                 var value = pair.Value;
                 if (value.IsReferenceType)
-                    size += PropagateMark(value);
+                    size += RecursiveMark(value);
             }
 
             return size;
         }
 
+        /// <summary>
+        /// Mark all items in the object 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>Return the size of memory that referenced by the object</returns>
         private int TraverseObject(DSObject obj)
         {
             int size = obj.MemorySize;
@@ -602,7 +607,7 @@ namespace ProtoCore.DSASM
             foreach (var item in obj.VisibleItems)
             {
                 if (item.IsReferenceType)
-                    size += PropagateMark(item);
+                    size += RecursiveMark(item);
             }
 
             return size;
@@ -612,9 +617,9 @@ namespace ProtoCore.DSASM
         /// Recursively mark all objects referenced by the object and change the
         /// color of this object to black.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">StackValue</param>
         /// <returns></returns>
-        private int PropagateMark(StackValue value)
+        private int RecursiveMark(StackValue value)
         {
             Validity.Assert(value.IsReferenceType);
 
@@ -676,7 +681,7 @@ namespace ProtoCore.DSASM
                 case GCState.Propagate:
                     if (grayList.Any())
                     {
-                        totalTraversed += PropagateMark(grayList.First());
+                        totalTraversed += RecursiveMark(grayList.First());
                         grayList.RemoveFirst();
                     }
                     else
@@ -694,6 +699,9 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Sweep all heap elements that are marked as white.
+        /// </summary>
         private void Sweep()
         {
             foreach (var ptr in sweepSet)
@@ -719,9 +727,12 @@ namespace ProtoCore.DSASM
                 freeList.Add(ptr);
             }
 
-            gcDebt = totalAllocated > kGCThreshold ? totalAllocated : kGCThreshold;
+            gcDebt = totalAllocated > GC_THRESHOLD ? totalAllocated : GC_THRESHOLD;
         }
 
+        /// <summary>
+        /// Mark all heap elements as white.
+        /// </summary>
         private void MarkAllWhite()
         {
             foreach (var hp in heapElements)
@@ -731,6 +742,11 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// If the heap object is modified, mark the new value that it references to.
+        /// </summary>
+        /// <param name="hp">Heap object that is to be modified</param>
+        /// <param name="value">The value that will be put in the heap object</param>
         public void WriteBarrierForward(HeapElement hp, StackValue value)
         {
             if (hp.Mark == GCMark.Black && value.IsReferenceType)
@@ -738,14 +754,20 @@ namespace ProtoCore.DSASM
                 HeapElement valueHp;
                 if (TryGetHeapElement(value, out valueHp))
                 {
-                    totalTraversed += PropagateMark(value);
+                    totalTraversed += RecursiveMark(value);
                 }
             }
         }
 
-        public bool IsWaitingForRoots()
+        /// <summary>
+        /// Return if the heap is waiting for GC root objects.
+        /// </summary>
+        public bool IsWaitingForRoots
         {
-            return gcState == GCState.WaitingForRoots;
+            get
+            { 
+                return gcState == GCState.WaitingForRoots;
+            }
         }
 
         /// <summary>
