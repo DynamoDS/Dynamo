@@ -919,10 +919,8 @@ namespace Dynamo.Tests
 
         private static string[] GetDynFiles(string folder)
         {
-            var execDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var directory = new DirectoryInfo(execDirectory);
-            var undoFileDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"test\core\node2code\" + folder);
-            var files = Directory.GetFiles(undoFileDirectory, "*.dyn");
+            var dir = Path.Combine(TestDirectory, @"core\node2code\" + folder);
+            var files = Directory.GetFiles(dir, "*.dyn");
             return files;
         }
 
