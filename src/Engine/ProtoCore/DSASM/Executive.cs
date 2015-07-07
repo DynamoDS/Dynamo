@@ -1344,8 +1344,6 @@ namespace ProtoCore.DSASM
             }
 
             bool isUpdated = false;
-
-            //List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
             List<AssociativeGraph.GraphNode> graphNodes = graphNodesInProgramScope;
             if (graphNodes != null)
             {
@@ -1757,7 +1755,7 @@ namespace ProtoCore.DSASM
             int langBlockDecl = (int)svFunctionBlock.opdata;
             ProcedureNode procNode = GetProcedureNode(langBlockDecl, classIndex, procIndex);
 
-            List<AssociativeGraph.GraphNode> graphNodes = procNode.GraphNodeList;//istream.dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
+            List<AssociativeGraph.GraphNode> graphNodes = procNode.GraphNodeList;
             if (graphNodes != null)
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
@@ -5712,6 +5710,7 @@ namespace ProtoCore.DSASM
             {
                 rmem.PopConstructBlockId();
             }
+            SetupGraphNodesInScope();
         }
 
      
