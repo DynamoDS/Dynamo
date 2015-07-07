@@ -120,7 +120,10 @@ namespace ProtoCore.DSASM
         {
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
-            if (IsGlobalScope())
+            // Check if wh're in the global scope
+            // executingBlock is 0, if its the outer block (no language block)
+            // IsGlobalScope returns if true if execution is not within a function call
+            if (executingBlock == 0 && IsGlobalScope())
             {
                 List<AssociativeGraph.GraphNode> globalScopeNodes = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
 

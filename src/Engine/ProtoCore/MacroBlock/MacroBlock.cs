@@ -183,9 +183,15 @@ namespace ProtoCore
                     continue;
                 }
 
+                if (graphnode.Visited)
+                {
+                    continue;
+                }
+
                 if (IsMacroblockEntryPoint(graphnode))
                 {
                     graphnode.MacroblockID = macroBlockID++;
+                    graphnode.Visited = true;
                     BuildMacroblock(graphnode, programSnapshot);
                 }
             }
@@ -194,13 +200,19 @@ namespace ProtoCore
 
         private void BuildMacroblock(AssociativeGraph.GraphNode currentNode, List<AssociativeGraph.GraphNode> programSnapshot)
         {
-            foreach (AssociativeGraph.GraphNode node in programSnapshot)
+            foreach (AssociativeGraph.GraphNode graphNode in programSnapshot)
             {
                 AssociativeGraph.GraphNode depNode = null;
-                if (node.DependsOn(currentNode.updateNodeRefList[0], ref depNode))
+                if (graphNode.Visited)
                 {
-                    node.MacroblockID = currentNode.MacroblockID;
-                    BuildMacroblock(node, programSnapshot);
+                    continue;
+                }
+
+                if (graphNode.DependsOn(currentNode.updateNodeRefList[0], ref depNode))
+                {
+                    graphNode.MacroblockID = currentNode.MacroblockID;
+                    graphNode.Visited = true;
+                    BuildMacroblock(graphNode, programSnapshot);
                 }
             }
         }
