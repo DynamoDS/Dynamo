@@ -355,6 +355,12 @@ namespace Dynamo.Core
             return Path.Combine(BackupDirectory, fileName);
         }
 
+        internal void LoadPackageFolders(IEnumerable<string> folders)
+        {
+            packageDirectories.Clear();
+            packageDirectories.AddRange(folders);
+        }
+
         #endregion
 
         #region Private Class Helper Methods

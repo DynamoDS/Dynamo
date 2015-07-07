@@ -102,6 +102,16 @@ namespace Dynamo
         public List<string> BackupFiles { get; set; }
 
         /// <summary>
+        /// A list of folders containing custom nodes.
+        /// </summary>
+        public List<string> CustomNodeFolders { get; set; }
+
+        /// <summary>
+        /// A list of folders containing zero-touch nodes.
+        /// </summary>
+        public List<string> PackageFolders { get; set; } 
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
@@ -186,6 +196,9 @@ namespace Dynamo
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
+
+            CustomNodeFolders = new List<string>();
+            PackageFolders = new List<string>();
         }
 
         /// <summary>
@@ -260,7 +273,24 @@ namespace Dynamo
             }
             catch (Exception) { }
 
+            settings.PackageFolders = RemoveDuplicateFolders(settings.PackageFolders);
+
             return settings;
+        }
+
+        private static List<string> RemoveDuplicateFolders(List<string> folders)
+        {
+            var uniqueFolders = new List<string>();
+            var lookup = new HashSet<string>();
+            foreach (var folder in folders)
+            {
+                if (!lookup.Contains(folder))
+                {
+                    lookup.Add(folder);
+                    uniqueFolders.Add(folder);
+                }
+            }
+            return uniqueFolders;
         }
     }
 }

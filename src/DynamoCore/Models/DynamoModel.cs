@@ -489,6 +489,15 @@ namespace Dynamo.Models
                 }
             }
 
+            // At this point, pathManager.PackageDirectories only has 1 element which is the directory
+            // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
+            // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
+            // PackageFolders
+            if (PreferenceSettings.PackageFolders.Count == 0)
+                PreferenceSettings.PackageFolders = new List<string>(pathManager.PackagesDirectories);
+            else
+                pathManager.LoadPackageFolders(PreferenceSettings.PackageFolders);
+
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));

@@ -22,6 +22,8 @@ namespace Dynamo.Interfaces
         List<string> RecentFiles { get; set; }
         List<string> BackupFiles { get; set; }
         List<string> PackageDirectoriesToUninstall { get; set; }
+        List<string> CustomNodeFolders { get; set; }
+        List<string> PackageFolders { get; set; } 
 
         /// <summary>
         /// Call this method to serialize PreferenceSettings given the output 
