@@ -611,4 +611,7 @@ value : bool = false</value>
     <value>Custom nodes</value>
     <comment>Used for uncategorised custom nodes.</comment>
   </data>
+  <data name="LibraryText" xml:space="preserve">
+    <value>Library</value>
+  </data>
 </root>

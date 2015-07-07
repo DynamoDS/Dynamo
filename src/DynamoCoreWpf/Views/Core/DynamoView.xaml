@@ -1426,8 +1426,9 @@
                                    VerticalAlignment="Stretch"
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
-                                   Margin="5 0 5 0">
-                            Library
+                                   Margin="5 0 5 0"
+                                   x:Name="Library">
+                            
                         </TextBlock>
                     </Grid>
                 </Button>

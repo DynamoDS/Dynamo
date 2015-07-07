@@ -227,7 +227,7 @@ namespace Dynamo.Controls
         {
             ShortcutToolbar shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager);
             shortcutBar.Name = "ShortcutToolbar";
-
+            Library.Text = Properties.Resources.LibraryText;
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
             newScriptButton.ShortcutToolTip = Dynamo.Wpf.Properties.Resources.DynamoViewToolbarNewButtonTooltip;
             newScriptButton.ShortcutCommand = dynamoViewModel.NewHomeWorkspaceCommand;

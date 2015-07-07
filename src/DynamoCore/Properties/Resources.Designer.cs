@@ -720,6 +720,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Library.
+        /// </summary>
+        public static string LibraryText {
+            get {
+                return ResourceManager.GetString("LibraryText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading node definition for &quot;{0}&quot; from: {1}.
         /// </summary>
         public static string LoadingNodeDefinition {
