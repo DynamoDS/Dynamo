@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using ProtoCore.AST.AssociativeAST;
+using System.Reflection;
 
 
 namespace Dynamo.Tests
@@ -877,6 +878,83 @@ namespace Dynamo.Tests
         {
             DynamoSelection.Instance.ClearSelection();
             nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele));
+        }
+    }
+
+    [Category("NodeToCode")]
+    class NodeToCodeSystemTest : DynamoModelTestBase
+    {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        private void SelectAll()
+        {
+            DynamoSelection.Instance.ClearSelection();
+            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+            {
+                DynamoSelection.Instance.Selection.Add(node); 
+            }
+        }
+
+        private string GetStringData(Guid guid)
+        {
+            var varName = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varName);
+            Assert.IsNotNull(mirror);
+            return mirror.GetStringData();
+        }
+
+        protected void UndoTest(string dynFilePath)
+        {
+            Dictionary<Guid, string> previewMap = new Dictionary<Guid, string>();
+            RunModel(dynFilePath);
+
+            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+            {
+                previewMap[node.GUID] = GetStringData(node.GUID); 
+            }
+
+            int nodeCount = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
+            int connectorCount = CurrentDynamoModel.CurrentWorkspace.Connectors.Count();
+
+            SelectAll();
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            CurrentDynamoModel.ExecuteCommand(undo);
+            CurrentDynamoModel.ForceRun();
+
+            // Verify after undo everything is OK
+            Assert.AreEqual(nodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(connectorCount, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+            {
+                Assert.IsTrue(previewMap.ContainsKey(node.GUID));
+                var preValue = previewMap[node.GUID];
+                var currentValue = GetStringData(node.GUID);
+                Assert.AreEqual(preValue, currentValue);
+            }
+        }
+
+        [Test, TestCaseSource("GetFiles")]
+        public void TestUndo(string fileName)
+        {
+            UndoTest(fileName);
+        }
+
+        private static string[] GetFilesForUndo()
+        {
+            var execDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var directory = new DirectoryInfo(execDirectory);
+            var undoFileDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"test\core\node2code\undo");
+            var files = Directory.GetFiles(undoFileDirectory, "*.dyn");
+            return files;
         }
     }
 }
