@@ -926,6 +926,26 @@ namespace Dynamo.Tests
             Assert.AreEqual("42", binaryExpr.RightNode.ToString());
         }
 
+
+        [Test]
+        public void TestUINode_CreateList()
+        {
+            OpenModel(@"core\node2code\CreateList.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            Assert.AreEqual(3, result.AstNodes.Count());
+            var assignment = result.AstNodes.LastOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("{t1, t2}", binaryExpr.RightNode.ToString());
+        }
+
         private void SelectAll(IEnumerable<NodeModel> nodes)
         {
             DynamoSelection.Instance.ClearSelection();
