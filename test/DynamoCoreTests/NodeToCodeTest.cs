@@ -861,7 +861,6 @@ namespace Dynamo.Tests
         }
 
 
-
         [Test]
         [Category("UnitTest")]
         public void TestNodeToCodeUndoRecorder()
@@ -871,6 +870,60 @@ namespace Dynamo.Tests
             recorder.RecordCreation(dummyModel);
             recorder.RecordDeletion(dummyModel);
             Assert.AreEqual(0, recorder.ActionCount());
+        }
+
+        [Test]
+        public void TestUINode_String()
+        {
+            OpenModel(@"core\node2code\stringNode.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.FirstOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("42", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_IntegerSlider()
+        {
+            OpenModel(@"core\node2code\integerSlider.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.FirstOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("42", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_NumberSlider()
+        {
+            OpenModel(@"core\node2code\numberSlider.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.FirstOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("42", binaryExpr.RightNode.ToString());
         }
 
         private void SelectAll(IEnumerable<NodeModel> nodes)
