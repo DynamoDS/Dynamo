@@ -737,8 +737,8 @@ namespace Dynamo.Tests
             var command = new DynamoModel.ConvertNodesToCodeCommand();
             CurrentDynamoModel.ExecuteCommand(command);
 
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             CurrentDynamoModel.ExecuteCommand(undo);
@@ -887,7 +887,7 @@ namespace Dynamo.Tests
             var binaryExpr = assignment as BinaryExpressionNode;
             Assert.IsNotNull(binaryExpr);
 
-            Assert.AreEqual("42", binaryExpr.RightNode.ToString());
+            Assert.AreEqual("\"42\"", binaryExpr.RightNode.ToString());
         }
 
         [Test]
@@ -961,6 +961,42 @@ namespace Dynamo.Tests
             Assert.IsNotNull(binaryExpr);
 
             Assert.AreEqual("{t1, t2}", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_NumberSequence()
+        {
+            OpenModel(@"core\node2code\numberSequence.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.LastOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.IsTrue(binaryExpr.RightNode is RangeExprNode);
+        }
+
+        [Test]
+        public void TestUINode_NumberRange()
+        {
+            OpenModel(@"core\node2code\numberRange.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.LastOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.IsTrue(binaryExpr.RightNode is RangeExprNode); ;
         }
 
         private void SelectAll(IEnumerable<NodeModel> nodes)
