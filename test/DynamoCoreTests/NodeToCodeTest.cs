@@ -899,6 +899,16 @@ namespace Dynamo.Tests
             }
         }
 
+        private void SelectAllExcept(Guid excludedNode)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+            {
+                if (node.GUID != excludedNode)
+                    DynamoSelection.Instance.Selection.Add(node);
+            }
+        }
+
         private string GetStringData(Guid guid)
         {
             var varName = GetVarName(guid);
@@ -907,6 +917,31 @@ namespace Dynamo.Tests
             return mirror.GetStringData();
         }
 
+        private static string[] GetDynFiles(string folder)
+        {
+            var execDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var directory = new DirectoryInfo(execDirectory);
+            var undoFileDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"test\core\node2code\" + folder);
+            var files = Directory.GetFiles(undoFileDirectory, "*.dyn");
+            return files;
+        }
+
+        private static string[] GetFilesForUndo()
+        {
+            return GetDynFiles("undo");
+        }
+
+        private static string[] GetFilesForMutation()
+        {
+            return GetDynFiles("mutation");
+        }
+
+        /// <summary>
+        /// Run the dyn file and get all preview values in string representation.
+        /// Undo, force run and get all preview values in string representation.
+        /// These two sets of preview value should be the same.
+        /// </summary>
+        /// <param name="dynFilePath"></param>
         protected void UndoTest(string dynFilePath)
         {
             Dictionary<Guid, string> previewMap = new Dictionary<Guid, string>();
@@ -942,19 +977,50 @@ namespace Dynamo.Tests
             }
         }
 
-        [Test, TestCaseSource("GetFiles")]
+        /// <summary>
+        /// Run the dyn file and get all preview values in string representation. 
+        /// Then, iterate all nodes, for each iteration, choose a node and convert 
+        /// the remaining nodes to code, and compare the preview value of this 
+        /// node against with its original value.
+        /// </summary>
+        /// <param name="dynFilePath"></param>
+        protected void MutationTest(string dynFilePath)
+        {
+            Dictionary<Guid, string> previewMap = new Dictionary<Guid, string>();
+            RunModel(dynFilePath);
+
+            foreach (var node in CurrentDynamoModel.CurrentWorkspace.Nodes)
+            {
+                previewMap[node.GUID] = GetStringData(node.GUID);
+            }
+
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Select(n => n.GUID).ToList();
+            foreach (var node in nodes)
+            {
+                SelectAllExcept(node);
+                var command = new DynamoModel.ConvertNodesToCodeCommand();
+                CurrentDynamoModel.ExecuteCommand(command);
+                CurrentDynamoModel.ForceRun();
+
+                var preValue = previewMap[node];
+                var currentValue = GetStringData(node);
+                Assert.AreEqual(preValue, currentValue);
+ 
+                var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+                CurrentDynamoModel.ExecuteCommand(undo);
+            }
+        }
+
+        [Test, TestCaseSource("GetFilesForUndo")]
         public void TestUndo(string fileName)
         {
             UndoTest(fileName);
         }
 
-        private static string[] GetFilesForUndo()
+        [Test, TestCaseSource("GetFilesForMutation")]
+        public void TestMutation(string fileName)
         {
-            var execDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var directory = new DirectoryInfo(execDirectory);
-            var undoFileDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"test\core\node2code\undo");
-            var files = Directory.GetFiles(undoFileDirectory, "*.dyn");
-            return files;
+            MutationTest(fileName);
         }
     }
 }
