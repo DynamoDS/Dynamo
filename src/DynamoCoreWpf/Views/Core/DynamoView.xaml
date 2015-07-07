@@ -357,11 +357,11 @@
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
                                     MouseEnter="LoadPresetsMenus"
                                       Name="RestorePresetMenu"
-                                      Focusable="False" />
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
                                     MouseEnter="LoadPresetsMenus"
                                       Name="DeletePresetMenu"
-                                      Focusable="False" />
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />
                         </MenuItem>
                         <Separator />
                         
