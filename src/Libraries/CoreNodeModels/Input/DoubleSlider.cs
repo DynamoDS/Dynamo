@@ -29,12 +29,24 @@ namespace DSCoreNodesUI.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return outputIndex == 0
+                ? AstIdentifierForPreview
+                : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildDoubleNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] {assignment};
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
         }
 
         protected override double DeserializeValue(string val)

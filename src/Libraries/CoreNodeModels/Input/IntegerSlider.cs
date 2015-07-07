@@ -75,12 +75,24 @@ namespace DSCoreNodesUI.Input
             return base.UpdateValueCore(updateValueParams);
         }
 
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return outputIndex == 0
+                ? AstIdentifierForPreview
+                : base.GetAstIdentifierForOutputIndex(outputIndex);
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildIntNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] {assignment};
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
         }
 
         protected override int DeserializeValue(string val)
