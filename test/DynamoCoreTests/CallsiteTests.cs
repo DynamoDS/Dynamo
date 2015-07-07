@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -126,7 +126,7 @@ namespace Dynamo.Tests
             var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Geometry", "Geometry_Surfaces.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(42, ws.Nodes.Count);
+            Assert.AreEqual(42, ws.Nodes.Count());
             Assert.AreEqual(49, ws.Connectors.Count());
 
             // The guard added around deserialization of types that

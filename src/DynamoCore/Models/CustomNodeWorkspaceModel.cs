@@ -196,6 +196,9 @@ namespace Dynamo.Models
 
         public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
         {
+            if (isBackUp)
+                return base.SaveAs(newPath, runtimeCore, isBackUp);
+
             var originalPath = FileName;
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -212,7 +215,7 @@ namespace Dynamo.Models
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return base.SaveAs(newPath, runtimeCore);
+            return base.SaveAs(newPath, runtimeCore, isBackUp);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)

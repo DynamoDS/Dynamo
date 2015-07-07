@@ -296,7 +296,7 @@ namespace DynamoCoreWpfTests
             System.Threading.Thread.Sleep(500);
 
             // check if the node is loaded
-            //Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            //Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
 
             var graphNode = model.CurrentWorkspace.NodeFromWorkspace<Function>("9c8c2279-6f59-417c-8218-3b337230bd99");
             //var graphNode = (Function)model.Nodes.First(x => x is Function);
