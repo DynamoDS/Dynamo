@@ -77,11 +77,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool IsConvertible
-        {
-            get { return true;  }
-        }
-
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             var rhs = AstFactory.BuildStringNode(Value);
