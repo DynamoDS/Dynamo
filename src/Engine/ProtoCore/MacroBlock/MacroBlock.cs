@@ -176,23 +176,23 @@ namespace ProtoCore
         {
             Validity.Assert(programSnapshot != null);
             int macroBlockID = 0;
-            foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
+            foreach (AssociativeGraph.GraphNode graphNode in programSnapshot)
             {
-                if (!graphnode.isActive)
+                if (!graphNode.isActive)
                 {
                     continue;
                 }
 
-                if (graphnode.Visited)
+                if (graphNode.Visited)
                 {
                     continue;
                 }
 
-                if (IsMacroblockEntryPoint(graphnode))
+                if (IsMacroblockEntryPoint(graphNode))
                 {
-                    graphnode.MacroblockID = macroBlockID++;
-                    graphnode.Visited = true;
-                    BuildMacroblock(graphnode, programSnapshot);
+                    graphNode.MacroblockID = macroBlockID++;
+                    graphNode.Visited = true;
+                    BuildMacroblock(graphNode, programSnapshot);
                 }
             }
             return macroBlockID;
@@ -208,7 +208,9 @@ namespace ProtoCore
                     continue;
                 }
 
-                if (graphNode.DependsOn(currentNode.updateNodeRefList[0], ref depNode))
+                // Does graphNode node depend on currentNode and it is not an input node
+                bool isInputNode = IsMacroblockEntryPoint(graphNode);
+                if (!isInputNode && graphNode.DependsOn(currentNode.updateNodeRefList[0], ref depNode))
                 {
                     graphNode.MacroblockID = currentNode.MacroblockID;
                     graphNode.Visited = true;
