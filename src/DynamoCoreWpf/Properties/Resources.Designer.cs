@@ -214,6 +214,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes, I would like to contribute to this program (Google Analytics)..
         /// </summary>
         public static string ConsentFormGoogleAnalyticsCheckBoxContent {
