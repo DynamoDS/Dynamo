@@ -82,7 +82,7 @@ namespace Dynamo.Controls
             }
         }
  
-        private const double NearPlaneDistanceFactor = 0.0001;
+        private double nearPlaneDistanceFactor = 0.01;
  
 
 #if DEBUG
@@ -195,7 +195,17 @@ namespace Dynamo.Controls
                    Model3DDictionary.Select(x => x.Value).ToList();
             }
         }
-       
+
+        public double NearPlaneDistanceFactor
+        {
+            get { return nearPlaneDistanceFactor; }
+            set
+            {
+                nearPlaneDistanceFactor = value;
+                NotifyPropertyChanged("");
+            }
+        }
+
         #endregion
 
         #region constructors

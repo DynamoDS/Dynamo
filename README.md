@@ -57,10 +57,13 @@ Lists
 Revit
 - FamilyInstance.SetRotation node
 
+Localization
+- Dynamo for Revit is now localized based on the Operating System locale.  
+
 UI
 - Control the preview state of multiple nodes at once in right-click menu
 - Node port tooltips now show default inputs
-- In canvas search available via Shift-DoubleClick (still working on additional access points)
+- In canvas search available via Shift-DoubleClick and Right-Click
 - Drag and drop nodes from the browser
 - ExportToSAT now has units control
 - Backup files are now created to recover lost work.  Backup folder location available in the Start page
@@ -350,3 +353,4 @@ http://www.apache.org/licenses/LICENSE-2.0
 ###Winpthreads###
 http://mingw-w64.sourceforge.net/
 http://www.mingw.org/license
+

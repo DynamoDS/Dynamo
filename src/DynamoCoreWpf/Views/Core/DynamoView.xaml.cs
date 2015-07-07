@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -35,6 +36,8 @@ using Dynamo.Wpf.Utilities;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
+using Dynamo.Wpf.Extensions;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Controls
 {
@@ -50,6 +53,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
+        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -113,6 +117,23 @@ namespace Dynamo.Controls
             loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+
+            var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
+            viewExtensionManager.MessageLogged += Log;
+
+            foreach (var ext in viewExtensions)
+            {
+                try
+                {
+                    ext.Startup(null);
+                    viewExtensionManager.Add(ext);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
+
         }
 
         #region NodeViewCustomization
@@ -420,6 +441,19 @@ namespace Dynamo.Controls
             dynamoViewModel.BeginCommandPlayback(this);
 
             watchSettingsControl.DataContext = background_preview;
+
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Loaded(null);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
+
         }
 
         /// <summary>
@@ -888,6 +922,20 @@ namespace Dynamo.Controls
 
             //SHOW or HIDE GALLERY
             dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
+
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
+
+            viewExtensionManager.MessageLogged -= Log;
         }
 
         // the key press event is being intercepted before it can get to
@@ -1414,6 +1462,16 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
+        }
+
+        private void Log(ILogMessage obj)
+        {
+            dynamoViewModel.Model.Logger.Log(obj);
+        }
+
+        private void Log(string message)
+        {
+            Log(LogMessage.Info(message));
         }
     }
 }
