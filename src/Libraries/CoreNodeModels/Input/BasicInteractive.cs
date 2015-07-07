@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.Models;
+using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
@@ -48,6 +49,18 @@ namespace DSCoreNodesUI
         public override string PrintExpression()
         {
             return Value.ToString();
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            return outputIndex == 0
+                ? AstIdentifierForPreview
+                : base.GetAstIdentifierForOutputIndex(outputIndex);
         }
 
         #region Serialization/Deserialization Methods

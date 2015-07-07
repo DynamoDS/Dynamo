@@ -36,6 +36,11 @@ namespace DSCoreNodesUI
             return Value.ToString();
         }
 
+        public override bool IsConvertible
+        {
+            get { return true; }
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildBooleanNode(Value);
