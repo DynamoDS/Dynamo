@@ -24,10 +24,10 @@ namespace Dynamo.TestInfrastructure
             const bool pass = false;
 
             var nodes = DynamoViewModel.Model.CurrentWorkspace.Nodes;
-            if (nodes.Count == 0)
+            if (nodes.Count() == 0)
                 return pass;
 
-            int nodesCountBeforeCopying = nodes.Count;
+            int nodesCountBeforeCopying = nodes.Count();
 
             int numberOfUndosNeeded = this.Mutate(node);
             Thread.Sleep(100);
@@ -63,7 +63,7 @@ namespace Dynamo.TestInfrastructure
             {
                 try
                 {
-                    int nodesCountAfterCopying = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
+                    int nodesCountAfterCopying = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count();
 
                     if (nodesCountBeforeCopying != nodesCountAfterCopying)
                     {

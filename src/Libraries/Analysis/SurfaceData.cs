@@ -16,16 +16,19 @@ namespace Analysis
         /// <summary>
         /// The surface which contains the locations.
         /// </summary>
+        [Obsolete("Use the Surface available elsewhere in your graph.")]
         public Surface Surface { get; set; }
 
         /// <summary>
         /// A list of UV locations on the surface.
         /// </summary>
+        [Obsolete("Use the UV locations available elsewhere in your graph.")]
         public IEnumerable<UV> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of lists of doubles.
         /// </summary>
+        [Obsolete("Use the values provided by the node conducting the analysis.")]
         public IList<double> Values { get; internal set; }
 
         protected SurfaceData(

@@ -114,6 +114,7 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Interfaces\ICustomNodeManager.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />

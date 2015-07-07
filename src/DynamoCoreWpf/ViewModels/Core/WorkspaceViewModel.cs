@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -298,7 +298,11 @@ namespace Dynamo.ViewModels
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
-            Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
+
+            Model.NodeAdded += Model_NodeAdded;
+            Model.NodeRemoved += Model_NodeRemoved;
+            Model.NodesCleared += Model_NodesCleared;
+
             Model.Notes.CollectionChanged += Notes_CollectionChanged;
             Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
             Model.ConnectorAdded += Connectors_ConnectorAdded;
@@ -309,7 +313,9 @@ namespace Dynamo.ViewModels
                 (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
-            Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
+
+            
+            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
             foreach (var c in Model.Connectors)
@@ -318,6 +324,7 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
         }
+
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -401,44 +408,39 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
-        
-        void Nodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+
+
+        void Model_NodesCleared()
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        if (item is NodeModel)
-                        {
-                            var node = item as NodeModel;
+            _nodes.Clear();
+            Errors.Clear();
+            PostNodeChangeActions();
+        }
 
-                            var nodeViewModel = new NodeViewModel(this, node);
-                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;  
-                            nodeViewModel.NodeLogic.Modified +=OnNodeModified;
-                            _nodes.Add(nodeViewModel);
-                            Errors.Add(nodeViewModel.ErrorBubble);
-                            nodeViewModel.UpdateBubbleContent();
-                        }
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _nodes.Clear();
-                    Errors.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
-                        Errors.Remove(nodeViewModel.ErrorBubble);
-                        _nodes.Remove(nodeViewModel);
+        void Model_NodeRemoved(NodeModel node)
+        {
+            NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == node);
+            Errors.Remove(nodeViewModel.ErrorBubble);
+            _nodes.Remove(nodeViewModel);
 
-                    }
-                    break;
-            }
+            PostNodeChangeActions();
+        }
 
+        void Model_NodeAdded(NodeModel node)
+        {
+            var nodeViewModel = new NodeViewModel(this, node);
+            nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
+            nodeViewModel.NodeLogic.Modified += OnNodeModified;
+            _nodes.Add(nodeViewModel);
+            Errors.Add(nodeViewModel.ErrorBubble);
+            nodeViewModel.UpdateBubbleContent();
+
+            PostNodeChangeActions();
+        }
+
+        void PostNodeChangeActions()
+        {
             if (RunSettingsViewModel == null) return;
-
             CheckAndSetPeriodicRunCapability();
         }
 
@@ -1067,7 +1069,7 @@ namespace Dynamo.ViewModels
 
         private void DoGraphAutoLayout(object o)
         {
-            if (Model.Nodes.Count == 0)
+            if (Model.Nodes.Count() == 0)
                 return;
 
             var graph = new GraphLayout.Graph();

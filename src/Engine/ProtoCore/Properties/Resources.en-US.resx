@@ -889,4 +889,11 @@
   <data name="ZipAlgorithmError" xml:space="preserve">
     <value>Cannot support Longest and shortest zipped collections</value>
   </data>
+  <data name="FailedToCastFromNull" xml:space="preserve">
+    <value>Null value cannot be cast to {0}</value>
+  </data>
+  <data name="ArgumentNullException" xml:space="preserve">
+    <value>Value cannot be null.
+Parameter name: {0}</value>
+  </data>
 </root>

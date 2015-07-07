@@ -497,7 +497,7 @@ namespace ProtoFFI
                 {
                     if (objType.IsValueType)
                         throw new System.InvalidCastException(
-                            string.Format("Null value cannot be cast to {0}", objType.Name));
+                            string.Format(Resources.FailedToCastFromNull, objType.Name));
 
                     result.Add(default(T));
                 }

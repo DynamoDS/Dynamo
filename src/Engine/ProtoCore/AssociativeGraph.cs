@@ -16,6 +16,51 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Gets the dirty graphnode of the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public static AssociativeGraph.GraphNode GetGraphNodeAtPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            Validity.Assert(graphNodesInScope != null);
+            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc == pc);
+        }
+
+        /// <summary>
+        /// Gets the first dirty graphnode starting from the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public static AssociativeGraph.GraphNode GetFirstDirtyGraphNodeFromPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            Validity.Assert(graphNodesInScope != null);
+            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc >= pc);
+        }
+
+        /// <summary>
+        /// Marks all graphnodes ditry within the specified block
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="graphNodesInScope"></param>
+        public static void MarkAllGraphNodesDirty(int block, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Builds the dependencies within the list of graphNodes
         /// </summary>
         /// <param name="graphNodeScopeToCheck"></param>
@@ -1563,101 +1608,6 @@ namespace ProtoCore.AssociativeGraph
             }
         }
 
-        /// <summary>
-        /// Marks all graphnodes in scope as dirty
-        /// </summary>
-        /// <param name="block"></param>
-        /// <param name="classIndex"></param>
-        /// <param name="procIndex"></param>
-        public void MarkAllGraphNodesDirty(int block, int classIndex, int procIndex)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
-            if (gnodeList != null)
-            {
-                foreach (GraphNode gnode in gnodeList)
-                {
-                    if (gnode.languageBlockId == block)
-                    {
-                        gnode.isDirty = true;
-                    }
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Gets the graphnode of the given pc and scope
-        /// </summary>
-        /// <param name="pc"></param>
-        /// <param name="classIndex"></param>
-        /// <param name="procIndex"></param>
-        /// <returns></returns>
-        public GraphNode GetGraphNode(int pc, int classIndex, int procIndex)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
-            if (gnodeList != null && gnodeList.Count > 0)
-            {
-                foreach (GraphNode gnode in gnodeList)
-                {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc == pc)
-                    {
-                        return gnode;
-                    }
-                }
-            }
-            return null;
-        }
-
-
-        /// <summary>
-        /// Gets the first dirty graphnode starting from the given pc
-        /// </summary>
-        /// <param name="pc"></param>
-        /// <param name="classIndex"></param>
-        /// <param name="procIndex"></param>
-        /// <returns></returns>
-        public GraphNode GetFirstDirtyGraphNode(int pc, int classIndex, int procIndex)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
-            if (gnodeList != null && gnodeList.Count > 0)
-            {
-                foreach (GraphNode gnode in gnodeList)
-                {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
-                    {
-                        return gnode;
-                    }
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the first dirty graphnode at the global and macroblock scope
-        /// </summary>
-        /// <param name="pc"></param>
-        /// <param name="macroBlockID"></param>
-        /// <returns></returns>
-        public GraphNode GetFirstDirtyGraphNodeAtGlobalScope(int pc, int macroBlockID)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-            if (gnodeList == null || gnodeList.Count < 1)
-            {
-                return null;
-            }
-
-            foreach (GraphNode gnode in gnodeList)
-            {
-                if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc && gnode.MacroblockID == macroBlockID)
-                {
-                    return gnode;
-                }
-            }
-
-            return null;
-        }
-
-
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {
             uint ci = (uint)classIndex;
@@ -1674,7 +1624,7 @@ namespace ProtoCore.AssociativeGraph
 
         public List<GraphNode> GetGraphNodesAtScope(int classIndex, int procIndex)
         {
-            List<GraphNode> nodes;
+            List<GraphNode> nodes = new List<GraphNode>();
             graphNodeMap.TryGetValue(GetGraphNodeKey(classIndex, procIndex), out nodes);
             return nodes;
         }

@@ -33,7 +33,8 @@ namespace Dynamo.Nodes
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
 
 
-        public const string GEOMETRY = "Geometry";
+        public const string GEOMETRY_CATEGORY = "Geometry";
+        public const string GEOMETRY = "Geometry.Geometry";
 
         public const string ANALYZE_SOLAR = "Analyze.Solar";
 

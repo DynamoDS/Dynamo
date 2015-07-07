@@ -567,6 +567,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A description that helps people understand what the node might be used for..
+        /// </summary>
+        public static string CustomNodePromptDescriptionTooltip {
+            get {
+                return ResourceManager.GetString("CustomNodePromptDescriptionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A unique name for the node..
+        /// </summary>
+        public static string CustomNodePromptNameTooltip {
+            get {
+                return ResourceManager.GetString("CustomNodePromptNameTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom Node Property Error.
         /// </summary>
         public static string CustomNodePropertyErrorMessageBoxTitle {
@@ -3462,6 +3480,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A description of the preset state..
+        /// </summary>
+        public static string PresetPromptDescriptionTooltip {
+            get {
+                return ResourceManager.GetString("PresetPromptDescriptionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A unique name for the preset..
+        /// </summary>
+        public static string PresetPromptNameTooltip {
+            get {
+                return ResourceManager.GetString("PresetPromptNameTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string PresetsWindowDescription {
@@ -3795,6 +3831,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        public static string SelectNodeButtonChange {
+            get {
+                return ResourceManager.GetString("SelectNodeButtonChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        public static string SelectNodeButtonSelect {
+            get {
+                return ResourceManager.GetString("SelectNodeButtonSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Classic Node Library.
         /// </summary>
         public static string ShowClassicNodeLibrary {
@@ -4097,6 +4151,195 @@ namespace Dynamo.Wpf.Properties {
         public static string UninstallingPackageMessageBoxTitle {
             get {
                 return ResourceManager.GetString("UninstallingPackageMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Acres.
+        /// </summary>
+        public static string UnitAcres {
+            get {
+                return ResourceManager.GetString("UnitAcres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Centimeters.
+        /// </summary>
+        public static string UnitCentimeters {
+            get {
+                return ResourceManager.GetString("UnitCentimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CubicCentimeter.
+        /// </summary>
+        public static string UnitCubicCentimeter {
+            get {
+                return ResourceManager.GetString("UnitCubicCentimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CubicFoot.
+        /// </summary>
+        public static string UnitCubicFoot {
+            get {
+                return ResourceManager.GetString("UnitCubicFoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CubicInches.
+        /// </summary>
+        public static string UnitCubicInches {
+            get {
+                return ResourceManager.GetString("UnitCubicInches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CubicMeters.
+        /// </summary>
+        public static string UnitCubicMeters {
+            get {
+                return ResourceManager.GetString("UnitCubicMeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CubicMillimeter.
+        /// </summary>
+        public static string UnitCubicMillimeter {
+            get {
+                return ResourceManager.GetString("UnitCubicMillimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CubicYards.
+        /// </summary>
+        public static string UnitCubicYards {
+            get {
+                return ResourceManager.GetString("UnitCubicYards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decimeters.
+        /// </summary>
+        public static string UnitDecimeters {
+            get {
+                return ResourceManager.GetString("UnitDecimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feet.
+        /// </summary>
+        public static string UnitFeet {
+            get {
+                return ResourceManager.GetString("UnitFeet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hectares.
+        /// </summary>
+        public static string UnitHectares {
+            get {
+                return ResourceManager.GetString("UnitHectares", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inches.
+        /// </summary>
+        public static string UnitInches {
+            get {
+                return ResourceManager.GetString("UnitInches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Litres.
+        /// </summary>
+        public static string UnitLitres {
+            get {
+                return ResourceManager.GetString("UnitLitres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meters.
+        /// </summary>
+        public static string UnitMeters {
+            get {
+                return ResourceManager.GetString("UnitMeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Millimeters.
+        /// </summary>
+        public static string UnitMillimeters {
+            get {
+                return ResourceManager.GetString("UnitMillimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SquareCentimeter.
+        /// </summary>
+        public static string UnitSquareCentimeter {
+            get {
+                return ResourceManager.GetString("UnitSquareCentimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SquareFoot.
+        /// </summary>
+        public static string UnitSquareFoot {
+            get {
+                return ResourceManager.GetString("UnitSquareFoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SquareInch.
+        /// </summary>
+        public static string UnitSquareInch {
+            get {
+                return ResourceManager.GetString("UnitSquareInch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SquareMeter.
+        /// </summary>
+        public static string UnitSquareMeter {
+            get {
+                return ResourceManager.GetString("UnitSquareMeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SquareMillimeter.
+        /// </summary>
+        public static string UnitSquareMillimeter {
+            get {
+                return ResourceManager.GetString("UnitSquareMillimeter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USGallons.
+        /// </summary>
+        public static string UnitUSGallons {
+            get {
+                return ResourceManager.GetString("UnitUSGallons", resourceCulture);
             }
         }
         
