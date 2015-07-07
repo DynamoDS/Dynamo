@@ -238,6 +238,9 @@
                              Value="false">
                         <Setter Property="Foreground"
                                 Value="{StaticResource DisabledForegroundBrush}" />
+                        <Setter TargetName="Indicator"
+                                Property="Visibility"
+                                Value="Collapsed" />
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>

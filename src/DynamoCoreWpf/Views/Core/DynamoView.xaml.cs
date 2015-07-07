@@ -1034,7 +1034,9 @@ namespace Dynamo.Controls
             var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
             dynamoViewModel.Model.CurrentWorkspace.RemoveState(state);
-            
+            //This is to remove the PATH (>) indicator from the preset submenu header
+            //if there are no presets.
+            dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();
         }
         
 
