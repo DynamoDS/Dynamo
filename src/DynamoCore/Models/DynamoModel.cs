@@ -498,6 +498,12 @@ namespace Dynamo.Models
             else
                 pathManager.LoadPackageFolders(PreferenceSettings.PackageFolders);
 
+            if (PreferenceSettings.CustomNodeFolders.Count == 0)
+                PreferenceSettings.CustomNodeFolders = new List<string>(pathManager.UserDefinitionDirectories);
+            else
+                pathManager.LoadCustomNodeFolders(PreferenceSettings.CustomNodeFolders);
+
+
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
@@ -893,7 +899,7 @@ namespace Dynamo.Models
 #endif
 
             // Load local custom nodes
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
+            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitionDirectories.ElementAt(0), IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 

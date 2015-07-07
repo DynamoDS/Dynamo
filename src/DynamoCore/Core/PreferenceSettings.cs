@@ -274,6 +274,7 @@ namespace Dynamo
             catch (Exception) { }
 
             settings.PackageFolders = RemoveDuplicateFolders(settings.PackageFolders);
+            settings.CustomNodeFolders = RemoveDuplicateFolders(settings.CustomNodeFolders);
 
             return settings;
         }

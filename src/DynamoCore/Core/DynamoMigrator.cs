@@ -89,7 +89,9 @@ namespace Dynamo.Core
         {
             get
             {
-                return this.pathManager.UserDefinitions;
+                // Only return the default custom node directory.
+                var userDefinitionDirectories = pathManager.UserDefinitionDirectories;
+                return userDefinitionDirectories.ElementAt(0);
             }
         }
 
