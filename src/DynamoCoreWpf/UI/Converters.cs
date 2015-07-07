@@ -2054,6 +2054,10 @@ namespace Dynamo.Controls
 
             var textBlock = values[0] as TextBlock;
             var viewModel = values[1] as SearchViewModel;
+
+            if(viewModel == null)
+                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+
             var searchText = viewModel.SearchText;
             var typeface = viewModel.RegularTypeface;
             var fullText = textBlock.Text;
