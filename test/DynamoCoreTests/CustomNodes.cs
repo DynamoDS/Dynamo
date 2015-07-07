@@ -31,7 +31,7 @@ namespace Dynamo.Tests
 
             var watchNode = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-            var numNodesPreCollapse = CurrentDynamoModel.CurrentWorkspace.Nodes.Count;
+            var numNodesPreCollapse = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
 
             BeginRun();
 
@@ -62,7 +62,7 @@ namespace Dynamo.Tests
                     Success = true
                 });
 
-            var numNodesPostCollapse = CurrentDynamoModel.CurrentWorkspace.Nodes.Count;
+            var numNodesPostCollapse = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
 
             Assert.AreNotEqual(numNodesPreCollapse, numNodesPostCollapse);
             Assert.AreEqual(nodesToCollapse.Length, numNodesPreCollapse - numNodesPostCollapse + 1);
@@ -85,7 +85,7 @@ namespace Dynamo.Tests
             var minNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("13f58ca4-4e48-4757-b16a-45b971a6d7fc");
             var numNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("4b6487e1-1bcf-47a6-a6fb-ea3122a303af");
 
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             AssertPreviewValue("13f58ca4-4e48-4757-b16a-45b971a6d7fc", 10);
@@ -105,7 +105,7 @@ namespace Dynamo.Tests
                     Success = true
                 });
 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             BeginRun();
 
@@ -145,7 +145,7 @@ namespace Dynamo.Tests
                     Success = true
                 });
 
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             BeginRun();
 
@@ -160,7 +160,7 @@ namespace Dynamo.Tests
             OpenModel(Path.Combine(TestDirectory, @"core\collapse\collapse-number-chain.dyn"));
 
             // Ensure all the nodes we are looking for are actually there.
-            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             var existenceMap = new Dictionary<string, bool>
             {
@@ -212,7 +212,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
 
             // Make sure we have 8 nodes left (11 - 4 + 1).
-            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             existenceMap.Clear();
             existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
@@ -236,7 +236,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.CanRedo);
 
             // Now it should have gone back to 11 nodes.
-            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             existenceMap.Clear();
             existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
@@ -258,7 +258,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.CanRedo);
 
             // It should have gone back to 8 nodes.
-            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             existenceMap.Clear();
             existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
@@ -311,7 +311,7 @@ namespace Dynamo.Tests
 
             SelectTabByGuid(ws.CustomNodeId);
 
-            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var modelsToDelete = new List<ModelBase>();
             var addition = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSFunction>();
@@ -320,7 +320,7 @@ namespace Dynamo.Tests
 
             modelsToDelete.Add(addition);
             CurrentDynamoModel.DeleteModelInternal(modelsToDelete);
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -331,7 +331,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // run the expression
             BeginRun();
@@ -425,7 +425,7 @@ namespace Dynamo.Tests
                     true,
                     true));
 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.IsInstanceOf<Function>(CurrentDynamoModel.CurrentWorkspace.Nodes.First());
             Assert.AreEqual(
                 customNodeDef.FunctionId,
@@ -624,7 +624,7 @@ namespace Dynamo.Tests
 
             Assert.IsNotNull(CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
 
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(2, CurrentDynamoModel.Workspaces.Count());
 
             var customWorkspace = CurrentDynamoModel.Workspaces.ElementAt(1);
@@ -860,7 +860,7 @@ namespace Dynamo.Tests
 
             SelectTabByGuid(ws.CustomNodeId);
 
-            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //Check whether the group is copied to custom workspace
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Annotations.Count); 

@@ -16,7 +16,7 @@ namespace DSCore
         /// <summary>
         ///     Find the red component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the red component.</returns>
+        /// <returns name="red">int between 0 and 255 inclusive.</returns>
         public byte Red
         {
             get { return color.R; }
@@ -25,7 +25,7 @@ namespace DSCore
         /// <summary>
         ///     Find the green component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the green component.</returns>
+        /// <returns name="green">int between 0 and 255 inclusive.</returns>
         public byte Green
         {
             get { return color.G; }
@@ -34,7 +34,7 @@ namespace DSCore
         /// <summary>
         ///     Find the blue component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the blue component.</returns>
+        /// <returns name="blue">int between 0 and 255 inclusive.</returns>
         public byte Blue
         {
             get { return color.B; }
@@ -43,7 +43,7 @@ namespace DSCore
         /// <summary>
         ///     Find the alpha component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="val">Value of the alpha component.</returns>
+        /// <returns name="alpha">int between 0 and 255 inclusive.</returns>
         public byte Alpha
         {
             get { return color.A; }
@@ -91,7 +91,7 @@ namespace DSCore
         /// <summary>
         ///     Gets the brightness value for this color.
         /// </summary>
-        /// <returns name="val">Brightness value for the color.</returns>
+        /// <returns name="brightness">double between 0 and 1 inclusive.</returns>
         public static float Brightness(Color c)
         {
             return c.color.GetBrightness();
@@ -100,7 +100,7 @@ namespace DSCore
         /// <summary>
         ///     Gets the saturation value for this color.
         /// </summary>
-        /// <returns name="val">Saturation value for the color.</returns>
+        /// <returns name="saturation">double between 0 and 1 inclusive.</returns>
         public static float Saturation(Color c)
         {
             return c.color.GetSaturation();
@@ -109,7 +109,7 @@ namespace DSCore
         /// <summary>
         ///     Gets the hue value for this color.
         /// </summary>
-        /// <returns name="val">Hue value for the color.</returns>
+        /// <returns name="hue">double between 0 and 1 inclusive.</returns>
         public static float Hue(Color c)
         {
             return c.color.GetHue();
@@ -355,9 +355,6 @@ namespace DSCore
         public static ColorRange1D ByColorsAndParameters(
             List<Color> colors, List<double> parameters)
         {
-            var blue = Color.ByARGB(255, 0, 0, 255);
-            var red = Color.ByARGB(255, 255, 0, 0);
-
             if (colors == null)
                 colors = new List<Color>();
 
@@ -372,7 +369,7 @@ namespace DSCore
             // a red->blue gradient.
             if (!colors.Any())
             {
-                colors = new List<Color>(){ red, blue};
+                colors = DefaultColorRanges.Analysis;
             }
 
             // If there's no parameters supplied, then set the parameters
@@ -415,7 +412,8 @@ namespace DSCore
                 var diff = colors.Count() - parameters.Count();
                 for (var i = 0; i < diff; i++)
                 {
-                    parameters.Add(1.0);
+                    // Put the color in the middle
+                    parameters.Add(0.5);
                 }
             }
             // If the number of parameters is greater than the
@@ -425,7 +423,7 @@ namespace DSCore
                 var diff = parameters.Count() - colors.Count();
                 for (var i = 0; i < diff; i++)
                 {
-                    colors.Add(blue);
+                    colors.Add(DefaultColorRanges.Analysis.Last());
                 }
             }
 
@@ -474,6 +472,18 @@ namespace DSCore
 
             return Color.Lerp(c1.Color, c2.Color, (parameter - c1.Parameter) / (c2.Parameter - c1.Parameter));
         }
+
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public static class DefaultColorRanges
+    {
+        public static List<Color> Analysis = new List<Color>
+        {
+            Color.ByARGB(255,255,100,100), // orange
+            Color.ByARGB(255,255,255,0), // yellow
+            Color.ByARGB(255,0,255,255) // cyan
+        };
     }
 
     [IsVisibleInDynamoLibrary(true)]

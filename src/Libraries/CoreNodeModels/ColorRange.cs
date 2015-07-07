@@ -16,20 +16,29 @@ namespace DSCoreNodesUI
     [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     public class ColorRange : NodeModel
     {
-        public event EventHandler RequestChangeColorRange;
-        protected virtual void OnRequestChangeColorRange(object sender, EventArgs e)
+        public event Action RequestChangeColorRange;
+        protected virtual void OnRequestChangeColorRange()
         {
             if (RequestChangeColorRange != null)
-                RequestChangeColorRange(sender, e);
+                RequestChangeColorRange();
         }
 
         public ColorRange()
         {
             InitializePorts();
 
-            this.PropertyChanged += ColorRange_PropertyChanged; 
-            
+            this.PropertyChanged += ColorRange_PropertyChanged;
+            foreach (var port in InPorts)
+            {
+                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            }
+
             ShouldDisplayPreviewCore = false;
+        }
+
+        void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnRequestChangeColorRange();
         }
 
         protected virtual void InitializePorts()
@@ -50,7 +59,7 @@ namespace DSCoreNodesUI
             if (InPorts.Any(x => x.Connectors.Count == 0))
                 return;
 
-            OnRequestChangeColorRange(this, EventArgs.Empty);
+            OnRequestChangeColorRange();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

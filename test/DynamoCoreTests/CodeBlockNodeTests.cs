@@ -277,7 +277,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // Make sure we are able to get the second code block node.
-            var codeBlockNodeTwo = CurrentDynamoModel.CurrentWorkspace.Nodes[1] as CodeBlockNodeModel;
+            var codeBlockNodeTwo = CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1) as CodeBlockNodeModel;
             Assert.IsNotNull(codeBlockNodeTwo);
 
             // The preview identifier should be named as "arr_GUID" (the prefix 
@@ -294,7 +294,7 @@ b = c[w][x][y][z];";
             string openPath = Path.Combine(TestDirectory,
                 @"core\dsevaluation\TestOutportConnectors_OnAssigningVariables_ToRetainConnections.dyn");
             OpenModel(openPath);
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             BeginRun();
 
@@ -347,7 +347,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // Make sure we are able to get the second code block node.
-            var codeBlockNodeTwo = CurrentDynamoModel.CurrentWorkspace.Nodes[1] as CodeBlockNodeModel;
+            var codeBlockNodeTwo = CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1) as CodeBlockNodeModel;
             Assert.IsNotNull(codeBlockNodeTwo);
 
             // Run 
@@ -864,7 +864,7 @@ b = c[w][x][y][z];";
             string openPath = Path.Combine(TestDirectory,
                 @"core\dsevaluation\typedIdentifier_warning.dyn");
             OpenModel(openPath);
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             BeginRun();
 

@@ -101,7 +101,6 @@
             ShowViewCube="False" 
             CameraRotationMode="Turntable"
             IsHitTestVisible="True"
-            MouseLeftButtonDown="Watch_view_OnMouseDown" 
             ShowCoordinateSystem="False"
             RenderTechnique="{Binding RenderTechnique}"
             Camera="{Binding Camera}" 
