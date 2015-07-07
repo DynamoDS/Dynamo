@@ -24,7 +24,6 @@ namespace DSIronPythonNode
     {
         private DynamoViewModel dynamoViewModel;
         private PythonNode model;
-
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
             base.CustomizeView(nodeModel, nodeView);
@@ -32,7 +31,7 @@ namespace DSIronPythonNode
             model = nodeModel;
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
-            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
+            var editWindowItem = new MenuItem { Header = Properties.Resources.EditHeader, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
             nodeView.UpdateLayout();

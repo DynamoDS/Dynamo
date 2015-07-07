@@ -66,6 +66,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         public string CurrentHeader { get { return (currentContent == null) ? string.Empty : currentContent.Header; } }
         public string CurrentBody { get { return (currentContent == null) ? string.Empty : currentContent.Body; } }
         public string DynamoVersion { get; private set; }
+        public string CloseButton { get; private set; }
         public IEnumerable<GalleryContent> Contents { get { return contents; } }
         public DelegateCommand MoveNextCommand { get; set; }
         public DelegateCommand MovePrevCommand { get; set; }
@@ -78,7 +79,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             var pathManager = dynamoViewModel.Model.PathManager;
             var galleryFilePath = pathManager.GalleryFilePath;
             var galleryDirectory = Path.GetDirectoryName(galleryFilePath);
-
+            CloseButton = Properties.Resources.Close;
             DynamoVersion = string.Format(Properties.Resources.GalleryDynamoVersion,
                             pathManager.MajorFileVersion,
                             pathManager.MinorFileVersion);
