@@ -2079,7 +2079,7 @@ namespace Dynamo.Tests
 
         private string GetDynPath(string sourceDynFile)
         {
-            string sourceDynPath = this.TestDirectory;
+            string sourceDynPath = TestDirectory;
             sourceDynPath = Path.Combine(sourceDynPath, @"core\migration\");
             return Path.Combine(sourceDynPath, sourceDynFile);
         }
