@@ -24,17 +24,8 @@ namespace ProtoCore.AssociativeEngine
         /// <returns></returns>
         public static AssociativeGraph.GraphNode GetGraphNodeAtPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
-            if (graphNodesInScope != null && graphNodesInScope.Count > 0)
-            {
-                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
-                {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc == pc)
-                    {
-                        return gnode;
-                    }
-                }
-            }
-            return null;
+            Validity.Assert(graphNodesInScope != null);
+            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc == pc);
         }
 
         /// <summary>
@@ -46,17 +37,8 @@ namespace ProtoCore.AssociativeEngine
         /// <returns></returns>
         public static AssociativeGraph.GraphNode GetFirstDirtyGraphNodeFromPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
-            if (graphNodesInScope != null && graphNodesInScope.Count > 0)
-            {
-                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
-                {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
-                    {
-                        return gnode;
-                    }
-                }
-            }
-            return null;
+            Validity.Assert(graphNodesInScope != null);
+            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc >= pc);
         }
 
         /// <summary>
@@ -1628,7 +1610,7 @@ namespace ProtoCore.AssociativeGraph
 
         public List<GraphNode> GetGraphNodesAtScope(int classIndex, int procIndex)
         {
-            List<GraphNode> nodes;
+            List<GraphNode> nodes = new List<GraphNode>();
             graphNodeMap.TryGetValue(GetGraphNodeKey(classIndex, procIndex), out nodes);
             return nodes;
         }
