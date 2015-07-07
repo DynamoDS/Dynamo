@@ -47,9 +47,9 @@ namespace ProtoCore.Runtime
                 return;
             }
 
+            executive.SetupBounce(exeblock, entry, stackFrame, locals);
             foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
             {
-                executive.SetupBounce(exeblock, entry, stackFrame, locals);
                 executive.Execute(macroBlock);
             }
         }

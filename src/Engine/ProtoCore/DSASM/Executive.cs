@@ -119,13 +119,21 @@ namespace ProtoCore.DSASM
         private void SetupGraphNodesInScope()
         {
             int ci = Constants.kInvalidIndex;
-            int fi = Constants.kInvalidIndex;
-            if (!IsGlobalScope())
+            int fi = Constants.kGlobalScope;
+            if (IsGlobalScope())
+            {
+                List<AssociativeGraph.GraphNode> globalScopeNodes = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
+
+                // Get only the nodes within the macroblock
+                graphNodesInProgramScope = new List<AssociativeGraph.GraphNode>();
+                graphNodesInProgramScope.AddRange(globalScopeNodes.Where(g => g.MacroblockID == exe.ExecutingMacroBlock));
+            }
+            else
             {
                 ci = rmem.CurrentStackFrame.ClassScope;
                 fi = rmem.CurrentStackFrame.FunctionScope;
+                graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
             }
-            graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
         }
 
         /// <summary>
@@ -485,7 +493,8 @@ namespace ProtoCore.DSASM
             if (!fepRun)
             {
                 // TODO Jun: Perhaps the entrypoint now can be set from the argument 'entry' only...instead of the stream
-                pc = istream.entrypoint;
+                //pc = istream.entrypoint;
+                pc = entry;
 
                 // JILFep handles function call stack frames
                 rmem.FramePointer = rmem.Stack.Count;
@@ -6411,10 +6420,6 @@ namespace ProtoCore.DSASM
                 {
                     Properties.executingGraphNode.isDirty = false;
                     pc = Properties.executingGraphNode.updateBlock.startpc;
-                }
-                else
-                {
-                    pc = Constants.kInvalidPC;
                 }
             }
             GC();

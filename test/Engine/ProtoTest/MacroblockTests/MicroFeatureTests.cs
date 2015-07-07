@@ -24,6 +24,36 @@ b = 2;
             thisTest.Verify("b", 2);
         }
 
-      
+        [Test]
+        public void TestSimpleParallel02()
+        {
+            const string code = @"
+a = 1;
+b = 2;
+
+x = 3;
+y = x;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 2);
+            thisTest.Verify("x", 3);
+            thisTest.Verify("y", 3);
+        }
+
+        [Test]
+        public void TestInputblock01()
+        {
+            const string code = @"
+a = 1;
+b = 2;
+c = a + b;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1);
+            thisTest.Verify("b", 2);
+            thisTest.Verify("c", 3);
+        }
+ 
     }
 }
