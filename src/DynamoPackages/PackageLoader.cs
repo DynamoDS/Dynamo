@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.DSEngine;
@@ -178,6 +179,18 @@ namespace Dynamo.PackageManager
 
         private void ScanPackageDirectories(string root, IPreferences preferences)
         {
+            bool rootDirectoryExists = true;
+            var t = new Thread(delegate()
+            {
+                rootDirectoryExists = Directory.Exists(root);
+            });
+
+            t.Start();
+            bool requestCompleted = t.Join(5000);
+
+            if (!requestCompleted || !rootDirectoryExists)
+                return;
+
             foreach (var dir in
                 Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
             {
