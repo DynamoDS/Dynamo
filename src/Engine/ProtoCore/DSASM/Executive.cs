@@ -1345,8 +1345,8 @@ namespace ProtoCore.DSASM
 
             bool isUpdated = false;
 
-            List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
-            //List<AssociativeGraph.GraphNode> graphNodes = graphNodesInProgramScope;
+            //List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
+            List<AssociativeGraph.GraphNode> graphNodes = graphNodesInProgramScope;
             if (graphNodes != null)
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
@@ -2632,6 +2632,8 @@ namespace ProtoCore.DSASM
                     instructions = istream.instrList;
                     executingBlock = exeblock;
                     runtimeCore.DebugProps.CurrentBlockId = exeblock;
+
+                    SetupGraphNodesInScope();
                 }
                 else if (executeInstruction.opCode == OpCode.RETB)
                 {
