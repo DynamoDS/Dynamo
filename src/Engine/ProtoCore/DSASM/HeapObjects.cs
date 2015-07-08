@@ -11,6 +11,12 @@ namespace ProtoCore.DSASM
     public class DSArray : HeapElement
     {
         private Dictionary<StackValue, StackValue> Dict;
+
+        /// <summary>
+        /// Create an array with pre-allocated size.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="heap"></param>
         public DSArray(int size, Heap heap)
             : base(size, heap)
         {
@@ -18,11 +24,28 @@ namespace ProtoCore.DSASM
             MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
         }
 
-        public IEnumerable<StackValue> Values
+        /// <summary>
+        /// Create an array and populuate with input values
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="heap"></param>
+        public DSArray(StackValue[] values, Heap heap)
+            : base(values, heap)
+        {
+            Dict = new Dictionary<StackValue, StackValue>();
+            MetaData = new MetaData { type = (int)PrimitiveType.kTypeArray };
+        }
+
+        /// <summary>
+        /// Get all keys.
+        /// </summary>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public IEnumerable<StackValue> Keys
         {
             get
             {
-                return VisibleItems.Concat(Dict.Values);
+                return Enumerable.Range(0, Count).Select(i => StackValue.BuildInt(i)).Concat(Dict.Keys);
             }
         }
 
@@ -34,7 +57,18 @@ namespace ProtoCore.DSASM
             }
         }
         /// <summary>
-        /// Check if an array contain key
+        /// Get all values. 
+        /// </summary>
+        public override IEnumerable<StackValue> Values
+        {
+            get
+            {
+                return base.Values.Concat(Dict.Values);
+            }
+        }
+
+        /// <summary>
+        /// Return if array contain key or not.
         /// </summary>
         /// <param name="array"></param>
         /// <param name="key"></param>
@@ -47,9 +81,9 @@ namespace ProtoCore.DSASM
                 long index = key.ToInteger().opdata;
                 if (index < 0)
                 {
-                    index = index + VisibleSize;
+                    index = index + Count;
                 }
-                return (index >= 0 && index < VisibleSize);
+                return (index >= 0 && index < Count);
             }
             else
             {
@@ -57,6 +91,11 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Remove a key from array. Return true if key exsits.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool RemoveKey(StackValue key)
         {
             if (key.IsNumeric)
@@ -64,16 +103,16 @@ namespace ProtoCore.DSASM
                 long index = key.ToInteger().opdata;
                 if (index < 0)
                 {
-                    index = index + VisibleSize;
+                    index = index + Count;
                 }
 
-                if (index >= 0 && index < VisibleSize)
+                if (index >= 0 && index < Count)
                 {
-                    SetItemAt((int)index, StackValue.Null);
+                    SetValueAt((int)index, StackValue.Null);
 
-                    if (index == VisibleSize - 1)
+                    if (index == Count - 1)
                     {
-                        VisibleSize -= 1;
+                        Count -= 1;
                     }
                     return true;
                 }
@@ -108,7 +147,7 @@ namespace ProtoCore.DSASM
 
             var values = new List<StackValue>();
             bool hasValue = false;
-            foreach (var element in VisibleItems)
+            foreach (var element in Values)
             {
                 if (!(element.IsArray))
                     continue;
@@ -124,7 +163,7 @@ namespace ProtoCore.DSASM
 
             if (hasValue)
             {
-                value = heap.AllocateArray(values);
+                value = heap.AllocateArray(values.ToArray());
                 return true;
             }
             else
@@ -135,19 +174,6 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Get all keys from an array
-        /// </summary>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public StackValue[] GetKeys()
-        {
-            var keys = Enumerable.Range(0, VisibleSize).Select(i => StackValue.BuildInt(i))
-                                 .Concat(Dict.Keys)
-                                 .ToArray();
-            return keys;
-        }
-
-        /// <summary>
         /// Get a list of key-value pairs for an array.
         /// </summary>
         /// <param name="array"></param>
@@ -155,8 +181,8 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public IDictionary<StackValue, StackValue> ToDictionary()
         {
-            var dict = Enumerable.Range(0, VisibleSize)
-                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), GetItemAt(i)))
+            var dict = Enumerable.Range(0, Count)
+                                 .Select(i => new KeyValuePair<StackValue, StackValue>(StackValue.BuildInt(i), GetValueAt(i)))
                                  .Concat(Dict ?? Enumerable.Empty<KeyValuePair<StackValue, StackValue>>())
                                  .ToDictionary(p => p.Key, p => p.Value);
             return dict;
@@ -182,10 +208,10 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         public StackValue CopyArray(Type type, RuntimeCore runtimeCore)
         {
-            StackValue[] elements = new StackValue[VisibleSize];
-            for (int i = 0; i < VisibleSize; i++)
+            StackValue[] elements = new StackValue[Count];
+            for (int i = 0; i < Count; i++)
             {
-                StackValue coercedValue = TypeSystem.Coerce(GetItemAt(i), type, runtimeCore);
+                StackValue coercedValue = TypeSystem.Coerce(GetValueAt(i), type, runtimeCore);
                 elements[i] = coercedValue;
             }
 
@@ -220,17 +246,17 @@ namespace ProtoCore.DSASM
         {
             index = ExpandByAcessingAt(index);
             if (index < 0)
-                index += VisibleSize;
+                index += Count;
 
-            if (index >= VisibleSize || index < 0)
+            if (index >= Count || index < 0)
             {
                 if (runtimeCore != null)
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
-            StackValue oldValue = GetItemAt(index);
-            SetItemAt(index, value);
+            StackValue oldValue = GetValueAt(index);
+            SetValueAt(index, value);
             return oldValue;
         }
 
@@ -285,7 +311,7 @@ namespace ProtoCore.DSASM
                 {
                     index = index.ToInteger();
                     int absIndex = array.ExpandByAcessingAt((int)index.opdata);
-                    svSubArray  = array.GetItemAt(absIndex);
+                    svSubArray  = array.GetValueAt(absIndex);
                 }
                 else
                 {
@@ -337,12 +363,12 @@ namespace ProtoCore.DSASM
             {
                 // Replication happens on both side.
                 DSArray dataElements = heap.ToHeapObject<DSArray>(value);
-                int length = Math.Min(zippedIndices.Length, dataElements.VisibleSize);
+                int length = Math.Min(zippedIndices.Length, dataElements.Count);
 
                 StackValue[] oldValues = new StackValue[length];
                 for (int i = 0; i < length; ++i)
                 {
-                    StackValue coercedData = TypeSystem.Coerce(dataElements.GetItemAt(i), t, runtimeCore);
+                    StackValue coercedData = TypeSystem.Coerce(dataElements.GetValueAt(i), t, runtimeCore);
                     oldValues[i] = SetValueForIndices(zippedIndices[i], coercedData, runtimeCore);
                 }
 
@@ -376,16 +402,16 @@ namespace ProtoCore.DSASM
         public StackValue GetValueFromIndex(int index, RuntimeCore runtimeCore)
         {
             if (index < 0)
-                index += VisibleSize;
+                index += Count;
 
-            if (index >= VisibleSize || index < 0)
+            if (index >= Count || index < 0)
             {
                 if (runtimeCore != null)
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
-            return GetItemAt(index);
+            return GetValueAt(index);
         }
 
         /// <summary>
@@ -407,13 +433,13 @@ namespace ProtoCore.DSASM
             {
                 int fullIndex = (int)index.opdata;
 
-                if (VisibleSize > fullIndex)
+                if (Count > fullIndex)
                 {
                     return GetValueFromIndex(fullIndex, runtimeCore);
                 }
                 else
                 {
-                    fullIndex = fullIndex - VisibleSize;
+                    fullIndex = fullIndex - Count;
                     if (Dict != null && Dict.Count > fullIndex)
                     {
                         int count = 0;
@@ -518,15 +544,15 @@ namespace ProtoCore.DSASM
 
         public static bool CompareFromDifferentCore(DSArray array1, DSArray array2, RuntimeCore rtCore1, RuntimeCore rtCore2, Context context = null)
         {
-            if (array1.VisibleSize != array2.VisibleSize)
+            if (array1.Count != array2.Count)
             {
                 return false;
             }
 
             var dict1 = array1.ToDictionary();
-            for (int i = 0; i < array1.VisibleSize; i++)
+            for (int i = 0; i < array1.Count; i++)
             {
-                if (!StackUtils.CompareStackValues(array1.GetItemAt(i), array2.GetItemAt(i), rtCore1, rtCore2, context))
+                if (!StackUtils.CompareStackValues(array1.GetValueAt(i), array2.GetValueAt(i), rtCore1, rtCore2, context))
                 {
                     return false;
                 }
@@ -559,29 +585,35 @@ namespace ProtoCore.DSASM
             MetaData = new MetaData { type = (int)PrimitiveType.kTypePointer };
         }
 
+        public DSObject(StackValue[] values, Heap heap)
+            : base(values, heap)
+        {
+            MetaData = new MetaData { type = (int)PrimitiveType.kTypePointer };
+        }
+
         public StackValue GetValueFromIndex(int index, RuntimeCore runtimeCore)
         {
-            if (index >= VisibleSize || index < 0)
+            if (index >= Count || index < 0)
             {
                 if (runtimeCore != null)
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
-            return GetItemAt(index);
+            return GetValueAt(index);
         }
 
         public StackValue SetValueAtIndex(int index, StackValue value, RuntimeCore runtimeCore)
         {
-            if (index >= VisibleSize || index < 0)
+            if (index >= Count || index < 0)
             {
                 if (runtimeCore != null)
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
-            StackValue oldValue = GetItemAt(index);
-            SetItemAt(index, value);
+            StackValue oldValue = GetValueAt(index);
+            SetValueAt(index, value);
             return oldValue;
         }
     }
@@ -592,6 +624,12 @@ namespace ProtoCore.DSASM
 
         public DSString(int size, Heap heap)
             : base(size, heap)
+        {
+            MetaData = new MetaData { type = (int)PrimitiveType.kTypeString };
+        }
+
+        public DSString(StackValue[] values, Heap heap)
+            : base(values, heap)
         {
             MetaData = new MetaData { type = (int)PrimitiveType.kTypeString };
         }
