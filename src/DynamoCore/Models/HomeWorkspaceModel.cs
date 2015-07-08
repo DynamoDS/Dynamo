@@ -488,7 +488,8 @@ namespace Dynamo.Models
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
-                RunSettings.RunEnabled = false; // Disable 'Run' button.
+                // Disable 'Run' button.
+                RunSettings.RunEnabled = false;
 
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;

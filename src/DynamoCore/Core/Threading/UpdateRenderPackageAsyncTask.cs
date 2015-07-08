@@ -90,6 +90,10 @@ namespace Dynamo.Core.Threading
             if (!nodeModel.IsUpdated)
                 return false; // Not has not been updated at all.
 
+            // Reset the updated flag so we don't unnecessarily generate 
+            // another UpdateRenderPackageAsyncTask later on.
+            nodeModel.IsUpdated = false;
+
             // If a node is in either of the following states, then it will not 
             // produce any geometric output. Bail after clearing the render packages.
             if (nodeModel.IsInErrorState || !nodeModel.IsVisible)
