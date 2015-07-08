@@ -457,6 +457,25 @@ namespace ProtoCore.DSASM
             freeList.Clear();
         }
 
+        private int AddHeapElement(HeapElement hpe)
+        {
+            hpe.Mark = GCMark.White;
+            ReportAllocation(hpe.MemorySize);
+
+            int index;
+            if (TryFindFreeIndex(out index))
+            {
+                heapElements[index] = hpe;
+            }
+            else
+            {
+                heapElements.Add(hpe);
+                index = heapElements.Count - 1;
+            }
+
+            return index;
+        }
+
         private int AllocateInternal(int size, PrimitiveType type)
         {
             HeapElement hpe = null;
@@ -478,47 +497,33 @@ namespace ProtoCore.DSASM
                 default:
                     throw new ArgumentException("type");
             }
-            
-            hpe.Mark = GCMark.White;
-            ReportAllocation(size);
+
             return AddHeapElement(hpe);
         }
 
         private int AllocateInternal(StackValue[] values, PrimitiveType type)
         {
+            HeapElement hpe = null;
+
             switch (type)
             {
                 case PrimitiveType.kTypeArray:
-                    var dsArray = new DSArray(values, this);
-                    return AddHeapElement(dsArray);
+                    hpe = new DSArray(values, this);
+                    break;
 
                 case PrimitiveType.kTypePointer:
-                    var dsObject = new DSObject(values, this);
-                    return AddHeapElement(dsObject);
+                    hpe = new DSObject(values, this);
+                    break;
 
                 case PrimitiveType.kTypeString:
-                    var dsString = new DSString(values, this);
-                    return AddHeapElement(dsString);
+                    hpe = new DSString(values, this);
+                    break;
 
                 default:
                     throw new ArgumentException("type");
             }
-        }
 
-        private int AddHeapElement(HeapElement hpe)
-        {
-            int index;
-            if (TryFindFreeIndex(out index))
-            {
-                heapElements[index] = hpe;
-            }
-            else
-            {
-                heapElements.Add(hpe);
-                index = heapElements.Count - 1;
-            }
- 
-            return index;
+            return AddHeapElement(hpe);
         }
 
         private bool TryFindFreeIndex(out int index)
