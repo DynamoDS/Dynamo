@@ -26,6 +26,13 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public override int MemorySize
+        {
+            get
+            {
+                return base.MemorySize + Dict.Keys.Count + Dict.Values.Count;
+            }
+        }
         /// <summary>
         /// Check if an array contain key
         /// </summary>
@@ -599,6 +606,14 @@ namespace ProtoCore.DSASM
             get
             {
                 return heap.GetString(this);
+            }
+        }
+
+        public override int MemorySize
+        {
+            get
+            {
+                return 0;
             }
         }
 

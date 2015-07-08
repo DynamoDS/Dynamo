@@ -1,19 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Policy;
 
 using ProtoCore.Utils;
-
 
 namespace ProtoCore.DSASM
 {
     public class HeapElement
     {
-        private const int kInitialSize = 5;
-        private const double kReallocFactor = 0.5;
+        private const int INITIAL_SIZE = 5;
+        private const double REALLOC_FACTOR = 0.5;
 
         protected Heap heap;
         private int allocated;
@@ -21,6 +18,7 @@ namespace ProtoCore.DSASM
 
         public int VisibleSize { get; set; }
         public MetaData MetaData { get; set; }
+        public Heap.GCMark Mark { get; set; }
 
         public HeapElement(int size, Heap heap)
         {
@@ -41,11 +39,11 @@ namespace ProtoCore.DSASM
         //
         private void ReAllocate(int size)
         {
-            int newSize = kInitialSize;
-            if (size > kInitialSize)
+            int newSize = INITIAL_SIZE;
+            if (size > INITIAL_SIZE)
             {
                 // Determine the next allocation size
-                newSize = (int)(allocated * kReallocFactor) + allocated;
+                newSize = (int)(allocated * REALLOC_FACTOR) + allocated;
 
                 // If the requested index is greater than the computed next allocation size, 
                 // then the requested index is the next allocation size
@@ -64,6 +62,10 @@ namespace ProtoCore.DSASM
             {
                 items[i] = StackValue.Null;
             }
+
+            // We should move StackValue list to heap. That is, heap
+            // manages StackValues instead of HeapElement itself.
+            heap.ReportAllocation(size - allocated);
 
             allocated = newSize;
             Validity.Assert(size <= allocated);
@@ -143,7 +145,13 @@ namespace ProtoCore.DSASM
 
         public void SetItemAt(int index, StackValue value)
         {
+            heap.WriteBarrierForward(this, value);
             items[index] = value;
+        }
+
+        public virtual int MemorySize
+        {
+            get { return allocated; }
         }
     }
 
@@ -242,14 +250,44 @@ namespace ProtoCore.DSASM
 
     public class Heap
     {
+        private enum GCState
+        {
+            Pause,
+            WaitingForRoots,
+            Propagate,
+            Sweep,
+        }
+
+        public enum GCMark
+        {
+            White,
+            Gray,
+            Black
+        }
+
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
-        private StringTable stringTable = new StringTable();
-        private bool isGarbageCollecting = false;
+        private readonly StringTable stringTable = new StringTable();
+
+        private const int GC_THRESHOLD = 1024*1024;
+        // Totaly allocated StackValues
+        private int totalAllocated = 0;
+        private int totalTraversed = 0;
+        private int gcDebt = GC_THRESHOLD;
+
+        private LinkedList<StackValue> grayList;
+        private HashSet<int> sweepSet;
+        private List<StackValue> roots;
+        private Executive executive;
+        private bool isDisposing = false;
+
+        public bool IsGCRunning { get; private set; }
+        private GCState gcState = GCState.Pause;
 
         public Heap()
         {
+            IsGCRunning = false;
         }
 
         public T ToHeapObject<T>(StackValue heapObject) where T : HeapElement
@@ -322,7 +360,7 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Allocate an object pointer.
         /// </summary>
-        /// <param name="size"></param>
+        /// <param name="size">The size of object properties.</parame
         /// <returns></returns>
         public StackValue AllocatePointer(int size)
         {
@@ -411,23 +449,29 @@ namespace ProtoCore.DSASM
 
         private int AllocateInternal(int size, PrimitiveType type)
         {
+            HeapElement hpe = null;
+
             switch (type)
             {
                 case PrimitiveType.kTypeArray:
-                    var dsArray = new DSArray(size, this);
-                    return AddHeapElement(dsArray);
+                    hpe = new DSArray(size, this);
+                    break;
 
                 case PrimitiveType.kTypePointer:
-                    var dsObject = new DSObject(size, this);
-                    return AddHeapElement(dsObject);
+                    hpe = new DSObject(size, this);
+                    break;
 
                 case PrimitiveType.kTypeString:
-                    var dsString = new DSString(size, this);
-                    return AddHeapElement(dsString);
+                    hpe = new DSString(size, this);
+                    break;
 
                 default:
                     throw new ArgumentException("type");
             }
+            
+            hpe.Mark = GCMark.White;
+            ReportAllocation(size);
+            return AddHeapElement(hpe);
         }
 
         private int AllocateInternal(IEnumerable<StackValue> values, PrimitiveType type)
@@ -520,14 +564,282 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Mark all items in the array.
+        /// </summary>
+        /// <param name="array">Array</param>
+        /// <returns>Return the size of memory that referenced by the array</returns>
+        private int TraverseArray(DSArray array)
+        {
+            var dict = array.ToDictionary();
+            int size = array.MemorySize;
+
+            foreach (var pair in array.ToDictionary())
+            {
+                var key = pair.Key;
+                if (key.IsReferenceType)
+                    size += RecursiveMark(key);
+
+                var value = pair.Value;
+                if (value.IsReferenceType)
+                    size += RecursiveMark(value);
+            }
+
+            return size;
+        }
+
+        /// <summary>
+        /// Mark all items in the object 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>Return the size of memory that referenced by the object</returns>
+        private int TraverseObject(DSObject obj)
+        {
+            int size = obj.MemorySize;
+
+            foreach (var item in obj.VisibleItems)
+            {
+                if (item.IsReferenceType)
+                    size += RecursiveMark(item);
+            }
+
+            return size;
+        }
+
+        /// <summary>
+        /// Recursively mark all objects referenced by the object and change the
+        /// color of this object to black.
+        /// </summary>
+        /// <param name="value">StackValue</param>
+        /// <returns></returns>
+        private int RecursiveMark(StackValue value)
+        {
+            Validity.Assert(value.IsReferenceType);
+
+            int rawPtr = (int)value.RawIntValue;
+            var hp = heapElements[rawPtr];
+            if (hp.Mark == GCMark.Black)
+                return 0;
+
+            hp.Mark = GCMark.Black;
+
+            int size = 0;
+            if (value.IsArray)
+            {
+                size = TraverseArray(ToHeapObject<DSArray>(value));
+            }
+            else if (value.IsPointer)
+            {
+                size = TraverseObject(ToHeapObject<DSObject>(value));
+            }
+
+            return size;
+        }
+
+        /// <summary>
+        /// Put all roots in gray list and be ready for gc.
+        /// </summary>
+        private void StartCollection()
+        {
+            sweepSet = new HashSet<int>(Enumerable.Range(0, heapElements.Count));
+            sweepSet.ExceptWith(freeList);
+            sweepSet.ExceptWith(fixedHeapElements);
+
+            grayList = new LinkedList<StackValue>();
+            foreach (var heapPointer in roots)
+            {
+                var ptr = (int)heapPointer.RawIntValue;
+                heapElements[ptr].Mark = GCMark.Gray;
+                grayList.AddLast(heapPointer);
+            }
+
+            totalTraversed = 0;
+        }
+
+        /// <summary>
+        /// Move gc a step forward.
+        /// </summary>
+        private void SingleStep(bool forceGC)
+        {
+            switch (gcState)
+            {
+                case GCState.Pause:
+                    if (gcDebt <= 0 || forceGC)
+                        gcState = GCState.WaitingForRoots;
+                    break;
+
+                case GCState.WaitingForRoots:
+                    break;
+
+                case GCState.Propagate:
+                    if (grayList.Any())
+                    {
+                        totalTraversed += RecursiveMark(grayList.First());
+                        grayList.RemoveFirst();
+                    }
+                    else
+                    {
+                        gcState = GCState.Sweep;
+                    }
+                    break;
+
+                case GCState.Sweep:
+                    Sweep();
+                    MarkAllWhite();
+                    gcState = GCState.Pause;
+                    IsGCRunning = false;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Sweep all heap elements that are marked as white.
+        /// </summary>
+        private void Sweep()
+        {
+            foreach (var ptr in sweepSet)
+            {
+                var hp = heapElements[ptr];
+                if (hp.Mark != GCMark.White)
+                    continue;
+
+                if (hp is DSString)
+                {
+                    stringTable.TryRemoveString(ptr);
+                }
+                else if (hp is DSObject)
+                {
+                    var objPointer = StackValue.BuildPointer(ptr, hp.MetaData);
+                    isDisposing = true;
+                    GCDisposeObject(objPointer, executive);
+                    isDisposing = false;
+                }
+
+                totalAllocated -= hp.MemorySize;
+                heapElements[ptr] = null;
+                freeList.Add(ptr);
+            }
+
+            gcDebt = totalAllocated > GC_THRESHOLD ? totalAllocated : GC_THRESHOLD;
+        }
+
+        /// <summary>
+        /// Mark all heap elements as white.
+        /// </summary>
+        private void MarkAllWhite()
+        {
+            foreach (var hp in heapElements)
+            {
+                if (hp != null)
+                    hp.Mark = GCMark.White;
+            }
+        }
+
+        /// <summary>
+        /// If the heap object is modified, mark the new value that it references to.
+        /// </summary>
+        /// <param name="hp">Heap object that is to be modified</param>
+        /// <param name="value">The value that will be put in the heap object</param>
+        public void WriteBarrierForward(HeapElement hp, StackValue value)
+        {
+            if (hp.Mark == GCMark.Black && value.IsReferenceType)
+            {
+                HeapElement valueHp;
+                if (TryGetHeapElement(value, out valueHp))
+                {
+                    totalTraversed += RecursiveMark(value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Return if the heap is waiting for GC root objects.
+        /// </summary>
+        public bool IsWaitingForRoots
+        {
+            get
+            { 
+                return gcState == GCState.WaitingForRoots;
+            }
+        }
+
+        /// <summary>
+        /// Notify the heap that gc roots are ready so that gc could move
+        /// forward. The executive is passed for dispoing objects.
+        /// </summary>
+        /// <param name="gcroots"></param>
+        /// <param name="exe"></param>
+        /// <returns></returns>
+        public bool SetRoots(IEnumerable<StackValue> gcroots, Executive exe)
+        {
+            if (gcroots == null)
+                throw new ArgumentNullException("gcroots");
+
+            if (exe == null)
+                throw new ArgumentNullException("exe");
+
+            if (!IsWaitingForRoots)
+                return false;
+
+            var validPointers = gcroots.Where(r => r.IsReferenceType && 
+                                                   r.RawIntValue < heapElements.Count() && 
+                                                   r.RawIntValue >= 0 && 
+                                                   heapElements[(int)r.RawIntValue] != null);
+            roots = new List<StackValue>(validPointers);
+            executive = exe;
+            StartCollection();
+            gcState = GCState.Propagate;
+
+            return true;
+        }
+
+        /// <summary>
+        /// GC
+        /// </summary>
+        public void GC()
+        {
+            // GC disabled when the object is being disposed.
+            if (isDisposing)
+                return;
+
+            SingleStep(false);
+        }
+
+        /// <summary>
+        /// Do a full GC cycle
+        /// </summary>
+        /// <param name="gcroots"></param>
+        /// <param name="exe"></param>
+        public void FullGC(IEnumerable<StackValue> gcroots, Executive exe)
+        {
+            if (gcroots == null)
+                throw new ArgumentNullException("gcroots");
+
+            if (exe == null)
+                throw new ArgumentNullException("exe");
+
+            while (gcState != GCState.WaitingForRoots)
+                SingleStep(true);
+
+            SetRoots(gcroots, exe);
+            while (gcState != GCState.Pause)
+                SingleStep(true);
+        }
+
+        public void ReportAllocation(int newSize)
+        {
+            gcDebt -= newSize;
+            totalAllocated += newSize;
+        }
+
         public void GCMarkAndSweep(List<StackValue> rootPointers, Executive exe)
         {
-            if (isGarbageCollecting)
+            if (IsGCRunning)
                 return;
 
             try
             {
-                isGarbageCollecting = true;
+                IsGCRunning = true;
 
                 // Mark
                 var count = heapElements.Count;
@@ -593,7 +905,6 @@ namespace ProtoCore.DSASM
                     }
 
                     heapElements[i] = null;
-
 #if !HEAP_VERIFICATION
                     freeList.Add(i);
 #endif
@@ -601,7 +912,7 @@ namespace ProtoCore.DSASM
             }
             finally
             {
-                isGarbageCollecting = false;
+                IsGCRunning = false;
             }
         }
 

@@ -4552,15 +4552,15 @@ namespace ProtoCore.DSASM
                 }
 
                 tempSvData = coercedValue;
-                EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
+                var preValue = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
                 if (runtimeCore.Options.ExecuteSSA)
                 {
                     if (!isSSANode)
                     {
-                        if (EX.IsPointer && coercedValue.IsPointer)
+                        if (preValue.IsPointer && coercedValue.IsPointer)
                         {
-                            if (EX.opdata != coercedValue.opdata)
+                            if (preValue.opdata != coercedValue.opdata)
                             {
                                 if (null != Properties.executingGraphNode)
                                 {
@@ -4584,9 +4584,12 @@ namespace ProtoCore.DSASM
 
                 svData = rmem.Pop();
                 tempSvData = svData;
-                EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
+                PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
+#if !NAIVE_MARK_AND_SWEEP
+            rmem.Heap.GC();
+#endif
             ++pc;
             return tempSvData;
         }
@@ -4643,9 +4646,12 @@ namespace ProtoCore.DSASM
                 }
 
                 svData = rmem.Pop();
-                EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
+                PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
+#if !NAIVE_MARK_AND_SWEEP
+            rmem.Heap.GC();
+#endif
             ++pc;
         }
 
@@ -4718,11 +4724,11 @@ namespace ProtoCore.DSASM
                 {
                     StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
                     tempSvData = coercedValue;
-                    EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
+                    PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
                 }
                 else
                 {
-                    EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, Constants.kGlobalScope, dimList, svData);
+                    PopToIndexedArray(blockId, (int)instruction.op1.opdata, Constants.kGlobalScope, dimList, svData);
                 }
 
                 ++pc;
@@ -4806,7 +4812,7 @@ namespace ProtoCore.DSASM
             else if (svProperty.IsArray && (dimensions > 0))
             {
                 var propertyArray = rmem.Heap.ToHeapObject<DSArray>(svProperty);
-                EX = propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
+                propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
             }
             else // This property has NOT been allocated
             {
@@ -6386,7 +6392,10 @@ namespace ProtoCore.DSASM
                     pc = Properties.executingGraphNode.updateBlock.startpc;
                 }
             }
+
+#if NAIVE_MARK_AND_SWEEP 
             GC();
+#endif
             return;
         }
 
@@ -6584,6 +6593,13 @@ namespace ProtoCore.DSASM
 
         private void Exec(Instruction instruction)
         {
+#if !NAIVE_MARK_AND_SWEEP
+            if (rmem.Heap.IsWaitingForRoots)
+            {
+                var gcroots = CollectGCRoots();
+                rmem.Heap.SetRoots(gcroots, this);
+            }
+#endif
             switch (instruction.opCode)
             {
                 case OpCode.ALLOCC:
@@ -6872,6 +6888,16 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public List<StackValue> CollectGCRoots()
+        {
+            var gcRoots = new List<StackValue>();
+            if (RX.IsReferenceType)
+                gcRoots.Add(RX);
+            gcRoots.AddRange(runtimeCore.CallSiteGCRoots);
+            gcRoots.AddRange(rmem.Stack.Where(s => s.IsReferenceType));
+            return gcRoots;
+        }
+
         private void GC()
         {
             var currentFramePointer = rmem.FramePointer;
@@ -6890,6 +6916,7 @@ namespace ProtoCore.DSASM
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
+
             var isInNestedImperativeBlock = frames.Any(f =>
                 {
                     var callerBlockId = f.FunctionCallerBlock;
@@ -6947,7 +6974,7 @@ namespace ProtoCore.DSASM
                     while (workingList.Any())
                     {
                         blockId = workingList.Pop();
-                        var block = exe.CompleteCodeBlocks[blockId];
+                        var block = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId];
 
                         foreach (var child in block.children)
                         {
@@ -6989,10 +7016,9 @@ namespace ProtoCore.DSASM
                 blockId = stackFrame.FunctionCallerBlock;
                 currentFramePointer = stackFrame.FramePointer;
             }
-
             gcRoots.Add(RX);
 
-            rmem.GC(gcRoots, this);
+            rmem.Heap.GCMarkAndSweep(gcRoots, this);
         }
     }
 }
