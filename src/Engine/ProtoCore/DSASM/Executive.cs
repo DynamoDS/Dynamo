@@ -2732,6 +2732,10 @@ namespace ProtoCore.DSASM
             }
         }
 
+        /// <summary>
+        /// Executes a single macroblock
+        /// </summary>
+        /// <param name="macroBlock"></param>
         public void Execute(ProtoCore.Runtime.MacroBlock macroBlock)
         {
             int entry = macroBlock.GenerateEntryPoint();
@@ -2739,7 +2743,6 @@ namespace ProtoCore.DSASM
             {
                 exe.SetupMacroBlock(macroBlock.UID);
                 int scope = 0;
-                istream = exe.GetInstructionStream(scope);
                 try
                 {
                     Execute(scope, entry, null);
@@ -6491,30 +6494,6 @@ namespace ProtoCore.DSASM
             }
             return nextGraphNode;
         }
-
-
-        ///// <summary>
-        ///// Get the first dirty graphnode to execute within the macroblock scope
-        ///// </summary>
-        ///// <param name="nextPC"></param>
-        ///// <param name="ci"></param>
-        ///// <param name="fi"></param>
-        ///// <returns></returns>
-        //private AssociativeGraph.GraphNode GetNextGraphNodeToExecute(int nextPC, int ci, int fi)
-        //{
-        //    AssociativeGraph.GraphNode nextGraphNode = null;
-        //    if (IsGlobalScope())
-        //    {
-        //        nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstDirtyGraphNodeFromPC(Constants.kInvalidIndex, graphNodesInProgramScope);
-        //    }
-        //    else
-        //    {
-        //        // On normal execution, just retrieve the graphnode associated with pc
-        //        // Associative update is handled in jdep
-        //        nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetGraphNodeAtPC(nextPC, graphNodesInProgramScope);
-        //    }
-        //    return nextGraphNode;
-        //}
 
         private void JDEP_Handler(Instruction instruction)
         {
