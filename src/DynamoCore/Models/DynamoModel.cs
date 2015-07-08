@@ -899,7 +899,8 @@ namespace Dynamo.Models
 #endif
 
             // Load local custom nodes
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.DefinitionDirectories.ElementAt(0), IsTestMode);
+            foreach (var directory in pathManager.DefinitionDirectories)
+                CustomNodeManager.AddUninitializedCustomNodesInPath(directory, IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
