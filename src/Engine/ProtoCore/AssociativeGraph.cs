@@ -991,12 +991,6 @@ namespace ProtoCore.AssociativeGraph
         public int MacroblockID { get; set; }
         public bool Visited { get; set; }
 
-        /// <summary>
-        /// A graphnode is flagged as an allocation represents a variable that was initially allocated on the DS stack or heap
-        /// i.e. the graphnode associated with a variable declaration
-        /// </summary>
-        public bool IsAllocation { get; set; }
-
         public GraphNode()
         {
             IsModifier = false;
@@ -1039,7 +1033,6 @@ namespace ProtoCore.AssociativeGraph
 
             MacroblockID = Constants.kInvalidIndex;
             Visited = false;
-            IsAllocation = false;
         }
 
 

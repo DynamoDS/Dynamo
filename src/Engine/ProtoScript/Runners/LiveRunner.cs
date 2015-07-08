@@ -321,11 +321,6 @@ namespace ProtoScript.Runners
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
-        public Dictionary<System.Guid, Subtree> GetProgramSnapshot()
-        {
-            return currentSubTreeList;
-        }
-
         /// <summary>
         /// Given deltaGraphNodes, estimate the reachable graphnodes from the live core
         /// </summary>
@@ -1800,16 +1795,6 @@ namespace ProtoScript.Runners
             return cbnGuidList;
         }
 
-        /// <summary>
-        /// Generates a snapshot of the entire program 
-        /// A snapshot is the current list of nodes
-        /// </summary>
-        /// <returns></returns>
-        private List<Subtree> GenerateProgramSnapshot()
-        {
-            return null;
-        }
-
         private void SynchronizeInternal(GraphSyncData syncData)
         {
             runnerCore.Options.IsDeltaCompile = true;
@@ -1841,8 +1826,7 @@ namespace ProtoScript.Runners
             }
             else
             {
-                var astNodes = CoreUtils.BuildASTList(runnerCore, code);
-                CompileAndExecuteForDeltaExecution(astNodes);
+                CompileAndExecuteForDeltaExecution(code);
             }
         }
 

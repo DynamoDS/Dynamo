@@ -8703,12 +8703,6 @@ namespace ProtoAssociative
                             symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
                                     false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
-                            // It is an input graphnode if the variable is allocated on the stack and is not compiler generated
-                            if (!CoreUtils.IsCompilerGenerated(symbolnode.name))
-                            {
-                                graphNode.IsAllocation = true;
-                            }
-
                             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                             {
                                 core.watchSymbolList.Add(symbolnode);

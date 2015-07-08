@@ -393,8 +393,6 @@ namespace ProtoCore
 
         public int newEntryPoint { get; private set; }
 
-        public int CurrentMacroBlockID { get; set; }
-
         public ProtoCore.MacroBlockGenerator MacroblockGen { get; set; }
 
         public void SetNewEntryPoint(int pc)
@@ -681,7 +679,6 @@ namespace ProtoCore
             InlineConditionalBodyGraphNodes = new Stack<List<GraphNode>>();
 
             newEntryPoint = Constants.kInvalidIndex;
-            CurrentMacroBlockID = Constants.kInvalidIndex;
             RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
             MacroblockGen = new MacroBlockGenerator(this);
         }
