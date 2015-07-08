@@ -1,5 +1,5 @@
 
-#define __MACROBLOCK_CORE_EXECUTION
+//#define __MACROBLOCK_CORE_EXECUTION
 
 using System;
 using System.Text;
@@ -291,6 +291,9 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
 
+                
+#if __MACROBLOCK_CORE_EXECUTION
+
                 ProtoCore.Runtime.MacroblockSequencer sequencer = new ProtoCore.Runtime.MacroblockSequencer(exe.MacroBlockList);
                 sequencer.Execute(
                     runtimeCore.CurrentExecutive.CurrentDSASMExec,
@@ -298,7 +301,14 @@ namespace ProtoScript.Runners
                     runtimeCore.StartPC,
                     stackFrame,
                     locals);
-
+#else
+                runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec,
+                    codeBlock.codeBlockId,
+                    runtimeCore.StartPC,
+                    stackFrame,
+                    locals);
+#endif
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
             catch

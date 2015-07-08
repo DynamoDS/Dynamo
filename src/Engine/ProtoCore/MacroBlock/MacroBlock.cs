@@ -30,6 +30,7 @@ namespace ProtoCore.Runtime
     {
         public enum ExecuteState
         {
+            NotReady,
             Ready,
             Executing,
             Paused
@@ -37,12 +38,14 @@ namespace ProtoCore.Runtime
 
         public int UID { get; set; }
         public ExecuteState State { get; set; }
+        public AssociativeGraph.GraphNode InputGraphNode { get; set; }
         public List<AssociativeGraph.GraphNode> GraphNodeList { get; set; }
 
         public MacroBlock(int ID)
         {
             UID = ID;
-            State = ExecuteState.Ready;
+            State = ExecuteState.NotReady;
+            InputGraphNode = null;
             GraphNodeList = new List<AssociativeGraph.GraphNode>();
         }
 
@@ -249,6 +252,10 @@ namespace ProtoCore
                 if (graphNode.MacroblockID != Constants.kInvalidIndex)
                 {
                     RuntimeMacroBlockList[graphNode.MacroblockID].GraphNodeList.Add(graphNode);
+                    if (IsMacroblockEntryPoint(graphNode))
+                    {
+                        RuntimeMacroBlockList[graphNode.MacroblockID].InputGraphNode = graphNode;
+                    }
                 }
             }
             core.RuntimeMacroBlockList = RuntimeMacroBlockList;

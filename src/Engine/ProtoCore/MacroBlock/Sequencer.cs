@@ -40,45 +40,22 @@ namespace ProtoCore.Runtime
             Validity.Assert(executive != null);
             Validity.Assert(macroBlockList != null);
 
-            // Get the list of macroblocks that will be executed in the current run
-            List<ProtoCore.Runtime.MacroBlock> validBlocks = GetExecutingBlocks(macroBlockList);
-            if (validBlocks.Count == 0)
-            {
-                return;
-            }
-
             executive.SetupBounce(exeblock, entry, stackFrame, locals);
-            foreach (ProtoCore.Runtime.MacroBlock macroBlock in validBlocks)
+            foreach (ProtoCore.Runtime.MacroBlock macroBlock in macroBlockList)
             {
                 executive.Execute(macroBlock);
             }
         }
 
         /// <summary>
-        /// Get all macroblocks that can be executed
-        /// </summary>
-        /// <returns></returns>
-        private List<ProtoCore.Runtime.MacroBlock> GetExecutingBlocks(List<ProtoCore.Runtime.MacroBlock> macroBlocks)
-        {
-            Validity.Assert(macroBlocks != null);
-            List<ProtoCore.Runtime.MacroBlock> validBlocks = new List<Runtime.MacroBlock>();
-            foreach (ProtoCore.Runtime.MacroBlock block in macroBlocks)
-            {
-                if (IsBlockReady(block))
-                {
-                    validBlocks.Add(block);
-                }
-            }
-            return validBlocks;
-        }
-
-        /// <summary>
         /// Determines if a block is ready for execution
+        /// A block is ready if all its operands have executed
         /// </summary>
         /// <param name="block"></param>
         /// <returns></returns>
         private bool IsBlockReady(ProtoCore.Runtime.MacroBlock block)
         {
+            Validity.Assert(macroBlockList != null);
             return true;
         }
     }

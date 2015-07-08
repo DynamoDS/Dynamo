@@ -118,6 +118,9 @@ namespace ProtoCore.DSASM
         /// </summary>
         private void SetupGraphNodesInScope()
         {
+
+            //#define __MACROBLOCK_CORE_EXECUTION
+#if __MACROBLOCK_CORE_EXECUTION
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
             // Check if wh're in the global scope
@@ -137,6 +140,16 @@ namespace ProtoCore.DSASM
                 fi = rmem.CurrentStackFrame.FunctionScope;
                 graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
             }
+#else             
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kGlobalScope;
+            if (!IsGlobalScope())
+            {
+                ci = rmem.CurrentStackFrame.ClassScope;
+                fi = rmem.CurrentStackFrame.FunctionScope;
+            }
+            graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
+#endif
         }
 
         /// <summary>
