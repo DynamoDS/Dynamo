@@ -45,13 +45,6 @@ namespace DSCoreNodesUI
             get { return true; }
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            return outputIndex == 0
-                ? AstIdentifierForPreview
-                : base.GetAstIdentifierForOutputIndex(outputIndex);
-        }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (IsPartiallyApplied)

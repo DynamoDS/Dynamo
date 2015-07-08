@@ -80,13 +80,7 @@ namespace Dynamo.Nodes
             NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
         {
             if (model.OutPortData.Count == 1)
-            {
                 resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
-                resultAst.Add(
-                    AstFactory.BuildAssignment(
-                        model.GetAstIdentifierForOutputIndex(0),
-                        model.AstIdentifierForPreview));
-            }
             else
                 base.AssignIdentifiersForFunctionCall(model, rhs, resultAst);
         }

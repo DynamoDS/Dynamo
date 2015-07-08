@@ -56,13 +56,6 @@ namespace DSCoreNodesUI
             get { return true; }
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            return outputIndex == 0
-                ? AstIdentifierForPreview
-                : base.GetAstIdentifierForOutputIndex(outputIndex);
-        }
-
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
