@@ -1778,7 +1778,6 @@ namespace ProtoCore.AST.AssociativeAST
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }
-        public int MacroBlockID { get; set; }
         public Guid guid { get; set; }
         public int OriginalAstID { get; set; }    // The original AST that this Binarynode was derived from
         public bool isSSAAssignment { get; set; }
@@ -1811,7 +1810,6 @@ namespace ProtoCore.AST.AssociativeAST
             RightNode = right;
             IsInputExpression = false;
             IsFirstIdentListNode = false;
-            MacroBlockID = Constants.kInvalidIndex;
         }
 
         public BinaryExpressionNode(BinaryExpressionNode rhs) : base(rhs)
@@ -1834,7 +1832,6 @@ namespace ProtoCore.AST.AssociativeAST
             }
             IsInputExpression = rhs.IsInputExpression;
             IsFirstIdentListNode = rhs.IsFirstIdentListNode;
-            MacroBlockID = rhs.MacroBlockID;
         }
 
         /// <summary>
@@ -1860,8 +1857,6 @@ namespace ProtoCore.AST.AssociativeAST
              RightNode = NodeUtils.Clone(rhs);
              IsInputExpression = false;
              IsFirstIdentListNode = false;
-             MacroBlockID = Constants.kInvalidIndex;
-             
          }
 
         public override bool Equals(object other)

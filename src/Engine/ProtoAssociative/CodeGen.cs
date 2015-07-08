@@ -2981,8 +2981,6 @@ namespace ProtoAssociative
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode(leftNode, rightNode, ProtoCore.DSASM.Operator.assign);
                 bnode.isSSAAssignment = isSSAAssignment;
-                bnode.IsInputExpression = astBNode.IsInputExpression;
-                bnode.MacroBlockID = astBNode.MacroBlockID;
 
                 astlist.Add(bnode);
                 ssaStack.Push(bnode);
@@ -3792,7 +3790,6 @@ namespace ProtoAssociative
                 {
                     AssociativeNode lastNode = DFSEmitSplitAssign_AST(bnode.RightNode, ref astList);
                     var newBNode = nodeBuilder.BuildBinaryExpression(bnode.LeftNode, lastNode);
-                    (newBNode as BinaryExpressionNode).MacroBlockID = bnode.MacroBlockID;
                     astList.Add(newBNode);
                     return bnode.LeftNode;
                 }
@@ -8836,7 +8833,6 @@ namespace ProtoAssociative
                     }
 
                     PushGraphNode(graphNode);
-                    StoreGraphnodeAtMacroBlock(graphNode, bnode.MacroBlockID);
 
                     if (core.InlineConditionalBodyGraphNodes.Count > 0)
                     {
