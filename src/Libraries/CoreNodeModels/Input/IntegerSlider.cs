@@ -100,6 +100,14 @@ namespace DSCoreNodesUI.Input
             return Value.ToString(CultureInfo.InvariantCulture);
         }
 
+        public override bool IsInputNode
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)

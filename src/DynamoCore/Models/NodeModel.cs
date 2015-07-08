@@ -191,6 +191,30 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Input nodes are used in Customizer. Input nodes can be numbers, number sliders,
+        /// strings, bool, code blocks and custom nodes, which don't specify path.
+        /// </summary>
+        public virtual bool IsInputNode
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        private bool isVisibleInCustomizer;
+        public bool IsVisibleInCustomizer
+        {
+            get
+            {
+                if (!IsInputNode)
+                    return false;
+
+                return isVisibleInCustomizer;
+            }
+        }
+
+        /// <summary>
         ///     The Node's state, which determines the coloring of the Node in the canvas.
         /// </summary>
         public ElementState State

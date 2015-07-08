@@ -31,6 +31,14 @@ namespace Dynamo.Nodes
             ShouldDisplayPreviewCore = false;
         }
 
+        public override bool IsInputNode
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
             string name = updateValueParams.PropertyName;
@@ -210,6 +218,14 @@ namespace Dynamo.Nodes
         public override bool IsConvertible
         {
             get { return true; }
+        }
+
+        public override bool IsInputNode
+        {
+            get
+            {
+                return true;
+            }
         }
 
         #region Serialization/Deserialization Methods

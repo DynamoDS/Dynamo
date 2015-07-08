@@ -57,5 +57,13 @@ namespace DSCoreNodesUI
             Value = false;
             ShouldDisplayPreviewCore = false;
         }
+
+        public override bool IsInputNode
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }
