@@ -4237,6 +4237,8 @@ namespace ProtoAssociative
 
             List<GraphNode> nodesInScope = codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
             ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(nodesInScope);
+
+            // Generate the macroblock fragments at the global scope
             if (codeBlock.codeBlockId == 0)
             {
                 core.MacroblockGen.GenerateMacroBlocks(nodesInScope);
