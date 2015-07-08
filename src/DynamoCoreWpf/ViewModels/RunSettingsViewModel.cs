@@ -129,9 +129,19 @@ namespace Dynamo.Wpf.ViewModels
 
         }
 
-        public bool RunButtonEnabled
+        public bool RunEnabled
         {
             get { return Model.RunEnabled; }
+        }
+
+        public bool RunButtonEnabled
+        {
+            get
+            {
+                return Model.RunEnabled &&
+                    Model.RunType != RunType.Automatic &&
+                    Model.RunType != RunType.Periodic;
+            }
         }
 
         public string RunButtonToolTip
