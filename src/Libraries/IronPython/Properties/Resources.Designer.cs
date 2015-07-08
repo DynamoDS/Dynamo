@@ -61,6 +61,15 @@ namespace DSIronPythonNode.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit....
+        /// </summary>
+        public static string EditHeader {
+            get {
+                return ResourceManager.GetString("EditHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>
         public static string PythonNodePortDataOutputToolTip {

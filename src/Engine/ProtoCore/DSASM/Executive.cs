@@ -80,7 +80,13 @@ namespace ProtoCore.DSASM
 
         public bool IsExplicitCall { get; set; }
 
-        public List<AssociativeGraph.GraphNode> deferedGraphNodes {get; private set;}
+        public List<AssociativeGraph.GraphNode> deferedGraphNodes { get; private set; }
+
+        /// <summary>
+        /// This is the list of graphnodes that are reachable from the current state
+        /// This is updated for every bounce and function call
+        /// </summary>
+        private List<AssociativeGraph.GraphNode> graphNodesInProgramScope;
         
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
@@ -105,6 +111,21 @@ namespace ProtoCore.DSASM
             bounceType = CallingConvention.BounceType.kImplicit;
 
             deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
+        }
+
+        /// <summary>
+        /// Cache the graphnodes in scope
+        /// </summary>
+        private void SetupGraphNodesInScope()
+        {
+            int ci = Constants.kInvalidIndex;
+            int fi = Constants.kInvalidIndex;
+            if (!IsGlobalScope())
+            {
+                ci = rmem.CurrentStackFrame.ClassScope;
+                fi = rmem.CurrentStackFrame.FunctionScope;
+            }
+            graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
         }
 
         /// <summary>
@@ -392,7 +413,7 @@ namespace ProtoCore.DSASM
             //  Entering a nested block requires all the nodes of that block to be executed
             if (executingBlock > 0)
             {
-                istream.dependencyGraph.MarkAllGraphNodesDirty(executingBlock, ci, fi);
+                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(executingBlock, graphNodesInProgramScope);
             }
 
             if (fepRun)
@@ -445,6 +466,8 @@ namespace ProtoCore.DSASM
             Validity.Assert(null != istream);
 
             Validity.Assert(null != istream.instrList);
+
+            SetupGraphNodesInScope();
 
             if (!fepRun)
             {
@@ -499,6 +522,8 @@ namespace ProtoCore.DSASM
             istream = exe.instrStreamList[exeblock];
             Validity.Assert(null != istream);
             Validity.Assert(null != istream.instrList);
+
+            SetupGraphNodesInScope();
 
             pc = entry;
 
@@ -1319,7 +1344,7 @@ namespace ProtoCore.DSASM
             }
 
             bool isUpdated = false;
-            List<AssociativeGraph.GraphNode> graphNodes = istream.dependencyGraph.GetGraphNodesAtScope(classscope, function);
+            List<AssociativeGraph.GraphNode> graphNodes = graphNodesInProgramScope;
             if (graphNodes != null)
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
@@ -1412,28 +1437,26 @@ namespace ProtoCore.DSASM
         /// <param name="entrypoint"></param>
         /// <param name="isGlobalScope"></param>
         private void SetupGraphEntryPoint(int entrypoint, bool isGlobalScope)
-        { 
-            List<AssociativeGraph.GraphNode> graphNodeList = null;
+        {
+            if (graphNodesInProgramScope == null)
+            {
+                return;
+            }
+
             if (runtimeCore.Options.ApplyUpdate && isGlobalScope)
             {
-                graphNodeList = istream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kInvalidIndex);
-
-                Validity.Assert(graphNodeList.Count > 0);
+                Validity.Assert(graphNodesInProgramScope.Count > 0);
 
                 // The default entry point on ApplyUpdate is the first graphNode
-                entrypoint = graphNodeList[0].updateBlock.startpc;
-            }
-            else
-            {
-                graphNodeList = istream.dependencyGraph.GraphList;
+                entrypoint = graphNodesInProgramScope[0].updateBlock.startpc;
             }
 
-            if (graphNodeList.Count > 0)
+            if (graphNodesInProgramScope.Count > 0)
             {
-                Properties.executingGraphNode = graphNodeList[0];
+                Properties.executingGraphNode = graphNodesInProgramScope[0];
             }
 
-            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
+            foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodesInProgramScope)
             {
                 if (runtimeCore.Options.IsDeltaExecution)
                 {
@@ -1556,7 +1579,7 @@ namespace ProtoCore.DSASM
         private bool UpdatePropertyChangedGraphNode()
         {
             bool propertyChanged = false;
-            var graphNodes = istream.dependencyGraph.GraphList;
+            var graphNodes = graphNodesInProgramScope;
             foreach (var node in graphNodes)
             {
                 if (node.propertyChanged)
@@ -1698,21 +1721,24 @@ namespace ProtoCore.DSASM
         {
             int setentry = entry;
             bool isFirstGraphSet = false;
-            foreach (AssociativeGraph.GraphNode graphNode in istream.dependencyGraph.GraphList)
+            if (graphNodesInProgramScope != null)
             {
-                graphNode.isDirty = true;
-                if (!isFirstGraphSet)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodesInProgramScope)
                 {
-                    // Setting the first graph of this function to be in executed (not dirty) state
-                    isFirstGraphSet = true;
-                    graphNode.isDirty = false;
-                }
+                    graphNode.isDirty = true;
+                    if (!isFirstGraphSet)
+                    {
+                        // Setting the first graph of this function to be in executed (not dirty) state
+                        isFirstGraphSet = true;
+                        graphNode.isDirty = false;
+                    }
 
-                if (Constants.kInvalidIndex == setentry)
-                {
-                    // Set the entry point as this graph and mark this graph as executed 
-                    setentry = graphNode.updateBlock.startpc;
-                    graphNode.isDirty = false;
+                    if (Constants.kInvalidIndex == setentry)
+                    {
+                        // Set the entry point as this graph and mark this graph as executed 
+                        setentry = graphNode.updateBlock.startpc;
+                        graphNode.isDirty = false;
+                    }
                 }
             }
             return setentry;
@@ -1729,7 +1755,7 @@ namespace ProtoCore.DSASM
             int langBlockDecl = (int)svFunctionBlock.opdata;
             ProcedureNode procNode = GetProcedureNode(langBlockDecl, classIndex, procIndex);
 
-            List<AssociativeGraph.GraphNode> graphNodes = procNode.GraphNodeList;//istream.dependencyGraph.GetGraphNodesAtScope(classIndex, procIndex);
+            List<AssociativeGraph.GraphNode> graphNodes = procNode.GraphNodeList;
             if (graphNodes != null)
             {
                 foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
@@ -2367,6 +2393,8 @@ namespace ProtoCore.DSASM
             List<Instruction> instructions = istream.instrList;
             Validity.Assert(null != instructions);
 
+            SetupGraphNodesInScope();
+
             // Restore the previous state
             //rmem = runtimeCore.RuntimeMemory;
             rmem = runtimeCore.RuntimeMemory;
@@ -2602,6 +2630,8 @@ namespace ProtoCore.DSASM
                     instructions = istream.instrList;
                     executingBlock = exeblock;
                     runtimeCore.DebugProps.CurrentBlockId = exeblock;
+
+                    SetupGraphNodesInScope();
                 }
                 else if (executeInstruction.opCode == OpCode.RETB)
                 {
@@ -3955,15 +3985,6 @@ namespace ProtoCore.DSASM
             exe.instrStreamList[blockId].entrypoint = pc;
         }
 
-        public AssociativeGraph.GraphNode GetLastGraphNode(string varName)
-        {
-            return istream.dependencyGraph.GraphList.Last(x =>
-                    null != x.updateNodeRefList && x.updateNodeRefList.Count > 0
-                && null != x.updateNodeRefList[0].nodeList && x.updateNodeRefList[0].nodeList.Count > 0
-                && x.updateNodeRefList[0].nodeList[0].symbol.name == varName);
-        }
-
-
         public AssociativeGraph.GraphNode GetFirstGraphNode(string varName, out int blockId)
         {
             blockId = 0;
@@ -4531,15 +4552,15 @@ namespace ProtoCore.DSASM
                 }
 
                 tempSvData = coercedValue;
-                EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
+                var preValue = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
 
                 if (runtimeCore.Options.ExecuteSSA)
                 {
                     if (!isSSANode)
                     {
-                        if (EX.IsPointer && coercedValue.IsPointer)
+                        if (preValue.IsPointer && coercedValue.IsPointer)
                         {
-                            if (EX.opdata != coercedValue.opdata)
+                            if (preValue.opdata != coercedValue.opdata)
                             {
                                 if (null != Properties.executingGraphNode)
                                 {
@@ -4563,9 +4584,12 @@ namespace ProtoCore.DSASM
 
                 svData = rmem.Pop();
                 tempSvData = svData;
-                EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
+                PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
+#if !NAIVE_MARK_AND_SWEEP
+            rmem.Heap.GC();
+#endif
             ++pc;
             return tempSvData;
         }
@@ -4622,9 +4646,12 @@ namespace ProtoCore.DSASM
                 }
 
                 svData = rmem.Pop();
-                EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
+                PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
             }
 
+#if !NAIVE_MARK_AND_SWEEP
+            rmem.Heap.GC();
+#endif
             ++pc;
         }
 
@@ -4697,11 +4724,11 @@ namespace ProtoCore.DSASM
                 {
                     StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
                     tempSvData = coercedValue;
-                    EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
+                    PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
                 }
                 else
                 {
-                    EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, Constants.kGlobalScope, dimList, svData);
+                    PopToIndexedArray(blockId, (int)instruction.op1.opdata, Constants.kGlobalScope, dimList, svData);
                 }
 
                 ++pc;
@@ -4785,7 +4812,7 @@ namespace ProtoCore.DSASM
             else if (svProperty.IsArray && (dimensions > 0))
             {
                 var propertyArray = rmem.Heap.ToHeapObject<DSArray>(svProperty);
-                EX = propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
+                propertyArray.SetValueForIndices(dimList, svData, targetType, runtimeCore);
             }
             else // This property has NOT been allocated
             {
@@ -5689,6 +5716,7 @@ namespace ProtoCore.DSASM
             {
                 rmem.PopConstructBlockId();
             }
+            SetupGraphNodesInScope();
         }
 
      
@@ -5835,11 +5863,9 @@ namespace ProtoCore.DSASM
             {
                 DebugReturn(procNode, pc);
             }
-            // This resotring execution states is only permitted if the current scope is still in a function
-            //if (currentScopeFunction != Constants.kGlobalScope)
-            {
-                RestoreGraphNodeExecutionStates(procNode, execStateRestore);
-            }
+
+            SetupGraphNodesInScope();   
+            RestoreGraphNodeExecutionStates(procNode, execStateRestore);
         }
 
         private void RETB_Handler()
@@ -5913,6 +5939,7 @@ namespace ProtoCore.DSASM
                 }
             }
             Properties = PopInterpreterProps();
+            SetupGraphNodesInScope();   
         }
 
         private void RETCN_Handler(Instruction instruction)
@@ -6038,6 +6065,7 @@ namespace ProtoCore.DSASM
             }
 
 
+
             terminate = !explicitCall;
 
             // Comment Jun: Dispose calls are always implicit and need to terminate
@@ -6077,6 +6105,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
+            SetupGraphNodesInScope();          
             RestoreGraphNodeExecutionStates(procNode, execStateRestore);
         }
 
@@ -6363,7 +6392,10 @@ namespace ProtoCore.DSASM
                     pc = Properties.executingGraphNode.updateBlock.startpc;
                 }
             }
+
+#if NAIVE_MARK_AND_SWEEP 
             GC();
+#endif
             return;
         }
 
@@ -6389,19 +6421,19 @@ namespace ProtoCore.DSASM
                     // On delta execution, it is possible that the next graphnode is clean
                     // Retrieve the next dirty graphnode given the pc
                     // Associative update is handled when ApplyUpdate = true
-                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(nextPC, ci, fi);
+                    nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstDirtyGraphNodeFromPC(nextPC, graphNodesInProgramScope);
                 }
                 else
                 {
                     // Allow immediate update if we are in a local scope.
-                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
+                    nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetFirstDirtyGraphNodeFromPC(Constants.kInvalidIndex, graphNodesInProgramScope);
                 }
             }
             else
             {
                 // On normal execution, just retrieve the graphnode associated with pc
                 // Associative update is handled in jdep
-                nextGraphNode = istream.dependencyGraph.GetGraphNode(nextPC, ci, fi);
+                nextGraphNode = ProtoCore.AssociativeEngine.Utils.GetGraphNodeAtPC(nextPC, graphNodesInProgramScope);
             }
             return nextGraphNode;
         }
@@ -6561,6 +6593,13 @@ namespace ProtoCore.DSASM
 
         private void Exec(Instruction instruction)
         {
+#if !NAIVE_MARK_AND_SWEEP
+            if (rmem.Heap.IsWaitingForRoots)
+            {
+                var gcroots = CollectGCRoots();
+                rmem.Heap.SetRoots(gcroots, this);
+            }
+#endif
             switch (instruction.opCode)
             {
                 case OpCode.ALLOCC:
@@ -6849,6 +6888,16 @@ namespace ProtoCore.DSASM
             }
         }
 
+        public List<StackValue> CollectGCRoots()
+        {
+            var gcRoots = new List<StackValue>();
+            if (RX.IsReferenceType)
+                gcRoots.Add(RX);
+            gcRoots.AddRange(runtimeCore.CallSiteGCRoots);
+            gcRoots.AddRange(rmem.Stack.Where(s => s.IsReferenceType));
+            return gcRoots;
+        }
+
         private void GC()
         {
             var currentFramePointer = rmem.FramePointer;
@@ -6867,6 +6916,7 @@ namespace ProtoCore.DSASM
 #if DEBUG
             var gcRootSymbolNames = new List<string>();
 #endif
+
             var isInNestedImperativeBlock = frames.Any(f =>
                 {
                     var callerBlockId = f.FunctionCallerBlock;
@@ -6924,7 +6974,7 @@ namespace ProtoCore.DSASM
                     while (workingList.Any())
                     {
                         blockId = workingList.Pop();
-                        var block = exe.CompleteCodeBlocks[blockId];
+                        var block = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId];
 
                         foreach (var child in block.children)
                         {
@@ -6966,10 +7016,9 @@ namespace ProtoCore.DSASM
                 blockId = stackFrame.FunctionCallerBlock;
                 currentFramePointer = stackFrame.FramePointer;
             }
-
             gcRoots.Add(RX);
 
-            rmem.GC(gcRoots, this);
+            rmem.Heap.GCMarkAndSweep(gcRoots, this);
         }
     }
 }
