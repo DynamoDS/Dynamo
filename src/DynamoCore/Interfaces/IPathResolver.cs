@@ -70,9 +70,15 @@ namespace Dynamo.Interfaces
         string CommonDataDirectory { get; }
 
         /// <summary>
-        /// The local directory that contains custom nodes created by the user.
+        /// Directories from where custom nodes are to be loaded. The implementor
+        /// of this interface method should always guarantee that a non-empty 
+        /// list is returned, and that the first entry represents the default 
+        /// custom node directory. Custom nodes created are stored in the
+        /// default directory, which is specific to the current user. Changes to
+        /// custom nodes may or may not be saved to their current location depeding
+        /// on write access.
         /// </summary>
-        string UserDefinitions { get; }
+        IEnumerable<string> DefinitionDirectories { get; }
 
         /// <summary>
         /// The local directory that contains custom nodes created by all users.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 using Dynamo.Core;
@@ -102,6 +103,16 @@ namespace Dynamo
         public List<string> BackupFiles { get; set; }
 
         /// <summary>
+        /// A list of folders containing custom nodes.
+        /// </summary>
+        public List<string> CustomNodeFolders { get; set; }
+
+        /// <summary>
+        /// A list of folders containing zero-touch nodes.
+        /// </summary>
+        public List<string> PackageFolders { get; set; } 
+
+        /// <summary>
         /// A list of packages used by the Package Manager to determine
         /// which packages are marked for deletion.
         /// </summary>
@@ -186,6 +197,9 @@ namespace Dynamo
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
+
+            CustomNodeFolders = new List<string>();
+            PackageFolders = new List<string>();
         }
 
         /// <summary>
@@ -259,6 +273,9 @@ namespace Dynamo
                 }
             }
             catch (Exception) { }
+
+            settings.PackageFolders = settings.PackageFolders.Distinct().ToList();
+            settings.CustomNodeFolders = settings.CustomNodeFolders.Distinct().ToList();
 
             return settings;
         }

@@ -47,8 +47,12 @@ namespace Dynamo.PackageManager
                 throw new ArgumentNullException("packagesDirectories");
 
             this.packagesDirectories.AddRange(packagesDirectories);
-            if (!Directory.Exists(DefaultPackagesDirectory))
-                Directory.CreateDirectory(DefaultPackagesDirectory);
+            try
+            {
+                if (!Directory.Exists(DefaultPackagesDirectory))
+                    Directory.CreateDirectory(DefaultPackagesDirectory);
+            }
+            catch (DirectoryNotFoundException) { }
         }
 
         private void OnPackageAdded(Package pkg)
@@ -178,6 +182,9 @@ namespace Dynamo.PackageManager
 
         private void ScanPackageDirectories(string root, IPreferences preferences)
         {
+            if (!Directory.Exists(root))
+                return;
+
             foreach (var dir in
                 Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
             {
