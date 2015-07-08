@@ -1427,7 +1427,7 @@
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
                                    Margin="5 0 5 0"
-                                   x:Name="Library">
+                                   Name="Library">
                             
                         </TextBlock>
                     </Grid>
