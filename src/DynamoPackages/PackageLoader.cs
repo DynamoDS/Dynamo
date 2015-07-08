@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.DSEngine;
