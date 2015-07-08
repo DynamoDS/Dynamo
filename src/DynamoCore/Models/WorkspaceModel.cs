@@ -232,8 +232,11 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     A set of input parameter states, this can be used to set the graph to a serialized state.
+        ///     this is not an IEnumerable becuase the presets should have distinct names. If this is IEnumerable,
+        ///     then presets should be converted to a list before removing an item. Also, the new list has to be assigned
+        ///     to this. So changed this from IEnumerable to List.
         /// </summary>
-        public IEnumerable<PresetModel> Presets { get { return presets;} }
+        public List<PresetModel> Presets { get { return presets;} }
 
         /// <summary>
         ///     The date of the last save.
@@ -588,6 +591,7 @@ namespace Dynamo.Models
             ClearNodes();
             Notes.Clear();
             Annotations.Clear();
+            Presets.Clear();
 
             ClearUndoRecorder();
             ResetWorkspace();

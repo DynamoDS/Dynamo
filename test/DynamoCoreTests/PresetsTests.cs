@@ -564,5 +564,47 @@ namespace Dynamo.Tests
             Assert.AreEqual(numberNode2.X, 20);
             Assert.AreEqual(numberNode2.Y, 20);
         }
+
+        [Test]
+        public void CloseWorkspaceShouldClearPresets()
+        {
+            var model = CurrentDynamoModel;
+            //create some numbers
+            var numberNode1 = new DoubleInput();
+
+            numberNode1.Value = "1";
+            var numberNode2 = new DoubleInput();
+            numberNode2.Value = "2";
+
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+
+            //add the nodes
+            model.CurrentWorkspace.AddNode(numberNode1, false);
+            model.CurrentWorkspace.AddNode(numberNode2, false);
+            model.CurrentWorkspace.AddNode(addNode, false);
+            //connect them up
+            ConnectorModel.Make(numberNode1, addNode, 0, 0);
+            ConnectorModel.Make(numberNode2, addNode, 0, 1);
+
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 3);
+            Assert.AreEqual(model.CurrentWorkspace.Connectors.Count(), 2);
+
+            //create the first state with the numbers selected
+            DynamoSelection.Instance.Selection.Add(numberNode1);
+            DynamoSelection.Instance.Selection.Add(numberNode2);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            //create the preset from 2 nodes
+            model.CurrentWorkspace.AddPreset(
+                 "state1",
+                 "3", IDS);
+
+            Assert.AreEqual(1, model.CurrentWorkspace.Presets.Count());
+
+            //Clear the current workspace
+            model.ClearCurrentWorkspace();
+            
+            //Clearing the workspace should clear the presets
+            Assert.AreEqual(0, model.CurrentWorkspace.Presets.Count());
+        }
     }
 }
