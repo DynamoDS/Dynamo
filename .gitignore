@@ -81,3 +81,4 @@ src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 /src/Libraries/UnitsUI/*.resources
 /src/DynamoCore/BuiltInAndOperators/BuiltInImages.resources
 /src/DynamoCore/BuiltInAndOperators/OperatorsImages.resources
+/src/Libraries/GeometryUI/*.resources

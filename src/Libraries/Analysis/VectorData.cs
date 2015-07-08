@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structured vector analysis data.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class VectorData : IStructuredData<Point, Vector>
     {
         private const byte VectorColor = 120;
@@ -15,11 +17,13 @@ namespace Analysis
         /// <summary>
         /// A list of calculation locations.
         /// </summary>
+        [Obsolete("Use the Points available elsewhere in your graph.")]
         public IEnumerable<Point> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of results.
         /// </summary>
+        [Obsolete("Use the values provided by the node conducting the analysis.")]
         public IList<Vector> Values { get; internal set; }
 
         protected VectorData(IEnumerable<Point> points, IList<Vector> values)
@@ -33,6 +37,7 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of Points.</param>
         /// <param name="values">A list of Vector values.</param>
+        [Obsolete("Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes.")]
         public static VectorData ByPointsAndValues(
             IEnumerable<Point> points, IList<Vector> values)
         {

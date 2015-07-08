@@ -127,7 +127,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             //ViewModel.HomeSpace.Run();
@@ -153,7 +153,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             BeginRun();
@@ -169,7 +169,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             BeginRun();
@@ -185,7 +185,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\DynamoDefects\Defect_MAGN_3648.dyn");
 
             OpenModel(openPath);
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             //Check the CBN for input and output ports count and for error as well.
@@ -268,7 +268,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             BeginRun();
@@ -463,7 +463,7 @@ namespace Dynamo.Tests
                                         @"core\DynamoDefects\EqualEqualTestForSting_6694.dyn");
             RunModel(openPath);
             // check for number of Nodes and Connectors
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             // Different Stinrg input

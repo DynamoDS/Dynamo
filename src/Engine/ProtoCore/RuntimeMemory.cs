@@ -397,16 +397,6 @@ namespace ProtoCore
                     yield return stackFrame;
                 }
             }
-
-            /// <summary>
-            /// Mark and sweep garbage collection.
-            /// </summary>
-            /// <param name="gcRootPointers"></param>
-            /// <param name="exe"></param>
-            public void GC(List<StackValue> gcRootPointers, DSASM.Executive exe)
-            {
-                Heap.GCMarkAndSweep(gcRootPointers.ToList(), exe);
-            }
         }
     }
 }

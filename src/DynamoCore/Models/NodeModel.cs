@@ -568,7 +568,7 @@ namespace Dynamo.Models
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
             return rtAttribs.Length > 0
                 ? ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription
-                : "No description provided";
+                : Properties.Resources.NoDescriptionAvailable;
         }
 
         /// <summary>
@@ -723,7 +723,7 @@ namespace Dynamo.Models
                 // The return value of function %nodeAstFailed() is always 
                 // null.
                 var errorMsg = Properties.Resources.NodeProblemEncountered;
-                var fullMsg = String.Format(errorMsg, e.Message);
+                var fullMsg = errorMsg + "\n\n" + e.Message;
                 this.NotifyAstBuildBroken(fullMsg);
 
                 var fullName = this.GetType().ToString();

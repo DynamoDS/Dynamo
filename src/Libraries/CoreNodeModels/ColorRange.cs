@@ -16,25 +16,39 @@ namespace DSCoreNodesUI
     [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     public class ColorRange : NodeModel
     {
-        public event EventHandler RequestChangeColorRange;
-        protected virtual void OnRequestChangeColorRange(object sender, EventArgs e)
+        public event Action RequestChangeColorRange;
+        protected virtual void OnRequestChangeColorRange()
         {
             if (RequestChangeColorRange != null)
-                RequestChangeColorRange(sender, e);
+                RequestChangeColorRange();
         }
 
         public ColorRange()
         {
+            InitializePorts();
+
+            this.PropertyChanged += ColorRange_PropertyChanged;
+            foreach (var port in InPorts)
+            {
+                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            }
+
+            ShouldDisplayPreviewCore = false;
+        }
+
+        void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnRequestChangeColorRange();
+        }
+
+        protected virtual void InitializePorts()
+        {
             InPortData.Add(new PortData("colors", Resources.ColorRangePortDataColorsToolTip));
             InPortData.Add(new PortData("indices", Resources.ColorRangePortDataIndicesToolTip));
             InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));
-            OutPortData.Add(new PortData("color",  Resources.ColorRangePortDataResultToolTip));
+            OutPortData.Add(new PortData("color", Resources.ColorRangePortDataResultToolTip));
 
             RegisterAllPorts();
-
-            this.PropertyChanged += ColorRange_PropertyChanged; 
-            
-            ShouldDisplayPreviewCore = false;
         }
 
         void ColorRange_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -45,18 +59,24 @@ namespace DSCoreNodesUI
             if (InPorts.Any(x => x.Connectors.Count == 0))
                 return;
 
-            OnRequestChangeColorRange(this, EventArgs.Empty);
+            OnRequestChangeColorRange();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            var buildColorRangeNode =
+                AstFactory.BuildFunctionCall(
+                    new Func<List<Color>, List<double>, ColorRange1D>(ColorRange1D.ByColorsAndParameters),
+                    new List<AssociativeNode>(){inputAstNodes[0], inputAstNodes[1]});
+
             var functionCall =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<Color>, List<double>, double, Color>(Color.BuildColorFrom1DRange),
-                    inputAstNodes);
+                    new Func<ColorRange1D,double, Color>(ColorRange1D.GetColorAtParameter),
+                    new List<AssociativeNode>(){buildColorRangeNode, inputAstNodes[2]});
+
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall),
             };
         }
     }

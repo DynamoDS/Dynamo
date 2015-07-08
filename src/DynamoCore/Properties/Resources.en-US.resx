@@ -286,7 +286,7 @@ Sorry about that.</value>
     <value>Loading node definition for "{0}" from: {1}</value>
   </data>
   <data name="NodeProblemEncountered" xml:space="preserve">
-    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}</value>
+    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:</value>
   </data>
   <data name="OpeningHomeWorkspace" xml:space="preserve">
     <value>Opening home workspace {0}...</value>
@@ -519,7 +519,12 @@ value: bool = false</value>
     <value>Instance of a Custom Node</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false</value>
+    <value>A function parameter, use with custom nodes.
+
+You can specify the type and default value for parameter. E.g.,
+
+input : var[]..[]
+value : bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
     <value>Custom node definition is not loaded!</value>

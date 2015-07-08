@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -82,7 +84,7 @@ namespace Dynamo.Models
         /// </summary>
 
         public event NodeEventHandler RequestNodeCentered;
-        
+
         /// <summary>
         ///     Requests that a Node or Note model should be centered.
         /// </summary>
@@ -93,6 +95,7 @@ namespace Dynamo.Models
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
         }
+
 
         /// <summary>
         ///     Function that can be used to respond to a changed workspace Zoom amount.
@@ -177,6 +180,13 @@ namespace Dynamo.Models
         {
             var handler = NodeRemoved;
             if (handler != null) handler(node);
+        }
+
+        public event Action NodesCleared;
+        protected virtual void OnNodesCleared()
+        {
+            var handler = NodesCleared;
+            if (handler != null) handler();
         }
 
         /// <summary>
@@ -266,10 +276,41 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     All of the nodes currently in the workspace.
-        /// 
-        ///     TODO(Peter): This should be an IEnumerable of nodes to prevent modification from the outside - MAGN-6580
         /// </summary>
-        public ObservableCollection<NodeModel> Nodes { get { return nodes; } }
+        public IEnumerable<NodeModel> Nodes { 
+            get 
+            {
+                IEnumerable<NodeModel> nodesClone;
+                lock (nodes)
+                {
+                    nodesClone = nodes.ToList();                
+                }
+
+                return nodesClone;
+            } 
+        }
+
+
+        public void AddNode(NodeModel node)
+        {
+            lock (nodes)
+            {
+                nodes.Add(node);
+            }            
+
+            OnNodeAdded(node);
+        }
+
+        public void ClearNodes()
+        {
+            lock (nodes)
+            {
+                nodes.Clear();
+            }
+
+            OnNodesCleared();
+        }
+
 
         /// <summary>
         ///     All of the connectors currently in the workspace.
@@ -544,7 +585,7 @@ namespace Dynamo.Models
                 }
             }
 
-            Nodes.Clear();
+            ClearNodes();
             Notes.Clear();
             Annotations.Clear();
 
@@ -562,14 +603,16 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="newPath">The path to save to</param>
         /// <param name="core"></param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
+        /// <param name="isBackup">Indicates whether saved workspace is backup or not. If it's not backup,
+        /// we should add it to recent files. Otherwise leave it.</param>
+        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackup = false)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore))
+                if (SaveInternal(newPath, runtimeCore) && !isBackup)
                     OnWorkspaceSaved();
             }
             catch (Exception ex)
@@ -600,8 +643,8 @@ namespace Dynamo.Models
                 OnRequestNodeCentered(this, args);
             }
 
-            nodes.Add(node);
-            OnNodeAdded(node);
+            AddNode(node);
+
             HasUnsavedChanges = true;
 
             RequestRun();
@@ -628,13 +671,17 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Removes a node from this workspace. 
-        /// This method does not raise a NodesModified event.
+        /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model"></param>
         public void RemoveNode(NodeModel model)
         {
-            if (!nodes.Remove(model)) return;
+            lock (nodes)
+            {
+                if (!nodes.Remove(model)) return;                
+            }
 
+            OnNodeRemoved(model);
             DisposeNode(model);
         }
 
@@ -642,7 +689,6 @@ namespace Dynamo.Models
         {
             model.ConnectorAdded -= OnConnectorAdded;
             model.Modified -= NodeModified;
-            OnNodeRemoved(model);
             model.Dispose();
         }
 
@@ -1182,7 +1228,7 @@ namespace Dynamo.Models
                         totalX += node.X;
                         totalY += node.Y;
                         undoHelper.RecordDeletion(node);
-                        Nodes.Remove(node);
+                        RemoveNode(node);
                         #endregion
                     }
                     #endregion
@@ -1190,7 +1236,10 @@ namespace Dynamo.Models
                     #region Step II. Create the new code block node
                     var outputVariables = externalOutputConnections.Values;
                     var newResult = NodeToCodeUtils.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
-                    NodeToCodeUtils.ReplaceWithUnqualifiedName(engineController.LibraryServices.LibraryManagementCore, newResult.AstNodes);
+
+                    // Rewrite the AST using the shortest unique name in case of namespace conflicts
+                    NodeToCodeUtils.ReplaceWithShortestQualifiedName(
+                        engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, ElementResolver);
                     var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                     var code = codegen.GenerateCode();
 
@@ -1200,9 +1249,8 @@ namespace Dynamo.Models
                         totalX / nodeCount,
                         totalY / nodeCount, engineController.LibraryServices);
                     undoHelper.RecordCreation(codeBlockNode);
-                    Nodes.Add(codeBlockNode);
-                    this.RegisterNode(codeBlockNode);
-
+                   
+                    AddNode(codeBlockNode);
                     codeBlockNodes.Add(codeBlockNode);
                     #endregion
 
@@ -1542,8 +1590,8 @@ namespace Dynamo.Models
             else // Other node types.
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
-                Nodes.Add(nodeModel);
-                RegisterNode(nodeModel);
+                
+                AddNode(nodeModel);
                 
                 //check whether this node belongs to a group
                 foreach (var annotation in Annotations)
