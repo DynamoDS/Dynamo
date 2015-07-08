@@ -110,7 +110,10 @@
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
     <Compile Include="Extensions\ViewStartupParams.cs" />
+    <Compile Include="Interfaces\IManipulator.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
+    <Compile Include="Manipulation\DynamoManipulatorContext.cs" />
+    <Compile Include="Manipulation\Manipulator.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
     <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
