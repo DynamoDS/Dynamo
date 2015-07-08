@@ -68,7 +68,7 @@ namespace Dynamo.Core
         private readonly string preferenceFilePath;
         private readonly string galleryFilePath;
 
-        private readonly List<string> userDefinitionDirectories;
+        private readonly List<string> definitionDirectories;
         private readonly List<string> packageDirectories;
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
@@ -88,9 +88,9 @@ namespace Dynamo.Core
             get { return commonDataDir; }
         }
 
-        public IEnumerable<string> UserDefinitionDirectories
+        public IEnumerable<string> DefinitionDirectories
         {
-            get { return userDefinitionDirectories; }
+            get { return definitionDirectories; }
         }
 
         public string CommonDefinitions
@@ -287,7 +287,7 @@ namespace Dynamo.Core
             var galleryDirectory = GetGalleryDirectory(commonDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
-            userDefinitionDirectories = new List<string>
+            definitionDirectories = new List<string>
             {
                 Path.Combine(userDataDir, DefinitionsDirectoryName)
             };
@@ -321,7 +321,7 @@ namespace Dynamo.Core
                     "At least one package directory must be specified");
             }
 
-            if (userDefinitionDirectories.Count <= 0)
+            if (definitionDirectories.Count <= 0)
             {
                 throw new InvalidOperationException(
                     "At least one custom node directory must be specified");
@@ -373,8 +373,8 @@ namespace Dynamo.Core
 
         internal void LoadCustomNodeFolders(IEnumerable<string> folders)
         {
-            userDefinitionDirectories.Clear();
-            userDefinitionDirectories.AddRange(folders);
+            definitionDirectories.Clear();
+            definitionDirectories.AddRange(folders);
         }
 
         #endregion

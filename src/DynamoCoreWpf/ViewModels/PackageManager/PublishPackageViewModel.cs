@@ -817,9 +817,9 @@ namespace Dynamo.PackageManager
             else // use the definitions directory
             {
                 var pathManager = dynamoViewModel.Model.PathManager;
-                if (Directory.Exists(pathManager.UserDefinitionDirectories.ElementAt(0)))
+                if (Directory.Exists(pathManager.DefinitionDirectories.ElementAt(0)))
                 {
-                    fDialog.InitialDirectory = pathManager.UserDefinitionDirectories.ElementAt(0);
+                    fDialog.InitialDirectory = pathManager.DefinitionDirectories.ElementAt(0);
                 }
             }
 

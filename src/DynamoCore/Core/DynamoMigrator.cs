@@ -90,8 +90,8 @@ namespace Dynamo.Core
             get
             {
                 // Only return the default custom node directory.
-                var userDefinitionDirectories = pathManager.UserDefinitionDirectories;
-                return userDefinitionDirectories.ElementAt(0);
+                var definitionDirectories = pathManager.DefinitionDirectories;
+                return definitionDirectories.ElementAt(0);
             }
         }
 

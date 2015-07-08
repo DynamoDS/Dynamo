@@ -78,7 +78,7 @@ namespace Dynamo.Interfaces
         /// custom nodes may or may not be saved to their current location depeding
         /// on write access.
         /// </summary>
-        IEnumerable<string> UserDefinitionDirectories { get; }
+        IEnumerable<string> DefinitionDirectories { get; }
 
         /// <summary>
         /// The local directory that contains custom nodes created by all users.

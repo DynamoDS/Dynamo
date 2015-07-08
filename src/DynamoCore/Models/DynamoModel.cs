@@ -499,7 +499,7 @@ namespace Dynamo.Models
                 pathManager.LoadPackageFolders(PreferenceSettings.PackageFolders);
 
             if (PreferenceSettings.CustomNodeFolders.Count == 0)
-                PreferenceSettings.CustomNodeFolders = new List<string>(pathManager.UserDefinitionDirectories);
+                PreferenceSettings.CustomNodeFolders = new List<string>(pathManager.DefinitionDirectories);
             else
                 pathManager.LoadCustomNodeFolders(PreferenceSettings.CustomNodeFolders);
 
@@ -899,7 +899,7 @@ namespace Dynamo.Models
 #endif
 
             // Load local custom nodes
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitionDirectories.ElementAt(0), IsTestMode);
+            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.DefinitionDirectories.ElementAt(0), IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
