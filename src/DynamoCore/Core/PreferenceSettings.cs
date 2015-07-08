@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 using Dynamo.Core;
@@ -273,25 +274,10 @@ namespace Dynamo
             }
             catch (Exception) { }
 
-            settings.PackageFolders = RemoveDuplicateFolders(settings.PackageFolders);
-            settings.CustomNodeFolders = RemoveDuplicateFolders(settings.CustomNodeFolders);
+            settings.PackageFolders = settings.PackageFolders.Distinct().ToList();
+            settings.CustomNodeFolders = settings.CustomNodeFolders.Distinct().ToList();
 
             return settings;
-        }
-
-        private static List<string> RemoveDuplicateFolders(List<string> folders)
-        {
-            var uniqueFolders = new List<string>();
-            var lookup = new HashSet<string>();
-            foreach (var folder in folders)
-            {
-                if (!lookup.Contains(folder))
-                {
-                    lookup.Add(folder);
-                    uniqueFolders.Add(folder);
-                }
-            }
-            return uniqueFolders;
         }
     }
 }
