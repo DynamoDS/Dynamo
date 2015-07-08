@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -38,6 +39,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
+using Dynamo.Wpf.Manipulation;
 
 namespace Dynamo.Controls
 {
@@ -53,7 +55,8 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        private readonly ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        private ManipulatorDaemon manipulatorDaemon;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -133,7 +136,8 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
-
+            if(dynamoViewModel.ManipulatorDaemonInitializer != null)
+                manipulatorDaemon = ManipulatorDaemon.Create(dynamoViewModel.ManipulatorDaemonInitializer);
         }
 
         #region NodeViewCustomization
@@ -647,6 +651,26 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
+
+            if (e.Action != NotifyCollectionChangedAction.Move)
+            {
+                if (e.OldItems != null)
+                {
+                    foreach (var nm in e.OldItems.OfType<NodeModel>())
+                        manipulatorDaemon.KillManipulators(nm);
+                }
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                manipulatorDaemon.KillAll();
+            }
+
+            if (e.NewItems == null)
+                return;
+
+            foreach (var nm in e.NewItems.OfType<NodeModel>())
+                manipulatorDaemon.CreateManipulator(nm, this);
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)

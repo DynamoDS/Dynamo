@@ -461,6 +461,10 @@ namespace Dynamo.ViewModels
 
         public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
+        public IBrandingResourceProvider BrandingResourceProvider { get; private set; }
+
+        public IManipulatorDaemonInitializer ManipulatorDaemonInitializer { get; private set; }
+
         #endregion
 
         public struct StartConfiguration
@@ -472,10 +476,11 @@ namespace Dynamo.ViewModels
             public bool ShowLogin { get; set; }
 
             /// <summary>
-            /// This property is initialized if there is an external host application
-            /// at startup in order to be used to pass in host specific resources to DynamoModel
+            /// These properties are initialized if there is an external host application
+            /// at startup in order to be used to pass in host specific resources to DynamoViewModel
             /// </summary>
             public IBrandingResourceProvider BrandingResourceProvider { get; set; }
+            public IManipulatorDaemonInitializer ManipulatorDaemonInitializer { get; set; }
         }
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
@@ -513,6 +518,7 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
+            this.ManipulatorDaemonInitializer = startConfiguration.ManipulatorDaemonInitializer;
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection

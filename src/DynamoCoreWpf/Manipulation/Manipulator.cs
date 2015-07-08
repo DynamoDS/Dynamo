@@ -24,7 +24,21 @@ namespace Dynamo.Wpf.Manipulation
     {
         public void Dispose()
         {
-            throw new NotImplementedException();
+        }
+    }
+
+    internal class CompositeManipulator : IManipulator
+    {
+        private readonly List<IManipulator> subManipulators;
+        public CompositeManipulator(List<IManipulator> manipulators)
+        {
+            subManipulators = manipulators;
+        }
+
+        public void Dispose()
+        {
+            foreach (var sub in subManipulators)
+                sub.Dispose();
         }
     }
 }

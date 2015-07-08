@@ -114,6 +114,7 @@
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Manipulation\DynamoManipulatorContext.cs" />
     <Compile Include="Manipulation\Manipulator.cs" />
+    <Compile Include="Manipulation\ManipulatorDaemon.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
     <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
@@ -223,7 +224,6 @@
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
-    <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
