@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.684" X="24.4439146864963" Y="783.380908599593" zoom="0.078446933167599" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.1.1823" X="-1278.16237614023" Y="2151.85183014009" zoom="0.828132616706409" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="False">
   <NamespaceResolutionMap>
     <ClassMap partialName="Math" resolvedName="DSCore.Math" assemblyName="DSCoreNodes.dll" />
     <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
@@ -597,39 +597,40 @@ OUT = z</Script>
     <Dynamo.Models.ConnectorModel start="415d623a-1da5-4aac-82fe-e1acf5ba96e0" start_index="0" end="e538161c-6352-4523-9c80-37ad33fd4e1c" end_index="0" portType="0" />
   </Connectors>
   <Notes>
-    <Dynamo.Models.NoteModel text="Divides flat list into series&#xD;&#xA;of lists by row" x="5013.15163024654" y="-1981.52796290518" />
-    <Dynamo.Models.NoteModel text="Creates NURBS curves&#xD;&#xA;through points" x="5249.35016754846" y="-1981.52796290518" />
-    <Dynamo.Models.NoteModel text="Creates a surface" x="5484.54360469166" y="-1969.4667610004" />
-    <Dynamo.Models.NoteModel text="Angles in Dynamo are in Degrees" x="3537.50142587175" y="-1430.1424473788" />
-    <Dynamo.Models.NoteModel text="The formula node, since it uses external functionalities, treats angles as radians." x="3166.23979515036" y="894.59461299858" />
-    <Dynamo.Models.NoteModel text="Documentation for the formula node can be found at http://ncalc.codeplex.com/" x="1799.73423784379" y="512.365735214873" />
-    <Dynamo.Models.NoteModel text="Moves the geometry over" x="4445.32002425921" y="661.034952118672" />
-    <Dynamo.Models.NoteModel text="Moves the geometry over" x="4453.68340110129" y="1834.44318363474" />
-    <Dynamo.Models.NoteModel text="Names for math methods match the names of the Dynamo nodes used in the first example." x="3203.91982435646" y="2069.46024013556" />
-    <Dynamo.Models.NoteModel text="Makes a grid of points.&#xD;&#xA;Note lacing behavior is&#xD;&#xA;&quot;cross product.&quot;" x="1982.6125831102" y="-2098.07718256548" />
-    <Dynamo.Models.NoteModel text="This example shows four different ways to approach dealing with Math functions.  Each of these examples starts with a grid of points, calculates z-coordinates for the points and then makes a surface.  Only the calculation method differs; these methods all salove the same.&#xD;&#xA;&#xD;&#xA;1. Nodes. Math nodes are in Core/Math/&#xD;&#xA;&#xD;&#xA;2. Python.&#xD;&#xA;&#xD;&#xA;2. Formula Node. This is a separate open-source project made available through Dynamo. Documentation for the formula node can be found at http://ncalc.codeplex.com/&#xD;&#xA;&#xD;&#xA;3. Code Block Node.  Double-click anywhere in the canvas to create a code block node.  Syntax for each function matches the name of the node in Dynamo.&#xD;&#xA;&#xD;&#xA;** Note: You can adjust the resolution of the geometry preview through the Settings Menu." x="1812.46057685456" y="-2504.39001671435" />
-    <Dynamo.Models.NoteModel text="Moves the geometry over" x="4442.41008044081" y="-423.761242670439" />
-    <Dynamo.Models.NoteModel text="Amplitude" x="1738.43040995611" y="-5150.89757865026" />
-    <Dynamo.Models.NoteModel text="Frequency" x="1737.05742650172" y="-5044.71619375349" />
-    <Dynamo.Models.NoteModel text="Series of X-values" x="1762.57303513511" y="-4944.73986856929" />
-    <Dynamo.Models.NoteModel text="Amplitude" x="1728.95515313524" y="-3629.26832647376" />
-    <Dynamo.Models.NoteModel text="Frequency" x="1729.86237692087" y="-3519.66663071694" />
-    <Dynamo.Models.NoteModel text="Series of X-values" x="1749.67746745418" y="-3410.56947657261" />
-    <Dynamo.Models.NoteModel text="Amplitude" x="1729.82810880095" y="-4400.53245340749" />
-    <Dynamo.Models.NoteModel text="Frequency" x="1728.45512534655" y="-4294.35106851073" />
-    <Dynamo.Models.NoteModel text="Series of X-values" x="1753.97073397994" y="-4194.37474332653" />
-    <Dynamo.Models.NoteModel text="Formula nodes take angles in radians" x="2227.92530294549" y="-4163.20065414374" />
-    <Dynamo.Models.NoteModel text="Arithmetic operators such as&#xD;&#xA;+, -, *, /, %" x="1843.7515618155" y="-9666.81500847717" />
-    <Dynamo.Models.NoteModel text="Comparison operators such as&#xD;&#xA;&lt;, &gt;, &lt;=, &gt;=, !=, ==" x="1844.28587441878" y="-9172.68682391276" />
-    <Dynamo.Models.NoteModel text="Angles in nodes or Code Block are in radians." x="1836.34388434462" y="-6874.26264410584" />
-    <Dynamo.Models.NoteModel text="Rounding" x="1854.28521233912" y="-7736.15885661683" />
-    <Dynamo.Models.NoteModel text="Boolean operators&#xD;&#xA;(Find others in the library.)" x="1839.21824043643" y="-8604.83483561747" />
-    <Dynamo.Models.NoteModel text="Tip: Adjust how precisely the geometry in the background preview is rendered.  In the settings menu, choose &quot;Render Precision.&quot;  A higher value will make curved surfaces look smoother, but it will take more processing power to draw." x="2187.04967283522" y="-2263.61659167369" />
-    <Dynamo.Models.NoteModel text="For more on this example:&#xD;&#xA;http://dynamobim.org/math-transit/" x="2190.02932526022" y="-2399.32775583674" />
-    <Dynamo.Models.NoteModel text="This set of examples shows how to graph a cosine function using nodes, the Formula node, and a Code Block.&#xD;&#xA;&#xD;&#xA;Each example takes a series of numbers as the x-values for a series of points, calculates the y-values from the x-values, and then draws a line in the shape of a cosine curve.  The large code block at the end of each graph moves the drawn geometry to a different part of the screen so that they are not all overlapping." x="1834.17235279297" y="-5384.44101169838" />
-    <Dynamo.Models.NoteModel text="Tip: Selecting a node that draws geometry will turn the geometry it creates cyan.  This code block draws the axes of a graph, the points along the curve, and then the curve itself.  Select the code block to see in the background which curve it draws." x="3763.84470264006" y="-4965.35306638978" />
-    <Dynamo.Models.NoteModel text="Tip: You can turn on or off the preview functionality for any node that makes geometry.  Right click and check or uncheck &quot;Preview.&quot;" x="2681.07141123741" y="-4859.03316263299" />
-    <Dynamo.Models.NoteModel text="MATH&#xD;&#xA;&#xD;&#xA;Math in Dynamo can be done with nodes from the Math library and the Operators library, with a Formula node, or with a Code Block.  Below, see how to perform several basic math operations with each of these three methods." x="1840.19274183438" y="-9919.72549106897" />
-    <Dynamo.Models.NoteModel text="Move the slider to change the length of the arc." x="2198.71039733515" y="-6454.82029082354" />
+    <Dynamo.Models.NoteModel guid="34ca9dc7-5f5f-4a0c-afb3-7c7cb5a5c55b" text="Divides flat list into series&#xD;&#xA;of lists by row" x="5013.15163024654" y="-1981.52796290518" />
+    <Dynamo.Models.NoteModel guid="70ca9a3d-c577-4b6b-8d73-079d04a11603" text="Creates NURBS curves&#xD;&#xA;through points" x="5249.35016754846" y="-1981.52796290518" />
+    <Dynamo.Models.NoteModel guid="510c1729-a257-405b-a101-9db9f50a9505" text="Creates a surface" x="5484.54360469166" y="-1969.4667610004" />
+    <Dynamo.Models.NoteModel guid="1110bee9-d04c-4e47-b5a4-91b38acf154d" text="Angles in Dynamo are in Degrees" x="3537.50142587175" y="-1430.1424473788" />
+    <Dynamo.Models.NoteModel guid="5a5399ab-c51d-4d96-b7e2-1782fa06861e" text="The formula node, since it uses external functionalities, treats angles as radians." x="3166.23979515036" y="894.59461299858" />
+    <Dynamo.Models.NoteModel guid="480e8979-6f22-48c3-bf12-f459f32b553f" text="Documentation for the formula node can be found at http://ncalc.codeplex.com/" x="1799.73423784379" y="512.365735214873" />
+    <Dynamo.Models.NoteModel guid="3bf0a0d7-13c8-494f-a272-37c9023ddb97" text="Moves the geometry over" x="4445.32002425921" y="661.034952118672" />
+    <Dynamo.Models.NoteModel guid="8d98c23f-5973-4b1f-8dad-ac2f1b78a3cf" text="Moves the geometry over" x="4453.68340110129" y="1834.44318363474" />
+    <Dynamo.Models.NoteModel guid="45a885bf-5a37-487d-9f54-b0cdd437cb1a" text="Names for math methods match the names of the Dynamo nodes used in the first example." x="3203.91982435646" y="2069.46024013556" />
+    <Dynamo.Models.NoteModel guid="4d435701-9781-47f8-b158-75ae93b19e91" text="Makes a grid of points.&#xD;&#xA;Note lacing behavior is&#xD;&#xA;&quot;cross product.&quot;" x="1982.6125831102" y="-2098.07718256548" />
+    <Dynamo.Models.NoteModel guid="389f4a9c-c353-478e-b18f-88ebd2afd77c" text="This example shows four different ways to approach dealing with Math functions.  Each of these examples starts with a grid of points, calculates z-coordinates for the points and then makes a surface.  Only the calculation method differs; these methods all salove the same.&#xD;&#xA;&#xD;&#xA;1. Nodes. Math nodes are in Core/Math/&#xD;&#xA;&#xD;&#xA;2. Python.&#xD;&#xA;&#xD;&#xA;3. Formula Node. This is a separate open-source project made available through Dynamo. Documentation for the formula node can be found at http://ncalc.codeplex.com/&#xD;&#xA;&#xD;&#xA;4. Code Block Node.  Double-click anywhere in the canvas to create a code block node.  Syntax for each function matches the name of the node in Dynamo.&#xD;&#xA;&#xD;&#xA;** Note: You can adjust the resolution of the geometry preview through the Settings Menu." x="1812.46057685456" y="-2504.39001671435" />
+    <Dynamo.Models.NoteModel guid="52480571-ffa5-41ab-ae0f-b430c37bdf22" text="Moves the geometry over" x="4442.41008044081" y="-423.761242670439" />
+    <Dynamo.Models.NoteModel guid="2996bd73-e5fe-4dde-af9b-9e3ed41d9e38" text="Amplitude" x="1738.43040995611" y="-5150.89757865026" />
+    <Dynamo.Models.NoteModel guid="1f3dedf2-366d-4697-afb8-574e78ad7326" text="Frequency" x="1737.05742650172" y="-5044.71619375349" />
+    <Dynamo.Models.NoteModel guid="fe7f0b51-c0ef-4340-ad92-79dfb87d3f48" text="Series of X-values" x="1762.57303513511" y="-4944.73986856929" />
+    <Dynamo.Models.NoteModel guid="869955ea-c725-46c9-a899-f626cbbe4664" text="Amplitude" x="1728.95515313524" y="-3629.26832647376" />
+    <Dynamo.Models.NoteModel guid="64d406fa-6314-4c6e-8bdf-c25fcf8cef7a" text="Frequency" x="1729.86237692087" y="-3519.66663071694" />
+    <Dynamo.Models.NoteModel guid="decfabfd-04b8-47b8-a0f2-d7c426644ba5" text="Series of X-values" x="1749.67746745418" y="-3410.56947657261" />
+    <Dynamo.Models.NoteModel guid="2da42904-44cd-4f20-8e60-d03bc9f350f7" text="Amplitude" x="1729.82810880095" y="-4400.53245340749" />
+    <Dynamo.Models.NoteModel guid="32f92c57-dca5-4f44-87a2-1c0c63b050a5" text="Frequency" x="1728.45512534655" y="-4294.35106851073" />
+    <Dynamo.Models.NoteModel guid="33e99d00-57f7-4981-be0c-29039e045f1c" text="Series of X-values" x="1753.97073397994" y="-4194.37474332653" />
+    <Dynamo.Models.NoteModel guid="499510b7-26f6-4a0c-b77c-96a9bd561f53" text="Formula nodes take angles in radians" x="2227.92530294549" y="-4163.20065414374" />
+    <Dynamo.Models.NoteModel guid="b4c82d4e-8ca1-4e86-a0fb-795ed3093db3" text="Arithmetic operators such as&#xD;&#xA;+, -, *, /, %" x="1843.7515618155" y="-9666.81500847717" />
+    <Dynamo.Models.NoteModel guid="708bc982-9a5d-48f9-8a80-12ee315ffee7" text="Comparison operators such as&#xD;&#xA;&lt;, &gt;, &lt;=, &gt;=, !=, ==" x="1844.28587441878" y="-9172.68682391276" />
+    <Dynamo.Models.NoteModel guid="fc2e1b28-80ce-4bd3-8526-8658df8ece8b" text="Angles in nodes or Code Block are in radians." x="1836.34388434462" y="-6874.26264410584" />
+    <Dynamo.Models.NoteModel guid="fed5aee1-f21b-441d-8dee-b12d70a33895" text="Rounding" x="1854.28521233912" y="-7736.15885661683" />
+    <Dynamo.Models.NoteModel guid="b948f67c-485b-4b4a-a90b-dae672bb8d7c" text="Boolean operators&#xD;&#xA;(Find others in the library.)" x="1839.21824043643" y="-8604.83483561747" />
+    <Dynamo.Models.NoteModel guid="6ce44cfe-4e10-47e5-83b3-d4466f024d1e" text="Tip: Adjust how precisely the geometry in the background preview is rendered.  In the settings menu, choose &quot;Render Precision.&quot;  A higher value will make curved surfaces look smoother, but it will take more processing power to draw." x="2187.04967283522" y="-2263.61659167369" />
+    <Dynamo.Models.NoteModel guid="58e6e8f2-a9d0-4d1a-9254-f89a415b4f91" text="For more on this example:&#xD;&#xA;http://dynamobim.org/math-transit/" x="2190.02932526022" y="-2399.32775583674" />
+    <Dynamo.Models.NoteModel guid="fd354f9d-77f5-426a-8b64-24ae1833dd5c" text="This set of examples shows how to graph a cosine function using nodes, the Formula node, and a Code Block.&#xD;&#xA;&#xD;&#xA;Each example takes a series of numbers as the x-values for a series of points, calculates the y-values from the x-values, and then draws a line in the shape of a cosine curve.  The large code block at the end of each graph moves the drawn geometry to a different part of the screen so that they are not all overlapping." x="1834.17235279297" y="-5384.44101169838" />
+    <Dynamo.Models.NoteModel guid="bf41017d-3a83-491b-895f-c3b2105ffbf4" text="Tip: Selecting a node that draws geometry will turn the geometry it creates cyan.  This code block draws the axes of a graph, the points along the curve, and then the curve itself.  Select the code block to see in the background which curve it draws." x="3763.84470264006" y="-4965.35306638978" />
+    <Dynamo.Models.NoteModel guid="83b7bac1-6e54-4db0-8eae-1918774132e7" text="Tip: You can turn on or off the preview functionality for any node that makes geometry.  Right click and check or uncheck &quot;Preview.&quot;" x="2681.07141123741" y="-4859.03316263299" />
+    <Dynamo.Models.NoteModel guid="f7c8f404-c9b5-4e14-9856-1434ae42c0e0" text="MATH&#xD;&#xA;&#xD;&#xA;Math in Dynamo can be done with nodes from the Math library and the Operators library, with a Formula node, or with a Code Block.  Below, see how to perform several basic math operations with each of these three methods." x="1840.19274183438" y="-9919.72549106897" />
+    <Dynamo.Models.NoteModel guid="87f001f7-28aa-4214-96e4-f92eb7a0dae8" text="Move the slider to change the length of the arc." x="2198.71039733515" y="-6454.82029082354" />
   </Notes>
+  <Annotations />
 </Workspace>
