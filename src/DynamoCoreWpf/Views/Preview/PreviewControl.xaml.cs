@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+using Dynamo.Extensions;
 
 namespace Dynamo.UI.Controls
 {
@@ -296,6 +297,10 @@ namespace Dynamo.UI.Controls
                     else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
                     {
                         newContent = mirrorData.Class.ClassName;
+                    }
+                    else if (mirrorData.Data is Enum)
+                    {
+                        newContent = ((Enum) mirrorData.Data).GetDescription();
                     }
                     else
                     {

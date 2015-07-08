@@ -63,6 +63,11 @@
     <Compile Include="RecordedFileSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoPackages\DynamoPackages.csproj">
+      <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
+      <Name>DynamoPackages</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
@@ -70,10 +75,6 @@
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\DynamoPackages\DynamoPackages.csproj">
-      <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
-      <Name>DynamoPackages</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

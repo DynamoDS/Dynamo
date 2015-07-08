@@ -55,7 +55,7 @@ namespace Dynamo.Tests
             OpenTestFile(@"core\combine", "Sequence2.dyf");
             
             var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
-            Assert.AreEqual(1, res.Count());
+            Assert.AreEqual(6, res.Count());
             Assert.AreEqual("Sequence2", res.First().Name);
         }
     }

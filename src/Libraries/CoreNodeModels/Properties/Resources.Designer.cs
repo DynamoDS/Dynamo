@@ -1051,6 +1051,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A numeric value for conversion..
+        /// </summary>
+        internal static string UnitNodeFromPortTooltip {
+            get {
+                return ResourceManager.GetString("UnitNodeFromPortTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A converted numeric value..
+        /// </summary>
+        internal static string UnitNodeToPortToolTip {
+            get {
+                return ResourceManager.GetString("UnitNodeToPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Visualize the output of node..
         /// </summary>
         internal static string WatchDescription {

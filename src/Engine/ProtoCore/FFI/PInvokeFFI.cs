@@ -103,13 +103,13 @@ namespace ProtoFFI
                                 out int size)
         {
             size = 0;
-            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(o);
+            var array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(o);
 
-            if (!hs.VisibleItems.Any())
+            if (!array.Values.Any())
                 return null;
 
             IList elements = null;
-            var opType = hs.Stack[0].optype;
+            var opType = array.GetValueFromIndex(0, dsi.runtime.RuntimeCore).optype;
             if (opType == AddressType.Boolean)
             {
                 elements = new List<bool>();
@@ -131,7 +131,7 @@ namespace ProtoFFI
                 throw new ArgumentException(string.Format("Argument of type {0} is not supported for FFI Marshalling", opType.ToString()));
             }
 
-            foreach (var op in hs.VisibleItems)
+            foreach (var op in array.Values)
             {
                 if (opType == AddressType.Double)
                 {

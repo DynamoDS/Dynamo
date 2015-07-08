@@ -379,7 +379,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var path = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<StringInput>("84693240-90f3-45f3-9cb3-88207499f0bc");
             path.Value = GetNewFileNameOnTempPath(".txt");
@@ -395,7 +395,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var filename = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<StringInput>("0aaae6d6-f84b-4e61-888b-14936343d80a");
             filename.Value = GetNewFileNameOnTempPath(".png");
@@ -421,7 +421,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             BeginRun();
 

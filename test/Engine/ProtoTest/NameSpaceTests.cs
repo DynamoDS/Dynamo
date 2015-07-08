@@ -172,6 +172,20 @@ namespace ProtoTest
 
         [Test]
         [Category("UnitTests")]
+        public void GetShortestUniqueNamespaces_FromSingleNamespaceList()
+        {
+            var namespaceList = new List<Symbol>
+            {
+                new Symbol("A.B.C.D.E"),
+            };
+            var shortNamespaces = Symbol.GetShortestUniqueNames(namespaceList);
+
+            Assert.AreEqual(1, shortNamespaces.Count);
+            Assert.AreEqual("A.E", shortNamespaces[namespaceList[0]]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void GetShortestUniqueNamespaces_FromComplexNamespaceList2()
         {
             var namespaceList = new List<Symbol>

@@ -165,6 +165,9 @@
         <MouseBinding Gesture="Shift+LeftDoubleClick"
                       Command="{Binding Path=DataContext.HomeSpaceViewModel.ShowInCanvasSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
+        <KeyBinding Key="T"
+                    Modifiers="Control"
+                    Command="{Binding ShowNewPresetsDialogCommand}"/>
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -340,6 +343,28 @@
                                   Name="paste"
                                   InputGestureText="Ctrl + V" />
                         <Separator />
+
+                       
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuPresetsMenu}"
+                              Name = "PresetsMenu"
+                              Focusable= "False"
+                              IsEnabled="True">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreatePreset}"
+                                      Command="{Binding ShowNewPresetsDialogCommand}"
+                                      Name="newPreset"
+                                      Focusable="False"
+                                      InputGestureText="Ctrl + T"/>
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
+                                    MouseEnter="LoadPresetsMenus"
+                                      Name="RestorePresetMenu"
+                                      Focusable="False" />
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
+                                    MouseEnter="LoadPresetsMenus"
+                                      Name="DeletePresetMenu"
+                                      Focusable="False" />
+                        </MenuItem>
+                        <Separator />
+                        
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNote}"
                                   Command="{Binding AddNoteCommand}"
@@ -612,7 +637,8 @@
                               Focusable="False">
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
-                                  Name="SamplesMenu">
+                                  Name="SamplesMenu"
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCoreWpf;component/UI/Images/OpenSelectedItemHS.png"
                                        Width="14"

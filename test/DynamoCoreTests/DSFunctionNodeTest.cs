@@ -28,7 +28,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]

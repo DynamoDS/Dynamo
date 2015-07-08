@@ -47,6 +47,7 @@ namespace Dynamo.Core
         public const string LogsDirectoryName = "Logs";
         public const string NodesDirectoryName = "nodes";
         public const string ExtensionsDirectoryName = "extensions";
+        public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
@@ -63,6 +64,7 @@ namespace Dynamo.Core
         private readonly string logDirectory;
         private readonly string packagesDirectory;
         private readonly string extensionsDirectory;
+        private readonly string viewExtensionsDirectory;
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
@@ -109,6 +111,11 @@ namespace Dynamo.Core
         public string ExtensionsDirectory
         {
             get { return extensionsDirectory; }
+        }
+
+        public string ViewExtensionsDirectory
+        {
+            get { return viewExtensionsDirectory; }
         }
 
         public string SamplesDirectory
@@ -253,6 +260,7 @@ namespace Dynamo.Core
             }
 
             extensionsDirectory = Path.Combine(dynamoCoreDir, ExtensionsDirectoryName);
+            viewExtensionsDirectory = Path.Combine(dynamoCoreDir, ViewExtensionsDirectoryName);
 
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
