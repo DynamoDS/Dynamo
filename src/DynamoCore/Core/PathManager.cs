@@ -329,6 +329,7 @@ namespace Dynamo.Core
 
             // User specific data folders.
             CreateFolderIfNotExist(userDataDir);
+            CreateFolderIfNotExist(definitionDirectories[0]);
             CreateFolderIfNotExist(logDirectory);
             CreateFolderIfNotExist(packageDirectories[0]);
             CreateFolderIfNotExist(backupDirectory);
