@@ -35,8 +35,6 @@ namespace Dynamo.ViewModels
                         System.Diagnostics.Process.Start(xmlFilePath);
                 }
             }
-
-            model.EngineController.LiveRunnerRuntimeCore.RequestCancellation();
         }
 
         private bool CanSaveRecordedCommands(object parameters)
