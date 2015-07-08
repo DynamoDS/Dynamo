@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-using ProtoCore.DSASM.Mirror;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
 
@@ -16,15 +15,6 @@ namespace ProtoCore.Runtime
             macroBlockList = macroBlocks;
         }
 
-        private void SetupExecutive(
-            ProtoCore.DSASM.Executive executive,
-            int exeblock, 
-            int entry, 
-            StackFrame stackFrame, int locals = 0)
-        {
-            //executive.SetupBounce(exeblock, entry, stackFrame, locals);
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Begin excution of macroblocks
@@ -40,7 +30,10 @@ namespace ProtoCore.Runtime
             Validity.Assert(executive != null);
             Validity.Assert(macroBlockList != null);
 
+            // Setup the executive prior to execution
             executive.SetupBounce(exeblock, entry, stackFrame, locals);
+
+            // Execute all macroblocks
             foreach (ProtoCore.Runtime.MacroBlock macroBlock in macroBlockList)
             {
                 executive.Execute(macroBlock);
@@ -56,7 +49,7 @@ namespace ProtoCore.Runtime
         private bool IsBlockReady(ProtoCore.Runtime.MacroBlock block)
         {
             Validity.Assert(macroBlockList != null);
-            return true;
+            return block.State == MacroBlock.ExecuteState.Ready;
         }
     }
 }

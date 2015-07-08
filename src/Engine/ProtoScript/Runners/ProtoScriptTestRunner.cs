@@ -196,63 +196,7 @@ namespace ProtoScript.Runners
             return runtimeCore;
         }
 
-
-        /// <summary>
-        /// ExecuteLive is called by the liverunner where a persistent RuntimeCore is provided
-        /// ExecuteLive assumes only a single global scope
-        /// </summary>
-        /// <param name="core"></param>
-        /// <param name="runtimeCore"></param>
-        /// <param name="runningBlock"></param>
-        /// <param name="staticContext"></param>
-        /// <param name="runtimeContext"></param>
-        /// <returns></returns>
-        public ProtoCore.RuntimeCore __ExecuteLive_CurrentVersion(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
-        {
-            try
-            {
-                Executable exe = runtimeCore.DSExecutable;
-                Validity.Assert(exe.CodeBlocks.Count == 1);
-                CodeBlock codeBlock = runtimeCore.DSExecutable.CodeBlocks[0];
-                int codeBlockID = codeBlock.codeBlockId;
-
-                // Comment Jun:
-                // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
-                // Passing it to bounce() increments it so the first depth is always 0
-                ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
-                stackFrame.FramePointer = runtimeCore.RuntimeMemory.FramePointer;
-
-                // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
-                // Register TX is used for this.
-                StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-                stackFrame.TX = svCallConvention;
-
-                // Initialize the entry point interpreter
-                int locals = 0; // This is the global scope, there are no locals
-                if (runtimeCore.CurrentExecutive.CurrentDSASMExec == null)
-                {
-                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                }
-
-                runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec,
-                    codeBlock.codeBlockId,
-                    runtimeCore.StartPC,
-                    stackFrame,
-                    locals);
-
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
-            }
-            catch
-            {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
-                throw;
-            }
-            return runtimeCore;
-        }
-
-
+       
         /// <summary>
         /// ExecuteLive is called by the liverunner where a persistent RuntimeCore is provided
         /// ExecuteLive assumes only a single global scope

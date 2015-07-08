@@ -342,7 +342,6 @@ namespace ProtoCore
         //The dynamic string table and function table
         public DynamicVariableTable DynamicVariableTable { get; set; }
         public DynamicFunctionTable DynamicFunctionTable { get; set; }
-        public List<ProtoCore.CompileTime.MacroBlock> MacroBlockList { get; set; }
         public List<ProtoCore.Runtime.MacroBlock> RuntimeMacroBlockList { get; set; }
 
 

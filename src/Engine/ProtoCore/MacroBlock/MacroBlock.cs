@@ -7,21 +7,6 @@ using ProtoCore.Utils;
 using ProtoCore.DSASM;
 using ProtoCore.AST.AssociativeAST;
 
-
-namespace ProtoCore.CompileTime
-{
-    public class MacroBlock
-    {
-        public int UID { get; set; }
-        public List<AssociativeNode> AstList { get; set; }
-
-        public MacroBlock()
-        {
-            AstList = new List<AssociativeNode>();
-        }
-    }
-}
-
 namespace ProtoCore.Runtime 
 {
     public class MacroBlock
