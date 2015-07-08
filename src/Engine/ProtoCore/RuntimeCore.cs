@@ -217,6 +217,30 @@ namespace ProtoCore
         public List<SymbolNode> WatchSymbolList { get; set; }
 #endregion 
         
+        private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
+
+        public IEnumerable<StackValue> CallSiteGCRoots
+        {
+            get { return callsiteGCRoots.Values.SelectMany(x => x);  }
+        }
+
+        public void AddCallSiteGCRoot(Guid callSiteID, StackValue sv)
+        {
+            if (!sv.IsReferenceType)
+                return;
+
+            if (!callsiteGCRoots.ContainsKey(callSiteID))
+                callsiteGCRoots[callSiteID] = new List<StackValue>();
+
+            List<StackValue> svs = callsiteGCRoots[callSiteID];
+            svs.Add(sv); 
+        }
+
+        public void RemoveCallSiteGCRoot(Guid callSiteID)
+        {
+            callsiteGCRoots.Remove(callSiteID);
+        }
+
         public void ResetForDeltaExecution()
         {
             RunningBlock = 0;
