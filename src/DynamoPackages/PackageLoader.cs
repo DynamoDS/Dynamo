@@ -179,16 +179,7 @@ namespace Dynamo.PackageManager
 
         private void ScanPackageDirectories(string root, IPreferences preferences)
         {
-            bool rootDirectoryExists = true;
-            var t = new Thread(delegate()
-            {
-                rootDirectoryExists = Directory.Exists(root);
-            });
-
-            t.Start();
-            bool requestCompleted = t.Join(5000);
-
-            if (!requestCompleted || !rootDirectoryExists)
+            if (!Directory.Exists(root))
                 return;
 
             foreach (var dir in
