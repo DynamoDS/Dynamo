@@ -95,6 +95,30 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsInput
+        {
+            get
+            {
+                return nodeLogic.IsInputNode;
+            }
+        }
+
+        public bool IsVisibleInCustomizer
+        {
+            get
+            {
+                return nodeLogic.IsVisibleInCustomizer;
+            }
+            set
+            {
+                if (nodeLogic.IsVisibleInCustomizer != value)
+                {
+                    nodeLogic.IsVisibleInCustomizer = value;
+                    RaisePropertyChanged("IsVisibleInCustomizer");
+                }
+            }
+        }
+
         public string NickName
         {
             get { return nodeLogic.NickName; }
@@ -952,6 +976,11 @@ namespace Dynamo.ViewModels
                 return !(groups.ContainsModel(NodeLogic.GUID));
             }
             return false;
+        }
+
+        private void ChangeIsInputProperty(object parameter)
+        {
+            IsVisibleInCustomizer = (bool)parameter;
         }
 
 

@@ -202,7 +202,13 @@ namespace Dynamo.Models
             }
         }
 
-        private bool isVisibleInCustomizer;
+        // By default node is visible in Customizer.
+        // Even if it's not input node it will be visible.        
+        private bool isVisibleInCustomizer = true;
+        /// <summary>
+        /// All input nodes can be visible in customizer.
+        /// But, if user would like, he can hide node from customizer.
+        /// </summary>
         public bool IsVisibleInCustomizer
         {
             get
@@ -211,6 +217,11 @@ namespace Dynamo.Models
                     return false;
 
                 return isVisibleInCustomizer;
+            }
+
+            set
+            {
+                isVisibleInCustomizer = value;
             }
         }
 
