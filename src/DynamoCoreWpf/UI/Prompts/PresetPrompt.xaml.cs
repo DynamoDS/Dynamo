@@ -56,9 +56,18 @@ namespace Dynamo.Nodes
             get { return this.DescriptionInput.Text; }
         }
 
+        public int MaxLength
+        {
+            get { return this.nameBox.MaxLength; }
+        }
+
 
         private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
+            if (this.nameBox.MaxLength - this.nameBox.Text.Length < 1)
+            {
+                this.Text = this.Text.Substring(0, MaxLength);
+            }
             this.TextRemaining.Content = Wpf.Properties.Resources.PresetTextRemaining  + " " + (this.nameBox.MaxLength - this.nameBox.Text.Length);
         }
     }
