@@ -4241,7 +4241,7 @@ namespace ProtoAssociative
             // Generate the macroblock fragments at the global scope
             if (codeBlock.codeBlockId == 0)
             {
-                core.MacroblockGen.GenerateMacroBlocks(nodesInScope);
+                core.MacroblockGen.GenerateAndCacheMacroBlocks(nodesInScope);
             }
             
             if (codeBlock.parent == null)  // top-most langauge block

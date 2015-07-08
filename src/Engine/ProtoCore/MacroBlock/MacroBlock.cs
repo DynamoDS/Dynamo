@@ -154,7 +154,7 @@ namespace ProtoCore
         /// Generates the macroblock groupings of the given list of graphnodes (the program snapshot)
         /// </summary>
         /// <param name="programSnapshot"></param>
-        public void GenerateMacroBlocks(List<AssociativeGraph.GraphNode> programSnapshot)
+        public void GenerateAndCacheMacroBlocks(List<AssociativeGraph.GraphNode> programSnapshot)
         {
             // Reset the graphnode states
             foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)

@@ -1,4 +1,7 @@
 ﻿
+
+//#define __MACROBLOCK_CORE_EXECUTION
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,8 +121,6 @@ namespace ProtoCore.DSASM
         /// </summary>
         private void SetupGraphNodesInScope()
         {
-
-            //#define __MACROBLOCK_CORE_EXECUTION
 #if __MACROBLOCK_CORE_EXECUTION
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
