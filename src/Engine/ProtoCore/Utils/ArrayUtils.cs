@@ -184,7 +184,7 @@ namespace ProtoCore.Utils
 
             //This is the element on the heap that manages the data structure
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
-            foreach (var sv in dsArray.VisibleItems)
+            foreach (var sv in dsArray.Values)
             {
                 if (!usageFreq.ContainsKey(sv.metaData.type))
                     usageFreq.Add(sv.metaData.type, sv);
@@ -213,7 +213,7 @@ namespace ProtoCore.Utils
 
             //This is the element on the heap that manages the data structure
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
-            foreach (var sv in dsArray.VisibleItems)
+            foreach (var sv in dsArray.Values)
             {
                 ClassNode cn = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
                 if (!usageFreq.ContainsKey(cn))
@@ -244,7 +244,7 @@ namespace ProtoCore.Utils
 
             //This is the element on the heap that manages the data structure
             var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
-            foreach (var sv in dsArray.VisibleItems)
+            foreach (var sv in dsArray.Values)
             {
                 if (sv.IsArray)
                 {
@@ -366,7 +366,7 @@ namespace ProtoCore.Utils
             }
 
             var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
-            if (!array.VisibleItems.Any())
+            if (!array.Values.Any())
             {
                 return false;
             }
@@ -376,7 +376,7 @@ namespace ProtoCore.Utils
                 array = rmem.Heap.ToHeapObject<DSArray>(array.GetValueFromIndex(0, runtimeCore));
 
                 // Handle the case where the array is valid but empty
-                if (!array.VisibleItems.Any())
+                if (!array.Values.Any())
                 {
                     return false;
                 }
