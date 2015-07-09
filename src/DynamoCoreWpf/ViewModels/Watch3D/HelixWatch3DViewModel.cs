@@ -26,6 +26,8 @@ using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
+using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
@@ -773,7 +775,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetupScene()
         {
-            RenderTechnique = Techniques.RenderDynamo;
+            RenderTechnique = new RenderTechnique("RenderDynamo");
+            EffectsManager.Instance.InitializingEffects += Instance_InitializingEffects;
 
             WhiteMaterial = new PhongMaterial
             {
@@ -803,6 +806,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             SetCameraData(new CameraData());
 
             DrawGrid();
+        }
+
+        void Instance_InitializingEffects(EffectInitializationEventArgs args)
+        {
+            EffectsManager.Instance.RegisterEffect(args.ShaderEffectBytecode, new[] { RenderTechnique });
+
+            var dynamoInputLayout = new InputLayout(args.Device, EffectsManager.Instance.GetEffect(RenderTechnique).GetTechniqueByName(RenderTechnique.Name).GetPassByIndex(0).Description.Signature, new[]
+            {
+                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                new InputElement("TEXCOORD", 0, Format.R32G32_Float,       InputElement.AppendAligned, 0),
+                new InputElement("NORMAL",   0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
+                new InputElement("TANGENT",  0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
+                new InputElement("BINORMAL", 0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),  
+                new InputElement("COLOR", 1, Format.R32G32B32A32_Float,    InputElement.AppendAligned, 0),  
+                //new InputElement("REQUIRES_PER_VERTEX_COLORATION", 0, Format.R32_UInt,    InputElement.AppendAligned, 0),  
+
+                //INSTANCING: die 4 texcoords sind die matrix, die mit jedem buffer reinwandern
+                new InputElement("TEXCOORD", 2, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),                 
+                new InputElement("TEXCOORD", 3, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+                new InputElement("TEXCOORD", 4, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+                new InputElement("TEXCOORD", 5, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+            });
+            dynamoInputLayout.DebugName = "Dynamo";
+
+            EffectsManager.Instance.RegisterLayout(new[] { RenderTechnique }, dynamoInputLayout);
         }
 
         /// <summary>
@@ -1164,7 +1193,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
         {
-            var meshGeometry3D = new DynamoGeometryModel3D()
+            var meshGeometry3D = new DynamoGeometryModel3D(RenderTechnique)
             {
                 Transform = Model1Transform,
                 Material = WhiteMaterial,

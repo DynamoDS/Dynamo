@@ -10,7 +10,7 @@ using SharpDX.DXGI;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using MapFlags = SharpDX.Direct3D11.MapFlags;
 
-namespace Dynamo.Wpf
+namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct DynamoVertex
@@ -34,6 +34,13 @@ namespace Dynamo.Wpf
 
     public class DynamoGeometryModel3D : MaterialGeometryModel3D
     {
+        private RenderTechnique renderTechnique;
+
+        public DynamoGeometryModel3D(RenderTechnique renderTechnique)
+        {
+            this.renderTechnique = renderTechnique;
+        }
+
         public bool RequiresPerVertexColoration
         {
             get
@@ -80,8 +87,6 @@ namespace Dynamo.Wpf
         {
             base.Attach(host);
 
-            this.renderTechnique = Techniques.RenderDynamo;
-
             if (this.Geometry == null)
                 return;
 
@@ -127,7 +132,7 @@ namespace Dynamo.Wpf
             Disposer.RemoveAndDispose(ref this.texNormalMapView);
             Disposer.RemoveAndDispose(ref this.bHasInstances);
 
-            this.renderTechnique = null;
+            //this.renderTechnique = null;
             this.phongMaterial = null;
             this.effectTechnique = null;
             this.vertexLayout = null;

@@ -61,6 +61,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.D3DCompiler, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Helix3D\NET40\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX.Direct3D11, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\SharpDX.Direct3D11.dll</HintPath>
@@ -112,7 +116,6 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="DynamoGeometryModel3D.cs" />
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\IViewExtensionLoader.cs" />
     <Compile Include="Extensions\IViewExtensionManager.cs" />
@@ -251,6 +254,7 @@
     <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
     <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
     <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
+    <Compile Include="ViewModels\Watch3D\DynamoGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\Watch3DViewModelBase.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
