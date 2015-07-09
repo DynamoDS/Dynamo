@@ -491,6 +491,12 @@ namespace Dynamo.Models
                 // Disable 'Run' button.
                 RunSettings.RunEnabled = false;
 
+                // Reset node states
+                foreach (var node in Nodes)
+                {
+                    node.IsUpdated = false;
+                }
+
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
