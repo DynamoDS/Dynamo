@@ -978,11 +978,6 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void ChangeIsInputProperty(object parameter)
-        {
-            IsVisibleInCustomizer = (bool)parameter;
-        }
-
 
         #region Private Helper Methods
         private Point GetTopLeft()
