@@ -31,15 +31,15 @@ namespace Dynamo.Extensions
         public IPathManager PathManager { get { return pathManager; } }
         private readonly IPathManager pathManager;
 
-        public ICustomNodeManager CustomNodeManager { get { return customNodeManager; } }
-        private readonly ICustomNodeManager customNodeManager;
+        public IDynamoModel DynamoModel { get { return dynamoModel; } }
+        private readonly IDynamoModel dynamoModel;
 
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
-            ICustomNodeManager customNodeManager)
+            IDynamoModel dynamoModel)
         {
             this.authProvider = provider;
             this.pathManager = pathManager;
-            this.customNodeManager = customNodeManager;
+            this.dynamoModel = dynamoModel;
         }
     }
 }

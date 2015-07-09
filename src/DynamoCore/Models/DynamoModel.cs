@@ -44,7 +44,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDynamoModel, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         #region private members
 
@@ -201,7 +201,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Custom Node Manager instance, manages all loaded custom nodes.
         /// </summary>
-        public readonly CustomNodeManager CustomNodeManager;
+        public ICustomNodeManager CustomNodeManager { get { return customNodeManager; } }
+        private readonly CustomNodeManager customNodeManager;
 
         /// <summary>
         ///     The Dynamo Logger, receives and manages all log messages.
@@ -496,7 +497,7 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
+            customNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
 
             extensionManager = new ExtensionManager();
@@ -541,12 +542,11 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, CustomNodeManager);
+                    pathManager, this);
 
                 foreach (var ext in extensions)
                 {
                     ext.Startup(startupParams);
-                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
                     ext.Load(preferences, pathManager);
                     ExtensionManager.Add(ext);
                 }
@@ -573,7 +573,6 @@ namespace Dynamo.Models
             
         private void RemoveExtension(IExtension ext)
         {
-            ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
             ExtensionManager.Remove(ext);
         }
 
@@ -703,11 +702,6 @@ namespace Dynamo.Models
         public void Dispose()
         {
             EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
-
-            foreach (var ext in ExtensionManager.Extensions)
-            {
-                ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
-            }
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
@@ -888,7 +882,7 @@ namespace Dynamo.Models
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
-        private void LoadNodeLibrary(Assembly assem)
+        public void LoadNodeLibraryFromAssembly(Assembly assem)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {

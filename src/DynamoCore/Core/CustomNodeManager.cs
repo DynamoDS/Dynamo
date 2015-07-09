@@ -20,7 +20,7 @@ namespace Dynamo.Core
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
+    public class CustomNodeManager : LogSourceBase, ICustomNodeManager
     {
         public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
         {
@@ -53,7 +53,8 @@ namespace Dynamo.Core
         ///     Registry of all NodeInfos corresponding to discovered custom nodes. These
         ///     custom nodes are not all necessarily initialized.
         /// </summary>
-        public readonly Dictionary<Guid, CustomNodeInfo> NodeInfos = new Dictionary<Guid, CustomNodeInfo>();
+        public Dictionary<Guid, CustomNodeInfo> NodeInfos { get { return nodeInfos; } }
+        private readonly Dictionary<Guid, CustomNodeInfo> nodeInfos = new Dictionary<Guid, CustomNodeInfo>();
 
         /// <summary>
         ///     All loaded custom node workspaces.
@@ -1137,7 +1138,7 @@ namespace Dynamo.Core
             return newWorkspace;
         }
 
-        internal IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
+        public IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
         {
             var idSet = new HashSet<Guid>();
             idSet.Add(def.FunctionId);
