@@ -9,7 +9,7 @@ using ProtoCore.AssociativeGraph;
 using ProtoScript.Runners;
 namespace ProtoTest.Macroblocks
 {
-    public class MacroblockGeneratorTests : ProtoTestBase
+    class MacroblockGeneratorTests : ProtoTestBase
     {
         private Core core = null;
         ProtoCore.DSASM.Executable dsExecutable = null;
