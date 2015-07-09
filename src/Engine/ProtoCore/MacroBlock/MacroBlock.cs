@@ -91,8 +91,58 @@ namespace ProtoCore
             //      HasMoreThanOneDependent = graphnode.dependentList.Count > 1
             //      IsEntryPoint = NoDependent or HasMoreThanOneDependent
             //
-            // The above condition is condensed by just checking if the graphnode has exactly one dependent
-            return !graphnode.isReturn && !(graphnode.dependentList.Count == 1);
+            bool hasNoDependency = graphnode.dependentList.Count == 0;
+            bool hasMoreThanOneDependent = graphnode.dependentList.Count > 1;
+            bool isEntryPoint = hasNoDependency || hasMoreThanOneDependent;
+            return !graphnode.isReturn && isEntryPoint;
+        }
+
+        /// <summary>
+        /// A node that diverges means that the node is connected to 2 or more nodes
+        /// Here, 'a' diverges to 'b' and 'c'
+        ///     a = 1
+        ///     b = a
+        ///     c = a
+        ///     
+        ///     a = 1 <- An input
+        ///     b = a <- An input because it has a sibling 'c'
+        ///     c = a <- An input because it has a sibling 'b'
+        ///     
+        /// </summary>
+        /// <param name="?"></param>
+        private void GenerateMacroblockForDivergingNodes(List<AssociativeGraph.GraphNode> programSnapshot, ref int macroblockID)
+        {
+            foreach (AssociativeGraph.GraphNode graphNode in programSnapshot)
+            {
+                if (!graphNode.isActive)
+                {
+                    continue;
+                }
+
+                if (graphNode.Visited)
+                {
+                    continue;
+                }
+
+                // graphNode.graphNodesToExecute are the children of graphNode
+                // Where:
+                //      a = 1
+                //      b = a
+                //      c = a
+                //
+                // The children of 'a = 1' are:
+                //      b = a
+                //      c = a
+                if (graphNode.graphNodesToExecute.Count > 1)
+                {
+                    foreach (AssociativeGraph.GraphNode child in graphNode.graphNodesToExecute)
+                    {
+                        child.MacroblockID = macroblockID++;
+                        child.Visited = true;
+                        BuildMacroblock(child, programSnapshot);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -104,7 +154,12 @@ namespace ProtoCore
         private int GenerateDefaultMacroblocks(List<AssociativeGraph.GraphNode> programSnapshot)
         {
             Validity.Assert(programSnapshot != null);
-            int macroBlockID = 0;
+            int macroblockID = 0;
+
+            // First pass - Generate macroblocks for diverging nodes
+            GenerateMacroblockForDivergingNodes(programSnapshot, ref macroblockID);
+
+            // Second pass - Generate macroblocks for the rest of the unvisited nodes
             foreach (AssociativeGraph.GraphNode graphNode in programSnapshot)
             {
                 if (!graphNode.isActive)
@@ -119,12 +174,12 @@ namespace ProtoCore
 
                 if (IsMacroblockEntryPoint(graphNode))
                 {
-                    graphNode.MacroblockID = macroBlockID++;
+                    graphNode.MacroblockID = macroblockID++;
                     graphNode.Visited = true;
                     BuildMacroblock(graphNode, programSnapshot);
                 }
             }
-            return macroBlockID;
+            return macroblockID;
         }
 
         /// <summary>

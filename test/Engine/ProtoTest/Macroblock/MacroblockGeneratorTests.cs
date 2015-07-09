@@ -134,6 +134,22 @@ namespace ProtoTest.Macroblocks
             VerifyGraphNodesInMacroblock(3, 3);
         }
 
+        [Test]
+        public void TestParallel04()
+        {
+            const string code =
+                @"
+a = 10;b = a;c = a;
+";
+            CompileAndGenerateMacroblocks(code);
+
+            // Verify
+            VerifyMacroblockCount(3);
+            VerifyGraphNodesInMacroblock(0, 2);
+            VerifyGraphNodesInMacroblock(1, 2);
+            VerifyGraphNodesInMacroblock(2, 1);
+        }
+
         private void CompileAndGenerateMacroblocks(string code)
         {
             // Compile DS code
