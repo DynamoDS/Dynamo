@@ -652,6 +652,9 @@ namespace Dynamo.Controls
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
 
+            if (manipulatorDaemon == null)
+                return;
+
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 if (e.OldItems != null)
