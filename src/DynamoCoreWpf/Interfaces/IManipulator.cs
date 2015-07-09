@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Wpf.Manipulation;
 
@@ -20,7 +21,7 @@ namespace Dynamo.Wpf.Interfaces
         IManipulator Create(NodeModel node, DynamoManipulatorContext manipulatorContext);
     }
 
-    public interface IManipulator : IDisposable
+    public interface IManipulator : IGraphicItem, IDisposable
     {
         
     }

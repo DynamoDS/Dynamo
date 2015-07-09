@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.Manipulation
@@ -22,12 +23,12 @@ namespace Dynamo.Wpf.Manipulation
 
     public abstract class Manipulator : IManipulator
     {
-        public void Dispose()
-        {
-        }
+        public abstract void Dispose();
+
+        public abstract void Tessellate(IRenderPackage package, TessellationParameters parameters);
     }
 
-    internal class CompositeManipulator : IManipulator
+    internal class CompositeManipulator : Manipulator
     {
         private readonly List<IManipulator> subManipulators;
         public CompositeManipulator(List<IManipulator> manipulators)
@@ -35,10 +36,14 @@ namespace Dynamo.Wpf.Manipulation
             subManipulators = manipulators;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            foreach (var sub in subManipulators)
-                sub.Dispose();
+            subManipulators.ForEach(x => x.Dispose());
+        }
+
+        public override void Tessellate(IRenderPackage package, TessellationParameters parameters)
+        {
+            subManipulators.ForEach(x => x.Tessellate(package, parameters));
         }
     }
 }
