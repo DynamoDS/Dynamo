@@ -498,8 +498,10 @@ namespace ProtoCore.Lang
                     ret = StackValue.Null;
                     break;
                 case BuiltInMethods.MethodID.kGC:
+#if !NAIVE_MARK_AND_SWEEP
                     var gcRoots = interpreter.runtime.RuntimeCore.CurrentExecutive.CurrentDSASMExec.CollectGCRoots();
                     rmem.Heap.FullGC(gcRoots, interpreter.runtime);
+#endif
                     ret = StackValue.Null;
                     break;
                 default:
