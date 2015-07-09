@@ -71,7 +71,7 @@ namespace Dynamo.Controls
         private double lightElevationDegrees = 35.0;
         private int renderingTier;
         private DynamoViewModel viewModel;
-        private const double NearPlaneDistanceFactor = 0.0001;
+        private double nearPlaneDistanceFactor = 0.01;
         internal readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
         internal readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
         internal readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0); 
@@ -201,7 +201,17 @@ namespace Dynamo.Controls
                    Model3DDictionary.Select(x => x.Value).ToList();
             }
         }
-       
+
+        public double NearPlaneDistanceFactor
+        {
+            get { return nearPlaneDistanceFactor; }
+            set
+            {
+                nearPlaneDistanceFactor = value;
+                NotifyPropertyChanged("");
+            }
+        }
+
         #endregion
 
         #region constructors
