@@ -138,7 +138,7 @@ namespace Dynamo.Tests
             var strNode = workspace.NodeFromWorkspace<StringInput>(
                 "dc27fc31-fdad-40b5-906e-bbba9caf43a6");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
 
             Assert.NotNull(strNode); // Ensure the StringInput node is migrated.
@@ -161,7 +161,7 @@ namespace Dynamo.Tests
             var dsfn3 = workspace.NodeFromWorkspace<DSFunction>(
                  "3f361451-01e7-4608-bb07-fb80b3a09063");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(dsfn1);
@@ -187,7 +187,7 @@ namespace Dynamo.Tests
             var dsfn3 = workspace.NodeFromWorkspace<DSFunction>(
                  "36ca91dc-537d-46bc-80b6-6e5e65bff303");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(dsfn1);
@@ -213,7 +213,7 @@ namespace Dynamo.Tests
             var dsfn3 = workspace.NodeFromWorkspace<DSFunction>(
                  "30fa3b8d-878f-458b-a8da-7867f9144eb9");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(dsfn1);
@@ -239,7 +239,7 @@ namespace Dynamo.Tests
             var dsfn3 = workspace.NodeFromWorkspace<DSFunction>(
                  "ecd771cc-5025-4511-8871-cdc1e7318097");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(dsfn1);
@@ -265,7 +265,7 @@ namespace Dynamo.Tests
             var dsfn3 = workspace.NodeFromWorkspace<DSFunction>(
                  "07464c17-ca41-42e7-ac93-220e4c50cc0b");
 
-            Assert.AreEqual(6, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(dsfn1);
@@ -291,7 +291,7 @@ namespace Dynamo.Tests
             var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
                  "4a61ddb0-999d-412d-9330-52f0a982b214");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -317,7 +317,7 @@ namespace Dynamo.Tests
             var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.And>(
                  "4a61ddb0-999d-412d-9330-52f0a982b214");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -343,7 +343,7 @@ namespace Dynamo.Tests
             var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
                  "60a2b505-f173-4f65-a42e-cdd3708900f8");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -369,7 +369,7 @@ namespace Dynamo.Tests
             var logicn3 = workspace.NodeFromWorkspace<DSCore.Logic.Or>(
                  "60a2b505-f173-4f65-a42e-cdd3708900f8");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -395,7 +395,7 @@ namespace Dynamo.Tests
             var logicn3 = workspace.NodeFromWorkspace<DSFunction>(
                  "17aa70a5-8038-425a-b049-9627a73a071c");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -421,7 +421,7 @@ namespace Dynamo.Tests
             var logicn3 = workspace.NodeFromWorkspace<DSFunction>(
                  "17aa70a5-8038-425a-b049-9627a73a071c");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -445,7 +445,7 @@ namespace Dynamo.Tests
             var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "6ceae932-650f-409e-a836-009c5e0b9707");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -467,7 +467,7 @@ namespace Dynamo.Tests
             var logicn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "6ceae932-650f-409e-a836-009c5e0b9707");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -491,7 +491,7 @@ namespace Dynamo.Tests
             var operationn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "91fffb4d-f6cc-4770-b9c7-b64accaeca8c");
 
-            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(7, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -517,7 +517,7 @@ namespace Dynamo.Tests
             var operationn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "945b64a3-6504-43f1-87fa-f46c4bc23f1a");
 
-            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(7, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -543,7 +543,7 @@ namespace Dynamo.Tests
             var operationn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "0cd1e263-1c38-4f1e-893d-874b593f939b");
 
-            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(7, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -573,7 +573,7 @@ namespace Dynamo.Tests
             var operationn5 = workspace.NodeFromWorkspace<DSFunction>(
                 "9b902150-dc32-4e00-8ba6-1819887528ae");
 
-            Assert.AreEqual(10, workspace.Nodes.Count);
+            Assert.AreEqual(10, workspace.Nodes.Count());
             Assert.AreEqual(10, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -607,7 +607,7 @@ namespace Dynamo.Tests
             var operationn4 = workspace.NodeFromWorkspace<DSFunction>(
                 "2be464f1-81d0-4427-b588-a22d94e8118c");
 
-            Assert.AreEqual(9, workspace.Nodes.Count);
+            Assert.AreEqual(9, workspace.Nodes.Count());
             Assert.AreEqual(8, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -640,7 +640,7 @@ namespace Dynamo.Tests
             var operationn4 = workspace.NodeFromWorkspace<DSFunction>(
                 "d7709ae9-ab6c-4923-8624-d1348fa66fde");
 
-            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(8, workspace.Nodes.Count());
             Assert.AreEqual(8, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -672,7 +672,7 @@ namespace Dynamo.Tests
             var operationn5 = workspace.NodeFromWorkspace<DSFunction>(
                 "dbd083ba-91ec-4e70-a1b9-10efd09daf33");
 
-            Assert.AreEqual(10, workspace.Nodes.Count);
+            Assert.AreEqual(10, workspace.Nodes.Count());
             Assert.AreEqual(5, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -708,7 +708,7 @@ namespace Dynamo.Tests
             var operationn6 = workspace.NodeFromWorkspace<DSFunction>(
                 "3120bce8-45de-49b1-9a7e-743b94608ff4");
 
-            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -746,7 +746,7 @@ namespace Dynamo.Tests
             var operationn6 = workspace.NodeFromWorkspace<DSFunction>(
                 "1ef510c8-5f3b-4654-8fb7-bcd7827ccb07");
 
-            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -774,7 +774,7 @@ namespace Dynamo.Tests
             var constantn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "74416af6-c22c-4822-8b65-c5deea710a38");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             Assert.NotNull(constantn1);
@@ -792,7 +792,7 @@ namespace Dynamo.Tests
             var constantn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "3e82b16c-b928-4d20-a9cb-1dc27498255f");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             Assert.NotNull(constantn1);
@@ -810,7 +810,7 @@ namespace Dynamo.Tests
             var constantn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "3017f3cb-7097-4180-b72e-9dcc19d7d690");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             Assert.NotNull(constantn1);
@@ -836,7 +836,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toDegree node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(8 + 4, workspace.Nodes.Count);
+            Assert.AreEqual(8 + 4, workspace.Nodes.Count());
             Assert.AreEqual(4 + 4, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -868,7 +868,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toDegree node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(8 + 4, workspace.Nodes.Count);
+            Assert.AreEqual(8 + 4, workspace.Nodes.Count());
             Assert.AreEqual(4 + 4, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -900,7 +900,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toDegree node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(8 + 4, workspace.Nodes.Count);
+            Assert.AreEqual(8 + 4, workspace.Nodes.Count());
             Assert.AreEqual(4 + 4, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -934,7 +934,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toRadius node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(10 + 5, workspace.Nodes.Count);
+            Assert.AreEqual(10 + 5, workspace.Nodes.Count());
             Assert.AreEqual(5 + 5, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -970,7 +970,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toRadius node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(10 + 5, workspace.Nodes.Count);
+            Assert.AreEqual(10 + 5, workspace.Nodes.Count());
             Assert.AreEqual(5 + 5, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -1006,7 +1006,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toRadius node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(10 + 5, workspace.Nodes.Count);
+            Assert.AreEqual(10 + 5, workspace.Nodes.Count());
             Assert.AreEqual(5 + 5, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -1038,7 +1038,7 @@ namespace Dynamo.Tests
             var operationn4 = workspace.NodeFromWorkspace<DSFunction>(
                 "af486a6c-a558-4a0b-860f-8c3800f5b8b5");
 
-            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(8, workspace.Nodes.Count());
             Assert.AreEqual(4, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -1064,7 +1064,7 @@ namespace Dynamo.Tests
             var logicn2 = workspace.NodeFromWorkspace<DSCoreNodesUI.Logic.If>(
                 "274166dc-4c76-4e42-8856-817978a0dd7c");
 
-            Assert.AreEqual(6, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(logicn1);
@@ -1094,7 +1094,7 @@ namespace Dynamo.Tests
             var listn6 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "e8f77740-93b5-4129-9cf2-9ae7b4a0aa06");
 
-            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Nodes.Count());
             Assert.AreEqual(11, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1134,7 +1134,7 @@ namespace Dynamo.Tests
             var listn4 = workspace.NodeFromWorkspace<DSFunction>(
                 "a6c40764-1009-4d43-9728-17fc1e03caa8");
 
-            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(8, workspace.Nodes.Count());
             Assert.AreEqual(8, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1162,7 +1162,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "1201c055-31a3-46ff-997c-e634c7d061fa");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1186,7 +1186,7 @@ namespace Dynamo.Tests
             var listn4 = workspace.NodeFromWorkspace<DSFunction>(
                 "ecd5e943-e6b5-44ca-bb52-3b5c39971ea7");
 
-            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(8, workspace.Nodes.Count());
             Assert.AreEqual(4, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1214,7 +1214,7 @@ namespace Dynamo.Tests
             var listn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "4477b43e-0f51-486d-98a5-27ee0b312819");
 
-            Assert.AreEqual(6, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1236,7 +1236,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "23b91324-69db-46b7-aa0b-b57fcd723264");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1258,7 +1258,7 @@ namespace Dynamo.Tests
             var listn3 = workspace.NodeFromWorkspace<DSFunction>(
                 "218c3a8e-9c4a-4a8c-8b13-6f2fb758df3f");
 
-            Assert.AreEqual(6, workspace.Nodes.Count);
+            Assert.AreEqual(6, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1280,7 +1280,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "6a575df0-0540-46ff-8b9d-15787835f064");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1301,7 +1301,7 @@ namespace Dynamo.Tests
             var operationn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "71149321-db95-4064-a311-aadfe0cec404");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -1317,7 +1317,7 @@ namespace Dynamo.Tests
             var operationn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "8a4329e2-d0d5-4fe2-9bba-f4291502eb1c");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -1334,7 +1334,7 @@ namespace Dynamo.Tests
             var operationn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "010adb65-ae28-408f-a91e-c5b0fae2c387");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(operationn1);
@@ -1350,7 +1350,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "f08875de-8aa4-4bae-aedd-8bb26ae73a35");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1369,7 +1369,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "f08875de-8aa4-4bae-aedd-8bb26ae73a35");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1389,7 +1389,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "adffbefb-4f91-4b6e-bcef-59f8f7adf9f4");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1408,7 +1408,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "adffbefb-4f91-4b6e-bcef-59f8f7adf9f4");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(9, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1429,7 +1429,7 @@ namespace Dynamo.Tests
             var listn2 = workspace.NodeFromWorkspace<DSFunction>(
                 "b6769722-96ae-437d-9c64-cc82f2f6fb01");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(4, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1451,7 +1451,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "5295f03d-531c-4f0e-b852-47eef1f8c38c");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1470,7 +1470,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "c250a8d2-4e16-4e87-a8a8-f738329e61b1");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1489,7 +1489,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "c250a8d2-4e16-4e87-a8a8-f738329e61b1");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1508,7 +1508,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "9e3e4a46-9874-4322-a126-2ada785f3f80");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1527,7 +1527,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "9e3e4a46-9874-4322-a126-2ada785f3f80");
 
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(9, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1547,7 +1547,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "77a79c75-15a4-4b0a-b326-00df04c689b6");
 
-            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(8, workspace.Nodes.Count());
             Assert.AreEqual(7, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1566,7 +1566,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "3c619222-858f-4f7c-b001-3a4a248f8f77");
 
-            Assert.AreEqual(10, workspace.Nodes.Count);
+            Assert.AreEqual(10, workspace.Nodes.Count());
             Assert.AreEqual(9, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1589,7 +1589,7 @@ namespace Dynamo.Tests
             var listn3 = workspace.NodeFromWorkspace<DSCoreNodesUI.CreateList>(
                 "0c98e395-e2f4-49c1-abda-d1bcb3c24cbd");
 
-            Assert.AreEqual(10, workspace.Nodes.Count);
+            Assert.AreEqual(10, workspace.Nodes.Count());
             Assert.AreEqual(12, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1614,7 +1614,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1633,7 +1633,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "1dd7ff84-90db-4e1c-a0ca-9fe9119dbea6");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1653,7 +1653,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "ce22d1d1-c5e4-4684-8414-9a115848a06f");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1671,7 +1671,7 @@ namespace Dynamo.Tests
             var listn1 = workspace.NodeFromWorkspace<DSFunction>(
                 "ce22d1d1-c5e4-4684-8414-9a115848a06f");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1696,7 +1696,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toRadius node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(6 + 2, workspace.Nodes.Count);
+            Assert.AreEqual(6 + 2, workspace.Nodes.Count());
             Assert.AreEqual(6 + 2, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1721,7 +1721,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toRadius node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(5 + 1, workspace.Nodes.Count);
+            Assert.AreEqual(5 + 1, workspace.Nodes.Count());
             Assert.AreEqual(7 + 1, workspace.Connectors.Count());
 
             Assert.NotNull(listn1);
@@ -1740,7 +1740,7 @@ namespace Dynamo.Tests
 
             //During migraton, the manager will add a toRadius node. 
             //So the number of node and connector will be increased.
-            Assert.AreEqual(8, workspace.Nodes.Count);
+            Assert.AreEqual(8, workspace.Nodes.Count());
             Assert.AreEqual(7, workspace.Connectors.Count());
 
             RunCurrentModel();
@@ -1753,7 +1753,7 @@ namespace Dynamo.Tests
             OpenModel(GetDynPath("TestNumberInput.dyn"));
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
-            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Nodes.Count());
             Assert.AreEqual(16, workspace.Connectors.Count());
 
             var number5 = workspace.NodeFromWorkspace<DoubleInput>(
@@ -1822,7 +1822,7 @@ namespace Dynamo.Tests
             var z = workspace.NodeFromWorkspace<DSFunction>(
                 "6e68a338-d71e-4b72-a806-9c6b9e917c50");
 
-            Assert.AreEqual(14 + 6, workspace.Nodes.Count);
+            Assert.AreEqual(14 + 6, workspace.Nodes.Count());
             Assert.AreEqual(19 + 8, workspace.Connectors.Count());
 
             Assert.NotNull(x);
@@ -1842,7 +1842,7 @@ namespace Dynamo.Tests
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
-            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Nodes.Count());
             Assert.AreEqual(14, workspace.Connectors.Count());
 
             RunCurrentModel();
@@ -1858,7 +1858,7 @@ namespace Dynamo.Tests
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
-            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Nodes.Count());
             Assert.AreEqual(14, workspace.Connectors.Count());
 
             RunCurrentModel();
@@ -1874,7 +1874,7 @@ namespace Dynamo.Tests
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
-            Assert.AreEqual(12, workspace.Nodes.Count);
+            Assert.AreEqual(12, workspace.Nodes.Count());
             Assert.AreEqual(14, workspace.Connectors.Count());
 
             RunCurrentModel();
@@ -1890,7 +1890,7 @@ namespace Dynamo.Tests
 
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(3, workspace.Connectors.Count());
 
             var path = workspace.NodeFromWorkspace<Dynamo.Nodes.StringInput>("1651f446-1b0f-4d5b-be59-c59bf9f80142");
@@ -1915,7 +1915,7 @@ namespace Dynamo.Tests
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
             // check that all nodes and connectors are loaded
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(5, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
@@ -1934,7 +1934,7 @@ namespace Dynamo.Tests
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
             // check that all nodes and connectors are loaded
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(5, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
@@ -1953,7 +1953,7 @@ namespace Dynamo.Tests
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
             // check that all nodes and connectors are loaded
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(5, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
@@ -1971,7 +1971,7 @@ namespace Dynamo.Tests
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
             // check that all nodes and connectors are loaded
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
@@ -1989,7 +1989,7 @@ namespace Dynamo.Tests
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
             // check that all nodes and connectors are loaded
-            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(7, workspace.Nodes.Count());
             Assert.AreEqual(6, workspace.Connectors.Count());
 
             // check that no nodes are migrated to dummy nodes
@@ -2079,7 +2079,7 @@ namespace Dynamo.Tests
 
         private string GetDynPath(string sourceDynFile)
         {
-            string sourceDynPath = this.TestDirectory;
+            string sourceDynPath = TestDirectory;
             sourceDynPath = Path.Combine(sourceDynPath, @"core\migration\");
             return Path.Combine(sourceDynPath, sourceDynFile);
         }
