@@ -233,7 +233,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     A set of input parameter states, this can be used to set the graph to a serialized state.
         /// </summary>
-        public List<PresetModel> Presets { get { return presets;} }
+        public IEnumerable<PresetModel> Presets { get { return presets;} }
 
         /// <summary>
         ///     The date of the last save.
@@ -867,7 +867,7 @@ namespace Dynamo.Models
             presets.Add(newstate);
         }
 
-        public void RemoveState(PresetModel state)
+        public void RemovePreset(PresetModel state)
         {
             if (Presets.Contains(state))
             {

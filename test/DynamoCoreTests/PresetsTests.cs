@@ -80,7 +80,7 @@ namespace Dynamo.Tests
 
             //delete state
             var state = model.CurrentWorkspace.Presets.First();
-           model.CurrentWorkspace.RemoveState(state);
+           model.CurrentWorkspace.RemovePreset(state);
 
            Assert.AreEqual(model.CurrentWorkspace.Presets.Count(), 0);
 

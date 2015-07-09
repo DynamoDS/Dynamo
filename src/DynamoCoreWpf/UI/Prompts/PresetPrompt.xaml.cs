@@ -26,8 +26,9 @@ namespace Dynamo.Nodes
             if (this.Owner != null)
             {
                 var dataContext = this.Owner.DataContext as DynamoViewModel;
+                var presets = dataContext == null ? null : dataContext.Model.CurrentWorkspace.Presets;
                  //get the preset names from workspace
-                if (dataContext != null && dataContext.Model.CurrentWorkspace.Presets.Any())
+                if (presets != null && presets.Any())
                 {
                     if (dataContext.Model.CurrentWorkspace.Presets.Any(x => x.Name == Text))
                     {
@@ -46,8 +47,8 @@ namespace Dynamo.Nodes
                         //If the dialog result is true, then remove the old preset
                         else
                         {
-                           var oldPreset = dataContext.Model.CurrentWorkspace.Presets.FirstOrDefault(x => x.Name == Text);
-                           dataContext.Model.CurrentWorkspace.Presets.Remove(oldPreset);
+                            var oldPreset = presets.FirstOrDefault(x => x.Name == Text);
+                            dataContext.Model.CurrentWorkspace.RemovePreset(oldPreset);
                         }
                     }
                 }
