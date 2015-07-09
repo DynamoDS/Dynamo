@@ -60,6 +60,7 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
@@ -92,7 +93,7 @@
     <Compile Include="Models\PublishModel.cs" />
     <Compile Include="DynamoPublishExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Configurations\Resource.Designer.cs">
+    <Compile Include="Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
@@ -115,11 +116,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Configurations\Configurations.xml" />
     <Content Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Configurations\Resource.resx">
+    <EmbeddedResource Include="Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -130,13 +130,16 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="DynamoPublish.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>
       <ExtensionDefinition Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
-      <Configurations Include="Configurations\Configurations.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)..\" />
-    <Copy SourceFiles="@(Configurations)" DestinationFolder="$(OutputPath)\Configurations" />
   </Target>
 </Project>

@@ -1,6 +1,0 @@
-﻿<PublishConfigurations>
-  <ServerUrl>http://10.39.165.198</ServerUrl>
-  <Port>3000</Port>
-  <Page>ws</Page>
-  <Provider>https://accounts-staging.autodesk.com/</Provider>
-</PublishConfigurations>

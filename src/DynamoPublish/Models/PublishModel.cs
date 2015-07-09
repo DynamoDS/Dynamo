@@ -1,30 +1,27 @@
 ﻿using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Publish.Configurations;
 using Dynamo.Wpf.Authentication;
 using Greg.AuthProviders;
 using Reach;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml;
 
 namespace Dynamo.Publish.Models
 {
     public class PublishModel
     {
-        private AuthenticationManager manager;
+        private readonly AuthenticationManager manager;
         public LoginService LoginService;
 
-        private XmlDocument xml_configurations = new XmlDocument();
-
-        private string serverUrl;
-        private string port;
-        private string page;
-        private string provider;
+        private readonly string serverUrl;
+        private readonly string port;
+        private readonly string page;
+        private readonly string provider;
 
         public bool IsLoggedIn
         {
@@ -38,11 +35,18 @@ namespace Dynamo.Publish.Models
 
         public PublishModel()
         {
-            if (LoadConfigurationDocument(ref xml_configurations))
-            {
-                ProcessConfigurations(xml_configurations);
+            // Open the configuration file using the dll location.
+            Configuration config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
+            // Get the appSettings section.
+            AppSettingsSection appSettings = (AppSettingsSection)config.GetSection("appSettings");
+
+            serverUrl = appSettings.Settings["ServerUrl"].Value;
+            port = appSettings.Settings["Port"].Value;
+            page = appSettings.Settings["Page"].Value;
+            provider = appSettings.Settings["Provider"].Value;
+
+            if (!String.IsNullOrWhiteSpace(provider))
                 manager = new AuthenticationManager(new OxygenProvider(provider));
-            }
         }
 
         #endregion
@@ -72,63 +76,5 @@ namespace Dynamo.Publish.Models
             var reachClient = new WorkspaceStorageClient(manager.AuthProvider, fullServerAdress);
             var result = reachClient.Send(workspaces.OfType<HomeWorkspaceModel>().First(), workspaces.OfType<CustomNodeWorkspaceModel>());
         }
-
-        #region XML Configurations
-
-        /// <summary>
-        /// Loads configuration document. 
-        /// In most cases it can be found in folder Configurations, near result assembly.
-        /// </summary>
-        private bool LoadConfigurationDocument(ref XmlDocument doc)
-        {
-            var assembly_path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configirations_path = @"\Configurations\Configurations.xml";
-            var full_path = assembly_path + configirations_path;
-
-            if (File.Exists(full_path))
-            {
-                doc.Load(full_path);
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Reads configuration file.
-        /// </summary>        
-        private void ProcessConfigurations(object doc)
-        {
-            XmlNode topNode = xml_configurations.GetElementsByTagName("PublishConfigurations")[0];
-
-            if (topNode == null)
-            {
-                throw new Exception(Resource.BadXMLConfigurationFileMessage);
-            }
-
-            foreach (XmlNode node in topNode.ChildNodes)
-            {
-                switch (node.Name)
-                {
-                    case "ServerUrl":
-                        serverUrl = node.InnerText;
-                        break;
-                    case "Port":
-                        port = node.InnerText;
-                        break;
-                    case "Page":
-                        page = node.InnerText;
-                        break;
-                    case "Provider":
-                        provider = node.InnerText;
-                        break;
-
-                    default:
-                        throw new Exception(Resource.BadXMLConfigurationFileMessage);
-                }
-            }
-        }
-
-        #endregion
     }
 }
