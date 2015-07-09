@@ -22,8 +22,7 @@ namespace Dynamo.UI.Views
 
         public LibraryView()
         {
-            InitializeComponent();
-            AddButton.Content = Dynamo.Wpf.Properties.Resources.AddButton;
+            InitializeComponent(); 
 
             // Invalidate the DataContext here because it will be set at a later 
             // time through data binding expression. This way debugger will not 

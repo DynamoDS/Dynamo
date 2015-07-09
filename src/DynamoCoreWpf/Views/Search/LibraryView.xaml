@@ -551,7 +551,7 @@
                     </TreeView.Template>
                 </TreeView>
                 <Button 
-                    x:Name="AddButton"
+                    Content="{x:Static p:Resources.AddButton}"
                     Grid.Row="2"
                         Height="23"
                         HorizontalAlignment="Center"
