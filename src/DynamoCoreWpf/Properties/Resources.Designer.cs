@@ -3534,7 +3534,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remaining Characters :.
+        ///   Looks up a localized string similar to Characters Remaining.
         /// </summary>
         public static string PresetTextRemaining {
             get {

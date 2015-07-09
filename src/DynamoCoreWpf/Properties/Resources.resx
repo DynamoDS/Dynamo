@@ -1821,6 +1821,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Select</value>
   </data>
   <data name="PresetTextRemaining" xml:space="preserve">
-    <value>Remaining Characters :</value>
+    <value>Characters Remaining</value>
   </data>
 </root>

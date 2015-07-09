@@ -13,29 +13,14 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class PresetPrompt : Window
     {
-        public PresetPrompt()
+        public string Description
         {
-            InitializeComponent();
-
-            this.Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            this.Loaded +=PresetPrompt_Loaded;
-            this.nameBox.Focus();
+            get { return this.DescriptionInput.Text; }
         }
 
-        private void PresetPrompt_Loaded(object sender, RoutedEventArgs e)
+        public int MaxLength
         {
-            this.TextRemaining.Content = Wpf.Properties.Resources.PresetTextRemaining + " " + (this.nameBox.MaxLength - this.nameBox.Text.Length);
-        }
-
-        void OK_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-        }
-
-        void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = false;
+            get { return this.nameBox.MaxLength; }
         }
 
         public string Text
@@ -51,24 +36,46 @@ namespace Dynamo.Nodes
             }
         }
 
-        public string Description
+
+        public PresetPrompt()
         {
-            get { return this.DescriptionInput.Text; }
+            InitializeComponent();
+
+            this.Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.Loaded +=PresetPrompt_Loaded;
+            this.nameBox.Focus();
         }
 
-        public int MaxLength
+        private void PresetPrompt_Loaded(object sender, RoutedEventArgs e)
         {
-            get { return this.nameBox.MaxLength; }
+            UpdateText();
         }
 
+        void OK_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+        }
 
+        void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+        }
+               
         private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (this.nameBox.MaxLength - this.nameBox.Text.Length < 1)
+            if (this.nameBox.Text.Length > this.nameBox.MaxLength)
             {
                 this.Text = this.Text.Substring(0, MaxLength);
             }
-            this.TextRemaining.Content = Wpf.Properties.Resources.PresetTextRemaining  + " " + (this.nameBox.MaxLength - this.nameBox.Text.Length);
+
+            UpdateText();
+        }
+
+        private void UpdateText()         
+        {
+            this.TextRemaining.Content =  (this.nameBox.MaxLength - this.nameBox.Text.Length) + " " +
+                                                Wpf.Properties.Resources.PresetTextRemaining;
         }
     }
 }
