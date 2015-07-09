@@ -97,6 +97,11 @@ namespace Dynamo.Interfaces
         string ExtensionsDirectory { get; }
 
         /// <summary>
+        /// The directory, which contains ViewExtensionDefinition.xml files
+        /// </summary>
+        string ViewExtensionsDirectory { get; }
+
+        /// <summary>
         /// The root directory where all sample files are stored. This directory
         /// is common to all users on the machine.
         /// </summary>

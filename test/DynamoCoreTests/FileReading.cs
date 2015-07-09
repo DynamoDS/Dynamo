@@ -48,7 +48,7 @@ namespace Dynamo.Tests
             
 
             OpenModel(testFilePath);
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count, 0);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 0);
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Connectors.Count(), 0);
         }
 
@@ -61,7 +61,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoFileTestFloder, "future_file.dyf");
 
             OpenModel(testFilePath);
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count, 0);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), 0);
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Connectors.Count(), 0);
         }
     }

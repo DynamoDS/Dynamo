@@ -191,6 +191,12 @@ namespace Dynamo.Models
                     case "UngroupModelCommand":
                         command = UngroupModelCommand.DeserializeCore(element);
                         break;
+                    case "AddPresetCommand":
+                        command = AddPresetCommand.DeserializeCore(element);
+                        break;
+                    case "ApplyPresetCommand":
+                        command = ApplyPresetCommand.DeserializeCore(element);
+                        break;
                 }
 
                 if (null != command)
@@ -1632,6 +1638,105 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
+        public class AddPresetCommand : ModelBasedRecordableCommand
+        {
+            #region Public Class Methods
+
+            public AddPresetCommand(string name, string description, IEnumerable<Guid> currentSelectionIDS )
+                :base(currentSelectionIDS)
+            {
+                PresetStateName = name;
+                PresetStateDescription = description;
+            }
+
+            internal static AddPresetCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                var modelGuids = DeserializeGuid(element, helper);
+                if (modelGuids.Count()<1)
+                {
+                    throw new ArgumentNullException("No IDs were deserialized during load of preset creation command");
+                }
+                
+                return new AddPresetCommand(helper.ReadString("name"), helper.ReadString("description"),modelGuids);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string PresetStateName { get; set; }
+            [DataMember]
+            internal string PresetStateDescription { get; set; }
+             #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.CreatePresetStateImpl(this);
+
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("name", PresetStateName);
+                helper.SetAttribute("description", PresetStateDescription);
+               
+            }
+              #endregion
+        }
+
+        [DataContract]
+        public class ApplyPresetCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public ApplyPresetCommand(Guid workspaceID, Guid stateID)
+            {
+                StateID = stateID;
+                WorkSpaceID = workspaceID;
+            }
+
+            internal static ApplyPresetCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+
+                return new ApplyPresetCommand(helper.ReadGuid("WorkspaceID"), helper.ReadGuid("StateID"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal Guid StateID { get; set; }
+            [DataMember]
+            internal Guid WorkSpaceID { get; set; }
+          
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.SetWorkSpaceToStateImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("WorkspaceID", WorkSpaceID.ToString());
+                helper.SetAttribute("StateID", StateID.ToString());
+
+            }
+
+            #endregion
+        }
     }
 
     // public class XxxYyyCommand : RecordableCommand

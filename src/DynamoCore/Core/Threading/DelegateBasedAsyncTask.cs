@@ -11,7 +11,7 @@ namespace Dynamo.Core.Threading
     {
         private Action actionToPerform;
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }

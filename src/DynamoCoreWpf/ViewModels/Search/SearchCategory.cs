@@ -1,18 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Core;
+using System.Windows.Input;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.Search
 {
-    public class SearchCategory
+    public class SearchCategory : NotificationObject
     {
         private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
 
         public string Name { get; private set; }
+
+        private bool isExpanded;
+        public bool IsExpanded { get { return isExpanded; } }
 
         // TODO: classes functionality.
         //       All functionality marked as 'classes functionality'
@@ -28,11 +35,22 @@ namespace Dynamo.Search
             get { return memberGroups; }
         }
 
+        public ICommand ClickedCommand { get; private set; }
+
+        private void OnClicked(object obj)
+        {
+            isExpanded = !isExpanded;
+            RaisePropertyChanged("IsExpanded");
+        }
+
         internal SearchCategory(string name)
         {
             Name = name;
             classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
+            isExpanded = true;
+
+            ClickedCommand = new DelegateCommand(OnClicked);
         }
 
         internal void AddMemberToGroup(NodeSearchElementViewModel memberNode)

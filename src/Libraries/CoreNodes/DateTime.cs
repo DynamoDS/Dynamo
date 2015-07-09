@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Extensions;
 
 namespace DSCore
 {
@@ -14,6 +15,7 @@ namespace DSCore
         /// <summary>
         ///     The earliest date and time that can be represented.
         /// </summary>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime MinValue
         {
             get { return System.DateTime.MinValue; }
@@ -22,6 +24,7 @@ namespace DSCore
         /// <summary>
         ///     The latest date and time that can be represented.
         /// </summary>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime MaxValue
         {
             get { return System.DateTime.MaxValue; }
@@ -30,6 +33,7 @@ namespace DSCore
         /// <summary>
         ///     The current system date and time.
         /// </summary>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime Now
         {
             get { return System.DateTime.Now; }
@@ -38,6 +42,7 @@ namespace DSCore
         /// <summary>
         ///     The current system date, with time set at midnight.
         /// </summary>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime Today
         {
             get { return System.DateTime.Today; }
@@ -49,6 +54,7 @@ namespace DSCore
         /// <param name="year">Exact year (1-9999)</param>
         /// <param name="month">Exact month (1-12)</param>
         /// <param name="day">Exact day (1-[days in month])</param>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime ByDate(int year, int month, int day)
         {
             return new System.DateTime(year, month, day);
@@ -64,6 +70,7 @@ namespace DSCore
         /// <param name="minute">Exact minute (0-59)</param>
         /// <param name="second">Exact second (0-59)</param>
         /// <param name="millisecond">Exact millisecond (0-999)</param>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime ByDateAndTime(
             int year, int month, int day, int hour=0, int minute=0, int second=0, int millisecond=0)
         {
@@ -75,6 +82,7 @@ namespace DSCore
         /// </summary>
         /// <param name="dateTime">Starting DateTime.</param>
         /// <param name="timeSpan">Amount of time to subtract.</param>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime SubtractTimeSpan(System.DateTime dateTime, System.TimeSpan timeSpan)
         {
             return dateTime.Subtract(timeSpan);
@@ -85,6 +93,7 @@ namespace DSCore
         /// </summary>
         /// <param name="dateTime">Starting DateTime.</param>
         /// <param name="timeSpan">Amount of time to add.</param>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime AddTimeSpan(System.DateTime dateTime, System.TimeSpan timeSpan)
         {
             return dateTime.Add(timeSpan);
@@ -122,6 +131,7 @@ namespace DSCore
         ///     Attempts to parse a DateTime from a string.
         /// </summary>
         /// <param name="str">String representation of a DateTime.</param>
+        /// <returns name="dateTime">DateTime</returns>
         public static System.DateTime FromString(string str)
         {
             return System.DateTime.Parse(str, CultureInfo.InvariantCulture);
@@ -158,7 +168,8 @@ namespace DSCore
         /// <summary>
         ///     Gets the Day of the Week from a given DateTime.
         /// </summary>
-        /// <param name="dateTime">A DateTime.</param>
+        /// <param name="dateTime">A DateTime object.</param>
+        /// <returns name="dayOfWeek">Day of the week</returns>
         public static DayOfWeek DayOfWeek(System.DateTime dateTime)
         {
             switch (dateTime.DayOfWeek)
@@ -207,7 +218,13 @@ namespace DSCore
     /// </summary>
     public enum DayOfWeek
     {
-        Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+        [EnumDescription("EnumDateOfWeekSunday", typeof(Properties.Resources))]Sunday,
+        [EnumDescription("EnumDateOfWeekMonday", typeof(Properties.Resources))]Monday,
+        [EnumDescription("EnumDateOfWeekTuesday", typeof(Properties.Resources))]Tuesday,
+        [EnumDescription("EnumDateOfWeekWednesday", typeof(Properties.Resources))]Wednesday,
+        [EnumDescription("EnumDateOfWeekThursday", typeof(Properties.Resources))]Thursday,
+        [EnumDescription("EnumDateOfWeekFriday", typeof(Properties.Resources))]Friday,
+        [EnumDescription("EnumDateOfWeekSaturday", typeof(Properties.Resources))]Saturday
     }
 
     /// <summary>
@@ -220,6 +237,7 @@ namespace DSCore
         /// </summary>
         /// <param name="date1">Starting DateTime.</param>
         /// <param name="date2">Ending DateTime.</param>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan ByDateDifference(System.DateTime date1, System.DateTime date2)
         {
             return date1.Subtract(date2);
@@ -228,16 +246,19 @@ namespace DSCore
         /// <summary>
         ///     A TimeSpan representing an elapsed time of Zero.
         /// </summary>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan Zero { get { return System.TimeSpan.Zero; } }
 
         /// <summary>
         ///     The largest TimeSpan that can be represented.
         /// </summary>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan MaxValue { get { return System.TimeSpan.MaxValue; } }
 
         /// <summary>
         ///     The smallest TimeSpan that can be represented.
         /// </summary>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan MinValue { get { return System.TimeSpan.MaxValue; } }
 
         /// <summary>
@@ -248,6 +269,7 @@ namespace DSCore
         /// <param name="minutes">Minutes spanned.</param>
         /// <param name="seconds">Seconds spanned.</param>
         /// <param name="milliseconds">Milliseconds spanned.</param>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan Create(
             double days = 0, double hours = 0, double minutes = 0, double seconds = 0, double milliseconds = 0)
         {
@@ -266,6 +288,7 @@ namespace DSCore
         /// Amount to scale the TimeSpan. For example, a scaling factor of 2 will yield
         /// double the amount of time spanned.
         /// </param>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan Scale(System.TimeSpan timeSpan, double scaleFactor)
         {
             return System.TimeSpan.FromMilliseconds(timeSpan.TotalMilliseconds*scaleFactor);
@@ -275,6 +298,7 @@ namespace DSCore
         ///     Negates a TimeSpan.
         /// </summary>
         /// <param name="timeSpan">A TimeSpan.</param>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan Negate(System.TimeSpan timeSpan)
         {
             return timeSpan.Negate();
@@ -285,6 +309,7 @@ namespace DSCore
         /// </summary>
         /// <param name="timeSpan1">A TimeSpan.</param>
         /// <param name="timeSpan2">A TimeSpan.</param>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan Add(System.TimeSpan timeSpan1, System.TimeSpan timeSpan2)
         {
             return timeSpan1.Add(timeSpan2);
@@ -295,7 +320,7 @@ namespace DSCore
         /// </summary>
         /// <param name="timeSpan1">A TimeSpan.</param>
         /// <param name="timeSpan2">A TimeSpan.</param>
-        /// <returns></returns>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan Subtract(System.TimeSpan timeSpan1, System.TimeSpan timeSpan2)
         {
             return timeSpan1.Subtract(timeSpan2);
@@ -305,6 +330,7 @@ namespace DSCore
         ///     Attempts to parse a TimeSpan from a string.
         /// </summary>
         /// <param name="str">String representation of a TimeSpan.</param>
+        /// <returns name="timeSpan">TimeSpan</returns>
         public static System.TimeSpan FromString(string str)
         {
             return System.TimeSpan.Parse(str, CultureInfo.InvariantCulture);
@@ -377,4 +403,5 @@ namespace DSCore
             return timeSpan.TotalMilliseconds;
         }
     }
+
 }

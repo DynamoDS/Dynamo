@@ -60,6 +60,7 @@
     <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="AsyncTaskExtensionsTests.cs" />
+    <Compile Include="AuthenticationManagerTests.cs" />
     <Compile Include="CallsiteTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
     <Compile Include="DefaultArgumentMigrationTests.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="MockMaker.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
+    <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />

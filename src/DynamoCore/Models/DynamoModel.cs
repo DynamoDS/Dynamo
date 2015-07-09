@@ -65,11 +65,31 @@ namespace Dynamo.Models
                 RequestsFunctionNamePrompt(this, e);
         }
 
+
+        public event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
+        public void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
+        {
+            if (RequestPresetsNamePrompt != null)
+                RequestPresetsNamePrompt(e);
+        }
         public event WorkspaceHandler WorkspaceSaved;
         internal void OnWorkspaceSaved(WorkspaceModel model)
         {
             if (WorkspaceSaved != null)
                 WorkspaceSaved(model);
+        }
+
+        /// <summary>
+        /// Event that is fired during the opening of the workspace.
+        /// 
+        /// Use the XmlDocument object provided to conduct additional
+        /// workspace opening operations.
+        /// </summary>
+        public event Action<XmlDocument> WorkspaceOpening;
+        internal void OnWorkspaceOpening(XmlDocument obj)
+        {
+            var handler = WorkspaceOpening;
+            if (handler != null) handler(obj);
         }
 
         /// <summary>
@@ -305,6 +325,8 @@ namespace Dynamo.Models
         /// </summary>
         public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
 
+        public AuthenticationManager AuthenticationManager { get; set; }
+
         #endregion
 
         #region initialization and disposal
@@ -494,20 +516,6 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
 
-            if (extensions.Any())
-            {
-                var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, CustomNodeManager);
-
-                foreach (var ext in extensions)
-                {
-                    ext.Startup(startupParams);
-                    ext.Load(preferences, pathManager);
-                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
-                    ExtensionManager.Add(ext);
-                }
-            }
-
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
@@ -529,6 +537,8 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode)
@@ -540,6 +550,20 @@ namespace Dynamo.Models
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
             InitializeNodeLibrary(preferences);
+
+            if (extensions.Any())
+            {
+                var startupParams = new StartupParams(config.AuthProvider,
+                    pathManager, CustomNodeManager);
+
+                foreach (var ext in extensions)
+                {
+                    ext.Startup(startupParams);
+                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
+                    ext.Load(preferences, pathManager);
+                    ExtensionManager.Add(ext);
+                }
+            }
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
@@ -738,6 +762,22 @@ namespace Dynamo.Models
             {
                 if (customNodeSearchRegistry.Contains(info.FunctionId))
                     return;
+
+                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+                                x =>
+                                {
+                                    return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                                }).ToList();
+
+                if (elements.Any())
+                {
+                    foreach (var element in elements)
+                    {
+                        element.SyncWithCustomNodeInfo(info);
+                        SearchModel.Update(element);
+                    }
+                    return;
+                }
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1092,6 +1132,8 @@ namespace Dynamo.Models
 
                         AddWorkspace(ws);
 
+                        OnWorkspaceOpening(xmlDoc);
+
                         // TODO: #4258
                         // Remove this ResetEngine call when multiple home workspaces is supported.
                         // This call formerly lived in DynamoViewModel
@@ -1136,7 +1178,7 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
+            
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
@@ -1144,7 +1186,8 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
@@ -1190,7 +1233,7 @@ namespace Dynamo.Models
                 {
                     if (!workspace.HasUnsavedChanges)
                     {
-                        if (workspace.Nodes.Count == 0 &&
+                        if (workspace.Nodes.Any() &&
                             workspace.Notes.Count == 0)
                             continue;
 
@@ -1204,7 +1247,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null);
+                    workspace.SaveAs(savePath, null, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict.Add(workspace.Guid, savePath);
