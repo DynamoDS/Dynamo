@@ -59,7 +59,7 @@ namespace Dynamo.Publish.ViewModels
         /// </summary>
         public Views.PublishView PublishView { get; set; }
 
-        public IEnumerable<WorkspaceViewModel> WorkSpaces { get; set; }
+        public IEnumerable<IWorkspaceModel> WorkSpaces { get; set; }
 
         #endregion
 
@@ -94,13 +94,7 @@ namespace Dynamo.Publish.ViewModels
             if (!model.IsLoggedIn)
                 return;
 
-            model.SendWorkspaces(WorkSpacesModels());
-        }
-
-        public IEnumerable<WorkspaceModel> WorkSpacesModels()
-        {
-            foreach (var ws in WorkSpaces)
-                yield return ws.Model;
+            model.SendWorkspaces(WorkSpaces);
         }
 
         #endregion

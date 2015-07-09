@@ -1,6 +1,7 @@
 ﻿using Dynamo.Publish.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -32,6 +33,12 @@ namespace Dynamo.Publish.Views
             InitializeComponent();
             DataContext = viewModel;
             viewModel.PublishView = this;
+        }
+
+        private void OnPublishViewClosing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visibility = Visibility.Hidden;
         }
     }
 }

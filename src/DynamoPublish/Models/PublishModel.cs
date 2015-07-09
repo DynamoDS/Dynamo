@@ -62,7 +62,7 @@ namespace Dynamo.Publish.Models
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <param name="workspaces"></param>
-        internal void SendWorkspaces(IEnumerable<WorkspaceModel> workspaces)
+        internal void SendWorkspaces(IEnumerable<IWorkspaceModel> workspaces)
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(manager.Username))
                 return;

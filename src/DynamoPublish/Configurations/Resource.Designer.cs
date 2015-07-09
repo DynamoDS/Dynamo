@@ -77,5 +77,14 @@ namespace Dynamo.Publish.Configurations {
                 return ResourceManager.GetString("BadXMLConfigurationFileMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish and Share....
+        /// </summary>
+        internal static string DynamoViewMenuItemPublishTitle {
+            get {
+                return ResourceManager.GetString("DynamoViewMenuItemPublishTitle", resourceCulture);
+            }
+        }
     }
 }

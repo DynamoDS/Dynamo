@@ -444,10 +444,7 @@ namespace Dynamo.Controls
 
             watchSettingsControl.DataContext = background_preview;
 
-            var loadedParams = new ViewLoadedParams()
-            {
-                WorkSpaces = dynamoViewModel.Workspaces,
-            };
+            var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
 
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {

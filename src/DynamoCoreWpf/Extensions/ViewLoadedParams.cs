@@ -6,7 +6,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.UI.Controls;
+using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.Utilities;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -27,38 +29,44 @@ namespace Dynamo.Wpf.Extensions
         // Here's a start on the implementation
         //
 
-        //private readonly DynamoView view;
+        private DynamoView dynamoView;
+        private DynamoViewModel dynamoViewModel;
 
-        //internal ViewLoadedParams(DynamoView view)
-        //{
-        //    this.view = view;
-        //}
+        public IEnumerable<IWorkspaceModel> WorkSpaces
+        {
+            get
+            {
+                return dynamoViewModel.Model.Workspaces;
+            }
+        }
 
-        ///// <summary>
-        ///// Add a menu item for workspace context click
-        ///// </summary>
-        ///// <param name="item">The item to insert</param>
-        ///// <param name="options">Options object to determine in which cases the MenuItem should be visible</param>
-        //public void AddWorkspaceContextClickMenuItem(MenuItem item, WorkspaceContextClickOptions options)
-        //{
-            
-        //}
+        public ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM)
+        {
+            dynamoView = dynamoV;
+            dynamoViewModel = dynamoVM;
+        }
 
-        //public void AddShortcutBarItem(ShortcutBarItem item)
-        //{
-        //    // add an item to Dynamo's shortcut bar
-        //}
+        public void AddMenuItem(MenuBarType type, MenuItem menuItem)
+        {
+            var dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
 
-        //public void AddMenuBar(MenuItem item)
-        //{
-            
-        //}
+            if (dynamoMenu == null)
+                return;
 
-        //public void AddKeyBinding(KeyBinding binding)
-        //{
-            
-        //}
+            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
+            var dynamoItem = dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
+            if (dynamoItem == null)
+                return;
 
-        public IEnumerable<WorkspaceViewModel> WorkSpaces;
+            dynamoItem.Items.Add(menuItem);
+        }
+    }
+
+    public enum MenuBarType
+    {
+        File,
+        Edit,
+        View,
+        Help
     }
 }

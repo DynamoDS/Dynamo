@@ -1,9 +1,11 @@
 ﻿using Dynamo.Interfaces;
+using Dynamo.Publish.Configurations;
 using Dynamo.Publish.Models;
 using Dynamo.Publish.ViewModels;
 using Dynamo.Publish.Views;
 using Dynamo.Wpf.Extensions;
 using System;
+using System.Windows.Controls;
 
 namespace Dynamo.Publish
 {
@@ -37,8 +39,7 @@ namespace Dynamo.Publish
             publishVM.WorkSpaces = p.WorkSpaces;
             publishWindow = new PublishView(publishVM);
 
-            // This should be called when user clicks on menu item.
-            publishWindow.Show();
+            p.AddMenuItem(MenuBarType.File, GenerateMenuItem());
         }
 
         public void Shutdown()
@@ -63,6 +64,23 @@ namespace Dynamo.Publish
             {
                 this.MessageLogged(msg);
             }
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private MenuItem GenerateMenuItem()
+        {
+            MenuItem item = new MenuItem();
+            item.Header = Resource.DynamoViewMenuItemPublishTitle;
+
+            item.Click += (sender, args) =>
+                {
+                    publishWindow.ShowDialog();
+                };
+
+            return item;
         }
 
         #endregion
