@@ -1184,8 +1184,33 @@ namespace Dynamo.Models
             return true;
         }
 
+        /// <summary>
+        /// Lanuch a new process for this home workspace
+        /// TODO: Move it to other place.
+        /// </summary>
+        private void LaunchExecutionInstance()
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = Process.GetCurrentProcess().MainModule.FileName;
+            process.StartInfo.Arguments = "/t instance";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.WorkingDirectory = Directory.GetCurrentDirectory();
+            process.StartInfo.CreateNoWindow = true;
+            try
+            {
+                var returnValue = process.Start();
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Failed to launch execution instance");
+                throw e;
+            }
+        }
+
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
+            LaunchExecutionInstance();
+
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
             newWorkspace.RefreshCompleted += OnRefreshCompleted;
 

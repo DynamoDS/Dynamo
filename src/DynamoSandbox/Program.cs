@@ -21,6 +21,7 @@ using Dynamo.ViewModels;
 using DynamoShapeManager;
 
 using Microsoft.Win32;
+using Dynamo.DSEngine;
 
 namespace DynamoSandbox
 {
@@ -99,6 +100,8 @@ namespace DynamoSandbox
             //
             var locale = string.Empty;
 
+            var type = string.Empty;
+
             for (var i = 0; i < args.Length; ++i)
             {
                 var arg = args[i];
@@ -121,18 +124,35 @@ namespace DynamoSandbox
                         if (i < args.Length - 1)
                             locale = args[++i];
                         break;
+
+                    case 't':
+                    case 'T':
+                        if (i < args.Length - 1)
+                            type = args[++i];
+                        break;
                 }
             }
+
+            ExecutionType execType = ExecutionType.Host;
+            if (!string.IsNullOrEmpty(type) && type.Equals("instance", StringComparison.OrdinalIgnoreCase))
+                execType = ExecutionType.Instance;
 
             return new CommandLineArguments
             {
                 Locale = locale,
-                CommandFilePath = commandFilePath
+                CommandFilePath = commandFilePath,
+                Type = execType 
             };
         }
 
+        internal enum ExecutionType
+        {
+            Host,
+            Instance
+        }
         internal string Locale { get; set; }
         internal string CommandFilePath { get; set; }
+        internal ExecutionType Type { get; private set; }
     }
 
     internal class SandboxLookUp : DynamoLookUp
@@ -233,6 +253,14 @@ namespace DynamoSandbox
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
 
+        private static void StartExecutionInstance(CommandLineArguments args)
+        {
+            // May pass more arguments to execution instance...
+            ExecutionInstance instance = new ExecutionInstance();
+            instance.Run();
+            instance.WaitForExit();
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -241,6 +269,12 @@ namespace DynamoSandbox
             try
             {
                 var cmdLineArgs = CommandLineArguments.FromArguments(args);
+                if (cmdLineArgs.Type == CommandLineArguments.ExecutionType.Instance)
+                {
+                    StartExecutionInstance(cmdLineArgs);
+                    return;
+                }
+
                 var supportedLocale = new HashSet<string>(new[]
                         {
                             "cs-CZ", "de-DE", "en-US", "es-ES", "fr-FR", "it-IT",
