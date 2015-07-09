@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
+// modified from : https://gist.github.com/lontivero/593fc51f1208555112e0
+
 namespace Dynamo.Docs
 {
     class Program
