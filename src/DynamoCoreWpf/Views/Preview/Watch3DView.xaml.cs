@@ -20,6 +20,8 @@ using Dynamo.Wpf.Rendering;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
+using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
@@ -264,8 +266,9 @@ namespace Dynamo.Controls
 
             var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
-            
-            RenderTechnique = Techniques.RenderDynamo;
+
+            RenderTechnique = new RenderTechnique("RenderDynamo");
+            EffectsManager.Instance.InitializingEffects += Instance_InitializingEffects;
 
             WhiteMaterial = new PhongMaterial
             {
@@ -304,7 +307,7 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Initialize the Helix with these values. These values should be attached before the 
+        /// Initialize Helix with these values. These values should be attached before the 
         /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
         /// So they are initialized before the process starts.
         /// </summary>
@@ -348,6 +351,32 @@ namespace Dynamo.Controls
             {
                 model3DDictionary.Add("Axes", axesModel3D);
             }
+        }
+
+        void Instance_InitializingEffects(EffectInitializationEventArgs args)
+        {
+            EffectsManager.Instance.RegisterEffect(args.ShaderEffectBytecode, new[] { RenderTechnique });
+
+            var dynamoInputLayout = new InputLayout(args.Device, EffectsManager.Instance.GetEffect(RenderTechnique).GetTechniqueByName(RenderTechnique.Name).GetPassByIndex(0).Description.Signature, new[]
+            {
+                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                new InputElement("TEXCOORD", 0, Format.R32G32_Float,       InputElement.AppendAligned, 0),
+                new InputElement("NORMAL",   0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
+                new InputElement("TANGENT",  0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
+                new InputElement("BINORMAL", 0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),  
+                new InputElement("COLOR", 1, Format.R32G32B32A32_Float,    InputElement.AppendAligned, 0),  
+                //new InputElement("REQUIRES_PER_VERTEX_COLORATION", 0, Format.R32_UInt,    InputElement.AppendAligned, 0),  
+
+                //INSTANCING: die 4 texcoords sind die matrix, die mit jedem buffer reinwandern
+                new InputElement("TEXCOORD", 2, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),                 
+                new InputElement("TEXCOORD", 3, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+                new InputElement("TEXCOORD", 4, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+                new InputElement("TEXCOORD", 5, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+            });
+            dynamoInputLayout.DebugName = "Dynamo";
+
+            EffectsManager.Instance.RegisterLayout(new[] { RenderTechnique }, dynamoInputLayout);
         }
 
         private void ResetCamera()
@@ -959,7 +988,7 @@ namespace Dynamo.Controls
                     id = baseId + ":points";
 
                     PointGeometryModel3D pointGeometry3D;
-
+                    
                     if (model3DDictionary.ContainsKey(id))
                     {
                         pointGeometry3D = model3DDictionary[id] as PointGeometryModel3D;
@@ -1056,7 +1085,7 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    meshGeometry3D = new DynamoGeometryModel3D()
+                    meshGeometry3D = new DynamoGeometryModel3D(RenderTechnique)
                     {
                         Transform = Model1Transform,
                         Material = WhiteMaterial,
