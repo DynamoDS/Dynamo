@@ -190,7 +190,7 @@ namespace ProtoScript.Runners
         /// <param name="staticContext"></param>
         /// <param name="runtimeContext"></param>
         /// <returns></returns>
-        public ProtoCore.RuntimeCore ExecuteLive(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, bool forceGC)
+        public ProtoCore.RuntimeCore ExecuteLive(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             try
             {
@@ -224,12 +224,6 @@ namespace ProtoScript.Runners
                     runtimeCore.StartPC, 
                     stackFrame,
                     locals);
-
-                if (forceGC)
-                {
-                    var gcRoots = runtimeCore.CurrentExecutive.CurrentDSASMExec.CollectGCRoots();
-                    runtimeCore.RuntimeMemory.Heap.FullGC(gcRoots, runtimeCore.CurrentExecutive.CurrentDSASMExec);
-                }
 
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }

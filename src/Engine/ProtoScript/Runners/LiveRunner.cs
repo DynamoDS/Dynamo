@@ -1657,12 +1657,12 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled, bool forceGC)
+        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled)
         {
             try
             {
                 SetupRuntimeCoreForExecution(isCodeCompiled);
-                runner.ExecuteLive(runnerCore, runtimeCore, forceGC);
+                runner.ExecuteLive(runnerCore, runtimeCore);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1680,7 +1680,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;
-                vmState = Execute(!string.IsNullOrEmpty(code), false);
+                vmState = Execute(!string.IsNullOrEmpty(code));
             }
             return succeeded;
         }
@@ -1693,7 +1693,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;
-                vmState = Execute(astList.Count > 0, false);
+                vmState = Execute(astList.Count > 0);
             }
             return succeeded;
         }
@@ -1725,13 +1725,20 @@ namespace ProtoScript.Runners
             runnerCore.DSExecutable.UpdatedSymbols.Clear();
         }
 
+        private void ForceGC()
+        {
+            var gcRoots = runtimeCore.CurrentExecutive.CurrentDSASMExec.CollectGCRoots();
+            runtimeCore.RuntimeMemory.Heap.FullGC(gcRoots, runtimeCore.CurrentExecutive.CurrentDSASMExec);
+        }
+
         private void ApplyUpdate()
         {
             if (ProtoCore.AssociativeEngine.Utils.IsGlobalScopeDirty(runnerCore.DSExecutable))
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
-                Execute(true, true);
+                Execute(true);
+                ForceGC();
             }
         }
 
