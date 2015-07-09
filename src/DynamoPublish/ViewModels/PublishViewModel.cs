@@ -1,5 +1,5 @@
 ﻿using Dynamo.Core;
-using Dynamo.Models;
+using Dynamo.Interfaces;
 using Dynamo.Publish.Models;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;

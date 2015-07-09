@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Dynamo.Models;
+using System;
 using System.Collections.Generic;
-namespace Dynamo.Models
+
+namespace Dynamo.Interfaces
 {
     public interface IWorkspaceModel
     {

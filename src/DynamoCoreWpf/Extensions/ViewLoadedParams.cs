@@ -6,9 +6,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.UI.Controls;
-using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Wpf.Extensions
 {
