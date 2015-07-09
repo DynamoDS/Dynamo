@@ -34,11 +34,5 @@ namespace Dynamo.Publish.Views
             DataContext = viewModel;
             viewModel.PublishView = this;
         }
-
-        private void OnPublishViewClosing(object sender, CancelEventArgs e)
-        {
-            e.Cancel = true;
-            this.Visibility = Visibility.Hidden;
-        }
     }
 }

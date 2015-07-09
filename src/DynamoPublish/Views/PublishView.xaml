@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PublishView"
         Height="400"
-        Width="600"
-        Closing="OnPublishViewClosing">
+        Width="600">
 
     <Grid Name="mainGrid">
         <Grid.ColumnDefinitions>

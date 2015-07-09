@@ -37,14 +37,13 @@ namespace Dynamo.Publish
         public void Loaded(ViewLoadedParams p)
         {
             publishVM.WorkSpaces = p.WorkSpaces;
-            publishWindow = new PublishView(publishVM);
 
             p.AddMenuItem(MenuBarType.File, GenerateMenuItem());
         }
 
         public void Shutdown()
         {
-            // Some shutdown stuff.
+            publishWindow.Close();
         }
 
         public void Dispose()
@@ -77,6 +76,15 @@ namespace Dynamo.Publish
 
             item.Click += (sender, args) =>
                 {
+                    if (publishWindow == null)
+                    {
+                        publishWindow = new PublishView(publishVM);
+                        publishWindow.Closed += (s, arg) =>
+                        {
+                            publishWindow = null;
+                        };
+                    }
+
                     publishWindow.ShowDialog();
                 };
 
