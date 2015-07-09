@@ -1,7 +1,4 @@
 ﻿
-
-//#define __MACROBLOCK_CORE_EXECUTION
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,28 +117,7 @@ namespace ProtoCore.DSASM
         /// Cache the graphnodes in scope
         /// </summary>
         private void SetupGraphNodesInScope()
-        {
-#if __MACROBLOCK_CORE_EXECUTION
-            int ci = Constants.kInvalidIndex;
-            int fi = Constants.kGlobalScope;
-            // Check if wh're in the global scope
-            // executingBlock is 0, if its the outer block (no language block)
-            // IsGlobalScope returns if true if execution is not within a function call
-            if (executingBlock == 0 && IsGlobalScope())
-            {
-                List<AssociativeGraph.GraphNode> globalScopeNodes = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
-
-                // Get only the nodes within the macroblock
-                graphNodesInProgramScope = new List<AssociativeGraph.GraphNode>();
-                graphNodesInProgramScope.AddRange(globalScopeNodes.Where(g => g.MacroblockID == exe.ExecutingMacroBlock));
-            }
-            else
-            {
-                ci = rmem.CurrentStackFrame.ClassScope;
-                fi = rmem.CurrentStackFrame.FunctionScope;
-                graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
-            }
-#else             
+        {         
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
             if (!IsGlobalScope())
@@ -150,7 +126,6 @@ namespace ProtoCore.DSASM
                 fi = rmem.CurrentStackFrame.FunctionScope;
             }
             graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
-#endif
         }
 
         /// <summary>
@@ -2729,27 +2704,6 @@ namespace ProtoCore.DSASM
             if (!fepRun || fepRun && debugRun)
             {
                 logVMMessage("End JIL Execution - " + CoreUtils.GetLanguageString(language));
-            }
-        }
-
-        /// <summary>
-        /// Executes a single macroblock
-        /// </summary>
-        /// <param name="macroBlock"></param>
-        public void Execute(ProtoCore.Runtime.MacroBlock macroBlock)
-        {
-            int entry = macroBlock.GenerateEntryPoint();
-            if (entry != Constants.kInvalidPC)
-            {
-                exe.SetupMacroBlock(macroBlock.UID);
-                int scope = 0;
-                try
-                {
-                    Execute(scope, entry, null);
-                }
-                catch (ProtoCore.Exceptions.ExecutionCancelledException)
-                {
-                }
             }
         }
 

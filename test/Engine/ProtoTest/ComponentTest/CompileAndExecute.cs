@@ -32,7 +32,7 @@ namespace ProtoTest.ComponentTest
 
             // Compiler instance
             ProtoCore.DSASM.Executable dsExecutable;
-            bool compileSucceeded = runner.CompileMe(code, core, out dsExecutable);
+            bool compileSucceeded = runner.Compile(code, core, out dsExecutable);
             Assert.IsTrue(compileSucceeded == true);
             
             // Pass compile data to the runtime 

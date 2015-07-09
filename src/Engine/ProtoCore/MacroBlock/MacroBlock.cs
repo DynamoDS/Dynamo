@@ -66,11 +66,11 @@ namespace ProtoCore
         /// <summary>
         /// Increment this counter for every new macroblock
         /// </summary>
-        private int generatedMacroblocks;
+        public int GeneratedMacroblockCount {get; private set;}
 
         public MacroBlockGenerator()
         {
-            generatedMacroblocks = 0;
+            GeneratedMacroblockCount = 0;
         }
 
         /// <summary>
@@ -200,11 +200,11 @@ namespace ProtoCore
                 graphnode.Visited = false;
             }
 
-            generatedMacroblocks = GenerateMacroblocksFromProgramSnapshot(programSnapshot);
+            GeneratedMacroblockCount = GenerateMacroblocksFromProgramSnapshot(programSnapshot);
 
             // Reinitialize the macroblock list
             RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
-            for (int n = 0; n < generatedMacroblocks; ++n)
+            for (int n = 0; n < GeneratedMacroblockCount; ++n)
             {
                 RuntimeMacroBlockList.Add(new Runtime.MacroBlock(n));
             }

@@ -97,7 +97,6 @@
     <Compile Include="AssociativeGraph.cs" />
     <Compile Include="ASTCompilerUtils.cs" />
     <Compile Include="MacroBlock\MacroBlock.cs" />
-    <Compile Include="MacroBlock\Sequencer.cs" />
     <Compile Include="DSASM\HeapObjects.cs" />
     <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="AttributeEntry.cs" />
