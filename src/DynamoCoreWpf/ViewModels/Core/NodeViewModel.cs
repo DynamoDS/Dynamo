@@ -103,7 +103,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsVisibleInCustomizer
+        public bool IsSelectedAsInput
         {
             get
             {
