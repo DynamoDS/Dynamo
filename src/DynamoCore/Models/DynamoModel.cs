@@ -560,6 +560,10 @@ namespace Dynamo.Models
 
                 foreach (var ext in extensions)
                 {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += LogMessage;
+
                     ext.Startup(startupParams);
                     ext.RequestLoadNodeLibrary += LoadNodeLibrary;
                     ext.Load(preferences, pathManager);
@@ -590,6 +594,10 @@ namespace Dynamo.Models
         {
             ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
             ExtensionManager.Remove(ext);
+
+            var logSource = ext as ILogSource;
+            if (logSource != null)
+                logSource.MessageLogged -= LogMessage;
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)

@@ -11,6 +11,7 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using DynamoUtilities;
+using DynamoPackages.Properties;
 
 namespace Dynamo.PackageManager
 {
@@ -183,7 +184,10 @@ namespace Dynamo.PackageManager
         private void ScanPackageDirectories(string root, IPreferences preferences)
         {
             if (!Directory.Exists(root))
+            {
+                this.Log(string.Format(Resources.InvalidPackageFolderWarning, root));
                 return;
+            }
 
             foreach (var dir in
                 Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
