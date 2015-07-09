@@ -1657,12 +1657,12 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled)
+        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled, bool forceGC)
         {
             try
             {
                 SetupRuntimeCoreForExecution(isCodeCompiled);
-                runner.ExecuteLive(runnerCore, runtimeCore);
+                runner.ExecuteLive(runnerCore, runtimeCore, forceGC);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1680,7 +1680,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;
-                vmState = Execute(!string.IsNullOrEmpty(code));
+                vmState = Execute(!string.IsNullOrEmpty(code), false);
             }
             return succeeded;
         }
@@ -1693,7 +1693,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;
-                vmState = Execute(astList.Count > 0);
+                vmState = Execute(astList.Count > 0, false);
             }
             return succeeded;
         }
@@ -1731,7 +1731,7 @@ namespace ProtoScript.Runners
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
-                Execute(true);
+                Execute(true, true);
             }
         }
 
