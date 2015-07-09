@@ -1675,6 +1675,7 @@ b;
 
 
         [Test]
+        [Category("Failure")]
         public void T67_DNL_1467458_3()
         {
             String code =

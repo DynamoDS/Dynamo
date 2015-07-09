@@ -448,7 +448,7 @@ namespace ProtoFFI
             }
 
             var heap = dsi.runtime.rmem.Heap;
-            var retVal = heap.AllocateArray(svs);
+            var retVal = heap.AllocateArray(svs.ToArray());
             return retVal;
         }
 
@@ -456,7 +456,7 @@ namespace ProtoFFI
         {
             var runtimeCore = dsi.runtime.RuntimeCore;
 
-            var svArray = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
+            var svArray = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] {});
             DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
             foreach (var key in dictionary.Keys)
             {
@@ -548,7 +548,7 @@ namespace ProtoFFI
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
-            foreach (var sv in dsArray.VisibleItems)
+            foreach (var sv in dsArray.Values)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, context, dsi, elementType);
                 arrList.Add(obj);
@@ -1084,7 +1084,7 @@ namespace ProtoFFI
                 return;
 
             var runtimeCore = dsi.runtime.RuntimeCore;
-            StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).VisibleItems.ToArray();
+            StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).Values.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];

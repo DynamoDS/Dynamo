@@ -32,7 +32,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(28, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(28, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(28, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check an input value
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("51ed7fed-99fa-46c3-a03c-2c076f2d0538");
@@ -99,7 +99,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // run the expression
             BeginRun();
@@ -122,7 +122,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // run the expression
             BeginRun();
@@ -255,7 +255,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\CASE\case_flip_matrix.dyn");
             RunModel(openPath);
 
-            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]

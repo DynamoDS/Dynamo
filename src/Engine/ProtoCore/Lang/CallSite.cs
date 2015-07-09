@@ -1506,8 +1506,9 @@ namespace ProtoCore
                 return ReportMethodNotFoundForArguments(runtimeCore, arguments);
             }
 
+            arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(CallSiteID, x));
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
-
+            runtimeCore.RemoveCallSiteGCRoot(CallSiteID);
             return ret;
         }
 
@@ -1762,7 +1763,7 @@ namespace ProtoCore
                     retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
-
+                    runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
                     retTrace.NestedData[i] = cleanRetTrace;
 
@@ -1877,10 +1878,11 @@ namespace ProtoCore
                     retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
-
+                    runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
+
 
                 StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;
