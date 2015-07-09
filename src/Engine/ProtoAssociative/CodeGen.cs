@@ -4239,7 +4239,7 @@ namespace ProtoAssociative
             // Generate the macroblock fragments at the global scope
             if (codeBlock.codeBlockId == 0)
             {
-                core.MacroblockGen.GenerateAndCacheMacroBlocks(nodesInScope);
+                GenerateAndCacheMacroblocks(nodesInScope);
             }
             
             if (codeBlock.parent == null)  // top-most langauge block
@@ -4260,6 +4260,15 @@ namespace ProtoAssociative
             core.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
+        }
+
+        private void GenerateAndCacheMacroblocks(List<GraphNode> nodesInScope)
+        {
+            Validity.Assert(macroblockGen != null);
+            List<ProtoCore.Runtime.MacroBlock> macroblocks = macroblockGen.GenerateMacroblocks(nodesInScope);
+
+            // Cache the generated blocks in core
+            core.RuntimeMacroBlockList = macroblocks;
         }
 
         private void EmitFunctionCallToInitStaticProperty(List<AssociativeNode> codeblock)

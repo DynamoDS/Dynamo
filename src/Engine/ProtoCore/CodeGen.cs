@@ -99,6 +99,8 @@ namespace ProtoCore
         // These variables hold data when backtracking static SSA'd calls
         protected string staticClass = null;
 
+        protected MacroBlockGenerator macroblockGen = null;
+
         public CodeGen(Core coreObj, ProtoCore.DSASM.CodeBlock parentBlock = null)
         {
             Validity.Assert(coreObj != null);
@@ -153,6 +155,7 @@ namespace ProtoCore
             }
 
             ssaPointerStack = new Stack<List<AST.AssociativeAST.AssociativeNode>>();
+            macroblockGen = new MacroBlockGenerator();
         }
 
 

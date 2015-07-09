@@ -393,8 +393,6 @@ namespace ProtoCore
 
         public int newEntryPoint { get; private set; }
 
-        public ProtoCore.MacroBlockGenerator MacroblockGen { get; set; }
-
         public void SetNewEntryPoint(int pc)
         {
             newEntryPoint = pc;
@@ -680,7 +678,6 @@ namespace ProtoCore
 
             newEntryPoint = Constants.kInvalidIndex;
             RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
-            MacroblockGen = new MacroBlockGenerator(this);
         }
 
         // The unique subscript for SSA temporaries

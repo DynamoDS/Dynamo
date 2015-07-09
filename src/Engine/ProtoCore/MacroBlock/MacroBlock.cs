@@ -55,7 +55,12 @@ namespace ProtoCore
     /// </summary>
     public class MacroBlockGenerator
     {
-        private Core core = null;
+        private enum MacroblockGeneratorType
+        {
+            Default,
+            NumTypes
+        }
+
         public List<ProtoCore.Runtime.MacroBlock> RuntimeMacroBlockList { get; set; }
 
         /// <summary>
@@ -63,9 +68,8 @@ namespace ProtoCore
         /// </summary>
         private int generatedMacroblocks;
 
-        public MacroBlockGenerator(ProtoCore.Core core)
+        public MacroBlockGenerator()
         {
-            this.core = core;
             generatedMacroblocks = 0;
         }
 
@@ -92,12 +96,12 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Generate macroblocks given a snapshot of the program
-        /// A macroblock starts with an input node
+        /// Generate macroblocks using the default method
+        /// A macroblock starts with an input node by checking IsMacroblockEntryPoint
         /// The macroblock ID is set for each graphnode 
         /// </summary>
         /// <param name="programSnapshot"></param>
-        public int GenerateMacroblocks(List<AssociativeGraph.GraphNode> programSnapshot)
+        private int GenerateDefaultMacroblocks(List<AssociativeGraph.GraphNode> programSnapshot)
         {
             Validity.Assert(programSnapshot != null);
             int macroBlockID = 0;
@@ -151,10 +155,44 @@ namespace ProtoCore
         }
 
         /// <summary>
+        /// Analyze the program snapshot and return the optimal macroblock generator type
+        /// </summary>
+        /// <param name="programSnapshot"></param>
+        /// <returns></returns>
+        private MacroblockGeneratorType GetMacroblockTypeFromSnapshot(List<AssociativeGraph.GraphNode> programSnapshot)
+        {
+            // Perform analysis of program snapshot
+            // Extend this implementation to support static analyzers of the snapshot
+            return MacroblockGeneratorType.Default;
+        }
+
+        /// <summary>
+        /// Analyze the program snapshot and generate the optimal macroblock
+        /// </summary>
+        /// <param name="programSnapshot"></param>
+        private int GenerateMacroblocksFromProgramSnapshot(List<AssociativeGraph.GraphNode> programSnapshot)
+        {
+            int generatedBlocks = Constants.kInvalidIndex;
+
+            MacroblockGeneratorType type = GetMacroblockTypeFromSnapshot(programSnapshot);
+            if (type == MacroblockGeneratorType.Default)
+            {
+                generatedBlocks = GenerateDefaultMacroblocks(programSnapshot);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            return generatedBlocks;
+        }
+
+
+        /// <summary>
         /// Generates the macroblock groupings of the given list of graphnodes (the program snapshot)
         /// </summary>
         /// <param name="programSnapshot"></param>
-        public void GenerateAndCacheMacroBlocks(List<AssociativeGraph.GraphNode> programSnapshot)
+        /// <returns></returns>
+        public List<ProtoCore.Runtime.MacroBlock> GenerateMacroblocks(List<AssociativeGraph.GraphNode> programSnapshot)
         {
             // Reset the graphnode states
             foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
@@ -162,7 +200,7 @@ namespace ProtoCore
                 graphnode.Visited = false;
             }
 
-            generatedMacroblocks = GenerateMacroblocks(programSnapshot);
+            generatedMacroblocks = GenerateMacroblocksFromProgramSnapshot(programSnapshot);
 
             // Reinitialize the macroblock list
             RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
@@ -183,7 +221,7 @@ namespace ProtoCore
                     }
                 }
             }
-            core.RuntimeMacroBlockList = RuntimeMacroBlockList;
+            return RuntimeMacroBlockList;
         }
     }
 }
