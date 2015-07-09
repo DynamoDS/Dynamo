@@ -191,14 +191,26 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Input nodes are used in Customizer. Input nodes can be numbers, number sliders,
+        /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
         /// strings, bool, code blocks and custom nodes, which don't specify path.
         /// </summary>
-        public virtual bool IsInputNode
+        public bool IsInputNode
         {
             get
             {
-                return false;
+                return !inPorts.Any() && !(this is DSFunction);
+            }
+        }
+
+        /// <summary>
+        /// Some of input nodes are not allowed in customizer. Such as directory path or file path.
+        /// If node is not allowed in customizer, this property should be overridden.
+        /// </summary>
+        public virtual bool IsAllowedInCustomizer
+        {
+            get
+            {
+                return IsInputNode;
             }
         }
 
@@ -206,10 +218,11 @@ namespace Dynamo.Models
         // Even if it's not input node it will be visible.        
         private bool isVisibleInCustomizer = true;
         /// <summary>
-        /// All input nodes can be visible in customizer.
-        /// But, if user would like, he can hide node from customizer.
+        /// All input nodes can be used in customizer or be part of preset.
+        /// But, if user would like, he can hide input node from customizer.
+        /// By default input node will be selected, so that it can be used in preset and be shown in customizer.
         /// </summary>
-        public bool IsVisibleInCustomizer
+        public bool IsSelectedAsInput
         {
             get
             {

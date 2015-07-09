@@ -107,13 +107,13 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeLogic.IsVisibleInCustomizer;
+                return nodeLogic.IsSelectedAsInput;
             }
             set
             {
-                if (nodeLogic.IsVisibleInCustomizer != value)
+                if (nodeLogic.IsSelectedAsInput != value)
                 {
-                    nodeLogic.IsVisibleInCustomizer = value;
+                    nodeLogic.IsSelectedAsInput = value;
                     RaisePropertyChanged("IsVisibleInCustomizer");
                 }
             }

@@ -164,14 +164,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool IsInputNode
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public override string AstIdentifierBase
         {
             get
