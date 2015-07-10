@@ -1311,6 +1311,13 @@ namespace ProtoFFI
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
+                else if (attr is NodeIsObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as NodeIsObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
                 else if (attr is ObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
