@@ -1057,7 +1057,7 @@ namespace ProtoCore.AssociativeGraph
 
             ChildrenNodes.Add(child);
 
-            // The this graphnode to be the parent of the child node
+            // Set this graphnode to be the parent of the child node
             child.ParentNodes.Add(this);
         }
 
