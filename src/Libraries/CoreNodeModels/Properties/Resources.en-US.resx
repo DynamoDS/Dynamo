@@ -539,4 +539,7 @@
   <data name="UnitNodeToPortToolTip" xml:space="preserve">
     <value>A converted numeric value.</value>
   </data>
+  <data name="DateTimeDescription" xml:space="preserve">
+    <value>Create a DateTime object from a formatted date and time string. Date and time must be of the format "April 12, 1977 12:00 PM"</value>
+  </data>
 </root>

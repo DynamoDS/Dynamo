@@ -9,7 +9,7 @@ using ProtoCore.AST.AssociativeAST;
 namespace DSCoreNodesUI
 {
     [NodeName("Date Time")]
-    [NodeDescription("Create a DateTime object by specifying a date and a time.")]
+    [NodeDescription("DateTimeDescription", typeof(Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [IsDesignScriptCompatible]
     public class DateTime : BasicInteractive<System.DateTime>
