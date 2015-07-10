@@ -14,6 +14,6 @@ namespace Dynamo.Wpf.Extensions
         public string AssemblyPath { get; set; }
 
         [DataMember]
-        public string ExtensionDefinition { get; set; }
+        public string TypeName { get; set; }
     }
 }

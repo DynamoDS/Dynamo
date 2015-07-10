@@ -15,12 +15,12 @@ namespace Dynamo.Wpf.Extensions
             try
             {
                 var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
-                var result = assembly.CreateInstance(viewExtension.ExtensionDefinition) as IViewExtension;
+                var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
                 return result;
             }
             catch
             {
-                var name = viewExtension.ExtensionDefinition == null ? "null" : viewExtension.ExtensionDefinition;
+                var name = viewExtension.TypeName == null ? "null" : viewExtension.TypeName;
                 Log("Could not create an instance of " + name);
                 return null;
             }
@@ -43,14 +43,14 @@ namespace Dynamo.Wpf.Extensions
             var path = Path.GetDirectoryName(extensionPath);
             foreach (XmlNode item in topNode[0].ChildNodes)
             {
-                if (item.Name == "AssemblyName")
+                if (item.Name == "AssemblyPath")
                 {
                     path = path + item.InnerText;
                     definition.AssemblyPath = path;
                 }
-                else if (item.Name == "ExtensionDefinition")
+                else if (item.Name == "TypeName")
                 {
-                    definition.ExtensionDefinition = item.InnerText;
+                    definition.TypeName = item.InnerText;
                 }
             }
 
