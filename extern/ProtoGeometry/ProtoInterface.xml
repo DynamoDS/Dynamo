@@ -135,12 +135,6 @@
             short name when convert the node to code.  
             </summary>
         </member>
-        <member name="T:Autodesk.DesignScript.Runtime.PreventNodeBeingConvertedToCode">
-            <summary>
-            This attribute indicates the target method cannot be converted
-            to code.
-            </summary>
-        </member>
         <member name="T:Autodesk.DesignScript.Runtime.NodeIsObsoleteAttribute">
             <summary>
             This attribute indicates the 
