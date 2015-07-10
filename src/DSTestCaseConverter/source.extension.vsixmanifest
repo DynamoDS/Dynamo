@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Vsix Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+  <Identifier Id="SortMembers..f510b13f-309e-4dd6-95f7-2d243b0fe7fe">
+    <Name>SortMembers</Name>
+    <Author>jasonrbock</Author>
+    <Version>1.0</Version>
+    <Description xml:space="preserve">This is a sample code refactoring extension for the Microsoft Roslyn CTP.</Description>
+    <Locale>1033</Locale>
+    <SupportedProducts>
+      <VisualStudio Version="10.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+      </VisualStudio>
+      <VisualStudio Version="11.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+      </VisualStudio>
+    </SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.0" />
+  </Identifier>
+  <References>
+    <!--Add References here-->
+  </References>
+
+  <Content>
+    <MefComponent>|%CurrentProject%|</MefComponent>
+  </Content>
+
+</Vsix>
