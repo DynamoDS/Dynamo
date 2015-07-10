@@ -19,7 +19,7 @@ using NUnit.Framework;
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
-    public class PresetViewModelTests : DynamoViewModelUnitTest
+    public class PresetPromptTests
     {
         [Test]
         public void TestCharacterLength()
