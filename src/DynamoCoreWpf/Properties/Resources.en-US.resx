@@ -1820,7 +1820,12 @@ Do you want to install the latest Dynamo update?</value>
   <data name="SelectNodeButtonSelect" xml:space="preserve">
     <value>Select</value>
   </data>
+<<<<<<< HEAD
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
+=======
+  <data name="AddButton" xml:space="preserve">
+    <value>Add</value>
+>>>>>>> remotes/upstream/master
   </data>
 </root>
