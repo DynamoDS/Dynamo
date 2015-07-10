@@ -22,6 +22,9 @@ namespace Dynamo.Wpf.Extensions
 
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
+        private readonly Menu dynamoMenu;
+
+        private List<Tuple<MenuBarType, MenuItem>> addedMenuItems = new List<Tuple<MenuBarType, MenuItem>>();
 
         public IEnumerable<IWorkspaceViewModel> WorkspaceViewModels
         {
@@ -35,21 +38,40 @@ namespace Dynamo.Wpf.Extensions
         {
             dynamoView = dynamoV;
             dynamoViewModel = dynamoVM;
+            dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
+
+            Disposable.Create(ClearMenuItems);
         }
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem)
         {
-            var dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
-
             if (dynamoMenu == null)
                 return;
-
-            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
-            var dynamoItem = dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
+            
+            var dynamoItem = SearchForMenuItem(type);
             if (dynamoItem == null)
                 return;
 
             dynamoItem.Items.Add(menuItem);
+            addedMenuItems.Add(Tuple.Create<MenuBarType, MenuItem>(type, menuItem));
+        }
+
+        private void ClearMenuItems()
+        {
+            foreach (var item in addedMenuItems)
+            {
+                var dynamoItem = SearchForMenuItem(item.Item1);
+                if (dynamoItem == null)
+                    continue;
+
+                dynamoItem.Items.Remove(item.Item2);
+            }
+        }
+
+        private MenuItem SearchForMenuItem(MenuBarType type)
+        {
+            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
+            return dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
         }
     }
 

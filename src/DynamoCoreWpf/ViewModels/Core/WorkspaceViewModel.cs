@@ -279,12 +279,12 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
+        public WorkspaceViewModel(WorkspaceModel wsmodel, DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
             this.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
-            model = model;
+            model = wsmodel;
             stateMachine = new StateMachine(this);
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
