@@ -4,6 +4,7 @@ using Dynamo.Publish.Models;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Authentication;
+using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -59,7 +60,16 @@ namespace Dynamo.Publish.ViewModels
         /// </summary>
         public Views.PublishView PublishView { get; set; }
 
-        public IEnumerable<IWorkspaceModel> WorkSpaces { get; set; }
+        public IEnumerable<IWorkspaceViewModel> Workspaces { get; set; }
+
+        private IEnumerable<IWorkspaceModel> WorkspaceModels
+        { 
+            get 
+            {
+                foreach (var ws in Workspaces)
+                    yield return ws.Model;
+            } 
+        }
 
         #endregion
 
@@ -94,10 +104,12 @@ namespace Dynamo.Publish.ViewModels
             if (!model.IsLoggedIn)
                 return;
 
-            model.SendWorkspaces(WorkSpaces);
+            model.SendWorkspaces(WorkspaceModels);
         }
 
         #endregion
+
+
 
     }
 }

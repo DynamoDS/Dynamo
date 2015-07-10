@@ -9,6 +9,7 @@ using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;
+using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -18,25 +19,15 @@ namespace Dynamo.Wpf.Extensions
     public class ViewLoadedParams
     {
         // TBD MAGN-7366
-        //
-        // Implementation notes:
-        // 
-        // This should be designed primarily to support the separation of the Package Manager from Core
-        // and minimize exposing unnecessary innards.
-        //
-        // It is expected that this class will be extended in the future, so it should stay as minimal as possible.
-        //
-        // Here's a start on the implementation
-        //
 
-        private DynamoView dynamoView;
-        private DynamoViewModel dynamoViewModel;
+        private readonly DynamoView dynamoView;
+        private readonly DynamoViewModel dynamoViewModel;
 
-        public IEnumerable<IWorkspaceModel> WorkSpaces
+        public IEnumerable<IWorkspaceViewModel> WorkspaceViewModels
         {
             get
             {
-                return dynamoViewModel.Model.Workspaces;
+                return dynamoViewModel.Workspaces;
             }
         }
 

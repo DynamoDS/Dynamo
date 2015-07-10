@@ -35,7 +35,7 @@ namespace Dynamo.Publish
 
         public void Loaded(ViewLoadedParams p)
         {
-            publishVM.WorkSpaces = p.WorkSpaces;
+            publishVM.Workspaces = p.WorkspaceViewModels;
 
             p.AddMenuItem(MenuBarType.File, GenerateMenuItem());
         }

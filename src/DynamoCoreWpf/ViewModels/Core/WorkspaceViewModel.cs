@@ -13,7 +13,9 @@ using Dynamo.Utilities;
 
 using System.Windows.Input;
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.Interfaces;
 
 using Function = Dynamo.Nodes.Function;
 
@@ -28,12 +30,12 @@ namespace Dynamo.ViewModels
 
     public enum ShowHideFlags { Hide, Show };
 
-    public partial class WorkspaceViewModel : ViewModelBase
+    public partial class WorkspaceViewModel : ViewModelBase, IWorkspaceViewModel
     {
         #region Properties and Fields
 
         public DynamoViewModel DynamoViewModel { get; private set; }
-        public readonly WorkspaceModel Model;
+        protected readonly WorkspaceModel model;
 
         private bool _canFindNodesFromElements = false;
 
@@ -48,6 +50,14 @@ namespace Dynamo.ViewModels
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
+
+        public WorkspaceModel Model
+        {
+            get
+            {
+                return model;
+            }
+        }
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
@@ -116,7 +126,7 @@ namespace Dynamo.ViewModels
         {
             // extend this for all workspaces
             if (WorkspacePropertyEditRequested != null)
-                WorkspacePropertyEditRequested(Model);
+                WorkspacePropertyEditRequested(model);
         }
 
         internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
@@ -169,36 +179,36 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (Model == DynamoViewModel.HomeSpace)
+                if (model == DynamoViewModel.HomeSpace)
                     return "Home";
-                return Model.Name;
+                return model.Name;
             }
         }
 
         public string FileName
         {
-            get { return Model.FileName; }
+            get { return model.FileName; }
         }
 
         public bool CanEditName
         {
-            get { return Model != DynamoViewModel.HomeSpace; }
+            get { return model != DynamoViewModel.HomeSpace; }
         }
 
         public bool IsCurrentSpace
         {
-            get { return Model == DynamoViewModel.CurrentSpace; }
+            get { return model == DynamoViewModel.CurrentSpace; }
         }
 
         public bool IsHomeSpace
         {
-            get { return Model == DynamoViewModel.HomeSpace; }
+            get { return model == DynamoViewModel.HomeSpace; }
         }
 
         public bool HasUnsavedChanges
         {
-            get { return Model.HasUnsavedChanges; }
-            set { Model.HasUnsavedChanges = value; }
+            get { return model.HasUnsavedChanges; }
+            set { model.HasUnsavedChanges = value; }
         }
 
         public ObservableCollection<Watch3DFullscreenViewModel> Watch3DViewModels
@@ -213,7 +223,7 @@ namespace Dynamo.ViewModels
 
         public double Zoom
         {
-            get { return Model.Zoom; }
+            get { return model.Zoom; }
         }
 
         public bool CanZoomIn
@@ -274,7 +284,7 @@ namespace Dynamo.ViewModels
             this.DynamoViewModel = dynamoViewModel;
             this.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
-            Model = model;
+            model = model;
             stateMachine = new StateMachine(this);
 
             var nodesColl = new CollectionContainer { Collection = Nodes };
@@ -299,15 +309,15 @@ namespace Dynamo.ViewModels
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
 
-            Model.NodeAdded += Model_NodeAdded;
-            Model.NodeRemoved += Model_NodeRemoved;
-            Model.NodesCleared += Model_NodesCleared;
+            model.NodeAdded += Model_NodeAdded;
+            model.NodeRemoved += Model_NodeRemoved;
+            model.NodesCleared += Model_NodesCleared;
 
-            Model.Notes.CollectionChanged += Notes_CollectionChanged;
-            Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
-            Model.ConnectorAdded += Connectors_ConnectorAdded;
-            Model.ConnectorDeleted += Connectors_ConnectorDeleted;
-            Model.PropertyChanged += ModelPropertyChanged;
+            model.Notes.CollectionChanged += Notes_CollectionChanged;
+            model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
+            model.ConnectorAdded += Connectors_ConnectorAdded;
+            model.ConnectorDeleted += Connectors_ConnectorDeleted;
+            model.PropertyChanged += ModelPropertyChanged;
 
             DynamoSelection.Instance.Selection.CollectionChanged += 
                 (sender, e) => RefreshViewOnSelectionChange();
@@ -315,10 +325,10 @@ namespace Dynamo.ViewModels
             // sync collections
 
             
-            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
-            Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
-            foreach (var c in Model.Connectors)
+            foreach (NodeModel node in model.Nodes) Model_NodeAdded(node);
+            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, model.Notes));
+            Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, model.Annotations));
+            foreach (var c in model.Connectors)
                 Connectors_ConnectorAdded(c);
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
@@ -456,7 +466,7 @@ namespace Dynamo.ViewModels
 
         internal void CheckAndSetPeriodicRunCapability()
         {
-            var periodUpdateAvailable = Model.Nodes.Any(n => n.CanUpdatePeriodically);
+            var periodUpdateAvailable = model.Nodes.Any(n => n.CanUpdatePeriodically);
             RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodic, periodUpdateAvailable);
         }
 
@@ -512,7 +522,7 @@ namespace Dynamo.ViewModels
                 case "Y":
                     break;
                 case "Zoom":
-                    this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
+                    this.model.OnZoomChanged(this, new ZoomEventArgs(model.Zoom));
                     RaisePropertyChanged("Zoom");
                     break;
                 case "IsCurrentSpace":
@@ -570,7 +580,7 @@ namespace Dynamo.ViewModels
         {
             bool fullyEnclosed = !isCrossSelect;
 
-            foreach (NodeModel n in Model.Nodes)
+            foreach (NodeModel n in model.Nodes)
             {
                 double x0 = n.X;
                 double y0 = n.Y;
@@ -587,7 +597,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            foreach (var n in Model.Notes)
+            foreach (var n in model.Notes)
             {
                 double x0 = n.X;
                 double y0 = n.Y;
@@ -604,7 +614,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            foreach (var n in Model.Annotations)
+            foreach (var n in model.Annotations)
             {
                 double x0 = n.X;
                 double y0 = n.Y;
@@ -712,7 +722,7 @@ namespace Dynamo.ViewModels
             // record their current states before anything gets changed.
             SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
-            WorkspaceModel.RecordModelsForModification(models.ToList(), Model.UndoRecorder);
+            WorkspaceModel.RecordModelsForModification(models.ToList(), model.UndoRecorder);
 
             var toAlign = DynamoSelection.Instance.Selection.OfType<ILocatable>().ToList();
 
@@ -887,8 +897,8 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
-                    DynamoViewModel.Model.RemoveWorkspace(Model);
+                if (!model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(model))
+                    DynamoViewModel.Model.RemoveWorkspace(model);
             }
         }
 
@@ -909,10 +919,10 @@ namespace Dynamo.ViewModels
 
             //set the current offset without triggering
             //any property change notices.
-            if (Model.X != p.X && Model.Y != p.Y)
+            if (model.X != p.X && model.Y != p.Y)
             {
-                Model.X = p.X;
-                Model.Y = p.Y;
+                model.X = p.X;
+                model.Y = p.Y;
             }
         }
 
@@ -946,13 +956,13 @@ namespace Dynamo.ViewModels
 
         private bool CanZoom(double zoom)
         {
-            return (!(zoom < 0) || !(Model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)) && (!(zoom > 0) 
-                || !(Model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM));
+            return (!(zoom < 0) || !(model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)) && (!(zoom > 0) 
+                || !(model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM));
         }
 
         private void SetZoom(object zoom)
         {
-            Model.Zoom = Convert.ToDouble(zoom);
+            model.Zoom = Convert.ToDouble(zoom);
         }
 
         private static bool CanSetZoom(object zoom)
@@ -1069,25 +1079,25 @@ namespace Dynamo.ViewModels
 
         private void DoGraphAutoLayout(object o)
         {
-            if (Model.Nodes.Count() == 0)
+            if (model.Nodes.Count() == 0)
                 return;
 
             var graph = new GraphLayout.Graph();
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             
-            foreach (NodeModel x in Model.Nodes)
+            foreach (NodeModel x in model.Nodes)
             {
                 graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
                 models.Add(x, UndoRedoRecorder.UserAction.Modification);
             }
 
-            foreach (ConnectorModel x in Model.Connectors)
+            foreach (ConnectorModel x in model.Connectors)
             {
                 graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
                 models.Add(x, UndoRedoRecorder.UserAction.Modification);
             }
 
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
+            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(model.Nodes), model.UndoRecorder);
             
             // Sugiyama algorithm steps
             graph.RemoveCycles();
@@ -1096,7 +1106,7 @@ namespace Dynamo.ViewModels
             
             // Assign coordinates to node models
             graph.NormalizeGraphPosition();
-            foreach (var x in Model.Nodes)
+            foreach (var x in model.Nodes)
             {
                 var id = x.GUID;
                 x.X = graph.FindNode(id).X;
@@ -1129,7 +1139,7 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.Model.AddCustomNodeWorkspace(
                 DynamoViewModel.Model.CustomNodeManager.Collapse(
-                    selectedNodes, Model, DynamoModel.IsTestMode, args));
+                    selectedNodes, model, DynamoModel.IsTestMode, args));
         }
 
         internal void Loaded()
@@ -1137,8 +1147,8 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsHomeSpace");
 
             // New workspace or swapped workspace to follow it offset and zoom
-            this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(Model.X, Model.Y)));
-            this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
+            this.model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(model.X, model.Y)));
+            this.model.OnZoomChanged(this, new ZoomEventArgs(model.Zoom));
         }
 
         private void RefreshViewOnSelectionChange()
