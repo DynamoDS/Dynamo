@@ -550,12 +550,14 @@
                         </ControlTemplate>
                     </TreeView.Template>
                 </TreeView>
-                <Button Grid.Row="2"
+                <Button 
+                    Content="{x:Static p:Resources.AddButton}"
+                    Grid.Row="2"
                         Height="23"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         PreviewMouseUp="OnAddButtonPreviewMouseDown"
-                        Content="Add">
+                        >
                     <Button.Template>
                         <ControlTemplate>
                             <Border x:Name="container"

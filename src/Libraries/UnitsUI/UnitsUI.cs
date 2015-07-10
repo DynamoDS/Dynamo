@@ -45,7 +45,7 @@ namespace UnitsUI
             //main context window
             var editWindowItem = new MenuItem()
             {
-                Header = "Edit...",
+                Header = Properties.Resources.EditHeader,
                 IsCheckable = false,
                 Tag = nodeView.ViewModel.DynamoViewModel
             };

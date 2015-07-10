@@ -8,10 +8,50 @@ namespace Dynamo
 {
     public class UnitTestBase
     {
-        protected string ExecutingDirectory { get; set; }
+        private static string executingDirectory;
+        protected static string ExecutingDirectory 
+        { 
+            get 
+            {
+                if (executingDirectory == null)
+                {
+                    executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                }
+                return executingDirectory;
+            }
+        }
+
+        private static string sampleDirectory;
+        public static string SampleDirectory 
+        { 
+            get
+            {
+                if (sampleDirectory == null)
+                {
+                    var directory = new FileInfo(ExecutingDirectory);
+                    string assemblyDir = directory.DirectoryName;
+                    string sampleLocation = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
+                    sampleDirectory = Path.GetFullPath(sampleLocation);
+                }
+                return sampleDirectory;
+            }
+        }
+
         protected string TempFolder { get; private set; }
-        public string SampleDirectory { get; private set; }
-        public string TestDirectory { get; private set; }
+
+        private static string testDirectory;
+        public static string TestDirectory 
+        { 
+            get
+            {
+                if (testDirectory == null)
+                {
+                    var directory = new DirectoryInfo(ExecutingDirectory);
+                    testDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+                }
+                return testDirectory;
+            }
+        }
 
         [SetUp]
         public virtual void Setup()
@@ -45,7 +85,6 @@ namespace Dynamo
 
         protected void SetupDirectories()
         {
-            ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string tempPath = Path.GetTempPath();
 
             TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
@@ -55,25 +94,6 @@ namespace Dynamo
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
-
-            SampleDirectory = GetSampleDirectory();
-
-            TestDirectory = GetTestDirectory();
-        }
-
-        private string GetSampleDirectory()
-        {
-            var directory = new FileInfo(ExecutingDirectory);
-            string assemblyDir = directory.DirectoryName;
-            string sampleLocation = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
-            string samplePath = Path.GetFullPath(sampleLocation);
-            return samplePath;
-        }
-
-        private string GetTestDirectory()
-        {
-            var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
     }
 }
