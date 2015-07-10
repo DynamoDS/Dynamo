@@ -53,7 +53,9 @@ namespace Dynamo.PackageManager
                 if (!Directory.Exists(DefaultPackagesDirectory))
                     Directory.CreateDirectory(DefaultPackagesDirectory);
             }
-            catch (DirectoryNotFoundException) { }
+            catch (IOException) { }
+            catch (ArgumentException) { }
+            catch (UnauthorizedAccessException) { }
         }
 
         private void OnPackageAdded(Package pkg)
