@@ -818,16 +818,25 @@ namespace Dynamo.Models
             {
                 throw new ArgumentException("duplicate id in collection");
             }
-
-            var newstate = new PresetModel(name, description, inputs, id);
-            presets.Add(newstate);
+            using (var undoGroup = this.undoRecorder.BeginActionGroup())
+            {
+                var newstate = new PresetModel(name, description, inputs, id);
+                UndoRecorder.RecordCreationForUndo(newstate);
+                presets.Add(newstate);
+            }
         }
 
         public void RemoveState(PresetModel state)
         {
-            if (Presets.Contains(state))
+            //start an undoBeginGroup
+            using (var undoGroup = this.undoRecorder.BeginActionGroup())
             {
-                presets.Remove(state);
+
+                if (Presets.Contains(state))
+                {
+                    UndoRecorder.RecordDeletionForUndo(state);
+                    presets.Remove(state);
+                }
             }
         }
 
@@ -868,11 +877,11 @@ namespace Dynamo.Models
         }
         internal void AddPreset(string name, string description, IEnumerable<Guid> IDSToSave)
         {
-            //lookup the nodes by their ID, can also check that we find all of them....
-            var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID));
- 	        //access the presetsCollection and add a new state based on the current selection
-            this.AddPresetCore(name, description, nodesFromIDs);
-            HasUnsavedChanges = true;
+                //lookup the nodes by their ID, can also check that we find all of them....
+                var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID));
+                //access the presetsCollection and add a new state based on the current selection
+                this.AddPresetCore(name, description, nodesFromIDs);
+                HasUnsavedChanges = true;
         }
         
         #endregion
@@ -1363,6 +1372,13 @@ namespace Dynamo.Models
                         undoRecorder.RecordDeletionForUndo(model);
                         Annotations.Remove(model as AnnotationModel);
                     }
+
+                    else if (model is PresetModel)
+                    {
+                        undoRecorder.RecordDeletionForUndo(model);
+                        presets.Remove(model as PresetModel);
+                    }
+
                     else if (model is NodeModel)
                     {
                         // Just to make sure we don't end up deleting nodes from 
@@ -1447,6 +1463,10 @@ namespace Dynamo.Models
             else if (model is AnnotationModel)
             {
                 RemoveGroup(model);
+            }
+            else if (model is PresetModel)
+            {
+                RemoveState(model as PresetModel);
             }
             else if (model is ConnectorModel)
             {
@@ -1540,6 +1560,12 @@ namespace Dynamo.Models
                 annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
                 annotationModel.Deserialize(modelData, SaveContext.Undo);                
                 Annotations.Add(annotationModel);
+            }
+
+            else if (typeName.Contains("PresetModel"))
+            {
+              var preset = PresetModel.LoadFromXml(modelData,this.nodes,NodeFactory.AsLogger());
+              presets.Add(preset);
             }
             else // Other node types.
             {

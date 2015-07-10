@@ -14,7 +14,7 @@ namespace Dynamo.Models
     /// This class references a set of nodemodels, and a set of serialized versions of those nodemodels
     /// a client can use this class to store the state of a set of nodes from a graph
     /// </summary>
-    public class PresetModel
+    public class PresetModel:ModelBase
     {
         private Guid guid;
         private readonly List<NodeModel> nodes;
@@ -119,31 +119,9 @@ namespace Dynamo.Models
 
         #region serialization / deserialzation
 
-        //grabbed some methods needed from modelbase for serialization
-        protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
-        {
-            string typeName = GetType().ToString();
-            XmlElement element = xmlDocument.CreateElement(typeName);
-            return element;
-        }
+        
 
-        /// <summary>
-        /// we serialze the presets to xml like a model, but we deserialze them before the workspacemodel is constructed
-        /// during save of the graph, workspace model serializes its list of presetModels into a "Presets" xml element
-        /// when a new presetModel is created we'll serialize all the current nodes into a new xmlelement
-        /// but not actually write this xml to a file until the graph is saved
-        /// </summary>
-        /// <param name="xmlDocument"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
-        {
-            var element = CreateElement(xmlDocument, context);
-            SerializeCore(element, context);
-            return element;
-        }
-
-        protected virtual void SerializeCore(System.Xml.XmlElement element, SaveContext context)
+        protected override void SerializeCore(System.Xml.XmlElement element, SaveContext context)
         {
             element.SetAttribute(NameAttributeName, this.Name);
             element.SetAttribute(DescriptionAttributeName, this.Description);
@@ -156,6 +134,16 @@ namespace Dynamo.Models
                 element.AppendChild(importNode);
             }
 
+        }
+
+        /// <summary>
+        /// this method will never be called for a presetModel but needs to exist for modelbase
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        /// <param name="context"></param>
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            throw new NotImplementedException();
         }
 
         public static PresetModel LoadFromXml(XmlElement element,IEnumerable<NodeModel> nodesInNodeGraph,ILogger logger)
