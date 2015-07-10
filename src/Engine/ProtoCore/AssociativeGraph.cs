@@ -155,7 +155,6 @@ namespace ProtoCore.AssociativeEngine
                         }
 
                         currentNode.PushChildNode(gnode);
-                        gnode.PushParentNode(currentNode);
                     }
                 }
             }
@@ -952,6 +951,7 @@ namespace ProtoCore.AssociativeGraph
         ///     b = a <- the parent of this graphnode is 'a = 1'
         /// </summary>
         public List<GraphNode> ParentNodes { get; set; }
+
         public bool allowDependents { get; set; }
         public bool isIndexingLHS { get; set; }
         public bool isLHSNode { get; set; }
@@ -1054,20 +1054,11 @@ namespace ProtoCore.AssociativeGraph
                     return;
                 }
             }
-            ChildrenNodes.Add(child);
-        }
 
-        public void PushParentNode(GraphNode parent)
-        {
-            // Do not add if it already contains this parent
-            foreach (GraphNode node in ParentNodes)
-            {
-                if (node.UID == parent.UID)
-                {
-                    return;
-                }
-            }
-            ParentNodes.Add(parent);
+            ChildrenNodes.Add(child);
+
+            // The this graphnode to be the parent of the child node
+            child.ParentNodes.Add(this);
         }
 
         public void PushDependent(GraphNode dependent)
