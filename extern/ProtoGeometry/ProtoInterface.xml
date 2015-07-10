@@ -135,7 +135,7 @@
             short name when convert the node to code.  
             </summary>
         </member>
-        <member name="T:Autodesk.DesignScript.Runtime.NodeIsObsoleteAttribute">
+        <member name="T:Autodesk.DesignScript.Runtime.IsObsoleteAttribute">
             <summary>
             This attribute indicates the 
             </summary>

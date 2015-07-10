@@ -2019,13 +2019,13 @@ namespace Dynamo.Models
     ///    The NodeDescriptionAttribute indicates this node is obsolete
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class CoreNodeIsObsoleteAttribute : NodeIsObsoleteAttribute 
+    public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
     {
-        public CoreNodeIsObsoleteAttribute(string message) : base(message)
+        public NodeObsoleteAttribute(string message) : base(message)
         {
         }
 
-        public CoreNodeIsObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
         {
             if (resourceType == null)
                 throw new ArgumentNullException("resourceType");
