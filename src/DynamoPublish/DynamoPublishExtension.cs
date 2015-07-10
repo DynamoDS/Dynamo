@@ -11,9 +11,8 @@ namespace Dynamo.Publish
     public class DynamoPublishExtension : IViewExtension, ILogSource
     {
 
-        private PublishView publishWindow;
-        private PublishViewModel publishVM;
-        private PublishModel publishM;
+        private PublishViewModel publishViewModel;
+        private PublishModel publishModel;
 
         #region IViewExtension implementation
 
@@ -29,20 +28,20 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams p)
         {
-            publishM = new PublishModel();
-            publishVM = new PublishViewModel(publishM);
+            publishModel = new PublishModel();
+            publishViewModel = new PublishViewModel(publishModel);
         }
 
         public void Loaded(ViewLoadedParams p)
         {
-            publishVM.Workspaces = p.WorkspaceViewModels;
+            publishViewModel.Workspaces = p.WorkspaceViewModels;
 
             p.AddMenuItem(MenuBarType.File, GenerateMenuItem());
         }
 
         public void Shutdown()
         {
-            publishWindow.Close();
+            
         }
 
         public void Dispose()
@@ -75,15 +74,7 @@ namespace Dynamo.Publish
 
             item.Click += (sender, args) =>
                 {
-                    if (publishWindow == null)
-                    {
-                        publishWindow = new PublishView(publishVM);
-                        publishWindow.Closed += (s, arg) =>
-                        {
-                            publishWindow = null;
-                        };
-                    }
-
+                    PublishView publishWindow = new PublishView(publishViewModel);
                     publishWindow.ShowDialog();
                 };
 

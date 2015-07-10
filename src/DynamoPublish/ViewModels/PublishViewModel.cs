@@ -49,16 +49,23 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
-        private PublishModel model;
-        public PublishModel Model
+        private readonly PublishModel model;
+        internal PublishModel Model
         {
             get { return model; }
         }
 
-        /// <summary>
-        /// Used as parent window for authentication window.
-        /// </summary>
-        public Views.PublishView PublishView { get; set; }
+        public LoginService LoginService
+        {
+            get
+            {
+                return model.LoginService;
+            }
+            set
+            {
+                model.LoginService = value;
+            }
+        }
 
         public IEnumerable<IWorkspaceViewModel> Workspaces { get; set; }
 
@@ -90,14 +97,20 @@ namespace Dynamo.Publish.ViewModels
 
         #endregion
 
-
         #region Helpers
+
+        public event Action RequestLogin;
+        private void OnRequestLogin()
+        {
+            if (RequestLogin != null)
+                RequestLogin();
+        }
 
         private void OnPublish(object obj)
         {
             if (!model.IsLoggedIn)
             {
-                model.LoginService = new LoginService(PublishView, new WindowsFormsSynchronizationContext());
+                OnRequestLogin();
                 model.Authenticate();
             }
 
