@@ -680,7 +680,7 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
-
+            HasUnsavedChanges = true;
         }
 
         /// <summary>
