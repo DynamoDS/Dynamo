@@ -3,7 +3,7 @@ using Dynamo.Wpf.Controls;
 
 namespace Dynamo.Wpf.NodeViewCustomizations
 {
-    public class DateTimeOffsetNodeViewCustomization : INodeViewCustomization<DSCoreNodesUI.DateTime>
+    public class DateTimeNodeViewCustomization : INodeViewCustomization<DSCoreNodesUI.DateTime>
     {
         public void CustomizeView(DSCoreNodesUI.DateTime model, NodeView nodeView)
         {
