@@ -12,6 +12,7 @@ using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
 using Dynamo.Library;
+using Dynamo.Properties;
 
 namespace Dynamo.Core
 {
@@ -315,7 +316,10 @@ namespace Dynamo.Core
         private IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir, bool isTestMode)
         {
             if (!Directory.Exists(dir))
+            {
+                Log(string.Format(Resources.InvalidCustomNodeFolderWarning, dir));
                 yield break;
+            }
 
             foreach (var file in Directory.EnumerateFiles(dir, "*.dyf"))
             {
