@@ -319,14 +319,22 @@ namespace Dynamo.Core
             // Copy each file into the new directory.
             foreach (FileInfo fi in source.GetFiles())
             {
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                var targetFilePath = Path.Combine(target.FullName, fi.Name);
+                if (File.Exists(targetFilePath) == false)
+                {
+                    fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                }
             }
 
             // Copy each subdirectory using recursion.
             foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
             {
-                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir);
+                var targetSubDirPath = Path.Combine(target.FullName, diSourceSubDir.Name);
+                if (Directory.Exists(targetSubDirPath) == false)
+                {
+                    DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
+                    CopyAll(diSourceSubDir, nextTargetSubDir);
+                }
             }
         }
 
