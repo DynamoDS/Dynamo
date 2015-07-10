@@ -26,7 +26,6 @@ namespace Dynamo.Search.SearchElements
             {
                 if (value == path) return;
                 path = value;
-                OnPropertyChanged("Path");
             }
         }         
 

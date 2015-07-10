@@ -7,7 +7,7 @@ namespace Dynamo.PackageManager.Tests
 {
     class PackageLoaderTests : DynamoModelTestBase
     {
-        public string PackagesDirectory { get { return Path.Combine(this.TestDirectory, "pkgs"); } }
+        public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
 
         [Test]
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()

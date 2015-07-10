@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Extensions;
 
 namespace DSCore
 {
@@ -217,7 +218,13 @@ namespace DSCore
     /// </summary>
     public enum DayOfWeek
     {
-        Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+        [EnumDescription("EnumDateOfWeekSunday", typeof(Properties.Resources))]Sunday,
+        [EnumDescription("EnumDateOfWeekMonday", typeof(Properties.Resources))]Monday,
+        [EnumDescription("EnumDateOfWeekTuesday", typeof(Properties.Resources))]Tuesday,
+        [EnumDescription("EnumDateOfWeekWednesday", typeof(Properties.Resources))]Wednesday,
+        [EnumDescription("EnumDateOfWeekThursday", typeof(Properties.Resources))]Thursday,
+        [EnumDescription("EnumDateOfWeekFriday", typeof(Properties.Resources))]Friday,
+        [EnumDescription("EnumDateOfWeekSaturday", typeof(Properties.Resources))]Saturday
     }
 
     /// <summary>
@@ -396,4 +403,5 @@ namespace DSCore
             return timeSpan.TotalMilliseconds;
         }
     }
+
 }

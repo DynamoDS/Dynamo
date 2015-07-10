@@ -27,6 +27,7 @@ namespace Dynamo.Search.SearchElements
                 displayName += "(" + string.Join(", ", functionDescriptor.Parameters) + ")";
 
             Name = displayName;
+            UserFriendlyName = functionDescriptor.UserFriendlyName;
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
