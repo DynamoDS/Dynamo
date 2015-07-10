@@ -156,19 +156,6 @@ namespace Dynamo.Controls
         public PhongMaterial SelectedMaterial { get; set; }
 
         public Transform3D Model1Transform { get; private set; }
-        
-        public RenderTechnique RenderTechnique
-        {
-            get
-            {
-                return this.renderTechnique;
-            }
-            set
-            {
-                renderTechnique = value;
-                NotifyPropertyChanged("RenderTechnique");
-            }
-        }
 
         public PerspectiveCamera Camera
         {
@@ -273,9 +260,6 @@ namespace Dynamo.Controls
             var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
 
-            RenderTechnique = new RenderTechnique("RenderDynamo");
-            EffectsManager.Instance.InitializingEffects += Instance_InitializingEffects;
-
             WhiteMaterial = new PhongMaterial
             {
                 Name = "White",
@@ -306,6 +290,9 @@ namespace Dynamo.Controls
             SetCameraToDefaultOrientation();
 
             DrawGrid();
+
+            renderTechnique = new RenderTechnique("RenderDynamo");
+            EffectsManager.Instance.InitializingEffects += RegisterRenderDynamoEffect;
         }
 
         private void SetCameraToDefaultOrientation()
@@ -364,11 +351,11 @@ namespace Dynamo.Controls
             }
         }
 
-        void Instance_InitializingEffects(EffectInitializationEventArgs args)
+        void RegisterRenderDynamoEffect(EffectInitializationEventArgs args)
         {
-            EffectsManager.Instance.RegisterEffect(args.ShaderEffectBytecode, new[] { RenderTechnique });
+            EffectsManager.Instance.RegisterEffect(args.ShaderEffectBytecode, new[] { renderTechnique });
 
-            var dynamoInputLayout = new InputLayout(args.Device, EffectsManager.Instance.GetEffect(RenderTechnique).GetTechniqueByName(RenderTechnique.Name).GetPassByIndex(0).Description.Signature, new[]
+            var dynamoInputLayout = new InputLayout(args.Device, EffectsManager.Instance.GetEffect(renderTechnique).GetTechniqueByName(renderTechnique.Name).GetPassByIndex(0).Description.Signature, new[]
             {
                 new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
                 new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
@@ -385,7 +372,7 @@ namespace Dynamo.Controls
             });
             dynamoInputLayout.DebugName = "Dynamo";
 
-            EffectsManager.Instance.RegisterLayout(new[] { RenderTechnique }, dynamoInputLayout);
+            EffectsManager.Instance.RegisterLayout(new[] { renderTechnique }, dynamoInputLayout);
         }
 
         private void ResetCamera()
@@ -1215,7 +1202,7 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    meshGeometry3D = new DynamoGeometryModel3D(RenderTechnique)
+                    meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
                     {
                         Transform = Model1Transform,
                         Material = WhiteMaterial,
