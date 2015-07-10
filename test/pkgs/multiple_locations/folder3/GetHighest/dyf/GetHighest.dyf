@@ -1,0 +1,20 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="Gets the highest value from a list" Category="CAAD_RWTH.Lists" Name="Get Highest" ID="525e7acd-e9a4-49ed-99d9-33700d5a8445">
+  <dynElements>
+    <Dynamo.Nodes.dynReverse type="Dynamo.Nodes.dynReverse" guid="c1ff76d0-f4f5-41ed-99d2-1659faa53e66" nickname="Reverse" x="320.912159268819" y="27" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynFirst type="Dynamo.Nodes.dynFirst" guid="6ca9e52d-963c-48d2-abf2-6f63b91c6d27" nickname="First of List" x="474.197873554533" y="27.571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynSort type="Dynamo.Nodes.dynSort" guid="e0750a36-665f-4fac-9a55-a0eec0c9a534" nickname="Sort" x="147" y="26.7953968253975" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="47b07e4b-505c-43cb-9dea-7981e0698867" nickname="Input" x="21" y="28" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="70740f4a-c6cf-4551-83e5-bab773d36ecc" nickname="Output" x="633.197873554533" y="28" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="highest" />
+    </Dynamo.Nodes.dynOutput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="c1ff76d0-f4f5-41ed-99d2-1659faa53e66" start_index="0" end="6ca9e52d-963c-48d2-abf2-6f63b91c6d27" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="6ca9e52d-963c-48d2-abf2-6f63b91c6d27" start_index="0" end="70740f4a-c6cf-4551-83e5-bab773d36ecc" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e0750a36-665f-4fac-9a55-a0eec0c9a534" start_index="0" end="c1ff76d0-f4f5-41ed-99d2-1659faa53e66" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="47b07e4b-505c-43cb-9dea-7981e0698867" start_index="0" end="e0750a36-665f-4fac-9a55-a0eec0c9a534" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
