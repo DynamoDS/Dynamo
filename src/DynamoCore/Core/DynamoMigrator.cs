@@ -80,8 +80,7 @@ namespace Dynamo.Core
             get
             {
                 // Only return the default package directory.
-                var packagesDirectories = pathManager.PackagesDirectories;
-                return packagesDirectories.ElementAt(0);
+                return pathManager.DefaultPackagesDirectory;
             }
         }
 
@@ -90,8 +89,7 @@ namespace Dynamo.Core
             get
             {
                 // Only return the default custom node directory.
-                var definitionDirectories = pathManager.DefinitionDirectories;
-                return definitionDirectories.ElementAt(0);
+                return pathManager.DefaultUserDefinitions;
             }
         }
 

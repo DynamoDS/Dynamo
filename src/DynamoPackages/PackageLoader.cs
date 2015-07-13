@@ -48,14 +48,10 @@ namespace Dynamo.PackageManager
                 throw new ArgumentNullException("packagesDirectories");
 
             this.packagesDirectories.AddRange(packagesDirectories);
-            try
-            {
-                if (!Directory.Exists(DefaultPackagesDirectory))
-                    Directory.CreateDirectory(DefaultPackagesDirectory);
-            }
-            catch (IOException) { }
-            catch (ArgumentException) { }
-            catch (UnauthorizedAccessException) { }
+            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
+
+            if (error != null)
+                Log(error);
         }
 
         private void OnPackageAdded(Package pkg)

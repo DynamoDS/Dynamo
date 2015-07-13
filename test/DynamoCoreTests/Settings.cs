@@ -18,22 +18,14 @@ namespace Dynamo.Tests
             var settings = PreferenceSettings.Load(filePath);
 
             Assert.NotNull(settings);
-            Assert.AreEqual(4, settings.PackageFolders.Count);
-            Assert.AreEqual(3, settings.CustomNodeFolders.Count);
+            Assert.AreEqual(4, settings.CustomPackageFolders.Count);
 
             var expectedPackageFolders = new List<string> { @"C:\folder_name_with_invalid_:*?|_characters\foobar",
-                                                               @"C:\this_folder_doesn't_exist",
-                                                               @"X:\this_drive_doesn't_exist",
-                                                               @"\\unreachable_machine\share_packages" };
+                                                            @"C:\this_folder_doesn't_exist",
+                                                            @"X:\this_drive_doesn't_exist",
+                                                            @"\\unreachable_machine\share_packages" };
 
-            IEnumerable<bool> comparisonResult = settings.PackageFolders.Zip(expectedPackageFolders, string.Equals);
-            Assert.IsFalse(comparisonResult.Any(isEqual => !isEqual));
-
-            var expectedCustomNodeFolders = new List<string> { @"\\test_machine\non-existent_folder",
-                                                                  @"D:\custom_nodes",
-                                                                  @"E:\this_folder_doesn't_exist" };
-
-            comparisonResult = settings.CustomNodeFolders.Zip(expectedCustomNodeFolders, string.Equals);
+            IEnumerable<bool> comparisonResult = settings.CustomPackageFolders.Zip(expectedPackageFolders, string.Equals);
             Assert.IsFalse(comparisonResult.Any(isEqual => !isEqual));
         }
 
