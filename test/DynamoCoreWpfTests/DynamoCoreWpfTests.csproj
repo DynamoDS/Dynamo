@@ -86,6 +86,7 @@
     </Compile>
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="AnnotationViewTests.cs" />
+    <Compile Include="CameraTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="ColorRangeTests.cs" />
     <Compile Include="ConverterTests.cs" />

@@ -492,7 +492,7 @@ namespace ProtoCore.Lang.Replication
                             var array = runtimeCore.Heap.ToHeapObject<DSArray>(basicList[index]);
 
                             //The elements of the array are still type structures
-                            if (array.VisibleSize == 0)
+                            if (array.Count == 0)
                                 reducedSV = StackValue.Null;
                             else
                             {
@@ -551,7 +551,7 @@ namespace ProtoCore.Lang.Replication
                         //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
 
                         //The elements of the array are still type structures
-                        if (array.VisibleSize == 0)
+                        if (array.Count == 0)
                             reducedSV = StackValue.Null;
                         else
                         {
@@ -629,7 +629,7 @@ namespace ProtoCore.Lang.Replication
 
                             //It is a collection, so cast it to an array and pull the type of the first element
                             //The elements of the array are still type structures
-                            if (array.VisibleSize == 0)
+                            if (array.Count == 0)
                                 reducedSV = StackValue.Null;
                             else
                                 reducedSV = array.GetValueFromIndex(0, runtimeCore);
@@ -658,7 +658,7 @@ namespace ProtoCore.Lang.Replication
 
                         //The elements of the array are still type structures
                         //reducedType = arr.members[0].Type;
-                        if (array.VisibleSize == 0)
+                        if (array.Count == 0)
                             reducedSV = StackValue.Null;
                         else
                             reducedSV = array.GetValueFromIndex(0, runtimeCore);
@@ -919,7 +919,7 @@ namespace ProtoCore.Lang.Replication
 
             //De-ref the sv
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
-            foreach (var subSv in array.VisibleItems)
+            foreach (var subSv in array.Values)
             {
                 maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, runtimeCore, depthCount + 1));
             }

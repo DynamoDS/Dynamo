@@ -80,6 +80,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Event that is fired during the opening of the workspace.
+        /// 
+        /// Use the XmlDocument object provided to conduct additional
+        /// workspace opening operations.
+        /// </summary>
+        public event Action<XmlDocument> WorkspaceOpening;
+        internal void OnWorkspaceOpening(XmlDocument obj)
+        {
+            var handler = WorkspaceOpening;
+            if (handler != null) handler(obj);
+        }
+
+        /// <summary>
         /// This event is raised right before the shutdown of DynamoModel started.
         /// When this event is raised, the shutdown is guaranteed to take place
         /// (i.e. user has had a chance to save the work and decided to proceed 
@@ -1118,6 +1131,8 @@ namespace Dynamo.Models
                         }
 
                         AddWorkspace(ws);
+
+                        OnWorkspaceOpening(xmlDoc);
 
                         // TODO: #4258
                         // Remove this ResetEngine call when multiple home workspaces is supported.
