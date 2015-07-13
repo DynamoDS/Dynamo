@@ -38,6 +38,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
+using Dynamo.Wpf.Views.PackageManager;
 
 namespace Dynamo.Controls
 {
@@ -580,7 +581,12 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
         {
+            var view = new PackagePathView()
+            {
+                Owner = this
+            };
 
+            view.ShowDialog();
         }
 
         private InstalledPackagesView _installedPkgsView;
