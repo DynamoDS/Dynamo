@@ -245,7 +245,7 @@ namespace Dynamo.Models
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
-        ///     A set of input parameter states, this can be used to set the graph to a serialized state.
+        ///     A set of input parameter states, this can be used to set the graph to a serialized state.       
         /// </summary>
         public IEnumerable<PresetModel> Presets { get { return presets;} }
 
@@ -602,6 +602,7 @@ namespace Dynamo.Models
             ClearNodes();
             Notes.Clear();
             Annotations.Clear();
+            presets.Clear();
 
             ClearUndoRecorder();
             ResetWorkspace();
@@ -881,7 +882,7 @@ namespace Dynamo.Models
             presets.Add(newstate);
         }
 
-        public void RemoveState(PresetModel state)
+        public void RemovePreset(PresetModel state)
         {
             if (Presets.Contains(state))
             {
