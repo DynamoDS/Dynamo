@@ -30,12 +30,12 @@ namespace Dynamo.ViewModels
 
     public enum ShowHideFlags { Hide, Show };
 
-    public partial class WorkspaceViewModel : ViewModelBase, IWorkspaceViewModel
+    public partial class WorkspaceViewModel : ViewModelBase
     {
         #region Properties and Fields
 
         public DynamoViewModel DynamoViewModel { get; private set; }
-        protected readonly WorkspaceModel model;
+        public readonly WorkspaceModel Model;
 
         private bool _canFindNodesFromElements = false;
 
@@ -50,14 +50,6 @@ namespace Dynamo.ViewModels
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
-
-        public WorkspaceModel Model
-        {
-            get
-            {
-                return model;
-            }
-        }
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
@@ -279,12 +271,12 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public WorkspaceViewModel(WorkspaceModel wsmodel, DynamoViewModel dynamoViewModel)
+        public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
             this.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
-            model = wsmodel;
+            Model = model;
             stateMachine = new StateMachine(this);
 
             var nodesColl = new CollectionContainer { Collection = Nodes };

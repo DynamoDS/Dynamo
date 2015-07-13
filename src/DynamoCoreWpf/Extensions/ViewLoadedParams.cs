@@ -22,11 +22,11 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
-        public IEnumerable<IWorkspaceViewModel> WorkspaceViewModels
+        public IEnumerable<IWorkspaceModel> WorkspaceViewModels
         {
             get
             {
-                return dynamoViewModel.Workspaces;
+                return null;//dynamoViewModel.Workspaces;
             }
         }
 
