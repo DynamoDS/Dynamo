@@ -20,7 +20,6 @@ namespace Dynamo.Publish.Models
         private readonly string serverUrl;
         private readonly string port;
         private readonly string page;
-        private readonly string provider;
 
         public bool IsLoggedIn
         {

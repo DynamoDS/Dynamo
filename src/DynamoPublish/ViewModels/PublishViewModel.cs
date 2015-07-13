@@ -78,20 +78,10 @@ namespace Dynamo.Publish.ViewModels
 
         #region Helpers
 
-        public event Action RequestLogin;
-        private void OnRequestLogin()
-        {
-            if (RequestLogin != null)
-                RequestLogin();
-        }
-
         private void OnPublish(object obj)
         {
-            if (!model.IsLoggedIn)
-            {
-                OnRequestLogin();
-                model.Authenticate();
-            }
+            if (!model.IsLoggedIn)            
+                model.Authenticate();            
 
             if (!model.IsLoggedIn)
                 return;
