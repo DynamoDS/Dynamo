@@ -1,0 +1,22 @@
+﻿<Window x:Class="Dynamo.Wpf.Views.PackageManager.PackagePathView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        mc:Ignorable="d"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        Title="{x:Static p:Resources.InstalledPackageViewTitle}"
+        Height="450"
+        Width="550"
+        MinWidth="550"
+        MaxWidth="550"
+        Background="#555"
+        d:DesignHeight="300"
+        d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}">
+    <Grid>
+
+    </Grid>
+</Window>
