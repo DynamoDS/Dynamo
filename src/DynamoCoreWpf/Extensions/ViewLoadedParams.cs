@@ -9,27 +9,21 @@ using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;
+using Dynamo.Extensions;
 
 namespace Dynamo.Wpf.Extensions
 {
     /// <summary>
     /// Application level parameters passed to an extension when the DynamoView is loaded
     /// </summary>
-    public class ViewLoadedParams
+    public class ViewLoadedParams : ReadyParams
     {
         private readonly DynamoView dynamoView;
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
-        public IEnumerable<IWorkspaceModel> WorkspaceModels
-        {
-            get
-            {
-                return dynamoViewModel.Model.Workspaces;
-            }
-        }
-
-        public ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM)
+        public ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
+            base(dynamoVM.Model)
         {
             dynamoView = dynamoV;
             dynamoViewModel = dynamoVM;

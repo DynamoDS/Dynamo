@@ -31,7 +31,7 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams p)
         {
-            publishModel = new PublishModel(p.DynamoAuthenticationManager);
+            publishModel = new PublishModel(p.AuthProvider);
             publishViewModel = new PublishViewModel(publishModel);
         }
 

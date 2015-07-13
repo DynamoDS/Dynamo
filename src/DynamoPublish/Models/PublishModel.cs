@@ -2,6 +2,7 @@
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Wpf.Authentication;
+using Greg;
 using Greg.AuthProviders;
 using Reach;
 using System;
@@ -15,7 +16,7 @@ namespace Dynamo.Publish.Models
 {
     public class PublishModel
     {
-        private readonly AuthenticationManager authenticationManager;
+        private readonly IAuthProvider authenticationProvider;
 
         private readonly string serverUrl;
         private readonly string port;
@@ -25,13 +26,13 @@ namespace Dynamo.Publish.Models
         {
             get
             {
-                return authenticationManager.LoginState == LoginState.LoggedIn;
+                return authenticationProvider.LoginState == LoginState.LoggedIn;
             }
         }
 
         #region Initialization
 
-        public PublishModel(AuthenticationManager dynamoAuthenticationManager)
+        public PublishModel(IAuthProvider dynamoAuthenticationProvider)
         {
             // Open the configuration file using the dll location.
             Configuration config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
@@ -50,7 +51,7 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(page))
                 throw new ArgumentException();
 
-            authenticationManager = dynamoAuthenticationManager;
+            authenticationProvider = dynamoAuthenticationProvider;
         }
 
         #endregion
@@ -58,11 +59,10 @@ namespace Dynamo.Publish.Models
         internal void Authenticate()
         {
             // Manager must be initialized in constructor.
-            if (authenticationManager == null)
+            if (authenticationProvider == null)
                 throw new Exception(Resource.AuthenticationErrorMessage);
 
-            if (authenticationManager.HasAuthProvider)
-                authenticationManager.AuthProvider.Login();
+            authenticationProvider.Login();
         }
 
         /// <summary>
@@ -70,14 +70,14 @@ namespace Dynamo.Publish.Models
         /// </summary>
         internal void Send(IEnumerable<IWorkspaceModel> workspaces)
         {
-            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationManager.Username))
+            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
                 throw new Exception(Resource.ServerErrorMessage);
 
-            if (authenticationManager == null || !authenticationManager.HasAuthProvider)
+            if (authenticationProvider == null)
                 throw new Exception(Resource.AuthenticationErrorMessage);
 
             string fullServerAdress = serverUrl + ":" + port;
-            var reachClient = new WorkspaceStorageClient(authenticationManager.AuthProvider, fullServerAdress);
+            var reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
             var result = reachClient.Send(workspaces.OfType<HomeWorkspaceModel>().First(), workspaces.OfType<CustomNodeWorkspaceModel>());
         }
     }
