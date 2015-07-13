@@ -51,7 +51,7 @@ namespace DynamoCoreWpfTests
             //Delete the preset
             //delete state
             var state = ViewModel.Model.CurrentWorkspace.Presets.First();
-            ViewModel.Model.CurrentWorkspace.RemoveState(state);
+            ViewModel.Model.CurrentWorkspace.RemovePreset(state);
 
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.Count(), 0);
 
