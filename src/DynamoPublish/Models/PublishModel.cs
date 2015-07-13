@@ -1,6 +1,7 @@
 ﻿using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Wpf.Authentication;
 using Greg;
 using Greg.AuthProviders;
@@ -78,7 +79,17 @@ namespace Dynamo.Publish.Models
 
             string fullServerAdress = serverUrl + ":" + port;
             var reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
-            var result = reachClient.Send(workspaces.OfType<HomeWorkspaceModel>().First(), workspaces.OfType<CustomNodeWorkspaceModel>());
+
+            var homeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
+            var functionNodes = homeWorkspace.Nodes.OfType<Function>();
+
+            List<CustomNodeDefinition> dependencies = new List<CustomNodeDefinition>();
+            foreach (var node in functionNodes)
+            {
+                dependencies.AddRange(node.Definition.Dependencies);
+            }
+
+            var result = reachClient.Send(homeWorkspace, null/*dependencies*/);
         }
     }
 }
