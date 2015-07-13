@@ -137,7 +137,7 @@
         </member>
         <member name="T:Autodesk.DesignScript.Runtime.IsObsoleteAttribute">
             <summary>
-            This attribute indicates the 
+            This attribute indicates the method is obsolete.
             </summary>
         </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IDesignScriptEntity">
