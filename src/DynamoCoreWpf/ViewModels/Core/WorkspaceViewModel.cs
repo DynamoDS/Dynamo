@@ -13,9 +13,7 @@ using Dynamo.Utilities;
 
 using System.Windows.Input;
 using Dynamo.Core;
-using Dynamo.Interfaces;
 using Dynamo.Wpf.ViewModels;
-using Dynamo.Wpf.Interfaces;
 
 using Function = Dynamo.Nodes.Function;
 

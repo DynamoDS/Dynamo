@@ -13,5 +13,11 @@ namespace Dynamo.Interfaces
 
         double CenterX { get; set; }
         double CenterY { get; set; }
+
+        event Action<NodeModel> NodeAdded;
+        event Action<NodeModel> NodeRemoved;
+        event Action NodesCleared;
+        event Action<ConnectorModel> ConnectorAdded;
+        event Action<ConnectorModel> ConnectorDeleted;
     }
 }
