@@ -1033,7 +1033,7 @@ namespace Dynamo.Controls
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
-            dynamoViewModel.Model.CurrentWorkspace.RemoveState(state);
+            dynamoViewModel.Model.CurrentWorkspace.RemovePreset(state);
             
         }
         

@@ -3498,6 +3498,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A preset by this name already exists, do you wish to overwrite?.
+        /// </summary>
+        public static string PresetOverwrite {
+            get {
+                return ResourceManager.GetString("PresetOverwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A description of the preset state..
         /// </summary>
         public static string PresetPromptDescriptionTooltip {
