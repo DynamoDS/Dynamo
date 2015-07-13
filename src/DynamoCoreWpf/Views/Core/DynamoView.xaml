@@ -232,7 +232,7 @@
                                                           TargetType="MenuItem">
                                     
                                     <Border Name="Border"
-                                            Height="25">
+                                            Height="25" Background="Transparent">
                                         <Grid MinWidth="200">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
