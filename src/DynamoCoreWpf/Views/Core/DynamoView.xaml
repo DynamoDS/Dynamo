@@ -232,7 +232,7 @@
                                                           TargetType="MenuItem">
                                     
                                     <Border Name="Border"
-                                            Height="25">
+                                            Height="25" Background="Transparent">
                                         <Grid MinWidth="200">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
@@ -412,14 +412,15 @@
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
-                                    MouseEnter="LoadPresetsMenus"
+                                      MouseEnter="LoadPresetsMenus"
                                       Name="RestorePresetMenu"
-                                      Focusable="False" ItemContainerStyle="{StaticResource SubMenuItemOverride}">                                
-                             </MenuItem>
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
-                                    MouseEnter="LoadPresetsMenus"
+                                      MouseEnter="LoadPresetsMenus"
                                       Name="DeletePresetMenu"
-                                      Focusable="False" ItemContainerStyle="{StaticResource SubMenuItemOverride}" />
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />                                                          
                         </MenuItem>
                         <Separator />
                         

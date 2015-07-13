@@ -1033,12 +1033,12 @@ namespace Dynamo.Controls
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
-            dynamoViewModel.Model.CurrentWorkspace.RemoveState(state);
-            
+            dynamoViewModel.Model.CurrentWorkspace.RemovePreset(state); 
+            //This is to remove the PATH (>) indicator from the preset submenu header
+            //if there are no presets.
+            dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();                       
         }
         
-
-
 #if !__NO_SAMPLES_MENU
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
