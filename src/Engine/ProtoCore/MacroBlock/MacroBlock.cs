@@ -61,16 +61,11 @@ namespace ProtoCore
             NumTypes
         }
 
-        public List<ProtoCore.Runtime.MacroBlock> RuntimeMacroBlockList { get; set; }
-
-        /// <summary>
-        /// Increment this counter for every new macroblock
-        /// </summary>
-        public int GeneratedMacroblockCount {get; private set;}
+        public List<ProtoCore.Runtime.MacroBlock> RuntimeMacroBlockList { get; private set; }
 
         public MacroBlockGenerator()
         {
-            GeneratedMacroblockCount = 0;
+            RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
         }
 
         /// <summary>
@@ -133,12 +128,12 @@ namespace ProtoCore
                 // The children of 'a = 1' are:
                 //      b = a
                 //      c = a
-                if (graphNode.graphNodesToExecute.Count > 1)
+                if (graphNode.ChildrenNodes.Count > 1)
                 {
-                    foreach (AssociativeGraph.GraphNode child in graphNode.graphNodesToExecute)
+                    foreach (AssociativeGraph.GraphNode child in graphNode.ChildrenNodes)
                     {
-                        child.MacroblockID = macroblockID++;
                         child.Visited = true;
+                        CacheGraphnodeToMacroblock(child, macroblockID++, true);
                         BuildMacroblock(child, programSnapshot);
                     }
                 }
@@ -174,8 +169,8 @@ namespace ProtoCore
 
                 if (IsMacroblockEntryPoint(graphNode))
                 {
-                    graphNode.MacroblockID = macroblockID++;
                     graphNode.Visited = true;
+                    CacheGraphnodeToMacroblock(graphNode, macroblockID++, true);
                     BuildMacroblock(graphNode, programSnapshot);
                 }
             }
@@ -202,8 +197,8 @@ namespace ProtoCore
                 bool isInputNode = IsMacroblockEntryPoint(graphNode);
                 if (!isInputNode && graphNode.DependsOn(currentNode.updateNodeRefList[0], ref depNode))
                 {
-                    graphNode.MacroblockID = currentNode.MacroblockID;
                     graphNode.Visited = true;
+                    CacheGraphnodeToMacroblock(graphNode, currentNode.MacroblockID, false);
                     BuildMacroblock(graphNode, programSnapshot);
                 }
             }
@@ -241,6 +236,24 @@ namespace ProtoCore
             return generatedBlocks;
         }
 
+        private void CacheGraphnodeToMacroblock(AssociativeGraph.GraphNode graphNode, int macroblockID, bool isInputNode)
+        {
+            graphNode.MacroblockID = macroblockID;
+
+            if (RuntimeMacroBlockList.Count <= macroblockID)
+            {
+                // This is a new macroblock ID, allocate space for it
+                Runtime.MacroBlock newMacroblock = new Runtime.MacroBlock(macroblockID);
+                RuntimeMacroBlockList.Add(newMacroblock);
+            }
+
+            RuntimeMacroBlockList[macroblockID].GraphNodeList.Add(graphNode);
+            if (isInputNode)
+            {
+                RuntimeMacroBlockList[macroblockID].InputGraphNode = graphNode;
+            }
+        }
+
 
         /// <summary>
         /// Generates the macroblock groupings of the given list of graphnodes (the program snapshot)
@@ -249,33 +262,16 @@ namespace ProtoCore
         /// <returns></returns>
         public List<ProtoCore.Runtime.MacroBlock> GenerateMacroblocks(List<AssociativeGraph.GraphNode> programSnapshot)
         {
+            RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
+
             // Reset the graphnode states
             foreach (AssociativeGraph.GraphNode graphnode in programSnapshot)
             {
                 graphnode.Visited = false;
             }
 
-            GeneratedMacroblockCount = GenerateMacroblocksFromProgramSnapshot(programSnapshot);
+            GenerateMacroblocksFromProgramSnapshot(programSnapshot);
 
-            // Reinitialize the macroblock list
-            RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
-            for (int n = 0; n < GeneratedMacroblockCount; ++n)
-            {
-                RuntimeMacroBlockList.Add(new Runtime.MacroBlock(n));
-            }
-
-            // Cache the macroblocks
-            foreach (AssociativeGraph.GraphNode graphNode in programSnapshot)
-            {
-                if (graphNode.MacroblockID != Constants.kInvalidIndex)
-                {
-                    RuntimeMacroBlockList[graphNode.MacroblockID].GraphNodeList.Add(graphNode);
-                    if (IsMacroblockEntryPoint(graphNode))
-                    {
-                        RuntimeMacroBlockList[graphNode.MacroblockID].InputGraphNode = graphNode;
-                    }
-                }
-            }
             return RuntimeMacroBlockList;
         }
     }
