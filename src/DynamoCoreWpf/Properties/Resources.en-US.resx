@@ -1823,4 +1823,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="AddButton" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="DynamoViewPackageMenuManagePaths" xml:space="preserve">
+    <value>Manage Package Paths...</value>
+    <comment>A menu item under Packages top-level menu</comment>
+  </data>
 </root>

@@ -608,6 +608,10 @@
                                   Header="{x:Static p:Resources.DynamoViewPackageMenuPublishWorkspace}"
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishCurrent" />
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewPackageMenuManagePaths}"
+                                  Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="managePackagePaths" />
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
