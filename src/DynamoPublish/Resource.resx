@@ -126,4 +126,7 @@
   <data name="DynamoViewMenuItemPublishTitle" xml:space="preserve">
     <value>Publish and Share...</value>
   </data>
+  <data name="ServerErrorMessage" xml:space="preserve">
+    <value>Server not found.</value>
+  </data>
 </root>

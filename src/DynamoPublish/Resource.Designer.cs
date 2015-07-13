@@ -86,5 +86,14 @@ namespace Dynamo.Publish {
                 return ResourceManager.GetString("DynamoViewMenuItemPublishTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server not found..
+        /// </summary>
+        internal static string ServerErrorMessage {
+            get {
+                return ResourceManager.GetString("ServerErrorMessage", resourceCulture);
+            }
+        }
     }
 }

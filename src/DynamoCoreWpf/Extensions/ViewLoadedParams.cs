@@ -9,7 +9,6 @@ using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;
-using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.Extensions
 {

@@ -55,18 +55,6 @@ namespace Dynamo.Publish.ViewModels
             get { return model; }
         }
 
-        public LoginService LoginService
-        {
-            get
-            {
-                return model.LoginService;
-            }
-            set
-            {
-                model.LoginService = value;
-            }
-        }
-
         public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
 
         #endregion

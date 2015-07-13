@@ -33,21 +33,7 @@ namespace Dynamo.Publish.Views
         public PublishView(PublishViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = viewModel;
-
-            viewModel.RequestLogin += CreateLoginService;
-        }
-
-        private void CreateLoginService()
-        {
-            ViewModel.LoginService = new LoginService(this, new WindowsFormsSynchronizationContext());
-        }
-
-        private void OnPublishViewClosing(object sender, CancelEventArgs e)
-        {
-            ViewModel.RequestLogin -= CreateLoginService;
-        }
-
-
+            DataContext = viewModel;            
+        }        
     }
 }

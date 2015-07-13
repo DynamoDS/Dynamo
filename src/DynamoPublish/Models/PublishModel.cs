@@ -15,8 +15,7 @@ namespace Dynamo.Publish.Models
 {
     public class PublishModel
     {
-        private readonly AuthenticationManager manager;
-        public LoginService LoginService;
+        private readonly AuthenticationManager authenticationManager;
 
         private readonly string serverUrl;
         private readonly string port;
@@ -27,13 +26,13 @@ namespace Dynamo.Publish.Models
         {
             get
             {
-                return manager.LoginState == LoginState.LoggedIn;
+                return authenticationManager.LoginState == LoginState.LoggedIn;
             }
         }
 
         #region Initialization
 
-        public PublishModel()
+        public PublishModel(AuthenticationManager dynamoAuthenticationManager)
         {
             // Open the configuration file using the dll location.
             Configuration config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
@@ -52,26 +51,19 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(page))
                 throw new ArgumentException();
 
-            provider = appSettings.Settings["Provider"].Value;
-            if (String.IsNullOrWhiteSpace(provider))
-                throw new ArgumentException();
-
-            if (!String.IsNullOrWhiteSpace(provider))
-                manager = new AuthenticationManager(new OxygenProvider(provider));
+            authenticationManager = dynamoAuthenticationManager;
         }
 
         #endregion
 
         internal void Authenticate()
         {
-            if (manager == null)
+            // Manager must be initialized in constructor.
+            if (authenticationManager == null)
                 throw new Exception(Resource.AuthenticationErrorMessage);
 
-            if (manager.HasAuthProvider && LoginService != null)
-            {
-                manager.AuthProvider.RequestLogin += LoginService.ShowLogin;
-                manager.AuthProvider.Login();
-            }
+            if (authenticationManager.HasAuthProvider)
+                authenticationManager.AuthProvider.Login();
         }
 
         /// <summary>
@@ -79,11 +71,14 @@ namespace Dynamo.Publish.Models
         /// </summary>
         internal void Send(IEnumerable<IWorkspaceModel> workspaces)
         {
-            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(manager.Username))
-                return;
+            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationManager.Username))
+                throw new Exception(Resource.ServerErrorMessage);
+
+            if (authenticationManager == null || !authenticationManager.HasAuthProvider)
+                throw new Exception(Resource.AuthenticationErrorMessage);
 
             string fullServerAdress = serverUrl + ":" + port;
-            var reachClient = new WorkspaceStorageClient(manager.AuthProvider, fullServerAdress);
+            var reachClient = new WorkspaceStorageClient(authenticationManager.AuthProvider, fullServerAdress);
             var result = reachClient.Send(workspaces.OfType<HomeWorkspaceModel>().First(), workspaces.OfType<CustomNodeWorkspaceModel>());
         }
     }
