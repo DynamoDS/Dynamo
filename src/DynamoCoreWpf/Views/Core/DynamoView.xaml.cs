@@ -44,7 +44,7 @@ namespace Dynamo.Controls
     /// <summary>
     ///     Interaction logic for DynamoForm.xaml
     /// </summary>
-    public partial class DynamoView : Window
+    public partial class DynamoView : Window, IDisposable
     {
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -1476,6 +1476,21 @@ namespace Dynamo.Controls
         private void Log(string message)
         {
             Log(LogMessage.Info(message));
+        }
+
+        public void Dispose()
+        {
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Dispose();
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ using Dynamo.Publish.Views;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.Windows.Controls;
+using System.Linq;
 
 namespace Dynamo.Publish
 {
@@ -13,6 +14,8 @@ namespace Dynamo.Publish
 
         private PublishViewModel publishViewModel;
         private PublishModel publishModel;
+        private Menu dynamoMenu;
+        private MenuItem extensionMenuItem;
 
         #region IViewExtension implementation
 
@@ -36,17 +39,19 @@ namespace Dynamo.Publish
         {
             publishViewModel.Workspaces = p.WorkspaceViewModels;
 
-            p.AddMenuItem(MenuBarType.File, GenerateMenuItem());
+            dynamoMenu = p.dynamoMenu;
+            extensionMenuItem = GenerateMenuItem();
+            p.AddMenuItem(MenuBarType.File, extensionMenuItem);
         }
 
         public void Shutdown()
         {
-            
+
         }
 
         public void Dispose()
         {
-            // Some dispose stuff.
+            ClearMenuItem(extensionMenuItem);
         }
 
         #endregion
@@ -81,6 +86,46 @@ namespace Dynamo.Publish
             return item;
         }
 
+        /// <summary>
+        /// Delete menu item from Dynamo.
+        /// </summary>
+        public void ClearMenuItem(MenuItem menuItem)
+        {
+            if (dynamoMenu == null)
+                return;
+
+            var dynamoItem = SearchForMenuItemRecursively(dynamoMenu.Items, menuItem);
+            if (dynamoItem == null)
+                return;
+
+            dynamoItem.Items.Remove(menuItem);
+        }
+
+
+        /// <summary>
+        /// Searches for given menu item. 
+        /// First it tries to find it among first layer items (e.g. File, Edit, etc.)
+        /// If it doesn't find given menuitem, it tries to search one layer deeper.
+        /// </summary>
+        /// <param name="menu">Menu items among which we will search for needed item.</param>
+        /// <param name="searchItem">Menu item, that we want to find.</param>
+        /// <returns>Returns parent item for searched item.</returns>
+        private MenuItem SearchForMenuItemRecursively(ItemCollection menuItems, MenuItem searchItem)
+        {
+            var collectionOfItems = menuItems.OfType<MenuItem>();
+            foreach (var item in collectionOfItems)
+            {
+                if (item == searchItem)
+                    return item.Parent as MenuItem;
+            }
+
+            foreach (var item in collectionOfItems)
+            {
+                return SearchForMenuItemRecursively(item.Items, searchItem);
+            }
+
+            return null;
+        }
         #endregion
     }
 }
