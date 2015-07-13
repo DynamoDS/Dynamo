@@ -1823,8 +1823,40 @@ Do you want to install the latest Dynamo update?</value>
   <data name="AddButton" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="DynamoViewPackageMenuManagePaths" xml:space="preserve">
-    <value>Manage Package Paths...</value>
-    <comment>A menu item under Packages top-level menu</comment>
+  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
+    <value>Custom Node Definition and Package Paths…</value>
+    <comment>Setting menu | Custom node definition and package paths</comment>
+  </data>
+  <data name="PackagePathViewClose" xml:space="preserve">
+    <value>Close</value>
+    <comment>Close button on the package path dialog</comment>
+  </data>
+  <data name="PackagePathViewHeading" xml:space="preserve">
+    <value>Paths:</value>
+    <comment>Package path management dialog content</comment>
+  </data>
+  <data name="PackagePathViewSummary" xml:space="preserve">
+    <value>The top path is the default location for saving new packages and custom nodes. Nodes in additional locations will show up in the add-ons section of the library.</value>
+    <comment>Package path management dialog content</comment>
+  </data>
+  <data name="PackagePathViewTitle" xml:space="preserve">
+    <value>Custom node definition and package paths</value>
+    <comment>Package path management dialog title</comment>
+  </data>
+  <data name="PackagePathViewToolTipDown" xml:space="preserve">
+    <value>Move the selected path downward</value>
+    <comment>Tool-tip for down arrow</comment>
+  </data>
+  <data name="PackagePathViewToolTipMinus" xml:space="preserve">
+    <value>Remove the selected path from list</value>
+    <comment>Tool-tip for minus icon</comment>
+  </data>
+  <data name="PackagePathViewToolTipPlus" xml:space="preserve">
+    <value>Add a new path to the list</value>
+    <comment>Tool-tip for plus icon</comment>
+  </data>
+  <data name="PackagePathViewToolTipUp" xml:space="preserve">
+    <value>Move the selected path upward</value>
+    <comment>Tool-tip for up arrow</comment>
   </data>
 </root>

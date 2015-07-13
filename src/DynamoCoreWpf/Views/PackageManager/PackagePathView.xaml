@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-        Title="{x:Static p:Resources.InstalledPackageViewTitle}"
+        Title="{x:Static p:Resources.PackagePathViewTitle}"
         Height="450"
         Width="550"
         MinWidth="550"
@@ -16,7 +16,9 @@
         d:DesignHeight="300"
         d:DesignWidth="300"
         d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}">
-    <Grid>
+
+    <Grid Margin="5">
 
     </Grid>
+
 </Window>
