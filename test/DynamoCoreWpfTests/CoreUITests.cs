@@ -679,7 +679,7 @@ namespace DynamoCoreWpfTests
         {
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) { X = 16, Y = 32 };
             ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
-            NodeModel locatable = ViewModel.Model.CurrentWorkspace.Nodes[0];
+            NodeModel locatable = ViewModel.Model.CurrentWorkspace.Nodes.First();
 
             var startPoint = new Point2D(8, 64);
             var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);

@@ -72,7 +72,8 @@ namespace ProtoCore.Lang
             kContainsKey,
             kEvaluate,
             kTryGetValueFromNestedDictionaries,
-            kNodeAstFailed
+            kNodeAstFailed,
+            kGC,
         }
 
         private static string[] methodNames = new string[]
@@ -137,7 +138,8 @@ namespace ProtoCore.Lang
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
-            Constants.kNodeAstFailed    // kNodeAstFailed
+            Constants.kNodeAstFailed,   // kNodeAstFailed
+            "__GC",                     // kGC
         };
 
         public static string GetMethodName(MethodID id)
@@ -982,6 +984,14 @@ namespace ProtoCore.Lang
                     }.ToList(),
                     ID = MethodID.kNodeAstFailed,
                     MethodAttributes = new MethodAttributes(true),
+                 },
+
+                 new BuiltInMethod
+                 {
+                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                     Parameters = new List<KeyValuePair<string,Type>>(),
+                     ID = MethodID.kGC,
+                     MethodAttributes  = new MethodAttributes(true),
                  }
             };
         }
