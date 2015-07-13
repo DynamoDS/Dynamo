@@ -6,18 +6,108 @@
         xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
         mc:Ignorable="d"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:uictrl="clr-namespace:Dynamo.UI.Controls"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         Title="{x:Static p:Resources.PackagePathViewTitle}"
         Height="450"
         Width="550"
         MinWidth="550"
         MaxWidth="550"
-        Background="#555"
         d:DesignHeight="300"
         d:DesignWidth="300"
+        Style="{DynamicResource DynamoWindowStyle}"
         d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}">
 
-    <Grid Margin="5">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   TextWrapping="Wrap"
+                   Background="Transparent"
+                   Foreground="#888888"
+                   FontSize="14"
+                   FontFamily="{StaticResource OpenSansRegular}"
+                   Text="{x:Static p:Resources.PackagePathViewSummary}" />
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="1"
+                   Background="Transparent"
+                   Foreground="#888888"
+                   FontSize="14"
+                   FontFamily="{StaticResource OpenSansRegular}"
+                   Margin="0,10,0,5"
+                   Text="{x:Static p:Resources.PackagePathViewHeading}" />
+
+        <StackPanel Grid.Row="2"
+                    Grid.Column="0"
+                    Orientation="Vertical">
+
+            <uictrl:ImageButton Width="30"
+                                Height="24"
+                                Margin="0,0,10,5"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipUp}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-move-up.png">
+            </uictrl:ImageButton>
+            <uictrl:ImageButton Width="30"
+                                Height="24"
+                                Margin="0,5,10,5"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipDown}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-move-down.png">
+            </uictrl:ImageButton>
+            <uictrl:ImageButton Width="30"
+                                Height="24"
+                                Margin="0,5,10,5"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-plus.png">
+            </uictrl:ImageButton>
+            <uictrl:ImageButton Width="30"
+                                Height="24"
+                                Margin="0,5,10,5"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipMinus}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-minus.png">
+            </uictrl:ImageButton>
+
+        </StackPanel>
+
+        <ListBox Grid.Row="2"
+                 Grid.Column="1">
+            <ListBoxItem>Hey</ListBoxItem>
+            <ListBoxItem>Hey</ListBoxItem>
+            <ListBoxItem>Hey</ListBoxItem>
+        </ListBox>
+
+        <StackPanel Grid.Row="3"
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Right">
+            <Button Margin="0,0,10,0"
+                    Style="{StaticResource STextButton}"
+                    Content="{x:Static p:Resources.OKButton}">
+            </Button>
+            <Button Style="{StaticResource STextButton}"
+                    Content="{x:Static p:Resources.CancelButton}">
+            </Button>
+        </StackPanel>
 
     </Grid>
 
