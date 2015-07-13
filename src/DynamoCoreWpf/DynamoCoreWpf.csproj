@@ -136,6 +136,9 @@
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
+    <Compile Include="UI\Prompts\PresetOverwritePrompt.xaml.cs">
+      <DependentUpon>PresetOverwritePrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Prompts\PresetPrompt.xaml.cs">
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
@@ -919,6 +922,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Prompts\PresetOverwritePrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

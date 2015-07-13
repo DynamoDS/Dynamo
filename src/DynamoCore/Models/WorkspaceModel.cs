@@ -882,7 +882,7 @@ namespace Dynamo.Models
             presets.Add(newstate);
         }
 
-        public void RemoveState(PresetModel state)
+        public void RemovePreset(PresetModel state)
         {
             if (Presets.Contains(state))
             {
