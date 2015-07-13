@@ -182,9 +182,6 @@ namespace Dynamo.Core
             if (versions.Count() < 2)
                 return null; // No need for migration
 
-            DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                    SettingsMigrationEventArgs.EventStatusType.Begin));
-
             var previousVersion = versions[1];
             var currentVersion = versions[0];
             Debug.Assert(currentVersion.MajorPart == pathManager.MajorFileVersion
@@ -271,7 +268,18 @@ namespace Dynamo.Core
             var targetMigrator = CreateMigrator(pathResolver, toVersion);
             Debug.Assert(targetMigrator != null);
 
-            return targetMigrator.MigrateFrom(sourceMigrator); 
+            bool isPackagesDirectoryEmpty = !Directory.EnumerateFileSystemEntries(targetMigrator.PackagesDirectory).Any();
+            bool isDefinitionsDirectoryEmpty = !Directory.EnumerateFileSystemEntries(targetMigrator.DefinitionsDirectory).Any();
+
+            // Migrate only if both packages and definitions directories are empty
+            if (isPackagesDirectoryEmpty && isDefinitionsDirectoryEmpty)
+            {
+                DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
+
+                return targetMigrator.MigrateFrom(sourceMigrator);
+            }
+            return targetMigrator;
         }
 
         /// <summary>
@@ -319,22 +327,14 @@ namespace Dynamo.Core
             // Copy each file into the new directory.
             foreach (FileInfo fi in source.GetFiles())
             {
-                var targetFilePath = Path.Combine(target.FullName, fi.Name);
-                if (File.Exists(targetFilePath) == false)
-                {
-                    fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-                }
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
             }
 
             // Copy each subdirectory using recursion.
             foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
             {
-                var targetSubDirPath = Path.Combine(target.FullName, diSourceSubDir.Name);
-                if (Directory.Exists(targetSubDirPath) == false)
-                {
-                    DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-                    CopyAll(diSourceSubDir, nextTargetSubDir);
-                }
+                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }
 
