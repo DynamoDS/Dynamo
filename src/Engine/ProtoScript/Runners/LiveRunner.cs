@@ -1727,6 +1727,12 @@ namespace ProtoScript.Runners
             runnerCore.DSExecutable.UpdatedSymbols.Clear();
         }
 
+        private void ForceGC()
+        {
+            var gcRoots = runtimeCore.CurrentExecutive.CurrentDSASMExec.CollectGCRoots();
+            runtimeCore.RuntimeMemory.Heap.FullGC(gcRoots, runtimeCore.CurrentExecutive.CurrentDSASMExec);
+        }
+
         private void ApplyUpdate()
         {
             if (ProtoCore.AssociativeEngine.Utils.IsGlobalScopeDirty(runnerCore.DSExecutable))
@@ -1735,6 +1741,7 @@ namespace ProtoScript.Runners
                 runnerCore.Options.ApplyUpdate = true;
                 Execute(true);
             }
+            ForceGC();
         }
 
         /// <summary>
