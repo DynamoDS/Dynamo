@@ -22,6 +22,7 @@ using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
+using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
@@ -2014,6 +2015,32 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public class IsDesignScriptCompatibleAttribute : Attribute { }
 
+    /// <summary>
+    ///    The NodeDescriptionAttribute indicates this node is obsolete
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
+    {
+        public NodeObsoleteAttribute(string message) : base(message)
+        {
+        }
+
+        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                Message = (string)prop.GetValue(null, null);
+            }
+            else
+            {
+                Message = descriptionResourceID;
+            }
+        }
+    }
     #endregion
     
     public class UIDispatcherEventArgs : EventArgs
