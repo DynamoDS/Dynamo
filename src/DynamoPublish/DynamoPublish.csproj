@@ -32,19 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Greg">
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="GregStandaloneAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\GregStandaloneAuth.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore">
@@ -61,25 +50,14 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.configuration" />
-    <Reference Include="System.Core">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml">
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Data">
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml">
