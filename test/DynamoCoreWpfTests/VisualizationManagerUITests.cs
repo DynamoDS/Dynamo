@@ -137,6 +137,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")] // MAGN-7875
         public void VisualizationManager_NodeDisconnected_NodeRendersAreCleared()
         {
             //test to ensure that when nodes are disconnected 
