@@ -203,39 +203,27 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// Some of input nodes are not allowed in customizer. Such as directory path or file path.
-        /// If node is not allowed in customizer, this property should be overridden.
-        /// </summary>
-        public virtual bool IsAllowedInCustomizer
-        {
-            get
-            {
-                return IsInputNode;
-            }
-        }
-
         // By default node is visible in Customizer.
         // Even if it's not input node it will be visible.        
-        private bool isVisibleInCustomizer = true;
+        private bool isSelectedInput = true;
         /// <summary>
         /// All input nodes can be used in customizer or be part of preset.
         /// But, if user would like, he can hide input node from customizer.
         /// By default input node will be selected, so that it can be used in preset and be shown in customizer.
         /// </summary>
-        public bool IsSelectedAsInput
+        public bool IsSelectedInput
         {
             get
             {
                 if (!IsInputNode)
                     return false;
 
-                return isVisibleInCustomizer;
+                return isSelectedInput;
             }
 
             set
             {
-                isVisibleInCustomizer = value;
+                isSelectedInput = value;
             }
         }
 

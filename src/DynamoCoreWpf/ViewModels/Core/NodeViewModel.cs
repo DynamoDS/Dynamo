@@ -103,18 +103,18 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsSelectedAsInput
+        public bool IsSelectedInput
         {
             get
             {
-                return nodeLogic.IsSelectedAsInput;
+                return nodeLogic.IsSelectedInput;
             }
             set
             {
-                if (nodeLogic.IsSelectedAsInput != value)
+                if (nodeLogic.IsSelectedInput != value)
                 {
-                    nodeLogic.IsSelectedAsInput = value;
-                    RaisePropertyChanged("IsVisibleInCustomizer");
+                    nodeLogic.IsSelectedInput = value;
+                    RaisePropertyChanged("IsSelectedInput");
                 }
             }
         }

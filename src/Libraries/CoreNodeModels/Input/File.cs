@@ -38,14 +38,6 @@ namespace DSCore.File
         {
             ShouldDisplayPreviewCore = false;
         }
-
-        public override bool IsAllowedInCustomizer
-        {
-            get
-            {
-                return false;
-            }
-        }
     }
 
     [NodeName("Directory Path")]
@@ -58,14 +50,6 @@ namespace DSCore.File
         public Directory() : base("Directory")
         {
             ShouldDisplayPreviewCore = false;
-        }
-
-        public override bool IsAllowedInCustomizer
-        {
-            get
-            {
-                return false;
-            }
         }
     }
 
