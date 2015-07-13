@@ -159,6 +159,17 @@ namespace Dynamo.Nodes
                 string displayReturnType = IsConstructor()
                     ? Definition.UnqualifedClassName
                     : Definition.ReturnType;
+
+                var returns = Definition.Returns;
+
+                if (returns.Any())
+                {
+                    model.OutPortData.Add(new PortData(
+                        returns.ElementAt(0).Item1 ?? displayReturnType,
+                        returns.ElementAt(0).Item2 ?? displayReturnType));
+                    return;
+                }
+
                 model.OutPortData.Add(new PortData(displayReturnType, displayReturnType));
             }
         }

@@ -44,7 +44,12 @@ namespace Dynamo.DSEngine
 
         public static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
         {
-            return GetMemberDocumentNode(member, xml).Returns;
+            var node = GetMemberDocumentNode(member, xml);
+            if (node == null)
+            {
+                return Enumerable.Empty<Tuple<string,string>>();
+            }
+            return node.Returns;
         }
 
         #endregion
