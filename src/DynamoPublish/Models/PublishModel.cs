@@ -41,9 +41,20 @@ namespace Dynamo.Publish.Models
             AppSettingsSection appSettings = (AppSettingsSection)config.GetSection("appSettings");
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
+            if (String.IsNullOrWhiteSpace(serverUrl))
+                throw new ArgumentException();
+
             port = appSettings.Settings["Port"].Value;
+            if (String.IsNullOrWhiteSpace(port))
+                throw new ArgumentException();
+
             page = appSettings.Settings["Page"].Value;
+            if (String.IsNullOrWhiteSpace(page))
+                throw new ArgumentException();
+
             provider = appSettings.Settings["Provider"].Value;
+            if (String.IsNullOrWhiteSpace(provider))
+                throw new ArgumentException();
 
             if (!String.IsNullOrWhiteSpace(provider))
                 manager = new AuthenticationManager(new OxygenProvider(provider));
@@ -66,7 +77,7 @@ namespace Dynamo.Publish.Models
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
-        internal void SendWorkspaces(IEnumerable<IWorkspaceModel> workspaces)
+        internal void Send(IEnumerable<IWorkspaceModel> workspaces)
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(manager.Username))
                 return;

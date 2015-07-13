@@ -108,7 +108,7 @@ namespace Dynamo.Publish.ViewModels
             if (!model.IsLoggedIn)
                 return;
 
-            model.SendWorkspaces(Workspaces);
+            model.Send(Workspaces);
         }
 
         #endregion
