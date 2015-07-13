@@ -149,9 +149,23 @@ namespace Dynamo.Nodes
             // Returns a dictionary
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
+                var returns = Definition.Returns.ToList();
+                var numReturns = returns.Count();
+
+                var i = 0;
+
                 foreach (var key in Definition.ReturnKeys)
                 {
-                    model.OutPortData.Add(new PortData(key, "var"));
+                    var portName = i < numReturns
+                        ? returns.ElementAt(i).Item1 ?? key // return name is optional
+                        : key;
+
+                    var portDesc = i < numReturns
+                        ? returns.ElementAt(i).Item2
+                        : "var";
+                    
+                    model.OutPortData.Add(new PortData(portName, portDesc));
+                    i++;
                 }
             }
             else
