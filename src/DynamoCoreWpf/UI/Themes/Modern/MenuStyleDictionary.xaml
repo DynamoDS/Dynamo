@@ -246,7 +246,7 @@
             <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
                              TargetType="MenuItem">
                 <Border Name="Border"
-                        Height="25">
+                        Height="25" Background="Transparent">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="25" />
