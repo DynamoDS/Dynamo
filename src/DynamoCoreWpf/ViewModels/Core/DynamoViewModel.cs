@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 
 using System.IO;
@@ -460,6 +461,17 @@ namespace Dynamo.ViewModels
         }
 
         public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
+
+        private Boolean showBusyIndicator;
+        public Boolean ShowBusyIndicator
+        {
+            get { return showBusyIndicator; }
+            set
+            {
+                showBusyIndicator = value;
+                RaisePropertyChanged("ShowBusyIndicator");
+            }
+        }
 
         #endregion
 

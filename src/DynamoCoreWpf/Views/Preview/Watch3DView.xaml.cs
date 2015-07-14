@@ -707,6 +707,10 @@ namespace Dynamo.Controls
                 renderTimer.Stop();
                 Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
                 renderTimer.Reset();
+                if (viewModel.ShowBusyIndicator)
+                {
+                    viewModel.ShowBusyIndicator = false;
+                }
             }
 #endif
             if (directionalLight == null)

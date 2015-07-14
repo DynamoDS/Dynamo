@@ -216,6 +216,16 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public Boolean ShowBusyIndicator
+        {
+            get { return dynamoViewModel.ShowBusyIndicator; }
+            set
+            {
+                dynamoViewModel.ShowBusyIndicator = value;
+                RaisePropertyChanged("ShowBusyIndicator");
+            }
+        }
+
         #endregion
 
         #region constructors
@@ -228,6 +238,8 @@ namespace Dynamo.Wpf.ViewModels
             this.workspaceViewModel = workspaceViewModel;
             this.dynamoViewModel = dynamoViewModel;
 
+            this.dynamoViewModel.PropertyChanged +=dynamoViewModel_PropertyChanged;
+
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             RunExpressionCommand = new DelegateCommand(RunExpression, CanRunExpression);
 
@@ -237,6 +249,16 @@ namespace Dynamo.Wpf.ViewModels
                 RunTypeItems.Add(new RunTypeItem(val));
             }
             ToggleRunTypeEnabled(RunType.Periodic, false);
+        }
+
+        private void dynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                 case "ShowBusyIndicator":
+                    RaisePropertyChanged("ShowBusyIndicator");
+                    break;
+            }
         }
 
         #endregion
@@ -279,7 +301,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("SelectedRunTypeItem");
                     RaisePropertyChanged("RunButtonVisibility");
                     RunTypeChangedRun(null);
-                    break;
+                    break;                               
             }
         }
 
@@ -305,6 +327,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             bool displayErrors = Convert.ToBoolean(parameters);
             var command = new DynamoModel.RunCancelCommand(displayErrors, false);
+            this.ShowBusyIndicator = true;
             dynamoViewModel.ExecuteCommand(command);
         }
 
