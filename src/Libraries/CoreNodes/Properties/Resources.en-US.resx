@@ -150,4 +150,7 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>A Quadtree cannot be constructed from a null set of UVs.</value>
   </data>
+  <data name="ReadImageObsolete" xml:space="preserve">
+    <value>Use File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels nodes instead.</value>
+  </data>
 </root>
