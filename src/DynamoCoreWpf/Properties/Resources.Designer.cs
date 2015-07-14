@@ -97,6 +97,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string AddButton {
+            get {
+                return ResourceManager.GetString("AddButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Custom Node, Library, or XML file to Package....
         /// </summary>
         public static string AddCustomFileToPackageDialogTitle {
@@ -3476,6 +3485,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PortViewContextMenuUserDefaultValue {
             get {
                 return ResourceManager.GetString("PortViewContextMenuUserDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A preset by this name already exists, do you wish to overwrite?.
+        /// </summary>
+        public static string PresetOverwrite {
+            get {
+                return ResourceManager.GetString("PresetOverwrite", resourceCulture);
             }
         }
         

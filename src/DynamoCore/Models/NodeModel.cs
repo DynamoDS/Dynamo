@@ -22,6 +22,7 @@ using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
+using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
@@ -568,7 +569,7 @@ namespace Dynamo.Models
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
             return rtAttribs.Length > 0
                 ? ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription
-                : "No description provided";
+                : Properties.Resources.NoDescriptionAvailable;
         }
 
         /// <summary>
@@ -581,11 +582,13 @@ namespace Dynamo.Models
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            //if (OutPortData.Count == 1)
-            //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
-
-            string id = AstIdentifierBase + "_out" + outputIndex;
-            return AstFactory.BuildIdentifier(id);
+            if (OutPortData.Count <= 1)
+                return AstIdentifierForPreview;
+            else
+            {
+                string id = AstIdentifierBase + "_out" + outputIndex;
+                return AstFactory.BuildIdentifier(id);
+            }
         }
 
         #endregion
@@ -2014,6 +2017,32 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public class IsDesignScriptCompatibleAttribute : Attribute { }
 
+    /// <summary>
+    ///    The NodeDescriptionAttribute indicates this node is obsolete
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
+    {
+        public NodeObsoleteAttribute(string message) : base(message)
+        {
+        }
+
+        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                Message = (string)prop.GetValue(null, null);
+            }
+            else
+            {
+                Message = descriptionResourceID;
+            }
+        }
+    }
     #endregion
     
     public class UIDispatcherEventArgs : EventArgs

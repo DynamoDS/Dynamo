@@ -233,7 +233,7 @@ namespace ProtoCore.DSASM.Mirror
                 if (classnode.symbols != null && classnode.symbols.symbolList.Count > 0)
                 {
                     bool firstPropertyDisplayed = false;
-                    for (int n = 0; n < obj.VisibleSize; ++n)
+                    for (int n = 0; n < obj.Count; ++n)
                     {
                         SymbolNode symbol = classnode.symbols.symbolList[n];
                         string propName = symbol.name;
@@ -261,7 +261,7 @@ namespace ProtoCore.DSASM.Mirror
                 }
                 else
                 {
-                    var stringValues = obj.VisibleItems.Select(x => GetStringValue(x, heap, langblock, forPrint))
+                    var stringValues = obj.Values.Select(x => GetStringValue(x, heap, langblock, forPrint))
                                                       .ToList();
 
                     for (int n = 0; n < stringValues.Count(); ++n)
@@ -320,17 +320,17 @@ namespace ProtoCore.DSASM.Mirror
             if (formatParams.MaxArraySize > 0) // If the caller did specify a max value...
             {
                 // And our array is larger than that max value...
-                if (array.VisibleSize > formatParams.MaxArraySize)
+                if (array.Count > formatParams.MaxArraySize)
                     halfArraySize = (int)Math.Floor(formatParams.MaxArraySize * 0.5);
             }
 
-            int totalElementCount = array.VisibleSize; 
+            int totalElementCount = array.Count; 
             if (svArray.IsArray)
             {
                 totalElementCount = heap.ToHeapObject<DSArray>(svArray).Values.Count();
             }
 
-            for (int n = 0; n < array.VisibleSize; ++n)
+            for (int n = 0; n < array.Count; ++n)
             {
                 // As we try to output the next element in the array, there 
                 // should be a comma if there were previously output element.
@@ -977,7 +977,7 @@ namespace ProtoCore.DSASM.Mirror
             Dictionary<string, Obj> ret = new Dictionary<string, Obj>();
             int classIndex = obj.DsasmValue.metaData.type;
             IDictionary<int,SymbolNode> symbolList = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList;
-            StackValue[] svs = rmem.Heap.ToHeapObject<DSObject>(obj.DsasmValue).VisibleItems.ToArray();
+            StackValue[] svs = rmem.Heap.ToHeapObject<DSObject>(obj.DsasmValue).Values.ToArray();
             int index = 0;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
@@ -990,8 +990,8 @@ namespace ProtoCore.DSASM.Mirror
                 if (val.IsPointer)
                 {
                     var pointer = rmem.Heap.ToHeapObject<DSObject>(val);
-                    var firstItem = pointer.VisibleSize == 1 ? pointer.GetValueFromIndex(0, runtimeCore) : StackValue.Null;
-                    if (pointer.VisibleSize == 1 &&
+                    var firstItem = pointer.Count == 1 ? pointer.GetValueFromIndex(0, runtimeCore) : StackValue.Null;
+                    if (pointer.Count == 1 &&
                         !firstItem.IsPointer && 
                         !firstItem.IsArray)
                     {
@@ -1014,7 +1014,7 @@ namespace ProtoCore.DSASM.Mirror
             List<string> ret = new List<string>();
             int classIndex = obj.DsasmValue.metaData.type;
 
-            StackValue[] svs = MirrorTarget.rmem.Heap.ToHeapObject<DSObject>(obj.DsasmValue).VisibleItems.ToArray();
+            StackValue[] svs = MirrorTarget.rmem.Heap.ToHeapObject<DSObject>(obj.DsasmValue).Values.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 string propertyName = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix].name;
@@ -1030,7 +1030,7 @@ namespace ProtoCore.DSASM.Mirror
             if ( obj == null || !obj.DsasmValue.IsArray)
                 return null;
 
-            return MirrorTarget.rmem.Heap.ToHeapObject<DSArray>(obj.DsasmValue).VisibleItems.Select(x => Unpack(x)).ToList();
+            return MirrorTarget.rmem.Heap.ToHeapObject<DSArray>(obj.DsasmValue).Values.Select(x => Unpack(x)).ToList();
         }
 
         public StackValue GetGlobalValue(string name, int startBlock = 0)
@@ -1140,8 +1140,8 @@ namespace ProtoCore.DSASM.Mirror
 
                         var array = heap.ToHeapObject<DSArray>(val);
 
-                        StackValue[] nodes = array.VisibleItems.ToArray();
-                        ret.members = new Obj[array.VisibleSize];
+                        StackValue[] nodes = array.Values.ToArray();
+                        ret.members = new Obj[array.Count];
                         for (int i = 0; i < ret.members.Length; i++)
                         {
                             ret.members[i] = Unpack(nodes[i], heap, runtimeCore, type);
@@ -1264,7 +1264,7 @@ namespace ProtoCore.DSASM.Mirror
                         DsasmArray ret = new DsasmArray();
                         var array = rmem.Heap.ToHeapObject<DSArray>(val);
 
-                        StackValue[] nodes = array.VisibleItems.ToArray();
+                        StackValue[] nodes = array.Values.ToArray();
                         ret.members = new Obj[nodes.Length];
 
                         for (int i = 0; i < ret.members.Length; i++)
