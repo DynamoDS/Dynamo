@@ -82,3 +82,4 @@ src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 /src/DynamoCore/BuiltInAndOperators/BuiltInImages.resources
 /src/DynamoCore/BuiltInAndOperators/OperatorsImages.resources
 /src/Libraries/GeometryUI/*.resources
+GregStandaloneAuth.dll

@@ -337,8 +337,12 @@ namespace ProtoCore.DSASM
         {
             if (sv1.optype != sv2.optype)
                 return false;
+
             switch (sv1.optype)
             {
+                case AddressType.Invalid:
+                    return true;
+
                 case AddressType.Int:
                 case AddressType.Char:
                     return sv1.opdata == sv2.opdata;
@@ -407,14 +411,14 @@ namespace ProtoCore.DSASM
         private static bool ComparePointerFromHeap(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context)
         {
             var obj1 = rtCore1.Heap.ToHeapObject<DSObject>(sv1);
-            var obj2 = rtCore1.Heap.ToHeapObject<DSObject>(sv2);
+            var obj2 = rtCore2.Heap.ToHeapObject<DSObject>(sv2);
 
-            if (obj1.VisibleSize != obj2.VisibleSize)
+            if (obj1.Count != obj2.Count)
             {
                 return false;
             }
 
-            for (int i = 0; i < obj1.VisibleSize; i++)
+            for (int i = 0; i < obj1.Count; i++)
             {
                 if (!CompareStackValues(obj1.GetValueFromIndex(i, rtCore1), 
                                         obj2.GetValueFromIndex(i, rtCore2), 

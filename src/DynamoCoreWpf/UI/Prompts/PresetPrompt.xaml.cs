@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using System;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes
 {
@@ -24,6 +23,37 @@ namespace Dynamo.Nodes
 
         void OK_Click(object sender, RoutedEventArgs e)
         {
+            if (this.Owner != null)
+            {
+                var dataContext = this.Owner.DataContext as DynamoViewModel;
+                var presets = dataContext == null ? null : dataContext.Model.CurrentWorkspace.Presets;
+                 //get the preset names from workspace
+                if (presets != null && presets.Any())
+                {
+                    if (dataContext.Model.CurrentWorkspace.Presets.Any(x => x.Name == Text))
+                    {
+                        var newDialog = new PresetOverwritePrompt()
+                        {
+                            Owner = this,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Text = Wpf.Properties.Resources.PresetOverwrite
+                        };
+
+                        if (newDialog.ShowDialog() != true)
+                        {                                                        
+                            e.Handled = true;
+                            return;
+                        }
+                        //If the dialog result is true, then remove the old preset
+                        else
+                        {
+                            var oldPreset = presets.FirstOrDefault(x => x.Name == Text);
+                            dataContext.Model.CurrentWorkspace.RemovePreset(oldPreset);
+                        }
+                    }
+                }
+
+            }
             this.DialogResult = true;
         }
 

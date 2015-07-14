@@ -16,6 +16,51 @@ namespace ProtoCore.AssociativeEngine
     public class Utils
     {
         /// <summary>
+        /// Gets the dirty graphnode of the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public static AssociativeGraph.GraphNode GetGraphNodeAtPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            Validity.Assert(graphNodesInScope != null);
+            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc == pc);
+        }
+
+        /// <summary>
+        /// Gets the first dirty graphnode starting from the given pc
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        /// <returns></returns>
+        public static AssociativeGraph.GraphNode GetFirstDirtyGraphNodeFromPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            Validity.Assert(graphNodesInScope != null);
+            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc >= pc);
+        }
+
+        /// <summary>
+        /// Marks all graphnodes ditry within the specified block
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="graphNodesInScope"></param>
+        public static void MarkAllGraphNodesDirty(int block, List<AssociativeGraph.GraphNode> graphNodesInScope)
+        {
+            if (graphNodesInScope != null)
+            {
+                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Builds the dependencies within the list of graphNodes
         /// </summary>
         /// <param name="graphNodeScopeToCheck"></param>
@@ -109,7 +154,7 @@ namespace ProtoCore.AssociativeEngine
                             continue;
                         }
 
-                        currentNode.PushGraphNodeToExecute(gnode);
+                        currentNode.PushChildNode(gnode);
                     }
                 }
             }
@@ -892,7 +937,21 @@ namespace ProtoCore.AssociativeGraph
         public bool ProcedureOwned { get; set; }       // This graphnode's immediate scope is within a function (as opposed to languageblock or construct)
         public UpdateBlock updateBlock { get; set; }
         public List<GraphNode> dependentList { get; set; }
-        public List<GraphNode> graphNodesToExecute { get; set; }
+
+        /// <summary>
+        /// Children nodes are nodes that will be marked dirty if this graphnode is executed
+        ///     a = 1 <- the child of this graphnode is 'b = a'
+        ///     b = a 
+        /// </summary>
+        public List<GraphNode> ChildrenNodes { get; set; }
+
+        /// <summary>
+        /// Parent nodes are the nodes that this graphnode is dependent on
+        ///     a = 1
+        ///     b = a <- the parent of this graphnode is 'a = 1'
+        /// </summary>
+        public List<GraphNode> ParentNodes { get; set; }
+
         public bool allowDependents { get; set; }
         public bool isIndexingLHS { get; set; }
         public bool isLHSNode { get; set; }
@@ -958,7 +1017,8 @@ namespace ProtoCore.AssociativeGraph
             classIndex = Constants.kInvalidIndex;
             updateBlock = new UpdateBlock();
             dependentList = new List<GraphNode>();
-            graphNodesToExecute = new List<GraphNode>();
+            ChildrenNodes = new List<GraphNode>();
+            ParentNodes = new List<GraphNode>();
             allowDependents = true;
             isIndexingLHS = false;
             isLHSNode = false;
@@ -984,17 +1044,21 @@ namespace ProtoCore.AssociativeGraph
         }
 
 
-        public void PushGraphNodeToExecute(GraphNode dependent)
+        public void PushChildNode(GraphNode child)
         {
-            // Do not add if it already contains this dependent
-            foreach (GraphNode node in graphNodesToExecute)
+            // Do not add if it already contains this child
+            foreach (GraphNode node in ChildrenNodes)
             {
-                if (node.UID == dependent.UID)
+                if (node.UID == child.UID)
                 {
                     return;
                 }
             }
-            graphNodesToExecute.Add(dependent);
+
+            ChildrenNodes.Add(child);
+
+            // Set this graphnode to be the parent of the child node
+            child.ParentNodes.Add(this);
         }
 
         public void PushDependent(GraphNode dependent)
@@ -1549,76 +1613,6 @@ namespace ProtoCore.AssociativeGraph
             }
         }
 
-        /// <summary>
-        /// Marks all graphnodes in scope as dirty
-        /// </summary>
-        /// <param name="block"></param>
-        /// <param name="classIndex"></param>
-        /// <param name="procIndex"></param>
-        public void MarkAllGraphNodesDirty(int block, int classIndex, int procIndex)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
-            if (gnodeList != null)
-            {
-                foreach (GraphNode gnode in gnodeList)
-                {
-                    if (gnode.languageBlockId == block)
-                    {
-                        gnode.isDirty = true;
-                    }
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Gets the graphnode of the given pc and scope
-        /// </summary>
-        /// <param name="pc"></param>
-        /// <param name="classIndex"></param>
-        /// <param name="procIndex"></param>
-        /// <returns></returns>
-        public GraphNode GetGraphNode(int pc, int classIndex, int procIndex)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
-            if (gnodeList != null && gnodeList.Count > 0)
-            {
-                foreach (GraphNode gnode in gnodeList)
-                {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc == pc)
-                    {
-                        return gnode;
-                    }
-                }
-            }
-            return null;
-        }
-
-
-        /// <summary>
-        /// Gets the first dirty graphnode starting from the given pc
-        /// </summary>
-        /// <param name="pc"></param>
-        /// <param name="classIndex"></param>
-        /// <param name="procIndex"></param>
-        /// <returns></returns>
-        public GraphNode GetFirstDirtyGraphNode(int pc, int classIndex, int procIndex)
-        {
-            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
-            if (gnodeList != null && gnodeList.Count > 0)
-            {
-                foreach (GraphNode gnode in gnodeList)
-                {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
-                    {
-                        return gnode;
-                    }
-                }
-            }
-            return null;
-        }
-
-
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {
             uint ci = (uint)classIndex;
@@ -1635,7 +1629,7 @@ namespace ProtoCore.AssociativeGraph
 
         public List<GraphNode> GetGraphNodesAtScope(int classIndex, int procIndex)
         {
-            List<GraphNode> nodes;
+            List<GraphNode> nodes = new List<GraphNode>();
             graphNodeMap.TryGetValue(GetGraphNodeKey(classIndex, procIndex), out nodes);
             return nodes;
         }

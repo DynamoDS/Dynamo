@@ -465,6 +465,11 @@ namespace Dynamo.ViewModels
 
         public IManipulatorDaemonInitializer ManipulatorDaemonInitializer { get; private set; }
 
+        public bool EnablePresetOptions
+        {
+            get { return this.Model.CurrentWorkspace.Presets.Any(); }            
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -1413,6 +1418,7 @@ namespace Dynamo.ViewModels
         }
         private bool CanShowNewPresetStateDialog(object parameter)
         {
+            RaisePropertyChanged("EnablePresetOptions");
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 

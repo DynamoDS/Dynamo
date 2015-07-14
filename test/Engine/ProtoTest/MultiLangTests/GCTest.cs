@@ -35,6 +35,7 @@ a = foo( { a1, a2 });
 a2 = A.A();
 v3 = DisposeVerify.x; // 6
 }
+__GC();
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
@@ -57,6 +58,7 @@ a1 = A.A();
         a3 = A.A();
     a4 = A.A();
 }
+__GC();
 v = DisposeVerify.x; // 3";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v", 3);
@@ -81,6 +83,7 @@ v1;
 	a5 = a1;
 	v1 = DisposeVerify.x; // 2
 }
+__GC();
 v2 = DisposeVerify.x; // 3";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
 
@@ -106,6 +109,7 @@ v1;
 	// %tempLangBlk, same value as a1, is gcced here, this is also to test after assign the return value from the language 
 	// block, the ref count of that value is still 1
 }
+__GC();
 v2 = DisposeVerify.x; // 2";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v1", 1);
@@ -134,6 +138,7 @@ m = 10;
 // test after assign the return value from foo, the ref count of that value is 1
 v2 = DisposeVerify.x; // 4
 }
+__GC();
 v3 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v3", 4);
@@ -169,6 +174,7 @@ v2 = DisposeVerify.x; // 4
 arr = null;
 v3 = DisposeVerify.x; // 7
 }
+__GC();
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
@@ -204,6 +210,7 @@ v2 = DisposeVerify.x; // 4
 arr = null;
 v3 = DisposeVerify.x; // 7
 }
+__GC();
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
@@ -249,6 +256,7 @@ a3 = null;
 v7 = DisposeVerify.x; // 7
 }
 
+__GC();
 v8 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
                 thisTest.Verify("v8", 7);
@@ -291,6 +299,7 @@ b = foo2(A.A());
 v5 = DisposeVerify.x; // 6
 c = foo( { A.A(), A.A(), A.A() } );
 }
+__GC();
 v6 = DisposeVerify.x; // 9";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
 
@@ -322,6 +331,7 @@ v1 = DisposeVerify.x; // 3
 m = null; 
 v2 = DisposeVerify.x; // 4
 }
+__GC();
 v3 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
                 thisTest.Verify("v3", 4);
@@ -381,6 +391,7 @@ v1;
 	cc = foo(aa);
 	v1 = DisposeVerify.x;
 }
+__GC();
 v2 = DisposeVerify.x; // 4";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v2", 7);
@@ -428,6 +439,7 @@ import(""DisposeVerify.ds"");
     arr = A.A();
     arr = 1;                // Dispose A.A() 
 }
+__GC();
     v1 = DisposeVerify.x;   // Reflect the disposed object
 
 ";
@@ -447,6 +459,7 @@ import(""DisposeVerify.ds"");
     arr = {A.A()};
     arr = 1;                // Dispose A.A() 
 }
+__GC();
     v1 = DisposeVerify.x;   // Reflect the disposed object
 
 ";

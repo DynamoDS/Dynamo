@@ -182,9 +182,6 @@ namespace Dynamo.Core
             if (versions.Count() < 2)
                 return null; // No need for migration
 
-            DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                    SettingsMigrationEventArgs.EventStatusType.Begin));
-
             var previousVersion = versions[1];
             var currentVersion = versions[0];
             Debug.Assert(currentVersion.MajorPart == pathManager.MajorFileVersion
@@ -260,7 +257,7 @@ namespace Dynamo.Core
         /// <param name="pathResolver"></param>
         /// <param name="fromVersion"> source Dynamo version from which to migrate </param>
         /// <param name="toVersion"> target Dynamo version into which to migrate </param>
-        /// <returns> new migrator instance after migration </returns>
+        /// <returns> new migrator instance after migration, null if there's no migration </returns>
         internal static DynamoMigratorBase Migrate(IPathResolver pathResolver, FileVersion fromVersion, FileVersion toVersion)
         {
             // Create concrete DynamoMigratorBase object using previousVersion and reflection
@@ -271,7 +268,18 @@ namespace Dynamo.Core
             var targetMigrator = CreateMigrator(pathResolver, toVersion);
             Debug.Assert(targetMigrator != null);
 
-            return targetMigrator.MigrateFrom(sourceMigrator); 
+            bool isPackagesDirectoryEmpty = !Directory.EnumerateFileSystemEntries(targetMigrator.PackagesDirectory).Any();
+            bool isDefinitionsDirectoryEmpty = !Directory.EnumerateFileSystemEntries(targetMigrator.DefinitionsDirectory).Any();
+
+            // Migrate only if both packages and definitions directories are empty
+            if (isPackagesDirectoryEmpty && isDefinitionsDirectoryEmpty)
+            {
+                DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
+
+                return targetMigrator.MigrateFrom(sourceMigrator);
+            }
+            return null;
         }
 
         /// <summary>

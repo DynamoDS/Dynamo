@@ -220,6 +220,20 @@ namespace Dynamo.Models
         /// </summary>
         public event Action Disposed;
 
+
+        /// <summary>
+        /// Event that is fired during the saving of the workspace.
+        /// 
+        /// Add additional XmlNode objects to the XmlDocument provided,
+        /// in order to save data to the file.
+        /// </summary>
+        public event Action<XmlDocument> Saving;
+        protected virtual void OnSaving(XmlDocument obj)
+        {
+            var handler = Saving;
+            if (handler != null) handler(obj);
+        }
+
         #endregion
 
         #region public properties
@@ -231,7 +245,7 @@ namespace Dynamo.Models
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
-        ///     A set of input parameter states, this can be used to set the graph to a serialized state.
+        ///     A set of input parameter states, this can be used to set the graph to a serialized state.       
         /// </summary>
         public IEnumerable<PresetModel> Presets { get { return presets;} }
 
@@ -588,6 +602,7 @@ namespace Dynamo.Models
             ClearNodes();
             Notes.Clear();
             Annotations.Clear();
+            presets.Clear();
 
             ClearUndoRecorder();
             ResetWorkspace();
@@ -666,7 +681,7 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
-
+            HasUnsavedChanges = true;
         }
 
         /// <summary>
@@ -867,7 +882,7 @@ namespace Dynamo.Models
             presets.Add(newstate);
         }
 
-        public void RemoveState(PresetModel state)
+        public void RemovePreset(PresetModel state)
         {
             if (Presets.Contains(state))
             {
@@ -936,7 +951,6 @@ namespace Dynamo.Models
                 return false;
 
             SerializeSessionData(document, runtimeCore);
-
 
             try
             {
@@ -1045,6 +1059,8 @@ namespace Dynamo.Models
                     var presetState = preset.Serialize(xmlDoc, SaveContext.File);
                     presetsElement.AppendChild(presetState);
                 }
+
+                OnSaving(xmlDoc);
 
                 return true;
             }
