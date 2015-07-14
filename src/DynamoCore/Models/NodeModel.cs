@@ -582,11 +582,13 @@ namespace Dynamo.Models
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            //if (OutPortData.Count == 1)
-            //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
-
-            string id = AstIdentifierBase + "_out" + outputIndex;
-            return AstFactory.BuildIdentifier(id);
+            if (OutPortData.Count <= 1)
+                return AstIdentifierForPreview;
+            else
+            {
+                string id = AstIdentifierBase + "_out" + outputIndex;
+                return AstFactory.BuildIdentifier(id);
+            }
         }
 
         #endregion
