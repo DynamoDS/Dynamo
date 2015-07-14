@@ -203,13 +203,10 @@ namespace Dynamo.Models
             }
         }
 
-        // By default node is visible in Customizer.
-        // Even if it's not input node it will be visible.        
         private bool isSelectedInput = true;
         /// <summary>
-        /// All input nodes can be used in customizer or be part of preset.
-        /// But, if user would like, he can hide input node from customizer.
-        /// By default input node will be selected, so that it can be used in preset and be shown in customizer.
+        /// Specifies whether an input node should be included in a preset. 
+        /// By default, this field is set to true.
         /// </summary>
         public bool IsSelectedInput
         {
@@ -1466,6 +1463,7 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
+            helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1516,6 +1514,7 @@ namespace Dynamo.Models
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+            IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
 
             var portInfoProcessed = new HashSet<int>();
 
