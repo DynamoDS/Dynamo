@@ -64,7 +64,7 @@ namespace Dynamo.Nodes
 
         public string Text
         {
-            get { return this.nameBox.Text; }
+            get { return this.nameBox.Text.Trim(); }
         }
 
         public string Description
