@@ -305,7 +305,7 @@ namespace Dynamo.Models
         }
 
 
-        public void AddNode(NodeModel node)
+        private void AddNode(NodeModel node)
         {
             lock (nodes)
             {
@@ -315,7 +315,7 @@ namespace Dynamo.Models
             OnNodeAdded(node);
         }
 
-        public void ClearNodes()
+        private void ClearNodes()
         {
             lock (nodes)
             {
