@@ -22,6 +22,11 @@ namespace Dynamo.Wpf.Views.PackageManager
         public PackagePathView()
         {
             InitializeComponent();
+            PathListBox.ItemsSource = new List<string>
+            {
+                "PathOne",
+                "PathTwo"
+            };
         }
     }
 }
