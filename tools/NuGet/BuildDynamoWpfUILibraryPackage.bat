@@ -15,7 +15,6 @@ mkdir .\%ui%\tools
 
 copy %base%\DynamoCore.dll .\%ui%\lib\%framework%\DynamoCore.dll
 copy %base%\DynamoCoreWpf.dll .\%ui%\lib\%framework%\DynamoCoreWpf.dll
-copy %base%\ProtoInterface.dll .\%ui%\lib\%framework%\ProtoInterface.dll
 copy %base%\ProtoCore.dll .\%ui%\lib\%framework%\ProtoCore.dll
 copy %base%\nodes\DSCoreNodesUI.dll .\%ui%\lib\%framework%\DSCoreNodesUI.dll
 copy %base%\nodes\CoreNodeModelsWpf.dll .\%ui%\lib\%framework%\CoreNodeModelsWpf.dll

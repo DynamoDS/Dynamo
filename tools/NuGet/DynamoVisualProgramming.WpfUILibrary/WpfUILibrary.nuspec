@@ -18,7 +18,8 @@
         <frameworkAssembly assemblyName="PresentationFramework"/>
     </frameworkAssemblies>
     <dependencies>
-        <dependency id="Prism" version="5.0"/>
+        <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="0.8.2"/>
+        <dependency id="Prism" version="4.1"/>
     </dependencies>
   </metadata>
 </package>
