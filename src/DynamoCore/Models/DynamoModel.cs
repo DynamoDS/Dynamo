@@ -507,7 +507,7 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.GetUserDataFolder()};
+                PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
             else
                 pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
 

@@ -297,10 +297,7 @@ namespace Dynamo.Core
             var galleryDirectory = GetGalleryDirectory(commonDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
-            rootDirectories = new List<string>
-            {
-                GetUserDataFolder()
-            };
+            rootDirectories = new List<string> { userDataDir };
 
             nodeDirectories = new HashSet<string>
             {
