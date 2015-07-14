@@ -6,13 +6,13 @@ namespace Dynamo.Interfaces
 {
     public interface IWorkspaceModel
     {
-        string Name { get; set; }
+        string Name { get; }
 
         IEnumerable<ConnectorModel> Connectors { get; }
         IEnumerable<NodeModel> Nodes { get; }
 
-        double CenterX { get; set; }
-        double CenterY { get; set; }
+        double CenterX { get; }
+        double CenterY { get; }
 
         event Action<NodeModel> NodeAdded;
         event Action<NodeModel> NodeRemoved;

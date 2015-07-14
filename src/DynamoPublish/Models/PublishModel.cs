@@ -6,6 +6,7 @@ using Dynamo.Wpf.Authentication;
 using Greg;
 using Greg.AuthProviders;
 using Reach;
+using Reach.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,10 +19,13 @@ namespace Dynamo.Publish.Models
     public class PublishModel
     {
         private readonly IAuthProvider authenticationProvider;
+        private readonly ICustomNodeManager customNodeManager;
 
         private readonly string serverUrl;
         private readonly string port;
         private readonly string page;
+
+        private IWorkspaceStorageClient reachClient;
 
         public bool IsLoggedIn
         {
@@ -31,9 +35,21 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        public HomeWorkspaceModel HomeWorkspace
+        {
+            get;
+            private set;
+        }
+
+        public List<CustomNodeWorkspaceModel> CustomNodesWorkspaces
+        {
+            get;
+            private set;
+        }
+
         #region Initialization
 
-        internal PublishModel(IAuthProvider dynamoAuthenticationProvider)
+        public PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
         {
             // Open the configuration file using the dll location.
             var config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
@@ -53,6 +69,7 @@ namespace Dynamo.Publish.Models
                 throw new ArgumentException();
 
             authenticationProvider = dynamoAuthenticationProvider;
+            customNodeManager = dynamoCustomNodeManager;
         }
 
         #endregion
@@ -69,7 +86,7 @@ namespace Dynamo.Publish.Models
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
-        internal void Send(IEnumerable<IWorkspaceModel> workspaces)
+        public void Send(IEnumerable<IWorkspaceModel> workspaces)
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
                 throw new Exception(Resource.ServerErrorMessage);
@@ -78,10 +95,12 @@ namespace Dynamo.Publish.Models
                 throw new Exception(Resource.AuthenticationErrorMessage);
 
             string fullServerAdress = serverUrl + ":" + port;
-            var reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
 
-            var homeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
-            var functionNodes = homeWorkspace.Nodes.OfType<Function>();
+            if (reachClient == null)
+                reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
+
+            HomeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
+            var functionNodes = HomeWorkspace.Nodes.OfType<Function>();
 
             List<CustomNodeDefinition> dependencies = new List<CustomNodeDefinition>();
             foreach (var node in functionNodes)
@@ -89,7 +108,24 @@ namespace Dynamo.Publish.Models
                 dependencies.AddRange(node.Definition.Dependencies);
             }
 
-            var result = reachClient.Send(homeWorkspace, null/*dependencies*/);
+            CustomNodesWorkspaces = new List<CustomNodeWorkspaceModel>();
+            foreach (var dependency in dependencies)
+            {
+                CustomNodeWorkspaceModel customNodeWs;
+                var isWorkspaceCreated = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
+                if (isWorkspaceCreated && !CustomNodesWorkspaces.Contains(customNodeWs))
+                    CustomNodesWorkspaces.Add(customNodeWs);
+            }
+
+            var result = reachClient.Send(HomeWorkspace, CustomNodesWorkspaces);
+        }
+
+        /// <summary>
+        /// Used for tests. Do not set it directly.
+        /// </summary>
+        public void SetClient(IWorkspaceStorageClient client)
+        {
+            reachClient = client;
         }
     }
 }
