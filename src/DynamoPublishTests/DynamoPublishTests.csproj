@@ -41,8 +41,8 @@
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Reach\extern\NUnit\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>$(NunitPath)\\nunit.framework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Reach">
       <HintPath>..\..\extern\Reach\Reach.dll</HintPath>
