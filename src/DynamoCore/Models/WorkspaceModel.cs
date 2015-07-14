@@ -1266,7 +1266,7 @@ namespace Dynamo.Models
                         totalY / nodeCount, engineController.LibraryServices);
                     undoHelper.RecordCreation(codeBlockNode);
                    
-                    AddNode(codeBlockNode);
+                    AddNode(codeBlockNode, false);
                     codeBlockNodes.Add(codeBlockNode);
                     #endregion
 
