@@ -3552,6 +3552,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Characters Remaining.
+        /// </summary>
+        public static string PresetTextRemaining {
+            get {
+                return ResourceManager.GetString("PresetTextRemaining", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Package !.
         /// </summary>
         public static string PublishPackage {
