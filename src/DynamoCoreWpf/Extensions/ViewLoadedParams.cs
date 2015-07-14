@@ -22,7 +22,7 @@ namespace Dynamo.Wpf.Extensions
         private readonly DynamoViewModel dynamoViewModel;
         public readonly Menu dynamoMenu;
 
-        public ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
+        internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
             base(dynamoVM.Model)
         {
             dynamoView = dynamoV;

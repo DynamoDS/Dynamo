@@ -33,12 +33,12 @@ namespace Dynamo.Publish.Models
 
         #region Initialization
 
-        public PublishModel(IAuthProvider dynamoAuthenticationProvider)
+        internal PublishModel(IAuthProvider dynamoAuthenticationProvider)
         {
             // Open the configuration file using the dll location.
-            Configuration config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
+            var config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
             // Get the appSettings section.
-            AppSettingsSection appSettings = (AppSettingsSection)config.GetSection("appSettings");
+            var appSettings = (AppSettingsSection)config.GetSection("appSettings");
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))

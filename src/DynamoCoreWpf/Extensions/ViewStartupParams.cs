@@ -18,7 +18,7 @@ namespace Dynamo.Wpf.Extensions
         /// </summary>
         public IExtensionManager extensionManager;
 
-        public ViewStartupParams(DynamoViewModel dynamoVM) :
+        internal ViewStartupParams(DynamoViewModel dynamoVM) :
             base(dynamoVM.Model.AuthenticationManager.AuthProvider,
                 dynamoVM.Model.PathManager,
                 dynamoVM.Model.CustomNodeManager)

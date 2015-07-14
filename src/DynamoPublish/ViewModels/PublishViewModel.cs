@@ -67,7 +67,7 @@ namespace Dynamo.Publish.ViewModels
 
         #region Initialization
 
-        public PublishViewModel(PublishModel model)
+        internal PublishViewModel(PublishModel model)
         {
             this.model = model;
 

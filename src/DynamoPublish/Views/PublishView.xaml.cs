@@ -22,14 +22,6 @@ namespace Dynamo.Publish.Views
     /// </summary>
     public partial class PublishView : Window
     {
-        internal PublishViewModel ViewModel
-        {
-            get
-            {
-                return DataContext as PublishViewModel;
-            }
-        }
-
         public PublishView(PublishViewModel viewModel)
         {
             InitializeComponent();

@@ -15,7 +15,7 @@ namespace Dynamo.Extensions
     {
         private readonly DynamoModel dynamoModel;
 
-        public ReadyParams(DynamoModel dynamoM)
+        internal ReadyParams(DynamoModel dynamoM)
         {
             dynamoModel = dynamoM;
         }
