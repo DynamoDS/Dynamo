@@ -645,7 +645,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
-        public void AddNode(NodeModel node, bool centered = false)
+        public void AddAndRegisterNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;
@@ -1266,7 +1266,7 @@ namespace Dynamo.Models
                         totalY / nodeCount, engineController.LibraryServices);
                     undoHelper.RecordCreation(codeBlockNode);
                    
-                    AddNode(codeBlockNode, false);
+                    AddAndRegisterNode(codeBlockNode, false);
                     codeBlockNodes.Add(codeBlockNode);
                     #endregion
 

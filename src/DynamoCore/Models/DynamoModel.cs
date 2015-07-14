@@ -1465,7 +1465,7 @@ namespace Dynamo.Models
         /// <param name="centered"></param>
         public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
         {
-            CurrentWorkspace.AddNode(node, centered);
+            CurrentWorkspace.AddAndRegisterNode(node, centered);
 
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
             DynamoSelection.Instance.ClearSelection();
@@ -1596,7 +1596,7 @@ namespace Dynamo.Models
             // Add the new NodeModel's to the Workspace
             foreach (var newNode in newNodeModels)
             {
-                CurrentWorkspace.AddNode(newNode, false);
+                CurrentWorkspace.AddAndRegisterNode(newNode, false);
                 createdModels.Add(newNode);
                 AddToSelection(newNode);
             }
