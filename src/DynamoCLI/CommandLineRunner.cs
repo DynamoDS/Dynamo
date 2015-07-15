@@ -35,9 +35,9 @@ namespace DynamoCLI
             {
                 return null;
             }
-            if (!string.IsNullOrEmpty(cmdLineArgs.Locale) || !(string.IsNullOrEmpty(cmdLineArgs.CommandFilePath)))
+            if (!(string.IsNullOrEmpty(cmdLineArgs.CommandFilePath)))
             {
-                Console.WriteLine("locale and commandFile options are only available when running DynamoSandbox, not DynamoCLI");
+                Console.WriteLine("commandFilePath option is only available when running DynamoSandbox, not DynamoCLI");
             }
 
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);

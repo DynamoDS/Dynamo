@@ -99,8 +99,7 @@ namespace Dynamo.Applications
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path,"+ 
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
-                .Add("l=|L=", "Running Dynamo under a different locale setting"+
-                "this option is only supported when run from DynamoSandbox", l => locale = l)
+                .Add("l=|L=", "Running Dynamo under a different locale setting",l => locale = l)
                 .Add("p=|P=", "PresetFile, Instruct Dynamo to import the presets at this path into the opened .dyn", p => presetFile = p)
                 .Add("s=|S=", "PresetStateID, Instruct Dynamo to set the graph to the specified preset by name," +
                 "this can be set to a statename or 'all', which will evaluate all states in the dyn", s => presetStateid = s)
