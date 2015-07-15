@@ -787,12 +787,26 @@ namespace Dynamo.Controls
             {
                 case "IsUpstreamVisible":
                 case "DisplayLabels":
-                    RequestNodeVisualUpdateAsync(sender as NodeModel);
+                    if (referenceNode == null)
+                    {
+                        RequestNodeVisualUpdateAsync(node);
+                    }
                     break;
                 case "IsVisible":
                     var geoms = FindGeometryModel3DsForNode(node);
-                    geoms.ToList().ForEach(g=>g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
-                    NotifyPropertyChanged("Model3DValues");
+                    if (geoms.Any())
+                    {
+                        geoms.ToList()
+                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
+                        NotifyPropertyChanged("Model3DValues");
+                    }
+                    else
+                    {
+                        if (referenceNode == null)
+                        {
+                            RequestNodeVisualUpdateAsync(node);
+                        }
+                    }
                     break;
             }
         }
