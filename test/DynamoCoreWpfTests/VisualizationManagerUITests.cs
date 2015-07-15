@@ -167,6 +167,7 @@ namespace DynamoCoreWpfTests
             port.Connectors.First().Delete();
 
             //ensure that the visualization no longer contains
+
             //the renderables for the line node
             Assert.AreEqual(7, ws.TotalPointsToRender());
             Assert.AreEqual(0, ws.TotalLinesToRender());

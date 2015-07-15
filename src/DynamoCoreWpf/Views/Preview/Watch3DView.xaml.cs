@@ -635,7 +635,9 @@ namespace Dynamo.Controls
                 var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
                 if (model != null)
                 {
-                    model.Detach();
+                    
+
+
                     model.MouseDown3D -= meshGeometry3D_MouseDown3D;
                 }
                 Model3DDictionary.Remove(kvp.Key);                
@@ -1039,7 +1041,9 @@ namespace Dynamo.Controls
 
             var packages = e.Packages.Concat(e.SelectedPackages)
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
-    
+
+            RemoveGeometryFromDisconnectedNodes();
+
             var text = HelixRenderPackage.InitText3D();
 
             var aggParams = new PackageAggregationParams
@@ -1091,7 +1095,41 @@ namespace Dynamo.Controls
                 }                
             }
        
-            NotifyPropertyChanged("");
+            NotifyPropertyChanged("Model3DValues");
+            View.InvalidateRender();
+        }
+
+        private void RemoveGeometryFromDisconnectedNodes()
+        {
+            var noRenderNodes = viewModel.Model.CurrentWorkspace.Nodes.
+                Where(n => n.IsUpdated).
+                Where(n => !n.RenderPackages.Any());
+
+            foreach (var node in noRenderNodes)
+            {
+                var idBase = node.AstIdentifierBase;
+                var pointsId = idBase + ":points";
+                var linesId = idBase + ":lines";
+                var meshId = idBase + ":mesh";
+
+                if (Model3DDictionary.ContainsKey(pointsId))
+                {
+                    Model3DDictionary[pointsId].Detach();
+                    Model3DDictionary.Remove(pointsId);
+                }
+
+                if (Model3DDictionary.ContainsKey(linesId))
+                {
+                    Model3DDictionary[linesId].Detach();
+                    Model3DDictionary.Remove(linesId);
+                }
+
+                if (Model3DDictionary.ContainsKey(meshId))
+                {
+                    Model3DDictionary[meshId].Detach();
+                    Model3DDictionary.Remove(meshId);
+                }
+            }
         }
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
