@@ -34,8 +34,8 @@ namespace Dynamo.Tests
             var numberNode2 = new DoubleInput();
             numberNode2.Value = "2";
 
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
        
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
 
@@ -62,8 +62,8 @@ namespace Dynamo.Tests
             var numberNode2 = new DoubleInput();
             numberNode2.Value = "2";
 
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
 
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
 
@@ -100,9 +100,9 @@ namespace Dynamo.Tests
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
 
             //add the nodes
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
            //connect them up
            ConnectorModel.Make(numberNode1,addNode, 0, 0);
@@ -165,9 +165,9 @@ namespace Dynamo.Tests
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
 
             //add the nodes
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //connect them up
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
@@ -239,9 +239,9 @@ namespace Dynamo.Tests
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
 
             //add the nodes
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //connect them up
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
@@ -383,9 +383,9 @@ namespace Dynamo.Tests
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
 
             //add the nodes
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //connect them up
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
@@ -436,9 +436,9 @@ namespace Dynamo.Tests
               var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
             
               //add the nodes
-              model.CurrentWorkspace.AddNode(numberNode1, false);
-              model.CurrentWorkspace.AddNode(numberNode2, false);
-              model.CurrentWorkspace.AddNode(addNode, false);
+              model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+              model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+              model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
               //connect them up
               ConnectorModel.Make(numberNode1, addNode, 0, 0);
@@ -526,9 +526,9 @@ namespace Dynamo.Tests
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
              
             //add the nodes
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             //connect them up
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
             ConnectorModel.Make(numberNode2, addNode, 0, 1);
@@ -578,9 +578,9 @@ namespace Dynamo.Tests
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
 
              //add the nodes
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             //connect them up
             ConnectorModel.Make(numberNode1, addNode, 0, 0);
             ConnectorModel.Make(numberNode2, addNode, 0, 1);
@@ -624,9 +624,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.HasUnsavedChanges,false);
 
             //add the nodes
-            model.CurrentWorkspace.AddNode(numberNode1, false);
-            model.CurrentWorkspace.AddNode(numberNode2, false);
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode1, false);
+            model.CurrentWorkspace.AddAndRegisterNode(numberNode2, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //Check for Dirty flag
             Assert.AreEqual(model.CurrentWorkspace.HasUnsavedChanges, true);

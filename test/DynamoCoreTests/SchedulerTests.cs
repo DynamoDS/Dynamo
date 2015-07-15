@@ -1253,7 +1253,7 @@ namespace Dynamo.Tests
             var workspace = dynamoModel.CurrentWorkspace;
             foreach (var node in nodes)
             {
-                workspace.AddNode(node, false);
+                workspace.AddAndRegisterNode(node, false);
             }
 
             Assert.AreEqual(3, workspace.Nodes.Count());
