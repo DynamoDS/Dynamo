@@ -88,6 +88,24 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;Page&quot; is not set. set. Please, set server page in configuration file..
+        /// </summary>
+        internal static string PageErrorMessage {
+            get {
+                return ResourceManager.GetString("PageErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Port&quot; is not set. Please, set port in configuration file..
+        /// </summary>
+        internal static string PortErrorMessage {
+            get {
+                return ResourceManager.GetString("PortErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server not found..
         /// </summary>
         internal static string ServerErrorMessage {

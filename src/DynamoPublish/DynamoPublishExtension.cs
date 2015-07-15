@@ -37,6 +37,9 @@ namespace Dynamo.Publish
 
         public void Loaded(ViewLoadedParams p)
         {
+            if (publishViewModel == null)
+                return;
+
             publishViewModel.Workspaces = p.WorkspaceModels;
 
             dynamoMenu = p.dynamoMenu;

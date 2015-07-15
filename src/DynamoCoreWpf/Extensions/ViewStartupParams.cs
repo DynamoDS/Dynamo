@@ -16,7 +16,13 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// A handle to the extensions that are already constructed in the Model layer
         /// </summary>
-        public IExtensionManager extensionManager;
+        public IExtensionManager ExtensionManager
+        {
+            get
+            {
+                return dynamoViewModel.Model.ExtensionManager;
+            }
+        }
 
         internal ViewStartupParams(DynamoViewModel dynamoVM) :
             base(dynamoVM.Model.AuthenticationManager.AuthProvider,

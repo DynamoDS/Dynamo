@@ -49,7 +49,7 @@ namespace Dynamo.Publish.Models
 
         #region Initialization
 
-        public PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
+        internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
         {
             // Open the configuration file using the dll location.
             var config = ConfigurationManager.OpenExeConfiguration(this.GetType().Assembly.Location);
@@ -58,18 +58,24 @@ namespace Dynamo.Publish.Models
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new ArgumentException();
+                throw new Exception(Resource.ServerErrorMessage);
 
             port = appSettings.Settings["Port"].Value;
             if (String.IsNullOrWhiteSpace(port))
-                throw new ArgumentException();
+                throw new Exception(Resource.PortErrorMessage);
 
             page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
-                throw new ArgumentException();
+                throw new Exception(Resource.PageErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
+        }
+
+        internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
+            this(provider, manager)
+        {
+            reachClient = client;
         }
 
         #endregion
@@ -86,7 +92,7 @@ namespace Dynamo.Publish.Models
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
-        public void Send(IEnumerable<IWorkspaceModel> workspaces)
+        internal void Send(IEnumerable<IWorkspaceModel> workspaces)
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
                 throw new Exception(Resource.ServerErrorMessage);
@@ -118,14 +124,6 @@ namespace Dynamo.Publish.Models
             }
 
             var result = reachClient.Send(HomeWorkspace, CustomNodesWorkspaces);
-        }
-
-        /// <summary>
-        /// Used for tests. Do not set it directly.
-        /// </summary>
-        public void SetClient(IWorkspaceStorageClient client)
-        {
-            reachClient = client;
         }
     }
 }

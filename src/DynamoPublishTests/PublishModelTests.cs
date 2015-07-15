@@ -27,9 +27,6 @@ namespace DynamoPublishTests
             authenticationProvider = new Mock<IAuthProvider>();
             authenticationProvider.Setup(provider => provider.Username).Returns("DummyUserName");
 
-            // Create publish model.
-            publishModel = new PublishModel(authenticationProvider.Object, CurrentDynamoModel.CustomNodeManager);
-
             // Create mock of reach client.
             var client = new Mock<IWorkspaceStorageClient>();
             client.Setup(c =>
@@ -37,7 +34,9 @@ namespace DynamoPublishTests
                 c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>())).
                 Returns("Successful");
 
-            publishModel.SetClient(client.Object);
+            // Create publish model.
+            publishModel = new PublishModel(authenticationProvider.Object, 
+                CurrentDynamoModel.CustomNodeManager, client.Object);            
         }
 
         [Test]
