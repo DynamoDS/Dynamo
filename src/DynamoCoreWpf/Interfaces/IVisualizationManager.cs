@@ -41,24 +41,5 @@ namespace Dynamo.Interfaces
         /// An event triggered when there are results to visualize
         /// </summary>
         event Action<VisualizationEventArgs> ResultsReadyToVisualize;
-
-        /// <summary>
-        /// Request updated visuals for a branch of the graph.
-        /// </summary>
-        void RequestBranchUpdate(NodeModel node);
-
-        /// <summary>
-        /// An IRenderPackageFactory object.
-        /// </summary>
-        IRenderPackageFactory RenderPackageFactory { get; }
-
-        /// <summary>
-        /// Create an IRenderPackage given an IGraphicItem
-        /// </summary>
-        IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem graphicItem);
-
-        /// Update all Node RenderPackages and raise notification.
-        /// </summary>
-        void UpdateAllNodeVisualsAndNotify();
     }
 }

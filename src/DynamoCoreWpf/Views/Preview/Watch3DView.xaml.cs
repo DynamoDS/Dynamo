@@ -14,11 +14,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Xml;
+using Autodesk.DesignScript.Interfaces;
+using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
+using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -55,7 +59,6 @@ namespace Dynamo.Controls
 
         #region private members
 
-        private readonly Guid _id=Guid.Empty;
         private Point rightMousePoint;
         private LineGeometry3D worldGrid;
         private LineGeometry3D worldAxes;
@@ -78,6 +81,7 @@ namespace Dynamo.Controls
         internal readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0); 
         private readonly Size defaultPointSize = new Size(8,8);
         private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
+        private NodeModel referenceNode;
 
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
         private Dictionary<string, Model3D> Model3DDictionary
@@ -229,33 +233,19 @@ namespace Dynamo.Controls
             InitializeHelix();
         }
 
-        public Watch3DView(Guid id)
+        public Watch3DView(NodeModel node)
         {
+            referenceNode = node;
+
             SetupScene();
 
             InitializeComponent();
             watch_view.DataContext = this;
             Loaded += OnViewLoaded;
             Unloaded += OnViewUnloaded;
-
-            _id = id;
-            
-            InitializeHelix();
-        }
-
-        public Watch3DView(Guid id, IWatchViewModel dataContext)
-        {
-            DataContext = dataContext;          
-            SetupScene();
-
-            InitializeComponent();
-            watch_view.DataContext = this;
-            Loaded += OnViewLoaded;
-            Unloaded += OnViewUnloaded;
-
-            _id = id;
-             
-            InitializeHelix();             
+            InitializeHelix();  
+           
+            resizeThumb.Visibility = Visibility.Visible;
         }
 
         private void SetupScene()
@@ -403,9 +393,9 @@ namespace Dynamo.Controls
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
-            UnregisterVisualizationManagerEventHandlers();
-
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+
+            viewModel.RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
@@ -427,15 +417,27 @@ namespace Dynamo.Controls
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
-            RegisterVisualizationManagerEventHandlers();
-
             LogVisualizationCapabilities();
 
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
+            viewModel.RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+
             RegisterModelEventhandlers(viewModel.Model);
 
             RegisterWorkspaceEventHandlers(viewModel.Model);  
+        }
+
+        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    viewModel.Model.PreferenceSettings.ShowEdges =
+                        viewModel.RenderPackageFactoryViewModel.Factory.TessellationParameters.ShowEdges;
+                    break;
+            }
+            RequestNodeVisualUpdateAsync(null);
         }
 
         private void RegisterButtonHandlers()
@@ -473,23 +475,12 @@ namespace Dynamo.Controls
                 LogLevel.File);
         }
 
-        private void RegisterVisualizationManagerEventHandlers()
-        {
-            viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-            viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
-        }
-
-        private void UnregisterVisualizationManagerEventHandlers()
-        {
-            viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-            viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-        }
-
         private void RegisterModelEventhandlers(DynamoModel model)
         {
             model.WorkspaceCleared += Model_WorkspaceCleared;
             model.ShutdownStarted += Model_ShutdownStarted;
             model.CleaningUp += ClearGeometryDictionary;
+            model.EvaluationCompleted += model_EvaluationCompleted;
         }
 
         private void UnregisterModelEventHandlers(DynamoModel model)
@@ -497,6 +488,7 @@ namespace Dynamo.Controls
             model.WorkspaceCleared -= Model_WorkspaceCleared;
             model.ShutdownStarted -= Model_ShutdownStarted;
             model.CleaningUp -= ClearGeometryDictionary;
+            model.EvaluationCompleted -= model_EvaluationCompleted;
         }
 
         private void UnregisterWorkspaceEventHandlers(DynamoModel model)
@@ -527,6 +519,93 @@ namespace Dynamo.Controls
                 {
                     node.PropertyChanged += node_PropertyChanged;
                 }
+            }
+        }
+
+        void model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            // Let the background preview do all the rendering.
+            if (referenceNode != null)
+            {
+                return;
+            }
+
+            // do nothing if it has come on EvaluationCompleted
+            // and no evaluation took place
+            if (e != null && !e.EvaluationTookPlace)
+                return;
+            
+            RequestNodeVisualUpdateAsync(null);
+        }
+
+        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel)
+        {
+            var model = viewModel.Model;
+
+            if (nodeModel != null)
+            {
+                // Visualization update for a given node is desired.
+                nodeModel.RequestVisualUpdateAsync(
+                    model.Scheduler,
+                    model.EngineController,
+                    viewModel.RenderPackageFactoryViewModel.Factory);
+            }
+            else
+            {
+                // Get each node in workspace to update their visuals.
+                foreach (var node in model.CurrentWorkspace.Nodes)
+                {
+                    node.RequestVisualUpdateAsync(
+                        model.Scheduler,
+                        model.EngineController,
+                        viewModel.RenderPackageFactoryViewModel.Factory);
+                }
+            }
+
+            // Schedule a NotifyRenderPackagesReadyAsyncTask here so that when 
+            // render packages of all the NodeModel objects are generated, the 
+            // VisualizationManager gets notified.
+            // 
+            var scheduler = viewModel.Model.Scheduler;
+            var notifyTask = new NotifyRenderPackagesReadyAsyncTask(scheduler);
+            notifyTask.Completed += notifyTask_Completed;
+            scheduler.ScheduleForExecution(notifyTask);
+        }
+
+        void notifyTask_Completed(AsyncTask asyncTask)
+        {
+            var model = viewModel.Model;
+
+            var scheduler = model.Scheduler;
+            if (scheduler == null) // Shutdown has begun.
+                return;
+
+            // Schedule a AggregateRenderPackageAsyncTask here so that the 
+            // background geometry preview gets refreshed.
+            // 
+            var task = new AggregateRenderPackageAsyncTask(scheduler);
+            task.Initialize(model.CurrentWorkspace, referenceNode);
+            task.Completed += task_Completed;
+            scheduler.ScheduleForExecution(task);
+        }
+
+        void task_Completed(AsyncTask asyncTask)
+        {
+            var task = asyncTask as AggregateRenderPackageAsyncTask;
+
+            if (task == null)
+            {
+                return;
+            }
+
+            var packages = task.NormalRenderPackages.Concat(task.SelectedRenderPackages);
+
+            if (CheckAccess())
+                RenderDrawables(packages);
+            else
+            {
+                // Scheduler invokes ResultsReadyToVisualize on background thread.
+                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(packages)));
             }
         }
 
@@ -616,48 +695,7 @@ namespace Dynamo.Controls
 
                     SetSelection(e.NewItems, true);
                     return;
-            }
-
-            
-            //OnSelectionChanged(e.NewItems);
-
-            //if (items == null)
-            //{
-            //    var geom3dList =
-            //        watch_view.Items.Cast<object>().Where(x => x is GeometryModel3D).Cast<GeometryModel3D>().ToList();
-
-            //    var list = geom3dList.Select(y =>
-            //    {
-            //        y.IsSelected = false;
-            //        return y;
-            //    }).ToList();
-               
-            //}
-            //else
-            //{
-            //    foreach (var item in items)
-            //    {
-            //        var node = item as NodeModel;
-            //        if (node == null)
-            //        {
-            //            continue;
-            //        }
-
-            //        var geometryModels = FindGeometryModel3DsForNode(node);
-
-            //        if (!geometryModels.Any())
-            //        {
-            //            continue;
-            //        }
-
-            //        var modelValues = geometryModels.Select(x => x.Value);
-            //        var selectedGeom = modelValues.Cast<GeometryModel3D>().Select(z =>
-            //        {
-            //            z.IsSelected = !z.IsSelected;
-            //            return z;
-            //        }).ToList();                    
-            //    }
-            //}            
+            }          
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
@@ -742,6 +780,10 @@ namespace Dynamo.Controls
             var node = sender as NodeModel;
             switch (e.PropertyName)
             {
+                case "IsUpstreamVisible":
+                case "DisplayLabels":
+                    RequestNodeVisualUpdateAsync(sender as NodeModel);
+                    break;
                 case "IsVisible":
                     var geoms = FindGeometryModel3DsForNode(node);
                     geoms.ToList().ForEach(g=>g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
@@ -846,42 +888,26 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Handler for the visualization manager's ResultsReadyToVisualize event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void VisualizationManager_ResultsReadyToVisualize(VisualizationEventArgs args)
-        {
-            if (CheckAccess())
-                RenderDrawables(args);
-            else
-            {
-                // Scheduler invokes ResultsReadyToVisualize on background thread.
-                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(args)));
-            }
-        }
-
-        /// <summary>
         /// When visualization is complete, the view requests it's visuals. For Full
         /// screen watch, this will be all renderables. For a Watch 3D node, this will
         /// be the subset of the renderables associated with the node.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void VisualizationManagerRenderComplete()
-        {
-            var executeCommand = new Action(delegate
-            {
-                var vm = (IWatchViewModel)DataContext;
-                if (vm.GetBranchVisualizationCommand.CanExecute(null))
-                    vm.GetBranchVisualizationCommand.Execute(null);
-            });
+        //private void VisualizationManagerRenderComplete()
+        //{
+        //    var executeCommand = new Action(delegate
+        //    {
+        //        var vm = (IWatchViewModel)DataContext;
+        //        if (vm.GetBranchVisualizationCommand.CanExecute(null))
+        //            vm.GetBranchVisualizationCommand.Execute(null);
+        //    });
 
-            if (CheckAccess())
-                executeCommand();
-            else
-                Dispatcher.BeginInvoke(executeCommand);
-        }
+        //    if (CheckAccess())
+        //        executeCommand();
+        //    else
+        //        Dispatcher.BeginInvoke(executeCommand);
+        //}
 
         /// <summary>
         /// Callback for thumb control's DragStarted event.
@@ -1078,18 +1104,18 @@ namespace Dynamo.Controls
         /// the associated node. Visualizations for the background preview will return an empty id.
         /// </summary>
         /// <param name="e"></param>
-        public void RenderDrawables(VisualizationEventArgs e)
+        public void RenderDrawables(IEnumerable<IRenderPackage> taskPackages)
         {
             recentlyAddedNodes.Clear();
 
             //check the id, if the id is meant for another watch,
             //then ignore it
-            if (e.Id != _id)
-            {               
-                Attach();
-                NotifyPropertyChanged("");
-                return;
-            }
+            //if (e.Id != _id)
+            //{               
+            //    Attach();
+            //    NotifyPropertyChanged("");
+            //    return;
+            //}
         
             // Don't render if the user's system is incapable.
             if (renderingTier == 0)
@@ -1102,7 +1128,7 @@ namespace Dynamo.Controls
 #endif                  
             Text = null;
 
-            var packages = e.Packages.Concat(e.SelectedPackages)
+            var packages = taskPackages
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
 
             RemoveGeometryFromDisconnectedNodes();

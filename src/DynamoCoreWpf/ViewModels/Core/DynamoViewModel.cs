@@ -4,41 +4,37 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-
 using Dynamo.DSEngine;
-using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
-using Dynamo.Wpf.UI;
-using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.PackageManager;
-
-using DynamoUnits;
-
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using System.Reflection;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
-using DynamoUtilities;
+using Dynamo.Wpf.ViewModels.Core;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
 {
-    public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
+    public partial class DynamoViewModel : ViewModelBase
     {
         #region properties
 
         private readonly DynamoModel model;
-        private System.Windows.Point transformOrigin;
+        private Point transformOrigin;
         private bool canNavigateBackground = false;
         private bool showStartPage = false;
         private bool watchEscapeIsDown = false;
@@ -67,7 +63,7 @@ namespace Dynamo.ViewModels
             get { return Model.PreferenceSettings; }
         }
 
-        public System.Windows.Point TransformOrigin
+        public Point TransformOrigin
         {
             get { return transformOrigin; }
             set
@@ -395,9 +391,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
-                return System.IO.Path.Combine(rootModuleDirectory, "License.rtf");
+                string executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
+                string rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
+                return Path.Combine(rootModuleDirectory, "License.rtf");
             }
         }
 
@@ -549,20 +545,7 @@ namespace Dynamo.ViewModels
 
             SubscribeDispatcherHandlers();
 
-            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(this.VisualizationManager.RenderPackageFactory);
-            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
-        }
-
-        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "ShowEdges":
-                    Model.PreferenceSettings.ShowEdges =
-                        VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges;
-                    break;
-            }
-            VisualizationManager.UpdateAllNodeVisualsAndNotify();
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model);
         }
 
         internal event EventHandler NodeViewReady;
@@ -589,7 +572,6 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
-            RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
         }
 
         private void InitializeRecentFiles()
@@ -782,7 +764,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        void Instance_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");
             RaisePropertyChanged("IsUpdateAvailable");
@@ -1179,7 +1161,7 @@ namespace Dynamo.ViewModels
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
+                string UICulture = CultureInfo.CurrentUICulture.ToString();
                 string path = Path.Combine(location, "samples", UICulture);
 
                 if (Directory.Exists(path))
@@ -1826,7 +1808,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start(Dynamo.UI.Configurations.DynamoWikiLink);
+            Process.Start(Configurations.DynamoWikiLink);
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -1836,7 +1818,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start(Dynamo.UI.Configurations.GitHubDynamoLink);
+            Process.Start(Configurations.GitHubDynamoLink);
         }
 
         internal bool CanGoToSourceCode(object parameter)
@@ -2211,15 +2193,15 @@ namespace Dynamo.ViewModels
 
         #region IWatchViewModel interface
 
-        public void GetBranchVisualization(object parameters)
-        {
-            VisualizationManager.RequestBranchUpdate(null);
-        }
+        //public void GetBranchVisualization(object parameters)
+        //{
+        //    VisualizationManager.RequestBranchUpdate(null);
+        //}
 
-        public bool CanGetBranchVisualization(object parameter)
-        {
-            return FullscreenWatchShowing;
-        }
+        //public bool CanGetBranchVisualization(object parameter)
+        //{
+        //    return FullscreenWatchShowing;
+        //}
 
         public DynamoViewModel ViewModel { get { return this; } }
 

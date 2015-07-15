@@ -22,7 +22,7 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
-
+using Dynamo.Wpf.Rendering;
 using ProtoCore.AST.AssociativeAST;
 
 using VMDataBridge;
@@ -46,17 +46,18 @@ namespace Dynamo.Nodes
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
 
-            View = new Watch3DView(model.GUID, watch3dModel)
+            View = new Watch3DView(model)
             {
                 Width = model.WatchWidth,
-                Height = model.WatchHeight
+                Height = model.WatchHeight,
+                DataContext = nodeView.ViewModel.DynamoViewModel,
             };
 
             var pos = model.CameraPosition;
             var viewDir = model.LookDirection;
 
-            View.View.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
-            View.View.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
+            View.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
+            View.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
@@ -96,15 +97,7 @@ namespace Dynamo.Nodes
                     nodeView.Dispatcher.Invoke(
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
-                        obj));
-
-            View.Loaded += View_Loaded;
-           
-        }
-
-        void View_Loaded(object sender, RoutedEventArgs e)
-        {
-            watch3dModel.GetBranchVisualization(null);
+                        obj));       
         }
 
         private void UpdateLatestCameraPosition()
@@ -119,12 +112,24 @@ namespace Dynamo.Nodes
             watch3dModel.LookDirection = new Vector3D(viewDir.X, -viewDir.Z, viewDir.Y);
         }
 
+        /// <summary>
+        /// Create an IRenderPackage object provided an IGraphicItem
+        /// </summary>
+        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
+        /// <returns>An IRenderPackage object.</returns>
+        public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
+        {
+            var factory = new HelixRenderPackageFactory();
+            var renderPackage = factory.CreateRenderPackage();
+            gItem.Tessellate(renderPackage, factory.TessellationParameters);
+            return renderPackage;
+        }
+
         private void RenderData(object data)
         {
             if (View == null) return;
-            
-            View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(watch3dModel.ViewModel.VisualizationManager.CreateRenderPackageFromGraphicItem), new List<IRenderPackage>(), watch3dModel.GUID));
+
+            View.RenderDrawables(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -158,7 +163,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags("Watch3DSearchTags", typeof(DynamoWatch3D.Properties.Resources))]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
-    public class Watch3D : NodeModel, IWatchViewModel
+    public class Watch3D : NodeModel
     {
         public bool _canNavigateBackground { get; private set; }
 
@@ -178,8 +183,6 @@ namespace Dynamo.Nodes
         }
 
         #region public properties
-
-        public DelegateCommand GetBranchVisualizationCommand { get; set; }
 
         public DelegateCommand ToggleCanNavigateBackgroundCommand
         {
@@ -226,8 +229,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-
-            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
 
             WatchIsResizable = true;
 
@@ -357,19 +358,5 @@ namespace Dynamo.Nodes
         {
             // No visualization update is required for this node type.
         }
-
-        #region IWatchViewModel interface
-
-        public void GetBranchVisualization(object parameters)
-        {
-            ViewModel.VisualizationManager.RequestBranchUpdate(this);
-        }
-
-        public bool CanGetBranchVisualization(object parameter)
-        {
-            return true;
-        }
-
-        #endregion
     }
 }

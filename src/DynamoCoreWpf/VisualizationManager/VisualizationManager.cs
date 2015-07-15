@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Wpf.Rendering;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -41,11 +38,9 @@ namespace Dynamo
 
         private string alternateContextName = "Host";
         private bool drawToAlternateContext = true;
-        private bool updatingPaused;
         protected readonly DynamoModel dynamoModel;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
         private bool alternateDrawingContextAvailable;
-        private IRenderPackageFactory renderPackageFactory;
  
         #endregion
 
@@ -109,11 +104,6 @@ namespace Dynamo
             set { alternateContextName = value; }
         }
 
-        public IRenderPackageFactory RenderPackageFactory
-        {
-            get { return renderPackageFactory; }
-        }
-
         #endregion
 
         #region events
@@ -155,23 +145,7 @@ namespace Dynamo
         public VisualizationManager(DynamoModel model)
         {
             dynamoModel = model;
-
-            dynamoModel.WorkspaceAdded += WorkspaceAdded;
-            dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
-
             dynamoModel.DeletionComplete += dynamoModel_DeletionComplete; 
-
-            dynamoModel.EvaluationCompleted += RequestAllNodesVisualsUpdate;
-            dynamoModel.RequestsRedraw += RequestAllNodesVisualsUpdate;
-
-            // The initial workspace will have been created before the viz manager
-            // is created. So we have to hook to that workspace's events during
-            // construction of the viz manager to make sure we don't miss handling
-            // events from the pre-existing workspace.
-            WorkspaceAdded(dynamoModel.CurrentWorkspace);
-
-            renderPackageFactory = new HelixRenderPackageFactory();
-            RenderPackageFactory.TessellationParameters.ShowEdges = model.PreferenceSettings.ShowEdges;
         }
 
         #endregion
@@ -232,83 +206,11 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Request updated visuals for a branch of the graph.
-        /// </summary>
-        /// <param name="node">The node whose branch you want updated visuals for, 
-        /// or null to return everything.</param>
-        public void RequestBranchUpdate(NodeModel node)
-        {
-            var scheduler = dynamoModel.Scheduler;
-            if (scheduler == null) // Shutdown has begun.
-                return;
-
-            // Schedule a AggregateRenderPackageAsyncTask here so that the 
-            // background geometry preview gets refreshed.
-            // 
-            var task = new AggregateRenderPackageAsyncTask(scheduler);
-            task.Initialize(dynamoModel.CurrentWorkspace, node);
-            task.Completed += OnRenderPackageAggregationCompleted;
-            scheduler.ScheduleForExecution(task);
-        }
-
-        /// <summary>
         /// Unhook all event handlers.
         /// </summary>
         public void Dispose()
         {
-            UnregisterEventListeners();
-
-            dynamoModel.WorkspaceAdded -= WorkspaceAdded;
-            dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
-
             dynamoModel.DeletionComplete -= dynamoModel_DeletionComplete;
-
-            dynamoModel.EvaluationCompleted -= RequestAllNodesVisualsUpdate;
-            dynamoModel.RequestsRedraw -= RequestAllNodesVisualsUpdate;
-
-        }
-
-        #endregion
-
-        #region private event handlers
-
-        private void WorkspaceAdded(WorkspaceModel model)
-        {
-            var workspace = model as HomeWorkspaceModel;
-            if (workspace == null) return;
-
-            workspace.NodeAdded += NodeAddedToHomeWorkspace;
-
-            foreach (var node in workspace.Nodes)
-                NodeAddedToHomeWorkspace(node);
-        }
-
-        private void WorkspaceRemoved(WorkspaceModel model)
-        {
-            var workspace = model as HomeWorkspaceModel;
-            if (workspace == null) return;
-
-            workspace.NodeAdded -= NodeAddedToHomeWorkspace;
-
-            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>(), new List<IRenderPackage>(),  Guid.Empty));
-        }
-
-        private void NodeAddedToHomeWorkspace(NodeModel node)
-        {
-            node.PropertyChanged += NodePropertyChanged;
-        }
-
-        private void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (updatingPaused) return;
-
-            switch (e.PropertyName)
-            {
-                case "IsUpstreamVisible":
-                case "DisplayLabels":
-                    RequestNodeVisualUpdateAsync(sender as NodeModel, renderPackageFactory);
-                    break;
-            }
         }
 
         #endregion
@@ -329,57 +231,6 @@ namespace Dynamo
             }
         }
 
-        private void UnregisterEventListeners()
-        {
-            foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
-                n.PropertyChanged -= NodePropertyChanged;
-        }
-
-        private void RequestAllNodesVisualsUpdate(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Viz manager responding to execution.");
-
-            // do nothing if it has come on EvaluationCompleted
-            // and no evaluation took place
-            var args = e as EvaluationCompletedEventArgs;
-            if (args != null && !args.EvaluationTookPlace)
-                return;
-
-            RequestNodeVisualUpdateAsync(null, renderPackageFactory);
-        }
-
-        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel, IRenderPackageFactory factory)
-        {
-            if (nodeModel != null)
-            {
-                // Visualization update for a given node is desired.
-                nodeModel.RequestVisualUpdateAsync(
-                    dynamoModel.Scheduler,
-                    dynamoModel.EngineController,
-                    factory);
-            }
-            else
-            {
-                // Get each node in workspace to update their visuals.
-                foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
-                {
-                    node.RequestVisualUpdateAsync(
-                        dynamoModel.Scheduler,
-                        dynamoModel.EngineController,
-                        factory);
-                }
-            }
-
-            // Schedule a NotifyRenderPackagesReadyAsyncTask here so that when 
-            // render packages of all the NodeModel objects are generated, the 
-            // VisualizationManager gets notified.
-            // 
-            var scheduler = dynamoModel.Scheduler;
-            var notifyTask = new NotifyRenderPackagesReadyAsyncTask(scheduler);
-            notifyTask.Completed += OnNodeModelRenderPackagesReady;
-            scheduler.ScheduleForExecution(notifyTask);
-        }
-
         private void OnNodeModelRenderPackagesReady(AsyncTask asyncTask)
         {
             // By design the following method is invoked on the context of 
@@ -398,14 +249,6 @@ namespace Dynamo
             HandleRenderPackagesReadyCore();
         }
 
-        private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
-        {
-            var task = asyncTask as AggregateRenderPackageAsyncTask;
-
-            var e = new VisualizationEventArgs(task.NormalRenderPackages, task.SelectedRenderPackages, task.NodeId);
-            OnResultsReadyToVisualize(e);
-        }
-
         #endregion
 
         #region protected methods
@@ -417,22 +260,6 @@ namespace Dynamo
 
         #endregion
 
-        /// <summary>
-        /// Create an IRenderPackage object provided an IGraphicItem
-        /// </summary>
-        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
-        /// <returns>An IRenderPackage object.</returns>
-        public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
-        {
-            var renderPackage = renderPackageFactory.CreateRenderPackage();
-            gItem.Tessellate(renderPackage, renderPackageFactory.TessellationParameters);
-            return renderPackage;
-        }
-
-        public void UpdateAllNodeVisualsAndNotify()
-        {
-            RequestNodeVisualUpdateAsync(null, renderPackageFactory);
-        }
     }
 
     /// <summary>
