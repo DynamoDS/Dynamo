@@ -1028,6 +1028,7 @@ namespace Dynamo.Controls
             //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
             //Instead, only the geometry gets updated every time. Once it is attached (after the geometry), helix
             // renders the text at the right position.
+
             if (Text != null && Text.TextInfo.Any())
             {
                 BillboardTextModel3D billboardText3D = new BillboardTextModel3D
@@ -1055,21 +1056,30 @@ namespace Dynamo.Controls
                     billBoardModel3D.Geometry = Text;                   
                 }                
             }
-
-            //This is required for Dynamo to send property changed notifications to helix.          
-            NotifyPropertyChanged("");
+       
+            NotifyPropertyChanged("Model3DValues");
         }
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-            //Clear the geometry values before adding the package.
-            VisualizationManager_WorkspaceOpenedClosedHandled();
+            // The set of packages that we get in this method is all packages for nodes
+            // which have been marked IsUpdated. Because we store multiple packages' worth
+            // of data in each dictionary entry, we need to make sure we only clear the 
+            // GeometryModel3D once. The first time we encounter a key, we add it to the pass
+            // list and reset the geometry. The next time through, we do NOT reset the geometry
+            // we just add to it.
+
+            var passList = new List<string>();
 
             foreach (var rp in parameters.Packages)
             {
-                //Node ID gets updated with a ":" everytime this function is called.
-                //For example, if the same point node is called multiple times (CBN), the ID has a ":"
-                //and this makes the dictionary to have multiple entries for the same node. 
+                // Each node can produce multiple render packages. We want all the geometry of the
+                // same kind stored inside a RenderPackage to be pushed into one GeometryModel3D object.
+                // We strip the unique identifier for the package (i.e. the bit after the `:` in var12345:0), and replace it
+                // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
+                // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
+                // to those geometry objects.
+
                 var baseId = rp.Description;
                 if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
                 {
@@ -1086,20 +1096,16 @@ namespace Dynamo.Controls
 
                     if (model3DDictionary.ContainsKey(id))
                     {
+                        if (!passList.Contains(id))
+                        {
+                            model3DDictionary[id] = CreatePointGeometryModel3D(rp);
+                            passList.Add(id);
+                        }
                         pointGeometry3D = model3DDictionary[id] as PointGeometryModel3D;
                     }
                     else
                     {
-                        pointGeometry3D = new PointGeometryModel3D
-                        {
-                            Geometry = HelixRenderPackage.InitPointGeometry(),
-                            Transform = Model1Transform,
-                            Color = SharpDX.Color.White,
-                            Figure = PointGeometryModel3D.PointFigure.Ellipse,
-                            Size = defaultPointSize,
-                            IsHitTestVisible = true,
-                            IsSelected = rp.IsSelected
-                        };
+                        pointGeometry3D = CreatePointGeometryModel3D(rp);
                         model3DDictionary.Add(id, pointGeometry3D);
                     }
 
@@ -1131,20 +1137,16 @@ namespace Dynamo.Controls
 
                     if (model3DDictionary.ContainsKey(id))
                     {
+                        if (!passList.Contains(id))
+                        {
+                            model3DDictionary[id] = CreateLineGeometryModel3D(rp);
+                            passList.Add(id);
+                        }
                         lineGeometry3D = model3DDictionary[id] as LineGeometryModel3D;
                     }
                     else
                     {
-                        lineGeometry3D = new LineGeometryModel3D()
-                        {
-                            Geometry = HelixRenderPackage.InitLineGeometry(),
-                            Transform = Model1Transform,
-                            Color = SharpDX.Color.White,
-                            Thickness = 0.5,
-                            IsHitTestVisible = true,
-                            IsSelected = rp.IsSelected
-                        };
-
+                        lineGeometry3D = CreateLineGeometryModel3D(rp);
                         model3DDictionary.Add(id, lineGeometry3D);
                     }
 
@@ -1176,46 +1178,16 @@ namespace Dynamo.Controls
 
                 if (model3DDictionary.ContainsKey(id))
                 {
+                    if (!passList.Contains(id))
+                    {
+                        model3DDictionary[id] = CreateDynamoGeometryModel3D(rp);
+                        passList.Add(id);
+                    }
                     meshGeometry3D = model3DDictionary[id] as DynamoGeometryModel3D;
                 }
                 else
                 {
-                    meshGeometry3D = new DynamoGeometryModel3D()
-                    {
-                        Transform = Model1Transform,
-                        Material = WhiteMaterial,
-                        IsHitTestVisible = true,
-                        RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
-                        IsSelected = rp.IsSelected,
-                    };
-                    
-                    if (rp.Colors != null)
-                    {
-                        var pf = PixelFormats.Bgra32;
-                        var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
-                        try
-                        {
-                            var diffMap = BitmapSource.Create(rp.ColorsStride/4, rp.Colors.Count()/rp.ColorsStride, 96.0, 96.0, pf, null,
-                                rp.Colors.ToArray(), stride);
-                            var diffMat = new PhongMaterial
-                            {
-                                Name = "White",
-                                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                                DiffuseColor = materialColor,
-                                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
-                                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
-                                SpecularShininess = 12.8f,
-                                DiffuseMap = diffMap
-                            };
-                            meshGeometry3D.Material = diffMat;
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                            Console.WriteLine(ex.StackTrace);
-                        }
-                    }
-                    ((MaterialGeometryModel3D) meshGeometry3D).SelectionColor = selectionColor; 
+                    meshGeometry3D = CreateDynamoGeometryModel3D(rp);
                     model3DDictionary.Add(id, meshGeometry3D);
                 }
 
@@ -1223,7 +1195,6 @@ namespace Dynamo.Controls
                 var idxCount = mesh.Positions.Count;
 
                 mesh.Positions.AddRange(m.Positions);
-
                 mesh.Colors.AddRange(m.Colors);
                 mesh.Normals.AddRange(m.Normals);
                 mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
@@ -1249,6 +1220,77 @@ namespace Dynamo.Controls
             Attach();
         }
 
+        private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
+        {
+            var meshGeometry3D = new DynamoGeometryModel3D()
+            {
+                Transform = Model1Transform,
+                Material = WhiteMaterial,
+                IsHitTestVisible = true,
+                RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                IsSelected = rp.IsSelected,
+            };
+
+            if (rp.Colors != null)
+            {
+                var pf = PixelFormats.Bgra32;
+                var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
+                try
+                {
+                    var diffMap = BitmapSource.Create(rp.ColorsStride / 4, rp.Colors.Count() / rp.ColorsStride, 96.0, 96.0, pf, null,
+                        rp.Colors.ToArray(), stride);
+                    var diffMat = new PhongMaterial
+                    {
+                        Name = "White",
+                        AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                        DiffuseColor = materialColor,
+                        SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                        EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                        SpecularShininess = 12.8f,
+                        DiffuseMap = diffMap
+                    };
+                    meshGeometry3D.Material = diffMat;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+            }
+            ((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = selectionColor; 
+
+            return meshGeometry3D;
+        }
+
+        private LineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp)
+        {
+            var lineGeometry3D = new LineGeometryModel3D()
+            {
+                Geometry = HelixRenderPackage.InitLineGeometry(),
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.5,
+                IsHitTestVisible = true,
+                IsSelected = rp.IsSelected
+            };
+            return lineGeometry3D;
+        }
+
+        private PointGeometryModel3D CreatePointGeometryModel3D(HelixRenderPackage rp)
+        {
+            var pointGeometry3D = new PointGeometryModel3D
+            {
+                Geometry = HelixRenderPackage.InitPointGeometry(),
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Figure = PointGeometryModel3D.PointFigure.Ellipse,
+                Size = defaultPointSize,
+                IsHitTestVisible = true,
+                IsSelected = rp.IsSelected
+            };
+            return pointGeometry3D;
+        }
+
         void meshGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
         {
             var args = e as Mouse3DEventArgs;
@@ -1272,7 +1314,7 @@ namespace Dynamo.Controls
                 var model3d = kvp.Value;
                 if (model3d is GeometryModel3D)
                 {                  
-                    if (View != null && View.RenderHost != null)
+                    if (View != null && View.RenderHost != null && ! model3d.IsAttached)
                     {
                         model3d.Attach(View.RenderHost);
                     }
@@ -1285,11 +1327,6 @@ namespace Dynamo.Controls
                     {
                         model3d.Attach(View.RenderHost);
                     }
-                    //else
-                    //{
-                    //    model3d.Detach();
-                    //    model3d.Attach(View.RenderHost);
-                    //}
                 }
             }   
         }
