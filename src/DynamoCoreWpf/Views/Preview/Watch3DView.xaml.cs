@@ -487,12 +487,14 @@ namespace Dynamo.Controls
         {
             model.WorkspaceCleared += Model_WorkspaceCleared;
             model.ShutdownStarted += Model_ShutdownStarted;
+            model.CleaningUp += ClearGeometryDictionary;
         }
 
         private void UnregisterModelEventHandlers(DynamoModel model)
         {
             model.WorkspaceCleared -= Model_WorkspaceCleared;
             model.ShutdownStarted -= Model_ShutdownStarted;
+            model.CleaningUp -= ClearGeometryDictionary;
         }
 
         private void UnregisterWorkspaceEventHandlers(DynamoModel model)

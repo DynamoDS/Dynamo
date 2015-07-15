@@ -173,8 +173,6 @@ namespace Dynamo
 
             dynamoModel.DeletionComplete += dynamoModel_DeletionComplete; 
 
-            dynamoModel.CleaningUp += Clear;
-
             dynamoModel.EvaluationCompleted += RequestAllNodesVisualsUpdate;
             dynamoModel.RequestsRedraw += RequestAllNodesVisualsUpdate;
 
@@ -280,8 +278,6 @@ namespace Dynamo
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
 
             dynamoModel.DeletionComplete -= dynamoModel_DeletionComplete;
-
-            dynamoModel.CleaningUp -= Clear;
 
             dynamoModel.EvaluationCompleted -= RequestAllNodesVisualsUpdate;
             dynamoModel.RequestsRedraw -= RequestAllNodesVisualsUpdate;
@@ -476,12 +472,6 @@ namespace Dynamo
 
             var e = new VisualizationEventArgs(task.NormalRenderPackages, task.SelectedRenderPackages, task.NodeId);
             OnResultsReadyToVisualize(e);
-        }
-
-        private void Clear()
-        {
-            // Send along an empty render set to clear all visualizations.
-            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, new List<IRenderPackage>{}, Guid.Empty));
         }
 
         #endregion
