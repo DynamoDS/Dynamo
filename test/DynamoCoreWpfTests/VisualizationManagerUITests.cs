@@ -72,7 +72,10 @@ namespace DynamoCoreWpfTests
             var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Assert.AreEqual(1, ws.TotalPointsToRender());
+            // Visibility does not cause a re-render.
+            // Everything should be the same.
+
+            Assert.AreEqual(7, ws.TotalPointsToRender());
             Assert.AreEqual(6, ws.TotalLinesToRender());
             Assert.AreEqual(0, ws.TotalMeshesToRender());
 
@@ -80,8 +83,11 @@ namespace DynamoCoreWpfTests
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Assert.AreEqual(1, ws.TotalPointsToRender());
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            // Visibility does not cause a re-render.
+            // Everything should be the same.
+
+            Assert.AreEqual(7, ws.TotalPointsToRender());
+            Assert.AreEqual(6, ws.TotalLinesToRender());
             Assert.AreEqual(0, ws.TotalMeshesToRender());
 
             //flip those back on and ensure the visualization returns
@@ -105,7 +111,7 @@ namespace DynamoCoreWpfTests
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
-
+            
             //we start with all previews disabled
             //the graph is two points feeding into a line
 
@@ -166,10 +172,11 @@ namespace DynamoCoreWpfTests
             var port = lineNode.InPorts.First();
             port.Connectors.First().Delete();
 
-            //ensure that the visualization no longer contains
+            // When removing the connector, it will result in a no render.
+            // The existing lines will be removed. There shouldn't
+            // be anything new to render.
 
-            //the renderables for the line node
-            Assert.AreEqual(7, ws.TotalPointsToRender());
+            Assert.AreEqual(0, ws.TotalPointsToRender());
             Assert.AreEqual(0, ws.TotalLinesToRender());
         }
 
