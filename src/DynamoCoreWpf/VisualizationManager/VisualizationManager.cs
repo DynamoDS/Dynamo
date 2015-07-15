@@ -168,8 +168,6 @@ namespace Dynamo
         {
             dynamoModel = model;
 
-            dynamoModel.WorkspaceCleared += ClearVisualizations;
-       
             dynamoModel.WorkspaceAdded += WorkspaceAdded;
             dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
 
@@ -277,8 +275,6 @@ namespace Dynamo
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
             UnregisterEventListeners();
-
-            dynamoModel.WorkspaceCleared -= ClearVisualizations;
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
@@ -486,13 +482,6 @@ namespace Dynamo
         {
             // Send along an empty render set to clear all visualizations.
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, new List<IRenderPackage>{}, Guid.Empty));
-        }
-
-        private void ClearVisualizations(object sender, EventArgs e)
-        {
-            OnWorkspaceOpenedClosed();
-            Clear();
-            OnRenderComplete();
         }
 
         #endregion

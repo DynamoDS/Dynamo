@@ -472,7 +472,7 @@ namespace Dynamo.Controls
             viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             viewModel.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled += VisualizationManager_WorkspaceOpenedClosedHandled;
+            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled += ClearGeometryDictionary;
         }
 
         private void UnregisterVisualizationManagerEventHandlers()
@@ -480,7 +480,7 @@ namespace Dynamo.Controls
             viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             viewModel.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled -= VisualizationManager_WorkspaceOpenedClosedHandled;
+            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled -= ClearGeometryDictionary;
         }
 
         private void RegisterModelEventhandlers(DynamoModel model)
@@ -529,6 +529,7 @@ namespace Dynamo.Controls
         void Model_WorkspaceCleared(object sender, EventArgs e)
         {
             SetCameraToDefaultOrientation();
+            ClearGeometryDictionary();
         }
 
         void Model_WorkspaceOpening(XmlDocument doc)
@@ -556,9 +557,9 @@ namespace Dynamo.Controls
         /// Always, keep these DirectionalLight,Grid,Axes. These values are rendered
         /// only once by helix, attaching them again will make no effect on helix 
         /// </summary> 
-        private void VisualizationManager_WorkspaceOpenedClosedHandled()
+        private void ClearGeometryDictionary()
         {
-            List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText"};
+            var keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText"};
             if (Text != null && Text.TextInfo.Any())
             {
                 Text.TextInfo.Clear();               
