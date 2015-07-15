@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -76,6 +77,7 @@ namespace Dynamo.Controls
         internal readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
         internal readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0); 
         private readonly Size defaultPointSize = new Size(8,8);
+        private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
 
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
         private Dictionary<string, Model3D> Model3DDictionary
@@ -399,6 +401,8 @@ namespace Dynamo.Controls
 
             if (viewModel == null) return;
 
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
+
             UnregisterVisualizationManagerEventHandlers();
 
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
@@ -420,6 +424,8 @@ namespace Dynamo.Controls
 
             //check this for null so the designer can load the preview
             if (viewModel == null) return;
+
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
             RegisterVisualizationManagerEventHandlers();
 
@@ -471,14 +477,12 @@ namespace Dynamo.Controls
         {
             viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
-            viewModel.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
         }
 
         private void UnregisterVisualizationManagerEventHandlers()
         {
             viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            viewModel.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
         }
 
         private void RegisterModelEventhandlers(DynamoModel model)
@@ -580,45 +584,102 @@ namespace Dynamo.Controls
         /// If any of the model is in selected mode, then unselect that model
         /// </summary>
         /// <param name="items">The items.</param>
-        private void VisualizationManager_SelectionHandled(IEnumerable items)
+        private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (items == null)
+            switch (e.Action)
             {
-                var geom3dList =
-                    watch_view.Items.Cast<object>().Where(x => x is GeometryModel3D).Cast<GeometryModel3D>().ToList();
+                case NotifyCollectionChangedAction.Reset:
+                    Model3DDictionary.Values.
+                        Where(v=>v is GeometryModel3D).
+                        Cast<GeometryModel3D>().ToList().ForEach(g=>g.IsSelected = false);
+                    return;
 
-                var list = geom3dList.Select(y =>
-                {
-                    y.IsSelected = false;
-                    return y;
-                }).ToList();
-               
+                case NotifyCollectionChangedAction.Remove:
+                    SetSelection(e.OldItems,false);
+                    return;
+
+                case NotifyCollectionChangedAction.Add:
+
+                    // When a node is added to the workspace, it is also added
+                    // to the selection. When running automatically, this addition
+                    // also triggers an execution. This would successive calls to render.
+                    // To prevent this, we maintain a collection of recently added nodes, and
+                    // we check if the selection is an addition and if all of the recently
+                    // added nodes are contained in that selection. if so, we skip the render
+                    // as this render will occur after the upcoming execution.
+                    if (e.Action == NotifyCollectionChangedAction.Add && recentlyAddedNodes.Any()
+                        && recentlyAddedNodes.TrueForAll(n => e.NewItems.Contains((object)n)))
+                    {
+                        recentlyAddedNodes.Clear();
+                        return;
+                    }
+
+                    SetSelection(e.NewItems, true);
+                    return;
             }
-            else
+
+            
+            //OnSelectionChanged(e.NewItems);
+
+            //if (items == null)
+            //{
+            //    var geom3dList =
+            //        watch_view.Items.Cast<object>().Where(x => x is GeometryModel3D).Cast<GeometryModel3D>().ToList();
+
+            //    var list = geom3dList.Select(y =>
+            //    {
+            //        y.IsSelected = false;
+            //        return y;
+            //    }).ToList();
+               
+            //}
+            //else
+            //{
+            //    foreach (var item in items)
+            //    {
+            //        var node = item as NodeModel;
+            //        if (node == null)
+            //        {
+            //            continue;
+            //        }
+
+            //        var geometryModels = FindGeometryModel3DsForNode(node);
+
+            //        if (!geometryModels.Any())
+            //        {
+            //            continue;
+            //        }
+
+            //        var modelValues = geometryModels.Select(x => x.Value);
+            //        var selectedGeom = modelValues.Cast<GeometryModel3D>().Select(z =>
+            //        {
+            //            z.IsSelected = !z.IsSelected;
+            //            return z;
+            //        }).ToList();                    
+            //    }
+            //}            
+        }
+
+        private void SetSelection(IEnumerable items, bool isSelected)
+        {
+            foreach (var item in items)
             {
-                foreach (var item in items)
+                var node = item as NodeModel;
+                if (node == null)
                 {
-                    var node = item as NodeModel;
-                    if (node == null)
-                    {
-                        continue;
-                    }
-
-                    var geometryModels = FindGeometryModel3DsForNode(node);
-
-                    if (!geometryModels.Any())
-                    {
-                        continue;
-                    }
-
-                    var modelValues = geometryModels.Select(x => x.Value);
-                    var selectedGeom = modelValues.Cast<GeometryModel3D>().Select(z =>
-                    {
-                        z.IsSelected = !z.IsSelected;
-                        return z;
-                    }).ToList();                    
+                    continue;
                 }
-            }            
+
+                var geometryModels = FindGeometryModel3DsForNode(node);
+
+                if (!geometryModels.Any())
+                {
+                    continue;
+                }
+
+                var modelValues = geometryModels.Select(x => x.Value);
+                modelValues.Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = isSelected);
+            }
         }
 
         private void DeleteGeometryForNode(NodeModel node)
@@ -1019,6 +1080,8 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void RenderDrawables(VisualizationEventArgs e)
         {
+            recentlyAddedNodes.Clear();
+
             //check the id, if the id is meant for another watch,
             //then ignore it
             if (e.Id != _id)

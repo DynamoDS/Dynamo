@@ -57,11 +57,6 @@ namespace Dynamo.Interfaces
         /// </summary>
         IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem graphicItem);
 
-        /// <summary>
-        /// An event triggered on the Selection of model.
-        /// </summary>
-        event Action<IEnumerable> SelectionHandled;
-
         /// Update all Node RenderPackages and raise notification.
         /// </summary>
         void UpdateAllNodeVisualsAndNotify();

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +7,6 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Selection;
 using Dynamo.Wpf.Rendering;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -48,7 +45,6 @@ namespace Dynamo
         protected readonly DynamoModel dynamoModel;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
         private bool alternateDrawingContextAvailable;
-        private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         private IRenderPackageFactory renderPackageFactory;
  
         #endregion
@@ -168,8 +164,6 @@ namespace Dynamo
             dynamoModel.EvaluationCompleted += RequestAllNodesVisualsUpdate;
             dynamoModel.RequestsRedraw += RequestAllNodesVisualsUpdate;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
-
             // The initial workspace will have been created before the viz manager
             // is created. So we have to hook to that workspace's events during
             // construction of the viz manager to make sure we don't miss handling
@@ -262,8 +256,6 @@ namespace Dynamo
         /// </summary>
         public void Dispose()
         {
-            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
-
             UnregisterEventListeners();
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
@@ -304,8 +296,6 @@ namespace Dynamo
         private void NodeAddedToHomeWorkspace(NodeModel node)
         {
             node.PropertyChanged += NodePropertyChanged;
-
-            recentlyAddedNodes.Add(node);
         }
 
         private void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -319,47 +309,6 @@ namespace Dynamo
                     RequestNodeVisualUpdateAsync(sender as NodeModel, renderPackageFactory);
                     break;
             }
-        }
-
-        public event Action<IEnumerable> SelectionHandled;
-        protected virtual void OnSelectionChanged(IEnumerable items)
-        {
-            if (SelectionHandled != null)
-                SelectionHandled(items);
-        }
-
-        private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            Debug.WriteLine("SELECTION: {0}", e.Action);
-
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                //Calling with NULL to make sure nothing is selected
-                OnSelectionChanged(null);
-                return;
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                OnSelectionChanged(e.OldItems);
-                return;
-            }
-
-            // When a node is added to the workspace, it is also added
-            // to the selection. When running automatically, this addition
-            // also triggers an execution. This would successive calls to render.
-            // To prevent this, we maintain a collection of recently added nodes, and
-            // we check if the selection is an addition and if all of the recently
-            // added nodes are contained in that selection. if so, we skip the render
-            // as this render will occur after the upcoming execution.
-            if (e.Action == NotifyCollectionChangedAction.Add && recentlyAddedNodes.Any()
-                && recentlyAddedNodes.TrueForAll(n=>e.NewItems.Contains((object)n)))
-            {
-                recentlyAddedNodes.Clear();
-                return;
-            }
-
-            OnSelectionChanged(e.NewItems);
         }
 
         #endregion
@@ -389,8 +338,6 @@ namespace Dynamo
         private void RequestAllNodesVisualsUpdate(object sender, EventArgs e)
         {
             Debug.WriteLine("Viz manager responding to execution.");
-
-            recentlyAddedNodes.Clear();
 
             // do nothing if it has come on EvaluationCompleted
             // and no evaluation took place
