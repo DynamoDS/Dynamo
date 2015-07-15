@@ -341,7 +341,6 @@ namespace Dynamo
 
             switch (e.PropertyName)
             {
-                case "IsVisible":
                 case "IsUpstreamVisible":
                 case "DisplayLabels":
                     RequestNodeVisualUpdateAsync(sender as NodeModel, renderPackageFactory);

@@ -518,6 +518,13 @@ namespace Dynamo.Controls
             foreach (var ws in model.Workspaces)
             {
                 ws.Saving += workspace_Saving;
+                ws.NodeAdded += workspace_NodeAdded;
+                ws.NodeRemoved += workspace_NodeRemoved;
+
+                foreach (var node in ws.Nodes)
+                {
+                    node.PropertyChanged += node_PropertyChanged;
+                }
             }
         }
 
@@ -646,11 +653,43 @@ namespace Dynamo.Controls
         void Model_WorkspaceAdded(Models.WorkspaceModel workspace)
         {
             workspace.Saving += workspace_Saving;
+            workspace.NodeAdded += workspace_NodeAdded;
+            workspace.NodeRemoved += workspace_NodeRemoved;
+
+            foreach (var node in workspace.Nodes)
+            {
+                node.PropertyChanged += node_PropertyChanged;
+            }
         }
 
         void Model_WorkspaceRemoved(Models.WorkspaceModel workspace)
         {
             workspace.Saving -= workspace_Saving;
+            workspace.NodeAdded -= workspace_NodeAdded;
+            workspace.NodeRemoved -= workspace_NodeRemoved;
+        }
+
+        void workspace_NodeAdded(NodeModel node)
+        {
+            node.PropertyChanged += node_PropertyChanged;
+        }
+
+        void workspace_NodeRemoved(NodeModel obj)
+        {
+            obj.PropertyChanged -= node_PropertyChanged;
+        }
+
+        void node_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var node = sender as NodeModel;
+            switch (e.PropertyName)
+            {
+                case "IsVisible":
+                    var geoms = FindGeometryModel3DsForNode(node);
+                    geoms.ToList().ForEach(g=>g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
+                    NotifyPropertyChanged("Model3DValues");
+                    break;
+            }
         }
 
         void workspace_Saving(XmlDocument doc)
@@ -1057,7 +1096,7 @@ namespace Dynamo.Controls
                 }                
             }
        
-            NotifyPropertyChanged("Model3DValues");
+            NotifyPropertyChanged("");
         }
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
