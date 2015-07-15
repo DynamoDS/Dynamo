@@ -63,11 +63,6 @@ namespace Dynamo.Interfaces
         event Action<IEnumerable> SelectionHandled;
 
         /// <summary>
-        /// An event triggered on the Deletion of model.
-        /// </summary>
-        event Action<NodeModel> DeletionHandled;
-
-        /// <summary>
         /// An event triggered when a workspace is closed / open.
         /// </summary>
         event Action WorkspaceOpenedClosedHandled;

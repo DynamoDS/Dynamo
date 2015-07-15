@@ -302,7 +302,6 @@ namespace Dynamo
             if (workspace == null) return;
 
             workspace.NodeAdded += NodeAddedToHomeWorkspace;
-            workspace.NodeRemoved += NodeRemovedFromHomeWorkspace;
 
             foreach (var node in workspace.Nodes)
                 NodeAddedToHomeWorkspace(node);
@@ -314,18 +313,8 @@ namespace Dynamo
             if (workspace == null) return;
 
             workspace.NodeAdded -= NodeAddedToHomeWorkspace;
-            workspace.NodeRemoved -= NodeRemovedFromHomeWorkspace;
-
-            foreach (var node in workspace.Nodes)
-                NodeRemovedFromHomeWorkspace(node);
 
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>(), new List<IRenderPackage>(),  Guid.Empty));
-        }
-
-        private void NodeRemovedFromHomeWorkspace(NodeModel node)
-        {
-            node.PropertyChanged -= NodePropertyChanged;
-            OnNodeDeletionHandled(node);
         }
 
         private void NodeAddedToHomeWorkspace(NodeModel node)
@@ -353,13 +342,6 @@ namespace Dynamo
         {
             if (SelectionHandled != null)
                 SelectionHandled(items);
-        }
-
-        public event Action<NodeModel> DeletionHandled;
-        protected virtual void OnNodeDeletionHandled(NodeModel node)
-        {
-            if (DeletionHandled != null)
-                DeletionHandled(node);
         }
 
         public event Action WorkspaceOpenedClosedHandled;

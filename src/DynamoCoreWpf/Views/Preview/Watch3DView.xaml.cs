@@ -472,7 +472,6 @@ namespace Dynamo.Controls
             viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             viewModel.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.DeletionHandled += VisualizationManager_DeletionHandled;
             viewModel.VisualizationManager.WorkspaceOpenedClosedHandled += VisualizationManager_WorkspaceOpenedClosedHandled;
         }
 
@@ -481,7 +480,6 @@ namespace Dynamo.Controls
             viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             viewModel.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.DeletionHandled -= VisualizationManager_DeletionHandled;
             viewModel.VisualizationManager.WorkspaceOpenedClosedHandled -= VisualizationManager_WorkspaceOpenedClosedHandled;
         }
 
@@ -622,12 +620,7 @@ namespace Dynamo.Controls
             }            
         }
 
-        /// <summary>
-        /// when a node is deleted, then update the Geometry 
-        /// and notify helix        
-        /// </summary>
-        /// <param name="node">The node.</param>
-        private void VisualizationManager_DeletionHandled(NodeModel node)
+        private void DeleteGeometryForNode(NodeModel node)
         {
             var geometryModels = FindGeometryModel3DsForNode(node);
 
@@ -647,7 +640,7 @@ namespace Dynamo.Controls
                 Model3DDictionary.Remove(kvp.Key);                
             }
 
-            NotifyPropertyChanged("");
+            NotifyPropertyChanged("Model3DValues");
         }
 
         void Model_WorkspaceAdded(Models.WorkspaceModel workspace)
@@ -674,9 +667,10 @@ namespace Dynamo.Controls
             node.PropertyChanged += node_PropertyChanged;
         }
 
-        void workspace_NodeRemoved(NodeModel obj)
+        void workspace_NodeRemoved(NodeModel node)
         {
-            obj.PropertyChanged -= node_PropertyChanged;
+            node.PropertyChanged -= node_PropertyChanged;
+            DeleteGeometryForNode(node);
         }
 
         void node_PropertyChanged(object sender, PropertyChangedEventArgs e)
