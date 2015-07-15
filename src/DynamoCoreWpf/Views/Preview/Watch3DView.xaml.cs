@@ -437,6 +437,11 @@ namespace Dynamo.Controls
                         viewModel.RenderPackageFactoryViewModel.Factory.TessellationParameters.ShowEdges;
                     break;
             }
+
+            if (referenceNode != null) return;
+
+            ClearGeometryDictionary();
+
             RequestNodeVisualUpdateAsync(null);
         }
 
@@ -910,26 +915,6 @@ namespace Dynamo.Controls
         //}
 
         /// <summary>
-        /// Callback for thumb control's DragStarted event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ResizeThumb_OnDragStarted(object sender, DragStartedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Callbcak for thumb control's DragCompleted event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ResizeThumb_OnDragCompleted(object sender, DragCompletedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Callback for thumb control's DragDelta event.
         /// </summary>
         /// <param name="sender"></param>
@@ -938,11 +923,6 @@ namespace Dynamo.Controls
         {
             var yAdjust = ActualHeight + e.VerticalChange;
             var xAdjust = ActualWidth + e.HorizontalChange;
-
-            //Debug.WriteLine("d_x:" + e.HorizontalChange + "," + "d_y:" + e.VerticalChange);
-            //Debug.WriteLine("Size:" + _nodeUI.Width + "," + _nodeUI.Height);
-            //Debug.WriteLine("ActualSize:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
-            //Debug.WriteLine("Grid size:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
 
             if (xAdjust >= inputGrid.MinWidth)
             {
@@ -1108,15 +1088,6 @@ namespace Dynamo.Controls
         {
             recentlyAddedNodes.Clear();
 
-            //check the id, if the id is meant for another watch,
-            //then ignore it
-            //if (e.Id != _id)
-            //{               
-            //    Attach();
-            //    NotifyPropertyChanged("");
-            //    return;
-            //}
-        
             // Don't render if the user's system is incapable.
             if (renderingTier == 0)
             {
@@ -1132,6 +1103,8 @@ namespace Dynamo.Controls
                 .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
 
             RemoveGeometryFromDisconnectedNodes();
+
+            RemoveGeometryForUpdatedPackages(packages);
 
             var text = HelixRenderPackage.InitText3D();
 
@@ -1221,17 +1194,38 @@ namespace Dynamo.Controls
             }
         }
 
+        private void RemoveGeometryForUpdatedPackages(IEnumerable<IRenderPackage> packages)
+        {
+            var packageDescrips = packages.Select(p => p.Description.Split(':')[0]).Distinct();
+
+            foreach (var id in packageDescrips)
+            {
+                var pointsId = id + ":points";
+                var linesId = id + ":lines";
+                var meshId = id + ":mesh";
+
+                if (Model3DDictionary.ContainsKey(pointsId))
+                {
+                    Model3DDictionary[pointsId].Detach();
+                    Model3DDictionary.Remove(pointsId);
+                }
+
+                if (Model3DDictionary.ContainsKey(linesId))
+                {
+                    Model3DDictionary[linesId].Detach();
+                    Model3DDictionary.Remove(linesId);
+                }
+
+                if (Model3DDictionary.ContainsKey(meshId))
+                {
+                    Model3DDictionary[meshId].Detach();
+                    Model3DDictionary.Remove(meshId);
+                }
+            }
+        }
+
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-            // The set of packages that we get in this method is all packages for nodes
-            // which have been marked IsUpdated. Because we store multiple packages' worth
-            // of data in each dictionary entry, we need to make sure we only clear the 
-            // GeometryModel3D once. The first time we encounter a key, we add it to the pass
-            // list and reset the geometry. The next time through, we do NOT reset the geometry
-            // we just add to it.
-
-            var passList = new List<string>();
-
             foreach (var rp in parameters.Packages)
             {
                 // Each node can produce multiple render packages. We want all the geometry of the
@@ -1257,11 +1251,6 @@ namespace Dynamo.Controls
 
                     if (model3DDictionary.ContainsKey(id))
                     {
-                        if (!passList.Contains(id))
-                        {
-                            model3DDictionary[id] = CreatePointGeometryModel3D(rp);
-                            passList.Add(id);
-                        }
                         pointGeometry3D = model3DDictionary[id] as PointGeometryModel3D;
                     }
                     else
@@ -1298,11 +1287,6 @@ namespace Dynamo.Controls
 
                     if (model3DDictionary.ContainsKey(id))
                     {
-                        if (!passList.Contains(id))
-                        {
-                            model3DDictionary[id] = CreateLineGeometryModel3D(rp);
-                            passList.Add(id);
-                        }
                         lineGeometry3D = model3DDictionary[id] as LineGeometryModel3D;
                     }
                     else
@@ -1339,11 +1323,6 @@ namespace Dynamo.Controls
 
                 if (model3DDictionary.ContainsKey(id))
                 {
-                    if (!passList.Contains(id))
-                    {
-                        model3DDictionary[id] = CreateDynamoGeometryModel3D(rp);
-                        passList.Add(id);
-                    }
                     meshGeometry3D = model3DDictionary[id] as DynamoGeometryModel3D;
                 }
                 else
