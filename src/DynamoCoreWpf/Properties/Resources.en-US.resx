@@ -1829,4 +1829,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="AddButton" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="NodeContextMenuIsInput" xml:space="preserve">
+    <value>Is Input</value>
+  </data>
 </root>
