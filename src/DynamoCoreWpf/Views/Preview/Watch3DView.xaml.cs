@@ -472,7 +472,6 @@ namespace Dynamo.Controls
             viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             viewModel.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled += ClearGeometryDictionary;
         }
 
         private void UnregisterVisualizationManagerEventHandlers()
@@ -480,7 +479,6 @@ namespace Dynamo.Controls
             viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             viewModel.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled -= ClearGeometryDictionary;
         }
 
         private void RegisterModelEventhandlers(DynamoModel model)

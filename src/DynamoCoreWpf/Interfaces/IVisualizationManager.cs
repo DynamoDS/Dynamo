@@ -62,11 +62,6 @@ namespace Dynamo.Interfaces
         /// </summary>
         event Action<IEnumerable> SelectionHandled;
 
-        /// <summary>
-        /// An event triggered when a workspace is closed / open.
-        /// </summary>
-        event Action WorkspaceOpenedClosedHandled;
-
         /// Update all Node RenderPackages and raise notification.
         /// </summary>
         void UpdateAllNodeVisualsAndNotify();

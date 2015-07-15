@@ -5,20 +5,12 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.IO;
-using System.Reflection;
-
 using Autodesk.DesignScript.Interfaces;
-
 using Dynamo.Core.Threading;
-using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
-using Dynamo.Wpf.ViewModels;
-
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -334,13 +326,6 @@ namespace Dynamo
         {
             if (SelectionHandled != null)
                 SelectionHandled(items);
-        }
-
-        public event Action WorkspaceOpenedClosedHandled;
-        protected virtual void OnWorkspaceOpenedClosed()
-        {
-            if (WorkspaceOpenedClosedHandled != null)
-                WorkspaceOpenedClosedHandled();
         }
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
