@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Dynamo.Wpf.Converters"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d" 
              Width="200">
     <UserControl.Resources>
@@ -11,7 +12,7 @@
     </UserControl.Resources>
     <Grid>
         <TextBox Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeOffsetConverter}}"
-                     ToolTip="Ented time and date in the format 'dd MMMM yyyy h:mm tt'" 
+                    ToolTip="{x:Static p:CoreNodeModelWpfResources.DateTimeInputToolTip}" 
                      VerticalAlignment="Stretch" 
                      VerticalContentAlignment="Center"
                      HorizontalAlignment="Stretch"/>

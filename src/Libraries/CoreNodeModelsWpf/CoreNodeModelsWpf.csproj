@@ -104,6 +104,16 @@
     <Compile Include="NodeViewCustomizations\StringInput.cs" />
     <Compile Include="NodeViewCustomizations\WatchImage.cs" />
     <Compile Include="NodeViewCustomizations\Watch.cs" />
+    <Compile Include="Properties\CoreNodeModelWpfResources.Designer.cs">
+      <DependentUpon>CoreNodeModelWpfResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\CoreNodeModelWpfResources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoreNodeModelWpfResources.en-US.resx</DependentUpon>
+    </Compile>
     <Compile Include="SliderViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +179,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\MissingNode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\CoreNodeModelWpfResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CoreNodeModelWpfResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\CoreNodeModelWpfResources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CoreNodeModelWpfResources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
