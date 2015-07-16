@@ -47,6 +47,14 @@ namespace Dynamo.Publish.Models
             private set;
         }
 
+        public bool HasAuthenticationProvider
+        {
+            get
+            {
+                return authenticationProvider != null;
+            }
+        }
+
         #region Initialization
 
         internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
