@@ -9,6 +9,7 @@ namespace Dynamo.DSEngine
         private string summary = String.Empty;
         private string searchTags = String.Empty;
         private readonly Dictionary<string, string> parameters;
+        private readonly List<Tuple<string, string>> returns;
 
         public string FullyQualifiedName { get { return fullyQualifiedName; } }
 
@@ -40,6 +41,11 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public IList<Tuple<string,string>> Returns
+        {
+            get { return returns; }
+        }
+
         public IDictionary<string, string> Parameters { get { return parameters; } }
 
         /// <summary>
@@ -64,6 +70,7 @@ namespace Dynamo.DSEngine
 
             fullyQualifiedName = MakeFullyQualifiedName(assemblyName, memberName);
             parameters = new Dictionary<string, string>();
+            returns = new List<Tuple<string, string>>();
         }
 
         internal void AddParameter(string name, string description)

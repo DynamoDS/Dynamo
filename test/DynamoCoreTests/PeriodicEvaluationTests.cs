@@ -102,7 +102,7 @@ namespace Dynamo.Tests
 
             var count = 0;
 
-            Workspace.AddNode(new ActionNodeModel(() =>
+            Workspace.AddAndRegisterNode(new ActionNodeModel(() =>
             {
                 count++;
             }, true));
@@ -125,7 +125,7 @@ namespace Dynamo.Tests
 
             var count = 0;
 
-            Workspace.AddNode(new ActionNodeModel(() =>
+            Workspace.AddAndRegisterNode(new ActionNodeModel(() =>
             {
                 count++;
                 Thread.Sleep(200);

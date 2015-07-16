@@ -158,5 +158,14 @@ namespace DSCore.Properties {
                 return ResourceManager.GetString("QuadtreeConstructionNullUVSetMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels nodes instead..
+        /// </summary>
+        internal static string ReadImageObsolete {
+            get {
+                return ResourceManager.GetString("ReadImageObsolete", resourceCulture);
+            }
+        }
     }
 }

@@ -152,7 +152,7 @@ namespace DSCore.IO
 
         #region Obsolete Methods
 
-        [Obsolete("Use File.FromPath -> Image.ReadFromFile -> Image.Pixels nodes instead.")]
+        [NodeObsolete("ReadImageObsolete", typeof(DSCore.Properties.Resources))]
         public static Color[] ReadImage(string path, int xSamples, int ySamples)
         {
             var info = FromPath(path);
