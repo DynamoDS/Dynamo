@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Dynamo.Wpf.Converters
 {
-    public class StringToDateTimeOffsetConverter : IValueConverter
+    public class StringToDateTimeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -13,10 +13,10 @@ namespace Dynamo.Wpf.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            DateTime dtOffset;
+            DateTime dt;
             return DateTime.TryParseExact(value.ToString(), PreferenceSettings.DefaultDateFormat,
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out dtOffset) ?
-                dtOffset : new DateTime();
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out dt) ?
+                dt : new DateTime(1977, 4, 12, 12, 12, 0, 0);
         }
     }
 }

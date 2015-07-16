@@ -8,10 +8,10 @@
              mc:Ignorable="d" 
              Width="200">
     <UserControl.Resources>
-        <converters:StringToDateTimeOffsetConverter x:Key="StringToDateTimeOffsetConverter"/>
+        <converters:StringToDateTimeConverter x:Key="StringToDateTimeConverter"/>
     </UserControl.Resources>
     <Grid>
-        <TextBox Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeOffsetConverter}}"
+        <TextBox Text="{Binding Value, Mode=TwoWay, Converter={StaticResource StringToDateTimeConverter}}"
                     ToolTip="{x:Static p:CoreNodeModelWpfResources.DateTimeInputToolTip}" 
                      VerticalAlignment="Stretch" 
                      VerticalContentAlignment="Center"
