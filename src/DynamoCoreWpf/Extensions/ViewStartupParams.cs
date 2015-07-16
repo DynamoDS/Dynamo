@@ -3,23 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo.Extensions;
+using Dynamo.Core;
+using Dynamo.ViewModels;
+using Dynamo.Models;
 
 namespace Dynamo.Wpf.Extensions
 {
-    public class ViewStartupParams
+    public class ViewStartupParams : StartupParams
     {
+        private readonly DynamoViewModel dynamoViewModel;
+
         /// <summary>
         /// A handle to the extensions that are already constructed in the Model layer
         /// </summary>
-        public IExtensionManager extensionManager;
+        public IExtensionManager ExtensionManager
+        {
+            get
+            {
+                return dynamoViewModel.Model.ExtensionManager;
+            }
+        }
 
-        // TBD MAGN-7366
-        //
-        // Implementation notes:
-        // 
-        // This should be designed primarily to support the separation of the Package Manager from Core
-        // and minimize exposing unnecessary innards.
-        //
-        // It is expected that this class will be extended in the future, so it should stay as minimal as possible.
+        internal ViewStartupParams(DynamoViewModel dynamoVM) :
+            base(dynamoVM.Model.AuthenticationManager.AuthProvider,
+                dynamoVM.Model.PathManager,
+                dynamoVM.Model.CustomNodeManager)
+        {
+            dynamoViewModel = dynamoVM;
+        }
     }
 }

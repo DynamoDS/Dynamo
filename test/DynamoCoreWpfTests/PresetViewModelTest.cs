@@ -26,7 +26,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());

@@ -1,0 +1,17 @@
+<Workspace Version="0.8.2.1873" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.NumberSeq guid="9dad4260-2708-4503-a0a8-13697fb1a43e" type="DSCoreNodesUI.NumberSeq" nickname="Number Sequence" x="520.5" y="360.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="afb08f0b-7c76-4cd3-8c38-282f9ae1b5de" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="247" y="514" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="50bec59d-f015-4685-b2a5-602291510244" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="241" y="408" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="10;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="621a3f70-2cc4-45f9-8573-0f3a8e1fe9b1" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="241" y="315" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="afb08f0b-7c76-4cd3-8c38-282f9ae1b5de" start_index="0" end="9dad4260-2708-4503-a0a8-13697fb1a43e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="50bec59d-f015-4685-b2a5-602291510244" start_index="0" end="9dad4260-2708-4503-a0a8-13697fb1a43e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="621a3f70-2cc4-45f9-8573-0f3a8e1fe9b1" start_index="0" end="9dad4260-2708-4503-a0a8-13697fb1a43e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>
