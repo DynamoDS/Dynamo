@@ -1,0 +1,167 @@
+﻿<Window x:Class="Dynamo.Publish.Views.PublishView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resx="clr-namespace:Dynamo.Publish"
+        Title="{x:Static resx:Resource.PublishViewTitle}"
+        Height="400"
+        Width="600">
+
+    <Grid Name="mainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="40" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Column="1"
+              Grid.Row="0"
+              Name="gridNameAndDescription">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0"
+                  Margin="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Name:"
+                           Grid.Row="0" />
+
+                <TextBox Name="textBoxName"
+                         Grid.Row="1"
+                         Text="{Binding Name, Mode=TwoWay}" />
+                <TextBlock Name="textBlockDefaultName"
+                           Text="defaults to file name"
+                           Grid.Row="1"
+                           Margin="5,0,5,0"
+                           Foreground="#FF808080"
+                           FontStyle="Italic"
+                           IsHitTestVisible="False">
+
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=textBoxName, Path=Text}"
+                                                   Value="" />
+                                        <Condition Binding="{Binding ElementName=textBoxName, Path=IsKeyboardFocusWithin}"
+                                                   Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  Margin="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Description:"
+                           Grid.Row="0" />
+
+                <TextBox Name="textBoxDescription"
+                         MinHeight="150"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         Text="{Binding Description, Mode=TwoWay}" />
+                <TextBlock Name="textBlockDefaultDescription"
+                           Text="enter description here"
+                           Grid.Row="1"
+                           Margin="5,0,5,0"
+                           Foreground="#FF808080"
+                           FontStyle="Italic"
+                           IsHitTestVisible="False">
+
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=textBoxDescription, Path=Text}"
+                                                   Value="" />
+                                        <Condition Binding="{Binding ElementName=textBoxDescription, Path=IsKeyboardFocusWithin}"
+                                                   Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <Button Name="buttonPublish"
+                        Grid.Row="2"
+                        Content="Publish"
+                        Command="{Binding PublishCommand}"
+                        Width="100"
+                        Grid.Column="1"
+                        Margin="0,10,0,0" />
+
+            </Grid>
+
+        </Grid>
+
+        <Grid Grid.Column="1"
+              Grid.Row="1"
+              Name="gridShareLink"
+              Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Share Link:"
+                       Grid.Row="0" />
+            <TextBox Name="textBoxShareLink"
+                     Grid.Row="1"
+                     Text="{Binding ShareLink, Mode=TwoWay}" />
+            <Button Name="buttonCopyLink"
+                    Content="Copy Link"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="100" />
+            <Button Name="buttonClose"
+                    Content="Close"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Width="100"
+                    Margin="0,10,0,0" />
+        </Grid>
+
+    </Grid>
+</Window>

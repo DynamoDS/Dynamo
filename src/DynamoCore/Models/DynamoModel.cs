@@ -575,7 +575,7 @@ namespace Dynamo.Models
             {
                 try
                 {
-                    ext.Ready(new ReadyParams());
+                    ext.Ready(new ReadyParams(this));
                 }
                 catch (Exception ex)
                 {

@@ -24,7 +24,7 @@ using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable
+    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
 
         public const double ZOOM_MAXIMUM = 4.0;
