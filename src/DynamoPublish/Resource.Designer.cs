@@ -22,7 +22,7 @@ namespace Dynamo.Publish {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource {
+    public class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Dynamo.Publish {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.Publish.Resource", typeof(Resource).Assembly);
@@ -51,7 +51,7 @@ namespace Dynamo.Publish {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Dynamo.Publish {
         /// <summary>
         ///   Looks up a localized string similar to Authentication manager is not found. Please, provide correct authentication manager..
         /// </summary>
-        internal static string AuthenticationErrorMessage {
+        public static string AuthenticationErrorMessage {
             get {
                 return ResourceManager.GetString("AuthenticationErrorMessage", resourceCulture);
             }
@@ -72,16 +72,16 @@ namespace Dynamo.Publish {
         /// <summary>
         ///   Looks up a localized string similar to Malformed configuration file..
         /// </summary>
-        internal static string BadXMLConfigurationFileMessage {
+        public static string BadXMLConfigurationFileMessage {
             get {
                 return ResourceManager.GetString("BadXMLConfigurationFileMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish and Share....
+        ///   Looks up a localized string similar to Publish Customizer....
         /// </summary>
-        internal static string DynamoViewMenuItemPublishTitle {
+        public static string DynamoViewMenuItemPublishTitle {
             get {
                 return ResourceManager.GetString("DynamoViewMenuItemPublishTitle", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Dynamo.Publish {
         /// <summary>
         ///   Looks up a localized string similar to &quot;Page&quot; is not set. set. Please, set server page in configuration file..
         /// </summary>
-        internal static string PageErrorMessage {
+        public static string PageErrorMessage {
             get {
                 return ResourceManager.GetString("PageErrorMessage", resourceCulture);
             }
@@ -99,16 +99,25 @@ namespace Dynamo.Publish {
         /// <summary>
         ///   Looks up a localized string similar to &quot;Port&quot; is not set. Please, set port in configuration file..
         /// </summary>
-        internal static string PortErrorMessage {
+        public static string PortErrorMessage {
             get {
                 return ResourceManager.GetString("PortErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish Customizer.
+        /// </summary>
+        public static string PublishViewTitle {
+            get {
+                return ResourceManager.GetString("PublishViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server not found..
         /// </summary>
-        internal static string ServerErrorMessage {
+        public static string ServerErrorMessage {
             get {
                 return ResourceManager.GetString("ServerErrorMessage", resourceCulture);
             }

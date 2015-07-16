@@ -44,7 +44,7 @@ namespace Dynamo.Publish
 
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
-            p.AddMenuItem(MenuBarType.File, extensionMenuItem);
+            p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
         }
 
         public void Shutdown()
@@ -92,7 +92,7 @@ namespace Dynamo.Publish
         /// <summary>
         /// Delete menu item from Dynamo.
         /// </summary>
-        public void ClearMenuItem(MenuItem menuItem)
+        private void ClearMenuItem(MenuItem menuItem)
         {
             if (dynamoMenu == null)
                 return;
@@ -110,7 +110,7 @@ namespace Dynamo.Publish
         /// First it tries to find it among first layer items (e.g. File, Edit, etc.)
         /// If it doesn't find given menuitem, it tries to search one layer deeper.
         /// </summary>
-        /// <param name="menu">Menu items among which we will search for needed item.</param>
+        /// <param name="menuItems">Menu items among which we will search for needed item.</param>
         /// <param name="searchItem">Menu item, that we want to find.</param>
         /// <returns>Returns parent item for searched item.</returns>
         private MenuItem SearchForMenuItemRecursively(ItemCollection menuItems, MenuItem searchItem)

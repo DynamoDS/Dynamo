@@ -30,7 +30,7 @@ namespace Dynamo.Wpf.Extensions
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
         }
 
-        public void AddMenuItem(MenuBarType type, MenuItem menuItem)
+        public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
         {
             if (dynamoMenu == null)
                 return;
@@ -39,7 +39,10 @@ namespace Dynamo.Wpf.Extensions
             if (dynamoItem == null)
                 return;
 
-            dynamoItem.Items.Add(menuItem);
+            if (index >= 0 && index < dynamoItem.Items.Count)
+                dynamoItem.Items.Insert(index, menuItem);
+            else
+                dynamoItem.Items.Add(menuItem);
         }
 
         /// <summary>
