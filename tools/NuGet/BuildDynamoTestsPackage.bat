@@ -20,6 +20,7 @@ copy %base%\ProtoInterface.dll .\%test%\lib\%framework%\ProtoInterface.dll
 copy %base%\ProtoCore.dll .\%test%\lib\%framework%\ProtoCore.dll
 copy %base%\TestServices.dll .\%test%\lib\%framework%\TestServices.dll
 copy %base%\SystemTestServices.dll .\%test%\lib\%framework%\SystemTestServices.dll
+copy %base%\DynamoShapeManager.dll .\%test%\lib\%framework%\DynamoShapeManager.dll
 
 copy ..\..\src\Libraries\Samples\SampleLibraryTests\TestServices.dll.config .\%test%\content\TestServices.dll.config
 
