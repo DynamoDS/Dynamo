@@ -53,7 +53,8 @@ namespace DSCoreNodesUI
         protected override System.DateTime DeserializeValue(string val)
         {
             System.DateTime result;
-            return System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ? result : new System.DateTime();
+            return System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
+                result : PreferenceSettings.DynamoDefaultTime;
         }
 
         protected override string SerializeValue()

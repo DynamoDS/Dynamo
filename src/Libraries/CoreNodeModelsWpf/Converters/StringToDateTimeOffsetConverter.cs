@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.Converters
             DateTime dt;
             return DateTime.TryParseExact(value.ToString(), PreferenceSettings.DefaultDateFormat,
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out dt) ?
-                dt : new DateTime(1977, 4, 12, 12, 12, 0, 0);
+                dt : PreferenceSettings.DynamoDefaultTime; 
         }
     }
 }
