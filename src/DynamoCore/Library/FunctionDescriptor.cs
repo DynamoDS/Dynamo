@@ -187,6 +187,17 @@ namespace Dynamo.DSEngine
             get { return !String.IsNullOrEmpty(Summary) ? Summary : string.Empty; }
         }
 
+        private IEnumerable<Tuple<string, string>> returns; 
+
+        /// <summary>
+        ///     If the XML documentation for the function includes a returns field,
+        ///     this parameter contains a collection of tuples of output names to
+        ///     descriptions.
+        /// 
+        ///     Otherwise, this list will be empty.
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> Returns { get { return returns ?? (returns = this.GetReturns()); } }
+
         /// <summary>
         ///     Inputs for Node
         /// </summary>

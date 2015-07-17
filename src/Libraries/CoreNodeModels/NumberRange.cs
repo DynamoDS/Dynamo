@@ -25,6 +25,11 @@ namespace DSCoreNodesUI
             ArgumentLacing = LacingStrategy.Longest;
         }
 
+        public override bool IsConvertible
+        {
+            get { return true; }
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return new[]
@@ -59,6 +64,11 @@ namespace DSCoreNodesUI
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
