@@ -26,6 +26,11 @@ namespace Dynamo.Publish.Views
         {
             InitializeComponent();
             DataContext = viewModel;            
+        }
+
+        private void OnPublishViewLoaded(object sender, RoutedEventArgs e)
+        {
+            LoadingIcon.Image = Resource.publish_loader;
         }        
     }
 }

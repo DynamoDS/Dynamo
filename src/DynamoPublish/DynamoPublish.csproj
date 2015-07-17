@@ -50,6 +50,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.configuration" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml">
       <Private>False</Private>
@@ -66,6 +67,7 @@
     <Reference Include="WindowsBase">
       <Private>False</Private>
     </Reference>
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\PublishModel.cs" />

@@ -106,6 +106,16 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap publish_loader {
+            get {
+                object obj = ResourceManager.GetObject("publish_loader", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Customizer.
         /// </summary>
         public static string PublishViewTitle {
