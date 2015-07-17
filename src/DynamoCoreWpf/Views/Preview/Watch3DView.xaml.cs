@@ -16,13 +16,11 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core.Threading;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
-using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -228,8 +226,8 @@ namespace Dynamo.Controls
 
             InitializeComponent();
             watch_view.DataContext = this;
-            Loaded += OnViewLoaded;
-            Unloaded += OnViewUnloaded;
+            Loaded += ViewLoadedHandler;
+            Unloaded += ViewUnloadedHandler;
             InitializeHelix();
         }
 
@@ -241,8 +239,8 @@ namespace Dynamo.Controls
 
             InitializeComponent();
             watch_view.DataContext = this;
-            Loaded += OnViewLoaded;
-            Unloaded += OnViewUnloaded;
+            Loaded += ViewLoadedHandler;
+            Unloaded += ViewUnloadedHandler;
             InitializeHelix();  
            
             resizeThumb.Visibility = Visibility.Visible;
@@ -378,12 +376,7 @@ namespace Dynamo.Controls
         
         #endregion
 
-        #region event handlers
-
-        private void OnViewUnloaded(object sender, RoutedEventArgs e)
-        {
-            UnregisterEventHandlers();
-        }
+        #region event registration
 
         private void UnregisterEventHandlers()
         {
@@ -391,72 +384,31 @@ namespace Dynamo.Controls
 
             if (viewModel == null) return;
 
-            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
-            viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            viewModel.PropertyChanged -= ViewModelPropertyChangedHandler;
 
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
+            viewModel.RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModelPropertyChangedHandler;
 
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            CompositionTarget.Rendering -= CompositionTargetRenderingHandler;
 
             UnregisterModelEventHandlers(viewModel.Model);
 
             UnregisterWorkspaceEventHandlers(viewModel.Model);
         }
 
-        private void OnViewLoaded(object sender, RoutedEventArgs e)
-        {
-            viewModel = DataContext as DynamoViewModel;
-
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
-
-            RegisterButtonHandlers();
-
-            //check this for null so the designer can load the preview
-            if (viewModel == null) return;
-
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
-
-            LogVisualizationCapabilities();
-
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
-
-            RegisterModelEventhandlers(viewModel.Model);
-
-            RegisterWorkspaceEventHandlers(viewModel.Model);  
-        }
-
-        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "ShowEdges":
-                    viewModel.Model.PreferenceSettings.ShowEdges =
-                        viewModel.RenderPackageFactoryViewModel.Factory.TessellationParameters.ShowEdges;
-                    break;
-            }
-
-            if (referenceNode != null) return;
-
-            ClearGeometryDictionary();
-
-            RequestNodeVisualUpdateAsync(null);
-        }
-
         private void RegisterButtonHandlers()
         {
-            MouseLeftButtonDown += view_MouseButtonIgnore;
-            MouseLeftButtonUp += view_MouseButtonIgnore;
+            MouseLeftButtonDown += MouseButtonIgnoreHandler;
+            MouseLeftButtonUp += MouseButtonIgnoreHandler;
             MouseRightButtonUp += view_MouseRightButtonUp;
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
         }
 
         private void UnregisterButtonHandlers()
         {
-            MouseLeftButtonDown -= view_MouseButtonIgnore;
-            MouseLeftButtonUp -= view_MouseButtonIgnore;
+            MouseLeftButtonDown -= MouseButtonIgnoreHandler;
+            MouseLeftButtonUp -= MouseButtonIgnoreHandler;
             MouseRightButtonUp -= view_MouseRightButtonUp;
             PreviewMouseRightButtonDown -= view_PreviewMouseRightButtonDown;
         }
@@ -482,52 +434,118 @@ namespace Dynamo.Controls
 
         private void RegisterModelEventhandlers(DynamoModel model)
         {
-            model.WorkspaceCleared += Model_WorkspaceCleared;
-            model.ShutdownStarted += Model_ShutdownStarted;
-            model.CleaningUp += ClearGeometryDictionary;
-            model.EvaluationCompleted += model_EvaluationCompleted;
+            model.WorkspaceCleared += WorkspaceClearedHandler;
+            model.ShutdownStarted += ModelShutdownStartedHandler;
+            model.CleaningUp += ResetGeometryDictionary;
+            model.EvaluationCompleted += EvaluationCompletedHandler;
         }
 
         private void UnregisterModelEventHandlers(DynamoModel model)
         {
-            model.WorkspaceCleared -= Model_WorkspaceCleared;
-            model.ShutdownStarted -= Model_ShutdownStarted;
-            model.CleaningUp -= ClearGeometryDictionary;
-            model.EvaluationCompleted -= model_EvaluationCompleted;
+            model.WorkspaceCleared -= WorkspaceClearedHandler;
+            model.ShutdownStarted -= ModelShutdownStartedHandler;
+            model.CleaningUp -= ResetGeometryDictionary;
+            model.EvaluationCompleted -= EvaluationCompletedHandler;
         }
 
         private void UnregisterWorkspaceEventHandlers(DynamoModel model)
         {
-            model.WorkspaceAdded -= Model_WorkspaceAdded;
-            model.WorkspaceRemoved -= Model_WorkspaceRemoved;
-            model.WorkspaceOpening -= Model_WorkspaceOpening;
+            model.WorkspaceAdded -= WorkspaceAddedHandler;
+            model.WorkspaceRemoved -= WorkspaceRemovedHandler;
+            model.WorkspaceOpening -= WorkspaceOpeningHandler;
 
             foreach (var ws in model.Workspaces)
             {
-                ws.Saving -= workspace_Saving;
+                ws.Saving -= WorkspaceSavingHandler;
             }
         }
 
         private void RegisterWorkspaceEventHandlers(DynamoModel model)
         {
-            model.WorkspaceAdded += Model_WorkspaceAdded;
-            model.WorkspaceRemoved += Model_WorkspaceRemoved;
-            model.WorkspaceOpening += Model_WorkspaceOpening;
+            model.WorkspaceAdded += WorkspaceAddedHandler;
+            model.WorkspaceRemoved += WorkspaceRemovedHandler;
+            model.WorkspaceOpening += WorkspaceOpeningHandler;
 
             foreach (var ws in model.Workspaces)
             {
-                ws.Saving += workspace_Saving;
-                ws.NodeAdded += workspace_NodeAdded;
-                ws.NodeRemoved += workspace_NodeRemoved;
+                ws.Saving += WorkspaceSavingHandler;
+                ws.NodeAdded += NodeAddedToWorkspaceHandler;
+                ws.NodeRemoved += NodeRemovedFromWorkspaceHandler;
 
                 foreach (var node in ws.Nodes)
                 {
-                    node.PropertyChanged += node_PropertyChanged;
+                    node.PropertyChanged += NodePropertyChangedHandler;
                 }
             }
         }
 
-        void model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        #endregion
+
+        #region event handlers
+
+        private void ViewUnloadedHandler(object sender, RoutedEventArgs e)
+        {
+            UnregisterEventHandlers();
+        }
+
+        private void ViewLoadedHandler(object sender, RoutedEventArgs e)
+        {
+            viewModel = DataContext as DynamoViewModel;
+
+            CompositionTarget.Rendering += CompositionTargetRenderingHandler;
+
+            RegisterButtonHandlers();
+
+            //check this for null so the designer can load the preview
+            if (viewModel == null) return;
+
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChangedHandler;
+
+            LogVisualizationCapabilities();
+
+            viewModel.PropertyChanged += ViewModelPropertyChangedHandler;
+
+            viewModel.RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModelPropertyChangedHandler;
+
+            RegisterModelEventhandlers(viewModel.Model);
+
+            RegisterWorkspaceEventHandlers(viewModel.Model);  
+        }
+
+        private void RenderPackageFactoryViewModelPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    viewModel.Model.PreferenceSettings.ShowEdges =
+                        viewModel.RenderPackageFactoryViewModel.Factory.TessellationParameters.ShowEdges;
+                    break;
+            }
+
+            if (referenceNode != null) return;
+
+            ResetGeometryDictionary();
+
+            RequestUpdatedNodeRenderPackagesAsync(null);
+        }
+
+        private void meshGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
+        {
+            var args = e as Mouse3DEventArgs;
+            if (args == null) return;
+            if (args.Viewport == null) return;
+
+            var viewModel = DataContext as DynamoViewModel;
+            foreach (var node in viewModel.Model.CurrentWorkspace.Nodes)
+            {
+                var foundNode = node.AstIdentifierBase.Contains(((GeometryModel3D)e.OriginalSource).Name);
+                if (!foundNode) continue;
+                DynamoSelection.Instance.ClearSelection();
+                viewModel.Model.AddToSelection(node);
+            }
+        }
+        
+        private void EvaluationCompletedHandler(object sender, EvaluationCompletedEventArgs e)
         {
             // Let the background preview do all the rendering.
             if (referenceNode != null)
@@ -540,10 +558,10 @@ namespace Dynamo.Controls
             if (e != null && !e.EvaluationTookPlace)
                 return;
             
-            RequestNodeVisualUpdateAsync(null);
+            RequestUpdatedNodeRenderPackagesAsync(null);
         }
 
-        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel)
+        private void RequestUpdatedNodeRenderPackagesAsync(NodeModel nodeModel)
         {
             var model = viewModel.Model;
 
@@ -577,7 +595,7 @@ namespace Dynamo.Controls
             scheduler.ScheduleForExecution(notifyTask);
         }
 
-        void notifyTask_Completed(AsyncTask asyncTask)
+        private void notifyTask_Completed(AsyncTask asyncTask)
         {
             var model = viewModel.Model;
 
@@ -590,11 +608,11 @@ namespace Dynamo.Controls
             // 
             var task = new AggregateRenderPackageAsyncTask(scheduler);
             task.Initialize(model.CurrentWorkspace, referenceNode);
-            task.Completed += task_Completed;
+            task.Completed += RenderPackageAggregationCompletedHandler;
             scheduler.ScheduleForExecution(task);
         }
 
-        void task_Completed(AsyncTask asyncTask)
+        private void RenderPackageAggregationCompletedHandler(AsyncTask asyncTask)
         {
             var task = asyncTask as AggregateRenderPackageAsyncTask;
 
@@ -614,61 +632,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void Model_WorkspaceCleared(object sender, EventArgs e)
-        {
-            SetCameraToDefaultOrientation();
-            ClearGeometryDictionary();
-        }
-
-        void Model_WorkspaceOpening(XmlDocument doc)
-        {
-            var vm = DataContext as DynamoViewModel;
-            if (vm == null)
-            {
-                return;
-            }
-
-            var camerasElements = doc.GetElementsByTagName("Cameras");
-            if (camerasElements.Count == 0)
-            {
-                return;
-            }
-
-            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
-            {
-                LoadCamera(cameraNode);
-            }
-        }
-
-        /// <summary>
-        /// Initialize the Geometry everytime a workspace is opened or closed. 
-        /// Always, keep these DirectionalLight,Grid,Axes. These values are rendered
-        /// only once by helix, attaching them again will make no effect on helix 
-        /// </summary> 
-        private void ClearGeometryDictionary()
-        {
-            var keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText"};
-            if (Text != null && Text.TextInfo.Any())
-            {
-                Text.TextInfo.Clear();               
-            }
-            foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
-            {
-                var model = Model3DDictionary[key] as GeometryModel3D;
-                model.Detach();
-                Model3DDictionary.Remove(key);
-            }
-
-            NotifyPropertyChanged("");
-            View.InvalidateRender();
-        }
-
-        /// <summary>
-        /// When a model is selected,then select only that Geometry
-        /// If any of the model is in selected mode, then unselect that model
-        /// </summary>
-        /// <param name="items">The items.</param>
-        private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void SelectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -713,7 +677,7 @@ namespace Dynamo.Controls
                     continue;
                 }
 
-                var geometryModels = FindGeometryModel3DsForNode(node);
+                var geometryModels = FindAllGeometryModel3DsForNode(node);
 
                 if (!geometryModels.Any())
                 {
@@ -725,62 +689,76 @@ namespace Dynamo.Controls
             }
         }
 
-        private void DeleteGeometryForNode(NodeModel node)
+        private void WorkspaceClearedHandler(object sender, EventArgs e)
         {
-            var geometryModels = FindGeometryModel3DsForNode(node);
+            SetCameraToDefaultOrientation();
+            ResetGeometryDictionary();
+        }
 
-            if (!geometryModels.Any())
+        private void WorkspaceOpeningHandler(XmlDocument doc)
+        {
+            var vm = DataContext as DynamoViewModel;
+            if (vm == null)
             {
                 return;
             }
-            
-            foreach (var kvp in geometryModels)
+
+            var camerasElements = doc.GetElementsByTagName("Cameras");
+            if (camerasElements.Count == 0)
             {
-                var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
-                if (model != null)
-                {
-                    
-
-
-                    model.MouseDown3D -= meshGeometry3D_MouseDown3D;
-                }
-                Model3DDictionary.Remove(kvp.Key);                
+                return;
             }
 
-            NotifyPropertyChanged("Model3DValues");
+            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
+            {
+                LoadCamera(cameraNode);
+            }
         }
 
-        void Model_WorkspaceAdded(Models.WorkspaceModel workspace)
+        private void WorkspaceAddedHandler(WorkspaceModel workspace)
         {
-            workspace.Saving += workspace_Saving;
-            workspace.NodeAdded += workspace_NodeAdded;
-            workspace.NodeRemoved += workspace_NodeRemoved;
+            workspace.Saving += WorkspaceSavingHandler;
+            workspace.NodeAdded += NodeAddedToWorkspaceHandler;
+            workspace.NodeRemoved += NodeRemovedFromWorkspaceHandler;
 
             foreach (var node in workspace.Nodes)
             {
-                node.PropertyChanged += node_PropertyChanged;
+                node.PropertyChanged += NodePropertyChangedHandler;
             }
         }
 
-        void Model_WorkspaceRemoved(Models.WorkspaceModel workspace)
+        private void WorkspaceRemovedHandler(WorkspaceModel workspace)
         {
-            workspace.Saving -= workspace_Saving;
-            workspace.NodeAdded -= workspace_NodeAdded;
-            workspace.NodeRemoved -= workspace_NodeRemoved;
+            workspace.Saving -= WorkspaceSavingHandler;
+            workspace.NodeAdded -= NodeAddedToWorkspaceHandler;
+            workspace.NodeRemoved -= NodeRemovedFromWorkspaceHandler;
         }
 
-        void workspace_NodeAdded(NodeModel node)
+        private void WorkspaceSavingHandler(XmlDocument doc)
         {
-            node.PropertyChanged += node_PropertyChanged;
+            var root = doc.DocumentElement;
+            if (root == null)
+            {
+                return;
+            }
+
+            var camerasElement = doc.CreateElement("Cameras");
+            SaveCamera(camerasElement);
+            root.AppendChild(camerasElement);
         }
 
-        void workspace_NodeRemoved(NodeModel node)
+        private void NodeAddedToWorkspaceHandler(NodeModel node)
         {
-            node.PropertyChanged -= node_PropertyChanged;
+            node.PropertyChanged += NodePropertyChangedHandler;
+        }
+
+        private void NodeRemovedFromWorkspaceHandler(NodeModel node)
+        {
+            node.PropertyChanged -= NodePropertyChangedHandler;
             DeleteGeometryForNode(node);
         }
 
-        void node_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void NodePropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
             var node = sender as NodeModel;
             switch (e.PropertyName)
@@ -789,11 +767,11 @@ namespace Dynamo.Controls
                 case "DisplayLabels":
                     if (referenceNode == null)
                     {
-                        RequestNodeVisualUpdateAsync(node);
+                        RequestUpdatedNodeRenderPackagesAsync(node);
                     }
                     break;
                 case "IsVisible":
-                    var geoms = FindGeometryModel3DsForNode(node);
+                    var geoms = FindAllGeometryModel3DsForNode(node);
                     if (geoms.Any())
                     {
                         geoms.ToList()
@@ -804,49 +782,19 @@ namespace Dynamo.Controls
                     {
                         if (referenceNode == null)
                         {
-                            RequestNodeVisualUpdateAsync(node);
+                            RequestUpdatedNodeRenderPackagesAsync(node);
                         }
                     }
                     break;
             }
         }
 
-        void workspace_Saving(XmlDocument doc)
-        {
-            var root = doc.DocumentElement;
-            if (root == null)
-            {
-                return;
-            }
-
-            var camerasElement = doc.CreateElement("Cameras");
-            SaveCamera(camerasElement);
-            root.AppendChild(camerasElement);  
-        }
-
-        /// <summary>
-        /// A utility method for finding all the geometry model objects in the geometry
-        /// dictionary which correspond to a node.
-        /// </summary>
-        /// <param name="node">The node.</param>
-        /// <returns></returns>
-        private KeyValuePair<string, Model3D>[] FindGeometryModel3DsForNode(NodeModel node)
-        {
-            var geometryModels =
-                Model3DDictionary
-                    .Where(x => x.Key.Contains(node.AstIdentifierBase))
-                    .Where(x => x.Value is GeometryModel3D)
-                    .Select(x => x).ToArray();
-
-            return geometryModels;   
-        }
-
-        void Model_ShutdownStarted(Models.DynamoModel model)
+        private void ModelShutdownStartedHandler(DynamoModel model)
         {
             UnregisterEventHandlers();
         }
 
-        void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ViewModelPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -857,7 +805,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void CompositionTarget_Rendering(object sender, EventArgs e)
+        private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
 #if DEBUG
             if (renderTimer.IsRunning)
@@ -889,6 +837,200 @@ namespace Dynamo.Controls
             UpdateNearClipPlaneForSceneBounds();
         }
 
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
+        {
+            var yAdjust = ActualHeight + e.VerticalChange;
+            var xAdjust = ActualWidth + e.HorizontalChange;
+
+            if (xAdjust >= inputGrid.MinWidth)
+            {
+                Width = xAdjust;
+            }
+
+            if (yAdjust >= inputGrid.MinHeight)
+            {
+                Height = yAdjust;
+            }
+        }
+
+        private void OnZoomToFitClickedHandler(object sender, RoutedEventArgs e)
+        {
+            watch_view.ZoomExtents();
+        }
+
+        private void MouseButtonIgnoreHandler(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = false;
+        }
+
+        private void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            rightMousePoint = e.GetPosition(topControl);
+        }
+
+        private void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            //if the mouse has moved, and this is a right click, we assume 
+            // rotation. handle the event so we don't show the context menu
+            // if the user wants the contextual menu they can click on the
+            // node sidebar or top bar
+            if (e.GetPosition(topControl) != rightMousePoint)
+            {
+                e.Handled = true;
+            }
+        }
+
+        #endregion
+
+        #region public methods
+
+        /// <summary>
+        /// Use the render packages returned from the visualization manager to update the visuals.
+        /// The visualization event arguments will contain a set of render packages and an id representing 
+        /// the associated node. Visualizations for the background preview will return an empty id.
+        /// </summary>
+        /// <param name="e"></param>
+        public void RenderDrawables(IEnumerable<IRenderPackage> taskPackages)
+        {
+            recentlyAddedNodes.Clear();
+
+            // Don't render if the user's system is incapable.
+            if (renderingTier == 0)
+            {
+                return;
+            }
+
+#if DEBUG
+            renderTimer.Start();
+#endif
+            Text = null;
+
+            var packages = taskPackages
+                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
+
+            RemoveGeometryFromDisconnectedNodes();
+
+            RemoveGeometryForUpdatedPackages(packages);
+
+            var text = HelixRenderPackage.InitText3D();
+
+            var aggParams = new PackageAggregationParams
+            {
+                Packages = packages,
+                Text = text
+            };
+
+            AggregateRenderPackages(aggParams);
+
+#if DEBUG
+            renderTimer.Stop();
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
+            renderTimer.Reset();
+            renderTimer.Start();
+#endif
+
+            //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
+            //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
+            //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
+            //Instead, only the geometry gets updated every time. Once it is attached (after the geometry), helix
+            // renders the text at the right position.
+
+            if (Text != null && Text.TextInfo.Any())
+            {
+                BillboardTextModel3D billboardText3D = new BillboardTextModel3D
+                {
+                    Transform = Model1Transform
+                };
+
+                if (model3DDictionary != null && !model3DDictionary.ContainsKey("BillBoardText"))
+                {
+                    model3DDictionary.Add("BillBoardText", billboardText3D);
+                }
+
+                var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                billBoardModel3D.Geometry = Text;
+                if (!billBoardModel3D.IsAttached)
+                {
+                    billBoardModel3D.Attach(View.RenderHost);
+                }
+            }
+            else
+            {
+                if (model3DDictionary != null && model3DDictionary.ContainsKey("BillBoardText"))
+                {
+                    var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                    billBoardModel3D.Geometry = Text;
+                }
+            }
+
+            NotifyPropertyChanged("Model3DValues");
+            View.InvalidateRender();
+        }
+
+
+        #endregion
+
+        #region private methods
+
+        private void DeleteGeometryForNode(NodeModel node)
+        {
+            var geometryModels = FindAllGeometryModel3DsForNode(node);
+
+            if (!geometryModels.Any())
+            {
+                return;
+            }
+
+            foreach (var kvp in geometryModels)
+            {
+                var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
+                if (model != null)
+                {
+
+
+
+                    model.MouseDown3D -= meshGeometry3D_MouseDown3D;
+                }
+                Model3DDictionary.Remove(kvp.Key);
+            }
+
+            NotifyPropertyChanged("Model3DValues");
+        }
+
+        /// <summary>
+        /// Reset the geometry dictionary, keeping the DirectionalLight ,Grid, and Axes.
+        /// These values are rendered only once by helix, attaching them again will make 
+        /// no effect on helix.
+        /// </summary> 
+        private void ResetGeometryDictionary()
+        {
+            var keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
+            if (Text != null && Text.TextInfo.Any())
+            {
+                Text.TextInfo.Clear();
+            }
+            foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
+            {
+                var model = Model3DDictionary[key] as GeometryModel3D;
+                model.Detach();
+                Model3DDictionary.Remove(key);
+            }
+
+            NotifyPropertyChanged("");
+            View.InvalidateRender();
+        }
+
+        private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
+        {
+            var geometryModels =
+                Model3DDictionary
+                    .Where(x => x.Key.Contains(node.AstIdentifierBase))
+                    .Where(x => x.Value is GeometryModel3D)
+                    .Select(x => x).ToArray();
+
+            return geometryModels;
+        }
+
         /// <summary>
         /// This method attempts to maximize the near clip plane in order to 
         /// achiever higher z-buffer precision.
@@ -905,80 +1047,6 @@ namespace Dynamo.Controls
         {
             return maxDim * NearPlaneDistanceFactor;
         }
-
-        /// <summary>
-        /// When visualization is complete, the view requests it's visuals. For Full
-        /// screen watch, this will be all renderables. For a Watch 3D node, this will
-        /// be the subset of the renderables associated with the node.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void VisualizationManagerRenderComplete()
-        //{
-        //    var executeCommand = new Action(delegate
-        //    {
-        //        var vm = (IWatchViewModel)DataContext;
-        //        if (vm.GetBranchVisualizationCommand.CanExecute(null))
-        //            vm.GetBranchVisualizationCommand.Execute(null);
-        //    });
-
-        //    if (CheckAccess())
-        //        executeCommand();
-        //    else
-        //        Dispatcher.BeginInvoke(executeCommand);
-        //}
-
-        /// <summary>
-        /// Callback for thumb control's DragDelta event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ResizeThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
-        {
-            var yAdjust = ActualHeight + e.VerticalChange;
-            var xAdjust = ActualWidth + e.HorizontalChange;
-
-            if (xAdjust >= inputGrid.MinWidth)
-            {
-                Width = xAdjust;
-            }
-
-            if (yAdjust >= inputGrid.MinHeight)
-            {
-                Height = yAdjust;
-            }
-        }
-
-        protected void OnZoomToFitClicked(object sender, RoutedEventArgs e)
-        {
-            watch_view.ZoomExtents();
-        }
-
-        void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = false;
-        }
-
-        void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            rightMousePoint = e.GetPosition(topControl);
-        }
-
-        void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            //if the mouse has moved, and this is a right click, we assume 
-            // rotation. handle the event so we don't show the context menu
-            // if the user wants the contextual menu they can click on the
-            // node sidebar or top bar
-            if (e.GetPosition(topControl) != rightMousePoint)
-            {
-                e.Handled = true;
-            }
-        }
-
-        #endregion
-
-        #region private methods
 
         /// <summary>
         /// Create the grid
@@ -1090,89 +1158,6 @@ namespace Dynamo.Controls
                     colors.Add(lightGridColor);
                 }
             }
-        }
-
-        /// <summary>
-        /// Use the render packages returned from the visualization manager to update the visuals.
-        /// The visualization event arguments will contain a set of render packages and an id representing 
-        /// the associated node. Visualizations for the background preview will return an empty id.
-        /// </summary>
-        /// <param name="e"></param>
-        public void RenderDrawables(IEnumerable<IRenderPackage> taskPackages)
-        {
-            recentlyAddedNodes.Clear();
-
-            // Don't render if the user's system is incapable.
-            if (renderingTier == 0)
-            {
-                return;
-            }
-
-#if DEBUG
-            renderTimer.Start();
-#endif                  
-            Text = null;
-
-            var packages = taskPackages
-                .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
-
-            RemoveGeometryFromDisconnectedNodes();
-
-            RemoveGeometryForUpdatedPackages(packages);
-
-            var text = HelixRenderPackage.InitText3D();
-
-            var aggParams = new PackageAggregationParams
-            {
-                Packages = packages,                          
-                Text = text
-            };
-
-            AggregateRenderPackages(aggParams);
-
-#if DEBUG
-            renderTimer.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
-            renderTimer.Reset();
-            renderTimer.Start();
-#endif        
-            
-            //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
-            //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
-            //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
-            //Instead, only the geometry gets updated every time. Once it is attached (after the geometry), helix
-            // renders the text at the right position.
-
-            if (Text != null && Text.TextInfo.Any())
-            {
-                BillboardTextModel3D billboardText3D = new BillboardTextModel3D
-                {
-                    Transform = Model1Transform
-                };
-
-                if (model3DDictionary != null && !model3DDictionary.ContainsKey("BillBoardText"))
-                {
-                    model3DDictionary.Add("BillBoardText", billboardText3D);
-                }
-
-                var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
-                billBoardModel3D.Geometry = Text;
-                if (!billBoardModel3D.IsAttached)
-                {
-                    billBoardModel3D.Attach(View.RenderHost);
-                }
-            }
-            else
-            {               
-                if (model3DDictionary != null && model3DDictionary.ContainsKey("BillBoardText"))
-                {
-                    var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
-                    billBoardModel3D.Geometry = Text;                   
-                }                
-            }
-       
-            NotifyPropertyChanged("Model3DValues");
-            View.InvalidateRender();
         }
 
         private void RemoveGeometryFromDisconnectedNodes()
@@ -1371,7 +1356,7 @@ namespace Dynamo.Controls
                 meshGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
             }
 
-            Attach();
+            AttachAllGeometryModel3DToRenderHost();
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
@@ -1444,24 +1429,8 @@ namespace Dynamo.Controls
             };
             return pointGeometry3D;
         }
-
-        void meshGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
-        {
-            var args = e as Mouse3DEventArgs;
-            if (args == null) return;
-            if (args.Viewport == null) return;
-
-            var viewModel = DataContext as DynamoViewModel;
-            foreach (var node in viewModel.Model.CurrentWorkspace.Nodes)
-            {
-                var foundNode = node.AstIdentifierBase.Contains(((GeometryModel3D) e.OriginalSource).Name);
-                if (!foundNode) continue;
-                DynamoSelection.Instance.ClearSelection();
-                viewModel.Model.AddToSelection(node);
-            }
-        }
        
-        private void Attach()
+        private void AttachAllGeometryModel3DToRenderHost()
         {
             foreach (var kvp in model3DDictionary)
             {

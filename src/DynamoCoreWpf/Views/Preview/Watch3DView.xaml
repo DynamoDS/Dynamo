@@ -91,7 +91,7 @@
                 </MenuItem>
 
                 <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuZoomToFit}"
-                          Click="OnZoomToFitClicked" />
+                          Click="OnZoomToFitClickedHandler" />
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -131,7 +131,7 @@
                HorizontalAlignment="Right" 
                VerticalAlignment="Bottom" 
                Margin="5"
-               DragDelta="ResizeThumb_OnDragDelta"
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
                Visibility="Collapsed"/>
     </Grid>
 </UserControl>
