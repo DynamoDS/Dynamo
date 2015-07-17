@@ -651,28 +651,6 @@ namespace Dynamo.Controls
             }          
         }
 
-        private void SetSelection(IEnumerable items, bool isSelected)
-        {
-            foreach (var item in items)
-            {
-                var node = item as NodeModel;
-                if (node == null)
-                {
-                    continue;
-                }
-
-                var geometryModels = FindAllGeometryModel3DsForNode(node);
-
-                if (!geometryModels.Any())
-                {
-                    continue;
-                }
-
-                var modelValues = geometryModels.Select(x => x.Value);
-                modelValues.Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = isSelected);
-            }
-        }
-
         private void WorkspaceClearedHandler(object sender, EventArgs e)
         {
             SetCameraToDefaultOrientation();
@@ -955,6 +933,28 @@ namespace Dynamo.Controls
         #endregion
 
         #region private methods
+
+        private void SetSelection(IEnumerable items, bool isSelected)
+        {
+            foreach (var item in items)
+            {
+                var node = item as NodeModel;
+                if (node == null)
+                {
+                    continue;
+                }
+
+                var geometryModels = FindAllGeometryModel3DsForNode(node);
+
+                if (!geometryModels.Any())
+                {
+                    continue;
+                }
+
+                var modelValues = geometryModels.Select(x => x.Value);
+                modelValues.Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = isSelected);
+            }
+        }
 
         private void DeleteGeometryForNode(NodeModel node)
         {
