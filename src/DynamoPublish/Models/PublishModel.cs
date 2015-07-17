@@ -13,6 +13,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Dynamo.Publish.Models
 {
@@ -55,6 +56,35 @@ namespace Dynamo.Publish.Models
             }
         }
 
+
+        private PublishModelState state;
+        /// <summary>
+        /// Indicates the state of workspace publishing.
+        /// </summary>
+        public PublishModelState State
+        {
+            get
+            {
+                return state;
+            }
+            private set
+            {
+                if (state != value)
+                {
+                    state = value;
+                    OnModelStateChanged(state);
+                }
+            }
+        }
+
+        internal event Action<PublishModelState> ModelStateChanged;
+        private void OnModelStateChanged(PublishModelState state)
+        {
+            if (ModelStateChanged != null)
+                ModelStateChanged(state);
+        }
+
+
         #region Initialization
 
         internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
@@ -78,6 +108,8 @@ namespace Dynamo.Publish.Models
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
+
+            State = PublishModelState.Uninitialized;
         }
 
         internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
@@ -97,10 +129,27 @@ namespace Dynamo.Publish.Models
             authenticationProvider.Login();
         }
 
+        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
+        {
+
+            State = PublishModelState.Uploading;
+
+            Task.Factory.StartNew(() =>
+                {
+                    var result = this.Send(workspaces);
+
+                    if (result == "Succeeded")
+                        State = PublishModelState.Succeeded;
+                    else
+                        State = PublishModelState.Failed;
+                });
+
+        }
+
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
-        internal void Send(IEnumerable<IWorkspaceModel> workspaces)
+        internal string Send(IEnumerable<IWorkspaceModel> workspaces)
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
                 throw new Exception(Resource.ServerErrorMessage);
@@ -131,7 +180,15 @@ namespace Dynamo.Publish.Models
                     CustomNodesWorkspaces.Add(customNodeWs);
             }
 
-            var result = reachClient.Send(HomeWorkspace, CustomNodesWorkspaces);
+            return reachClient.Send(HomeWorkspace, CustomNodesWorkspaces);
         }
+    }
+
+    public enum PublishModelState
+    {
+        Uninitialized,
+        Succeeded,
+        Uploading,
+        Failed
     }
 }

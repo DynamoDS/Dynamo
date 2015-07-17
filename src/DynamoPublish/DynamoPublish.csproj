@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
+    <Resource Include="Resources\publish-loader.gif" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.resx">
