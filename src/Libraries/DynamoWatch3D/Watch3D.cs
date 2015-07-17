@@ -23,6 +23,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
+using Dynamo.Wpf.Views.Preview;
 using ProtoCore.AST.AssociativeAST;
 
 using VMDataBridge;
@@ -46,7 +47,7 @@ namespace Dynamo.Nodes
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
 
-            View = new Watch3DView(model)
+            View = new Watch3DNodeView(model)
             {
                 Width = model.WatchWidth,
                 Height = model.WatchHeight,

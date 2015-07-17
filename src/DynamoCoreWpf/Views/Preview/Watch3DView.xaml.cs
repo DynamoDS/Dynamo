@@ -72,14 +72,13 @@ namespace Dynamo.Controls
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
         private int renderingTier;
-        private DynamoViewModel viewModel;
+        protected DynamoViewModel viewModel;
         private double nearPlaneDistanceFactor = 0.01;
         internal readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
         internal readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
         internal readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0); 
         private readonly Size defaultPointSize = new Size(8,8);
         private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
-        private NodeModel referenceNode;
 
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
         private Dictionary<string, Model3D> Model3DDictionary
@@ -229,21 +228,6 @@ namespace Dynamo.Controls
             Loaded += ViewLoadedHandler;
             Unloaded += ViewUnloadedHandler;
             InitializeHelix();
-        }
-
-        public Watch3DView(NodeModel node)
-        {
-            referenceNode = node;
-
-            SetupScene();
-
-            InitializeComponent();
-            watch_view.DataContext = this;
-            Loaded += ViewLoadedHandler;
-            Unloaded += ViewUnloadedHandler;
-            InitializeHelix();  
-           
-            resizeThumb.Visibility = Visibility.Visible;
         }
 
         private void SetupScene()
@@ -522,11 +506,9 @@ namespace Dynamo.Controls
                     break;
             }
 
-            if (referenceNode != null) return;
-
             ResetGeometryDictionary();
 
-            RequestUpdatedNodeRenderPackagesAsync(null);
+            UpdatedNodeRenderPackagesAndAggregateAsync(viewModel.Model.CurrentWorkspace.Nodes);
         }
 
         private void MeshGeometry3DMouseDown3DHandler(object sender, RoutedEventArgs e)
@@ -545,23 +527,22 @@ namespace Dynamo.Controls
             }
         }
         
-        private void EvaluationCompletedHandler(object sender, EvaluationCompletedEventArgs e)
+        protected virtual void EvaluationCompletedHandler(object sender, EvaluationCompletedEventArgs e)
         {
-            // Let the background preview do all the rendering.
-            if (referenceNode != null)
-            {
-                return;
-            }
-
             // do nothing if it has come on EvaluationCompleted
             // and no evaluation took place
             if (e != null && !e.EvaluationTookPlace)
                 return;
             
-            RequestUpdatedNodeRenderPackagesAsync(null);
+            UpdatedNodeRenderPackagesAndAggregateAsync(viewModel.Model.CurrentWorkspace.Nodes);
         }
 
-        private void RequestUpdatedNodeRenderPackagesAsync(NodeModel nodeModel)
+        protected void UpdatedNodeRenderPackagesAndAggregateAsync(NodeModel nodeModel)
+        {
+            UpdatedNodeRenderPackagesAndAggregateAsync(new []{nodeModel});
+        }
+
+        protected void UpdatedNodeRenderPackagesAndAggregateAsync(IEnumerable<NodeModel> nodeModelsToUpdate)
         {
             var model = viewModel.Model;
 
@@ -569,36 +550,25 @@ namespace Dynamo.Controls
             if (scheduler == null) // Shutdown has begun.
                 return;
 
-            if (nodeModel != null)
+            // Get each node in workspace to update their visuals.
+            foreach (var node in nodeModelsToUpdate)
             {
-                // Visualization update for a given node is desired.
-                nodeModel.RequestVisualUpdateAsync(
+                node.RequestVisualUpdateAsync(
                     model.Scheduler,
                     model.EngineController,
                     viewModel.RenderPackageFactoryViewModel.Factory);
-            }
-            else
-            {
-                // Get each node in workspace to update their visuals.
-                foreach (var node in model.CurrentWorkspace.Nodes)
-                {
-                    node.RequestVisualUpdateAsync(
-                        model.Scheduler,
-                        model.EngineController,
-                        viewModel.RenderPackageFactoryViewModel.Factory);
-                }
             }
 
             // Schedule a AggregateRenderPackageAsyncTask here so that the 
             // background geometry preview gets refreshed.
             // 
             var task = new AggregateRenderPackageAsyncTask(scheduler);
-            task.Initialize(model.CurrentWorkspace, referenceNode);
+            task.Initialize(model.CurrentWorkspace, null);
             task.Completed += RenderPackageAggregationCompletedHandler;
             scheduler.ScheduleForExecution(task);
         }
 
-        private void RenderPackageAggregationCompletedHandler(AsyncTask asyncTask)
+        protected void RenderPackageAggregationCompletedHandler(AsyncTask asyncTask)
         {
             var task = asyncTask as AggregateRenderPackageAsyncTask;
 
@@ -720,18 +690,15 @@ namespace Dynamo.Controls
             DeleteGeometryForNode(node);
         }
 
-        private void NodePropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        protected virtual void NodePropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
             var node = sender as NodeModel;
             switch (e.PropertyName)
             {
-                case "IsUpstreamVisible":
                 case "DisplayLabels":
-                    if (referenceNode == null)
-                    {
-                        RequestUpdatedNodeRenderPackagesAsync(node);
-                    }
+                    UpdatedNodeRenderPackagesAndAggregateAsync(node);
                     break;
+
                 case "IsVisible":
                     var geoms = FindAllGeometryModel3DsForNode(node);
                     if (geoms.Any())
@@ -742,10 +709,7 @@ namespace Dynamo.Controls
                     }
                     else
                     {
-                        if (referenceNode == null)
-                        {
-                            RequestUpdatedNodeRenderPackagesAsync(node);
-                        }
+                        UpdatedNodeRenderPackagesAndAggregateAsync(node);
                     }
                     break;
             }
