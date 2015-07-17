@@ -565,6 +565,10 @@ namespace Dynamo.Controls
         {
             var model = viewModel.Model;
 
+            var scheduler = model.Scheduler;
+            if (scheduler == null) // Shutdown has begun.
+                return;
+
             if (nodeModel != null)
             {
                 // Visualization update for a given node is desired.
@@ -584,24 +588,6 @@ namespace Dynamo.Controls
                         viewModel.RenderPackageFactoryViewModel.Factory);
                 }
             }
-
-            // Schedule a NotifyRenderPackagesReadyAsyncTask here so that when 
-            // render packages of all the NodeModel objects are generated, the 
-            // VisualizationManager gets notified.
-            // 
-            var scheduler = viewModel.Model.Scheduler;
-            var notifyTask = new NotifyRenderPackagesReadyAsyncTask(scheduler);
-            notifyTask.Completed += notifyTask_Completed;
-            scheduler.ScheduleForExecution(notifyTask);
-        }
-
-        private void notifyTask_Completed(AsyncTask asyncTask)
-        {
-            var model = viewModel.Model;
-
-            var scheduler = model.Scheduler;
-            if (scheduler == null) // Shutdown has begun.
-                return;
 
             // Schedule a AggregateRenderPackageAsyncTask here so that the 
             // background geometry preview gets refreshed.
