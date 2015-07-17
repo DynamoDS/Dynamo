@@ -529,7 +529,7 @@ namespace Dynamo.Controls
             RequestUpdatedNodeRenderPackagesAsync(null);
         }
 
-        private void meshGeometry3D_MouseDown3D(object sender, RoutedEventArgs e)
+        private void MeshGeometry3DMouseDown3DHandler(object sender, RoutedEventArgs e)
         {
             var args = e as Mouse3DEventArgs;
             if (args == null) return;
@@ -621,14 +621,12 @@ namespace Dynamo.Controls
                 return;
             }
 
-            var packages = task.NormalRenderPackages.Concat(task.SelectedRenderPackages);
-
             if (CheckAccess())
-                RenderDrawables(packages);
+                RenderDrawables(task.RenderPackages);
             else
             {
                 // Scheduler invokes ResultsReadyToVisualize on background thread.
-                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(packages)));
+                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(task.RenderPackages)));
             }
         }
 
@@ -989,7 +987,7 @@ namespace Dynamo.Controls
 
 
 
-                    model.MouseDown3D -= meshGeometry3D_MouseDown3D;
+                    model.MouseDown3D -= MeshGeometry3DMouseDown3DHandler;
                 }
                 Model3DDictionary.Remove(kvp.Key);
             }
@@ -1274,7 +1272,7 @@ namespace Dynamo.Controls
 
                     pointGeometry3D.Geometry = points;
                     pointGeometry3D.Name = baseId;
-                    pointGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
+                    pointGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                 }
 
                 var l = rp.Lines;
@@ -1310,7 +1308,7 @@ namespace Dynamo.Controls
 
                     lineGeometry3D.Geometry = lineSet;
                     lineGeometry3D.Name = baseId;
-                    lineGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
+                    lineGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                 }
 
                 var m = rp.Mesh;
@@ -1353,7 +1351,7 @@ namespace Dynamo.Controls
 
                 meshGeometry3D.Geometry = mesh;
                 meshGeometry3D.Name = baseId; 
-                meshGeometry3D.MouseDown3D += meshGeometry3D_MouseDown3D;
+                meshGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
             }
 
             AttachAllGeometryModel3DToRenderHost();

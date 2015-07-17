@@ -26,20 +26,14 @@ namespace Dynamo.Core.Threading
         #region Class Data Members and Properties
 
         protected Guid targetedNodeId = Guid.Empty;
-        private readonly List<IRenderPackage> normalRenderPackages;
-        private readonly List<IRenderPackage> selectedRenderPackages;
+        private readonly List<IRenderPackage> renderPackages;
         private IEnumerable<NodeModel> duplicatedNodeReferences;
 
         internal Guid NodeId { get { return targetedNodeId; } }
 
-        internal IEnumerable<IRenderPackage> NormalRenderPackages
+        internal IEnumerable<IRenderPackage> RenderPackages
         {
-            get { return normalRenderPackages; }
-        }
-
-        internal IEnumerable<IRenderPackage> SelectedRenderPackages
-        {
-            get { return selectedRenderPackages; }
+            get { return renderPackages; }
         }
 
         public override TaskPriority Priority
@@ -54,8 +48,7 @@ namespace Dynamo.Core.Threading
         internal AggregateRenderPackageAsyncTask(IScheduler scheduler)
             : base(scheduler)
         {
-            normalRenderPackages = new List<IRenderPackage>();
-            selectedRenderPackages = new List<IRenderPackage>();
+            renderPackages = new List<IRenderPackage>();
         }
 
         /// <summary>
@@ -121,10 +114,7 @@ namespace Dynamo.Core.Threading
                     if (!renderPackage.HasRenderingData)
                         continue;
 
-                    if (renderPackage.IsSelected)
-                        selectedRenderPackages.Add(renderPackage);
-                    else
-                        normalRenderPackages.Add(renderPackage);
+                    renderPackages.Add(renderPackage);
                 }
             }
         }
