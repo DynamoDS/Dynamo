@@ -122,5 +122,14 @@ namespace Dynamo.Publish {
                 return ResourceManager.GetString("ServerErrorMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;message&quot;:&quot;Workspaces saved.&quot;}.
+        /// </summary>
+        public static string WorkspacesSendSucceededServerResponse {
+            get {
+                return ResourceManager.GetString("WorkspacesSendSucceededServerResponse", resourceCulture);
+            }
+        }
     }
 }

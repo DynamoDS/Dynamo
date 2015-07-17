@@ -138,7 +138,7 @@ namespace Dynamo.Publish.Models
                 {
                     var result = this.Send(workspaces);
 
-                    if (result == "Succeeded")
+                    if (result == Resource.WorkspacesSendSucceededServerResponse)
                         State = PublishModelState.Succeeded;
                     else
                         State = PublishModelState.Failed;
