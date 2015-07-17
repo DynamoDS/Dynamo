@@ -2058,7 +2058,9 @@ namespace Dynamo.Controls
             // In some cases viewModel can be null. Mostly it's because workspace has not loaded yet.
             // But converter has been already called.
             if (viewModel == null)
-                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight); ;
+            {
+                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+            }
 
             var searchText = viewModel.SearchText;
             var typeface = viewModel.RegularTypeface;
