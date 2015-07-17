@@ -47,6 +47,7 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +84,11 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
+      <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
+      <Name>DynamoApplications</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>

@@ -854,7 +854,7 @@ namespace Dynamo.Models
         {
             this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
-
+        
         #endregion
 
         #region Presets
@@ -904,8 +904,8 @@ namespace Dynamo.Models
                 foreach (var node in state.Nodes)
                 {
                     //check that node still exists in this workspace, 
-                    //otherwise bail on this node
-                    if (nodes.Contains(node))
+                    //otherwise bail on this node, check by GUID instead of nodemodel
+                    if (nodes.Select(x=>x.GUID).Contains(node.GUID))
                     {
                         var originalpos = node.Position;
                         var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
@@ -933,7 +933,12 @@ namespace Dynamo.Models
             this.AddPresetCore(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
         }
-        
+
+        public void ImportPresets(IEnumerable<PresetModel> presetCollection)
+        {
+            presets.AddRange(presetCollection);
+        }
+
         #endregion
 
         #region private/internal methods

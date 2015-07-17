@@ -1,0 +1,24 @@
+<Workspace Version="0.8.2.1605" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="2ef55ca9-1342-43d5-b5e1-44abb09fb2f5" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="216.146596858639" y="69.8848167539266" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0.5;" ShouldFocus="false" />
+    <Dynamo.Nodes.DoubleInput guid="c67de4ff-96ab-4386-94ba-5a680688e8f8" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="216.523560209424" y="242.659685863874" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction guid="2f33ef65-b196-4287-b4b8-4c8d725a7883" type="Dynamo.Nodes.DSFunction" nickname="*" x="390.178010471204" y="137.361256544503" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="*@var[]..[],var[]..[]" />
+    <DSCoreNodesUI.Input.DoubleSlider guid="aeb94820-ee65-428c-932c-929948eb680b" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="51.6649214659685" y="358.261780104712" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>20</System.Double>
+      <Range min="0" max="20" step="0.1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+    <Dynamo.Nodes.DSFunction guid="6e2d89d1-d5e8-4030-b065-f9d98b3adb45" type="Dynamo.Nodes.DSFunction" nickname="+" x="600.900523560209" y="230.973821989529" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@var[]..[],var[]..[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2ef55ca9-1342-43d5-b5e1-44abb09fb2f5" start_index="0" end="2f33ef65-b196-4287-b4b8-4c8d725a7883" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c67de4ff-96ab-4386-94ba-5a680688e8f8" start_index="0" end="2f33ef65-b196-4287-b4b8-4c8d725a7883" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f33ef65-b196-4287-b4b8-4c8d725a7883" start_index="0" end="6e2d89d1-d5e8-4030-b065-f9d98b3adb45" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aeb94820-ee65-428c-932c-929948eb680b" start_index="0" end="6e2d89d1-d5e8-4030-b065-f9d98b3adb45" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets/>
+</Workspace>
