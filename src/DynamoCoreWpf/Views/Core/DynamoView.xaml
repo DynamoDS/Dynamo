@@ -220,6 +220,63 @@
                 <Menu IsMainMenu="True"
                       Name="menu1"
                       Style="{StaticResource MainMenu}">
+                 <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
+                    <Menu.Resources>
+                        <Style x:Key="SubMenuItemOverride"
+                            BasedOn="{StaticResource MenuItemStyle}"
+                            TargetType="{x:Type MenuItem}">
+
+                            <Style.Resources>                              
+                                <!--  SubmenuItem  -->
+                                <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
+                                                          TargetType="MenuItem">
+                                    
+                                    <Border Name="Border"
+                                            Height="25" Background="Transparent">
+                                        <Grid MinWidth="200">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter Name="HeaderHost"
+                                                              Grid.Column="0"
+                                                              Margin="5,0,0,0"
+                                                              HorizontalAlignment="Stretch"
+                                                              VerticalAlignment="Center"
+                                                              ContentSource="Header"
+                                                              RecognizesAccessKey="False" />                                         
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted"
+                                                           Value="true">
+                                            <Setter TargetName="Border"
+                                                              Property="Background"
+                                                              Value="{StaticResource HighlightedBrush}" />
+                                            <Setter TargetName="HeaderHost"
+                                                               Property="TextBlock.Foreground"
+                                                               Value="{StaticResource ActiveForegroundBrush}" />
+                                            <Setter TargetName="Border"
+                                                                Property="BorderBrush"
+                                                                Value="Transparent" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled"
+                                                                Value="false">
+                                            <Setter Property="Foreground"
+                                                                 Value="{StaticResource DisabledForegroundBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Style.Resources>                         
+                            <Style.Triggers>                                                              
+                                <Trigger Property="Role"
+                                    Value="SubmenuItem">
+                                    <Setter Property="Template"
+                                      Value="{StaticResource {x:Static MenuItem.SubmenuItemTemplateKey}}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Menu.Resources>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenu}"
                               Name="fileMenu"
@@ -355,13 +412,15 @@
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
-                                    MouseEnter="LoadPresetsMenus"
+                                      MouseEnter="LoadPresetsMenus"
                                       Name="RestorePresetMenu"
-                                      Focusable="False" />
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
-                                    MouseEnter="LoadPresetsMenus"
+                                      MouseEnter="LoadPresetsMenus"
                                       Name="DeletePresetMenu"
-                                      Focusable="False" />
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />                                                          
                         </MenuItem>
                         <Separator />
                         
@@ -1426,8 +1485,8 @@
                                    VerticalAlignment="Stretch"
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
-                                   Margin="5 0 5 0">
-                            Library
+                                   Margin="5 0 5 0"
+                                   Text="{x:Static p:Resources.LibraryViewTitle}">                         
                         </TextBlock>
                     </Grid>
                 </Button>

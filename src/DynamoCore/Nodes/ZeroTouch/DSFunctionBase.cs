@@ -149,9 +149,23 @@ namespace Dynamo.Nodes
             // Returns a dictionary
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
+                var returns = Definition.Returns.ToList(); // for performance reasons
+                var numReturns = returns.Count;
+
+                var i = 0;
+
                 foreach (var key in Definition.ReturnKeys)
                 {
-                    model.OutPortData.Add(new PortData(key, "var"));
+                    var portName = i < numReturns
+                        ? returns[i].Item1 ?? key // return name is optional
+                        : key;
+
+                    var portDesc = i < numReturns
+                        ? returns[i].Item2
+                        : "var";
+                    
+                    model.OutPortData.Add(new PortData(portName, portDesc));
+                    i++;
                 }
             }
             else
@@ -159,6 +173,17 @@ namespace Dynamo.Nodes
                 string displayReturnType = IsConstructor()
                     ? Definition.UnqualifedClassName
                     : Definition.ReturnType;
+
+                var returns = Definition.Returns;
+
+                if (returns.Any())
+                {
+                    model.OutPortData.Add(new PortData(
+                        returns.ElementAt(0).Item1 ?? displayReturnType,
+                        returns.ElementAt(0).Item2 ?? displayReturnType));
+                    return;
+                }
+
                 model.OutPortData.Add(new PortData(displayReturnType, displayReturnType));
             }
         }

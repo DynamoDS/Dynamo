@@ -42,6 +42,16 @@ namespace Dynamo.DSEngine
                 .Where(x => x != String.Empty);
         }
 
+        public static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
+        {
+            var node = GetMemberDocumentNode(member, xml);
+            if (node == null)
+            {
+                return Enumerable.Empty<Tuple<string,string>>();
+            }
+            return node.Returns;
+        }
+
         #endregion
 
         #region Helpers
@@ -65,21 +75,19 @@ namespace Dynamo.DSEngine
             return sb.ToString();
         }
 
-        private static string GetMemberElement(
+        private static MemberDocumentNode GetMemberDocumentNode(
             FunctionDescriptor function,
-            XmlReader xml,
-            DocumentElementType property,
-            string paramName = "")
+            XmlReader xml )
         {
             //customNodeDefinitions typedParameters don't have functionDescriptors
             if (function == null)
             {
-                return string.Empty;
+                return null;
             }
             var assemblyName = function.Assembly;
 
             if (string.IsNullOrEmpty(assemblyName))
-                return String.Empty;
+                return null;
 
             var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
                 (assemblyName, GetMemberElementName(function));
@@ -100,11 +108,22 @@ namespace Dynamo.DSEngine
                         Where(key => key.Contains(function.ClassName + "." + function.FunctionName)).FirstOrDefault();
 
                 if (overloadedName == null)
-                    return String.Empty;
+                    return null;
                 if (documentNodes.ContainsKey(overloadedName))
                     documentNode = documentNodes[overloadedName];
             }
-            
+
+            return documentNode;
+        }
+
+        private static string GetMemberElement(
+            FunctionDescriptor function,
+            XmlReader xml,
+            DocumentElementType property,
+            string paramName = "")
+        {
+            var documentNode = GetMemberDocumentNode(function, xml);
+
             if (documentNode == null)
                 return String.Empty;
             if (property.Equals(DocumentElementType.Description) && !documentNode.Parameters.ContainsKey(paramName))
@@ -214,7 +233,8 @@ namespace Dynamo.DSEngine
             Member,
             Summary,
             Parameter,
-            SearchTags
+            SearchTags,
+            Returns
         }
 
         private enum DocumentElementType
@@ -262,6 +282,18 @@ namespace Dynamo.DSEngine
                                 currentTag = XmlTagType.Parameter;
                                 break;
 
+                            case "returns":
+                                if (reader.MoveToAttribute("name"))
+                                {
+                                    currentParamName = reader.Value;
+                                }
+                                else
+                                {
+                                    currentParamName = null;
+                                }
+                                currentTag = XmlTagType.Returns;
+                                break;
+
                             case "search":
                                 currentTag = XmlTagType.SearchTags;
                                 break;
@@ -282,6 +314,9 @@ namespace Dynamo.DSEngine
                                 break;
                             case XmlTagType.Parameter:
                                 currentDocNode.Parameters.Add(currentParamName, reader.Value.CleanUpDocString());
+                                break;
+                            case XmlTagType.Returns:
+                                currentDocNode.Returns.Add(new Tuple<string,string>(currentParamName, reader.Value.CleanUpDocString()));
                                 break;
                             case XmlTagType.SearchTags:
                                 currentDocNode.SearchTags = reader.Value.CleanUpDocString();

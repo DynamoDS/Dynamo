@@ -80,6 +80,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Event that is fired during the opening of the workspace.
+        /// 
+        /// Use the XmlDocument object provided to conduct additional
+        /// workspace opening operations.
+        /// </summary>
+        public event Action<XmlDocument> WorkspaceOpening;
+        internal void OnWorkspaceOpening(XmlDocument obj)
+        {
+            var handler = WorkspaceOpening;
+            if (handler != null) handler(obj);
+        }
+
+        /// <summary>
         /// This event is raised right before the shutdown of DynamoModel started.
         /// When this event is raised, the shutdown is guaranteed to take place
         /// (i.e. user has had a chance to save the work and decided to proceed 
@@ -1119,6 +1132,8 @@ namespace Dynamo.Models
 
                         AddWorkspace(ws);
 
+                        OnWorkspaceOpening(xmlDoc);
+
                         // TODO: #4258
                         // Remove this ResetEngine call when multiple home workspaces is supported.
                         // This call formerly lived in DynamoViewModel
@@ -1450,7 +1465,7 @@ namespace Dynamo.Models
         /// <param name="centered"></param>
         public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
         {
-            CurrentWorkspace.AddNode(node, centered);
+            CurrentWorkspace.AddAndRegisterNode(node, centered);
 
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
             DynamoSelection.Instance.ClearSelection();
@@ -1581,7 +1596,7 @@ namespace Dynamo.Models
             // Add the new NodeModel's to the Workspace
             foreach (var newNode in newNodeModels)
             {
-                CurrentWorkspace.AddNode(newNode, false);
+                CurrentWorkspace.AddAndRegisterNode(newNode, false);
                 createdModels.Add(newNode);
                 AddToSelection(newNode);
             }

@@ -26,7 +26,11 @@
                     <TextBlock Text="{x:Static p:Resources.PresetPromptNameTooltip}" />
                 </Label.ToolTip>
             </Label>
-            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5"/>
+            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5" MaxLength="50"
+                     TextChanged="NameBox_OnTextChanged"/>
+            <Label Name="TextRemaining" Foreground="DarkGray" 
+                   Height="28" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="10"
+                   VerticalAlignment="Top"></Label>
             <TextBlock Name="nameView" Foreground="WhiteSmoke" FontSize="13" Padding="5"></TextBlock>
 
             <Label Content="{x:Static p:Resources.PresetsWindowDescription}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >

@@ -1,0 +1,13 @@
+<Workspace Version="0.8.2.1870" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.Input.IntegerSlider guid="51a01eaa-2352-48fb-9e55-0ce53b5d863f" type="DSCoreNodesUI.Input.IntegerSlider" nickname="Integer Slider" x="294.5" y="280.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32>42</System.Int32>
+      <Range min="0" max="100" step="1" />
+    </DSCoreNodesUI.Input.IntegerSlider>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>
