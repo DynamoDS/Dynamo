@@ -893,7 +893,6 @@ namespace Dynamo.Controls
             View.InvalidateRender();
         }
 
-
         #endregion
 
         #region private methods
@@ -968,7 +967,7 @@ namespace Dynamo.Controls
             View.InvalidateRender();
         }
 
-        private KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
+        protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
         {
             var geometryModels =
                 Model3DDictionary

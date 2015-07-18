@@ -71,14 +71,38 @@ namespace Dynamo.Wpf.Views.Preview
         protected override void NodePropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
             var updatedNode = sender as NodeModel;
+
+            // Don't bother with node property changes 
+            // that are not in this branch.
+
+            if (!updatedNode.IsUpstreamOf(node))
+                return;
+
             switch (e.PropertyName)
             {
                 case "IsUpstreamVisible":
-                    var gathered = new List<NodeModel>();
-                    updatedNode.UpstreamNodes(gathered, model => model.IsUpstreamVisible);
-                    UpdatedNodeRenderPackagesAndAggregateAsync(gathered);
+
+                    var upstream = new List<NodeModel>();
+                    updatedNode.UpstreamNodes(upstream);
+
+                    foreach (var n in upstream)
+                    {
+                        var geoms = FindAllGeometryModel3DsForNode(n).ToList();
+                        if (updatedNode.IsUpstreamVisible)
+                        {
+                            // Only unhide the geom if its preview value is set to true
+                            geoms.ForEach(g=>g.Value.Visibility = n.IsVisible? Visibility.Visible : Visibility.Hidden);
+                        }
+                        else
+                        {
+                            geoms.ForEach(g => g.Value.Visibility = Visibility.Hidden);
+                        }
+                    }
+
+                    View.InvalidateRender();
+
                     break;
-            }
+            }   
 
             base.NodePropertyChangedHandler(sender, e);
         }

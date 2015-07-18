@@ -86,7 +86,7 @@ namespace Dynamo.Core.Threading
                 // gathering if this node does not display upstream.
                 var gathered = new List<NodeModel>();
 
-                nodeModel.UpstreamNodes(gathered, model => model.IsUpstreamVisible);
+                nodeModel.UpstreamNodes(gathered);
                 duplicatedNodeReferences = gathered;
             }
 
