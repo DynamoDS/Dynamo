@@ -37,8 +37,6 @@ namespace Dynamo.Nodes
     {
         private Watch3D watch3dModel;
 
-        public Watch3DView View { get; private set; }
-
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
             model.ViewModel = nodeView.ViewModel.DynamoViewModel;
@@ -47,7 +45,7 @@ namespace Dynamo.Nodes
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
 
-            View = new Watch3DNodeView(model)
+            model.View = new Watch3DNodeView(model)
             {
                 Width = model.WatchWidth,
                 Height = model.WatchHeight,
@@ -57,8 +55,8 @@ namespace Dynamo.Nodes
             var pos = model.CameraPosition;
             var viewDir = model.LookDirection;
 
-            View.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
-            View.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
+            model.View.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
+            model.View.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
@@ -89,7 +87,7 @@ namespace Dynamo.Nodes
             backgroundRect.Fill = backgroundBrush;
 
             nodeView.PresentationGrid.Children.Add(backgroundRect);
-            nodeView.PresentationGrid.Children.Add(View);
+            nodeView.PresentationGrid.Children.Add(model.View);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
             DataBridge.Instance.RegisterCallback(
@@ -103,10 +101,10 @@ namespace Dynamo.Nodes
 
         private void UpdateLatestCameraPosition()
         {
-            if (View == null) return;
+            if (watch3dModel.View == null) return;
 
-            var pos = View.View.Camera.Position;
-            var viewDir = View.View.Camera.LookDirection;
+            var pos = watch3dModel.View.View.Camera.Position;
+            var viewDir = watch3dModel.View.View.Camera.LookDirection;
 
             // Convert Helix3D coordinates from +Y up to +Z up.
             watch3dModel.CameraPosition = new Point3D(pos.X, -pos.Z, pos.Y);
@@ -128,16 +126,16 @@ namespace Dynamo.Nodes
 
         private void RenderData(object data)
         {
-            if (View == null) return;
+            if (watch3dModel.View == null) return;
 
-            View.RenderDrawables(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            watch3dModel.View.RenderDrawables(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
-            if (View == null) return;
+            if (watch3dModel.View == null) return;
 
-            View.View.ZoomExtents();
+            watch3dModel.View.View.ZoomExtents();
         }
 
         private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
@@ -166,8 +164,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
     {
-        public bool _canNavigateBackground { get; private set; }
-
+        internal Watch3DView View { get; set; }
+        public bool canNavigateBackground { get; private set; }
         public double WatchWidth { get; private set; }
         public double WatchHeight { get; private set; }
         public Point3D CameraPosition { get; set; }
@@ -201,11 +199,11 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _canNavigateBackground;
+                return canNavigateBackground;
             }
             set
             {
-                _canNavigateBackground = value;
+                canNavigateBackground = value;
                 RaisePropertyChanged("CanNavigateBackground");
             }
         }

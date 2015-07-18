@@ -19,26 +19,26 @@ namespace Dynamo.Wpf.Views.Preview
             resizeThumb.Visibility = Visibility.Visible;
             foreach (var p in node.InPorts)
             {
-                p.PortDisconnected += p_PortDisconnected;
-                p.PortConnected += p_PortConnected;
+                p.PortDisconnected += PortDisconnectedHandler;
+                p.PortConnected += PortConnectedHandler;
             }
         }
 
-        void p_PortConnected(PortModel arg1, ConnectorModel arg2)
+        void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
         {
             // Mark upstream nodes as updated.
             // Trigger an aggregation.
             var gathered = new List<NodeModel>();
-            WorkspaceUtilities.GatherAllUpstreamNodes(node, gathered, n=>n.IsUpstreamVisible);
+            node.UpstreamNodes(gathered, n => n.IsUpstreamVisible);
             if (gathered.Any())
             {
                 gathered.ForEach(n => n.IsUpdated = true);
             }
 
-            ScheduleAggregationForNode();
+            UpdatedNodeRenderPackagesAndAggregateAsync(gathered);
         }
 
-        void p_PortDisconnected(PortModel obj)
+        void PortDisconnectedHandler(PortModel obj)
         {
             ResetGeometryDictionary();
         }
@@ -75,8 +75,7 @@ namespace Dynamo.Wpf.Views.Preview
             {
                 case "IsUpstreamVisible":
                     var gathered = new List<NodeModel>();
-                    WorkspaceUtilities.GatherAllUpstreamNodes(updatedNode,
-                    gathered, model => model.IsUpstreamVisible);
+                    updatedNode.UpstreamNodes(gathered, model => model.IsUpstreamVisible);
                     UpdatedNodeRenderPackagesAndAggregateAsync(gathered);
                     break;
             }

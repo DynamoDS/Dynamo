@@ -23,26 +23,28 @@ namespace Dynamo.Utilities
         }
     }
 
-    public static class WorkspaceUtilities
+    public static class NodeModelExtensions
     {
-        internal static void GatherAllUpstreamNodes(NodeModel nodeModel,
-            List<NodeModel> gathered, Predicate<NodeModel> match)
+        internal static IEnumerable<NodeModel> UpstreamNodes(this NodeModel node, List<NodeModel> gathered, Predicate<NodeModel> match)
         {
-            if ((nodeModel == null) || gathered.Contains(nodeModel))
-                return; // Look no further, node is already in the list.
+            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c=>c.Start.Owner)).
+                Where(n=>match(n)).
+                ToList();
 
-            gathered.Add(nodeModel); // Add to list first, avoiding re-entrant.
-            if (!match(nodeModel)) // Determine if the search should proceed.
-                return;
-
-            foreach (var upstreamNode in nodeModel.InputNodes)
+            foreach (var n in upstream)
             {
-                if (upstreamNode.Value == null)
-                    continue;
-
-                // Add all the upstream nodes found into the list.
-                GatherAllUpstreamNodes(upstreamNode.Value.Item2, gathered, match);
+                if (!gathered.Contains(n))
+                {
+                    gathered.Add(n);
+                }
             }
+
+            foreach (var n in upstream)
+            {
+                n.UpstreamNodes(gathered, match);
+            }
+
+            return gathered;
         }
     }
 

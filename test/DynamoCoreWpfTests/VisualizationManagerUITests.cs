@@ -11,6 +11,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.Tests;
 using Dynamo.UI;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
@@ -670,6 +671,44 @@ namespace DynamoCoreWpfTests
             RunCurrentModel();
 
             Assert.True(ws.HasAnyColorMappedMeshes());
+        }
+
+        [Test]
+        public void Watch3D_Disconnect_Reconnect_CorrectRenderings()
+        {
+            string openPath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                @"core\visualization\ASM_points_line.dyn");
+            Open(openPath);
+
+            // Clear the dispatcher to ensure that the 
+            // view is created.
+            DispatcherUtil.DoEvents();
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            ws.RunSettings.RunType = RunType.Automatic;
+
+            var watch3DNode = ws.FirstNodeFromWorkspace<Watch3D>();
+            Assert.Greater(watch3DNode.View.View.Items.Count, 3);     
+       
+            // Disconnect the port coming into the watch3d node.
+            var connector = watch3DNode.InPorts[0].Connectors.First();
+            watch3DNode.InPorts[0].Disconnect(connector);
+
+            // Three items, the grid, the axes, and the light will remain.
+            Assert.AreEqual(watch3DNode.View.View.Items.Count, 3);
+
+            var linesNode = ws.Nodes.First(n => n.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+
+            var cmd1 = new DynamoModel.MakeConnectionCommand(linesNode.GUID.ToString(), 0, PortType.Output,
+                DynamoModel.MakeConnectionCommand.Mode.Begin);
+            var cmd2 = new DynamoModel.MakeConnectionCommand(watch3DNode.GUID.ToString(), 0, PortType.Input,
+                DynamoModel.MakeConnectionCommand.Mode.End);
+
+            ViewModel.Model.ExecuteCommand(cmd1);
+            ViewModel.Model.ExecuteCommand(cmd2);
+
+            Assert.AreEqual(6, watch3DNode.View.View.Items.Count);
         }
 
         private void Open(string relativePath)
