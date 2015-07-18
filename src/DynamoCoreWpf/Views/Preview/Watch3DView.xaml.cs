@@ -245,134 +245,6 @@ namespace Dynamo.Controls
             InitializeHelix();
         }
 
-        private void SetupScene()
-        {
-            var ptColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PointColor"];
-            defaultPointColor = new Color4(ptColor.R/255.0f, ptColor.G/255.0f, ptColor.B/255.0f, ptColor.A/255.0f);
-
-            var lineColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
-            defaultLineColor = new Color4(lineColor.R/255.0f, lineColor.G/255.0f, lineColor.B/255.0f, lineColor.A/255.0f);
-
-            directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
-            directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
-
-            var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
-            materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
-            
-            RenderTechnique = Techniques.RenderDynamo;
-
-            WhiteMaterial = new PhongMaterial
-            {
-                Name = "White",
-                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = materialColor,
-                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
-                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
-                SpecularShininess = 12.8f,
-            };
-
-            var selColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["SelectionColor"];
-            selectionColor = new Color4(selColor.R/255.0f, selColor.G/255.0f, selColor.B/255.0f, selColor.A/255.0f);
-            SelectedMaterial = new PhongMaterial
-            {
-                Name = "White",
-                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = selectionColor,
-                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
-                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
-                SpecularShininess = 12.8f,
-            };
-
-            Model1Transform = new TranslateTransform3D(0, -0, 0);
-            
-            // camera setup
-            Camera = new PerspectiveCamera();
-
-            SetCameraToDefaultOrientation();
-
-            DrawGrid();
-        }
-
-        private void SetCameraToDefaultOrientation()
-        {
-            Camera.LookDirection = defaultCameraLookDirection;
-            Camera.Position = defaultCameraPosition;
-            Camera.UpDirection = defaultCameraUpDirection;
-            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
-            Camera.FarPlaneDistance = 10000000;
-        }
-
-        /// <summary>
-        /// Initialize the Helix with these values. These values should be attached before the 
-        /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
-        /// So they are initialized before the process starts.
-        /// </summary>
-        private void InitializeHelix()
-        {
-            directionalLight = new DirectionalLight3D
-            {
-                Color = directionalLightColor,
-                Direction = directionalLightDirection
-            };
-
-            if (model3DDictionary != null && !model3DDictionary.ContainsKey("DirectionalLight"))
-            {
-                model3DDictionary.Add("DirectionalLight", directionalLight);
-            }
-
-            LineGeometryModel3D gridModel3D = new LineGeometryModel3D
-            {
-                Geometry = Grid,
-                Transform = Model1Transform,
-                Color = SharpDX.Color.White,
-                Thickness = 0.3,
-                IsHitTestVisible = false
-            };
-
-            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Grid"))
-            {
-                model3DDictionary.Add("Grid", gridModel3D);
-            }
-
-            LineGeometryModel3D axesModel3D = new LineGeometryModel3D
-            {
-                Geometry = Axes,
-                Transform = Model1Transform,
-                Color = SharpDX.Color.White,
-                Thickness = 0.3,
-                IsHitTestVisible = false
-            };
-
-            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Axes"))
-            {
-                model3DDictionary.Add("Axes", axesModel3D);
-            }
-        }
-
-        private static MeshGeometry3D DrawTestMesh()
-        {
-            var b1 = new MeshBuilder();
-            for (var x = 0; x < 4; x++)
-            {
-                for (var y = 0; y < 4; y++)
-                {
-                    for (var z = 0; z < 4; z++)
-                    {
-                        b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
-                    }
-                }
-            }
-            var mesh = b1.ToMeshGeometry3D();
-            
-            mesh.Colors = new Color4Collection();
-            foreach (var v in mesh.Positions)
-            {
-                mesh.Colors.Add(new Color4(1f,0f,0f,1f));
-            }
-
-            return mesh;
-        }
-        
         #endregion
 
         #region event registration
@@ -911,6 +783,134 @@ namespace Dynamo.Controls
         #endregion
 
         #region private methods
+
+        private void SetupScene()
+        {
+            var ptColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PointColor"];
+            defaultPointColor = new Color4(ptColor.R / 255.0f, ptColor.G / 255.0f, ptColor.B / 255.0f, ptColor.A / 255.0f);
+
+            var lineColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
+            defaultLineColor = new Color4(lineColor.R / 255.0f, lineColor.G / 255.0f, lineColor.B / 255.0f, lineColor.A / 255.0f);
+
+            directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+            directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+
+            var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
+            materialColor = new Color4(matColor.R / 255.0f, matColor.G / 255.0f, matColor.B / 255.0f, matColor.A / 255.0f);
+
+            RenderTechnique = Techniques.RenderDynamo;
+
+            WhiteMaterial = new PhongMaterial
+            {
+                Name = "White",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = materialColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
+
+            var selColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["SelectionColor"];
+            selectionColor = new Color4(selColor.R / 255.0f, selColor.G / 255.0f, selColor.B / 255.0f, selColor.A / 255.0f);
+            SelectedMaterial = new PhongMaterial
+            {
+                Name = "White",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = selectionColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
+
+            Model1Transform = new TranslateTransform3D(0, -0, 0);
+
+            // camera setup
+            Camera = new PerspectiveCamera();
+
+            SetCameraToDefaultOrientation();
+
+            DrawGrid();
+        }
+
+        private void SetCameraToDefaultOrientation()
+        {
+            Camera.LookDirection = defaultCameraLookDirection;
+            Camera.Position = defaultCameraPosition;
+            Camera.UpDirection = defaultCameraUpDirection;
+            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
+            Camera.FarPlaneDistance = 10000000;
+        }
+
+        /// <summary>
+        /// Initialize the Helix with these values. These values should be attached before the 
+        /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
+        /// So they are initialized before the process starts.
+        /// </summary>
+        private void InitializeHelix()
+        {
+            directionalLight = new DirectionalLight3D
+            {
+                Color = directionalLightColor,
+                Direction = directionalLightDirection
+            };
+
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("DirectionalLight"))
+            {
+                model3DDictionary.Add("DirectionalLight", directionalLight);
+            }
+
+            LineGeometryModel3D gridModel3D = new LineGeometryModel3D
+            {
+                Geometry = Grid,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false
+            };
+
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Grid"))
+            {
+                model3DDictionary.Add("Grid", gridModel3D);
+            }
+
+            LineGeometryModel3D axesModel3D = new LineGeometryModel3D
+            {
+                Geometry = Axes,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false
+            };
+
+            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Axes"))
+            {
+                model3DDictionary.Add("Axes", axesModel3D);
+            }
+        }
+
+        private static MeshGeometry3D DrawTestMesh()
+        {
+            var b1 = new MeshBuilder();
+            for (var x = 0; x < 4; x++)
+            {
+                for (var y = 0; y < 4; y++)
+                {
+                    for (var z = 0; z < 4; z++)
+                    {
+                        b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
+                    }
+                }
+            }
+            var mesh = b1.ToMeshGeometry3D();
+
+            mesh.Colors = new Color4Collection();
+            foreach (var v in mesh.Positions)
+            {
+                mesh.Colors.Add(new Color4(1f, 0f, 0f, 1f));
+            }
+
+            return mesh;
+        }
 
         private void SetSelection(IEnumerable items, bool isSelected)
         {
