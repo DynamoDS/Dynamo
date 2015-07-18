@@ -2895,6 +2895,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Is Input.
+        /// </summary>
+        public static string NodeContextMenuIsInput {
+            get {
+                return ResourceManager.GetString("NodeContextMenuIsInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
         public static string NodeContextMenuPreview {
@@ -3570,6 +3579,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A preset by this name already exists, do you wish to overwrite?.
+        /// </summary>
+        public static string PresetOverwrite {
+            get {
+                return ResourceManager.GetString("PresetOverwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A description of the preset state..
         /// </summary>
         public static string PresetPromptDescriptionTooltip {
@@ -3620,6 +3638,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PresetsWindowTitle {
             get {
                 return ResourceManager.GetString("PresetsWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Characters Remaining.
+        /// </summary>
+        public static string PresetTextRemaining {
+            get {
+                return ResourceManager.GetString("PresetTextRemaining", resourceCulture);
             }
         }
         

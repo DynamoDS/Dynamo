@@ -420,7 +420,7 @@ namespace DynamoCoreWpfTests
         {
             // Create number node
             var numNode = new DoubleInput { X = 100, Y = 100 };
-            ViewModel.Model.CurrentWorkspace.AddNode(numNode, true);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numNode, true);
         }
 
         #endregion
@@ -678,7 +678,7 @@ namespace DynamoCoreWpfTests
         public void TestDraggedNode()
         {
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) { X = 16, Y = 32 };
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             NodeModel locatable = ViewModel.Model.CurrentWorkspace.Nodes.First();
 
             var startPoint = new Point2D(8, 64);

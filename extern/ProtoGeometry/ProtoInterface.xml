@@ -135,6 +135,11 @@
             short name when convert the node to code.  
             </summary>
         </member>
+        <member name="T:Autodesk.DesignScript.Runtime.IsObsoleteAttribute">
+            <summary>
+            This attribute indicates the method is obsolete.
+            </summary>
+        </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IDesignScriptEntity">
             <summary>
             This interface represents internal data model for a design script 
@@ -2616,7 +2621,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.PointBySphericalCoordinates(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity,System.Double,System.Double,System.Double)">
             <summary>
-            Form a Point in the given coordinate system given its position in cylindrical coordinates.
+            Form a Point in the given coordinate system given its position in spherical coordinates.
             </summary>
             <param name="cs">The coordinate system to build the point in</param>
             <param name="phi">The angle down from the Z axis in degrees</param>
@@ -2679,24 +2684,24 @@
             </summary>
             <search>rectbypoints</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.RectangleByWidthHeight(System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.RectangleByWidthLength(System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at the WCS origin in the WCS XY Plane, with
-            specified width (X Axis length), and height (Y Axis length).
+            specified width (X Axis length), and length (Y Axis length).
             </summary>
             <search>rectbylengths</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.RectangleByWidthHeight(Autodesk.DesignScript.Interfaces.IPlaneEntity,System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.RectangleByWidthLength(Autodesk.DesignScript.Interfaces.IPlaneEntity,System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at input Plane root, with input width 
-            (Plane X axis length) and (Plane Y axis length). 
+            (Plane X axis length), and length (Plane Y axis length). 
             </summary>
             <search>rectangle,rectbylengths</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.RectangleByWidthHeight(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity,System.Double,System.Double)">
+        <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.RectangleByWidthLength(Autodesk.DesignScript.Interfaces.ICoordinateSystemEntity,System.Double,System.Double)">
             <summary>
             Create a Rectangle centered at the input origin in the CoordinateSystem 
-            XY Plane, with specified width (X Axis length), and height 
+            XY Plane, with specified width (X Axis length), and length 
             (Y Axis length).
             </summary>
             <search>rectbylengths</search>
@@ -2959,8 +2964,7 @@
         <member name="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.LoadSAT(System.String)">
             <summary>
             Parses a ".sat" or ".smt" file for Curve, Surface, and Solid objects,
-            and returns newly created objects. WARNING: non-ascii characters
-            are not supported in file nams.
+            and returns newly created objects. 
             </summary>
             <search>import,load,open</search>
         </member>
@@ -3382,22 +3386,6 @@
             Add a line strip vertex color to the render package.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyLineVertexColors(System.Int32,System.Int32,System.Byte,System.Byte,System.Byte,System.Byte)">
-            <summary>
-            Apply a color to a sequence of line vertices.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyMeshVertexColors(System.Int32,System.Int32,System.Byte,System.Byte,System.Byte,System.Byte)">
-            <summary>
-            Apply a color to a sequence of mesh vertices.
-            </summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyPointVertexColors(System.Int32,System.Int32,System.Byte,System.Byte,System.Byte,System.Byte)">
-            <summary>
-            Apply a color to each point vertex.
-            </summary>
-            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
-        </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyPointVertexColors(System.Byte[])">
             <summary>
             Apply a color to each point vertex.
@@ -3414,6 +3402,12 @@
             Apply a color to each mesh vertex.
             </summary>
             <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.SetColors(System.Byte[])">
+            <summary>
+            Set a an array of bytes to be used as a color map.
+            </summary>
+            <param name="colors"></param>
         </member>
         <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.Clear">
             <summary>
@@ -3467,59 +3461,71 @@
             comprise each line segment in the package.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripVertexBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripVertices">
             <summary>
             A collection containing all line strip vertices as x1,y1,z1,x2,y2,z2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripVertexColorBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripVertexColors">
             <summary>
             A collection containing all line strip colors as r1,g1,b1,a1,r2,g2,b2,a2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripIndexBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripIndices">
             <summary>
             A collection containing all line strip indices.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshVertexBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshVertices">
             <summary>
             A collection containing all mesh vertices as x1,y1,z1,x2,y2,z2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshVertexColorBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshVertexColors">
             <summary>
             A collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshIndexBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshIndices">
             <summary>
             A collection containing all mesh vertex indices.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshNormalBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshNormals">
             <summary>
             A collection containing all mesh normals as x1,y1,z1,x2,y2,z2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshTextureCoordinateBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshTextureCoordinates">
             <summary>
             A collection containing all mesh texture coordinates as u1,v1,u2,v2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointVertexBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointVertices">
             <summary>
             A collection containing all point vertices as x1,y1,z1,x2,y2,z2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointVertexColorBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointVertexColors">
             <summary>
             A collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointIndexBuffer">
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointIndices">
             <summary>
             A collection containing all mesh vertex indices.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.Colors">
+            <summary>
+            A collection of bytes representing RGBA colors. This field can be used to populate textures
+            for mapping onto surfaces. Use the ColorsStride property to define the
+            size of one dimension of the collection.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.ColorsStride">
+            <summary>
+            The size of one dimension of the Colors collection.
             </summary>
         </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IGraphicItem">
@@ -3528,13 +3534,31 @@
             into the given render package.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IGraphicItem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double,System.Int32)">
+        <member name="M:Autodesk.DesignScript.Interfaces.IGraphicItem.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <summary>
             Gets the graphics/tesselation data in given render package object.
             </summary>
             <param name="package">The render package, where graphics data to be
             pushed.</param>
             <param name="tol">The tolerance for faceting</param>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.TessellationParameters.Tolerance">
+            <summary>
+            The tolerance for faceting.
+            Default is -1.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.TessellationParameters.MaxTessellationDivisions">
+            <summary>
+            The maximum number of divisions for tessellation.
+            Default is 512
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.TessellationParameters.ShowEdges">
+            <summary>
+            A flag indicating whether surface edges should be
+            included in the RenderPackage. Default is false.
+            </summary>
         </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IGraphicDataProvider">
             <summary>
@@ -3550,14 +3574,14 @@
             </param>
             <returns>List of IGraphicItem owned by the input object.</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Interfaces.IGraphicDataProvider.Tessellate(System.Collections.Generic.List{System.Object},Autodesk.DesignScript.Interfaces.IRenderPackage,System.Double)">
+        <member name="M:Autodesk.DesignScript.Interfaces.IGraphicDataProvider.Tessellate(System.Collections.Generic.List{System.Object},Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
             <summary>
             Gets the Graphics/Render data into the given render package.
             </summary>
             <param name="objects">Objects which owns some graphics items</param>
             <param name="package">RenderPackage where graphics/render data can
             be pushed/set.</param>
-            <param name="tol">The tolerance for faceting</param>
+            <param name="parameters">A TessellationParameters object.</param>
         </member>
         <member name="T:Autodesk.DesignScript.Runtime.XmlDocumentationExtensions">
             <summary>
