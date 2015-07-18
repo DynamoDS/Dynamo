@@ -450,14 +450,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            if (outputIndex < 0 || outputIndex > OutPortData.Count)
-                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
-
-            return AstIdentifierForPreview;
-        }
-
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             AssociativeNode assignment;

@@ -24,7 +24,7 @@ using Utils = Dynamo.Nodes.Utilities;
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable
+    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
 
         public const double ZOOM_MAXIMUM = 4.0;
@@ -245,7 +245,7 @@ namespace Dynamo.Models
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
-        ///     A set of input parameter states, this can be used to set the graph to a serialized state.
+        ///     A set of input parameter states, this can be used to set the graph to a serialized state.       
         /// </summary>
         public IEnumerable<PresetModel> Presets { get { return presets;} }
 
@@ -305,7 +305,7 @@ namespace Dynamo.Models
         }
 
 
-        public void AddNode(NodeModel node)
+        private void AddNode(NodeModel node)
         {
             lock (nodes)
             {
@@ -315,7 +315,7 @@ namespace Dynamo.Models
             OnNodeAdded(node);
         }
 
-        public void ClearNodes()
+        private void ClearNodes()
         {
             lock (nodes)
             {
@@ -602,6 +602,7 @@ namespace Dynamo.Models
             ClearNodes();
             Notes.Clear();
             Annotations.Clear();
+            presets.Clear();
 
             ClearUndoRecorder();
             ResetWorkspace();
@@ -644,7 +645,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Adds a node to this workspace.
         /// </summary>
-        public void AddNode(NodeModel node, bool centered = false)
+        public void AddAndRegisterNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;
@@ -680,7 +681,7 @@ namespace Dynamo.Models
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
-
+            HasUnsavedChanges = true;
         }
 
         /// <summary>
@@ -853,7 +854,7 @@ namespace Dynamo.Models
         {
             this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
-
+        
         #endregion
 
         #region Presets
@@ -881,7 +882,7 @@ namespace Dynamo.Models
             presets.Add(newstate);
         }
 
-        public void RemoveState(PresetModel state)
+        public void RemovePreset(PresetModel state)
         {
             if (Presets.Contains(state))
             {
@@ -903,8 +904,8 @@ namespace Dynamo.Models
                 foreach (var node in state.Nodes)
                 {
                     //check that node still exists in this workspace, 
-                    //otherwise bail on this node
-                    if (nodes.Contains(node))
+                    //otherwise bail on this node, check by GUID instead of nodemodel
+                    if (nodes.Select(x=>x.GUID).Contains(node.GUID))
                     {
                         var originalpos = node.Position;
                         var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
@@ -932,7 +933,12 @@ namespace Dynamo.Models
             this.AddPresetCore(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
         }
-        
+
+        public void ImportPresets(IEnumerable<PresetModel> presetCollection)
+        {
+            presets.AddRange(presetCollection);
+        }
+
         #endregion
 
         #region private/internal methods
@@ -1265,7 +1271,7 @@ namespace Dynamo.Models
                         totalY / nodeCount, engineController.LibraryServices);
                     undoHelper.RecordCreation(codeBlockNode);
                    
-                    AddNode(codeBlockNode);
+                    AddAndRegisterNode(codeBlockNode, false);
                     codeBlockNodes.Add(codeBlockNode);
                     #endregion
 

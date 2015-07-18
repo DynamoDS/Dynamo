@@ -6,56 +6,62 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.UI.Controls;
+using Dynamo.ViewModels;
+using Dynamo.Utilities;
+using Dynamo.Interfaces;
+using Dynamo.Extensions;
 
 namespace Dynamo.Wpf.Extensions
 {
     /// <summary>
     /// Application level parameters passed to an extension when the DynamoView is loaded
     /// </summary>
-    public class ViewLoadedParams
+    public class ViewLoadedParams : ReadyParams
     {
-        // TBD MAGN-7366
-        //
-        // Implementation notes:
-        // 
-        // This should be designed primarily to support the separation of the Package Manager from Core
-        // and minimize exposing unnecessary innards.
-        //
-        // It is expected that this class will be extended in the future, so it should stay as minimal as possible.
-        //
-        // Here's a start on the implementation
-        //
+        private readonly DynamoView dynamoView;
+        private readonly DynamoViewModel dynamoViewModel;
+        public readonly Menu dynamoMenu;
 
-        //private readonly DynamoView view;
+        internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
+            base(dynamoVM.Model)
+        {
+            dynamoView = dynamoV;
+            dynamoViewModel = dynamoVM;
+            dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
+        }
 
-        //internal ViewLoadedParams(DynamoView view)
-        //{
-        //    this.view = view;
-        //}
+        public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
+        {
+            if (dynamoMenu == null)
+                return;
 
-        ///// <summary>
-        ///// Add a menu item for workspace context click
-        ///// </summary>
-        ///// <param name="item">The item to insert</param>
-        ///// <param name="options">Options object to determine in which cases the MenuItem should be visible</param>
-        //public void AddWorkspaceContextClickMenuItem(MenuItem item, WorkspaceContextClickOptions options)
-        //{
-            
-        //}
+            var dynamoItem = SearchForMenuItem(type);
+            if (dynamoItem == null)
+                return;
 
-        //public void AddShortcutBarItem(ShortcutBarItem item)
-        //{
-        //    // add an item to Dynamo's shortcut bar
-        //}
+            if (index >= 0 && index < dynamoItem.Items.Count)
+                dynamoItem.Items.Insert(index, menuItem);
+            else
+                dynamoItem.Items.Add(menuItem);
+        }
 
-        //public void AddMenuBar(MenuItem item)
-        //{
-            
-        //}
+        /// <summary>
+        /// Searchs for dynamo parent menu item. Parent item can be:
+        /// file menu, edit menu, view menu and help mebu bars.
+        /// </summary>
+        /// <param name="menuBarType">File, Edit, View or Help.</param>
+        private MenuItem SearchForMenuItem(MenuBarType type)
+        {
+            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
+            return dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
+        }
+    }
 
-        //public void AddKeyBinding(KeyBinding binding)
-        //{
-            
-        //}
+    public enum MenuBarType
+    {
+        File,
+        Edit,
+        View,
+        Help
     }
 }

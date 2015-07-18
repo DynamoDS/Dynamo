@@ -1109,7 +1109,7 @@ namespace Dynamo.Core
                 var collapsedNode = CreateCustomNodeInstance(newId, isTestMode: isTestMode);
                 collapsedNode.X = avgX;
                 collapsedNode.Y = avgY;
-                currentWorkspace.AddNode(collapsedNode, centered: false);
+                currentWorkspace.AddAndRegisterNode(collapsedNode, centered: false);
                 undoRecorder.RecordCreationForUndo(collapsedNode);
 
                 foreach (var connector in
