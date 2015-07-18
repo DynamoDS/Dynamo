@@ -502,6 +502,16 @@ namespace Dynamo.Models
                 }
             }
 
+            // At this point, pathManager.PackageDirectories only has 1 element which is the directory
+            // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
+            // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
+            // PackageFolders
+            if (PreferenceSettings.CustomPackageFolders.Count == 0)
+                PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
+            else
+                pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
+
+
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
@@ -558,6 +568,10 @@ namespace Dynamo.Models
 
                 foreach (var ext in extensions)
                 {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += LogMessage;
+
                     ext.Startup(startupParams);
                     ext.RequestLoadNodeLibrary += LoadNodeLibrary;
                     ext.Load(preferences, pathManager);
@@ -588,6 +602,10 @@ namespace Dynamo.Models
         {
             ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
             ExtensionManager.Remove(ext);
+
+            var logSource = ext as ILogSource;
+            if (logSource != null)
+                logSource.MessageLogged -= LogMessage;
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
@@ -897,7 +915,8 @@ namespace Dynamo.Models
 #endif
 
             // Load local custom nodes
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
+            foreach (var directory in pathManager.DefinitionDirectories)
+                CustomNodeManager.AddUninitializedCustomNodesInPath(directory, IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
