@@ -39,7 +39,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBox">
-                            <ScrollViewer Margin="0,2,0,2"
+                            <ScrollViewer Margin="0,0,0,1"
                                           Focusable="false">
                                 <StackPanel IsItemsHost="True" />
                             </ScrollViewer>
@@ -49,17 +49,22 @@
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <Grid Background="Transparent">
-                                <Grid.ToolTip>
-                                    <Binding Path="ToolTip" />
-                                </Grid.ToolTip>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding}"
-                                               Margin="6,7,0,8"
-                                               FontSize="14"
-                                               FontFamily="{StaticResource OpenSansRegular}"
-                                               VerticalAlignment="Center" />
-                                </StackPanel>
+                            <Grid Background="#40ffffff"
+                                  ToolTip="{Binding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding}"
+                                           Margin="6,7,0,8"
+                                           FontSize="14"
+                                           FontFamily="{StaticResource OpenSansRegular}"
+                                           VerticalAlignment="Center" />
+                                <Button Grid.Column="1"
+                                        Margin="10,0,10,0"
+                                        Style="{StaticResource STextButton}">
+                                    ...
+                                </Button>
                             </Grid>
                         </DataTemplate>
                     </Setter.Value>
@@ -76,7 +81,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
                             <Border x:Name="Border"
-                                    Padding="2"
+                                    Padding="1"
                                     SnapsToDevicePixels="true">
                                 <Border.Background>
                                     <SolidColorBrush Color="Transparent" />
@@ -176,8 +181,14 @@
         <ListBox x:Name="PathListBox"
                  Grid.Row="2"
                  Grid.Column="1"
+                 SelectionMode="Single"
+                 SelectionChanged="OnPathSelectionChanged"
                  Style="{StaticResource PathListBoxStyle}"
                  ItemContainerStyle="{StaticResource PathListBoxItemStyle}">
+            <ListBox.ItemsSource>
+                <Binding Path="DataContext.RootLocations"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
+            </ListBox.ItemsSource>
         </ListBox>
 
         <StackPanel Grid.Row="3"

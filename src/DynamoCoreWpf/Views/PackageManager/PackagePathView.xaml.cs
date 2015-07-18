@@ -23,11 +23,6 @@ namespace Dynamo.Wpf.Views.PackageManager
         public PackagePathView()
         {
             InitializeComponent();
-            PathListBox.ItemsSource = new List<string>
-            {
-                "PathOne",
-                "PathTwo"
-            };
         }
 
         internal PackagePathView(PackagePathViewModel viewModel)
@@ -36,7 +31,21 @@ namespace Dynamo.Wpf.Views.PackageManager
                 throw new ArgumentNullException("viewModel");
 
             InitializeComponent();
-            PathListBox.ItemsSource = viewModel.RootLocations;
+            this.DataContext = viewModel;
         }
+
+        #region Private Helper Methods and Event Handlers
+
+        void OnPathSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count <= 0)
+                return; // Nothing selected.
+
+            var viewModel = DataContext as PackagePathViewModel;
+            var selected = e.AddedItems[0] as string;
+            viewModel.SelectedIndex = viewModel.RootLocations.IndexOf(selected);
+        }
+
+        #endregion
     }
 }
