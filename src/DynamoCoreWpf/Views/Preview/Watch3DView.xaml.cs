@@ -393,7 +393,9 @@ namespace Dynamo.Controls
                     break;
             }
 
-            ResetGeometryDictionary();
+            // Set all the nodes as updated so we get a total redraw.
+
+            viewModel.Model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
 
             UpdatedNodeRenderPackagesAndAggregateAsync(viewModel.Model.CurrentWorkspace.Nodes);
         }
