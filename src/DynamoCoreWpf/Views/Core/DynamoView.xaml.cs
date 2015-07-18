@@ -585,11 +585,8 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
         {
-            var view = new PackagePathView()
-            {
-                Owner = this
-            };
-
+            var viewModel = new PackagePathViewModel(dynamoViewModel.PreferenceSettings);
+            var view = new PackagePathView(viewModel) { Owner = this };
             view.ShowDialog();
         }
 

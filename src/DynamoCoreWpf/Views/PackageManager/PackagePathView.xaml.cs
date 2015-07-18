@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,15 @@ namespace Dynamo.Wpf.Views.PackageManager
                 "PathOne",
                 "PathTwo"
             };
+        }
+
+        internal PackagePathView(PackagePathViewModel viewModel)
+        {
+            if (viewModel == null)
+                throw new ArgumentNullException("viewModel");
+
+            InitializeComponent();
+            PathListBox.ItemsSource = viewModel.RootLocations;
         }
     }
 }
