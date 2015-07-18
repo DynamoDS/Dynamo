@@ -15,7 +15,7 @@ namespace Dynamo.PackageManager.Tests
             base.Setup();
             var settings = new PreferenceSettings();
             var parentFolder = Path.Combine(TestDirectory, "pkgs", "multiple_locations");
-            settings.PackageFolders = new List<string>
+            settings.CustomPackageFolders = new List<string>
             {
                 Path.Combine(parentFolder, "folder1"),
                 @"C:\folder_name_with_invalid_:*?|_characters\foobar",
@@ -40,7 +40,7 @@ namespace Dynamo.PackageManager.Tests
             var loader = GetPackageLoader();
             
             Assert.AreEqual(loader.DefaultPackagesDirectory,
-                Path.Combine(TestDirectory, "pkgs", "multiple_locations", "folder1"));
+                Path.Combine(TestDirectory, "pkgs", "multiple_locations", "folder1", "packages"));
 
             Assert.AreEqual(2, loader.LocalPackages.Count());
 

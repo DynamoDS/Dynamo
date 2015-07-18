@@ -70,6 +70,11 @@ namespace Dynamo.Interfaces
         string CommonDataDirectory { get; }
 
         /// <summary>
+        /// The default directory that contains custom nodes created by the user.
+        /// </summary>
+        string DefaultUserDefinitions { get; }
+
+        /// <summary>
         /// Directories from where custom nodes are to be loaded. The implementor
         /// of this interface method should always guarantee that a non-empty 
         /// list is returned, and that the first entry represents the default 
@@ -90,6 +95,12 @@ namespace Dynamo.Interfaces
         /// specific to the current user.
         /// </summary>
         string LogDirectory { get; }
+
+        /// <summary>
+        /// The default directory for saving packages downloaded through
+        /// the package manager. This directory is specific to the current user.
+        /// </summary>
+        string DefaultPackagesDirectory { get; }
 
         /// <summary>
         /// Directories from where packages are to be loaded. The implementor

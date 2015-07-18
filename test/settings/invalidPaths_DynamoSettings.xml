@@ -12,17 +12,7 @@
   <MaxNumRecentFiles>10</MaxNumRecentFiles>
   <RecentFiles />
   <BackupFiles />
-  <CustomNodeFolders>
-    <string>\\test_machine\non-existent_folder</string>
-    <string>D:\custom_nodes</string>
-    <string>D:\custom_nodes</string>
-    <string>E:\this_folder_doesn't_exist</string>
-    <string>\\test_machine\non-existent_folder</string>
-    <string>\\test_machine\non-existent_folder</string>
-    <string>E:\this_folder_doesn't_exist</string>
-    <string>E:\this_folder_doesn't_exist</string>
-  </CustomNodeFolders>
-  <PackageFolders>
+  <CustomPackageFolders>
     <string>C:\folder_name_with_invalid_:*?|_characters\foobar</string>
     <string>C:\this_folder_doesn't_exist</string>
     <string>C:\this_folder_doesn't_exist</string>
@@ -31,7 +21,7 @@
     <string>C:\folder_name_with_invalid_:*?|_characters\foobar</string>
     <string>X:\this_drive_doesn't_exist</string>
     <string>X:\this_drive_doesn't_exist</string>
-  </PackageFolders>
+  </CustomPackageFolders>
   <PackageDirectoriesToUninstall />
   <WindowX>0</WindowX>
   <WindowY>0</WindowY>
@@ -40,7 +30,7 @@
   <UseHardwareAcceleration>true</UseHardwareAcceleration>
   <BackupInterval>60000</BackupInterval>
   <BackupFilesCount>1</BackupFilesCount>
-  <PackageDownloadTouAccepted>true</PackageDownloadTouAccepted>
+  <PackageDownloadTouAccepted>false</PackageDownloadTouAccepted>
   <ShowEdges>false</ShowEdges>
   <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
 </PreferenceSettings>

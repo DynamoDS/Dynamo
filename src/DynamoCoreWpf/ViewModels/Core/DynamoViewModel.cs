@@ -1453,7 +1453,7 @@ namespace Dynamo.ViewModels
             else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var pathManager = vm.model.PathManager;
-                _fileDialog.InitialDirectory = pathManager.DefinitionDirectories.ElementAt(0);
+                _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
