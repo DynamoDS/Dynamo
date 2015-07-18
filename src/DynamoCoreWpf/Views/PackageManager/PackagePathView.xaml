@@ -149,29 +149,30 @@
 
         <StackPanel Grid.Row="2"
                     Grid.Column="0"
+                    Margin="0,0,8,0"
                     Orientation="Vertical">
 
-            <uictrl:ImageButton Width="30"
-                                Height="24"
-                                Margin="0,0,10,5"
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,0,5,0"
                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipUp}"
                                 StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-move-up.png">
             </uictrl:ImageButton>
-            <uictrl:ImageButton Width="30"
-                                Height="24"
-                                Margin="0,5,10,5"
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,5,5,0"
                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipDown}"
                                 StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-move-down.png">
             </uictrl:ImageButton>
-            <uictrl:ImageButton Width="30"
-                                Height="24"
-                                Margin="0,5,10,5"
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,5,5,0"
                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}"
                                 StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-plus.png">
             </uictrl:ImageButton>
-            <uictrl:ImageButton Width="30"
-                                Height="24"
-                                Margin="0,5,10,5"
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,5,5,0"
                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipMinus}"
                                 StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-minus.png">
             </uictrl:ImageButton>
