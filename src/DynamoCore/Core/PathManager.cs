@@ -314,7 +314,9 @@ namespace Dynamo.Core
         /// is referring to. This method call throws exception if any creation 
         /// fails.
         /// </summary>
-        internal void EnsureDirectoryExistence()
+        /// <param name="exceptions">The output list of exception, if any of 
+        /// the target directories cannot be created during this call.</param>
+        internal void EnsureDirectoryExistence(List<Exception> exceptions)
         {
             if (rootDirectories.Count <= 0)
             {
@@ -322,16 +324,23 @@ namespace Dynamo.Core
                     "At least one custom package directory must be specified");
             }
 
+            if (exceptions == null)
+                throw new ArgumentNullException("exceptions");
+
+            exceptions.Clear();
+
             // User specific data folders.
-            PathHelper.CreateFolderIfNotExist(userDataDir);
-            PathHelper.CreateFolderIfNotExist(DefaultUserDefinitions);
-            PathHelper.CreateFolderIfNotExist(logDirectory);
-            PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
-            PathHelper.CreateFolderIfNotExist(backupDirectory);
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(userDataDir));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(DefaultUserDefinitions));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(logDirectory));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(backupDirectory));
 
             // Common data folders for all users.
-            PathHelper.CreateFolderIfNotExist(commonDataDir);
-            PathHelper.CreateFolderIfNotExist(commonDefinitions);
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDataDir));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDefinitions));
+
+            exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
 
         /// <summary>

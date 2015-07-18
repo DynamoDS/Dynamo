@@ -450,12 +450,18 @@ namespace Dynamo.Models
             });
 
             // Ensure we have all directories in place.
-            pathManager.EnsureDirectoryExistence();
+            var exceptions = new List<Exception>();
+            pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
+
+            foreach (var exception in exceptions)
+            {
+                Logger.Log(exception); // Log all exceptions.
+            }
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
             MigrationManager.MessageLogged += LogMessage;
