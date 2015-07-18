@@ -433,7 +433,7 @@ namespace DynamoCoreWpfTests
                     Success = true
                 }) as CustomNodeWorkspaceModel;
             ViewModel.HomeSpace.Run();
-
+            
             // Switch to custom workspace
             model.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
             var customSpace = Model.CurrentWorkspace;

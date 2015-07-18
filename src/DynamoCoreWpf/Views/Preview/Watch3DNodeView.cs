@@ -20,7 +20,22 @@ namespace Dynamo.Wpf.Views.Preview
             foreach (var p in node.InPorts)
             {
                 p.PortDisconnected += p_PortDisconnected;
+                p.PortConnected += p_PortConnected;
             }
+        }
+
+        void p_PortConnected(PortModel arg1, ConnectorModel arg2)
+        {
+            // Mark upstream nodes as updated.
+            // Trigger an aggregation.
+            var gathered = new List<NodeModel>();
+            WorkspaceUtilities.GatherAllUpstreamNodes(node, gathered, n=>n.IsUpstreamVisible);
+            if (gathered.Any())
+            {
+                gathered.ForEach(n => n.IsUpdated = true);
+            }
+
+            ScheduleAggregationForNode();
         }
 
         void p_PortDisconnected(PortModel obj)
@@ -33,7 +48,11 @@ namespace Dynamo.Wpf.Views.Preview
             // The background preview, which will be initialized before this view,
             // will take care of updating render packages for all nodes that were
             // evaluated. For this handler, we only need to do the aggregation.
+            ScheduleAggregationForNode();
+        }
 
+        private void ScheduleAggregationForNode()
+        {
             var model = viewModel.Model;
 
             var scheduler = model.Scheduler;
