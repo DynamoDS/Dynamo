@@ -200,8 +200,23 @@ namespace Dynamo.Controls
         {
             get
             {
-                return Model3DDictionary == null ? new List<Model3D>() :
-                   Model3DDictionary.Select(x => x.Value).ToList();
+                if (Model3DDictionary == null)
+                {
+                    return new List<Model3D>();
+                }
+
+                var values = Model3DDictionary.
+                    Select(x => x.Value).
+                    ToList();
+                
+                values.Sort((a, b) =>
+                    {
+                        var aType = a.GetType() == typeof (BillboardTextModel3D);
+                        var bType = b.GetType() == typeof (BillboardTextModel3D);
+                        return aType.CompareTo(bType);
+                    });
+
+                return values;
             }
         }
 
@@ -537,7 +552,7 @@ namespace Dynamo.Controls
             UpdatedNodeRenderPackagesAndAggregateAsync(viewModel.Model.CurrentWorkspace.Nodes);
         }
 
-        protected void UpdatedNodeRenderPackagesAndAggregateAsync(NodeModel nodeModel)
+        private void UpdatedNodeRenderPackagesAndAggregateAsync(NodeModel nodeModel)
         {
             UpdatedNodeRenderPackagesAndAggregateAsync(new []{nodeModel});
         }
