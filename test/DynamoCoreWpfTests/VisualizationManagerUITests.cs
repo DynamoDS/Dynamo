@@ -100,7 +100,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, ws.TotalMeshesToRender());
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationManager_PreviewUpstreamToggled_RenderingUpToDate()
         {
             var model = ViewModel.Model;
