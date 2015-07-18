@@ -950,7 +950,7 @@ namespace Dynamo.Controls
         /// These values are rendered only once by helix, attaching them again will make 
         /// no effect on helix.
         /// </summary> 
-        private void ResetGeometryDictionary()
+        protected void ResetGeometryDictionary()
         {
             var keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
             if (Text != null && Text.TextInfo.Any())

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Core.Threading;
@@ -16,6 +17,15 @@ namespace Dynamo.Wpf.Views.Preview
         {
             this.node = node;
             resizeThumb.Visibility = Visibility.Visible;
+            foreach (var p in node.InPorts)
+            {
+                p.PortDisconnected += p_PortDisconnected;
+            }
+        }
+
+        void p_PortDisconnected(PortModel obj)
+        {
+            ResetGeometryDictionary();
         }
 
         protected override void EvaluationCompletedHandler(object sender, EvaluationCompletedEventArgs e)
