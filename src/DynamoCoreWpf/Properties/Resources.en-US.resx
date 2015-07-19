@@ -1830,7 +1830,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Add</value>
   </data>
   <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
-    <value>Custom Node Definition and Package Paths…</value>
+    <value>Manage Node and Package Paths...</value>
     <comment>Setting menu | Custom node definition and package paths</comment>
   </data>
   <data name="PackagePathViewClose" xml:space="preserve">
@@ -1846,7 +1846,7 @@ Do you want to install the latest Dynamo update?</value>
     <comment>Package path management dialog content</comment>
   </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
-    <value>Custom node definition and package paths</value>
+    <value>Manage Node and Package Paths</value>
     <comment>Package path management dialog title</comment>
   </data>
   <data name="PackagePathViewToolTipDown" xml:space="preserve">

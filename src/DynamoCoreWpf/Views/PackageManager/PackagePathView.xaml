@@ -15,6 +15,7 @@
         MaxWidth="550"
         d:DesignHeight="300"
         d:DesignWidth="300"
+        Background="#515151"
         Style="{DynamicResource DynamoWindowStyle}"
         d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}">
 
@@ -36,6 +37,10 @@
                         Value="Auto" />
                 <Setter Property="ScrollViewer.CanContentScroll"
                         Value="true" />
+                <Setter Property="BorderThickness"
+                        Value="2" />
+                <Setter Property="BorderBrush"
+                        Value="#ff404040" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBox">
@@ -58,13 +63,16 @@
                                 <TextBlock Text="{Binding}"
                                            Margin="6,7,0,8"
                                            FontSize="14"
+                                           Foreground="#c0c0c0"
                                            FontFamily="{StaticResource OpenSansRegular}"
                                            VerticalAlignment="Center" />
-                                <Button Grid.Column="1"
-                                        Margin="10,0,10,0"
-                                        Style="{StaticResource STextButton}">
-                                    ...
-                                </Button>
+                                <TextBlock Grid.Column="1"
+                                           Text="..."
+                                           Margin="6,7,10,8"
+                                           FontSize="14"
+                                           Foreground="#c0c0c0"
+                                           FontFamily="{StaticResource OpenSansRegular}"
+                                           VerticalAlignment="Center" />
                             </Grid>
                         </DataTemplate>
                     </Setter.Value>
@@ -133,7 +141,7 @@
                    Grid.ColumnSpan="2"
                    TextWrapping="Wrap"
                    Background="Transparent"
-                   Foreground="#888888"
+                   Foreground="#c0c0c0"
                    FontSize="14"
                    FontFamily="{StaticResource OpenSansRegular}"
                    Text="{x:Static p:Resources.PackagePathViewSummary}" />
@@ -141,7 +149,7 @@
         <TextBlock Grid.Row="1"
                    Grid.Column="1"
                    Background="Transparent"
-                   Foreground="#888888"
+                   Foreground="#c0c0c0"
                    FontSize="14"
                    FontFamily="{StaticResource OpenSansRegular}"
                    Margin="0,10,0,5"
@@ -185,6 +193,8 @@
                  SelectionMode="Single"
                  SelectionChanged="OnPathSelectionChanged"
                  Style="{StaticResource PathListBoxStyle}"
+                 BorderThickness="2"
+                 BorderBrush="Green"
                  ItemContainerStyle="{StaticResource PathListBoxItemStyle}">
             <ListBox.ItemsSource>
                 <Binding Path="DataContext.RootLocations"

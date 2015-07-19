@@ -1471,7 +1471,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom Node Definition and Package Paths….
+        ///   Looks up a localized string similar to Manage Node and Package Paths....
         /// </summary>
         public static string DynamoViewSettingMenuManagePackagePath {
             get {
@@ -3183,7 +3183,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom node definition and package paths.
+        ///   Looks up a localized string similar to Manage Node and Package Paths.
         /// </summary>
         public static string PackagePathViewTitle {
             get {
