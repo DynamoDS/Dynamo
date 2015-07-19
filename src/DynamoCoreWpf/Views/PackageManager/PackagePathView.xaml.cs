@@ -21,6 +21,17 @@ namespace Dynamo.Wpf.Views.PackageManager
     /// </summary>
     public partial class PackagePathView : Window
     {
+        #region Class Properties
+
+        private PackagePathViewModel ViewModel
+        {
+            get { return this.DataContext as PackagePathViewModel; }
+        }
+
+        #endregion
+
+        #region Public Class Operational Methods
+
         public PackagePathView()
         {
             InitializeComponent();
@@ -35,6 +46,8 @@ namespace Dynamo.Wpf.Views.PackageManager
             this.DataContext = viewModel;
         }
 
+        #endregion
+
         #region Private Helper Methods and Event Handlers
 
         void OnPathSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -42,18 +55,15 @@ namespace Dynamo.Wpf.Views.PackageManager
             if (e.AddedItems.Count <= 0)
                 return; // Nothing selected.
 
-            var viewModel = DataContext as PackagePathViewModel;
             var selected = e.AddedItems[0] as string;
-            viewModel.SelectedIndex = viewModel.RootLocations.IndexOf(selected);
+            ViewModel.SelectedIndex = ViewModel.RootLocations.IndexOf(selected);
         }
 
         private void OnEllipsisClicked(object sender, MouseButtonEventArgs e)
         {
             var clicked = sender as TextBlock;
             var dataString = clicked.DataContext as string;
-
-            var viewModel = DataContext as PackagePathViewModel;
-            BrowseForFolder(viewModel.RootLocations.IndexOf(dataString));
+            BrowseForFolder(ViewModel.RootLocations.IndexOf(dataString));
         }
 
         private void BrowseForFolder(int replacement)
@@ -63,12 +73,10 @@ namespace Dynamo.Wpf.Views.PackageManager
                 return;
 
             var selected = dialog.SelectedPath;
-            var viewModel = DataContext as PackagePathViewModel;
-
             if (replacement != -1)
-                viewModel.RootLocations[replacement] = selected;
+                ViewModel.RootLocations[replacement] = selected;
             else
-                viewModel.RootLocations.Add(selected);
+                ViewModel.RootLocations.Add(selected);
         }
 
         #endregion
