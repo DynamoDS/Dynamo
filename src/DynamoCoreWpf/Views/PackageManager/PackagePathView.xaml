@@ -68,6 +68,8 @@
                                            VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="1"
                                            Text="..."
+                                           Cursor="Hand"
+                                           MouseLeftButtonUp="OnEllipsisClicked"
                                            Margin="6,7,10,8"
                                            FontSize="14"
                                            Foreground="#c0c0c0"

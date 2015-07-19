@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -44,6 +45,30 @@ namespace Dynamo.Wpf.Views.PackageManager
             var viewModel = DataContext as PackagePathViewModel;
             var selected = e.AddedItems[0] as string;
             viewModel.SelectedIndex = viewModel.RootLocations.IndexOf(selected);
+        }
+
+        private void OnEllipsisClicked(object sender, MouseButtonEventArgs e)
+        {
+            var clicked = sender as TextBlock;
+            var dataString = clicked.DataContext as string;
+
+            var viewModel = DataContext as PackagePathViewModel;
+            BrowseForFolder(viewModel.RootLocations.IndexOf(dataString));
+        }
+
+        private void BrowseForFolder(int replacement)
+        {
+            var dialog = new FolderBrowserDialog();
+            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            var selected = dialog.SelectedPath;
+            var viewModel = DataContext as PackagePathViewModel;
+
+            if (replacement != -1)
+                viewModel.RootLocations[replacement] = selected;
+            else
+                viewModel.RootLocations.Add(selected);
         }
 
         #endregion
