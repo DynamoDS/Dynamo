@@ -54,7 +54,7 @@
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <Grid Background="#40ffffff"
+                            <Grid Background="#20ffffff"
                                   ToolTip="{Binding}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -63,7 +63,6 @@
                                 <TextBlock Text="{Binding}"
                                            Margin="6,7,0,8"
                                            FontSize="14"
-                                           Foreground="#c0c0c0"
                                            FontFamily="{StaticResource OpenSansRegular}"
                                            VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="1"
@@ -92,32 +91,38 @@
                         <ControlTemplate TargetType="ListBoxItem">
                             <Border x:Name="Border"
                                     Padding="1"
-                                    SnapsToDevicePixels="true">
-                                <Border.Background>
-                                    <SolidColorBrush Color="Transparent" />
-                                </Border.Background>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal" />
-                                        <VisualState x:Name="Disabled" />
-                                        <VisualState x:Name="MouseOver">
-                                            <Storyboard>
-                                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
-                                                                              Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                                    <EasingColorKeyFrame KeyTime="0"
-                                                                         Value="#a1dbff" />
-                                                </ColorAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                    <VisualStateGroup x:Name="SelectionStates">
-                                        <VisualState x:Name="Unselected" />
-                                        <VisualState x:Name="Selected" />
-                                        <VisualState x:Name="SelectedUnfocused" />
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
+                                    TextBlock.Foreground="#c0c0c0"
+                                    SnapsToDevicePixels="true"
+                                    Background="Transparent">
                                 <ContentPresenter />
                             </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected"
+                                         Value="True">
+                                    <Setter TargetName="Border"
+                                            Property="Background"
+                                            Value="#80ffffff" />
+                                    <Setter TargetName="Border"
+                                            Property="TextBlock.Foreground"
+                                            Value="Black" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver"
+                                                   Value="True" />
+                                        <Condition Property="IsSelected"
+                                                   Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="Border"
+                                            Property="Background"
+                                            Value="#40ffffff" />
+                                    <Setter TargetName="Border"
+                                            Property="TextBlock.Foreground"
+                                            Value="#c0c0c0" />
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
