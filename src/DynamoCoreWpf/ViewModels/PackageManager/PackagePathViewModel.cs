@@ -20,11 +20,6 @@ namespace Dynamo.ViewModels
         /// Indicate the path to the custom packages folder
         /// </summary>
         public string Path { get; set; }
-
-        /// <summary>
-        /// Indicate the current path pointed to by SelectedIndex
-        /// </summary>
-        public string CurrentPath { get; set; }
     }
 
     public class PackagePathViewModel : ViewModelBase
@@ -141,7 +136,7 @@ namespace Dynamo.ViewModels
         {
             var args = new PackagePathEventArgs
             {
-                CurrentPath = RootLocations[SelectedIndex]
+                Path = RootLocations[SelectedIndex]
             };
 
             ShowFileDialog(args);
