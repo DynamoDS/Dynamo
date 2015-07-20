@@ -61,9 +61,13 @@ namespace Dynamo.Wpf.Views.PackageManager
 
         private void OnEllipsisClicked(object sender, MouseButtonEventArgs e)
         {
-            var clicked = sender as TextBlock;
-            var dataString = clicked.DataContext as string;
-            BrowseForFolder(ViewModel.RootLocations.IndexOf(dataString));
+            var selectedIndex = ViewModel.SelectedIndex;
+            if (ViewModel.UpdatePathCommand.CanExecute(selectedIndex))
+                ViewModel.UpdatePathCommand.Execute(selectedIndex);
+
+            // var clicked = sender as TextBlock;
+            // var dataString = clicked.DataContext as string;
+            // BrowseForFolder(ViewModel.RootLocations.IndexOf(dataString));
         }
 
         private void BrowseForFolder(int replacement)
