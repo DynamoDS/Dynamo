@@ -9,19 +9,43 @@ using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {
+    public class PackagePathEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Indicate whether user wants to add the current path to the list
+        /// </summary>
+        public bool Cancel { get; set; }
+
+        /// <summary>
+        /// Indicate path to the custom packages folder
+        /// </summary>
+        public string Path { get; set; }
+    }
+
     class PackagePathViewModel : ViewModelBase
     {
         public ObservableCollection<string> RootLocations { get; private set; }
         private int selectedIndex;
-        public int SelectedIndex {
-            get { return selectedIndex; }
-            set 
+        public int SelectedIndex
+        {
+            get
+            {
+                return selectedIndex;
+            }
+            set
             {
                 selectedIndex = value;
-                if (selectedIndex < RootLocations.Count - 1)
-                    MovePathDownCommand.RaiseCanExecuteChanged();
-                if (selectedIndex > 0)
-                    MovePathUpCommand.RaiseCanExecuteChanged();
+                MovePathDownCommand.RaiseCanExecuteChanged();
+                MovePathUpCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public event EventHandler RequestShowFileDialog;
+        public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
+        {
+            if (RequestShowFileDialog != null)
+            {
+                RequestShowFileDialog(sender, e);
             }
         }
 
@@ -41,11 +65,11 @@ namespace Dynamo.ViewModels
             SelectedIndex = 0;
             this.setting = setting;
 
-            AddPathCommand = new DelegateCommand(p => InsertPathAt(p as string, RootLocations.Count));
-            DeletePathCommand = new DelegateCommand(p => RemovePathAt(SelectedIndex), CanDelete);
-            MovePathUpCommand = new DelegateCommand(p => SwapPath(SelectedIndex, SelectedIndex - 1), CanMoveUp);
-            MovePathDownCommand = new DelegateCommand(p => SwapPath(SelectedIndex, SelectedIndex + 1), CanMoveDown);
-            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt(p as string, SelectedIndex));
+            AddPathCommand = new DelegateCommand(p => InsertPathAt((int) p));
+            DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
+            MovePathUpCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) - 1), CanMoveUp);
+            MovePathDownCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) + 1), CanMoveDown);
+            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int) p));
             SaveSettingCommand = new DelegateCommand(CommitChanges);
         }
 
@@ -77,18 +101,35 @@ namespace Dynamo.ViewModels
             SelectedIndex = y;
         }
 
-        private void InsertPathAt(string path, int index)
+        private void InsertPathAt(int index)
         {
-            RootLocations.Insert(index, path);
+            var args = new PackagePathEventArgs();
+            ShowFileDialog(args);
+
+            if (args.Cancel)
+                return;
+
+            RootLocations.Insert(index, args.Path);
 
             DeletePathCommand.RaiseCanExecuteChanged();
             if (index <= SelectedIndex)
                 SelectedIndex++;
         }
 
-        private void UpdatePathAt(string path, int index)
+        private void ShowFileDialog(PackagePathEventArgs e)
         {
-            RootLocations[index] = path;
+            OnRequestShowFileDialog(this, e);
+        }
+
+        private void UpdatePathAt(int index)
+        {
+            var args = new PackagePathEventArgs();
+            ShowFileDialog(args);
+
+            if (args.Cancel)
+                return;
+
+            RootLocations[index] = args.Path;
         }
 
         private void RemovePathAt(int index)
