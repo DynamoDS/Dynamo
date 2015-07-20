@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Wpf.Interfaces;
 
-namespace Dynamo.Wpf.Manipulation
+namespace Dynamo.Manipulation
 {
     public abstract class NodeManipulatorCreator : INodeManipulatorCreator
     {
@@ -15,7 +14,7 @@ namespace Dynamo.Wpf.Manipulation
         /// <param name="node"></param>
         /// <param name="manipulatorContext"></param>
         /// <returns></returns>
-        public IManipulator Create(Models.NodeModel node, DynamoManipulatorContext manipulatorContext)
+        public IManipulator Create(Dynamo.Models.NodeModel node, NodeManipulatorContext manipulatorContext)
         {
             throw new NotImplementedException();
         }
@@ -31,9 +30,9 @@ namespace Dynamo.Wpf.Manipulation
     internal class CompositeManipulator : Manipulator
     {
         private readonly List<IManipulator> subManipulators;
-        public CompositeManipulator(List<IManipulator> manipulators)
+        public CompositeManipulator(IEnumerable<IManipulator> manipulators)
         {
-            subManipulators = manipulators;
+            subManipulators = manipulators.ToList();
         }
 
         public override void Dispose()
