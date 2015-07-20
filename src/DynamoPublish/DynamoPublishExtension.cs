@@ -42,7 +42,7 @@ namespace Dynamo.Publish
                 return;
 
             publishViewModel.Workspaces = p.WorkspaceModels;
-            publishViewModel.CurrentWorkspace = p.CurrentWorkspace;
+            publishViewModel.CurrentWorkspaceModel = p.CurrentWorkspaceModel;
 
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
@@ -82,7 +82,7 @@ namespace Dynamo.Publish
             MenuItem item = new MenuItem();
             item.Header = Resource.DynamoViewMenuItemPublishTitle;
 
-            var isEnabled = publishViewModel.CurrentWorkspace is HomeWorkspaceModel && publishModel.HasAuthenticationProvider;
+            var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
 
             item.IsEnabled = isEnabled;
 

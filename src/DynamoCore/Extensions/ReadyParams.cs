@@ -28,7 +28,7 @@ namespace Dynamo.Extensions
             }
         }
 
-        public IWorkspaceModel CurrentWorkspace
+        public IWorkspaceModel CurrentWorkspaceModel
         {
             get
             {
