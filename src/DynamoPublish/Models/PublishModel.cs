@@ -41,10 +41,18 @@ namespace Dynamo.Publish.Models
             private set;
         }
 
-        public List<CustomNodeWorkspaceModel> CustomNodesWorkspaces
+        public List<CustomNodeWorkspaceModel> CustomNodeWorkspaces
         {
             get;
             private set;
+        }
+
+        public bool HasAuthProvider
+        {
+            get
+            {
+                return authenticationProvider != null;
+            }
         }
 
         #region Initialization
@@ -114,16 +122,16 @@ namespace Dynamo.Publish.Models
                 dependencies.AddRange(node.Definition.Dependencies);
             }
 
-            CustomNodesWorkspaces = new List<CustomNodeWorkspaceModel>();
+            CustomNodeWorkspaces = new List<CustomNodeWorkspaceModel>();
             foreach (var dependency in dependencies)
             {
                 CustomNodeWorkspaceModel customNodeWs;
                 var isWorkspaceCreated = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
-                if (isWorkspaceCreated && !CustomNodesWorkspaces.Contains(customNodeWs))
-                    CustomNodesWorkspaces.Add(customNodeWs);
+                if (isWorkspaceCreated && !CustomNodeWorkspaces.Contains(customNodeWs))
+                    CustomNodeWorkspaces.Add(customNodeWs);
             }
 
-            var result = reachClient.Send(HomeWorkspace, CustomNodesWorkspaces);
+            var result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces);
         }
     }
 }
