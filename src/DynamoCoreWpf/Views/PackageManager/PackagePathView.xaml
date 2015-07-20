@@ -235,10 +235,12 @@
                     Margin="0,10,0,0"
                     HorizontalAlignment="Right">
             <Button Margin="0,0,10,0"
+                    Click="OnOkButtonClicked"
                     Style="{StaticResource STextButton}"
                     Content="{x:Static p:Resources.OKButton}">
             </Button>
-            <Button Style="{StaticResource STextButton}"
+            <Button Click="OnCancelButtonClicked"
+                    Style="{StaticResource STextButton}"
                     Content="{x:Static p:Resources.CancelButton}">
             </Button>
         </StackPanel>

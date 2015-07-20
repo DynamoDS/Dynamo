@@ -71,6 +71,20 @@ namespace Dynamo.Wpf.Views.PackageManager
             // BrowseForFolder(ViewModel.RootLocations.IndexOf(dataString));
         }
 
+        private void OnOkButtonClicked(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.SaveSettingCommand.CanExecute(null))
+            {
+                ViewModel.SaveSettingCommand.Execute(null);
+                this.Close(); // Close the dialog after saving.
+            }
+        }
+
+        private void OnCancelButtonClicked(object sender, RoutedEventArgs e)
+        {
+            this.Close(); // Close the dialog without saving.
+        }
+
         private void OnRequestShowFileDialog(object sender, EventArgs e)
         {
             var args = e as PackagePathEventArgs;
