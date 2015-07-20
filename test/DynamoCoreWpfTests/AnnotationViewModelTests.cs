@@ -29,7 +29,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
            
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -64,7 +64,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -96,7 +96,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -115,7 +115,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.ClearSelection();
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
 
             //verify the node was created
             Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -135,7 +135,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -154,7 +154,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.ClearSelection();
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
 
             //verify the node was created
             Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -172,7 +172,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -191,7 +191,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.ClearSelection();
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
           
             //Select the node 
             DynamoSelection.Instance.Selection.Add(secondNode);
@@ -206,7 +206,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -228,7 +228,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.Selection.Add(annotation);
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
 
             //Select the node 
             DynamoSelection.Instance.Selection.Add(secondNode);
@@ -243,7 +243,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -275,7 +275,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
            
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -555,7 +555,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -586,7 +586,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -621,7 +621,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -665,7 +665,7 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());

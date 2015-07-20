@@ -46,7 +46,7 @@ namespace Dynamo.Controls
     /// <summary>
     ///     Interaction logic for DynamoForm.xaml
     /// </summary>
-    public partial class DynamoView : Window
+    public partial class DynamoView : Window, IDisposable
     {
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -126,11 +126,13 @@ namespace Dynamo.Controls
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += Log;
 
+            var startupParams = new ViewStartupParams(dynamoViewModel);
+
             foreach (var ext in viewExtensions)
             {
                 try
                 {
-                    ext.Startup(null);
+                    ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
                 }
                 catch (Exception exc)
@@ -448,11 +450,13 @@ namespace Dynamo.Controls
 
             watchSettingsControl.DataContext = background_preview;
 
+            var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
+
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
                 try
                 {
-                    ext.Loaded(null);
+                    ext.Loaded(loadedParams);
                 }
                 catch (Exception exc)
                 {
@@ -1501,6 +1505,21 @@ namespace Dynamo.Controls
         private void Log(string message)
         {
             Log(LogMessage.Info(message));
+        }
+
+        public void Dispose()
+        {
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Dispose();
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
         }
     }
 }

@@ -192,6 +192,39 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
+        /// strings, bool, code blocks and custom nodes, which don't specify path.
+        /// </summary>
+        public bool IsInputNode
+        {
+            get
+            {
+                return !inPorts.Any() && !(this is DSFunction);
+            }
+        }
+
+        private bool isSelectedInput = true;
+        /// <summary>
+        /// Specifies whether an input node should be included in a preset. 
+        /// By default, this field is set to true.
+        /// </summary>
+        public bool IsSelectedInput
+        {
+            get
+            {
+                if (!IsInputNode)
+                    return false;
+
+                return isSelectedInput;
+            }
+
+            set
+            {
+                isSelectedInput = value;
+            }
+        }
+
+        /// <summary>
         ///     The Node's state, which determines the coloring of the Node in the canvas.
         /// </summary>
         public ElementState State
@@ -582,11 +615,13 @@ namespace Dynamo.Models
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            //if (OutPortData.Count == 1)
-            //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
-
-            string id = AstIdentifierBase + "_out" + outputIndex;
-            return AstFactory.BuildIdentifier(id);
+            if (OutPortData.Count <= 1)
+                return AstIdentifierForPreview;
+            else
+            {
+                string id = AstIdentifierBase + "_out" + outputIndex;
+                return AstFactory.BuildIdentifier(id);
+            }
         }
 
         #endregion
@@ -1430,6 +1465,7 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
+            helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1480,6 +1516,7 @@ namespace Dynamo.Models
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+            IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
 
             var portInfoProcessed = new HashSet<int>();
 
@@ -2018,7 +2055,7 @@ namespace Dynamo.Models
     /// <summary>
     ///    The NodeDescriptionAttribute indicates this node is obsolete
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method |AttributeTargets.Property)]
     public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
     {
         public NodeObsoleteAttribute(string message) : base(message)

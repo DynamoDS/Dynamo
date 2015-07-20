@@ -1,0 +1,23 @@
+<Workspace Version="0.8.2.1943" X="-5553.50373123878" Y="-2063.6802388834" zoom="0.971411814636912" Name="CustomNodeForPublish" ID="f7763655-75b7-44a9-ace0-a4b7367ca64b" Description="Custom node used for dynamo publish tests" Category="Tests">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Symbol guid="f6139b57-3f12-405c-807d-d4e2d950ddcc" type="Dynamo.Nodes.Symbol" nickname="Input" x="6240.36682148046" y="2460.63652701615" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="a" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output guid="12018d2a-d69d-4ae4-9769-29868869a1b0" type="Dynamo.Nodes.Output" nickname="Output" x="6570.50157699686" y="2486.52235442485" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="a" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DSFunction guid="6c0f19c5-224b-4482-a0b6-ffb56865645b" type="Dynamo.Nodes.DSFunction" nickname="*" x="6379.23325247111" y="2548.3929885545" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="Operators" function="*@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.DoubleInput guid="92041fcd-b36c-459d-8e29-66a0e42183c0" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="6244.37798509003" y="2599.86446465415" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f6139b57-3f12-405c-807d-d4e2d950ddcc" start_index="0" end="6c0f19c5-224b-4482-a0b6-ffb56865645b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6c0f19c5-224b-4482-a0b6-ffb56865645b" start_index="0" end="12018d2a-d69d-4ae4-9769-29868869a1b0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="92041fcd-b36c-459d-8e29-66a0e42183c0" start_index="0" end="6c0f19c5-224b-4482-a0b6-ffb56865645b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

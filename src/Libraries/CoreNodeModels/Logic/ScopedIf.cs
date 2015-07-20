@@ -74,11 +74,6 @@ namespace DSCoreNodesUI.Logic
             return portIndex == 1 || portIndex == 2;
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            return AstIdentifierForPreview;
-        }
-
         public override IEnumerable<AssociativeNode> BuildOutputAstInScope(List<AssociativeNode> inputAstNodes, bool verboseLogging, AstBuilder builder)
         {
             // This function will compile IF node to the following format:

@@ -1,0 +1,13 @@
+<Workspace Version="0.8.2.1870" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.StringInput guid="daa2644b-ef0a-438b-a9e1-246086ebecfa" type="Dynamo.Nodes.StringInput" nickname="String" x="393.5" y="316.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>42</System.String>
+      <System.String value="42" />
+    </Dynamo.Nodes.StringInput>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

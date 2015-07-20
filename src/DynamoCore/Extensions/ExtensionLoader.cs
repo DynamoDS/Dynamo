@@ -16,7 +16,7 @@ namespace Dynamo.Extensions
         {
             try
             {
-                var assembly = Assembly.Load(extension.AssemblyName);
+                var assembly = Assembly.Load(extension.AssemblyPath);
                 var result = assembly.CreateInstance(extension.TypeName) as IExtension;
                 return result;
             }
@@ -44,9 +44,9 @@ namespace Dynamo.Extensions
             var definition = new ExtensionDefinition();
             foreach (XmlNode item in topNode[0].ChildNodes)
             {
-                if (item.Name == "AssemblyName")
+                if (item.Name == "AssemblyPath")
                 {
-                    definition.AssemblyName = item.InnerText;
+                    definition.AssemblyPath = item.InnerText;
                 }
                 else if (item.Name == "TypeName")
                 {
