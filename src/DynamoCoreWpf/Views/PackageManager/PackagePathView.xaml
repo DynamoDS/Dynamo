@@ -37,17 +37,16 @@
                         Value="Auto" />
                 <Setter Property="ScrollViewer.CanContentScroll"
                         Value="true" />
-                <Setter Property="BorderThickness"
-                        Value="2" />
-                <Setter Property="BorderBrush"
-                        Value="#ff404040" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBox">
-                            <ScrollViewer Margin="0,0,0,1"
-                                          Focusable="false">
-                                <StackPanel IsItemsHost="True" />
-                            </ScrollViewer>
+                            <Border BorderBrush="#80ffffff"
+                                    BorderThickness="1">
+                                <ScrollViewer Margin="0,0,0,1"
+                                              Focusable="false">
+                                    <StackPanel IsItemsHost="True" />
+                                </ScrollViewer>
+                            </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -89,7 +88,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
                             <Border x:Name="Border"
-                                    Padding="1"
+                                    Padding="0,0,0,1"
                                     TextBlock.Foreground="#c0c0c0"
                                     SnapsToDevicePixels="true"
                                     Background="Transparent">
