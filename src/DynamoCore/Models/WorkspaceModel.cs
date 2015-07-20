@@ -1612,7 +1612,7 @@ namespace Dynamo.Models
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 
-                AddNode(nodeModel);
+                AddAndRegisterNode(nodeModel);
                 
                 //check whether this node belongs to a group
                 foreach (var annotation in Annotations)
