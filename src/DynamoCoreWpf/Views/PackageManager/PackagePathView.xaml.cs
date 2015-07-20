@@ -1,6 +1,7 @@
 ﻿using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -45,6 +46,8 @@ namespace Dynamo.Wpf.Views.PackageManager
             InitializeComponent();
             this.DataContext = viewModel;
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            viewModel.PropertyChanged += OnPropertyChanged;
+            UpdateVisualToReflectSelectionState();
         }
 
         #endregion
@@ -60,15 +63,20 @@ namespace Dynamo.Wpf.Views.PackageManager
             ViewModel.SelectedIndex = ViewModel.RootLocations.IndexOf(selected);
         }
 
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("SelectedIndex"))
+            {
+                // Repositioning the selection should retain its visual state.
+                UpdateVisualToReflectSelectionState();
+            }
+        }
+
         private void OnEllipsisClicked(object sender, MouseButtonEventArgs e)
         {
             var selectedIndex = ViewModel.SelectedIndex;
             if (ViewModel.UpdatePathCommand.CanExecute(selectedIndex))
                 ViewModel.UpdatePathCommand.Execute(selectedIndex);
-
-            // var clicked = sender as TextBlock;
-            // var dataString = clicked.DataContext as string;
-            // BrowseForFolder(ViewModel.RootLocations.IndexOf(dataString));
         }
 
         private void OnOkButtonClicked(object sender, RoutedEventArgs e)
@@ -95,6 +103,13 @@ namespace Dynamo.Wpf.Views.PackageManager
                 args.Cancel = false;
                 args.Path = dialog.SelectedPath;
             }
+        }
+
+        private void UpdateVisualToReflectSelectionState()
+        {
+            var newIndex = ViewModel.SelectedIndex;
+            if (PathListBox.SelectedIndex != newIndex)
+                PathListBox.SelectedIndex = newIndex;
         }
 
         #endregion

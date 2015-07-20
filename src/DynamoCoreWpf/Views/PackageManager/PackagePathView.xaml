@@ -71,7 +71,6 @@
                                            MouseLeftButtonUp="OnEllipsisClicked"
                                            Margin="6,7,10,8"
                                            FontSize="14"
-                                           Foreground="#c0c0c0"
                                            FontFamily="{StaticResource OpenSansRegular}"
                                            VerticalAlignment="Center" />
                             </Grid>
