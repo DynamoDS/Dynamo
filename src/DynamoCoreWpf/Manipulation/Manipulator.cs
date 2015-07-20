@@ -28,7 +28,7 @@ namespace Dynamo.Wpf.Manipulation
         public abstract void Tessellate(IRenderPackage package, TessellationParameters parameters);
     }
 
-    internal class CompositeManipulator : Manipulator
+    public class CompositeManipulator : Manipulator
     {
         private readonly List<IManipulator> subManipulators;
         public CompositeManipulator(List<IManipulator> manipulators)

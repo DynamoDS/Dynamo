@@ -50,19 +50,21 @@ namespace Dynamo.Controls
     {
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
-        private Stopwatch _timer;
+        private readonly Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
         private readonly ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
-        private ManipulatorDaemon manipulatorDaemon;
+        private readonly ManipulatorDaemon manipulatorDaemon;
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
 
-        DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+        readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+
+        public Watch3DView Watch3DView { get { return background_preview; } }
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {

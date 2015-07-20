@@ -13,7 +13,7 @@ namespace Dynamo.Wpf.Manipulation
         private readonly Dictionary<Type, IEnumerable<INodeManipulatorCreator>> registeredManipulatorCreators;
         private readonly Dictionary<Guid, IDisposable> activeManipulators = new Dictionary<Guid, IDisposable>();
 
-        public ManipulatorDaemon(Dictionary<Type, IEnumerable<INodeManipulatorCreator>> creators)
+        private ManipulatorDaemon(Dictionary<Type, IEnumerable<INodeManipulatorCreator>> creators)
         {
             registeredManipulatorCreators = creators;
         }
