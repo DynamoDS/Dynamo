@@ -49,6 +49,7 @@
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="DataMarshaler.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="PathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeSwitch.cs" />
     <Compile Include="XmlHelper.cs" />

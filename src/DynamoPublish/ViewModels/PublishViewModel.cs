@@ -73,7 +73,7 @@ namespace Dynamo.Publish.ViewModels
         }
 
         public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
-        public IWorkspaceModel CurrentWorkspace { get; set; }
+        public IWorkspaceModel CurrentWorkspaceModel { get; set; }
 
         #endregion
 
