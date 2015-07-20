@@ -35,12 +35,13 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedIndex = value;
+                RaisePropertyChanged("SelectedIndex");
                 MovePathDownCommand.RaiseCanExecuteChanged();
                 MovePathUpCommand.RaiseCanExecuteChanged();
             }
         }
 
-        public event EventHandler RequestShowFileDialog;
+        public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
             if (RequestShowFileDialog != null)
@@ -62,15 +63,16 @@ namespace Dynamo.ViewModels
         public PackagePathViewModel(IPreferences setting)
         {
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-            SelectedIndex = 0;
             this.setting = setting;
 
-            AddPathCommand = new DelegateCommand(p => InsertPathAt((int) p));
+            AddPathCommand = new DelegateCommand(p => InsertPath());
             DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
             MovePathUpCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) - 1), CanMoveUp);
             MovePathDownCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) + 1), CanMoveDown);
             UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int) p));
             SaveSettingCommand = new DelegateCommand(CommitChanges);
+
+            SelectedIndex = 0;
         }
 
         private bool CanDelete(object param)
@@ -101,7 +103,7 @@ namespace Dynamo.ViewModels
             SelectedIndex = y;
         }
 
-        private void InsertPathAt(int index)
+        private void InsertPath()
         {
             var args = new PackagePathEventArgs();
             ShowFileDialog(args);
@@ -109,11 +111,9 @@ namespace Dynamo.ViewModels
             if (args.Cancel)
                 return;
 
-            RootLocations.Insert(index, args.Path);
+            RootLocations.Insert(RootLocations.Count, args.Path);
 
             DeletePathCommand.RaiseCanExecuteChanged();
-            if (index <= SelectedIndex)
-                SelectedIndex++;
         }
 
         private void ShowFileDialog(PackagePathEventArgs e)
