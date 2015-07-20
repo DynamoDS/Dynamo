@@ -709,6 +709,7 @@ namespace Dynamo.Controls
                 renderTimer.Reset();
                 if (viewModel.ShowBusyIndicator)
                 {
+                    viewModel.ShowRunMessage = "Run Completed";
                     viewModel.ShowBusyIndicator = false;
                 }
             }

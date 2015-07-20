@@ -469,7 +469,18 @@ namespace Dynamo.ViewModels
             set
             {
                 showBusyIndicator = value;
-                RaisePropertyChanged("ShowBusyIndicator");
+                RaisePropertyChanged("ShowBusyIndicator");               
+            }
+        }
+
+        private string showRunMessage;
+        public string ShowRunMessage
+        {
+            get { return showRunMessage; }
+            set
+            {
+                showRunMessage = value;
+                RaisePropertyChanged("ShowRunMessage");
             }
         }
 

@@ -215,14 +215,24 @@ namespace Dynamo.Wpf.ViewModels
                     : Visibility.Collapsed;
             }
         }
-
+       
         public Boolean ShowBusyIndicator
         {
             get { return dynamoViewModel.ShowBusyIndicator; }
             set
             {
                 dynamoViewModel.ShowBusyIndicator = value;
-                RaisePropertyChanged("ShowBusyIndicator");
+                RaisePropertyChanged("ShowBusyIndicator");            
+            }
+        }
+
+        public string ShowRunMessage
+        {
+            get { return dynamoViewModel.ShowRunMessage; }
+            set
+            {
+                dynamoViewModel.ShowRunMessage = value;
+                RaisePropertyChanged("ShowRunMessage");
             }
         }
 
@@ -257,6 +267,9 @@ namespace Dynamo.Wpf.ViewModels
             {
                  case "ShowBusyIndicator":
                     RaisePropertyChanged("ShowBusyIndicator");
+                    break;
+                 case "ShowRunMessage":
+                    RaisePropertyChanged("ShowRunMessage");
                     break;
             }
         }
@@ -327,7 +340,6 @@ namespace Dynamo.Wpf.ViewModels
         {
             bool displayErrors = Convert.ToBoolean(parameters);
             var command = new DynamoModel.RunCancelCommand(displayErrors, false);
-            this.ShowBusyIndicator = true;
             dynamoViewModel.ExecuteCommand(command);
         }
 
@@ -385,5 +397,5 @@ namespace Dynamo.Wpf.ViewModels
 
             return parseSuccess ? Math.Abs(ms) : RunSettings.DefaultRunPeriod;
         }
-    }
+    }  
 }

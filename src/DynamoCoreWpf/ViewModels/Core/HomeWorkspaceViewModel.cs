@@ -62,12 +62,14 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted += hwm_EvaluationStarted;
-            hwm.EvaluationCompleted += hwm_EvaluationCompleted;
+            hwm.EvaluationCompleted += hwm_EvaluationCompleted;            
+            hwm.RefreshCompleted +=hwm_RefreshCompleted;
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
         }
 
+       
         void Model_ShutdownStarted(DynamoModel model)
         {
             StopPeriodicTimer(null);
@@ -130,6 +132,11 @@ namespace Dynamo.Wpf.ViewModels.Core
             }           
         }
 
+        private void hwm_RefreshCompleted(object sender, EvaluationCompletedEventArgs e)
+        {        
+            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.TesselationCompletedMessage);
+        }
+
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning);
@@ -146,13 +153,17 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
         {
+            DynamoViewModel.ShowBusyIndicator = true;
+            DynamoViewModel.ShowRunMessage = String.Empty;
             SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedMessage);
         }
 
         private void SetCurrentWarning(NotificationLevel level, string message)
         {
-            CurrentNotificationLevel = level;
-            CurrentNotificationMessage = message;
+            //CurrentNotificationLevel = level;
+            //CurrentNotificationMessage = message;
+            DynamoViewModel.ShowRunMessage = message;
+
         }
 
         public void ClearWarning()
@@ -165,7 +176,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             // If any property changes on the run settings object
             // Raise a property change notification for the RunSettingsViewModel
             // property
-            RaisePropertyChanged("RunSettingsViewModel");
+            RaisePropertyChanged("RunSettingsViewModel");             
         }
 
         private void StartPeriodicTimer(object parameter)
@@ -201,6 +212,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
+            hwm.RefreshCompleted -= hwm_RefreshCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
 
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
