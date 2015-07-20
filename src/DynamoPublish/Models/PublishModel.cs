@@ -41,7 +41,7 @@ namespace Dynamo.Publish.Models
             private set;
         }
 
-        public List<CustomNodeWorkspaceModel> CustomNodesWorkspaces
+        public List<ICustomNodeWorkspaceModel> CustomNodesWorkspaces
         {
             get;
             private set;
@@ -114,16 +114,16 @@ namespace Dynamo.Publish.Models
                 dependencies.AddRange(node.Definition.Dependencies);
             }
 
-            CustomNodesWorkspaces = new List<CustomNodeWorkspaceModel>();
+            CustomNodesWorkspaces = new List<ICustomNodeWorkspaceModel>();
             foreach (var dependency in dependencies)
             {
-                CustomNodeWorkspaceModel customNodeWs;
+                ICustomNodeWorkspaceModel customNodeWs;
                 var isWorkspaceCreated = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
                 if (isWorkspaceCreated && !CustomNodesWorkspaces.Contains(customNodeWs))
                     CustomNodesWorkspaces.Add(customNodeWs);
             }
 
-            var result = reachClient.Send(HomeWorkspace, CustomNodesWorkspaces);
+            var result = reachClient.Send(HomeWorkspace, CustomNodesWorkspaces.OfType<CustomNodeWorkspaceModel>());
         }
     }
 }
