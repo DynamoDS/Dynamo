@@ -44,6 +44,7 @@ namespace Dynamo.Wpf.Views.PackageManager
 
             InitializeComponent();
             this.DataContext = viewModel;
+            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
         }
 
         #endregion
@@ -70,17 +71,16 @@ namespace Dynamo.Wpf.Views.PackageManager
             // BrowseForFolder(ViewModel.RootLocations.IndexOf(dataString));
         }
 
-        private void BrowseForFolder(int replacement)
+        private void OnRequestShowFileDialog(object sender, EventArgs e)
         {
+            var args = e as PackagePathEventArgs;
+            args.Cancel = true;
             var dialog = new FolderBrowserDialog();
-            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                return;
-
-            var selected = dialog.SelectedPath;
-            if (replacement != -1)
-                ViewModel.RootLocations[replacement] = selected;
-            else
-                ViewModel.RootLocations.Add(selected);
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                args.Cancel = false;
+                args.Path = dialog.SelectedPath;
+            }
         }
 
         #endregion
