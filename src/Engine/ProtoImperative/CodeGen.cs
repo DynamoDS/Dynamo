@@ -2485,23 +2485,18 @@ namespace ProtoImperative
                 ForLoopNode forNode = node as ForLoopNode;
                 ++core.ForLoopBlockIndex;   //new forloop beginning. increment loop counter 
 
+
                 ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0);
 
                 // val = null; 
-                IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.loopVar.Name) as IdentifierNode;
-                {
-                    loopvar.ArrayName = forNode.expression.Name;
-                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
-                    BinaryExpressionNode loopvarInit = new BinaryExpressionNode();
-                    loopvarInit.Optr = ProtoCore.DSASM.Operator.assign;
-                    loopvarInit.LeftNode = loopvar;
-                    loopvarInit.RightNode = new NullNode();
 
-                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvarInit, forNode);
-                    loopvarInit.endLine = loopvarInit.line;
-                    loopvarInit.endCol = loopvarInit.col + 3;
-                    EmitBinaryExpressionNode(loopvarInit, ref type, isBooleanOp, graphNode);
-                }
+                IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.loopVar.Name) as IdentifierNode;
+                loopvar.ArrayName = forNode.expression.Name;
+                ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
+
+                // None op for debugging
+                EmitNone(forNode.line, forNode.col, forNode.line, forNode.col + 3);
+                EmitInstrConsole("none");
 
                 // %key = null;
                 string keyIdent = GetForLoopKeyIdent();
