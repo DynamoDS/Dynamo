@@ -17,12 +17,17 @@ namespace Dynamo.ViewModels
         public bool Cancel { get; set; }
 
         /// <summary>
-        /// Indicate path to the custom packages folder
+        /// Indicate the path to the custom packages folder
         /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Indicate the current path pointed to by SelectedIndex
+        /// </summary>
+        public string CurrentPath { get; set; }
     }
 
-    class PackagePathViewModel : ViewModelBase
+    public class PackagePathViewModel : ViewModelBase
     {
         public ObservableCollection<string> RootLocations { get; private set; }
         private int selectedIndex;
@@ -36,8 +41,7 @@ namespace Dynamo.ViewModels
             {
                 selectedIndex = value;
                 RaisePropertyChanged("SelectedIndex");
-                MovePathDownCommand.RaiseCanExecuteChanged();
-                MovePathUpCommand.RaiseCanExecuteChanged();
+                RaiseCanExecuteChanged();
             }
         }
 
@@ -75,6 +79,14 @@ namespace Dynamo.ViewModels
             SelectedIndex = 0;
         }
 
+        private void RaiseCanExecuteChanged()
+        {
+            MovePathDownCommand.RaiseCanExecuteChanged();
+            MovePathUpCommand.RaiseCanExecuteChanged();
+            AddPathCommand.RaiseCanExecuteChanged();
+            DeletePathCommand.RaiseCanExecuteChanged();
+        }
+
         private bool CanDelete(object param)
         {
             return RootLocations.Count > 1;
@@ -106,6 +118,7 @@ namespace Dynamo.ViewModels
         private void InsertPath()
         {
             var args = new PackagePathEventArgs();
+
             ShowFileDialog(args);
 
             if (args.Cancel)
@@ -113,17 +126,24 @@ namespace Dynamo.ViewModels
 
             RootLocations.Insert(RootLocations.Count, args.Path);
 
-            DeletePathCommand.RaiseCanExecuteChanged();
+            RaiseCanExecuteChanged();
         }
 
         private void ShowFileDialog(PackagePathEventArgs e)
         {
             OnRequestShowFileDialog(this, e);
+
+            if (e.Cancel == false && RootLocations.Contains(e.Path))
+                e.Cancel = true;
         }
 
         private void UpdatePathAt(int index)
         {
-            var args = new PackagePathEventArgs();
+            var args = new PackagePathEventArgs
+            {
+                CurrentPath = RootLocations[SelectedIndex]
+            };
+
             ShowFileDialog(args);
 
             if (args.Cancel)
@@ -138,6 +158,8 @@ namespace Dynamo.ViewModels
 
             if (index <= SelectedIndex && SelectedIndex > 0)
                 SelectedIndex--;
+
+            RaiseCanExecuteChanged();
         }
 
         private void CommitChanges(object param)
