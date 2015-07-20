@@ -1306,13 +1306,19 @@ namespace Dynamo.Models
         internal void Undo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Undo();
+                RequestRun();
+            }
         }
 
         internal void Redo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Redo();
+                RequestRun();
+            }
         }
 
         internal void ClearUndoRecorder()
