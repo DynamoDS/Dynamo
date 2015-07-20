@@ -46,7 +46,6 @@ Name: "{app}\libg_221"
 Name: "{app}\libg_locale"
 Name: "{app}\nodes"
 Name: "{app}\extensions"
-Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\definitions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\Logs"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
 
@@ -102,9 +101,6 @@ Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly
 
 ;Samples
 Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
-
-;Other Custom Nodes
-Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;DirectX
 Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
