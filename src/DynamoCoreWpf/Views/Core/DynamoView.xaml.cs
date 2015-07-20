@@ -39,7 +39,8 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
-using Dynamo.Wpf.Manipulation;
+using Dynamo.Manipulation;
+using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Controls
 {
@@ -653,7 +654,7 @@ namespace Dynamo.Controls
             }
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
@@ -679,7 +680,7 @@ namespace Dynamo.Controls
                 return;
 
             foreach (var nm in e.NewItems.OfType<NodeModel>())
-                manipulatorDaemon.CreateManipulator(nm, this);
+                manipulatorDaemon.CreateManipulator(nm /*,this*/);
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)

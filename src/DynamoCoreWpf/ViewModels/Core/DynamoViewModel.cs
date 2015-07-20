@@ -27,6 +27,7 @@ using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
+using Dynamo.Manipulation;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;

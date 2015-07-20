@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
-using Dynamo.Wpf.Manipulation;
 
-namespace Dynamo.Wpf.Interfaces
+namespace Dynamo.Manipulation
 {
     public interface IManipulatorDaemonInitializer
     {
+        //ManipulatorDaemon CreateManipulatorDaemon();
         Dictionary<Type, IEnumerable<INodeManipulatorCreator>> GetManipulatorCreators();
     }
 
@@ -18,12 +19,11 @@ namespace Dynamo.Wpf.Interfaces
     /// </summary>
     public interface INodeManipulatorCreator
     {
-        IManipulator Create(NodeModel node, DynamoManipulatorContext manipulatorContext);
+        IManipulator Create(NodeModel node, NodeManipulatorContext manipulatorContext);
     }
 
     public interface IManipulator : IGraphicItem, IDisposable
     {
-        
-    }
 
+    }
 }

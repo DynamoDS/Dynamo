@@ -110,11 +110,7 @@
     <Compile Include="Extensions\ViewLoadedParams.cs" />
     <Compile Include="Extensions\ViewExtensionDefinition.cs" />
     <Compile Include="Extensions\ViewStartupParams.cs" />
-    <Compile Include="Interfaces\IManipulator.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
-    <Compile Include="Manipulation\DynamoManipulatorContext.cs" />
-    <Compile Include="Manipulation\Manipulator.cs" />
-    <Compile Include="Manipulation\ManipulatorDaemon.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
     <Compile Include="Interfaces\IBrandingResourceProvider.cs" />
     <Compile Include="NodeViewCustomization\AssemblyNodeViewCustomizations.cs" />
@@ -1124,6 +1120,11 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoManipulation\DynamoManipulation.csproj">
+      <Project>{2ea828ce-bd00-4884-be3f-c0762ff016c9}</Project>
+      <Name>DynamoManipulation</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>

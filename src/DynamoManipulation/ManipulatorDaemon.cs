@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Wpf.Interfaces;
 
-namespace Dynamo.Wpf.Manipulation
+namespace Dynamo.Manipulation
 {
-    internal class ManipulatorDaemon
+    public class ManipulatorDaemon
     {
         private readonly Dictionary<Type, IEnumerable<INodeManipulatorCreator>> registeredManipulatorCreators;
         private readonly Dictionary<Guid, IDisposable> activeManipulators = new Dictionary<Guid, IDisposable>();
@@ -23,11 +20,11 @@ namespace Dynamo.Wpf.Manipulation
             return new ManipulatorDaemon(initializer.GetManipulatorCreators());
         }
 
-        public void CreateManipulator(NodeModel model, DynamoView view)
+        public void CreateManipulator(NodeModel model /*, DynamoView view*/)
         {
             var creators = registeredManipulatorCreators.Where(pair => pair.Key.IsInstanceOfType(model)).SelectMany(pair => pair.Value);
             activeManipulators[model.GUID] = new CompositeManipulator(
-                creators.Select(x => x.Create(model, new DynamoManipulatorContext { View = view })).
+                creators.Select(x => x.Create(model, new NodeManipulatorContext(/*view*/))).
                 Where(x => x != null).ToList());
         }
 
