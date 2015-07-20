@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
@@ -140,6 +141,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoShapeManager", "Tools
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPackages", "DynamoPackages\DynamoPackages.csproj", "{47533B7C-0E1A-44A4-8511-B438645F052A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCLI", "DynamoCLI\DynamoCLI.csproj", "{5F9AE581-6781-4A4C-A262-1B06CD27208B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoApplications", "DynamoApplications\DynamoApplications.csproj", "{AA782772-FE61-4226-BAA4-EB529FA1646B}"
+EndProject
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Display", "Libraries\Display\Display.csproj", "{A50C198C-DA6E-4081-BC53-0F44D287F207}"
 EndProject
 Global
@@ -377,6 +383,15 @@ Global
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47533B7C-0E1A-44A4-8511-B438645F052A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F9AE581-6781-4A4C-A262-1B06CD27208B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F9AE581-6781-4A4C-A262-1B06CD27208B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F9AE581-6781-4A4C-A262-1B06CD27208B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F9AE581-6781-4A4C-A262-1B06CD27208B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA782772-FE61-4226-BAA4-EB529FA1646B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA782772-FE61-4226-BAA4-EB529FA1646B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA782772-FE61-4226-BAA4-EB529FA1646B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA782772-FE61-4226-BAA4-EB529FA1646B}.Release|Any CPU.Build.0 = Release|Any CPU
+		
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -67,7 +67,7 @@ namespace DynamoCoreWpfTests
             var node = new DoubleInput { CanUpdatePeriodically = true };
 
             var homeSpace = GetHomeSpace();
-            homeSpace.AddNode(node, true);
+            homeSpace.AddAndRegisterNode(node, true);
             
             var item = View.RunSettingsControl.RunTypesComboBox.Items[2] as RunTypeItem;
             Assert.True(item.Enabled);

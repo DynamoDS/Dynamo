@@ -22,6 +22,7 @@ using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
+using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
@@ -187,6 +188,39 @@ namespace Dynamo.Models
                     isUpstreamVisible = value;
                     RaisePropertyChanged("IsUpstreamVisible");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
+        /// strings, bool, code blocks and custom nodes, which don't specify path.
+        /// </summary>
+        public bool IsInputNode
+        {
+            get
+            {
+                return !inPorts.Any() && !(this is DSFunction);
+            }
+        }
+
+        private bool isSelectedInput = true;
+        /// <summary>
+        /// Specifies whether an input node should be included in a preset. 
+        /// By default, this field is set to true.
+        /// </summary>
+        public bool IsSelectedInput
+        {
+            get
+            {
+                if (!IsInputNode)
+                    return false;
+
+                return isSelectedInput;
+            }
+
+            set
+            {
+                isSelectedInput = value;
             }
         }
 
@@ -581,11 +615,13 @@ namespace Dynamo.Models
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            //if (OutPortData.Count == 1)
-            //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
-
-            string id = AstIdentifierBase + "_out" + outputIndex;
-            return AstFactory.BuildIdentifier(id);
+            if (OutPortData.Count <= 1)
+                return AstIdentifierForPreview;
+            else
+            {
+                string id = AstIdentifierBase + "_out" + outputIndex;
+                return AstFactory.BuildIdentifier(id);
+            }
         }
 
         #endregion
@@ -1429,6 +1465,7 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
+            helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1479,6 +1516,7 @@ namespace Dynamo.Models
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+            IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
 
             var portInfoProcessed = new HashSet<int>();
 
@@ -2014,6 +2052,32 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public class IsDesignScriptCompatibleAttribute : Attribute { }
 
+    /// <summary>
+    ///    The NodeDescriptionAttribute indicates this node is obsolete
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method |AttributeTargets.Property)]
+    public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
+    {
+        public NodeObsoleteAttribute(string message) : base(message)
+        {
+        }
+
+        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                Message = (string)prop.GetValue(null, null);
+            }
+            else
+            {
+                Message = descriptionResourceID;
+            }
+        }
+    }
     #endregion
     
     public class UIDispatcherEventArgs : EventArgs

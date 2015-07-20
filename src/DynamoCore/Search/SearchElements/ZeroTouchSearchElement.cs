@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -36,8 +37,10 @@ namespace Dynamo.Search.SearchElements
 
             if (functionDescriptor.IsBuiltIn)
                 ElementType |= ElementTypes.BuiltIn;
+
             // Assembly, that is located in package directory, considered as part of package.
-            if (Assembly.StartsWith(functionDescriptor.PathManager.PackagesDirectory))
+            var packageDirectories = functionDescriptor.PathManager.PackagesDirectories;
+            if (packageDirectories.Any(directory => Assembly.StartsWith(directory)))
                 ElementType |= ElementTypes.Packaged;
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);

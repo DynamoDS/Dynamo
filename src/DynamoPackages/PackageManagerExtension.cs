@@ -23,9 +23,9 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Manages loading of packages.
+        ///     Manages loading of packages (property meant solely for tests)
         /// </summary>
-        public PackageLoader PackageLoader { get; private set; }
+        internal PackageLoader PackageLoader { get; private set; }
 
         /// <summary>
         ///     Dynamo Package Manager Instance.
@@ -74,7 +74,7 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectory);
+            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
             PackageLoader.MessageLogged += OnMessageLogged;
             PackageLoader.RequestLoadNodeLibrary += startupParams.DynamoModel.LoadNodeLibraryFromAssembly;
             PackageLoader.RequestLoadCustomNodeDirectory +=
@@ -87,8 +87,9 @@ namespace Dynamo.PackageManager
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
-            PackageManagerClient = new PackageManagerClient(new GregClient(startupParams.AuthProvider, url), 
-                uploadBuilder, PackageLoader.RootPackagesDirectory);
+            PackageManagerClient = new PackageManagerClient(
+                new GregClient(startupParams.AuthProvider, url),
+                uploadBuilder, PackageLoader.DefaultPackagesDirectory);
         }
 
         public void Ready(ReadyParams sp) { }
