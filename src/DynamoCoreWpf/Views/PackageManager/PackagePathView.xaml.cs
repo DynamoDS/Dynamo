@@ -97,7 +97,13 @@ namespace Dynamo.Wpf.Views.PackageManager
         {
             var args = e as PackagePathEventArgs;
             args.Cancel = true;
-            var dialog = new FolderBrowserDialog();
+
+            var dialog = new FolderBrowserDialog()
+            {
+                // Navigate to initial folder.
+                SelectedPath = args.Path
+            };
+
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 args.Cancel = false;
