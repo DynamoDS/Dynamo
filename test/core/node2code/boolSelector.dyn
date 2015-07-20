@@ -1,0 +1,12 @@
+<Workspace Version="0.8.2.1873" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.BoolSelector guid="de9c9de4-f639-4bca-9090-7d02a58f7700" type="DSCoreNodesUI.BoolSelector" nickname="Boolean" x="399.5" y="372.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

@@ -138,16 +138,34 @@
   <data name="EnumDateOfWeekWednesday" xml:space="preserve">
     <value>Wednesday</value>
   </data>
+  <data name="ExportToCSVObsolete" xml:space="preserve">
+    <value>Use CSV.WriteToFile node instead</value>
+  </data>
   <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
     <value>You must provide a center point.</value>
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>The search radius cannot be zero.</value>
   </data>
+  <data name="FromObjectObsolete" xml:space="preserve">
+    <value>This node is obsolete, please use "String from Object"</value>
+  </data>
+  <data name="LoadImageFromPathObsolete" xml:space="preserve">
+    <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
+  </data>
   <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
     <value>You cannot construct a quadtree from an empty set of points.</value>
   </data>
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>A Quadtree cannot be constructed from a null set of UVs.</value>
+  </data>
+  <data name="ReadImageObsolete" xml:space="preserve">
+    <value>Use File.FromPath -&gt; Image.ReadFromFile -&gt;  Image.Pixels nodes instead</value>
+  </data>
+  <data name="ReadTextObsolete" xml:space="preserve">
+    <value>Use File.FromPath -&gt;  File.ReadText nodes instead.</value>
+  </data>
+  <data name="WriteImageObsolete" xml:space="preserve">
+    <value>Use Image.WriteToFile node instead</value>
   </data>
 </root>

@@ -1820,6 +1820,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="SelectNodeButtonSelect" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="PresetTextRemaining" xml:space="preserve">
+    <value>Characters Remaining</value>
+  </data>
   <data name="PresetOverwrite" xml:space="preserve">
     <value>A preset by this name already exists, do you wish to overwrite?</value>
   </data>
@@ -1828,5 +1831,8 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TesselationCompletedMessage" xml:space="preserve">
     <value>Rendering....</value>
+ </data>
+  <data name="NodeContextMenuIsInput" xml:space="preserve">
+    <value>Is Input</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
 <ExtensionDefinition>
-  <AssemblyName>DynamoPackages</AssemblyName>
+  <AssemblyPath>DynamoPackages</AssemblyPath>
   <TypeName>Dynamo.PackageManager.PackageManagerExtension</TypeName>
 </ExtensionDefinition>

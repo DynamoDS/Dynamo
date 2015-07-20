@@ -10,7 +10,7 @@ namespace Dynamo.Extensions
     public class ExtensionDefinition
     {
         [DataMember]
-        public string AssemblyName { get; set; }
+        public string AssemblyPath { get; set; }
 
         [DataMember]
         public string TypeName { get; set; }

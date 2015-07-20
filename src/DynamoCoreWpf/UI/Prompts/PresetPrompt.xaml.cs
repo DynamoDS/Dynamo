@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Windows;
 using Dynamo.Controls;
-using Dynamo.Utilities;
+using Dynamo.Utilities; 
+using System;
+using System.Windows.Controls;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes
@@ -11,14 +13,43 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class PresetPrompt : Window
     {
+        public string Description
+        {
+            get { return this.DescriptionInput.Text; }
+        }
+
+        public int MaxLength
+        {
+            get { return this.nameBox.MaxLength; }
+        }
+
+        public string Text
+        {
+            get
+            {
+                return this.nameBox.Text.Trim();
+            }
+
+            set
+            {
+                this.nameBox.Text = value;
+            }
+        }
+
+
         public PresetPrompt()
         {
             InitializeComponent();
 
             this.Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
+            this.Loaded +=PresetPrompt_Loaded;
             this.nameBox.Focus();
+        }
+
+        private void PresetPrompt_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateText();
         }
 
         void OK_Click(object sender, RoutedEventArgs e)
@@ -61,17 +92,21 @@ namespace Dynamo.Nodes
         {
             this.DialogResult = false;
         }
-
-        public string Text
+               
+        private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            get { return this.nameBox.Text; }
+            if (this.Text.Length > this.nameBox.MaxLength)
+            {
+                this.Text = this.Text.Substring(0, MaxLength);
+            }
+
+            UpdateText();
         }
 
-        public string Description
+        private void UpdateText()         
         {
-            get { return this.DescriptionInput.Text; }
+            this.TextRemaining.Content =  (this.nameBox.MaxLength - this.nameBox.Text.Length) + " " +
+                                                Wpf.Properties.Resources.PresetTextRemaining;
         }
-
-      
     }
 }

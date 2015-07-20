@@ -86,5 +86,14 @@ namespace DSOffice.Properties {
                 return ResourceManager.GetString("kMethodResolutionFailureWithTypes", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use File.FromPath -&gt; Excel.ReadFromFile node instead..
+        /// </summary>
+        internal static string ReadObsolete {
+            get {
+                return ResourceManager.GetString("ReadObsolete", resourceCulture);
+            }
+        }
     }
 }

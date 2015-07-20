@@ -462,6 +462,7 @@ namespace Dynamo.ViewModels
 
         public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
+ 
         private Boolean showBusyIndicator;
         public Boolean ShowBusyIndicator
         {
@@ -474,6 +475,7 @@ namespace Dynamo.ViewModels
         }
 
         private string showRunMessage;
+
         public string ShowRunMessage
         {
             get { return showRunMessage; }
@@ -482,6 +484,12 @@ namespace Dynamo.ViewModels
                 showRunMessage = value;
                 RaisePropertyChanged("ShowRunMessage");
             }
+        }
+
+        public bool EnablePresetOptions
+        {
+            get { return this.Model.CurrentWorkspace.Presets.Any(); }            
+ 
         }
 
         #endregion
@@ -1430,6 +1438,7 @@ namespace Dynamo.ViewModels
         }
         private bool CanShowNewPresetStateDialog(object parameter)
         {
+            RaisePropertyChanged("EnablePresetOptions");
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
@@ -1470,7 +1479,7 @@ namespace Dynamo.ViewModels
             else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var pathManager = vm.model.PathManager;
-                _fileDialog.InitialDirectory = pathManager.UserDefinitions;
+                _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
