@@ -1308,6 +1308,9 @@ namespace Dynamo.Models
             if (null != undoRecorder)
             {
                 undoRecorder.Undo();
+
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
+                // Request run for every undo action
                 RequestRun();
             }
         }
@@ -1317,6 +1320,9 @@ namespace Dynamo.Models
             if (null != undoRecorder)
             {
                 undoRecorder.Redo();
+
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
+                // Request run for every redo action
                 RequestRun();
             }
         }
