@@ -1842,7 +1842,7 @@ Do you want to install the latest Dynamo update?</value>
     <comment>Package path management dialog content</comment>
   </data>
   <data name="PackagePathViewSummary" xml:space="preserve">
-    <value>The top path is the default location for saving new packages and custom nodes. Nodes in additional locations will show up in the add-ons section of the library.</value>
+    <value>The top path is the default location for saving new packages and custom nodes. Nodes in additional locations will show up in the library.</value>
     <comment>Package path management dialog content</comment>
   </data>
   <data name="PackagePathViewTitle" xml:space="preserve">

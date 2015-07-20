@@ -3174,7 +3174,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The top path is the default location for saving new packages and custom nodes. Nodes in additional locations will show up in the add-ons section of the library..
+        ///   Looks up a localized string similar to The top path is the default location for saving new packages and custom nodes. Nodes in additional locations will show up in the library..
         /// </summary>
         public static string PackagePathViewSummary {
             get {
