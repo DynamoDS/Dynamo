@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
             if (!model.IsPartiallyApplied)
             {
                 var paramCount = Definition.Parameters.Count();
-                var packId = "__var_arg_pack_" + model.GUID;
+                var packId = "__var_arg_pack_" + model.GUID.ToString().Replace("-", string.Empty);
                 resultAst.Add(
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(packId),
