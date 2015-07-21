@@ -93,15 +93,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public event Action GeometryDictionaryReset;
-        private void OnGeometryDictionaryReset()
-        {
-            if (GeometryDictionaryReset != null)
-            {
-                GeometryDictionaryReset();
-            }
-        }
-
         public event Action RequestViewRefresh;
         protected void OnRequestViewRefresh()
         {
@@ -230,7 +221,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set
             {
                 nearPlaneDistanceFactor = value;
-                RaisePropertyChanged("");
+                RaisePropertyChanged("NearPlaneDistanceFactor");
             }
         }
 
@@ -511,6 +502,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             RaisePropertyChanged("Model3DValues");
+            OnRequestViewRefresh();
         }
 
         private void LogCameraWarning(string msg, Exception ex)
@@ -871,12 +863,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void RemoveGeometryFromDisconnectedNodes()
         {
-            var noRenderNodes = viewModel.Model.CurrentWorkspace.Nodes.
-                Where(n => n.IsUpdated).
-                Where(n => !n.RenderPackages.Any());
-
             lock (Model3DDictionaryMutex)
             {
+                var noRenderNodes = viewModel.Model.CurrentWorkspace.Nodes.
+                    Where(n => n.IsUpdated).
+                    Where(n => !n.RenderPackages.Any());
+
                 foreach (var node in noRenderNodes)
                 {
                     var idBase = node.AstIdentifierBase;
@@ -907,10 +899,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void RemoveGeometryForUpdatedPackages(IEnumerable<IRenderPackage> packages)
         {
-            var packageDescrips = packages.Select(p => p.Description.Split(':')[0]).Distinct();
-
             lock (Model3DDictionaryMutex)
             {
+                var packageDescrips = packages.Select(p => p.Description.Split(':')[0]).Distinct();
+
                 foreach (var id in packageDescrips)
                 {
                     var pointsId = id + ":points";
@@ -1362,8 +1354,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
-            RaisePropertyChanged("");
-            OnGeometryDictionaryReset();
+            RaisePropertyChanged("Model3DValues");
+            OnRequestViewRefresh();
         }
 
         protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
