@@ -13,9 +13,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -40,7 +42,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class Watch3DView : UserControl, INotifyPropertyChanged
+    public partial class Watch3DView : UserControl, INotifyPropertyChanged, IVisualizationManagerNew
     {
         #region events
 
@@ -257,9 +259,9 @@ namespace Dynamo.Controls
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
-            viewModel.PropertyChanged -= ViewModelPropertyChangedHandler;
+            viewModel.PropertyChanged -= OnViewModelPropertyChanged;
 
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModelPropertyChangedHandler;
+            viewModel.RenderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
 
             CompositionTarget.Rendering -= CompositionTargetRenderingHandler;
 
@@ -305,47 +307,46 @@ namespace Dynamo.Controls
 
         private void RegisterModelEventhandlers(DynamoModel model)
         {
-            model.WorkspaceCleared += WorkspaceClearedHandler;
-            model.ShutdownStarted += ModelShutdownStartedHandler;
+            model.WorkspaceCleared += OnWorkspaceCleared;
+            model.ShutdownStarted += OnModelShutdownStarted;
             model.CleaningUp += ResetGeometryDictionary;
-            model.EvaluationCompleted += EvaluationCompletedHandler;
         }
 
         private void UnregisterModelEventHandlers(DynamoModel model)
         {
-            model.WorkspaceCleared -= WorkspaceClearedHandler;
-            model.ShutdownStarted -= ModelShutdownStartedHandler;
+            model.WorkspaceCleared -= OnWorkspaceCleared;
+            model.ShutdownStarted -= OnModelShutdownStarted;
             model.CleaningUp -= ResetGeometryDictionary;
-            model.EvaluationCompleted -= EvaluationCompletedHandler;
         }
 
         private void UnregisterWorkspaceEventHandlers(DynamoModel model)
         {
-            model.WorkspaceAdded -= WorkspaceAddedHandler;
-            model.WorkspaceRemoved -= WorkspaceRemovedHandler;
-            model.WorkspaceOpening -= WorkspaceOpeningHandler;
+            model.WorkspaceAdded -= OnWorkspaceAdded;
+            model.WorkspaceRemoved -= OnWorkspaceRemoved;
+            model.WorkspaceOpening -= OnWorkspaceOpening;
 
             foreach (var ws in model.Workspaces)
             {
-                ws.Saving -= WorkspaceSavingHandler;
+                ws.Saving -= OnWorkspaceSaving;
             }
         }
 
         private void RegisterWorkspaceEventHandlers(DynamoModel model)
         {
-            model.WorkspaceAdded += WorkspaceAddedHandler;
-            model.WorkspaceRemoved += WorkspaceRemovedHandler;
-            model.WorkspaceOpening += WorkspaceOpeningHandler;
+            model.WorkspaceAdded += OnWorkspaceAdded;
+            model.WorkspaceRemoved += OnWorkspaceRemoved;
+            model.WorkspaceOpening += OnWorkspaceOpening;
 
             foreach (var ws in model.Workspaces)
             {
-                ws.Saving += WorkspaceSavingHandler;
-                ws.NodeAdded += NodeAddedToWorkspaceHandler;
-                ws.NodeRemoved += NodeRemovedFromWorkspaceHandler;
+                ws.Saving += OnWorkspaceSaving;
+                ws.NodeAdded += OnNodeAddedToWorkspace;
+                ws.NodeRemoved += OnNodeRemovedFromWorkspace;
 
                 foreach (var node in ws.Nodes)
                 {
-                    node.PropertyChanged += NodePropertyChangedHandler;
+                    node.PropertyChanged += OnNodePropertyChanged;
+                    node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
                 }
             }
         }
@@ -374,30 +375,13 @@ namespace Dynamo.Controls
 
             LogVisualizationCapabilities();
 
-            viewModel.PropertyChanged += ViewModelPropertyChangedHandler;
+            viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModelPropertyChangedHandler;
+            viewModel.RenderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
 
             RegisterModelEventhandlers(viewModel.Model);
 
             RegisterWorkspaceEventHandlers(viewModel.Model);  
-        }
-
-        private void RenderPackageFactoryViewModelPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "ShowEdges":
-                    viewModel.Model.PreferenceSettings.ShowEdges =
-                        viewModel.RenderPackageFactoryViewModel.Factory.TessellationParameters.ShowEdges;
-                    break;
-            }
-
-            // Set all the nodes as updated so we get a total redraw.
-
-            viewModel.Model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
-
-            UpdatedNodeRenderPackagesAndAggregateAsync(viewModel.Model.CurrentWorkspace.Nodes);
         }
 
         private void MeshGeometry3DMouseDown3DHandler(object sender, RoutedEventArgs e)
@@ -415,63 +399,20 @@ namespace Dynamo.Controls
                 viewModel.Model.AddToSelection(node);
             }
         }
-        
-        protected virtual void EvaluationCompletedHandler(object sender, EvaluationCompletedEventArgs e)
+
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
         {
-            // do nothing if it has come on EvaluationCompleted
-            // and no evaluation took place
-            if (e != null && !e.EvaluationTookPlace)
-                return;
-            
-            UpdatedNodeRenderPackagesAndAggregateAsync(viewModel.Model.CurrentWorkspace.Nodes);
-        }
+            var yAdjust = ActualHeight + e.VerticalChange;
+            var xAdjust = ActualWidth + e.HorizontalChange;
 
-        private void UpdatedNodeRenderPackagesAndAggregateAsync(NodeModel nodeModel)
-        {
-            UpdatedNodeRenderPackagesAndAggregateAsync(new []{nodeModel});
-        }
-
-        protected void UpdatedNodeRenderPackagesAndAggregateAsync(IEnumerable<NodeModel> nodeModelsToUpdate)
-        {
-            var model = viewModel.Model;
-
-            var scheduler = model.Scheduler;
-            if (scheduler == null) // Shutdown has begun.
-                return;
-
-            // Get each node in workspace to update their visuals.
-            foreach (var node in nodeModelsToUpdate)
+            if (xAdjust >= inputGrid.MinWidth)
             {
-                node.RequestVisualUpdateAsync(
-                    model.Scheduler,
-                    model.EngineController,
-                    viewModel.RenderPackageFactoryViewModel.Factory);
+                Width = xAdjust;
             }
 
-            // Schedule a AggregateRenderPackageAsyncTask here so that the 
-            // background geometry preview gets refreshed.
-            // 
-            var task = new AggregateRenderPackageAsyncTask(scheduler);
-            task.Initialize(model.CurrentWorkspace, null);
-            task.Completed += RenderPackageAggregationCompletedHandler;
-            scheduler.ScheduleForExecution(task);
-        }
-
-        protected void RenderPackageAggregationCompletedHandler(AsyncTask asyncTask)
-        {
-            var task = asyncTask as AggregateRenderPackageAsyncTask;
-
-            if (task == null)
+            if (yAdjust >= inputGrid.MinHeight)
             {
-                return;
-            }
-
-            if (CheckAccess())
-                RenderDrawables(task.RenderPackages);
-            else
-            {
-                // Scheduler invokes ResultsReadyToVisualize on background thread.
-                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(task.RenderPackages)));
+                Height = yAdjust;
             }
         }
 
@@ -481,12 +422,12 @@ namespace Dynamo.Controls
             {
                 case NotifyCollectionChangedAction.Reset:
                     Model3DDictionary.Values.
-                        Where(v=>v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g=>g.IsSelected = false);
+                        Where(v => v is GeometryModel3D).
+                        Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = false);
                     return;
 
                 case NotifyCollectionChangedAction.Remove:
-                    SetSelection(e.OldItems,false);
+                    SetSelection(e.OldItems, false);
                     return;
 
                 case NotifyCollectionChangedAction.Add:
@@ -507,116 +448,6 @@ namespace Dynamo.Controls
 
                     SetSelection(e.NewItems, true);
                     return;
-            }          
-        }
-
-        private void WorkspaceClearedHandler(object sender, EventArgs e)
-        {
-            SetCameraToDefaultOrientation();
-            ResetGeometryDictionary();
-        }
-
-        private void WorkspaceOpeningHandler(XmlDocument doc)
-        {
-            var vm = DataContext as DynamoViewModel;
-            if (vm == null)
-            {
-                return;
-            }
-
-            var camerasElements = doc.GetElementsByTagName("Cameras");
-            if (camerasElements.Count == 0)
-            {
-                return;
-            }
-
-            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
-            {
-                LoadCamera(cameraNode);
-            }
-        }
-
-        private void WorkspaceAddedHandler(WorkspaceModel workspace)
-        {
-            workspace.Saving += WorkspaceSavingHandler;
-            workspace.NodeAdded += NodeAddedToWorkspaceHandler;
-            workspace.NodeRemoved += NodeRemovedFromWorkspaceHandler;
-
-            foreach (var node in workspace.Nodes)
-            {
-                node.PropertyChanged += NodePropertyChangedHandler;
-            }
-        }
-
-        private void WorkspaceRemovedHandler(WorkspaceModel workspace)
-        {
-            workspace.Saving -= WorkspaceSavingHandler;
-            workspace.NodeAdded -= NodeAddedToWorkspaceHandler;
-            workspace.NodeRemoved -= NodeRemovedFromWorkspaceHandler;
-        }
-
-        private void WorkspaceSavingHandler(XmlDocument doc)
-        {
-            var root = doc.DocumentElement;
-            if (root == null)
-            {
-                return;
-            }
-
-            var camerasElement = doc.CreateElement("Cameras");
-            SaveCamera(camerasElement);
-            root.AppendChild(camerasElement);
-        }
-
-        private void NodeAddedToWorkspaceHandler(NodeModel node)
-        {
-            node.PropertyChanged += NodePropertyChangedHandler;
-        }
-
-        private void NodeRemovedFromWorkspaceHandler(NodeModel node)
-        {
-            node.PropertyChanged -= NodePropertyChangedHandler;
-            DeleteGeometryForNode(node);
-        }
-
-        protected virtual void NodePropertyChangedHandler(object sender, PropertyChangedEventArgs e)
-        {
-            var node = sender as NodeModel;
-            switch (e.PropertyName)
-            {
-                case "DisplayLabels":
-                    UpdatedNodeRenderPackagesAndAggregateAsync(node);
-                    break;
-
-                case "IsVisible":
-                    var geoms = FindAllGeometryModel3DsForNode(node);
-                    if (geoms.Any())
-                    {
-                        geoms.ToList()
-                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
-                        NotifyPropertyChanged("Model3DValues");
-                    }
-                    else
-                    {
-                        UpdatedNodeRenderPackagesAndAggregateAsync(node);
-                    }
-                    break;
-            }
-        }
-
-        private void ModelShutdownStartedHandler(DynamoModel model)
-        {
-            UnregisterEventHandlers();
-        }
-
-        private void ViewModelPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "IsPanning":
-                case "IsOrbiting":
-                    NotifyPropertyChanged("LeftClickCommand");
-                    break;
             }
         }
 
@@ -641,31 +472,15 @@ namespace Dynamo.Controls
 
             var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
             var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
-            var v = Vector3.Transform(cf, qaz*qel);
+            var v = Vector3.Transform(cf, qaz * qel);
             directionalLightDirection = v;
 
-            if ( !directionalLight.Direction.Equals(directionalLightDirection))
+            if (!directionalLight.Direction.Equals(directionalLightDirection))
             {
                 directionalLight.Direction = v;
             }
 
             UpdateNearClipPlaneForSceneBounds();
-        }
-
-        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
-        {
-            var yAdjust = ActualHeight + e.VerticalChange;
-            var xAdjust = ActualWidth + e.HorizontalChange;
-
-            if (xAdjust >= inputGrid.MinWidth)
-            {
-                Width = xAdjust;
-            }
-
-            if (yAdjust >= inputGrid.MinHeight)
-            {
-                Height = yAdjust;
-            }
         }
 
         private void OnZoomToFitClickedHandler(object sender, RoutedEventArgs e)
@@ -1474,11 +1289,186 @@ namespace Dynamo.Controls
         }
 
         #endregion
+
+        #region Proposed IVisualizationManager interface
+
+        public virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var model = viewModel.Model;
+
+            var node = sender as NodeModel;
+            if (node == null)
+            {
+                return;
+            }
+                
+            switch (e.PropertyName)
+            {
+                case "DisplayLabels":
+                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
+                    break;
+
+                case "IsVisible":
+                    var geoms = FindAllGeometryModel3DsForNode(node);
+                    if (geoms.Any())
+                    {
+                        geoms.ToList()
+                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
+                        NotifyPropertyChanged("Model3DValues");
+                    }
+                    else
+                    {
+                        node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
+                    }
+                    break;
+
+                case "IsUpdated":
+                    node.RequestVisualUpdateAsync(viewModel.Model.Scheduler, 
+                        viewModel.Model.EngineController, 
+                        viewModel.RenderPackageFactoryViewModel.Factory);
+                    break;
+            }
+        }
+
+        public void OnRenderPackageFactoryViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    viewModel.Model.PreferenceSettings.ShowEdges =
+                        viewModel.RenderPackageFactoryViewModel.Factory.TessellationParameters.ShowEdges;
+                    break;
+            }
+
+            // Set all the nodes as updated so we get a total redraw.
+            var model = viewModel.Model;
+
+            model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
+
+            foreach (var node in
+                model.CurrentWorkspace.Nodes)
+            {
+                node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController,
+                        viewModel.RenderPackageFactoryViewModel.Factory);
+            }  
+        }
+
+        public void OnWorkspaceCleared(object sender, EventArgs e)
+        {
+            SetCameraToDefaultOrientation();
+            ResetGeometryDictionary();
+        }
+
+        public void OnWorkspaceOpening(XmlDocument doc)
+        {
+            var vm = DataContext as DynamoViewModel;
+            if (vm == null)
+            {
+                return;
+            }
+
+            var camerasElements = doc.GetElementsByTagName("Cameras");
+            if (camerasElements.Count == 0)
+            {
+                return;
+            }
+
+            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
+            {
+                LoadCamera(cameraNode);
+            }
+        }
+
+        public void OnWorkspaceAdded(WorkspaceModel workspace)
+        {
+            workspace.Saving += OnWorkspaceSaving;
+            workspace.NodeAdded += OnNodeAddedToWorkspace;
+            workspace.NodeRemoved += OnNodeRemovedFromWorkspace;
+
+            foreach (var node in workspace.Nodes)
+            {
+                RegisterNodeEventHandlers(node);
+            }
+        }
+
+        public void OnWorkspaceRemoved(WorkspaceModel workspace)
+        {
+            workspace.Saving -= OnWorkspaceSaving;
+            workspace.NodeAdded -= OnNodeAddedToWorkspace;
+            workspace.NodeRemoved -= OnNodeRemovedFromWorkspace;
+        }
+
+        public void OnWorkspaceSaving(XmlDocument doc)
+        {
+            var root = doc.DocumentElement;
+            if (root == null)
+            {
+                return;
+            }
+
+            var camerasElement = doc.CreateElement("Cameras");
+            SaveCamera(camerasElement);
+            root.AppendChild(camerasElement);
+        }
+
+        public void OnNodeAddedToWorkspace(NodeModel node)
+        {
+            RegisterNodeEventHandlers(node);
+        }
+
+        public void OnNodeRemovedFromWorkspace(NodeModel node)
+        {
+            UnregisterNodeEventHandlers(node);
+            DeleteGeometryForNode(node);
+        }
+
+        private void RegisterNodeEventHandlers(NodeModel node)
+        {
+            node.PropertyChanged += OnNodePropertyChanged;
+            node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
+        }
+
+        private void UnregisterNodeEventHandlers(NodeModel node)
+        {
+            node.PropertyChanged -= OnNodePropertyChanged;
+            node.UpdatedRenderPackagesAvailable -= OnUpdatedRenderPackagesAvailable;
+        }
+
+        protected virtual void OnUpdatedRenderPackagesAvailable(IRenderPackageSource source, IEnumerable<IRenderPackage> renderPackages)
+        {
+            var packages = renderPackages.ToArray();
+
+            Debug.WriteLine("Updating {0} render packages for {1}", packages.Count(), source.GUID);
+            if (CheckAccess())
+                RenderDrawables(packages);
+            else
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => RenderDrawables(packages)));
+            }
+        }
+
+        public void OnModelShutdownStarted(DynamoModel model)
+        {
+            UnregisterEventHandlers();
+        }
+
+        public void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsPanning":
+                case "IsOrbiting":
+                    NotifyPropertyChanged("LeftClickCommand");
+                    break;
+            }
+        }
+
+        #endregion
     }
 
     internal class PackageAggregationParams
     {
         public IEnumerable<HelixRenderPackage> Packages { get; set; } 
         public BillboardText3D Text { get; set; }
-    }
+    }    
 }

@@ -26,7 +26,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IDisposable
+    public abstract class NodeModel : ModelBase, IDisposable, IRenderPackageSource
     {
         #region private members
 
@@ -487,6 +487,8 @@ namespace Dynamo.Models
                         cachedMirrorData = null;
                     }
                 }
+
+                RaisePropertyChanged("IsUpdated");
             }
         }
 
@@ -645,17 +647,6 @@ namespace Dynamo.Models
                 {
                     case ("OverrideName"):
                         RaisePropertyChanged("NickName");
-                        break;
-                    case ("IsSelected"):
-                        // Synchronize the selected state of any render packages for this node
-                        // with the selection state of the node.
-                        if (HasRenderPackages)
-                        {
-                            lock (RenderPackagesMutex)
-                            {
-                                RenderPackages.ForEach(rp => rp.IsSelected = IsSelected);
-                            }
-                        }
                         break;
                 }
             };
@@ -1737,6 +1728,11 @@ namespace Dynamo.Models
                 renderPackages.Clear();
                 renderPackages.AddRange(task.RenderPackages);
                 HasRenderPackages = renderPackages.Any();
+
+                if (RenderPackages.Any())
+                {
+                    OnUpdatedRenderPackagesAvailable(task.RenderPackages);
+                }
             }
         }
 
@@ -1819,6 +1815,16 @@ namespace Dynamo.Models
         }
 
         protected bool ShouldDisplayPreviewCore { get; set; }
+        
+        public event Action<IRenderPackageSource, IEnumerable<IRenderPackage>> UpdatedRenderPackagesAvailable;
+
+        public void OnUpdatedRenderPackagesAvailable(IEnumerable<IRenderPackage> packages)
+        {
+            if(UpdatedRenderPackagesAvailable != null)
+            {
+                UpdatedRenderPackagesAvailable(this, packages);
+            }
+        }
     }
 
     public enum ElementState

@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.Core.Threading;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -35,7 +37,7 @@ namespace Dynamo.Wpf.Views.Preview
                 gathered.ForEach(n => n.IsUpdated = true);
             }
 
-            UpdatedNodeRenderPackagesAndAggregateAsync(gathered);
+            gathered.ForEach(n=>n.RequestVisualUpdateAsync(viewModel.Model.Scheduler, viewModel.Model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory));
         }
 
         void PortDisconnectedHandler(PortModel obj)
@@ -43,32 +45,7 @@ namespace Dynamo.Wpf.Views.Preview
             ResetGeometryDictionary();
         }
 
-        protected override void EvaluationCompletedHandler(object sender, EvaluationCompletedEventArgs e)
-        {
-            // The background preview, which will be initialized before this view,
-            // will take care of updating render packages for all nodes that were
-            // evaluated. For this handler, we only need to do the aggregation.
-            ScheduleAggregationForNode();
-        }
-
-        private void ScheduleAggregationForNode()
-        {
-            var model = viewModel.Model;
-
-            var scheduler = model.Scheduler;
-            if (scheduler == null) // Shutdown has begun.
-                return;
-
-            // Schedule a AggregateRenderPackageAsyncTask here so that the 
-            // background geometry preview gets refreshed.
-            // 
-            var task = new AggregateRenderPackageAsyncTask(scheduler);
-            task.Initialize(model.CurrentWorkspace, node);
-            task.Completed += RenderPackageAggregationCompletedHandler;
-            scheduler.ScheduleForExecution(task);
-        }
-
-        protected override void NodePropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        public override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var updatedNode = sender as NodeModel;
 
@@ -91,7 +68,7 @@ namespace Dynamo.Wpf.Views.Preview
                         if (updatedNode.IsUpstreamVisible)
                         {
                             // Only unhide the geom if its preview value is set to true
-                            geoms.ForEach(g=>g.Value.Visibility = n.IsVisible? Visibility.Visible : Visibility.Hidden);
+                            geoms.ForEach(g => g.Value.Visibility = n.IsVisible ? Visibility.Visible : Visibility.Hidden);
                         }
                         else
                         {
@@ -102,9 +79,25 @@ namespace Dynamo.Wpf.Views.Preview
                     View.InvalidateRender();
 
                     break;
-            }   
+            }
 
-            base.NodePropertyChangedHandler(sender, e);
+            base.OnNodePropertyChanged(sender, e);
+        }
+
+        protected override void OnUpdatedRenderPackagesAvailable(IRenderPackageSource source,
+            IEnumerable<IRenderPackage> renderPackages)
+        {
+            var updatedNode = source as NodeModel;
+
+            var upstream = new List<NodeModel>();
+            node.UpstreamNodes(upstream);
+
+            if (node == null || !upstream.Contains(updatedNode))
+            {
+                return;
+            }
+
+            base.OnUpdatedRenderPackagesAvailable(source, renderPackages);
         }
     }
 }
