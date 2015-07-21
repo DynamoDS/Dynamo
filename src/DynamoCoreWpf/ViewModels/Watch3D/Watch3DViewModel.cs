@@ -702,12 +702,44 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             node.PropertyChanged += OnNodePropertyChanged;
             node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
+
+            RegisterPortEventHandlers(node);
+        }
+
+        protected void RegisterPortEventHandlers(NodeModel node)
+        {
+            foreach (var p in node.InPorts)
+            {
+                p.PortDisconnected += PortDisconnectedHandler;
+                p.PortConnected += PortConnectedHandler;
+            }
+        }
+
+        private void UnregisterPortEventHandlers(NodeModel node)
+        {
+            foreach (var p in node.InPorts)
+            {
+                p.PortDisconnected -= PortDisconnectedHandler;
+                p.PortConnected -= PortConnectedHandler;
+            }
+        }
+
+        protected virtual void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
+        {
+            // Do nothing for a standard node.
+        }
+
+        protected virtual void PortDisconnectedHandler(PortModel port)
+        {
+            DeleteGeometryForNode(port.Owner);
         }
 
         private void UnregisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.UpdatedRenderPackagesAvailable -= OnUpdatedRenderPackagesAvailable;
+
+            UnregisterPortEventHandlers(node);
         }
 
         private void SetupScene()

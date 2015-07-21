@@ -22,14 +22,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             IsResizable = false;
             Name = string.Format("{0}_preview", node.GUID);
 
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected += PortDisconnectedHandler;
-                p.PortConnected += PortConnectedHandler;
-            }
+            RegisterPortEventHandlers(node);
         }
 
-        void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
+        protected override void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
         {
             // Mark upstream nodes as updated.
             // Trigger an aggregation.
@@ -43,7 +39,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             gathered.ForEach(n=>n.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory));
         }
 
-        void PortDisconnectedHandler(PortModel obj)
+        protected override void PortDisconnectedHandler(PortModel obj)
         {
             ResetGeometryDictionary();
         }

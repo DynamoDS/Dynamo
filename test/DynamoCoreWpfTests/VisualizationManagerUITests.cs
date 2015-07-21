@@ -36,6 +36,11 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
+        private Dictionary<string, Model3D> Geometry
+        {
+            get { return ViewModel.BackgroundPreviewViewModel.Model3DDictionary; }
+        } 
+
         private Watch3DView BackgroundPreview
         {
             get { return (Watch3DView)View.background_grid.FindName("background_preview"); }
@@ -52,64 +57,29 @@ namespace DynamoCoreWpfTests
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
-            //we start with all previews disabled
-            //the graph is two points feeding into a line
-
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
+            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
             var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            // Visibility does not cause a re-render.
-            // Everything should be the same.
-
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
-
-            CompareRenderPackagesAndModel3DCounts(ws, ViewModel.BackgroundPreviewViewModel.Model3DDictionary);
+            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.AreEqual(Geometry.NumberOfInvisiblePoints(), 1);
 
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            // Visibility does not cause a re-render.
-            // Everything should be the same.
-
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
-
-            CompareRenderPackagesAndModel3DCounts(ws, ViewModel.BackgroundPreviewViewModel.Model3DDictionary);
+            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.AreEqual(Geometry.NumberOfInvisibleCurves(), 1);
 
             //flip those back on and ensure the visualization returns
             p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
             l1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
 
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
-
-            CompareRenderPackagesAndModel3DCounts(ws, ViewModel.BackgroundPreviewViewModel.Model3DDictionary);
-        }
-
-        [Test]
-        public void Node_VisibilityToggled_Model3DVisibilityUpdated()
-        {
-            OpenVisualizationTest("ASM_points_line.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            foreach (var n in ws.Nodes)
-            {
-                n.UpdateValue(new UpdateValueParams("IsVisible", "false"));
-            }
-
-            Assert.False(ViewModel.BackgroundPreviewViewModel.Model3DDictionary.HasVisibleObjects());
+            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.AreEqual(Geometry.NumberOfInvisibleCurves(), 0);
         }
 
         [Test]
@@ -125,9 +95,7 @@ namespace DynamoCoreWpfTests
             //the graph is two points feeding into a line
 
             //ensure that visulations match our expectations
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-            Assert.AreEqual(0, ws.TotalMeshesToRender());
+            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7,6,0));
 
             // listen for the render complete event so
             // we can inspect the packages sent to the watch3d node
@@ -144,34 +112,19 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Node_InputDisconnected_NodeRendersAreCleared()
         {
-            //test to ensure that when nodes are disconnected 
-            //their associated geometry is removed
             var model = ViewModel.Model;
 
             OpenVisualizationTest("ASM_points_line.dyn");
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7,6,0));
 
-            //ensure the correct representations
-
-            //look at the data in the visualization manager
-            //ensure that the number of Drawable nodes
-            Assert.AreEqual(7, ws.TotalPointsToRender());
-            Assert.AreEqual(6, ws.TotalLinesToRender());
-
-            //delete a conector coming into the lines node
             var lineNode =
                 model.CurrentWorkspace.Nodes.FirstOrDefault(
                     x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             var port = lineNode.InPorts.First();
             port.Connectors.First().Delete();
 
-            // When removing the connector, it will result in a no render.
-            // The existing lines will be removed. There shouldn't
-            // be anything new to render.
-
-            Assert.AreEqual(0, ws.TotalPointsToRender());
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            Assert.AreEqual(Geometry.TotalCurves(), 0);
         }
 
         [Test]
@@ -181,15 +134,11 @@ namespace DynamoCoreWpfTests
 
             OpenVisualizationTest("ASM_points.dyn");
 
-            // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            Assert.AreEqual(Geometry.TotalPoints(), 6);
 
-            Assert.AreEqual(6, ws.TotalPointsToRender());
-
-            //delete a node and ensure that the renderables are cleaned up
             var pointNode =
                 model.CurrentWorkspace.Nodes.FirstOrDefault(
                     x => x.GUID.ToString() == "0b472626-e18f-404a-bec4-d84ad7f33011");
@@ -198,7 +147,7 @@ namespace DynamoCoreWpfTests
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
 
-            Assert.AreEqual(0, ws.TotalPointsToRender());
+            Assert.AreEqual(Geometry.TotalPoints(), 0);
         }
 
         [Test]
@@ -207,8 +156,6 @@ namespace DynamoCoreWpfTests
             var model = ViewModel.Model;
 
             OpenVisualizationTest("Labels.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
@@ -226,22 +173,21 @@ namespace DynamoCoreWpfTests
             var elementResolver = model.CurrentWorkspace.ElementResolver;
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<1>,a<1>);", elementResolver);
 
-            // run the expression
-            Assert.AreEqual(4, ws.TotalPointsToRender());
+            Assert.AreEqual(4, Geometry.TotalPoints());
 
-            //label displayed should be possible now because
-            //some nodes have values. toggle on label display
             cbn.DisplayLabels = true;
-            Assert.AreEqual(4, ws.TotalTextObjectsToRender());
+            Assert.AreEqual(4, Geometry.TotalText());
 
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<2>,a<3>);", elementResolver);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
-            Assert.AreEqual(64, ws.TotalPointsToRender());
-            Assert.AreEqual(64, ws.TotalTextObjectsToRender());
+
+            Assert.AreEqual(64, Geometry.TotalPoints());
+            Assert.AreEqual(64, Geometry.TotalText());
 
             cbn.DisplayLabels = false;
-            Assert.AreEqual(0, ws.TotalTextObjectsToRender());
+
+            Assert.AreEqual(0, Geometry.TotalText());
         }
 
         [Test]
@@ -262,7 +208,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(6, ws.TotalLinesToRender());
+            Assert.AreEqual(6, Geometry.TotalCurves());
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
@@ -272,7 +218,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
-            Assert.AreEqual(6, ws.TotalTextObjectsToRender());
+            Assert.AreEqual(6, Geometry.TotalText());
         }
 
         #endregion
@@ -282,9 +228,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Workspace_Empty_NothingRenders()
         {
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.False(ws.HasSomethingToRender());
+            Assert.True(Geometry.HasNoUserCreatedModel3DObjects());
         }
 
         [Test]
@@ -294,41 +238,30 @@ namespace DynamoCoreWpfTests
 
             OpenVisualizationTest("ASM_points.dyn");
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
             //ensure that we have some visualizations
-            Assert.Greater(ws.TotalPointsToRender(), 0);
+            Assert.Greater(Geometry.TotalPoints(), 0);
 
             //now clear the workspace
             model.ClearCurrentWorkspace();
 
             //ensure that we have no visualizations
-            Assert.AreEqual(0, ws.TotalPointsToRender());
+            Assert.AreEqual(Geometry.TotalPoints(), 0);
         }
 
         [Test]
         public void Workspace_Opened_RenderingCleared()
         {
-            var model = ViewModel.Model;
-
             OpenVisualizationTest("ASM_points.dyn");
 
-            // Make sure the workspace is running automatically.
-            // Flipping the mode here will cause it to run.
-            var ws = model.CurrentWorkspace as HomeWorkspaceModel;
-
             // Ensure we have some geometry
-            Assert.Greater(ws.TotalPointsToRender(), 0);
+            Assert.Greater(Geometry.TotalPoints(), 0);
 
             // Open an empty file. This will test whether opening a
             // workspace causes any geometry to be left behind.
 
             OpenVisualizationTest("empty.dyn");
 
-            ws = model.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.AreEqual(0, ws.TotalPointsToRender());
-            CompareRenderPackagesAndModel3DCounts(ws, ViewModel.BackgroundPreviewViewModel.Model3DDictionary);
+            Assert.AreEqual(Geometry.TotalPoints(), 0);
         }
 
         [Test]
@@ -336,11 +269,9 @@ namespace DynamoCoreWpfTests
         {
             OpenVisualizationTest("ASM_points_line_noPreview.dyn");
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
             //all nodes are set to not preview in the file
             //ensure that we have no visualizations
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            Assert.AreEqual(Geometry.TotalCurves(), 0);
         }
 
         #endregion
@@ -352,9 +283,7 @@ namespace DynamoCoreWpfTests
         {
             OpenVisualizationTest("ASM_thicken.dyn");
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.True(ws.HasAnyMeshes());
+            Assert.True(Geometry.HasAnyMeshes());
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
         }
@@ -364,9 +293,7 @@ namespace DynamoCoreWpfTests
         {
             OpenVisualizationTest("ASM_cuboid.dyn");
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.AreEqual(36, ws.TotalMeshVerticesToRender());
+            Assert.AreEqual(Geometry.TotalMeshVerticesToRender(), 36);
         }
 
         [Test]
@@ -586,7 +513,8 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
             var watch3DNode = ws.FirstNodeFromWorkspace<Watch3D>();
-            Assert.Greater(watch3DNode.View.View.Items.Count, 3);
+            var totalPointsInView = ViewModel.BackgroundPreviewViewModel.Model3DDictionary.TotalPoints();
+            Assert.Greater(totalPointsInView, 3);
 
             // Disconnect the port coming into the watch3d node.
             var connector = watch3DNode.InPorts[0].Connectors.First();
@@ -675,7 +603,7 @@ namespace DynamoCoreWpfTests
                 return;
             }
 
-            Assert.AreEqual(0, args.Packages.Sum(rp => rp.PointVertexCount));
+            Assert.AreEqual(Geometry.TotalPoints(), 0);
         }
 
         private void OpenVisualizationTest(string fileName)
@@ -732,9 +660,65 @@ namespace DynamoCoreWpfTests
                 : 0;
         }
 
+        public static int TotalText(this Dictionary<string, Model3D> dictionary)
+        {
+            var text = dictionary
+                .Where(kvp => kvp.Value is BillboardTextModel3D && !keyList.Contains(kvp.Key))
+                .Select(kvp=>kvp.Value).Cast<BillboardTextModel3D>()
+                .Select(bb=>bb.Geometry).Cast<BillboardText3D>()
+                .ToArray();
+
+            return text.Any()
+                ? text.Where(t=>t != null).SelectMany(t=>t.TextInfo).Count()
+                : 0;
+        }
+
+        public static bool HasNumberOfPointsCurvesAndMeshes(this Dictionary<string, Model3D> dictionary, int numberOfPoints, int numberOfCurves, int numberOfMeshes)
+        {
+            return dictionary.TotalPoints() == numberOfPoints &&
+                   dictionary.TotalCurves() == numberOfCurves &&
+                   dictionary.TotalMeshes() == numberOfMeshes;
+        }
+
+        public static int NumberOfInvisiblePoints(this Dictionary<string, Model3D> dictionary)
+        {
+            var geoms = dictionary.Where(kvp => kvp.Value is PointGeometryModel3D).ToArray();
+            return geoms.Any()? geoms.Count(kvp => kvp.Value.Visibility == Visibility.Hidden) : 0;
+        }
+
+        public static int NumberOfInvisibleCurves(this Dictionary<string, Model3D> dictionary)
+        {
+            var geoms = dictionary.Where(kvp => kvp.Value is LineGeometryModel3D).ToArray();
+            return geoms.Any() ? geoms.Count(kvp => kvp.Value.Visibility == Visibility.Hidden) : 0;
+        }
+
+        public static int NumberOfInvisibleMeshes(this Dictionary<string, Model3D> dictionary)
+        {
+            var geoms = dictionary.Where(kvp => kvp.Value is DynamoGeometryModel3D).ToArray();
+            return geoms.Any() ? geoms.Count(kvp => kvp.Value.Visibility == Visibility.Hidden) : 0;
+        }
+
         public static bool HasVisibleObjects(this Dictionary<string, Model3D> dictionary)
         {
             return dictionary.Any(kvp => kvp.Value.Visibility == Visibility.Visible);
+        }
+
+        public static bool HasNoUserCreatedModel3DObjects(this Dictionary<string, Model3D> dictionary)
+        {
+            return dictionary.All(kvp => keyList.Contains(kvp.Key));
+        }
+
+        public static bool HasAnyMeshes(this Dictionary<string, Model3D> dictionary)
+        {
+            return dictionary.TotalMeshes() > 0;
+        }
+
+        public static int TotalMeshVerticesToRender(this Dictionary<string, Model3D> dictionary)
+        {
+            var geoms = dictionary.Where(kvp => kvp.Value is DynamoGeometryModel3D && !keyList.Contains(kvp.Key))
+                .Select(kvp=>kvp.Value).Cast<DynamoGeometryModel3D>();
+
+            return geoms.Any()? geoms.SelectMany(g=>g.Geometry.Positions).Count() : 0;
         }
     }
 
