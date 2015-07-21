@@ -35,7 +35,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class Watch3DViewModel : NotificationObject
     {
-        #region private memmbers
+        #region private members
 
         protected DynamoModel model;
         protected IRenderPackageFactory factory;
@@ -61,6 +61,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Size defaultPointSize = new Size(8, 8);
         private DirectionalLight3D directionalLight;
         private bool showWatchSettingsControl = false;
+        
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -70,17 +71,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #region events
 
+
+        public Object Model3DDictionaryMutex = new object();
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
         private Dictionary<string, Model3D> Model3DDictionary
         {
             get
             {
-                return model3DDictionary;
+                lock (Model3DDictionaryMutex)
+                {
+                    return model3DDictionary; 
+                }
             }
 
             set
             {
-                model3DDictionary = value;
+                lock (Model3DDictionaryMutex)
+                {
+                    model3DDictionary = value; 
+                }
             }
         }
 
@@ -324,17 +333,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             if (Text != null && Text.TextInfo.Any())
             {
-                BillboardTextModel3D billboardText3D = new BillboardTextModel3D
+                var billboardText3D = new BillboardTextModel3D
                 {
                     Transform = Model1Transform
                 };
 
-                if (model3DDictionary != null && !model3DDictionary.ContainsKey("BillBoardText"))
+                if (Model3DDictionary != null && !Model3DDictionary.ContainsKey("BillBoardText"))
                 {
-                    model3DDictionary.Add("BillBoardText", billboardText3D);
+                    Model3DDictionary.Add("BillBoardText", billboardText3D);
                 }
 
-                var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                var billBoardModel3D = Model3DDictionary["BillBoardText"] as BillboardTextModel3D;
                 billBoardModel3D.Geometry = Text;
                 if (!billBoardModel3D.IsAttached)
                 {
@@ -343,9 +352,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             else
             {
-                if (model3DDictionary != null && model3DDictionary.ContainsKey("BillBoardText"))
+                if (Model3DDictionary != null && Model3DDictionary.ContainsKey("BillBoardText"))
                 {
-                    var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                    var billBoardModel3D = Model3DDictionary["BillBoardText"] as BillboardTextModel3D;
                     billBoardModel3D.Geometry = Text;
                 }
             }
@@ -945,14 +954,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     PointGeometryModel3D pointGeometry3D;
 
-                    if (model3DDictionary.ContainsKey(id))
+                    if (Model3DDictionary.ContainsKey(id))
                     {
-                        pointGeometry3D = model3DDictionary[id] as PointGeometryModel3D;
+                        pointGeometry3D = Model3DDictionary[id] as PointGeometryModel3D;
                     }
                     else
                     {
                         pointGeometry3D = CreatePointGeometryModel3D(rp);
-                        model3DDictionary.Add(id, pointGeometry3D);
+                        Model3DDictionary.Add(id, pointGeometry3D);
                     }
 
                     var points = pointGeometry3D.Geometry as PointGeometry3D;
@@ -981,14 +990,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     LineGeometryModel3D lineGeometry3D;
 
-                    if (model3DDictionary.ContainsKey(id))
+                    if (Model3DDictionary.ContainsKey(id))
                     {
-                        lineGeometry3D = model3DDictionary[id] as LineGeometryModel3D;
+                        lineGeometry3D = Model3DDictionary[id] as LineGeometryModel3D;
                     }
                     else
                     {
                         lineGeometry3D = CreateLineGeometryModel3D(rp);
-                        model3DDictionary.Add(id, lineGeometry3D);
+                        Model3DDictionary.Add(id, lineGeometry3D);
                     }
 
                     var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
@@ -1017,14 +1026,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 DynamoGeometryModel3D meshGeometry3D;
 
-                if (model3DDictionary.ContainsKey(id))
+                if (Model3DDictionary.ContainsKey(id))
                 {
-                    meshGeometry3D = model3DDictionary[id] as DynamoGeometryModel3D;
+                    meshGeometry3D = Model3DDictionary[id] as DynamoGeometryModel3D;
                 }
                 else
                 {
                     meshGeometry3D = CreateDynamoGeometryModel3D(rp);
-                    model3DDictionary.Add(id, meshGeometry3D);
+                    Model3DDictionary.Add(id, meshGeometry3D);
                 }
 
                 var mesh = meshGeometry3D.Geometry == null ? HelixRenderPackage.InitMeshGeometry() : meshGeometry3D.Geometry as MeshGeometry3D;
@@ -1129,7 +1138,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void AttachAllGeometryModel3DToRenderHost()
         {
-            foreach (var model3D in model3DDictionary.Select(kvp => kvp.Value))
+            foreach (var model3D in Model3DDictionary.Select(kvp => kvp.Value))
             {
                 OnRequestAttachToScene(model3D);
             }
@@ -1187,9 +1196,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Direction = directionalLightDirection
             };
 
-            if (model3DDictionary != null && !model3DDictionary.ContainsKey("DirectionalLight"))
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey("DirectionalLight"))
             {
-                model3DDictionary.Add("DirectionalLight", directionalLight);
+                Model3DDictionary.Add("DirectionalLight", directionalLight);
             }
 
             var gridModel3D = new LineGeometryModel3D
@@ -1201,9 +1210,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 IsHitTestVisible = false
             };
 
-            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Grid"))
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey("Grid"))
             {
-                model3DDictionary.Add("Grid", gridModel3D);
+                Model3DDictionary.Add("Grid", gridModel3D);
             }
 
             var axesModel3D = new LineGeometryModel3D
@@ -1215,9 +1224,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 IsHitTestVisible = false
             };
 
-            if (model3DDictionary != null && !model3DDictionary.ContainsKey("Axes"))
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey("Axes"))
             {
-                model3DDictionary.Add("Axes", axesModel3D);
+                Model3DDictionary.Add("Axes", axesModel3D);
             }
         }
 
