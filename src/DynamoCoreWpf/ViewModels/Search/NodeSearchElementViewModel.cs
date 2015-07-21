@@ -252,7 +252,7 @@ namespace Dynamo.Wpf.ViewModels
 
             // If there is no path, that means it's just created node.
             // Use DefaultAssembly to load icon.
-            if (String.IsNullOrWhiteSpace(Path))
+            if (String.IsNullOrEmpty(Path))
             {
                 iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly, fullNameOfIcon);
                 OnRequestBitmapSource(iconRequest);
