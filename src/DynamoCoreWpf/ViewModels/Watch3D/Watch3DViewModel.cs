@@ -61,7 +61,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Size defaultPointSize = new Size(8, 8);
         private DirectionalLight3D directionalLight;
         private bool showWatchSettingsControl = false;
-        
+        internal static string gridKey = "Grid";
+        internal static string axesKey = "Axes";
+        internal static string directionalLightKey = "DirectionalLight";
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -71,32 +73,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #region events
 
-
         public Object Model3DDictionaryMutex = new object();
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
-
-        internal static string gridKey = "Grid";
-        internal static string axesKey = "Axes";
-        internal static string directionalLightKey = "DirectionalLight";
-
-        internal Dictionary<string, Model3D> Model3DDictionary
-        {
-            get
-            {
-                lock (Model3DDictionaryMutex)
-                {
-                    return model3DDictionary; 
-                }
-            }
-
-            set
-            {
-                lock (Model3DDictionaryMutex)
-                {
-                    model3DDictionary = value; 
-                }
-            }
-        }
 
         public event Action RequestViewRefresh;
         protected void OnRequestViewRefresh()
@@ -128,6 +106,25 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         #region properties
+
+        internal Dictionary<string, Model3D> Model3DDictionary
+        {
+            get
+            {
+                lock (Model3DDictionaryMutex)
+                {
+                    return model3DDictionary;
+                }
+            }
+
+            set
+            {
+                lock (Model3DDictionaryMutex)
+                {
+                    model3DDictionary = value;
+                }
+            }
+        }
 
         public List<Model3D> Model3DValues
         {
@@ -668,6 +665,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             workspace.Saving -= OnWorkspaceSaving;
             workspace.NodeAdded -= OnNodeAddedToWorkspace;
             workspace.NodeRemoved -= OnNodeRemovedFromWorkspace;
+
+            foreach (var node in workspace.Nodes)
+            {
+                UnregisterNodeEventHandlers(node);
+            }
+
+            ResetGeometryDictionary();
         }
 
         private void OnWorkspaceSaving(XmlDocument doc)
