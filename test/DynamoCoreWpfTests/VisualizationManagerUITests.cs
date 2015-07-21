@@ -221,6 +221,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(6, Geometry.TotalText());
         }
 
+        [Test]
+        public void Node_MixedGeometryOutput_Deleted_AllGeometryGone()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+
         #endregion
 
         #region workspace tests

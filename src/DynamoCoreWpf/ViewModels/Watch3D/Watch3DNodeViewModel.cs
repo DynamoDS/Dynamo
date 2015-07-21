@@ -63,7 +63,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     foreach (var n in upstream)
                     {
-                        var geoms = FindAllGeometryModel3DsForNode(n).ToList();
+                        var geoms = FindAllGeometryModel3DsForNode(n.AstIdentifierBase).ToList();
                         if (updatedNode.IsUpstreamVisible)
                         {
                             // Only unhide the geom if its preview value is set to true

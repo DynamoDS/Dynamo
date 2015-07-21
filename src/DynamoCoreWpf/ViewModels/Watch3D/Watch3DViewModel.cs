@@ -469,7 +469,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     continue;
                 }
 
-                var geometryModels = FindAllGeometryModel3DsForNode(node);
+                var geometryModels = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
 
                 if (!geometryModels.Any())
                 {
@@ -481,11 +481,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void DeleteGeometryForNode(NodeModel node)
+        private void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {
-                var geometryModels = FindAllGeometryModel3DsForNode(node);
+                var geometryModels = FindAllGeometryModel3DsForNode(identifier);
 
                 if (!geometryModels.Any())
                 {
@@ -502,6 +502,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Model3DDictionary.Remove(kvp.Key);
                 }
             }
+
+            if (!requestUpdate) return;
 
             RaisePropertyChanged("Model3DValues");
             OnRequestViewRefresh();
@@ -695,7 +697,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnNodeRemovedFromWorkspace(NodeModel node)
         {
             UnregisterNodeEventHandlers(node);
-            DeleteGeometryForNode(node);
+            DeleteGeometryForIdentifier(node.AstIdentifierBase);
         }
 
         private void RegisterNodeEventHandlers(NodeModel node)
@@ -731,7 +733,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void PortDisconnectedHandler(PortModel port)
         {
-            DeleteGeometryForNode(port.Owner);
+            DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
         }
 
         private void UnregisterNodeEventHandlers(NodeModel node)
@@ -946,27 +948,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 foreach (var id in packageDescrips)
                 {
-                    var pointsId = id + ":points";
-                    var linesId = id + ":lines";
-                    var meshId = id + ":mesh";
-
-                    if (Model3DDictionary.ContainsKey(pointsId))
-                    {
-                        Model3DDictionary[pointsId].Detach();
-                        Model3DDictionary.Remove(pointsId);
-                    }
-
-                    if (Model3DDictionary.ContainsKey(linesId))
-                    {
-                        Model3DDictionary[linesId].Detach();
-                        Model3DDictionary.Remove(linesId);
-                    }
-
-                    if (Model3DDictionary.ContainsKey(meshId))
-                    {
-                        Model3DDictionary[meshId].Detach();
-                        Model3DDictionary.Remove(meshId);
-                    }
+                    DeleteGeometryForIdentifier(id, false);
                 }
             }
         }
@@ -1352,7 +1334,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     break;
 
                 case "IsVisible":
-                    var geoms = FindAllGeometryModel3DsForNode(node);
+                    var geoms = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
                     if (geoms.Any())
                     {
                         geoms.ToList()
@@ -1399,7 +1381,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestViewRefresh();
         }
 
-        protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
+        protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(string identifier)
         {
             KeyValuePair<string,Model3D>[] geometryModels;
 
@@ -1407,7 +1389,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 geometryModels =
                     Model3DDictionary
-                        .Where(x => x.Key.Contains(node.AstIdentifierBase))
+                        .Where(x => x.Key.Contains(identifier))
                         .Where(x => x.Value is GeometryModel3D)
                         .Select(x => x).ToArray();
             }
