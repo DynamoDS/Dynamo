@@ -35,6 +35,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class Watch3DViewModel : NotificationObject
     {
+        #region private memmbers
+
         protected DynamoModel model;
         protected IRenderPackageFactory factory;
         private DynamoViewModel viewModel;
@@ -59,6 +61,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Size defaultPointSize = new Size(8, 8);
         private DirectionalLight3D directionalLight;
         private bool showWatchSettingsControl = false;
+
+#if DEBUG
+        private Stopwatch renderTimer = new Stopwatch();
+#endif
+
+        #endregion
+
+        #region events
 
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
         private Dictionary<string, Model3D> Model3DDictionary
@@ -110,9 +120,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-#if DEBUG
-        private Stopwatch renderTimer = new Stopwatch();
-#endif
+        #endregion
+
+        #region properties
 
         public List<Model3D> Model3DValues
         {
@@ -248,6 +258,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        #endregion
+
         public Watch3DViewModel(DynamoModel model, IRenderPackageFactory factory, DynamoViewModel viewModel)
         {
             this.model = model;
@@ -262,6 +274,89 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             SetupScene();
             InitializeHelix();
         }
+
+        #region public methods
+
+        public void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
+        {
+            recentlyAddedNodes.Clear();
+
+            // Don't render if the user's system is incapable.
+            if (renderingTier == 0)
+            {
+                return;
+            }
+
+#if DEBUG
+            renderTimer.Start();
+#endif
+            Text = null;
+
+            var packages = taskPackages
+                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
+
+            RemoveGeometryFromDisconnectedNodes();
+
+            RemoveGeometryForUpdatedPackages(packages);
+
+            var text = HelixRenderPackage.InitText3D();
+
+            var aggParams = new PackageAggregationParams
+            {
+                Packages = packages,
+                Text = text
+            };
+
+            AggregateRenderPackages(aggParams);
+
+#if DEBUG
+            renderTimer.Stop();
+            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
+            renderTimer.Reset();
+            renderTimer.Start();
+#endif
+
+            //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
+            //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
+            //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
+            //Instead, only the geometry gets updated every time. Once it is attached (after the geometry), helix
+            // renders the text at the right position.
+
+            if (Text != null && Text.TextInfo.Any())
+            {
+                BillboardTextModel3D billboardText3D = new BillboardTextModel3D
+                {
+                    Transform = Model1Transform
+                };
+
+                if (model3DDictionary != null && !model3DDictionary.ContainsKey("BillBoardText"))
+                {
+                    model3DDictionary.Add("BillBoardText", billboardText3D);
+                }
+
+                var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                billBoardModel3D.Geometry = Text;
+                if (!billBoardModel3D.IsAttached)
+                {
+                    OnRequestAttachToScene(billBoardModel3D);
+                }
+            }
+            else
+            {
+                if (model3DDictionary != null && model3DDictionary.ContainsKey("BillBoardText"))
+                {
+                    var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
+                    billBoardModel3D.Geometry = Text;
+                }
+            }
+
+            RaisePropertyChanged("Model3DValues");
+            OnRequestViewRefresh();
+        }
+
+        #endregion
+
+        #region private methods
 
         private void RegisterEventHandlers()
         {
@@ -384,17 +479,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
-        {
-            var geometryModels =
-                Model3DDictionary
-                    .Where(x => x.Key.Contains(node.AstIdentifierBase))
-                    .Where(x => x.Value is GeometryModel3D)
-                    .Select(x => x).ToArray();
-
-            return geometryModels;
-        }
-
         private void DeleteGeometryForNode(NodeModel node)
         {
             var geometryModels = FindAllGeometryModel3DsForNode(node);
@@ -472,29 +556,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        /// <summary>
-        /// Reset the geometry dictionary, keeping the DirectionalLight ,Grid, and Axes.
-        /// These values are rendered only once by helix, attaching them again will make 
-        /// no effect on helix.
-        /// </summary> 
-        protected void ResetGeometryDictionary()
-        {
-            var keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
-            if (Text != null && Text.TextInfo.Any())
-            {
-                Text.TextInfo.Clear();
-            }
-            foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
-            {
-                var model = Model3DDictionary[key] as GeometryModel3D;
-                model.Detach();
-                Model3DDictionary.Remove(key);
-            }
-
-            RaisePropertyChanged("");
-            OnGeometryDictionaryReset();
-        }
-
         private void RegisterModelEventhandlers(DynamoModel model)
         {
             model.WorkspaceCleared += OnWorkspaceCleared;
@@ -538,42 +599,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     node.PropertyChanged += OnNodePropertyChanged;
                     node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
                 }
-            }
-        }
-
-        protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var node = sender as NodeModel;
-            if (node == null)
-            {
-                return;
-            }
-
-            switch (e.PropertyName)
-            {
-                case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
-                    break;
-
-                case "IsVisible":
-                    var geoms = FindAllGeometryModel3DsForNode(node);
-                    if (geoms.Any())
-                    {
-                        geoms.ToList()
-                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
-                        RaisePropertyChanged("Model3DValues");
-                    }
-                    else
-                    {
-                        node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
-                    }
-                    break;
-
-                case "IsUpdated":
-                    node.RequestVisualUpdateAsync(model.Scheduler,
-                        model.EngineController,
-                        factory);
-                    break;
             }
         }
 
@@ -670,15 +695,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             node.PropertyChanged -= OnNodePropertyChanged;
             node.UpdatedRenderPackagesAvailable -= OnUpdatedRenderPackagesAvailable;
-        }
-
-        protected virtual void OnUpdatedRenderPackagesAvailable(NodeModel source, IEnumerable<IRenderPackage> renderPackages)
-        {
-            // Raise request for model objects to be
-            // created on the UI thread.
-
-            var packages = renderPackages.ToArray();
-            OnRequestCreateModels(packages);
         }
 
         private void SetupScene()
@@ -839,89 +855,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double CalculateNearClipPlane(double maxDim)
         {
             return maxDim * NearPlaneDistanceFactor;
-        }
-
-        /// <summary>
-        /// Use the render packages returned from the visualization manager to update the visuals.
-        /// The visualization event arguments will contain a set of render packages and an id representing 
-        /// the associated node. Visualizations for the background preview will return an empty id.
-        /// </summary>
-        /// <param name="e"></param>
-        public void RenderDrawables(IEnumerable<IRenderPackage> taskPackages)
-        {
-            recentlyAddedNodes.Clear();
-
-            // Don't render if the user's system is incapable.
-            if (renderingTier == 0)
-            {
-                return;
-            }
-
-#if DEBUG
-            renderTimer.Start();
-#endif
-            Text = null;
-
-            var packages = taskPackages
-                .Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
-
-            RemoveGeometryFromDisconnectedNodes();
-
-            RemoveGeometryForUpdatedPackages(packages);
-
-            var text = HelixRenderPackage.InitText3D();
-
-            var aggParams = new PackageAggregationParams
-            {
-                Packages = packages,
-                Text = text
-            };
-
-            AggregateRenderPackages(aggParams);
-
-#if DEBUG
-            renderTimer.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
-            renderTimer.Reset();
-            renderTimer.Start();
-#endif
-
-            //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
-            //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
-            //position. Also, BillBoardText gets attached only once. It is not removed from the tree everytime.
-            //Instead, only the geometry gets updated every time. Once it is attached (after the geometry), helix
-            // renders the text at the right position.
-
-            if (Text != null && Text.TextInfo.Any())
-            {
-                BillboardTextModel3D billboardText3D = new BillboardTextModel3D
-                {
-                    Transform = Model1Transform
-                };
-
-                if (model3DDictionary != null && !model3DDictionary.ContainsKey("BillBoardText"))
-                {
-                    model3DDictionary.Add("BillBoardText", billboardText3D);
-                }
-
-                var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
-                billBoardModel3D.Geometry = Text;
-                if (!billBoardModel3D.IsAttached)
-                {
-                    OnRequestAttachToScene(billBoardModel3D);
-                }
-            }
-            else
-            {
-                if (model3DDictionary != null && model3DDictionary.ContainsKey("BillBoardText"))
-                {
-                    var billBoardModel3D = model3DDictionary["BillBoardText"] as BillboardTextModel3D;
-                    billBoardModel3D.Geometry = Text;
-                }
-            }
-
-            RaisePropertyChanged("Model3DValues");
-            OnRequestViewRefresh();
         }
 
         private void RemoveGeometryFromDisconnectedNodes()
@@ -1217,12 +1150,36 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private static MeshGeometry3D DrawTestMesh()
+        {
+            var b1 = new MeshBuilder();
+            for (var x = 0; x < 4; x++)
+            {
+                for (var y = 0; y < 4; y++)
+                {
+                    for (var z = 0; z < 4; z++)
+                    {
+                        b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
+                    }
+                }
+            }
+            var mesh = b1.ToMeshGeometry3D();
+
+            mesh.Colors = new Color4Collection();
+            foreach (var v in mesh.Positions)
+            {
+                mesh.Colors.Add(new Color4(1f, 0f, 0f, 1f));
+            }
+
+            return mesh;
+        }
+
         /// <summary>
         /// Initialize the Helix with these values. These values should be attached before the 
         /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
         /// So they are initialized before the process starts.
         /// </summary>
-        internal void InitializeHelix()
+        private void InitializeHelix()
         {
             directionalLight = new DirectionalLight3D
             {
@@ -1264,29 +1221,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private static MeshGeometry3D DrawTestMesh()
+        /// <summary>
+        /// This method attempts to maximize the near clip plane in order to 
+        /// achiever higher z-buffer precision.
+        /// </summary>
+        private void UpdateNearClipPlaneForSceneBounds(Rect3D sceneBounds)
         {
-            var b1 = new MeshBuilder();
-            for (var x = 0; x < 4; x++)
-            {
-                for (var y = 0; y < 4; y++)
-                {
-                    for (var z = 0; z < 4; z++)
-                    {
-                        b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
-                    }
-                }
-            }
-            var mesh = b1.ToMeshGeometry3D();
-
-            mesh.Colors = new Color4Collection();
-            foreach (var v in mesh.Positions)
-            {
-                mesh.Colors.Add(new Color4(1f, 0f, 0f, 1f));
-            }
-
-            return mesh;
+            // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+            var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
+            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
         }
+
+        #endregion
+
+        #region internal methods
 
         internal void ComputeFrameUpdate(Rect3D sceneBounds)
         {
@@ -1320,15 +1268,89 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             UpdateNearClipPlaneForSceneBounds(sceneBounds);
         }
 
-        /// <summary>
-        /// This method attempts to maximize the near clip plane in order to 
-        /// achiever higher z-buffer precision.
-        /// </summary>
-        internal void UpdateNearClipPlaneForSceneBounds(Rect3D sceneBounds)
+        #endregion
+
+        #region protected methods
+
+        protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
-            var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
-            Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+            var node = sender as NodeModel;
+            if (node == null)
+            {
+                return;
+            }
+
+            switch (e.PropertyName)
+            {
+                case "DisplayLabels":
+                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
+                    break;
+
+                case "IsVisible":
+                    var geoms = FindAllGeometryModel3DsForNode(node);
+                    if (geoms.Any())
+                    {
+                        geoms.ToList()
+                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
+                        RaisePropertyChanged("Model3DValues");
+                    }
+                    else
+                    {
+                        node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
+                    }
+                    break;
+
+                case "IsUpdated":
+                    node.RequestVisualUpdateAsync(model.Scheduler,
+                        model.EngineController,
+                        factory);
+                    break;
+            }
         }
+
+        /// <summary>
+        /// Reset the geometry dictionary, keeping the DirectionalLight ,Grid, and Axes.
+        /// These values are rendered only once by helix, attaching them again will make 
+        /// no effect on helix.
+        /// </summary> 
+        protected void ResetGeometryDictionary()
+        {
+            var keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
+            if (Text != null && Text.TextInfo.Any())
+            {
+                Text.TextInfo.Clear();
+            }
+            foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
+            {
+                var model = Model3DDictionary[key] as GeometryModel3D;
+                model.Detach();
+                Model3DDictionary.Remove(key);
+            }
+
+            RaisePropertyChanged("");
+            OnGeometryDictionaryReset();
+        }
+
+        protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
+        {
+            var geometryModels =
+                Model3DDictionary
+                    .Where(x => x.Key.Contains(node.AstIdentifierBase))
+                    .Where(x => x.Value is GeometryModel3D)
+                    .Select(x => x).ToArray();
+
+            return geometryModels;
+        }
+
+        protected virtual void OnUpdatedRenderPackagesAvailable(NodeModel source, IEnumerable<IRenderPackage> renderPackages)
+        {
+            // Raise request for model objects to be
+            // created on the UI thread.
+
+            var packages = renderPackages.ToArray();
+            OnRequestCreateModels(packages);
+        }
+
+        #endregion
     }
 }

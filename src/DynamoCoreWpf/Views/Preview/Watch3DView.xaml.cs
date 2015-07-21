@@ -130,10 +130,10 @@ namespace Dynamo.Controls
         void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages)
         {
             if (CheckAccess())
-                viewModel.RenderDrawables(packages);
+                viewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages);
             else
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => viewModel.RenderDrawables(packages)));
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => viewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages)));
             }
         }
 
