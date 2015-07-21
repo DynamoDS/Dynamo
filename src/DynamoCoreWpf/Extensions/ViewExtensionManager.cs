@@ -51,7 +51,15 @@ namespace Dynamo.Wpf.Extensions
             }
 
             viewExtensions.Remove(extension);
-            extension.Dispose();
+            try
+            {
+                extension.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Log(fullName + " extension cannot be disposed properly: " + ex.Message);
+            }
+
             Log(fullName + " extension is removed");
             if (ExtensionRemoved != null)
             {
