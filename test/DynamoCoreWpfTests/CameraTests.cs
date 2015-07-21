@@ -44,7 +44,7 @@ namespace DynamoCoreWpfTests
                 @"core\camera\CameraData.dyn");
             OpenDynamoDefinition(openPath);
 
-            var cam = BackgroundPreview.Camera;
+            var cam = ViewModel.BackgroundPreviewViewModel.Camera;
 
             //<Camera Name="background_preview" eyeX="-9.38327815723004" eyeY="0.297033715592044" eyeZ="-0.189174672105126" 
             //lookX="10.3830314479331" lookY="0.223983767894635" lookZ="0.181236488075402" />
@@ -76,7 +76,7 @@ namespace DynamoCoreWpfTests
         {
             ViewModel.NewHomeWorkspaceCommand.Execute(null);
 
-            var cam = BackgroundPreview.Camera;
+            var cam = ViewModel.BackgroundPreviewViewModel.Camera;
             var testPos = new Point3D(5, 0, 0);
             var testLook = new Vector3D(-1, 0, 0);
             cam.Position = testPos;
@@ -102,9 +102,10 @@ namespace DynamoCoreWpfTests
 
         private bool CameraHasDefaultOrientation()
         {
-            return BackgroundPreview.Camera.Position == BackgroundPreview.defaultCameraPosition &&
-                BackgroundPreview.Camera.LookDirection == BackgroundPreview.defaultCameraLookDirection &&
-                BackgroundPreview.Camera.UpDirection == BackgroundPreview.defaultCameraUpDirection;
+            var cam = ViewModel.BackgroundPreviewViewModel.Camera;
+            return cam.Position == ViewModel.BackgroundPreviewViewModel.defaultCameraPosition &&
+                cam.LookDirection == ViewModel.BackgroundPreviewViewModel.defaultCameraLookDirection &&
+                cam.UpDirection == ViewModel.BackgroundPreviewViewModel.defaultCameraUpDirection;
         }
     }
 }

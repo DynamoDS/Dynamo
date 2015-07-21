@@ -819,7 +819,8 @@
                 </Canvas.Background>
             </Canvas>
 
-            <controls:Watch3DView x:Name="background_preview"
+            <controls:Watch3DView x:Name="background_preview" 
+                                  DataContext="{Binding BackgroundPreviewViewModel}"
                                   Margin="0,20,0,0"
                                   Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   IsHitTestVisible="{Binding WatchPreviewHitTest}">
@@ -1646,14 +1647,6 @@
                          UpdateSourceTrigger="Explicit" />
             </ItemsControl.Visibility>
         </ItemsControl>
-
-        <Grid Grid.Row="2"
-              Grid.Column="2" Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <preview:Watch3DSettingsControl x:Name="watchSettingsControl"  
-                                            DataContext=""
-                                            HorizontalAlignment="Left" 
-                                            VerticalAlignment="Top" Margin="10,30" />
-        </Grid>
 
         <Grid Name="galleryBackground"
               Visibility="Hidden"

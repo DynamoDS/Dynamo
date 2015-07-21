@@ -3,22 +3,25 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Controls;
-using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
-namespace Dynamo.Wpf.Views.Preview
+namespace Dynamo.Wpf.ViewModels.Watch3D
 {
-    public class Watch3DNodeView : Watch3DView
+    public class Watch3DNodeViewModel : Watch3DViewModel
     {
         private NodeModel node;
 
-        public Watch3DNodeView(NodeModel node)
+        public Watch3DNodeViewModel(NodeModel node, DynamoModel model, IRenderPackageFactory factory, DynamoViewModel viewModel):
+            base(model, factory, viewModel)
         {
             this.node = node;
-            resizeThumb.Visibility = Visibility.Visible;
+
+            IsResizable = false;
+            Name = string.Format("{0}_preview", node.GUID);
+
             foreach (var p in node.InPorts)
             {
                 p.PortDisconnected += PortDisconnectedHandler;
@@ -37,7 +40,7 @@ namespace Dynamo.Wpf.Views.Preview
                 gathered.ForEach(n => n.IsUpdated = true);
             }
 
-            gathered.ForEach(n=>n.RequestVisualUpdateAsync(viewModel.Model.Scheduler, viewModel.Model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory));
+            gathered.ForEach(n=>n.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory));
         }
 
         void PortDisconnectedHandler(PortModel obj)
@@ -45,7 +48,7 @@ namespace Dynamo.Wpf.Views.Preview
             ResetGeometryDictionary();
         }
 
-        public override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var updatedNode = sender as NodeModel;
 
@@ -76,7 +79,7 @@ namespace Dynamo.Wpf.Views.Preview
                         }
                     }
 
-                    View.InvalidateRender();
+                    OnRequestViewRefresh();
 
                     break;
             }
@@ -84,11 +87,9 @@ namespace Dynamo.Wpf.Views.Preview
             base.OnNodePropertyChanged(sender, e);
         }
 
-        protected override void OnUpdatedRenderPackagesAvailable(IRenderPackageSource source,
+        protected override void OnUpdatedRenderPackagesAvailable(NodeModel updatedNode,
             IEnumerable<IRenderPackage> renderPackages)
         {
-            var updatedNode = source as NodeModel;
-
             var upstream = new List<NodeModel>();
             node.UpstreamNodes(upstream);
 
@@ -97,7 +98,7 @@ namespace Dynamo.Wpf.Views.Preview
                 return;
             }
 
-            base.OnUpdatedRenderPackagesAvailable(source, renderPackages);
+            base.OnUpdatedRenderPackagesAvailable(updatedNode, renderPackages);
         }
     }
 }

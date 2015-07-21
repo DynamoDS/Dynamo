@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -25,6 +26,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -443,24 +445,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool showWatchSettingsControl = false;
-
-        public bool ShowWatchSettingsControl
-        {
-            get { return showWatchSettingsControl && !ShowStartPage; }
-            set
-            {
-                showWatchSettingsControl = value;
-                RaisePropertyChanged("ShowWatchSettingsControl");   
-            }
-        }
-
         public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
         public bool EnablePresetOptions
         {
             get { return this.Model.CurrentWorkspace.Presets.Any(); }            
         }
+
+        public Watch3DViewModel BackgroundPreviewViewModel { get; private set; }
 
         #endregion
 
@@ -546,6 +538,7 @@ namespace Dynamo.ViewModels
             SubscribeDispatcherHandlers();
 
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model);
+            BackgroundPreviewViewModel = new Watch3DViewModel(model, RenderPackageFactoryViewModel.Factory, this);
         }
 
         internal event EventHandler NodeViewReady;

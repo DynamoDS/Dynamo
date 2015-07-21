@@ -23,6 +23,8 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
+using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using Dynamo.Wpf.Views.Preview;
 using ProtoCore.AST.AssociativeAST;
 
@@ -36,6 +38,7 @@ namespace Dynamo.Nodes
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
         private Watch3D watch3dModel;
+        private Watch3DViewModel viewModel;
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
@@ -45,18 +48,22 @@ namespace Dynamo.Nodes
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
 
-            model.View = new Watch3DNodeView(model)
+            viewModel = new Watch3DNodeViewModel(
+                watch3dModel, model.ViewModel.Model, model.ViewModel.RenderPackageFactoryViewModel.Factory,
+                model.ViewModel);
+
+            model.View = new Watch3DView()
             {
                 Width = model.WatchWidth,
                 Height = model.WatchHeight,
-                DataContext = nodeView.ViewModel.DynamoViewModel,
+                DataContext = viewModel
             };
 
             var pos = model.CameraPosition;
             var viewDir = model.LookDirection;
 
-            model.View.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
-            model.View.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
+            viewModel.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
+            viewModel.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
@@ -128,7 +135,7 @@ namespace Dynamo.Nodes
         {
             if (watch3dModel.View == null) return;
 
-            watch3dModel.View.RenderDrawables(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            viewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

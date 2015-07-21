@@ -26,7 +26,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IDisposable, IRenderPackageSource
+    public abstract class NodeModel : ModelBase, IDisposable
     {
         #region private members
 
@@ -1816,7 +1816,7 @@ namespace Dynamo.Models
 
         protected bool ShouldDisplayPreviewCore { get; set; }
         
-        public event Action<IRenderPackageSource, IEnumerable<IRenderPackage>> UpdatedRenderPackagesAvailable;
+        public event Action<NodeModel, IEnumerable<IRenderPackage>> UpdatedRenderPackagesAvailable;
 
         public void OnUpdatedRenderPackagesAvailable(IEnumerable<IRenderPackage> packages)
         {

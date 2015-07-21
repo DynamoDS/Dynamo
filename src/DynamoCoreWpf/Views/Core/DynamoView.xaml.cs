@@ -442,8 +442,6 @@ namespace Dynamo.Controls
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
 
-            watchSettingsControl.DataContext = background_preview;
-
             var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
 
             foreach (var ext in viewExtensionManager.ViewExtensions)
