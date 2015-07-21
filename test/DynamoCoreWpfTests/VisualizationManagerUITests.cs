@@ -13,11 +13,13 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
 using Color = System.Windows.Media.Color;
+using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 
 namespace DynamoCoreWpfTests
 {
@@ -44,12 +46,8 @@ namespace DynamoCoreWpfTests
         public void Node_RenderingUpToDate()
         {
             var model = ViewModel.Model;
-            var viz = ViewModel.VisualizationManager;
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points_line.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points_line.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -73,6 +71,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(6, ws.TotalLinesToRender());
             Assert.AreEqual(0, ws.TotalMeshesToRender());
 
+            CompareRenderPackagesAndModel3DCounts(ws, ViewModel.BackgroundPreviewViewModel.Model3DDictionary);
+
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
@@ -84,6 +84,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(6, ws.TotalLinesToRender());
             Assert.AreEqual(0, ws.TotalMeshesToRender());
 
+            CompareRenderPackagesAndModel3DCounts(ws, ViewModel.BackgroundPreviewViewModel.Model3DDictionary);
+
             //flip those back on and ensure the visualization returns
             p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
             l1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
@@ -91,6 +93,14 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(7, ws.TotalPointsToRender());
             Assert.AreEqual(6, ws.TotalLinesToRender());
             Assert.AreEqual(0, ws.TotalMeshesToRender());
+
+            CompareRenderPackagesAndModel3DCounts(ws, ViewModel.BackgroundPreviewViewModel.Model3DDictionary);
+        }
+
+        [Test]
+        public void Node_VisibilityToggled_Model3DVisibilityUpdated()
+        {
+            OpenVisualizationTest("ASM_points_line.dyn");
         }
 
         [Test]
@@ -98,10 +108,7 @@ namespace DynamoCoreWpfTests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points_line.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points_line.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -127,16 +134,13 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void Node_Disconnected_NodeRendersAreCleared()
+        public void Node_InputDisconnected_NodeRendersAreCleared()
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points_line.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points_line.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -168,10 +172,7 @@ namespace DynamoCoreWpfTests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
@@ -199,10 +200,7 @@ namespace DynamoCoreWpfTests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\Labels.dyn");
-            Open(openPath);
+            OpenVisualizationTest("Labels.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -246,10 +244,7 @@ namespace DynamoCoreWpfTests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points_line.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points_line.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count());
@@ -293,10 +288,7 @@ namespace DynamoCoreWpfTests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -315,8 +307,8 @@ namespace DynamoCoreWpfTests
         public void Workspace_Opened_RenderingCleared()
         {
             var model = ViewModel.Model;
-            var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
-            Open(openPath);
+
+            OpenVisualizationTest("ASM_points.dyn");
 
             // Make sure the workspace is running automatically.
             // Flipping the mode here will cause it to run.
@@ -331,8 +323,7 @@ namespace DynamoCoreWpfTests
             // the home workspace should cause the visualization manager
             // to request all views to clear themselves.
 
-            openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_thicken.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_thicken.dyn");
 
             ws = model.CurrentWorkspace as HomeWorkspaceModel;
 
@@ -342,10 +333,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Workspace_Open_RemembersPreviewSaveState()
         {
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points_line_noPreview.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points_line_noPreview.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -362,10 +350,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Geometry_Solids_Render()
         {
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_thicken.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_thicken.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -378,10 +363,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Geometry_Surfaces_Render()
         {
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_cuboid.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_cuboid.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -392,10 +374,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Geometry_CoordinateSystems_Render()
         {
-            var openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_coordinateSystem.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_coordinateSystem.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -408,10 +387,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Geometry_Planes_Render()
         {
-            var openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\Planes.dyn");
-            Open(openPath);
+            OpenVisualizationTest("Planes.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -453,10 +429,8 @@ namespace DynamoCoreWpfTests
                         @"core\visualization\Points.dyf"),
                     true,
                     out info));
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_customNode.dyn");
-            Open(openPath);
+
+            OpenVisualizationTest("ASM_customNode.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -473,10 +447,8 @@ namespace DynamoCoreWpfTests
             // their render packages shouldn't be carried over to custom work
             // space.
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\");
-            Open(Path.Combine(examplePath, "visualize_line_incustom.dyn"));
+
+            OpenVisualizationTest("visualize_line_incustom.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -593,11 +565,7 @@ namespace DynamoCoreWpfTests
                     true,
                     out info));
 
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_customNode.dyn");
-
-            Open(openPath);
+            OpenVisualizationTest("ASM_customNode.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -606,7 +574,7 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor.ToColor4());
 
-            Open(customNodePath);
+            OpenVisualizationTest("Points.dyf");
 
             var customColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
 
@@ -616,10 +584,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Watch3D_Disconnect_Reconnect_CorrectRenderings()
         {
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_points_line.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_points_line.dyn");
 
             // Clear the dispatcher to ensure that the 
             // view is created.
@@ -658,10 +623,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ViewSettings_ShowEdges_Toggled_GeometryIsCorrect()
         {
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_cuboid.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_cuboid.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -681,10 +643,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Python_CreatesVisualizations()
         {
-            string openPath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                @"core\visualization\ASM_python.dyn");
-            Open(openPath);
+            OpenVisualizationTest("ASM_python.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
@@ -735,9 +694,58 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, args.Packages.Sum(rp => rp.PointVertexCount));
         }
 
-        private void Open(string relativePath)
+        private void OpenVisualizationTest(string fileName)
         {
+            string relativePath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                string.Format(@"core\visualization\{0}",fileName));
+
+            if (!File.Exists(relativePath))
+            {
+                throw new FileNotFoundException("The specified .dyn file could not be found.");
+            }
+
             OpenDynamoDefinition(relativePath);
+        }
+
+        private static void CompareRenderPackagesAndModel3DCounts(HomeWorkspaceModel ws, Dictionary<string, Model3D> geometryDictionary)
+        {
+            Assert.AreEqual(ws.TotalPointsToRender(), geometryDictionary.TotalPoints());
+            Assert.AreEqual(ws.TotalLinesToRender(), geometryDictionary.TotalCurves());
+            Assert.AreEqual(ws.TotalMeshesToRender(), geometryDictionary.TotalMeshes());
+        }
+    }
+
+    internal static class GeometryDictionaryExtensions
+    {
+        private static List<string> keyList = new List<string>()
+            {
+                Watch3DViewModel.axesKey,
+                Watch3DViewModel.gridKey,
+                Watch3DViewModel.directionalLightKey
+            };
+
+        public static int TotalPoints(this Dictionary<string, Model3D> dictionary)
+        {
+            var points = dictionary.Where(kvp => kvp.Value is PointGeometryModel3D && !keyList.Contains(kvp.Key)).ToArray();
+
+            return points.Any()
+                ? points.SelectMany(p => ((PointGeometryModel3D)p.Value).Geometry.Positions).Count()
+                : 0;
+        }
+
+        public static int TotalMeshes(this Dictionary<string, Model3D> dictionary)
+        {
+            return dictionary.Count(kvp => kvp.Value is DynamoGeometryModel3D && !keyList.Contains(kvp.Key));
+        }
+
+        public static int TotalCurves(this Dictionary<string, Model3D> dictionary)
+        {
+            var lines = dictionary.Where(kvp => kvp.Value is LineGeometryModel3D && ! keyList.Contains(kvp.Key)).ToArray();
+
+            return lines.Any()
+                ? lines.SelectMany(p => ((LineGeometryModel3D)p.Value).Geometry.Positions).Count()/2
+                : 0;
         }
     }
 

@@ -74,7 +74,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public Object Model3DDictionaryMutex = new object();
         private Dictionary<string, Model3D> model3DDictionary = new Dictionary<string, Model3D>();
-        private Dictionary<string, Model3D> Model3DDictionary
+
+        internal static string gridKey = "Grid";
+        internal static string axesKey = "Axes";
+        internal static string directionalLightKey = "DirectionalLight";
+
+        internal Dictionary<string, Model3D> Model3DDictionary
         {
             get
             {
@@ -154,7 +159,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set
             {
                 worldGrid = value;
-                RaisePropertyChanged("Grid");
+                RaisePropertyChanged(gridKey);
             }
         }
 
@@ -1211,9 +1216,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Direction = directionalLightDirection
             };
 
-            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey("DirectionalLight"))
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(directionalLightKey))
             {
-                Model3DDictionary.Add("DirectionalLight", directionalLight);
+                Model3DDictionary.Add(directionalLightKey, directionalLight);
             }
 
             var gridModel3D = new LineGeometryModel3D
@@ -1225,9 +1230,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 IsHitTestVisible = false
             };
 
-            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey("Grid"))
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(gridKey))
             {
-                Model3DDictionary.Add("Grid", gridModel3D);
+                Model3DDictionary.Add(gridKey, gridModel3D);
             }
 
             var axesModel3D = new LineGeometryModel3D
@@ -1239,9 +1244,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 IsHitTestVisible = false
             };
 
-            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey("Axes"))
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(axesKey))
             {
-                Model3DDictionary.Add("Axes", axesModel3D);
+                Model3DDictionary.Add(axesKey, axesModel3D);
             }
         }
 
@@ -1341,7 +1346,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             lock (Model3DDictionaryMutex)
             {
-                var keysList = new List<string> {"DirectionalLight", "Grid", "Axes", "BillBoardText"};
+                var keysList = new List<string> {"DirectionalLight", gridKey, "Axes", "BillBoardText"};
                 if (Text != null && Text.TextInfo.Any())
                 {
                     Text.TextInfo.Clear();
