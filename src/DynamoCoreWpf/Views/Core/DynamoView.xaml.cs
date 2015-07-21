@@ -63,7 +63,7 @@ namespace Dynamo.Controls
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
 
-        readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+        private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
         public Watch3DView Watch3DView { get { return background_preview; } }
 
@@ -659,6 +659,11 @@ namespace Dynamo.Controls
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
 
+            UpdateManipulators(e);
+        }
+
+        void UpdateManipulators(NotifyCollectionChangedEventArgs e)
+        {
             if (manipulatorDaemon == null)
                 return;
 
@@ -680,7 +685,7 @@ namespace Dynamo.Controls
                 return;
 
             foreach (var nm in e.NewItems.OfType<NodeModel>())
-                manipulatorDaemon.CreateManipulator(nm /*,this*/);
+                manipulatorDaemon.CreateManipulator(nm);
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)

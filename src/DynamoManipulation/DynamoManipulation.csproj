@@ -46,7 +46,6 @@
     <Compile Include="IManipulator.cs" />
     <Compile Include="Manipulator.cs" />
     <Compile Include="ManipulatorDaemon.cs" />
-    <Compile Include="NodeManipulatorContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

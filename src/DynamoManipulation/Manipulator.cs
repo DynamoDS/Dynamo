@@ -14,7 +14,7 @@ namespace Dynamo.Manipulation
         /// <param name="node"></param>
         /// <param name="manipulatorContext"></param>
         /// <returns></returns>
-        public IManipulator Create(Dynamo.Models.NodeModel node, NodeManipulatorContext manipulatorContext)
+        public IManipulator Create(Dynamo.Models.NodeModel node, INodeManipulatorContext manipulatorContext)
         {
             throw new NotImplementedException();
         }
