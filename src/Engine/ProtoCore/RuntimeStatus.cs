@@ -316,9 +316,11 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Report that a function group couldn't be found
+        /// Report that the method cannot be found.
         /// </summary>
-        /// <param name="methodName">The method that can't be found</param>
+        /// <param name="methodName">The method that cannot be found</param>
+        /// <param name="classScope">The class scope of object</param>
+        /// <param name="arguments">Arguments</param>
         public void LogFunctionGroupNotFoundWarning(string methodName,
             int classScope,
             List<StackValue> arguments)
