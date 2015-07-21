@@ -61,11 +61,20 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authentication failed..
+        /// </summary>
+        public static string AuthenticationFailedMessage {
+            get {
+                return ResourceManager.GetString("AuthenticationFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authentication manager is not found. Please, provide correct authentication manager..
         /// </summary>
-        public static string AuthenticationErrorMessage {
+        public static string AuthManagerNotFoundMessage {
             get {
-                return ResourceManager.GetString("AuthenticationErrorMessage", resourceCulture);
+                return ResourceManager.GetString("AuthManagerNotFoundMessage", resourceCulture);
             }
         }
         
@@ -106,6 +115,15 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string FailedMessage {
+            get {
+                return ResourceManager.GetString("FailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;Page&quot; is not set. set. Please, set server page in configuration file..
         /// </summary>
         public static string PageErrorMessage {
@@ -120,6 +138,33 @@ namespace Dynamo.Publish {
         public static string PortErrorMessage {
             get {
                 return ResourceManager.GetString("PortErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t connect to server with this authentication provider. Try to use another provider..
+        /// </summary>
+        public static string ProvideAuthProviderMessage {
+            get {
+                return ResourceManager.GetString("ProvideAuthProviderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, provide workspace description..
+        /// </summary>
+        public static string ProvideWorskspaceDescriptionMessage {
+            get {
+                return ResourceManager.GetString("ProvideWorskspaceDescriptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, provide workspace name..
+        /// </summary>
+        public static string ProvideWorskspaceNameMessage {
+            get {
+                return ResourceManager.GetString("ProvideWorskspaceNameMessage", resourceCulture);
             }
         }
         
@@ -189,9 +234,18 @@ namespace Dynamo.Publish {
         /// <summary>
         ///   Looks up a localized string similar to Server not found..
         /// </summary>
-        public static string ServerErrorMessage {
+        public static string ServerNotFoundMessage {
             get {
-                return ResourceManager.GetString("ServerErrorMessage", resourceCulture);
+                return ResourceManager.GetString("ServerNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error on the server side. Please, connect dynamo team for more information..
+        /// </summary>
+        public static string UnknownServerErrorMessage {
+            get {
+                return ResourceManager.GetString("UnknownServerErrorMessage", resourceCulture);
             }
         }
         

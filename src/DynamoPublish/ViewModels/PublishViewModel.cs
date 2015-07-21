@@ -49,6 +49,17 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
+        private string uploadStateMessage;
+        public string UploadStateMessage
+        {
+            get { return uploadStateMessage; }
+            private set
+            {
+                uploadStateMessage = value;
+                RaisePropertyChanged("UploadStateMessage");
+            }
+        }        
+
         private readonly PublishModel model;
         internal PublishModel Model
         {
@@ -89,7 +100,7 @@ namespace Dynamo.Publish.ViewModels
         {
             this.model = model;
 
-            PublishCommand = new DelegateCommand(OnPublish);
+            PublishCommand = new DelegateCommand(OnPublish, CanPublish);
             model.UploadStateChanged += OnModelStateChanged;
         }
 
@@ -113,9 +124,54 @@ namespace Dynamo.Publish.ViewModels
             IsUploading = state == PublishModel.UploadState.Uploading;
         }
 
+        private bool CanPublish(object obj)
+        {
+            if (String.IsNullOrWhiteSpace(Name))
+            {
+                UploadStateMessage = Resource.ProvideWorskspaceNameMessage;
+                return false;
+            }
+
+            if (String.IsNullOrWhiteSpace(Description))
+            {
+                UploadStateMessage = Resource.ProvideWorskspaceDescriptionMessage;
+                return false;
+            }
+
+            if (!model.HasAuthProvider)
+            {
+                UploadStateMessage = Resource.ProvideAuthProviderMessage;
+                return false;
+            }
+
+            if(model.State == PublishModel.UploadState.Failed)
+            {
+                GenerateErrorMessage();
+                return false;
+            }
+
+            return true;
+        }
+
+        private void GenerateErrorMessage()
+        {
+            switch (model.Error)
+            {
+                case PublishModel.UploadErrorType.AuthenticationFailed:
+                    UploadStateMessage = Resource.AuthenticationFailedMessage;
+                    break;
+                case PublishModel.UploadErrorType.AuthProviderNotFound:
+                    UploadStateMessage = Resource.AuthManagerNotFoundMessage;
+                    break;
+                case PublishModel.UploadErrorType.ServerNotFound:
+                    UploadStateMessage = Resource.ServerNotFoundMessage;
+                    break;
+                case PublishModel.UploadErrorType.UnknownServerError:
+                    UploadStateMessage = Resource.UnknownServerErrorMessage;
+                    break;
+            }
+        }
+
         #endregion
-
-
-
     }
 }

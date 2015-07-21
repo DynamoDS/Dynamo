@@ -206,6 +206,7 @@
                     Background="{StaticResource PublishStatePanelNormalBackground}"
                     Height="30">
             <TextBlock Name="UploadStateTextBlock"
+                       Text="{Binding UploadStateMessage}"
                        Foreground="White"
                        VerticalAlignment="Center"
                        Margin="10,8,0,0" />
