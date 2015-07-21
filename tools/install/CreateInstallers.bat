@@ -40,7 +40,7 @@ XmlDocumentationsUtility.exe %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\
 
 REM Localized resource assemblies
 for %%L in (cs-CZ, de-DE, en-US, es-ES, fr-FR, it-IT, ja-JP, ko-KR, pl-PL, pt-BR, ru-RU, zh-CN, zh-TW) do (
-    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\lang\%%L *.dll *.xml /e
+    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\lang\%%L *.dll *.xml *.txt /e
 )
 
 robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
