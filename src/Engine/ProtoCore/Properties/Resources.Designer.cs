@@ -449,7 +449,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No function called {0} on a {1} could be found..
+        ///   Looks up a localized string similar to No function called {0} on a {1} could be found.
         /// </summary>
         public static string FunctionGroupNotFound {
             get {
@@ -458,7 +458,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No function called {0} on a {1} that takes {2} could be found..
+        ///   Looks up a localized string similar to No function called {0} on a {1} that takes {2} could be found.
         /// </summary>
         public static string FunctionGroupWithParameterNotFound {
             get {
@@ -1439,7 +1439,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class &apos;{0}&apos; does not have a property &apos;{1}&apos;.
+        ///   Looks up a localized string similar to No property called {0} on {1} could be found.
         /// </summary>
         public static string kPropertyOfClassNotFound {
             get {
