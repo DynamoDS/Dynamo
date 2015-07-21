@@ -3,10 +3,11 @@ using System.Linq;
 using Dynamo.Core;
 using Dynamo.UI;
 using Dynamo.Wpf.ViewModels;
+using System;
 
 namespace Dynamo.Search
 {
-    public class SearchMemberGroup : NotificationObject
+    public class SearchMemberGroup : NotificationObject, ISearchEntryViewModel
     {
         private List<NodeSearchElementViewModel> members;
 
@@ -94,6 +95,40 @@ namespace Dynamo.Search
         internal void Sort()
         {
             members = members.OrderBy(x => x.Name).ToList();
+        }
+
+        public string Name
+        {
+            get { return String.Empty; }
+        }
+
+        public bool Visibility
+        {
+            get { return true; }
+        }
+
+        public bool IsSelected
+        {
+            get { return true; }
+        }
+
+        public string Description
+        {
+            get { return String.Empty; }
+        }
+
+        public System.Windows.Input.ICommand ClickedCommand
+        {
+            get { return null; }
+        }
+
+        public ElementTypes ElementType
+        {
+            get { return ElementTypes.None; }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

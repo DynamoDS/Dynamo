@@ -11,7 +11,7 @@ using Dynamo.UI.Commands;
 
 namespace Dynamo.Search
 {
-    public class SearchCategory : NotificationObject
+    public class SearchCategory : NotificationObject, ISearchEntryViewModel
     {
         private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
@@ -116,6 +116,32 @@ namespace Dynamo.Search
             // TODO(Vladimir): classes functionality.
             //Classes.ToList().ForEach(x => x.RecursivelySort());
             MemberGroups.ToList().ForEach(x => x.Sort());
+        }
+
+
+        public bool Visibility
+        {
+            get { return true; }
+        }
+
+        public bool IsSelected
+        {
+            get { return true; }
+        }
+
+        public string Description
+        {
+            get { return String.Empty; }
+        }
+
+        public ElementTypes ElementType
+        {
+            get { return ElementTypes.None; }
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

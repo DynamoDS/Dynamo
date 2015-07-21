@@ -22,7 +22,6 @@ using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.PackageManager;
-
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -1313,6 +1312,11 @@ namespace Dynamo.ViewModels
         private bool CanShowInstalledPackages(object parameters)
         {
             return true;
+        }
+
+        private void ManagePackagePaths(object parameters)
+        {
+            OnRequestPackagePathsDialog(this, EventArgs.Empty);
         }
 
         /// <summary>
