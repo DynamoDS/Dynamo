@@ -316,14 +316,42 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Report that a function group couldn't be found
+        /// Report that the method cannot be found.
         /// </summary>
-        /// <param name="methodName">The method that can't be found</param>
-        public void LogFunctionGroupNotFoundWarning(
-            string methodName)
+        /// <param name="methodName">The method that cannot be found</param>
+        /// <param name="classScope">The class scope of object</param>
+        /// <param name="arguments">Arguments</param>
+        public void LogFunctionGroupNotFoundWarning(string methodName,
+            int classScope,
+            List<StackValue> arguments)
         {
-            String message = string.Format(Resources.FUNCTION_GROUP_RESOLUTION_FAILURE, methodName);
-            LogWarning(WarningID.kMethodResolutionFailure, message);
+            string className = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].name;
+
+            List<string> argumentTypes = new List<string>();
+            if (arguments == null || arguments.Count == 0)
+            {
+                string propertyName;
+                if (CoreUtils.TryGetPropertyName(methodName, out propertyName))
+                {
+                    string message = string.Format(Resources.kPropertyOfClassNotFound, propertyName, className);
+                    LogWarning(WarningID.kMethodResolutionFailure, message);
+                }
+                else
+                {
+                    string message = string.Format(Resources.FunctionGroupNotFound, methodName, className);
+                    LogWarning(WarningID.kMethodResolutionFailure, message);
+                }
+            }
+            else
+            {
+                foreach (var argument in arguments)
+                {
+                    ProtoCore.Type type = runtimeCore.DSExecutable.TypeSystem.BuildTypeObject(argument.metaData.type, 0);
+                    argumentTypes.Add(type.ToShortString());
+                }
+                string message = string.Format(Resources.FunctionGroupWithParameterNotFound, methodName, className, string.Join(",", argumentTypes));
+                LogWarning(WarningID.kMethodResolutionFailure, message);
+            }
         }
 
 
@@ -340,7 +368,7 @@ namespace ProtoCore
                 if (classScope != Constants.kGlobalScope)
                 {
                     string classname = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].name;
-                    message = string.Format(Resources.kPropertyOfClassNotFound, classname, propertyName);
+                    message = string.Format(Resources.kPropertyOfClassNotFound, propertyName, classname);
                 }
                 else
                 {
