@@ -19,6 +19,15 @@ namespace Dynamo.Publish.Models
 {
     public class PublishModel
     {
+
+        public enum UploadState
+        {
+            Uninitialized,
+            Succeeded,
+            Uploading,
+            Failed
+        }
+
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
 
@@ -57,11 +66,11 @@ namespace Dynamo.Publish.Models
         }
 
 
-        private PublishModelState state;
+        private UploadState state;
         /// <summary>
         /// Indicates the state of workspace publishing.
         /// </summary>
-        public PublishModelState State
+        public UploadState State
         {
             get
             {
@@ -72,16 +81,16 @@ namespace Dynamo.Publish.Models
                 if (state != value)
                 {
                     state = value;
-                    OnModelStateChanged(state);
+                    OnUploadStateChanged(state);
                 }
             }
         }
 
-        internal event Action<PublishModelState> ModelStateChanged;
-        private void OnModelStateChanged(PublishModelState state)
+        internal event Action<UploadState> UploadStateChanged;
+        private void OnUploadStateChanged(UploadState state)
         {
-            if (ModelStateChanged != null)
-                ModelStateChanged(state);
+            if (UploadStateChanged != null)
+                UploadStateChanged(state);
         }
 
 
@@ -109,7 +118,7 @@ namespace Dynamo.Publish.Models
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
 
-            State = PublishModelState.Uninitialized;
+            State = UploadState.Uninitialized;
         }
 
         internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
@@ -132,16 +141,16 @@ namespace Dynamo.Publish.Models
         internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
         {
 
-            State = PublishModelState.Uploading;
+            State = UploadState.Uploading;
 
             Task.Factory.StartNew(() =>
                 {
                     var result = this.Send(workspaces);
 
                     if (result == Resource.WorkspacesSendSucceededServerResponse)
-                        State = PublishModelState.Succeeded;
+                        State = UploadState.Succeeded;
                     else
-                        State = PublishModelState.Failed;
+                        State = UploadState.Failed;
                 });
 
         }
@@ -184,11 +193,4 @@ namespace Dynamo.Publish.Models
         }
     }
 
-    public enum PublishModelState
-    {
-        Uninitialized,
-        Succeeded,
-        Uploading,
-        Failed
-    }
 }

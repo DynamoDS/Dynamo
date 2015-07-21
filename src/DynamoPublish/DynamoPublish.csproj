@@ -50,7 +50,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.configuration" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml">
       <Private>False</Private>
@@ -97,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoPublishExtension_ViewExtensionDefinition.xml" />
-    <Resource Include="Resources\publish-loader.gif" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.resx">

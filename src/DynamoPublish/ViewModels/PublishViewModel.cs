@@ -90,7 +90,7 @@ namespace Dynamo.Publish.ViewModels
             this.model = model;
 
             PublishCommand = new DelegateCommand(OnPublish);
-            model.ModelStateChanged += OnModelStateChanged;
+            model.UploadStateChanged += OnModelStateChanged;
         }
 
         #endregion
@@ -99,8 +99,8 @@ namespace Dynamo.Publish.ViewModels
 
         private void OnPublish(object obj)
         {
-            if (!model.IsLoggedIn)            
-                model.Authenticate();            
+            if (!model.IsLoggedIn)
+                model.Authenticate();
 
             if (!model.IsLoggedIn)
                 return;
@@ -108,9 +108,9 @@ namespace Dynamo.Publish.ViewModels
             model.SendAsynchronously(Workspaces);
         }
 
-        private void OnModelStateChanged(PublishModelState state)
+        private void OnModelStateChanged(PublishModel.UploadState state)
         {
-            IsUploading = state == PublishModelState.Uploading;
+            IsUploading = state == PublishModel.UploadState.Uploading;
         }
 
         #endregion
