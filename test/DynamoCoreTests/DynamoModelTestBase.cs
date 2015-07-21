@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Tests;
@@ -55,7 +55,7 @@ namespace Dynamo
             base.Cleanup();
         }
 
-        protected virtual void StartDynamo()
+        protected virtual void StartDynamo(IPreferences settings = null)
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
@@ -89,8 +89,10 @@ namespace Dynamo
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    Preferences = settings
                 });
+
         }
 
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel

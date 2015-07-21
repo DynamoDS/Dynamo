@@ -48,7 +48,7 @@ namespace DynamoPublishTests
             publishModel.Send(CurrentDynamoModel.Workspaces);
 
             Assert.IsNotNull(publishModel.HomeWorkspace);
-            Assert.AreEqual(1, publishModel.CustomNodesWorkspaces.Count);
+            Assert.AreEqual(1, publishModel.CustomNodeWorkspaces.Count);
         }
     }
 }

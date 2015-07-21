@@ -2061,7 +2061,7 @@ namespace Dynamo.Models
     /// <summary>
     ///    The NodeDescriptionAttribute indicates this node is obsolete
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method |AttributeTargets.Property)]
     public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
     {
         public NodeObsoleteAttribute(string message) : base(message)

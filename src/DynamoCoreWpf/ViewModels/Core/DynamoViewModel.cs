@@ -11,7 +11,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -27,6 +26,7 @@ using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
+
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -1290,6 +1290,11 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ManagePackagePaths(object parameters)
+        {
+            OnRequestPackagePathsDialog(this, EventArgs.Empty);
+        }
+
         /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
@@ -1428,7 +1433,7 @@ namespace Dynamo.ViewModels
             else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var pathManager = vm.model.PathManager;
-                _fileDialog.InitialDirectory = pathManager.UserDefinitions;
+                _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)

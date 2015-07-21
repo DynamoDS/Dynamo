@@ -1471,6 +1471,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Node and Package Paths....
+        /// </summary>
+        public static string DynamoViewSettingMenuManagePackagePath {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuManagePackagePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meter.
         /// </summary>
         public static string DynamoViewSettingMenuMeter {
@@ -3143,6 +3152,87 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageNeedAtLeastOneFile {
             get {
                 return ResourceManager.GetString("PackageNeedAtLeastOneFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accept Changes.
+        /// </summary>
+        public static string PackagePathViewAccept {
+            get {
+                return ResourceManager.GetString("PackagePathViewAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paths:.
+        /// </summary>
+        public static string PackagePathViewHeading {
+            get {
+                return ResourceManager.GetString("PackagePathViewHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add paths to make nodes and packages show up in the library..
+        /// </summary>
+        public static string PackagePathViewSummary1 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top path is the default save location..
+        /// </summary>
+        public static string PackagePathViewSummary2 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Node and Package Paths.
+        /// </summary>
+        public static string PackagePathViewTitle {
+            get {
+                return ResourceManager.GetString("PackagePathViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selected path downward.
+        /// </summary>
+        public static string PackagePathViewToolTipDown {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the selected path from list.
+        /// </summary>
+        public static string PackagePathViewToolTipMinus {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipMinus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new path to the list.
+        /// </summary>
+        public static string PackagePathViewToolTipPlus {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipPlus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selected path upward.
+        /// </summary>
+        public static string PackagePathViewToolTipUp {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipUp", resourceCulture);
             }
         }
         
