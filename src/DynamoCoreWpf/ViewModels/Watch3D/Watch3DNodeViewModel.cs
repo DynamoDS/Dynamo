@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             this.node = node;
 
-            IsResizable = false;
+            IsResizable = true;
             Name = string.Format("{0}_preview", node.GUID);
 
             RegisterPortEventHandlers(node);
