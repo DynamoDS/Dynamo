@@ -377,6 +377,12 @@ namespace Dynamo.PackageManager
         public DelegateCommand SubmitCommand { get; private set; }
 
         /// <summary>
+        /// PublishLocallyCommand property </summary>
+        /// <value>
+        /// A command which, when executed, publish the current package to a local folder</value>
+        public DelegateCommand PublishLocallyCommand { get; private set; }
+
+        /// <summary>
         /// SubmitCommand property </summary>
         /// <value>
         /// A command which, when executed, submits the current package</value>
@@ -485,6 +491,7 @@ namespace Dynamo.PackageManager
         {
             customNodeDefinitions = new List<CustomNodeDefinition>();
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
+            PublishLocallyCommand = new DelegateCommand(PublishLocally, CanPublishLocally);
             ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies = new ObservableCollection<PackageDependency>();
@@ -976,6 +983,13 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Delegate used to publish the element to a local folder</summary>
+        private void PublishLocally()
+        {
+            
+        }
+
         private void AppendPackageContents()
         {
             Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
@@ -1045,6 +1059,13 @@ namespace Dynamo.PackageManager
 
             if (Uploading) return false;
 
+            return true;
+        }
+
+        /// <summary>
+        /// Delegate used to publish the element locally </summary>
+        private bool CanPublishLocally()
+        {
             return true;
         }
 
