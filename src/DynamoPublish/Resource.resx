@@ -123,6 +123,12 @@
   <data name="BadXMLConfigurationFileMessage" xml:space="preserve">
     <value>Malformed configuration file.</value>
   </data>
+  <data name="CloseButtonTitle" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="CopyLinkButtonTitle" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
   <data name="DynamoViewMenuItemPublishTitle" xml:space="preserve">
     <value>Publish Customizer...</value>
   </data>
@@ -131,6 +137,24 @@
   </data>
   <data name="PortErrorMessage" xml:space="preserve">
     <value>"Port" is not set. Please, set port in configuration file.</value>
+  </data>
+  <data name="PublishButtonTitle" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="PublishViewDefaultDescriptionTitle" xml:space="preserve">
+    <value>enter description here</value>
+  </data>
+  <data name="PublishViewDefaultNameTitle" xml:space="preserve">
+    <value>defaults to file name</value>
+  </data>
+  <data name="PublishViewDescriptionTitle" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="PublishViewNameTitle" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="PublishViewShareLinkTitle" xml:space="preserve">
+    <value>Share Link:</value>
   </data>
   <data name="PublishViewTitle" xml:space="preserve">
     <value>Publish Customizer</value>

@@ -79,6 +79,24 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string CloseButtonTitle {
+            get {
+                return ResourceManager.GetString("CloseButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Link.
+        /// </summary>
+        public static string CopyLinkButtonTitle {
+            get {
+                return ResourceManager.GetString("CopyLinkButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Customizer....
         /// </summary>
         public static string DynamoViewMenuItemPublishTitle {
@@ -102,6 +120,60 @@ namespace Dynamo.Publish {
         public static string PortErrorMessage {
             get {
                 return ResourceManager.GetString("PortErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish.
+        /// </summary>
+        public static string PublishButtonTitle {
+            get {
+                return ResourceManager.GetString("PublishButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to enter description here.
+        /// </summary>
+        public static string PublishViewDefaultDescriptionTitle {
+            get {
+                return ResourceManager.GetString("PublishViewDefaultDescriptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to defaults to file name.
+        /// </summary>
+        public static string PublishViewDefaultNameTitle {
+            get {
+                return ResourceManager.GetString("PublishViewDefaultNameTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description:.
+        /// </summary>
+        public static string PublishViewDescriptionTitle {
+            get {
+                return ResourceManager.GetString("PublishViewDescriptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name:.
+        /// </summary>
+        public static string PublishViewNameTitle {
+            get {
+                return ResourceManager.GetString("PublishViewNameTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share Link:.
+        /// </summary>
+        public static string PublishViewShareLinkTitle {
+            get {
+                return ResourceManager.GetString("PublishViewShareLinkTitle", resourceCulture);
             }
         }
         
