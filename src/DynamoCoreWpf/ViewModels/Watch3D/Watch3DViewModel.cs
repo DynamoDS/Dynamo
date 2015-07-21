@@ -490,21 +490,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void DeleteGeometryForNode(NodeModel node)
         {
-            var geometryModels = FindAllGeometryModel3DsForNode(node);
-
-            if (!geometryModels.Any())
+            lock (Model3DDictionaryMutex)
             {
-                return;
-            }
+                var geometryModels = FindAllGeometryModel3DsForNode(node);
 
-            foreach (var kvp in geometryModels)
-            {
-                var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
-                if (model != null)
+                if (!geometryModels.Any())
                 {
-                    model.MouseDown3D -= MeshGeometry3DMouseDown3DHandler;
+                    return;
                 }
-                Model3DDictionary.Remove(kvp.Key);
+
+                foreach (var kvp in geometryModels)
+                {
+                    var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
+                    if (model != null)
+                    {
+                        model.MouseDown3D -= MeshGeometry3DMouseDown3DHandler;
+                    }
+                    Model3DDictionary.Remove(kvp.Key);
+                }
             }
 
             RaisePropertyChanged("Model3DValues");
@@ -872,29 +875,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Where(n => n.IsUpdated).
                 Where(n => !n.RenderPackages.Any());
 
-            foreach (var node in noRenderNodes)
+            lock (Model3DDictionaryMutex)
             {
-                var idBase = node.AstIdentifierBase;
-                var pointsId = idBase + ":points";
-                var linesId = idBase + ":lines";
-                var meshId = idBase + ":mesh";
-
-                if (Model3DDictionary.ContainsKey(pointsId))
+                foreach (var node in noRenderNodes)
                 {
-                    Model3DDictionary[pointsId].Detach();
-                    Model3DDictionary.Remove(pointsId);
-                }
+                    var idBase = node.AstIdentifierBase;
+                    var pointsId = idBase + ":points";
+                    var linesId = idBase + ":lines";
+                    var meshId = idBase + ":mesh";
 
-                if (Model3DDictionary.ContainsKey(linesId))
-                {
-                    Model3DDictionary[linesId].Detach();
-                    Model3DDictionary.Remove(linesId);
-                }
+                    if (Model3DDictionary.ContainsKey(pointsId))
+                    {
+                        Model3DDictionary[pointsId].Detach();
+                        Model3DDictionary.Remove(pointsId);
+                    }
 
-                if (Model3DDictionary.ContainsKey(meshId))
-                {
-                    Model3DDictionary[meshId].Detach();
-                    Model3DDictionary.Remove(meshId);
+                    if (Model3DDictionary.ContainsKey(linesId))
+                    {
+                        Model3DDictionary[linesId].Detach();
+                        Model3DDictionary.Remove(linesId);
+                    }
+
+                    if (Model3DDictionary.ContainsKey(meshId))
+                    {
+                        Model3DDictionary[meshId].Detach();
+                        Model3DDictionary.Remove(meshId);
+                    }
                 }
             }
         }
@@ -903,166 +909,183 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var packageDescrips = packages.Select(p => p.Description.Split(':')[0]).Distinct();
 
-            foreach (var id in packageDescrips)
+            lock (Model3DDictionaryMutex)
             {
-                var pointsId = id + ":points";
-                var linesId = id + ":lines";
-                var meshId = id + ":mesh";
-
-                if (Model3DDictionary.ContainsKey(pointsId))
+                foreach (var id in packageDescrips)
                 {
-                    Model3DDictionary[pointsId].Detach();
-                    Model3DDictionary.Remove(pointsId);
-                }
+                    var pointsId = id + ":points";
+                    var linesId = id + ":lines";
+                    var meshId = id + ":mesh";
 
-                if (Model3DDictionary.ContainsKey(linesId))
-                {
-                    Model3DDictionary[linesId].Detach();
-                    Model3DDictionary.Remove(linesId);
-                }
+                    if (Model3DDictionary.ContainsKey(pointsId))
+                    {
+                        Model3DDictionary[pointsId].Detach();
+                        Model3DDictionary.Remove(pointsId);
+                    }
 
-                if (Model3DDictionary.ContainsKey(meshId))
-                {
-                    Model3DDictionary[meshId].Detach();
-                    Model3DDictionary.Remove(meshId);
+                    if (Model3DDictionary.ContainsKey(linesId))
+                    {
+                        Model3DDictionary[linesId].Detach();
+                        Model3DDictionary.Remove(linesId);
+                    }
+
+                    if (Model3DDictionary.ContainsKey(meshId))
+                    {
+                        Model3DDictionary[meshId].Detach();
+                        Model3DDictionary.Remove(meshId);
+                    }
                 }
             }
         }
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
-            foreach (var rp in parameters.Packages)
+            lock (Model3DDictionaryMutex)
             {
-                // Each node can produce multiple render packages. We want all the geometry of the
-                // same kind stored inside a RenderPackage to be pushed into one GeometryModel3D object.
-                // We strip the unique identifier for the package (i.e. the bit after the `:` in var12345:0), and replace it
-                // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
-                // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
-                // to those geometry objects.
-
-                var baseId = rp.Description;
-                if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
+                foreach (var rp in parameters.Packages)
                 {
-                    baseId = baseId.Split(':')[0];
-                }
-                var id = baseId;
+                    // Each node can produce multiple render packages. We want all the geometry of the
+                    // same kind stored inside a RenderPackage to be pushed into one GeometryModel3D object.
+                    // We strip the unique identifier for the package (i.e. the bit after the `:` in var12345:0), and replace it
+                    // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
+                    // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
+                    // to those geometry objects.
 
-                var p = rp.Points;
-                if (p.Positions.Any())
-                {
-                    id = baseId + ":points";
+                    var baseId = rp.Description;
+                    if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
+                    {
+                        baseId = baseId.Split(':')[0];
+                    }
+                    var id = baseId;
 
-                    PointGeometryModel3D pointGeometry3D;
+                    var p = rp.Points;
+                    if (p.Positions.Any())
+                    {
+                        id = baseId + ":points";
+
+                        PointGeometryModel3D pointGeometry3D;
+
+                        if (Model3DDictionary.ContainsKey(id))
+                        {
+                            pointGeometry3D = Model3DDictionary[id] as PointGeometryModel3D;
+                        }
+                        else
+                        {
+                            pointGeometry3D = CreatePointGeometryModel3D(rp);
+                            Model3DDictionary.Add(id, pointGeometry3D);
+                        }
+
+                        var points = pointGeometry3D.Geometry as PointGeometry3D;
+                        var startIdx = points.Positions.Count;
+
+                        points.Positions.AddRange(p.Positions);
+                        points.Colors.AddRange(p.Colors.Any()
+                            ? p.Colors
+                            : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
+                        points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
+
+                        if (rp.DisplayLabels)
+                        {
+                            var pt = p.Positions[0];
+                            parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
+                                new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                            Text = parameters.Text;
+                        }
+
+                        pointGeometry3D.Geometry = points;
+                        pointGeometry3D.Name = baseId;
+                        pointGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
+                    }
+
+                    var l = rp.Lines;
+                    if (l.Positions.Any())
+                    {
+                        id = baseId + ":lines";
+
+                        LineGeometryModel3D lineGeometry3D;
+
+                        if (Model3DDictionary.ContainsKey(id))
+                        {
+                            lineGeometry3D = Model3DDictionary[id] as LineGeometryModel3D;
+                        }
+                        else
+                        {
+                            lineGeometry3D = CreateLineGeometryModel3D(rp);
+                            Model3DDictionary.Add(id, lineGeometry3D);
+                        }
+
+                        var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
+                        var startIdx = lineSet.Positions.Count;
+
+                        lineSet.Positions.AddRange(l.Positions);
+                        lineSet.Colors.AddRange(l.Colors.Any()
+                            ? l.Colors
+                            : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
+                        lineSet.Indices.AddRange(l.Indices.Any()
+                            ? l.Indices.Select(i => i + startIdx)
+                            : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
+
+                        if (rp.DisplayLabels)
+                        {
+                            var pt = lineSet.Positions[startIdx];
+                            parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
+                                new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                            Text = parameters.Text;
+                        }
+
+                        lineGeometry3D.Geometry = lineSet;
+                        lineGeometry3D.Name = baseId;
+                        lineGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
+                    }
+
+                    var m = rp.Mesh;
+                    if (!m.Positions.Any()) continue;
+
+                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + ":mesh";
+
+                    DynamoGeometryModel3D meshGeometry3D;
 
                     if (Model3DDictionary.ContainsKey(id))
                     {
-                        pointGeometry3D = Model3DDictionary[id] as PointGeometryModel3D;
+                        meshGeometry3D = Model3DDictionary[id] as DynamoGeometryModel3D;
                     }
                     else
                     {
-                        pointGeometry3D = CreatePointGeometryModel3D(rp);
-                        Model3DDictionary.Add(id, pointGeometry3D);
+                        meshGeometry3D = CreateDynamoGeometryModel3D(rp);
+                        Model3DDictionary.Add(id, meshGeometry3D);
                     }
 
-                    var points = pointGeometry3D.Geometry as PointGeometry3D;
-                    var startIdx = points.Positions.Count;
+                    var mesh = meshGeometry3D.Geometry == null
+                        ? HelixRenderPackage.InitMeshGeometry()
+                        : meshGeometry3D.Geometry as MeshGeometry3D;
+                    var idxCount = mesh.Positions.Count;
 
-                    points.Positions.AddRange(p.Positions);
-                    points.Colors.AddRange(p.Colors.Any() ? p.Colors : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
-                    points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
+                    mesh.Positions.AddRange(m.Positions);
+                    mesh.Colors.AddRange(m.Colors);
+                    mesh.Normals.AddRange(m.Normals);
+                    mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
+                    mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
+
+                    if (mesh.Colors.Any(c => c.Alpha < 1.0))
+                    {
+                        meshGeometry3D.HasTransparency = true;
+                    }
 
                     if (rp.DisplayLabels)
                     {
-                        var pt = p.Positions[0];
-                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        var pt = mesh.Positions[idxCount];
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
+                            new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                         Text = parameters.Text;
                     }
 
-                    pointGeometry3D.Geometry = points;
-                    pointGeometry3D.Name = baseId;
-                    pointGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
+                    meshGeometry3D.Geometry = mesh;
+                    meshGeometry3D.Name = baseId;
+                    meshGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                 }
 
-                var l = rp.Lines;
-                if (l.Positions.Any())
-                {
-                    id = baseId + ":lines";
-
-                    LineGeometryModel3D lineGeometry3D;
-
-                    if (Model3DDictionary.ContainsKey(id))
-                    {
-                        lineGeometry3D = Model3DDictionary[id] as LineGeometryModel3D;
-                    }
-                    else
-                    {
-                        lineGeometry3D = CreateLineGeometryModel3D(rp);
-                        Model3DDictionary.Add(id, lineGeometry3D);
-                    }
-
-                    var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
-                    var startIdx = lineSet.Positions.Count;
-
-                    lineSet.Positions.AddRange(l.Positions);
-                    lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
-                    lineSet.Indices.AddRange(l.Indices.Any() ? l.Indices.Select(i => i + startIdx) : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
-
-                    if (rp.DisplayLabels)
-                    {
-                        var pt = lineSet.Positions[startIdx];
-                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
-                        Text = parameters.Text;
-                    }
-
-                    lineGeometry3D.Geometry = lineSet;
-                    lineGeometry3D.Name = baseId;
-                    lineGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
-                }
-
-                var m = rp.Mesh;
-                if (!m.Positions.Any()) continue;
-
-                id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + ":mesh";
-
-                DynamoGeometryModel3D meshGeometry3D;
-
-                if (Model3DDictionary.ContainsKey(id))
-                {
-                    meshGeometry3D = Model3DDictionary[id] as DynamoGeometryModel3D;
-                }
-                else
-                {
-                    meshGeometry3D = CreateDynamoGeometryModel3D(rp);
-                    Model3DDictionary.Add(id, meshGeometry3D);
-                }
-
-                var mesh = meshGeometry3D.Geometry == null ? HelixRenderPackage.InitMeshGeometry() : meshGeometry3D.Geometry as MeshGeometry3D;
-                var idxCount = mesh.Positions.Count;
-
-                mesh.Positions.AddRange(m.Positions);
-                mesh.Colors.AddRange(m.Colors);
-                mesh.Normals.AddRange(m.Normals);
-                mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
-                mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
-
-                if (mesh.Colors.Any(c => c.Alpha < 1.0))
-                {
-                    meshGeometry3D.HasTransparency = true;
-                }
-
-                if (rp.DisplayLabels)
-                {
-                    var pt = mesh.Positions[idxCount];
-                    parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
-                    Text = parameters.Text;
-                }
-
-                meshGeometry3D.Geometry = mesh;
-                meshGeometry3D.Name = baseId;
-                meshGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
+                AttachAllGeometryModel3DToRenderHost();
             }
-
-            AttachAllGeometryModel3DToRenderHost();
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
@@ -1324,16 +1347,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary> 
         protected void ResetGeometryDictionary()
         {
-            var keysList = new List<string> { "DirectionalLight", "Grid", "Axes", "BillBoardText" };
-            if (Text != null && Text.TextInfo.Any())
+            lock (Model3DDictionaryMutex)
             {
-                Text.TextInfo.Clear();
-            }
-            foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
-            {
-                var model = Model3DDictionary[key] as GeometryModel3D;
-                model.Detach();
-                Model3DDictionary.Remove(key);
+                var keysList = new List<string> {"DirectionalLight", "Grid", "Axes", "BillBoardText"};
+                if (Text != null && Text.TextInfo.Any())
+                {
+                    Text.TextInfo.Clear();
+                }
+                foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
+                {
+                    var model = Model3DDictionary[key] as GeometryModel3D;
+                    model.Detach();
+                    Model3DDictionary.Remove(key);
+                }
             }
 
             RaisePropertyChanged("");
@@ -1342,11 +1368,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
         {
-            var geometryModels =
-                Model3DDictionary
-                    .Where(x => x.Key.Contains(node.AstIdentifierBase))
-                    .Where(x => x.Value is GeometryModel3D)
-                    .Select(x => x).ToArray();
+            KeyValuePair<string,Model3D>[] geometryModels;
+
+            lock (Model3DDictionaryMutex)
+            {
+                geometryModels =
+                    Model3DDictionary
+                        .Where(x => x.Key.Contains(node.AstIdentifierBase))
+                        .Where(x => x.Value is GeometryModel3D)
+                        .Select(x => x).ToArray();
+            }
 
             return geometryModels;
         }
