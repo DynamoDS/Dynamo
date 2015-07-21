@@ -2485,11 +2485,9 @@ namespace ProtoImperative
                 ForLoopNode forNode = node as ForLoopNode;
                 ++core.ForLoopBlockIndex;   //new forloop beginning. increment loop counter 
 
-
                 ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0);
 
                 // val = null; 
-
                 IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.loopVar.Name) as IdentifierNode;
                 loopvar.ArrayName = forNode.expression.Name;
                 ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);

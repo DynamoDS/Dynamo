@@ -107,7 +107,7 @@ namespace ProtoCore.DSASM
 
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
-        SETEXPUID,
+        SETEXPUID
     }
 
     public struct MetaData
