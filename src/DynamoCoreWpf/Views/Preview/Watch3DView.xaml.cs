@@ -125,9 +125,15 @@ namespace Dynamo.Controls
 
             viewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
             viewModel.RequestCreateModels += RequestCreateModelsHandler;
+            viewModel.RequestViewRefresh += RequestViewRefreshHandler;
         }
 
-        void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages)
+        void RequestViewRefreshHandler()
+        {
+            View.InvalidateRender();
+        }
+
+        private void RequestCreateModelsHandler(IEnumerable<IRenderPackage> packages)
         {
             if (CheckAccess())
                 viewModel.GenerateViewGeometryFromRenderPackagesAndRequestUpdate(packages);
