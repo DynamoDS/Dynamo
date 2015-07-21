@@ -1000,6 +1000,24 @@ namespace Dynamo.Tests
             Assert.IsTrue(binaryExpr.RightNode is RangeExprNode); ;
         }
 
+        [Test]
+        public void TestNodeWithVarArgument()
+        {
+            OpenModel(@"core\node2code\stringsplit.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, new [] {"foo", "bar", "qux"});
+        }
+
         private void SelectAll(IEnumerable<NodeModel> nodes)
         {
             DynamoSelection.Instance.ClearSelection();
