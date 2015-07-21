@@ -3156,11 +3156,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close.
+        ///   Looks up a localized string similar to Accept Changes.
         /// </summary>
-        public static string PackagePathViewClose {
+        public static string PackagePathViewAccept {
             get {
-                return ResourceManager.GetString("PackagePathViewClose", resourceCulture);
+                return ResourceManager.GetString("PackagePathViewAccept", resourceCulture);
             }
         }
         
@@ -3174,11 +3174,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The top path is the default location for saving new packages and custom nodes. Nodes in additional locations will show up in the library..
+        ///   Looks up a localized string similar to Add paths to make nodes and packages show up in the library..
         /// </summary>
-        public static string PackagePathViewSummary {
+        public static string PackagePathViewSummary1 {
             get {
-                return ResourceManager.GetString("PackagePathViewSummary", resourceCulture);
+                return ResourceManager.GetString("PackagePathViewSummary1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top path is the default save location..
+        /// </summary>
+        public static string PackagePathViewSummary2 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
             }
         }
         
