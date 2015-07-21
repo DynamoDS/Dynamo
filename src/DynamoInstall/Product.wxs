@@ -64,7 +64,6 @@
              Title="Dynamo Core"
              Level="1">
       <ComponentGroupRef Id="RELEASE"/>
-      <ComponentGroupRef Id="DEFINITIONS"/>
       <ComponentGroupRef Id="GALLERY"/>
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ProductRegistry" />
@@ -94,7 +93,6 @@
       <Directory Id="AppDataFolder">
         <Directory Id="DYNAMO_APPDATA" Name="Dynamo">
           <Directory Id="APPDATA" Name="$(var.Major).$(var.Minor)">
-            <Directory Id="definitions" Name="definitions" />
             <Directory Id="logs" Name="Logs" />
             <Directory Id="packages" Name="packages" />
           </Directory>
@@ -130,11 +128,9 @@
           <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
         </RegistryKey>
 
-        <CreateFolder Directory="definitions" />
         <CreateFolder Directory="logs" />
         <CreateFolder Directory="packages" />
 
-        <RemoveFolder Id="RemoveDefinitionsDir" Directory="definitions" On="uninstall" />
         <RemoveFolder Id="RemoveLogsDir" Directory="logs" On="uninstall" />
         <RemoveFolder Id="RemovePackagesDir" Directory="packages" On="uninstall" />
         <RemoveFolder Id="RemoveAppDataDir" Directory="APPDATA" On="uninstall" />
