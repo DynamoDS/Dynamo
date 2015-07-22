@@ -101,6 +101,11 @@
                 <MenuItem Name="rename_cm"
                           Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
                           Command="{Binding Path=RenameCommand}" />
+                <MenuItem Name="isInput_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuIsInput}"
+                          IsChecked="{Binding Path=IsSelectedInput,Mode=TwoWay}"
+                          Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                          IsCheckable="True" />
                 <MenuItem Name="help_cm"
                           Header="{x:Static p:Resources.NodeContextMenuHelp}"
                           Command="{Binding Path=ShowHelpCommand}" />

@@ -136,6 +136,9 @@
     <Compile Include="UI\FrozenResources.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
+    <Compile Include="UI\Prompts\PresetOverwritePrompt.xaml.cs">
+      <DependentUpon>PresetOverwritePrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Prompts\PresetPrompt.xaml.cs">
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
@@ -224,6 +227,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -242,6 +246,9 @@
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
+      <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
@@ -920,6 +927,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Prompts\PresetOverwritePrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1004,6 +1015,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Gallery\GalleryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\PackagePathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1179,6 +1194,10 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-minus.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-down.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-up.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-plus.png" />
     <Resource Include="UI\Images\drag_move.cur" />
     <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />

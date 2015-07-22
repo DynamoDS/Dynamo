@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.IO;
@@ -30,7 +31,7 @@ namespace Dynamo.Tests
             <search>
             move,push
             </search>
-            <returns>Transformed Geometry.</returns>
+            <returns name=""foo"">Transformed Geometry.</returns>
         </member>
         <member name=""M:MyNamespace.MyClass.#ctor"">
             <summary>
@@ -135,6 +136,19 @@ namespace Dynamo.Tests
             var summary = method.GetSummary(SampleDocument);
 
             Assert.AreEqual("Constructor summary.", summary);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetReturnKeys_FromMyMethod()
+        {
+            var method = GetMyMethod();
+
+            var returns = method.GetReturns(SampleDocument);
+
+            Assert.AreEqual(1, returns.Count());
+            Assert.AreEqual("foo", returns.ElementAt(0).Item1);
+            Assert.AreEqual("Transformed Geometry.", returns.ElementAt(0).Item2);
         }
 
     }

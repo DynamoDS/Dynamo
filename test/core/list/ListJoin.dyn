@@ -1,0 +1,27 @@
+<Workspace Version="0.8.2.1957" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSVarArgFunction guid="5f64d1bf-89af-4331-9403-2d9c1e4ef1b7" type="Dynamo.Nodes.DSVarArgFunction" nickname="List.Join" x="709.5" y="246.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.List.Join@var[]..[]" inputcount="2" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="979cc5ef-cfbd-441c-b01e-c93f0555c4e8" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="535" y="312" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="{1,2,3};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="d4d4a034-ee3b-4af3-bd0b-04afce1a6d38" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="502.5" y="135.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="7652db7a-81de-40b8-b6fd-bdf9c23764bf" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="300" y="153" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="5;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="e92cc929-a553-442a-a3f6-e6be748556d2" type="Dynamo.Nodes.DSFunction" nickname="List.FirstItem" x="905.5" y="280.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.List.FirstItem@var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="ea031ca8-9c49-4d14-a702-54022cb60e0f" type="Dynamo.Nodes.DSFunction" nickname="Point.X" x="1083.5" y="291.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.X" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5f64d1bf-89af-4331-9403-2d9c1e4ef1b7" start_index="0" end="e92cc929-a553-442a-a3f6-e6be748556d2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="979cc5ef-cfbd-441c-b01e-c93f0555c4e8" start_index="0" end="5f64d1bf-89af-4331-9403-2d9c1e4ef1b7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4d4a034-ee3b-4af3-bd0b-04afce1a6d38" start_index="0" end="5f64d1bf-89af-4331-9403-2d9c1e4ef1b7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7652db7a-81de-40b8-b6fd-bdf9c23764bf" start_index="0" end="d4d4a034-ee3b-4af3-bd0b-04afce1a6d38" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e92cc929-a553-442a-a3f6-e6be748556d2" start_index="0" end="ea031ca8-9c49-4d14-a702-54022cb60e0f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

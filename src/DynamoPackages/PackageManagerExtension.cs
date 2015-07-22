@@ -33,9 +33,9 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Manages loading of packages.
+        ///     Manages loading of packages (property meant solely for tests)
         /// </summary>
-        public PackageLoader PackageLoader
+        internal PackageLoader PackageLoader
         {
             get { return packageLoader; }
         }
@@ -55,8 +55,8 @@ namespace Dynamo.PackageManager
         public void Load(IPreferences preferences, IPathManager pathManager)
         {
             // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadAll(new LoadPackageParams
+            packageLoader.DoCachedPackageUninstalls(preferences);
+            packageLoader.LoadAll(new LoadPackageParams
             {
                 Preferences = preferences,
                 PathManager = pathManager
@@ -65,8 +65,8 @@ namespace Dynamo.PackageManager
 
         public void Dispose()
         {
-            this.packageLoader.MessageLogged -= OnMessageLogged;
-            this.packageLoader.RequestLoadNodeLibrary -= OnRequestLoadNodeLibrary;
+            packageLoader.MessageLogged -= OnMessageLogged;
+            packageLoader.RequestLoadNodeLibrary -= OnRequestLoadNodeLibrary;
         }
 
         /// <summary>
@@ -90,10 +90,10 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            this.packageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectory);
-            this.packageLoader.MessageLogged += OnMessageLogged;
-            this.packageLoader.RequestLoadNodeLibrary += OnRequestLoadNodeLibrary;
-            this.packageLoader.RequestLoadCustomNodeDirectory +=
+            packageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
+            packageLoader.MessageLogged += OnMessageLogged;
+            packageLoader.RequestLoadNodeLibrary += OnRequestLoadNodeLibrary;
+            packageLoader.RequestLoadCustomNodeDirectory +=
                 (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
 
@@ -103,8 +103,9 @@ namespace Dynamo.PackageManager
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
-            this.packageManagerClient = new PackageManagerClient(new GregClient(startupParams.AuthProvider, url), 
-                uploadBuilder, PackageLoader.RootPackagesDirectory);
+            packageManagerClient = new PackageManagerClient(
+                new GregClient(startupParams.AuthProvider, url),
+                uploadBuilder, packageLoader.DefaultPackagesDirectory);
         }
 
         public void Ready(ReadyParams sp) { }

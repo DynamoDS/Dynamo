@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"GetHighest","version":"0.1.2","description":"Gets the highest value from a list","group":"CAAD_RWTH","keywords":["highest","list"],"dependencies":[],"license":"MIT","contents":"Get Highest - Gets the highest value from a list","engine_version":"0.5.2.10107","engine_metadata":"","engine":"dynamo"}

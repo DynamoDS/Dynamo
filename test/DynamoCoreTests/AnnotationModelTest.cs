@@ -20,7 +20,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -46,7 +46,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -85,7 +85,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -126,7 +126,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -171,7 +171,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -212,7 +212,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -246,7 +246,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -292,7 +292,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -313,7 +313,7 @@ namespace Dynamo.Tests
             //Create Another node
             //Add a Node            
             var secondNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(secondNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
 
             DynamoSelection.Instance.ClearSelection();
@@ -359,7 +359,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -388,7 +388,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -423,7 +423,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -453,7 +453,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -482,7 +482,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -515,7 +515,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -561,7 +561,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -599,7 +599,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -649,7 +649,7 @@ namespace Dynamo.Tests
             //Add a Node
             var model = CurrentDynamoModel;
             var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(addNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 1);
 
             //Add a Note 
@@ -670,7 +670,7 @@ namespace Dynamo.Tests
             //Create Another node
             //Add a Node            
             var secondNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
-            model.CurrentWorkspace.AddNode(secondNode, false);
+            model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
             Assert.AreEqual(model.CurrentWorkspace.Nodes.Count(), 2);
 
             DynamoSelection.Instance.ClearSelection();

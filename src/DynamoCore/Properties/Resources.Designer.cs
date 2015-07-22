@@ -666,6 +666,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
+        /// </summary>
+        public static string InvalidCustomNodeFolderWarning {
+            get {
+                return ResourceManager.GetString("InvalidCustomNodeFolderWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid library format..
         /// </summary>
         public static string InvalidLibraryFormat {

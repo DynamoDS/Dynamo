@@ -448,7 +448,7 @@ namespace ProtoFFI
             }
 
             var heap = dsi.runtime.rmem.Heap;
-            var retVal = heap.AllocateArray(svs);
+            var retVal = heap.AllocateArray(svs.ToArray());
             return retVal;
         }
 
@@ -456,7 +456,7 @@ namespace ProtoFFI
         {
             var runtimeCore = dsi.runtime.RuntimeCore;
 
-            var svArray = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
+            var svArray = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] {});
             DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
             foreach (var key in dictionary.Keys)
             {
@@ -548,7 +548,7 @@ namespace ProtoFFI
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
-            foreach (var sv in dsArray.VisibleItems)
+            foreach (var sv in dsArray.Values)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, context, dsi, elementType);
                 arrList.Add(obj);
@@ -711,7 +711,7 @@ namespace ProtoFFI
             Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, 
                 string.Format("Operand type {0} not supported for marshalling", 
                 dsObject.optype));
-            
+
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
             if (DSObjectMap.TryGetValue(dsObject, out clrObject))
@@ -726,8 +726,10 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets marshaler for the given clrType and if it fails
+        /// If clrType is IEnumerable, returns a CollectionMarshaler, otherwise
+        /// gets marshaler for the given clrType and if it fails
         /// to get one, it tries to get primitive marshaler based on dsType.
+        /// 
         /// We want to get correct marshaler specific to the input type because
         /// more than one type gets map to same type in DS.
         /// </summary>
@@ -738,10 +740,6 @@ namespace ProtoFFI
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, AddressType dsType)
         {
-            //If the input ds object is pointer type then it can't be marshaled as primitive.
-            if (dsType == AddressType.Pointer)
-                return null;
-
             FFIObjectMarshler marshaler = null;
             //Expected CLR type is object, get marshaled clrType from dsType
             Type expectedType = clrType;
@@ -757,11 +755,17 @@ namespace ProtoFFI
             if (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType))
                 collection = true;
 
+            // If the expected type is collection, always marshal to collection
             if (collection)
             {
                 ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return new CollectionMarshaler(this, type);
+            }
+            // If the input ds object is pointer type then it can't be marshaled as primitive.
+            else if (dsType == AddressType.Pointer)
+            {
+                return null;
             }
 
             if (!mPrimitiveMarshalers.TryGetValue(expectedType, out marshaler))
@@ -1084,7 +1088,7 @@ namespace ProtoFFI
                 return;
 
             var runtimeCore = dsi.runtime.RuntimeCore;
-            StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).VisibleItems.ToArray();
+            StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).Values.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];

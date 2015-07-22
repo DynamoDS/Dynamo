@@ -258,7 +258,7 @@
             <TextBlock Grid.Column="1"
                        Name="memberName"
                        HorizontalAlignment="Left"
-                       Text="{Binding Name}"
+                       Text="{Binding UserFriendlyName}"
                        VerticalAlignment="Top"
                        Margin="5,10,0,0"
                        Foreground="{StaticResource CommonSidebarTextColor}"

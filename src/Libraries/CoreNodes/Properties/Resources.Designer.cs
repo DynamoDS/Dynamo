@@ -124,6 +124,15 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use CSV.WriteToFile node instead.
+        /// </summary>
+        internal static string ExportToCSVObsolete {
+            get {
+                return ResourceManager.GetString("ExportToCSVObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a center point..
         /// </summary>
         internal static string FindPointsWithinRadiusNullPointMessage {
@@ -142,6 +151,24 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This node is obsolete, please use &quot;String from Object&quot;.
+        /// </summary>
+        internal static string FromObjectObsolete {
+            get {
+                return ResourceManager.GetString("FromObjectObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use File.FromPath -&gt;  Image.ReadFromFile nodes instead.
+        /// </summary>
+        internal static string LoadImageFromPathObsolete {
+            get {
+                return ResourceManager.GetString("LoadImageFromPathObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You cannot construct a quadtree from an empty set of points..
         /// </summary>
         internal static string QuadtreeConstructionEmptyUVSetMessage {
@@ -156,6 +183,33 @@ namespace DSCore.Properties {
         internal static string QuadtreeConstructionNullUVSetMessage {
             get {
                 return ResourceManager.GetString("QuadtreeConstructionNullUVSetMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels nodes instead.
+        /// </summary>
+        internal static string ReadImageObsolete {
+            get {
+                return ResourceManager.GetString("ReadImageObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use File.FromPath -&gt;  File.ReadText nodes instead..
+        /// </summary>
+        internal static string ReadTextObsolete {
+            get {
+                return ResourceManager.GetString("ReadTextObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Image.WriteToFile node instead.
+        /// </summary>
+        internal static string WriteImageObsolete {
+            get {
+                return ResourceManager.GetString("WriteImageObsolete", resourceCulture);
             }
         }
     }
