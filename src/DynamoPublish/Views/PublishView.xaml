@@ -45,7 +45,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -205,14 +205,13 @@
                     Grid.Row="2"
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
-                    Margin="0,11,0,0"
                     Background="{Binding IsReadyToUpload, Converter={StaticResource BooleanToBrushConverter}}"
                     Height="30">
             <TextBlock Name="UploadStateTextBlock"
                        Text="{Binding UploadStateMessage}"
                        Foreground="White"
                        VerticalAlignment="Center"
-                       Margin="10,0,0,0" />
+                       Margin="10,7,0,0" />
         </StackPanel>
 
     </Grid>
