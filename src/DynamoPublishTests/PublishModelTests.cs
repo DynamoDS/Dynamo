@@ -1,6 +1,7 @@
 ﻿using Dynamo;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Publish;
 using Dynamo.Publish.Models;
 using Greg;
 using Moq;
@@ -32,7 +33,7 @@ namespace DynamoPublishTests
             client.Setup(c =>
                 // If it's sent any workspace or any custom nodes, result always will be successful.
                 c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>())).
-                Returns("Successful");
+                Returns(Resource.WorkspacesSendSucceededServerResponse);
 
             // Create publish model.
             publishModel = new PublishModel(authenticationProvider.Object, 
@@ -49,6 +50,23 @@ namespace DynamoPublishTests
 
             Assert.IsNotNull(publishModel.HomeWorkspace);
             Assert.AreEqual(1, publishModel.CustomNodeWorkspaces.Count);
+        }
+
+        [Test]
+        public void PublishModelStateTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"Libraries\DynamoPublishTests\PublishWorkspaceTest.dyn");
+            OpenModel(openPath);
+
+            publishModel.SendAsynchronously(CurrentDynamoModel.Workspaces);
+            Assert.AreEqual(PublishModel.UploadState.Uploading, publishModel.State);
+
+            // Wait until workspace is sent.
+            while (publishModel.State == PublishModel.UploadState.Uploading)
+            {
+            }
+
+            Assert.AreEqual(PublishModel.UploadState.Succeeded, publishModel.State);
         }
     }
 }
