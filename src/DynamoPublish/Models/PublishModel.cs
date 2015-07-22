@@ -130,7 +130,7 @@ namespace Dynamo.Publish.Models
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new Exception(Resource.ServerErrorMessage);
+                throw new Exception(Resource.ServerNotFoundMessage);
 
             port = appSettings.Settings["Port"].Value;
             if (String.IsNullOrWhiteSpace(port))

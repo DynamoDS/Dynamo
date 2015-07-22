@@ -24,6 +24,7 @@ namespace Dynamo.Publish.ViewModels
             {
                 name = value;
                 RaisePropertyChanged("Name");
+                PublishCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -35,6 +36,7 @@ namespace Dynamo.Publish.ViewModels
             {
                 description = value;
                 RaisePropertyChanged("Description");
+                PublishCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -58,7 +60,7 @@ namespace Dynamo.Publish.ViewModels
                 uploadStateMessage = value;
                 RaisePropertyChanged("UploadStateMessage");
             }
-        }        
+        }
 
         private readonly PublishModel model;
         internal PublishModel Model
@@ -78,6 +80,8 @@ namespace Dynamo.Publish.ViewModels
                 if (isUploading != value)
                 {
                     isUploading = value;
+                    if (isUploading)
+                        UploadStateMessage = Resource.UploadingMessage;
                     RaisePropertyChanged("IsUploading");
                 }
             }
@@ -90,7 +94,7 @@ namespace Dynamo.Publish.ViewModels
 
         #region Click commands
 
-        public ICommand PublishCommand { get; private set; }
+        public DelegateCommand PublishCommand { get; private set; }
 
         #endregion
 
@@ -122,6 +126,7 @@ namespace Dynamo.Publish.ViewModels
         private void OnModelStateChanged(PublishModel.UploadState state)
         {
             IsUploading = state == PublishModel.UploadState.Uploading;
+            PublishCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanPublish(object obj)
@@ -144,12 +149,20 @@ namespace Dynamo.Publish.ViewModels
                 return false;
             }
 
-            if(model.State == PublishModel.UploadState.Failed)
+            if (isUploading)
             {
-                GenerateErrorMessage();
                 return false;
             }
 
+            if (model.State == PublishModel.UploadState.Failed)
+            {
+                GenerateErrorMessage();
+                // Even if there is error, user can try submit one more time.
+                // E.g. user typed wrong login or password.
+                return true;
+            }
+
+            UploadStateMessage = Resource.ReadyForPublishMessage;
             return true;
         }
 

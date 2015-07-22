@@ -174,11 +174,17 @@
   <data name="PublishViewTitle" xml:space="preserve">
     <value>Publish Customizer</value>
   </data>
+  <data name="ReadyForPublishMessage" xml:space="preserve">
+    <value>Workspace is ready for publish.</value>
+  </data>
   <data name="ServerNotFoundMessage" xml:space="preserve">
     <value>Server not found.</value>
   </data>
   <data name="UnknownServerErrorMessage" xml:space="preserve">
     <value>Error on the server side. Please, connect dynamo team for more information.</value>
+  </data>
+  <data name="UploadingMessage" xml:space="preserve">
+    <value>Uploading...</value>
   </data>
   <data name="WorkspacesSendSucceededServerResponse" xml:space="preserve">
     <value>{"message":"Workspaces saved."}</value>

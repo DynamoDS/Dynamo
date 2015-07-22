@@ -232,6 +232,15 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Workspace is ready for publish..
+        /// </summary>
+        public static string ReadyForPublishMessage {
+            get {
+                return ResourceManager.GetString("ReadyForPublishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server not found..
         /// </summary>
         public static string ServerNotFoundMessage {
@@ -246,6 +255,15 @@ namespace Dynamo.Publish {
         public static string UnknownServerErrorMessage {
             get {
                 return ResourceManager.GetString("UnknownServerErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading....
+        /// </summary>
+        public static string UploadingMessage {
+            get {
+                return ResourceManager.GetString("UploadingMessage", resourceCulture);
             }
         }
         
