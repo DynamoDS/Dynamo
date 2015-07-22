@@ -7,19 +7,21 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 using DynamoUtilities;
 
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
 using Double = System.Double;
 using String = System.String;
 using Dynamo.Wpf.Properties;
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 
 namespace Dynamo.PackageManager
 {
@@ -938,9 +940,53 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the element</summary>
         private void Submit()
         {
+            var files = BuildPackage();
             try
             {
-                // build the package
+                // begin submission
+                var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
+
+                // start upload
+                Uploading = true;
+                UploadHandle = handle;
+            }
+            catch (Exception e)
+            {
+                ErrorString = e.Message;
+                dynamoViewModel.Model.Logger.Log(e);
+            }
+        }
+
+        /// <summary>
+        /// Delegate used to publish the element to a local folder</summary>
+        private void PublishLocally()
+        {
+            var publishPath = GetPublishFolder();
+            if (string.IsNullOrEmpty(publishPath))
+                return;
+
+            var files = BuildPackage();
+
+            try
+            {
+                // begin publishing to local directory
+                var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
+                var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
+                builder.BuildDirectory(Package, publishPath, files);
+            }
+            catch (Exception e)
+            {
+                ErrorString = e.Message;
+                dynamoViewModel.Model.Logger.Log(e);
+            }
+        }
+
+        // build the package
+        private IEnumerable<string> BuildPackage()
+        {
+            try
+            {
                 var isNewPackage = Package == null;
 
                 Package = Package ?? new Package("", Name, FullVersion, License);
@@ -968,26 +1014,59 @@ namespace Dynamo.PackageManager
 
                 Package.AddAssemblies(Assemblies);
 
-                // begin submission
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
-
-                // start upload
-                Uploading = true;
-                UploadHandle = handle;
-
+                return files;
             }
             catch (Exception e)
             {
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
             }
+
+            return null;
         }
 
-        /// <summary>
-        /// Delegate used to publish the element to a local folder</summary>
-        private void PublishLocally()
+        private string GetPublishFolder()
         {
-            
+            var pathManager = DynamoViewModel.Model.PathManager as PathManager;
+            var setting = DynamoViewModel.PreferenceSettings;
+
+            var folderBrowser = new FolderBrowserDialog
+            {
+                SelectedPath = pathManager.DefaultPackagesDirectory
+            };
+
+            if (folderBrowser.ShowDialog() != DialogResult.OK)
+                return string.Empty;
+
+            var folder = folderBrowser.SelectedPath;
+            var pkgSubFolder = Path.Combine(folder, PathManager.PackagesDirectoryName);
+
+            var index = pathManager.PackagesDirectories.IndexOf(folder);
+            var subFolderIndex = pathManager.PackagesDirectories.IndexOf(pkgSubFolder);
+
+            // This folder is not in the list of package folders.
+            // Add it to the list as the default
+            if (index == -1 && subFolderIndex == -1)
+            {
+                setting.CustomPackageFolders.Insert(0, folder);
+                pathManager.LoadCustomPackageFolders(setting.CustomPackageFolders);
+                return folder;
+            }
+
+            // This folder has a package subfolder that is in the list.
+            // Make the subfolder the default
+            if (subFolderIndex != -1)
+            {
+                index = subFolderIndex;
+                folder = pkgSubFolder;
+            }
+
+            var temp = setting.CustomPackageFolders[index];
+            setting.CustomPackageFolders[index] = setting.CustomPackageFolders[0];
+            setting.CustomPackageFolders[0] = temp;
+
+            pathManager.LoadCustomPackageFolders(setting.CustomPackageFolders);
+            return folder;
         }
 
         private void AppendPackageContents()
