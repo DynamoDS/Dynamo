@@ -9,6 +9,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+            <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
+                                              TrueBrush="{StaticResource PublishStatePanelNormalBackground}"
+                                              FalseBrush="{StaticResource PublishStatePanelErrorBackground}" />
 
             <Style TargetType="{x:Type TextBox}"
                    x:Key="TextBoxStyle">
@@ -67,7 +70,7 @@
 
                 <TextBox Name="textBoxName"
                          Grid.Row="1"
-                         Text="{Binding Name, Mode=TwoWay}"
+                         Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource TextBoxStyle}" />
                 <TextBlock Name="textBlockDefaultName"
                            Text="{x:Static resx:Resource.PublishViewDefaultNameTitle}"
@@ -120,7 +123,7 @@
                          MinHeight="150"
                          Grid.Row="1"
                          Grid.ColumnSpan="2"
-                         Text="{Binding Description, Mode=TwoWay}"
+                         Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource TextBoxStyle}" />
                 <TextBlock Name="textBlockDefaultDescription"
                            Text="{x:Static resx:Resource.PublishViewDefaultDescriptionTitle}"
@@ -203,13 +206,13 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
                     Margin="0,11,0,0"
-                    Background="{StaticResource PublishStatePanelNormalBackground}"
+                    Background="{Binding IsReadyToUpload, Converter={StaticResource BooleanToBrushConverter}}"
                     Height="30">
             <TextBlock Name="UploadStateTextBlock"
                        Text="{Binding UploadStateMessage}"
                        Foreground="White"
                        VerticalAlignment="Center"
-                       Margin="10,8,0,0" />
+                       Margin="10,0,0,0" />
         </StackPanel>
 
     </Grid>

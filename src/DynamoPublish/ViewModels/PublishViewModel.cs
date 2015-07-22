@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -24,7 +25,7 @@ namespace Dynamo.Publish.ViewModels
             {
                 name = value;
                 RaisePropertyChanged("Name");
-                PublishCommand.RaiseCanExecuteChanged();
+                BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
             }
         }
 
@@ -36,7 +37,7 @@ namespace Dynamo.Publish.ViewModels
             {
                 description = value;
                 RaisePropertyChanged("Description");
-                PublishCommand.RaiseCanExecuteChanged();
+                BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
             }
         }
 
@@ -62,6 +63,17 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
+        private bool isReadyToUpload;
+        public bool IsReadyToUpload
+        {
+            get { return isReadyToUpload; }
+            private set
+            {
+                isReadyToUpload = value;
+                RaisePropertyChanged("IsReadyToUpload");
+            }
+        }
+
         private readonly PublishModel model;
         internal PublishModel Model
         {
@@ -81,11 +93,16 @@ namespace Dynamo.Publish.ViewModels
                 {
                     isUploading = value;
                     if (isUploading)
+                    {
                         UploadStateMessage = Resource.UploadingMessage;
+                        IsReadyToUpload = true;
+                    }
                     RaisePropertyChanged("IsUploading");
                 }
             }
         }
+
+        internal Dispatcher UIDispatcher { get; set; }
 
         public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
         public IWorkspaceModel CurrentWorkspaceModel { get; set; }
@@ -126,7 +143,7 @@ namespace Dynamo.Publish.ViewModels
         private void OnModelStateChanged(PublishModel.UploadState state)
         {
             IsUploading = state == PublishModel.UploadState.Uploading;
-            PublishCommand.RaiseCanExecuteChanged();
+            BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
         }
 
         private bool CanPublish(object obj)
@@ -134,21 +151,25 @@ namespace Dynamo.Publish.ViewModels
             if (String.IsNullOrWhiteSpace(Name))
             {
                 UploadStateMessage = Resource.ProvideWorskspaceNameMessage;
+                IsReadyToUpload = false;
                 return false;
             }
 
             if (String.IsNullOrWhiteSpace(Description))
             {
                 UploadStateMessage = Resource.ProvideWorskspaceDescriptionMessage;
+                IsReadyToUpload = false;
                 return false;
             }
 
             if (!model.HasAuthProvider)
             {
                 UploadStateMessage = Resource.ProvideAuthProviderMessage;
+                IsReadyToUpload = false;
                 return false;
             }
 
+            // If workspace is uploading now, we can't upload one more at the same time.
             if (isUploading)
             {
                 return false;
@@ -157,12 +178,14 @@ namespace Dynamo.Publish.ViewModels
             if (model.State == PublishModel.UploadState.Failed)
             {
                 GenerateErrorMessage();
+                IsReadyToUpload = false;
                 // Even if there is error, user can try submit one more time.
                 // E.g. user typed wrong login or password.
                 return true;
             }
 
             UploadStateMessage = Resource.ReadyForPublishMessage;
+            IsReadyToUpload = true;
             return true;
         }
 
@@ -183,6 +206,11 @@ namespace Dynamo.Publish.ViewModels
                     UploadStateMessage = Resource.UnknownServerErrorMessage;
                     break;
             }
+        }
+
+        private void BeginInvoke(Action action)
+        {
+            UIDispatcher.BeginInvoke(action);
         }
 
         #endregion

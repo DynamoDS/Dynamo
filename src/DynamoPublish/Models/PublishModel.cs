@@ -108,6 +108,9 @@ namespace Dynamo.Publish.Models
             private set
             {
                 errorType = value;
+
+                if (errorType != UploadErrorType.None)
+                    State = UploadState.Failed;
             }
         }
 
@@ -159,9 +162,7 @@ namespace Dynamo.Publish.Models
             // Manager must be initialized in constructor.
             if (authenticationProvider == null)
             {
-                State = UploadState.Failed;
                 Error = UploadErrorType.AuthProviderNotFound;
-
                 return;
             }
 
@@ -169,7 +170,6 @@ namespace Dynamo.Publish.Models
 
             if (!loggedIn)
             {
-                State = UploadState.Failed;
                 Error = UploadErrorType.AuthenticationFailed;
             }
         }
@@ -183,16 +183,15 @@ namespace Dynamo.Publish.Models
                     var result = this.Send(workspaces);
 
                     if (result == Resource.WorkspacesSendSucceededServerResponse)
+                    {
                         State = UploadState.Succeeded;
+                        Error = UploadErrorType.None;
+                    }
                     else
                     {
                         // If there wasn't any error during uploading, 
-                        // that means it's some error on server side.
-                        if (Error != UploadErrorType.None)
-                        {
-                            State = UploadState.Failed;
-                            Error = UploadErrorType.UnknownServerError;
-                        }
+                        // that means it's some error on the server side.
+                        Error = UploadErrorType.UnknownServerError;
                     }
                 });
 
@@ -205,21 +204,18 @@ namespace Dynamo.Publish.Models
         {
             if (String.IsNullOrWhiteSpace(serverUrl))
             {
-                State = UploadState.Failed;
                 Error = UploadErrorType.ServerNotFound;
                 return Resource.FailedMessage;
             }
 
             if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
-            {
-                State = UploadState.Failed;
+            {                
                 Error = UploadErrorType.AuthenticationFailed;
                 return Resource.FailedMessage;
             }
 
             if (authenticationProvider == null)
-            {
-                State = UploadState.Failed;
+            {                
                 Error = UploadErrorType.AuthProviderNotFound;
                 return Resource.FailedMessage;
             }
@@ -247,7 +243,16 @@ namespace Dynamo.Publish.Models
                     CustomNodeWorkspaces.Add(customNodeWs);
             }
 
-            return reachClient.Send(HomeWorkspace, CustomNodeWorkspaces);
+            string result;
+            try
+            {
+                result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces);
+            }
+            catch
+            {
+                result = Resource.FailedMessage;
+            }
+            return result;
         }
     }
 
