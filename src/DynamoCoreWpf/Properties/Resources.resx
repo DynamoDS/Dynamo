@@ -1872,4 +1872,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>Available Previews</value>
+  </data>
 </root>

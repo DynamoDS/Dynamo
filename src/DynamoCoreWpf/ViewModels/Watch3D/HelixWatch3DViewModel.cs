@@ -17,8 +17,10 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
@@ -33,17 +35,10 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
-    public class Watch3DViewModel : NotificationObject
+    public class HelixWatch3DViewModel : Watch3DViewModelBase
     {
         #region private members
 
-        protected DynamoModel model;
-        protected IRenderPackageFactory factory;
-        private DynamoViewModel viewModel;
-        private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
-        private int renderingTier;
-        private Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
-        private Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
         private LineGeometry3D worldGrid;
@@ -51,22 +46,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private RenderTechnique renderTechnique;
         private PerspectiveCamera camera;
         private double nearPlaneDistanceFactor = 0.01;
-        private Color4 selectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
-        private Color4 materialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
-        private Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
-        internal readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
-        internal readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
-        internal readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0);
-        private readonly Size defaultPointSize = new Size(8, 8);
         private DirectionalLight3D directionalLight;
         private bool showWatchSettingsControl = false;
-        internal static string gridKey = "Grid";
-        internal static string axesKey = "Axes";
-        internal static string directionalLightKey = "DirectionalLight";
+
+        private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+        private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
+        private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
+        private readonly Size defaultPointSize = new Size(8, 8);
+        private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
+        private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
+
+        internal static readonly Vector3D DefaultCameraLookDirection = new Vector3D(-10, -10, -10);
+        internal static readonly Point3D DefaultCameraPosition = new Point3D(10, 15, 10);
+        internal static readonly Vector3D DefaultCameraUpDirection = new Vector3D(0, 1, 0);
+
+        internal const string DefaultGridName = "Grid";
+        internal const string DefaultAxesName = "Axes";
+        internal const string DefaultLightName = "DirectionalLight";
 
 #if DEBUG
-        private Stopwatch renderTimer = new Stopwatch();
+        private readonly Stopwatch renderTimer = new Stopwatch();
 #endif
 
         #endregion
@@ -126,37 +126,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        public List<Model3D> Model3DValues
-        {
-            get
-            {
-                if (Model3DDictionary == null)
-                {
-                    return new List<Model3D>();
-                }
-
-                var values = Model3DDictionary.
-                    Select(x => x.Value).
-                    ToList();
-
-                values.Sort((a, b) =>
-                {
-                    var aType = a.GetType() == typeof(BillboardTextModel3D);
-                    var bType = b.GetType() == typeof(BillboardTextModel3D);
-                    return aType.CompareTo(bType);
-                });
-
-                return values;
-            }
-        }
-
         public LineGeometry3D Grid
         {
             get { return worldGrid; }
             set
             {
                 worldGrid = value;
-                RaisePropertyChanged(gridKey);
+                RaisePropertyChanged(DefaultGridName);
             }
         }
 
@@ -227,8 +203,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        internal string Name { get; set; }
-
         /// <summary>
         /// The LeftClickCommand is set according to the
         /// ViewModel's IsPanning or IsOrbiting properties.
@@ -260,26 +234,188 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        public IEnumerable<Model3D> SceneItems
+        {
+            get
+            {
+                if (Model3DDictionary == null)
+                {
+                    return new List<Model3D>();
+                }
+
+                var values = Model3DDictionary.
+                    Select(x => x.Value).
+                    ToList();
+
+                values.Sort((a, b) =>
+                {
+                    var aType = a.GetType() == typeof(BillboardTextModel3D);
+                    var bType = b.GetType() == typeof(BillboardTextModel3D);
+                    return aType.CompareTo(bType);
+                });
+
+                return values;
+            }
+        }
+
         #endregion
 
-        public Watch3DViewModel(DynamoModel model, IRenderPackageFactory factory, DynamoViewModel viewModel)
+        protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
         {
-            this.model = model;
-            this.factory = factory;
-            this.viewModel = viewModel;
-
             IsResizable = false;
-            Name = "background_preview";
+        }
 
-            RegisterEventHandlers();
+        public static HelixWatch3DViewModel Start(Watch3DViewModelStartupParams parameters)
+        {
+            var vm = new HelixWatch3DViewModel(parameters);
+            vm.OnStartup();
+            return vm;
+        }
 
+        protected override void OnStartup()
+        {
             SetupScene();
             InitializeHelix();
         }
 
-        #region public methods
+        protected override void OnSceneUpdated(IEnumerable<IRenderPackage> packages)
+        {
+            if (Active == false)
+            {
+                return;
+            }
 
-        public void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
+            // Raise request for model objects to be
+            // created on the UI thread.
+            OnRequestCreateModels(packages);
+        }
+
+        protected override void OnSceneClear()
+        {
+            lock (Model3DDictionaryMutex)
+            {
+                var keysList = new List<string> { "DirectionalLight", DefaultGridName, "Axes", "BillBoardText" };
+                if (Text != null && Text.TextInfo.Any())
+                {
+                    Text.TextInfo.Clear();
+                }
+                foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
+                {
+                    var model = Model3DDictionary[key] as GeometryModel3D;
+                    model.Detach();
+                    Model3DDictionary.Remove(key);
+                }
+            }
+
+            RaisePropertyChanged("SceneItems");
+            OnRequestViewRefresh();
+        }
+
+        protected override void OnWorkspaceCleared(object sender, EventArgs e)
+        {
+            SetCameraToDefaultOrientation();
+            base.OnWorkspaceCleared(sender, e);
+        }
+
+        protected override void OnWorkspaceOpening(XmlDocument doc)
+        {
+            var camerasElements = doc.GetElementsByTagName("Cameras");
+            if (camerasElements.Count == 0)
+            {
+                return;
+            }
+
+            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
+            {
+                LoadCamera(cameraNode);
+            }
+        }
+
+        protected override void OnWorkspaceSaving(XmlDocument doc)
+        {
+            var root = doc.DocumentElement;
+            if (root == null)
+            {
+                return;
+            }
+
+            var camerasElement = doc.CreateElement("Cameras");
+            SaveCamera(camerasElement);
+            root.AppendChild(camerasElement);
+        }
+
+        protected override void SelectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Reset:
+                    Model3DDictionary.Values.
+                        Where(v => v is GeometryModel3D).
+                        Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = false);
+                    return;
+
+                case NotifyCollectionChangedAction.Remove:
+                    SetSelection(e.OldItems, false);
+                    return;
+
+                case NotifyCollectionChangedAction.Add:
+
+                    // When a node is added to the workspace, it is also added
+                    // to the selection. When running automatically, this addition
+                    // also triggers an execution. This would successive calls to render.
+                    // To prevent this, we maintain a collection of recently added nodes, and
+                    // we check if the selection is an addition and if all of the recently
+                    // added nodes are contained in that selection. if so, we skip the render
+                    // as this render will occur after the upcoming execution.
+                    if (e.Action == NotifyCollectionChangedAction.Add && recentlyAddedNodes.Any()
+                        && recentlyAddedNodes.TrueForAll(n => e.NewItems.Contains((object)n)))
+                    {
+                        recentlyAddedNodes.Clear();
+                        return;
+                    }
+
+                    SetSelection(e.NewItems, true);
+                    return;
+            }
+        }
+
+        protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var node = sender as NodeModel;
+            if (node == null)
+            {
+                return;
+            }
+
+            switch (e.PropertyName)
+            {
+                case "DisplayLabels":
+                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
+                    break;
+
+                case "IsVisible":
+                    var geoms = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+                    if (geoms.Any())
+                    {
+                        geoms.ToList()
+                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
+                        RaisePropertyChanged("SceneItems");
+                    }
+                    else
+                    {
+                        node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
+                    }
+                    break;
+
+                case "IsUpdated":
+                    node.RequestVisualUpdateAsync(model.Scheduler,
+                        model.EngineController,
+                        factory);
+                    break;
+            }
+        }
+
+        public override void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(IEnumerable<IRenderPackage> taskPackages)
         {
             recentlyAddedNodes.Clear();
 
@@ -352,136 +488,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
-            RaisePropertyChanged("Model3DValues");
+            RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
         }
 
-        #endregion
-
-        #region private methods
-
-        private void RegisterEventHandlers()
-        {
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChangedHandler;
-
-            LogVisualizationCapabilities();
-
-            viewModel.PropertyChanged += OnViewModelPropertyChanged;
-
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
-
-            RegisterModelEventhandlers(model);
-
-            RegisterWorkspaceEventHandlers(model);
-
-        }
-
-        private void UnregisterEventHandlers()
-        {
-            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
-
-            viewModel.PropertyChanged -= OnViewModelPropertyChanged;
-
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
-
-            UnregisterModelEventHandlers(model);
-
-            UnregisterWorkspaceEventHandlers(model);
-        }
-
-        private void OnModelShutdownStarted(DynamoModel model)
-        {
-            UnregisterEventHandlers();
-        }
-
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "IsPanning":
-                case "IsOrbiting":
-                    RaisePropertyChanged("LeftClickCommand");
-                    break;
-            }
-        }
-
-        private void LogVisualizationCapabilities()
-        {
-            renderingTier = (RenderCapability.Tier >> 16);
-            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
-            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
-            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
-            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
-
-            model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-            model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported),
-                LogLevel.File);
-            model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported),
-                LogLevel.File);
-            model.Logger.Log(
-                string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-            model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize),
-                LogLevel.File);
-        }
-
-        private void SelectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Reset:
-                    Model3DDictionary.Values.
-                        Where(v => v is GeometryModel3D).
-                        Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = false);
-                    return;
-
-                case NotifyCollectionChangedAction.Remove:
-                    SetSelection(e.OldItems, false);
-                    return;
-
-                case NotifyCollectionChangedAction.Add:
-
-                    // When a node is added to the workspace, it is also added
-                    // to the selection. When running automatically, this addition
-                    // also triggers an execution. This would successive calls to render.
-                    // To prevent this, we maintain a collection of recently added nodes, and
-                    // we check if the selection is an addition and if all of the recently
-                    // added nodes are contained in that selection. if so, we skip the render
-                    // as this render will occur after the upcoming execution.
-                    if (e.Action == NotifyCollectionChangedAction.Add && recentlyAddedNodes.Any()
-                        && recentlyAddedNodes.TrueForAll(n => e.NewItems.Contains((object)n)))
-                    {
-                        recentlyAddedNodes.Clear();
-                        return;
-                    }
-
-                    SetSelection(e.NewItems, true);
-                    return;
-            }
-        }
-
-        private void SetSelection(IEnumerable items, bool isSelected)
-        {
-            foreach (var item in items)
-            {
-                var node = item as NodeModel;
-                if (node == null)
-                {
-                    continue;
-                }
-
-                var geometryModels = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
-
-                if (!geometryModels.Any())
-                {
-                    continue;
-                }
-
-                var modelValues = geometryModels.Select(x => x.Value);
-                modelValues.Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = isSelected);
-            }
-        }
-
-        private void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
+        protected override void DeleteGeometryForIdentifier(string identifier, bool requestUpdate = true)
         {
             lock (Model3DDictionaryMutex)
             {
@@ -505,8 +516,84 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             if (!requestUpdate) return;
 
-            RaisePropertyChanged("Model3DValues");
+            RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
+        }
+
+        #region internal methods
+
+        internal void ComputeFrameUpdate(Rect3D sceneBounds)
+        {
+#if DEBUG
+            if (renderTimer.IsRunning)
+            {
+                renderTimer.Stop();
+                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
+                renderTimer.Reset();
+            }
+#endif
+            if (directionalLight == null)
+            {
+                return;
+            }
+
+            var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
+            var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
+            var right = Vector3.Cross(cf, cu);
+
+            var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
+            var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
+            var v = Vector3.Transform(cf, qaz * qel);
+            directionalLightDirection = v;
+
+            if (!directionalLight.Direction.Equals(directionalLightDirection))
+            {
+                directionalLight.Direction = v;
+            }
+
+            UpdateNearClipPlaneForSceneBounds(sceneBounds);
+        }
+
+        #endregion
+
+        protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(string identifier)
+        {
+            KeyValuePair<string, Model3D>[] geometryModels;
+
+            lock (Model3DDictionaryMutex)
+            {
+                geometryModels =
+                    Model3DDictionary
+                        .Where(x => x.Key.Contains(identifier))
+                        .Where(x => x.Value is GeometryModel3D)
+                        .Select(x => x).ToArray();
+            }
+
+            return geometryModels;
+        }
+
+        #region private methods
+
+        private void SetSelection(IEnumerable items, bool isSelected)
+        {
+            foreach (var item in items)
+            {
+                var node = item as NodeModel;
+                if (node == null)
+                {
+                    continue;
+                }
+
+                var geometryModels = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
+
+                if (!geometryModels.Any())
+                {
+                    continue;
+                }
+
+                var modelValues = geometryModels.Select(x => x.Value);
+                modelValues.Cast<GeometryModel3D>().ToList().ForEach(g => g.IsSelected = isSelected);
+            }
         }
 
         private void LogCameraWarning(string msg, Exception ex)
@@ -564,186 +651,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void RegisterModelEventhandlers(DynamoModel model)
-        {
-            model.WorkspaceCleared += OnWorkspaceCleared;
-            model.ShutdownStarted += OnModelShutdownStarted;
-            model.CleaningUp += ResetGeometryDictionary;
-        }
-
-        private void UnregisterModelEventHandlers(DynamoModel model)
-        {
-            model.WorkspaceCleared -= OnWorkspaceCleared;
-            model.ShutdownStarted -= OnModelShutdownStarted;
-            model.CleaningUp -= ResetGeometryDictionary;
-        }
-
-        private void UnregisterWorkspaceEventHandlers(DynamoModel model)
-        {
-            model.WorkspaceAdded -= OnWorkspaceAdded;
-            model.WorkspaceRemoved -= OnWorkspaceRemoved;
-            model.WorkspaceOpening -= OnWorkspaceOpening;
-
-            foreach (var ws in model.Workspaces)
-            {
-                ws.Saving -= OnWorkspaceSaving;
-            }
-        }
-
-        private void RegisterWorkspaceEventHandlers(DynamoModel model)
-        {
-            model.WorkspaceAdded += OnWorkspaceAdded;
-            model.WorkspaceRemoved += OnWorkspaceRemoved;
-            model.WorkspaceOpening += OnWorkspaceOpening;
-
-            foreach (var ws in model.Workspaces)
-            {
-                ws.Saving += OnWorkspaceSaving;
-                ws.NodeAdded += OnNodeAddedToWorkspace;
-                ws.NodeRemoved += OnNodeRemovedFromWorkspace;
-
-                foreach (var node in ws.Nodes)
-                {
-                    node.PropertyChanged += OnNodePropertyChanged;
-                    node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
-                }
-            }
-        }
-
-        private void OnRenderPackageFactoryViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "ShowEdges":
-                    model.PreferenceSettings.ShowEdges =
-                        factory.TessellationParameters.ShowEdges;
-                    break;
-            }
-
-            model.CurrentWorkspace.Nodes.Select(n => n.IsUpdated = true);
-
-            foreach (var node in
-                model.CurrentWorkspace.Nodes)
-            {
-                node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController,
-                        factory);
-            }
-        }
-
-        private void OnWorkspaceCleared(object sender, EventArgs e)
-        {
-            SetCameraToDefaultOrientation();
-            ResetGeometryDictionary();
-        }
-
-        private void OnWorkspaceOpening(XmlDocument doc)
-        {
-            var camerasElements = doc.GetElementsByTagName("Cameras");
-            if (camerasElements.Count == 0)
-            {
-                return;
-            }
-
-            foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
-            {
-                LoadCamera(cameraNode);
-            }
-        }
-
-        private void OnWorkspaceAdded(WorkspaceModel workspace)
-        {
-            workspace.Saving += OnWorkspaceSaving;
-            workspace.NodeAdded += OnNodeAddedToWorkspace;
-            workspace.NodeRemoved += OnNodeRemovedFromWorkspace;
-
-            foreach (var node in workspace.Nodes)
-            {
-                RegisterNodeEventHandlers(node);
-            }
-        }
-
-        private void OnWorkspaceRemoved(WorkspaceModel workspace)
-        {
-            workspace.Saving -= OnWorkspaceSaving;
-            workspace.NodeAdded -= OnNodeAddedToWorkspace;
-            workspace.NodeRemoved -= OnNodeRemovedFromWorkspace;
-
-            foreach (var node in workspace.Nodes)
-            {
-                UnregisterNodeEventHandlers(node);
-            }
-
-            ResetGeometryDictionary();
-        }
-
-        private void OnWorkspaceSaving(XmlDocument doc)
-        {
-            var root = doc.DocumentElement;
-            if (root == null)
-            {
-                return;
-            }
-
-            var camerasElement = doc.CreateElement("Cameras");
-            SaveCamera(camerasElement);
-            root.AppendChild(camerasElement);
-        }
-
-        private void OnNodeAddedToWorkspace(NodeModel node)
-        {
-            RegisterNodeEventHandlers(node);
-        }
-
-        private void OnNodeRemovedFromWorkspace(NodeModel node)
-        {
-            UnregisterNodeEventHandlers(node);
-            DeleteGeometryForIdentifier(node.AstIdentifierBase);
-        }
-
-        private void RegisterNodeEventHandlers(NodeModel node)
-        {
-            node.PropertyChanged += OnNodePropertyChanged;
-            node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
-
-            RegisterPortEventHandlers(node);
-        }
-
-        protected void RegisterPortEventHandlers(NodeModel node)
-        {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected += PortDisconnectedHandler;
-                p.PortConnected += PortConnectedHandler;
-            }
-        }
-
-        private void UnregisterPortEventHandlers(NodeModel node)
-        {
-            foreach (var p in node.InPorts)
-            {
-                p.PortDisconnected -= PortDisconnectedHandler;
-                p.PortConnected -= PortConnectedHandler;
-            }
-        }
-
-        protected virtual void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)
-        {
-            // Do nothing for a standard node.
-        }
-
-        protected virtual void PortDisconnectedHandler(PortModel port)
-        {
-            DeleteGeometryForIdentifier(port.Owner.AstIdentifierBase);
-        }
-
-        private void UnregisterNodeEventHandlers(NodeModel node)
-        {
-            node.PropertyChanged -= OnNodePropertyChanged;
-            node.UpdatedRenderPackagesAvailable -= OnUpdatedRenderPackagesAvailable;
-
-            UnregisterPortEventHandlers(node);
-        }
-
         private void SetupScene()
         {
             RenderTechnique = Techniques.RenderDynamo;
@@ -752,7 +659,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Name = "White",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = materialColor,
+                DiffuseColor = defaultMaterialColor,
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
@@ -762,7 +669,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Name = "White",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = selectionColor,
+                DiffuseColor = defaultSelectionColor,
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
@@ -776,6 +683,56 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             SetCameraToDefaultOrientation();
 
             DrawGrid();
+        }
+
+        /// <summary>
+        /// Initialize the Helix with these values. These values should be attached before the 
+        /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
+        /// So they are initialized before the process starts.
+        /// </summary>
+        private void InitializeHelix()
+        {
+            directionalLight = new DirectionalLight3D
+            {
+                Color = directionalLightColor,
+                Direction = directionalLightDirection,
+                Name = DefaultLightName
+            };
+
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(DefaultLightName))
+            {
+                Model3DDictionary.Add(DefaultLightName, directionalLight);
+            }
+
+            var gridModel3D = new LineGeometryModel3D
+            {
+                Geometry = Grid,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false,
+                Name = DefaultGridName
+            };
+
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(DefaultGridName))
+            {
+                Model3DDictionary.Add(DefaultGridName, gridModel3D);
+            }
+
+            var axesModel3D = new LineGeometryModel3D
+            {
+                Geometry = Axes,
+                Transform = Model1Transform,
+                Color = SharpDX.Color.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false,
+                Name = DefaultAxesName
+            };
+
+            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(DefaultAxesName))
+            {
+                Model3DDictionary.Add(DefaultAxesName, axesModel3D);
+            }
         }
 
         /// <summary>
@@ -892,9 +849,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetCameraToDefaultOrientation()
         {
-            Camera.LookDirection = defaultCameraLookDirection;
-            Camera.Position = defaultCameraPosition;
-            Camera.UpDirection = defaultCameraUpDirection;
+            Camera.LookDirection = DefaultCameraLookDirection;
+            Camera.Position = DefaultCameraPosition;
+            Camera.UpDirection = DefaultCameraUpDirection;
             Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
             Camera.FarPlaneDistance = 10000000;
         }
@@ -1126,7 +1083,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         Name = "White",
                         AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                        DiffuseColor = materialColor,
+                        DiffuseColor = defaultMaterialColor,
                         SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                         EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                         SpecularShininess = 12.8f,
@@ -1140,7 +1097,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-            ((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = selectionColor;
+            ((MaterialGeometryModel3D)meshGeometry3D).SelectionColor = defaultSelectionColor;
 
             return meshGeometry3D;
         }
@@ -1222,53 +1179,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// Initialize the Helix with these values. These values should be attached before the 
-        /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
-        /// So they are initialized before the process starts.
-        /// </summary>
-        private void InitializeHelix()
-        {
-            directionalLight = new DirectionalLight3D
-            {
-                Color = directionalLightColor,
-                Direction = directionalLightDirection
-            };
-
-            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(directionalLightKey))
-            {
-                Model3DDictionary.Add(directionalLightKey, directionalLight);
-            }
-
-            var gridModel3D = new LineGeometryModel3D
-            {
-                Geometry = Grid,
-                Transform = Model1Transform,
-                Color = SharpDX.Color.White,
-                Thickness = 0.3,
-                IsHitTestVisible = false
-            };
-
-            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(gridKey))
-            {
-                Model3DDictionary.Add(gridKey, gridModel3D);
-            }
-
-            var axesModel3D = new LineGeometryModel3D
-            {
-                Geometry = Axes,
-                Transform = Model1Transform,
-                Color = SharpDX.Color.White,
-                Thickness = 0.3,
-                IsHitTestVisible = false
-            };
-
-            if (Model3DDictionary != null && !Model3DDictionary.ContainsKey(axesKey))
-            {
-                Model3DDictionary.Add(axesKey, axesModel3D);
-            }
-        }
-
-        /// <summary>
         /// This method attempts to maximize the near clip plane in order to 
         /// achiever higher z-buffer precision.
         /// </summary>
@@ -1277,133 +1187,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
             var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
             Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
-        }
-
-        #endregion
-
-        #region internal methods
-
-        internal void ComputeFrameUpdate(Rect3D sceneBounds)
-        {
-#if DEBUG
-            if (renderTimer.IsRunning)
-            {
-                renderTimer.Stop();
-                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
-                renderTimer.Reset();
-            }
-#endif
-            if (directionalLight == null)
-            {
-                return;
-            }
-
-            var cf = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z).Normalized();
-            var cu = new Vector3((float)camera.UpDirection.X, (float)camera.UpDirection.Y, (float)camera.UpDirection.Z).Normalized();
-            var right = Vector3.Cross(cf, cu);
-
-            var qel = Quaternion.RotationAxis(right, (float)((-LightElevationDegrees * Math.PI) / 180));
-            var qaz = Quaternion.RotationAxis(cu, (float)((LightAzimuthDegrees * Math.PI) / 180));
-            var v = Vector3.Transform(cf, qaz * qel);
-            directionalLightDirection = v;
-
-            if (!directionalLight.Direction.Equals(directionalLightDirection))
-            {
-                directionalLight.Direction = v;
-            }
-
-            UpdateNearClipPlaneForSceneBounds(sceneBounds);
-        }
-
-        #endregion
-
-        #region protected methods
-
-        protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var node = sender as NodeModel;
-            if (node == null)
-            {
-                return;
-            }
-
-            switch (e.PropertyName)
-            {
-                case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
-                    break;
-
-                case "IsVisible":
-                    var geoms = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
-                    if (geoms.Any())
-                    {
-                        geoms.ToList()
-                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
-                        RaisePropertyChanged("Model3DValues");
-                    }
-                    else
-                    {
-                        node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
-                    }
-                    break;
-
-                case "IsUpdated":
-                    node.RequestVisualUpdateAsync(model.Scheduler,
-                        model.EngineController,
-                        factory);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Reset the geometry dictionary, keeping the DirectionalLight ,Grid, and Axes.
-        /// These values are rendered only once by helix, attaching them again will make 
-        /// no effect on helix.
-        /// </summary> 
-        protected void ResetGeometryDictionary()
-        {
-            lock (Model3DDictionaryMutex)
-            {
-                var keysList = new List<string> {"DirectionalLight", gridKey, "Axes", "BillBoardText"};
-                if (Text != null && Text.TextInfo.Any())
-                {
-                    Text.TextInfo.Clear();
-                }
-                foreach (var key in Model3DDictionary.Keys.Except(keysList).ToList())
-                {
-                    var model = Model3DDictionary[key] as GeometryModel3D;
-                    model.Detach();
-                    Model3DDictionary.Remove(key);
-                }
-            }
-
-            RaisePropertyChanged("Model3DValues");
-            OnRequestViewRefresh();
-        }
-
-        protected KeyValuePair<string, Model3D>[] FindAllGeometryModel3DsForNode(string identifier)
-        {
-            KeyValuePair<string,Model3D>[] geometryModels;
-
-            lock (Model3DDictionaryMutex)
-            {
-                geometryModels =
-                    Model3DDictionary
-                        .Where(x => x.Key.Contains(identifier))
-                        .Where(x => x.Value is GeometryModel3D)
-                        .Select(x => x).ToArray();
-            }
-
-            return geometryModels;
-        }
-
-        protected virtual void OnUpdatedRenderPackagesAvailable(NodeModel source, IEnumerable<IRenderPackage> renderPackages)
-        {
-            // Raise request for model objects to be
-            // created on the UI thread.
-
-            var packages = renderPackages.ToArray();
-            OnRequestCreateModels(packages);
         }
 
         #endregion

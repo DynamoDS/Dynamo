@@ -50,7 +50,7 @@ namespace Dynamo.Controls
         #region private members
 
         private Point rightMousePoint;
-        private Watch3DViewModel viewModel;
+        private HelixWatch3DViewModel viewModel;
 
         #endregion
 
@@ -112,7 +112,7 @@ namespace Dynamo.Controls
 
         private void ViewLoadedHandler(object sender, RoutedEventArgs e)
         {
-            viewModel = DataContext as Watch3DViewModel;
+            viewModel = DataContext as HelixWatch3DViewModel;
 
             CompositionTarget.Rendering += CompositionTargetRenderingHandler;
 

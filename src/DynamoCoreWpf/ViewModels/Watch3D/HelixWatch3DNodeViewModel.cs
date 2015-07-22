@@ -3,24 +3,27 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
-    public class Watch3DNodeViewModel : Watch3DViewModel
+    public class HelixWatch3DNodeViewModel : HelixWatch3DViewModel
     {
         private NodeModel node;
 
-        public Watch3DNodeViewModel(NodeModel node, DynamoModel model, IRenderPackageFactory factory, DynamoViewModel viewModel):
-            base(model, factory, viewModel)
+        public static HelixWatch3DNodeViewModel Start(NodeModel node, Watch3DViewModelStartupParams parameters)
+        {
+            var vm = new HelixWatch3DNodeViewModel(node, parameters);
+            vm.OnStartup();
+            return vm;
+        }
+
+        private HelixWatch3DNodeViewModel(NodeModel node, Watch3DViewModelStartupParams parameters):
+            base(parameters)
         {
             this.node = node;
-
             IsResizable = true;
-            Name = string.Format("{0}_preview", node.GUID);
 
             RegisterPortEventHandlers(node);
         }
@@ -41,7 +44,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void PortDisconnectedHandler(PortModel obj)
         {
-            ResetGeometryDictionary();
+            OnSceneClear();
         }
 
         protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)

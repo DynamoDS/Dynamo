@@ -9,7 +9,7 @@ namespace Dynamo.Interfaces
         int ConsoleHeight { get; set; }
         bool ShowConnector { get; set; }
         ConnectorType ConnectorType { get; set; }
-        bool FullscreenWatchShowing { get; set; }
+        bool IsBackgroundPreviewActive { get; set; }
         string NumberFormat { get; set; }
         bool IsUsageReportingApproved { get; set; }
         bool IsAnalyticsReportingApproved { get; set; }

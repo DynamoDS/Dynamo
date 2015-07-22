@@ -562,22 +562,24 @@
                                       Command="{Binding ShowHideConnectorsCommand}">
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="{Binding AlternateContextGeometryDisplayText}"
-                                  Name="showGeometryInAlternateContextMenu"
-                                  Focusable="False"
-                                  Visibility="{Binding Path=VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=VisualizationManager.DrawToAlternateContext}">
-                        </MenuItem>
+
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenu3DPreview}"
                                   Name="background3dMenu"
                                   Focusable="False">
-                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
-                                      IsChecked="{Binding Path=FullscreenWatchShowing}"
-                                      Command="{Binding ToggleFullscreenWatchShowingCommand}"
-                                      Focusable="False" />
+
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuAvailablePreviews}" ItemsSource="{Binding Watch3DViewModels}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Name}"/>
+                                        <Setter Property="IsCheckable" Value="True"/>
+                                        <Setter Property="IsChecked" Value="{Binding Active}"/>
+                                        <Setter Property="Focusable" Value="False"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
+
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPreviewNavigate}"
-                                      IsEnabled="{Binding Path=FullscreenWatchShowing}"
+                                      IsEnabled="{Binding Path=BackgroundPreviewActive}"
                                       IsChecked="{Binding Path=CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
@@ -766,10 +768,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
-                        <MenuItem Focusable="False"
-                                  Header="Show Watch Settings Control"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding ShowWatchSettingsControl, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 
@@ -823,10 +821,10 @@
                 </Canvas.Background>
             </Canvas>
 
-            <controls:Watch3DView x:Name="background_preview" 
+            <controls:Watch3DView x:Name="BackgroundPreview" 
                                   DataContext="{Binding BackgroundPreviewViewModel}"
                                   Margin="0,20,0,0"
-                                  Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   IsHitTestVisible="{Binding WatchPreviewHitTest}">
             </controls:Watch3DView>
             
