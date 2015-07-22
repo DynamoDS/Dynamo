@@ -21,7 +21,7 @@ namespace Dynamo.UI.Views
     public partial class LibrarySearchView : UserControl
     {
         private SearchViewModel viewModel;
-        private LibraryDragAndDrop drag_drop = new LibraryDragAndDrop();
+        private LibraryDragAndDrop dragDropHelper = new LibraryDragAndDrop();
 
         public LibrarySearchView()
         {
@@ -115,7 +115,11 @@ namespace Dynamo.UI.Views
 
         private void OnButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            drag_drop.StartPosition = e.GetPosition(null);
+            var senderButton = e.OriginalSource as FrameworkElement;
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
         }
 
         private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
@@ -124,12 +128,7 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
-
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-                return;
-
-            drag_drop.MouseMove(senderButton, e.GetPosition(null), searchElementVM);
+            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
         }
 
         #endregion

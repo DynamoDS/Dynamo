@@ -13,31 +13,44 @@ namespace Dynamo.Wpf.Utilities
         /// <summary>
         /// Position of mouse, when user clicks on button.
         /// </summary>
-        public Point StartPosition;
+        private Point startPosition;
+        private NodeSearchElementViewModel nodeViewModel;
 
         /// <summary>
         /// Indicates whether item is dragging or not, so that there won't be more than one DoDragDrop event.
         /// </summary>
-        private bool IsDragging;
+        private bool isDragging;
 
-        public void MouseMove(FrameworkElement sender, Point currentPosition, NodeSearchElementViewModel node)
+        internal void HandleMouseDown(Point position, NodeSearchElementViewModel node)
         {
+            startPosition = position;
+            nodeViewModel = node;
+        }
+
+        internal void HandleMouseMove(FrameworkElement sender, Point currentPosition)
+        {
+            if (isDragging || nodeViewModel == null)
+                return;
+
             // If item was dragged enough, then fire DoDragDrop. 
             // Otherwise it means user click on item and there is no need to fire DoDragDrop.
-            if ((System.Math.Abs(currentPosition.X - StartPosition.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                System.Math.Abs(currentPosition.Y - StartPosition.Y) > SystemParameters.MinimumVerticalDragDistance) &&
-                !IsDragging)
-            {
-                StartDrag(sender, node);
-            }
+            var deltaX = System.Math.Abs(currentPosition.X - startPosition.X);
+            if (deltaX < SystemParameters.MinimumHorizontalDragDistance)
+                return;
+
+            var deltaY = System.Math.Abs(currentPosition.Y - startPosition.Y);
+            if (deltaY < SystemParameters.MinimumVerticalDragDistance)
+                return;
+
+            StartDrag(sender, nodeViewModel);
 
         }
 
         private void StartDrag(FrameworkElement sender, NodeSearchElementViewModel node)
         {
-            IsDragging = true;
+            isDragging = true;
             DragDrop.DoDragDrop(sender, new DragDropNodeSearchElementInfo(node.Model), DragDropEffects.Copy);
-            IsDragging = false;
+            isDragging = false;
         }
     }
 }

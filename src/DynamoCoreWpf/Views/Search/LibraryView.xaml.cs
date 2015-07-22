@@ -19,7 +19,7 @@ namespace Dynamo.UI.Views
     {
         // See OnExpanderButtonMouseLeftButtonUp for details.
         private bool ignoreMouseEnter;
-        private LibraryDragAndDrop drag_drop = new LibraryDragAndDrop();
+        private LibraryDragAndDrop dragDropHelper = new LibraryDragAndDrop();
 
         public LibraryView()
         {
@@ -291,7 +291,11 @@ namespace Dynamo.UI.Views
 
         private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            drag_drop.StartPosition = e.GetPosition(null);
+            var senderButton = e.OriginalSource as FrameworkElement;
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
         }
 
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
@@ -300,12 +304,7 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
-
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-                return;
-
-            drag_drop.MouseMove(senderButton, e.GetPosition(null), searchElementVM);
+            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
         }
 
         #endregion
