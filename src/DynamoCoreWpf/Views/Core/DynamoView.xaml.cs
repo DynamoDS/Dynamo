@@ -41,6 +41,7 @@ using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Manipulation;
 using Dynamo.Wpf.Interfaces;
+using Dynamo.Wpf.Views.PackageManager;
 
 namespace Dynamo.Controls
 {
@@ -407,6 +408,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackagePathsDialog += DynamoViewModelRequestPackagePaths;
 
             #endregion
 
@@ -586,6 +588,13 @@ namespace Dynamo.Controls
 
             _searchPkgsView.Focus();
             _pkgSearchVM.RefreshAndSearchAsync();
+        }
+
+        private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
+        {
+            var viewModel = new PackagePathViewModel(dynamoViewModel.PreferenceSettings);
+            var view = new PackagePathView(viewModel) { Owner = this };
+            view.ShowDialog();
         }
 
         private InstalledPackagesView _installedPkgsView;
@@ -934,6 +943,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestManagePackagesDialog -= DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackagePathsDialog -= DynamoViewModelRequestPackagePaths;
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
