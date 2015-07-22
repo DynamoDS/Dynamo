@@ -209,13 +209,13 @@ namespace Dynamo.Publish.Models
             }
 
             if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
-            {                
+            {
                 Error = UploadErrorType.AuthenticationFailed;
                 return Resource.FailedMessage;
             }
 
             if (authenticationProvider == null)
-            {                
+            {
                 Error = UploadErrorType.AuthProviderNotFound;
                 return Resource.FailedMessage;
             }
