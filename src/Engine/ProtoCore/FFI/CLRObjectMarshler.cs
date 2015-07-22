@@ -726,8 +726,10 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets marshaler for the given clrType and if it fails
+        /// If clrType is IEnumerable, returns a CollectionMarshaler, otherwise
+        /// gets marshaler for the given clrType and if it fails
         /// to get one, it tries to get primitive marshaler based on dsType.
+        /// 
         /// We want to get correct marshaler specific to the input type because
         /// more than one type gets map to same type in DS.
         /// </summary>
