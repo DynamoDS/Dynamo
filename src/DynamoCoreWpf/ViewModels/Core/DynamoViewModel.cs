@@ -1404,20 +1404,39 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
-            //trigger the event to request the display
-            //of the preset name dialogue
-            var args = new PresetsNamePromptEventArgs();
-            this.Model.OnRequestPresetNamePrompt(args);
-            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
-            if (args.Success)
+            var selectedNodes = GetInputNodes().ToList();
+
+            //If there are NO input nodes then show the error message
+            if (!selectedNodes.Any())
             {
-                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+                this.Model.OnRequestPresetWarningPrompt();
             }
+            else
+            {
+                //trigger the event to request the display
+                //of the preset name dialogue
+                var args = new PresetsNamePromptEventArgs();
+                this.Model.OnRequestPresetNamePrompt(args);
+
+                //Select only Input nodes for preset
+                var IDS = selectedNodes.Select(x => x.GUID).ToList();
+                if (args.Success)
+                {
+                    this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+                }
+            }
+          
         }
         private bool CanShowNewPresetStateDialog(object parameter)
         {
             RaisePropertyChanged("EnablePresetOptions");
             return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        public IEnumerable<NodeModel> GetInputNodes()
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                                .Where(x => x.IsInputNode).ToList();
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)

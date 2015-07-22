@@ -58,5 +58,37 @@ namespace DynamoCoreWpfTests
             //Check the Preset option visibility.
             Assert.AreEqual(false, ViewModel.EnablePresetOptions);
         }
+
+        [Test]
+        public void CanCreatePreset()
+        {
+            //Create a Node
+            var numberNode = new DoubleInput();
+            numberNode.Value = "1";
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numberNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+          
+            DynamoSelection.Instance.Selection.Add(numberNode);
+
+            //Check for input nodes
+            Assert.AreEqual(true, ViewModel.GetInputNodes().Any());
+
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            DynamoSelection.Instance.ClearSelection();
+
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            Assert.AreEqual(false, ViewModel.GetInputNodes().Any());
+
+            DynamoSelection.Instance.Selection.Add(numberNode);
+
+            //Check for input nodes
+            Assert.AreEqual(true, ViewModel.GetInputNodes().Any());
+
+        }
     }
 }

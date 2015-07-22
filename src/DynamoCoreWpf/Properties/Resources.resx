@@ -1872,4 +1872,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>
+  <data name="PresetWarningMessage" xml:space="preserve">
+    <value>Select an input node to create a Preset</value>
+  </data>
 </root>
