@@ -1873,6 +1873,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Is Input</value>
   </data>
   <data name="PresetWarningMessage" xml:space="preserve">
-    <value>Select an input node to create a Preset</value>
+    <value>No input nodes selected. Select at least one input node to create a preset.</value>
   </data>
 </root>
