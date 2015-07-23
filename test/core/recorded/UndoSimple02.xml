@@ -1,0 +1,64 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="195" Y="144" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="195" Y="144" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>b6ae9e41-4115-4ac3-a5fa-2b89899c47ea</ModelGuid>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="b6ae9e41-4115-4ac3-a5fa-2b89899c47ea" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="103" y="113" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="5fe8af19-1339-402b-9ccb-8a0529490ff2">
+    <ModelGuid>b6ae9e41-4115-4ac3-a5fa-2b89899c47ea</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="170" Y="259" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="158" Y="260" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="158" Y="260" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>943255e1-51bc-487f-ba0e-5a02242af782</ModelGuid>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="943255e1-51bc-487f-ba0e-5a02242af782" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="66" y="229" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="2;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="2" WorkspaceGuid="5fe8af19-1339-402b-9ccb-8a0529490ff2">
+    <ModelGuid>943255e1-51bc-487f-ba0e-5a02242af782</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="323" Y="251" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="347" Y="174" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>b77b23d5-0fd5-4979-8b50-4e7dbb8bda96</ModelGuid>
+    <Dynamo.Nodes.DSFunction guid="b77b23d5-0fd5-4979-8b50-4e7dbb8bda96" type="Dynamo.Nodes.DSFunction" nickname="+" x="347" y="174" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Operators" function="+@var[]..[],var[]..[]" />
+  </CreateNodeCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>b6ae9e41-4115-4ac3-a5fa-2b89899c47ea</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="0" ConnectionMode="1">
+    <ModelGuid>b77b23d5-0fd5-4979-8b50-4e7dbb8bda96</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="0" Type="1" ConnectionMode="0">
+    <ModelGuid>943255e1-51bc-487f-ba0e-5a02242af782</ModelGuid>
+  </MakeConnectionCommand>
+  <MakeConnectionCommand PortIndex="1" Type="0" ConnectionMode="1">
+    <ModelGuid>b77b23d5-0fd5-4979-8b50-4e7dbb8bda96</ModelGuid>
+  </MakeConnectionCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>b77b23d5-0fd5-4979-8b50-4e7dbb8bda96</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="385" Y="196" DragOperation="0" />
+  <DragSelectionCommand X="385" Y="196" DragOperation="1" />
+  <DeleteModelCommand>
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </DeleteModelCommand>
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="Run" PauseDurationInMs="20" />
+</Commands>

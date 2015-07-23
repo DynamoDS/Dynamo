@@ -22,7 +22,6 @@ using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.PackageManager;
-
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -1315,6 +1314,11 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ManagePackagePaths(object parameters)
+        {
+            OnRequestPackagePathsDialog(this, EventArgs.Empty);
+        }
+
         /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
@@ -1408,6 +1412,8 @@ namespace Dynamo.ViewModels
             if (args.Success)
             {
                 this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+                //Presets created - this will enable the Restore / Delete presets
+                RaisePropertyChanged("EnablePresetOptions");    
             }
         }
         private bool CanShowNewPresetStateDialog(object parameter)

@@ -995,6 +995,15 @@ namespace Dynamo.Tests
             AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", new object[] { new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false } });
 
         }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void TestListJoin()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\list\ListJoin.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("ea031ca8-9c49-4d14-a702-54022cb60e0f", 5);
+        }
     }
 
     [Category("DSCustomNode")]
@@ -1144,6 +1153,5 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
-        
     }
 }
