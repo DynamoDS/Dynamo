@@ -247,7 +247,20 @@ namespace Dynamo.Search
                 numberOfAllSymbols += subPattern.Length;
             }
 
-            return (double)numberOfMatchSymbols / numberOfAllSymbols > 0.8;
+            double similarity = (double)numberOfMatchSymbols / numberOfAllSymbols;
+
+            switch (numberOfAllSymbols)
+            {
+                case 3:
+                    // If there is just 3 letters(e.g. UVs), threshold should be lower.
+                    return similarity >= 0.6;
+                case 4:
+                    // The same for 4 letters.
+                    return similarity >= 0.75;
+                default:
+                    // By default threshold is 80% similarity.
+                    return similarity >= 0.8;
+            }
         }
 
         private static string[] SplitOnWhiteSpace(string s)
