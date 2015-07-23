@@ -15,8 +15,11 @@ namespace Dynamo.Publish
 
         private PublishViewModel publishViewModel;
         private PublishModel publishModel;
+        private InviteViewModel inviteViewModel;
+        private InviteModel inviteModel;
         private Menu dynamoMenu;
         private MenuItem extensionMenuItem;
+        private MenuItem inviteMenuItem;
 
         #region IViewExtension implementation
 
@@ -34,6 +37,9 @@ namespace Dynamo.Publish
         {
             publishModel = new PublishModel(p.AuthProvider, p.CustomNodeManager);
             publishViewModel = new PublishViewModel(publishModel);
+
+            inviteModel = new InviteModel(p.AuthProvider);
+            inviteViewModel = new InviteViewModel(inviteModel);            
         }
 
         public void Loaded(ViewLoadedParams p)
@@ -47,6 +53,14 @@ namespace Dynamo.Publish
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
             p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
+
+            inviteMenuItem = GenerateInviteMenuItem();
+            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
+
+            //Create a new Menu item here. Call it as Invite Menuitem
+            //Create a new view - InviteView - with Invitemodel and InviteVM.
+            //Configure the client in InviteModel. Use Restsharp / GregClient.cs
+            //then add the endpoint in JS file.
         }
 
         public void Shutdown()
@@ -89,8 +103,31 @@ namespace Dynamo.Publish
             item.Click += (sender, args) =>
                 {
                     PublishView publishWindow = new PublishView(publishViewModel);
-                    publishWindow.ShowDialog();
+                    publishWindow.ShowDialog();                    
                 };
+
+            return item;
+        }
+
+
+        /// <summary>
+        /// Generates the invite menu item.
+        /// </summary>
+        /// <returns></returns>
+        private MenuItem GenerateInviteMenuItem()
+        {
+            MenuItem item = new MenuItem();
+            item.Header = "Request for Access";
+
+            //var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
+
+            //item.IsEnabled = isEnabled;
+
+            item.Click += (sender, args) =>
+            {
+                InviteView inviteWindow = new InviteView(inviteViewModel);
+                inviteWindow.ShowDialog();
+            };
 
             return item;
         }
