@@ -701,11 +701,10 @@ namespace Dynamo.Controls
 
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-#if DEBUG
             if (renderTimer.IsRunning)
             {
                 renderTimer.Stop();
-                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
+                //Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
                 renderTimer.Reset();
                 if (viewModel.ShowBusyIndicator)
                 {
@@ -713,7 +712,7 @@ namespace Dynamo.Controls
                     viewModel.ShowBusyIndicator = false;
                 }
             }
-#endif
+
             if (directionalLight == null)
             {
                 return;
@@ -1003,9 +1002,8 @@ namespace Dynamo.Controls
                 return;
             }
 
-#if DEBUG
             renderTimer.Start();
-#endif                  
+                 
             Text = null;
 
             var packages = e.Packages.Concat(e.SelectedPackages)
@@ -1021,12 +1019,10 @@ namespace Dynamo.Controls
 
             AggregateRenderPackages(aggParams);
 
-#if DEBUG
             renderTimer.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
+           // Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
             renderTimer.Reset();
-            renderTimer.Start();
-#endif        
+            renderTimer.Start();       
             
             //Helix render the packages in certain order. Here, the BillBoardText has to be rendered
             //after rendering all the geometry. Otherwise, the Text will not get rendered at the right 
