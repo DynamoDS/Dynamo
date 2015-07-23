@@ -30,6 +30,7 @@ namespace DSCore.File
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("FilenameNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("FilePathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
@@ -43,6 +44,7 @@ namespace DSCore.File
     [NodeName("Directory Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DirectoryNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("DirectoryPathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
@@ -166,6 +168,7 @@ namespace DSCore.File
     [NodeName("File.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
     [NodeDescription("FileObjectNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("FilePathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class FileObject : FileSystemObject<FileInfo>
@@ -220,6 +223,7 @@ namespace DSCore.File
     [NodeName("Directory.FromPath")]
     [NodeCategory(BuiltinNodeCategories.CORE_IO)]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("DirectoryPathSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class DirectoryObject : FileSystemObject<DirectoryInfo>

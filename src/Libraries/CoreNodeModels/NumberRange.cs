@@ -10,6 +10,7 @@ namespace DSCoreNodesUI
     [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("NumberRangeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("NumberRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberRange : NodeModel
     {
