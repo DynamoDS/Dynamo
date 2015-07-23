@@ -25,7 +25,7 @@ using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
-    public class VisualizationManagerUITests : SystemTestBase
+    public class HelixWatch3DViewModelTests : SystemTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
