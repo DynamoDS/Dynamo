@@ -65,6 +65,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal const string DefaultAxesName = "Axes";
         internal const string DefaultLightName = "DirectionalLight";
 
+        private const string PointsKey = ":points";
+        private const string LinesKey = ":lines";
+        private const string MeshKey = ":mesh";
+
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
 #endif
@@ -877,9 +881,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach (var node in noRenderNodes)
                 {
                     var idBase = node.AstIdentifierBase;
-                    var pointsId = idBase + ":points";
-                    var linesId = idBase + ":lines";
-                    var meshId = idBase + ":mesh";
+                    var pointsId = idBase + PointsKey;
+                    var linesId = idBase + LinesKey;
+                    var meshId = idBase + MeshKey;
 
                     if (Model3DDictionary.ContainsKey(pointsId))
                     {
@@ -938,7 +942,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
-                        id = baseId + ":points";
+                        id = baseId + PointsKey;
 
                         PointGeometryModel3D pointGeometry3D;
 
@@ -977,7 +981,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        id = baseId + ":lines";
+                        id = baseId + LinesKey;
 
                         LineGeometryModel3D lineGeometry3D;
 
@@ -1018,7 +1022,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var m = rp.Mesh;
                     if (!m.Positions.Any()) continue;
 
-                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + ":mesh";
+                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null) ? rp.Description : baseId) + MeshKey;
 
                     DynamoGeometryModel3D meshGeometry3D;
 
