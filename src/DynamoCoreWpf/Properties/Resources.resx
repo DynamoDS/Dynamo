@@ -1356,7 +1356,7 @@ You will get a chance to save your work.</value>
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
   </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
-    <value>Publish a Package Online</value>
+    <value>Publish a Package</value>
   </data>
   <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
     <value>Website Url (optional)</value>
@@ -1650,7 +1650,7 @@ Do you want to install the latest Dynamo update?</value>
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
   </data>
   <data name="PublishPackage" xml:space="preserve">
-    <value>Publish Package !</value>
+    <value>Publish Online</value>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>What's New</value>
@@ -1873,6 +1873,9 @@ Do you want to install the latest Dynamo update?</value>
     <value>Is Input</value>
   </data>
   <data name="PresetWarningMessage" xml:space="preserve">
-    <value>No input nodes selected. Select at least one input node to create a preset.</value>
+    <value>No input nodes selected. Select at least one input node to create a preset.</value> 
+  </data>
+  <data name="PublishPackageLocally" xml:space="preserve">
+    <value>Publish Locally</value>
   </data>
 </root>

@@ -1424,6 +1424,10 @@ namespace Dynamo.ViewModels
                 {
                     this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
                 }
+ 
+                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+                //Presets created - this will enable the Restore / Delete presets
+                RaisePropertyChanged("EnablePresetOptions");     
             }
           
         }

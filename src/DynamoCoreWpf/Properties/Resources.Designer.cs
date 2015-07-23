@@ -3669,11 +3669,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish Package !.
+        ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
             get {
                 return ResourceManager.GetString("PublishPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Locally.
+        /// </summary>
+        public static string PublishPackageLocally {
+            get {
+                return ResourceManager.GetString("PublishPackageLocally", resourceCulture);
             }
         }
         
@@ -3822,7 +3831,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish a Package Online.
+        ///   Looks up a localized string similar to Publish a Package.
         /// </summary>
         public static string PublishPackageViewPublish {
             get {
