@@ -95,9 +95,13 @@ namespace Dynamo
         {
             var path = this.GetType().Assembly.Location;
             var config = ConfigurationManager.OpenExeConfiguration(path);
-            var key = config.AppSettings.Settings["alternativeSampleDirectory"];
-            alternativeSampleDirectory = key == null ? string.Empty : key.Value;
-
+            if (config!=null)
+            {
+                var key = config.AppSettings.Settings["alternativeSampleDirectory"];
+                alternativeSampleDirectory = key == null ? string.Empty : key.Value;
+                
+            }
+            
             string tempPath = Path.GetTempPath();
 
             TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
