@@ -158,6 +158,7 @@ namespace Dynamo.Publish.Models
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
+        /// <returns>String which is response from server.</returns>
         internal string Send(IEnumerable<IWorkspaceModel> workspaces)
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
