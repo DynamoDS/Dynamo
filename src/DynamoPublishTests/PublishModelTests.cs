@@ -61,9 +61,14 @@ namespace DynamoPublishTests
             publishModel.SendAsynchronously(CurrentDynamoModel.Workspaces);
             Assert.AreEqual(PublishModel.UploadState.Uploading, publishModel.State);
 
+            var startTime = DateTime.Now;
+            var halfMinute = new TimeSpan(0, 0, 30);
             // Wait until workspace is sent.
             while (publishModel.State == PublishModel.UploadState.Uploading)
             {
+                var now = DateTime.Now;
+                if (now - startTime > halfMinute)
+                    Assert.Fail("Couldn't send workspace to customizer in time.");
             }
 
             Assert.AreEqual(PublishModel.UploadState.Succeeded, publishModel.State);
