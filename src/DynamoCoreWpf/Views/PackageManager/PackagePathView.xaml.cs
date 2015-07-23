@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dynamo.UI;
 
 namespace Dynamo.Wpf.Views.PackageManager
 {
@@ -98,7 +99,7 @@ namespace Dynamo.Wpf.Views.PackageManager
             var args = e as PackagePathEventArgs;
             args.Cancel = true;
 
-            var dialog = new FolderBrowserDialog()
+            var dialog = new DynamoFolderBrowserDialog
             {
                 // Navigate to initial folder.
                 SelectedPath = args.Path
