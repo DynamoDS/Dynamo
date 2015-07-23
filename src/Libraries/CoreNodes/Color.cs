@@ -110,6 +110,7 @@ namespace DSCore
         ///     Gets the hue value for this color.
         /// </summary>
         /// <returns name="hue">double between 0 and 1 inclusive.</returns>
+        /// <search>hues</search>
         public static float Hue(Color c)
         {
             return c.color.GetHue();
