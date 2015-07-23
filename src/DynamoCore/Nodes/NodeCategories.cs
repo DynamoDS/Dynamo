@@ -548,9 +548,10 @@ namespace Dynamo.Nodes
                     continue;
                 }
 
-                if (row != lastRow)
+                if (row != lastRow || rows.Count() == 1)
                 {
                     // Rows other than the last get dots appended to the end.
+                    // Or if there is only one row.
                     results.Add(row.Substring(0, maxAfterTruncate) + Configurations.TwoDots);
                 }
                 else

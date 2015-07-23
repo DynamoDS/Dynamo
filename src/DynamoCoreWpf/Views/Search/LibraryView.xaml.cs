@@ -96,8 +96,12 @@ namespace Dynamo.UI.Views
             }
 
             FrameworkElement fromSender = sender as FrameworkElement;
-            libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            var memberVM = fromSender.DataContext as NodeSearchElementViewModel;
+            if (memberVM != null)
+            {
+                libraryToolTipPopup.PlacementTarget = fromSender;
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            }
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
