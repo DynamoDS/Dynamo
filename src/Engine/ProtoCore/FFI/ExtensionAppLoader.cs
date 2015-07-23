@@ -12,7 +12,18 @@ namespace ProtoFFI
         System.Collections.Hashtable mExtensionApps = new System.Collections.Hashtable();
         string mProtoInterface = string.Empty;
 
-        internal ExtensionAppLoader()
+        private static ExtensionAppLoader mInstance;
+        public static ExtensionAppLoader Instance
+        {
+            get
+            {
+                if (null == mInstance)
+                    mInstance = new ExtensionAppLoader();
+                return mInstance;
+            }
+        }
+
+        private ExtensionAppLoader()
         {
             mProtoInterface = typeof(IExtensionApplication).Assembly.GetName().Name;
             Initialize();
@@ -79,6 +90,7 @@ namespace ProtoFFI
             }
             mExtensionApps.Clear();
             mAssemblies.Clear();
+            mInstance = null;
         }
 
         private Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
