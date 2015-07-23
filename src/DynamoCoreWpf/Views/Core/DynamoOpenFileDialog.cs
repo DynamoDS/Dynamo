@@ -103,6 +103,64 @@ namespace Dynamo.UI
         public static extern IntPtr GetActiveWindow();
     }
 
+    class DynamoFolderBrowserDialog
+    {
+        private readonly NativeFileOpenDialog dialog;
+
+        public string Title
+        {
+            set { dialog.SetTitle(value); }
+        }
+
+        public string SelectedPath
+        {
+            get
+            {
+                string selectedPath;
+                IShellItem item;
+                dialog.GetResult(out item);
+                item.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out selectedPath);
+                return selectedPath;
+            }
+            set
+            {
+                object item;
+                // IShellItem GUID
+                Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
+                int hresult = SHCreateItemFromParsingName(value, IntPtr.Zero, ref guid, out item);
+                if (hresult != 0)
+                    throw new System.ComponentModel.Win32Exception(hresult);
+
+                dialog.SetFolder((IShellItem)item);
+            }
+        }
+
+        public DynamoFolderBrowserDialog()
+        {
+            dialog = new NativeFileOpenDialog();
+            dialog.SetOptions(FOS.FOS_PICKFOLDERS | FOS.FOS_FORCEFILESYSTEM | FOS.FOS_FILEMUSTEXIST);
+        }
+
+        public DialogResult ShowDialog()
+        {
+            var result = dialog.Show(GetActiveWindow());
+            if (result < 0)
+            {
+                if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                    return DialogResult.Cancel;
+                throw Marshal.GetExceptionForHR(result);
+            }
+
+            return DialogResult.OK;
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] out object ppv);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern IntPtr GetActiveWindow();
+    }
+
     [ComImport]
     [Guid("D57C7288-D4AD-4768-BE02-9D969532D960")]
     [CoClass(typeof(FileOpenDialogRCW))]

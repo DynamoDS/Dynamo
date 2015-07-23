@@ -11,6 +11,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -1034,7 +1035,7 @@ namespace Dynamo.PackageManager
             var pathManager = DynamoViewModel.Model.PathManager as PathManager;
             var setting = DynamoViewModel.PreferenceSettings;
 
-            var folderBrowser = new FolderBrowserDialog
+            var folderBrowser = new DynamoFolderBrowserDialog
             {
                 SelectedPath = pathManager.DefaultPackagesDirectory
             };
