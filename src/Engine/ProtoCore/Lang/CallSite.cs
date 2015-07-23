@@ -652,9 +652,9 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        private StackValue ReportFunctionGroupNotFound(RuntimeCore runtimeCore)
+        private StackValue ReportFunctionGroupNotFound(RuntimeCore runtimeCore, List<StackValue> arguments)
         {
-            runtimeCore.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
+            runtimeCore.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName, classScope, arguments);
             return StackValue.Null;
         }
 
@@ -1447,7 +1447,7 @@ namespace ProtoCore
                 if (runtimeCore.Options.DumpFunctionResolverLogic)
                     runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportFunctionGroupNotFound(runtimeCore);
+                return ReportFunctionGroupNotFound(runtimeCore, arguments);
             }
 
 

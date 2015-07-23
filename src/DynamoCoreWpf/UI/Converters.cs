@@ -2055,12 +2055,13 @@ namespace Dynamo.Controls
             var textBlock = values[0] as TextBlock;
             var viewModel = values[1] as SearchViewModel;
 
-            // In some cases viewModel can be null. Mostly it's because workspace has not loaded yet.
-            // But converter has been already called.
+            // This converter is used in Library view and in ClassInformation view.
+            // In Library view ViewModel is SearchViewModel, that's why it can't be null.
+            // But in ClassInformation view ViewModel is ClassInformationViewModel.
+            // So, if viewModel is null, that means we are in ClassInformationView
+            // and there is no need to create additional margin.
             if (viewModel == null)
-            {
                 return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
-            }
 
             var searchText = viewModel.SearchText;
             var typeface = viewModel.RegularTypeface;

@@ -6,6 +6,8 @@ using System.Text;
 using System.Windows.Forms;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.ViewModels;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace Dynamo.UI
 {
@@ -101,6 +103,72 @@ namespace Dynamo.UI
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetActiveWindow();
+    }
+
+    class DynamoFolderBrowserDialog
+    {
+        private readonly NativeFileOpenDialog dialog;
+
+        public string Title
+        {
+            set { dialog.SetTitle(value); }
+        }
+
+        public Window Owner { get; set; }
+
+        public string SelectedPath
+        {
+            get
+            {
+                string selectedPath;
+                IShellItem item;
+                dialog.GetResult(out item);
+                item.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out selectedPath);
+                return selectedPath;
+            }
+            set
+            {
+                object item;
+                // IShellItem GUID
+                Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
+                int hresult = SHCreateItemFromParsingName(value, IntPtr.Zero, ref guid, out item);
+                if (hresult != 0)
+                    throw new System.ComponentModel.Win32Exception(hresult);
+
+                dialog.SetFolder((IShellItem)item);
+            }
+        }
+
+        public DynamoFolderBrowserDialog()
+        {
+            dialog = new NativeFileOpenDialog();
+            dialog.SetOptions(FOS.FOS_PICKFOLDERS | FOS.FOS_FORCEFILESYSTEM | FOS.FOS_FILEMUSTEXIST);
+        }
+
+        public DialogResult ShowDialog()
+        {
+            try
+            {
+                IntPtr hWnd = new WindowInteropHelper(Owner).Handle;
+                var result = dialog.Show(hWnd);
+                if (result < 0)
+                {
+                    if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                        return DialogResult.Cancel;
+                    throw Marshal.GetExceptionForHR(result);
+                }
+
+                return DialogResult.OK;
+            }
+            finally 
+            {
+                if (dialog != null)
+                    Marshal.FinalReleaseComObject(dialog);
+            }
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] out object ppv);
     }
 
     [ComImport]

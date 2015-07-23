@@ -431,15 +431,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No function called {0} could be found. Please check the name of the function.
-        /// </summary>
-        public static string FUNCTION_GROUP_RESOLUTION_FAILURE {
-            get {
-                return ResourceManager.GetString("FUNCTION_GROUP_RESOLUTION_FAILURE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A function call is not allowed on the left hand side of an assignment.
         /// </summary>
         public static string FunctionCallCannotBeAtLeftSide {
@@ -454,6 +445,24 @@ namespace ProtoCore.Properties {
         public static string FunctionDispatchFailed {
             get {
                 return ResourceManager.GetString("FunctionDispatchFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No function called {0} on a {1} could be found.
+        /// </summary>
+        public static string FunctionGroupNotFound {
+            get {
+                return ResourceManager.GetString("FunctionGroupNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No function called {0} on a {1} that takes {2} could be found.
+        /// </summary>
+        public static string FunctionGroupWithParameterNotFound {
+            get {
+                return ResourceManager.GetString("FunctionGroupWithParameterNotFound", resourceCulture);
             }
         }
         
@@ -1430,7 +1439,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class &apos;{0}&apos; does not have a property &apos;{1}&apos;.
+        ///   Looks up a localized string similar to No property called {0} on {1} could be found.
         /// </summary>
         public static string kPropertyOfClassNotFound {
             get {
