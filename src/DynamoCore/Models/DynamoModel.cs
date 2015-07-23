@@ -44,7 +44,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDynamoModel, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, ILibraryLoader, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         #region private members
 
@@ -214,8 +214,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Custom Node Manager instance, manages all loaded custom nodes.
         /// </summary>
-        public ICustomNodeManager CustomNodeManager { get { return customNodeManager; } }
-        private readonly CustomNodeManager customNodeManager;
+        public readonly CustomNodeManager CustomNodeManager;
 
         /// <summary>
         ///     The Dynamo Logger, receives and manages all log messages.
@@ -526,7 +525,7 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            customNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
 
             extensionManager = new ExtensionManager();
@@ -571,7 +570,7 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, this);
+                    pathManager, this, CustomNodeManager);
 
                 foreach (var ext in extensions)
                 {
@@ -920,7 +919,7 @@ namespace Dynamo.Models
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
-        public void LoadNodeLibraryFromAssembly(Assembly assem)
+        public void LoadNodeLibrary(Assembly assem)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {

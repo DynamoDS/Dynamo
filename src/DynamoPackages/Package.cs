@@ -375,7 +375,7 @@ namespace Dynamo.PackageManager
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 
-        internal void UninstallCore(ICustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
+        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
         {
             if (LoadedAssemblies.Any())
             {
@@ -397,7 +397,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal void RefreshCustomNodesFromDirectory(ICustomNodeManager customNodeManager, bool isTestMode)
+        internal void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager, bool isTestMode)
         {
             LoadedCustomNodes.Clear();
 

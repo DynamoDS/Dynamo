@@ -20,15 +20,19 @@ namespace Dynamo.Extensions
         public IPathManager PathManager { get { return pathManager; } }
         private readonly IPathManager pathManager;
 
-        public IDynamoModel DynamoModel { get { return dynamoModel; } }
-        private readonly IDynamoModel dynamoModel;
+        public ILibraryLoader LibraryLoader { get { return libraryLoader; } }
+        private readonly ILibraryLoader libraryLoader;
+
+        public ICustomNodeManager CustomNodeManager { get { return customNodeManager; } }
+        private readonly ICustomNodeManager customNodeManager;
 
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
-            IDynamoModel dynamoModel)
+            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager)
         {
             this.authProvider = provider;
             this.pathManager = pathManager;
-            this.dynamoModel = dynamoModel;
+            this.libraryLoader = libraryLoader;
+            this.customNodeManager = customNodeManager;
         }
     }
 }

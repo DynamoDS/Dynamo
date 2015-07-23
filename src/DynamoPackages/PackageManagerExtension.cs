@@ -76,14 +76,14 @@ namespace Dynamo.PackageManager
 
             PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
             PackageLoader.MessageLogged += OnMessageLogged;
-            PackageLoader.RequestLoadNodeLibrary += startupParams.DynamoModel.LoadNodeLibraryFromAssembly;
+            PackageLoader.RequestLoadNodeLibrary += startupParams.LibraryLoader.LoadNodeLibrary;
             PackageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => startupParams.DynamoModel.CustomNodeManager
+                (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
 
             var dirBuilder = new PackageDirectoryBuilder(
                 new MutatingFileSystem(),
-                new CustomNodePathRemapper(startupParams.DynamoModel.CustomNodeManager, DynamoModel.IsTestMode));
+                new CustomNodePathRemapper(startupParams.CustomNodeManager, DynamoModel.IsTestMode));
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 

@@ -32,7 +32,7 @@ namespace Dynamo.Publish
 
         public void Startup(ViewStartupParams p)
         {
-            publishModel = new PublishModel(p.AuthProvider, p.DynamoModel.CustomNodeManager);
+            publishModel = new PublishModel(p.AuthProvider, p.CustomNodeManager);
             publishViewModel = new PublishViewModel(publishModel);
         }
 
