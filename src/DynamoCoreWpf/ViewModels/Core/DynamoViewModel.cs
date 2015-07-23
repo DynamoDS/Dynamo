@@ -536,17 +536,6 @@ namespace Dynamo.ViewModels
             var vm = HelixWatch3DViewModel.Start(backgroundPreviewParams);
             Watch3DViewModels.Add(vm);
             vm.PropertyChanged += HelixWatch3DViewModelPropertyChanged;
-
-            var testParams = new Watch3DViewModelStartupParams
-            {
-                Model = Model,
-                Factory = RenderPackageFactoryViewModel.Factory,
-                ViewModel = this,
-                IsActiveAtStart = false,
-                Name = "Test 3D Preview"
-            };
-            var vmTest = HelixWatch3DViewModel.Start(testParams);
-            Watch3DViewModels.Add(vmTest);
         }
 
         void HelixWatch3DViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
