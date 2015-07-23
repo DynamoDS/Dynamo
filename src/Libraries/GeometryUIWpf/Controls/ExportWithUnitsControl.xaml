@@ -6,6 +6,7 @@
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:controls="clr-namespace:Dynamo.Controls;assembly=CoreNodeModelsWpf"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
              mc:Ignorable="d" Width="250" Height="Auto">
 
@@ -57,7 +58,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock 
-            Text="Units:"
+            Text="{x:Static p:Resources.Units}"       
             Grid.Column="0"
             Margin="5,5,0,0"
             VerticalAlignment="Center"
