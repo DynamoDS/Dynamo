@@ -965,15 +965,19 @@ namespace Dynamo.PackageManager
             var publishPath = GetPublishFolder();
             if (string.IsNullOrEmpty(publishPath))
                 return;
+            
+            UploadState = PackageUploadHandle.State.Ready;
 
             var files = BuildPackage();
 
             try
             {
+                UploadState = PackageUploadHandle.State.Copying;
                 // begin publishing to local directory
                 var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
                 var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
                 builder.BuildDirectory(Package, publishPath, files);
+                UploadState = PackageUploadHandle.State.Uploaded;
             }
             catch (Exception e)
             {
@@ -1086,6 +1090,18 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            return CheckPackageValidity();
+        }
+
+        /// <summary>
+        /// Delegate used to publish the element locally </summary>
+        private bool CanPublishLocally()
+        {
+            return CheckPackageValidity();
+        }
+
+        private bool CheckPackageValidity()
+        {
             if (Name.Contains(@"\") || Name.Contains(@"/") || Name.Contains(@"*"))
             {
                 ErrorString = Resources.PackageNameCannotContainTheseCharacters;
@@ -1134,20 +1150,12 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            if ( UploadState != PackageUploadHandle.State.Error ) ErrorString = "";
+            if (UploadState != PackageUploadHandle.State.Error) ErrorString = "";
 
             if (Uploading) return false;
 
             return true;
         }
-
-        /// <summary>
-        /// Delegate used to publish the element locally </summary>
-        private bool CanPublishLocally()
-        {
-            return true;
-        }
-
     }
 
 }
