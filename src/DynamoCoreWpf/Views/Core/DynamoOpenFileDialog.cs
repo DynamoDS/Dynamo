@@ -108,6 +108,7 @@ namespace Dynamo.UI
     class DynamoFolderBrowserDialog
     {
         private readonly NativeFileOpenDialog dialog;
+        private string selectedPath = string.Empty;
 
         public string Title
         {
@@ -120,14 +121,11 @@ namespace Dynamo.UI
         {
             get
             {
-                string selectedPath;
-                IShellItem item;
-                dialog.GetResult(out item);
-                item.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out selectedPath);
                 return selectedPath;
             }
             set
             {
+                selectedPath = value;
                 object item;
                 // IShellItem GUID
                 Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
@@ -157,6 +155,12 @@ namespace Dynamo.UI
                         return DialogResult.Cancel;
                     throw Marshal.GetExceptionForHR(result);
                 }
+
+                string path;
+                IShellItem item;
+                dialog.GetResult(out item);
+                item.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out path);
+                SelectedPath = path;
 
                 return DialogResult.OK;
             }
