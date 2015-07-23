@@ -158,6 +158,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             model.WorkspaceCleared += OnWorkspaceCleared;
             model.ShutdownStarted += OnModelShutdownStarted;
             model.CleaningUp += OnSceneClear;
+            model.EvaluationCompleted += OnEvaluationCompleted;
+        }
+
+        protected virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            // Override in derived classed
         }
 
         private void UnregisterModelEventHandlers(DynamoModel model)

@@ -33,7 +33,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Mark upstream nodes as updated.
             // Trigger an aggregation.
             var gathered = new List<NodeModel>();
-            node.UpstreamNodes(gathered, n => n.IsUpstreamVisible);
+            node.UpstreamNodesMatchingPredicate(gathered, n => n.IsUpstreamVisible);
             if (gathered.Any())
             {
                 gathered.ForEach(n => n.IsUpdated = true);
@@ -62,7 +62,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case "IsUpstreamVisible":
 
                     var upstream = new List<NodeModel>();
-                    updatedNode.UpstreamNodes(upstream);
+                    updatedNode.AllUpstreamNodes(upstream);
 
                     foreach (var n in upstream)
                     {
@@ -90,7 +90,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             IEnumerable<IRenderPackage> renderPackages)
         {
             var upstream = new List<NodeModel>();
-            node.UpstreamNodes(upstream);
+            node.AllUpstreamNodes(upstream);
 
             if (node == null || !upstream.Contains(updatedNode))
             {

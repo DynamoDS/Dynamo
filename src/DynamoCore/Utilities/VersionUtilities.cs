@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.DesignScript.Interfaces;
+using Dynamo.DSEngine;
 using Dynamo.Models;
+using ProtoCore.Mirror;
 
 namespace Dynamo.Utilities
 {
@@ -22,59 +25,4 @@ namespace Dynamo.Utilities
             return Version.Parse(rejoinedVersion);
         }
     }
-
-    public static class NodeModelExtensions
-    {
-        internal static IEnumerable<NodeModel> UpstreamNodes(this NodeModel node, List<NodeModel> gathered, Predicate<NodeModel> match)
-        {
-            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c=>c.Start.Owner)).
-                Where(n=>match(n)).
-                ToList();
-
-            foreach (var n in upstream)
-            {
-                if (!gathered.Contains(n))
-                {
-                    gathered.Add(n);
-                }
-            }
-
-            foreach (var n in upstream)
-            {
-                n.UpstreamNodes(gathered, match);
-            }
-
-            return gathered;
-        }
-
-        internal static IEnumerable<NodeModel> UpstreamNodes(this NodeModel node, List<NodeModel> gathered)
-        {
-            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
-                ToList();
-
-            foreach (var n in upstream)
-            {
-                if (!gathered.Contains(n))
-                {
-                    gathered.Add(n);
-                }
-            }
-
-            foreach (var n in upstream)
-            {
-                n.UpstreamNodes(gathered);
-            }
-
-            return gathered;
-        }
-
-        internal static bool IsUpstreamOf(this NodeModel node, NodeModel otherNode)
-        {
-            var gathered = new List<NodeModel>();
-            otherNode.UpstreamNodes(gathered);
-
-            return gathered.Contains(node);
-        }
-    }
-
 }
