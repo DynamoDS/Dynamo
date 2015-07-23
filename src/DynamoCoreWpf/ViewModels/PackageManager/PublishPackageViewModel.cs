@@ -56,8 +56,8 @@ namespace Dynamo.PackageManager
                 {
                     _uploading = value;
                     RaisePropertyChanged("Uploading");
-                    BeginInvoke(
-                        (Action) (() => (SubmitCommand).RaiseCanExecuteChanged()));
+                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
                 }
             }
 
@@ -159,8 +159,8 @@ namespace Dynamo.PackageManager
                 {
                     _Description = value;
                     RaisePropertyChanged("Description");
-                    BeginInvoke(
-                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
+                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
                 }
             }
         }
@@ -221,8 +221,8 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MinorVersion = value;
                     RaisePropertyChanged("MinorVersion");
-                    BeginInvoke(
-                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
+                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
                 }
             }
         }
@@ -244,8 +244,8 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _BuildVersion = value;
                     RaisePropertyChanged("BuildVersion");
-                    BeginInvoke(
-                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
+                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
                 }
             }
         }
@@ -267,8 +267,8 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MajorVersion = value;
                     RaisePropertyChanged("MajorVersion");
-                    BeginInvoke(
-                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
+                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
                 }
             }
         }
@@ -342,8 +342,8 @@ namespace Dynamo.PackageManager
                 {
                     _name = value;
                     RaisePropertyChanged("Name");
-                    BeginInvoke(
-                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
+                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
                 }
             }
         }
@@ -520,6 +520,7 @@ namespace Dynamo.PackageManager
             {
                 CanSubmit();
                SubmitCommand.RaiseCanExecuteChanged();
+               PublishLocallyCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -965,14 +966,13 @@ namespace Dynamo.PackageManager
             var publishPath = GetPublishFolder();
             if (string.IsNullOrEmpty(publishPath))
                 return;
-            
-            UploadState = PackageUploadHandle.State.Ready;
 
             var files = BuildPackage();
 
             try
             {
                 UploadState = PackageUploadHandle.State.Copying;
+                Uploading = true;
                 // begin publishing to local directory
                 var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
                 var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
