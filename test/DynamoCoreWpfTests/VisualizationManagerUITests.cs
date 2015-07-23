@@ -36,7 +36,7 @@ namespace DynamoCoreWpfTests
             base.GetLibrariesToPreload(libraries);
         }
 
-        private IEnumerable<Model3D> Geometry
+        private IEnumerable<Model3D> BackgroundPreviewGeometry
         {
             get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
         } 
@@ -55,56 +55,57 @@ namespace DynamoCoreWpfTests
 
             OpenVisualizationTest("ASM_points_line.dyn");
 
-            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
             var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(Geometry.NumberOfInvisiblePoints(), 1);
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 1);
 
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
-            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(Geometry.NumberOfInvisibleCurves(), 1);
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisibleCurves(), 1);
 
             //flip those back on and ensure the visualization returns
             p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
             l1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
 
-            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
-            Assert.AreEqual(Geometry.NumberOfInvisibleCurves(), 0);
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisibleCurves(), 0);
         }
 
         [Test, Category("Failure")]
         public void Node_PreviewUpstreamToggled_RenderingUpToDate()
         {
-            //var model = ViewModel.Model;
+            var model = ViewModel.Model;
 
-            //OpenVisualizationTest("ASM_points_line.dyn");
+            OpenVisualizationTest("ASM_points_line.dyn");
 
-            //var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            DispatcherUtil.DoEvents();
 
-            ////we start with all previews disabled
-            ////the graph is two points feeding into a line
+            //we start with all previews disabled
+            //the graph is two points feeding into a line
 
-            ////ensure that visulations match our expectations
-            //Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7,6,0));
+            //ensure that visulations match our expectations
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
 
-            //// listen for the render complete event so
-            //// we can inspect the packages sent to the watch3d node
-            //var viz = ViewModel.VisualizationManager;
-            //viz.ResultsReadyToVisualize += viz_ResultsReadyToVisualize;
+            var watch3D = Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();
+            Assert.NotNull(watch3D);
 
-            ////flip off the line node's preview upstream
-            //var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
-            //l1.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
+            var vm = watch3D.viewModel as HelixWatch3DNodeViewModel;
+            Assert.NotNull(vm);
 
-            //viz.ResultsReadyToVisualize -= viz_ResultsReadyToVisualize;
+            //flip off the line node's preview upstream
+            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            l1.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
+
+            Assert.True(vm.SceneItems.HasNumberOfPointsCurvesAndMeshes(0,6,0));
         }
 
         [Test]
@@ -114,7 +115,7 @@ namespace DynamoCoreWpfTests
 
             OpenVisualizationTest("ASM_points_line.dyn");
 
-            Assert.True(Geometry.HasNumberOfPointsCurvesAndMeshes(7,6,0));
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7,6,0));
 
             var lineNode =
                 model.CurrentWorkspace.Nodes.FirstOrDefault(
@@ -122,7 +123,7 @@ namespace DynamoCoreWpfTests
             var port = lineNode.InPorts.First();
             port.Connectors.First().Delete();
 
-            Assert.AreEqual(Geometry.TotalCurves(), 0);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalCurves(), 0);
         }
 
         [Test]
@@ -135,7 +136,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
 
-            Assert.AreEqual(Geometry.TotalPoints(), 6);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalPoints(), 6);
 
             var pointNode =
                 model.CurrentWorkspace.Nodes.FirstOrDefault(
@@ -145,7 +146,7 @@ namespace DynamoCoreWpfTests
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
 
-            Assert.AreEqual(Geometry.TotalPoints(), 0);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalPoints(), 0);
         }
 
         [Test]
@@ -171,21 +172,21 @@ namespace DynamoCoreWpfTests
             var elementResolver = model.CurrentWorkspace.ElementResolver;
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<1>,a<1>);", elementResolver);
 
-            Assert.AreEqual(4, Geometry.TotalPoints());
+            Assert.AreEqual(4, BackgroundPreviewGeometry.TotalPoints());
 
             cbn.DisplayLabels = true;
-            Assert.AreEqual(4, Geometry.TotalText());
+            Assert.AreEqual(4, BackgroundPreviewGeometry.TotalText());
 
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<2>,a<3>);", elementResolver);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
 
-            Assert.AreEqual(64, Geometry.TotalPoints());
-            Assert.AreEqual(64, Geometry.TotalText());
+            Assert.AreEqual(64, BackgroundPreviewGeometry.TotalPoints());
+            Assert.AreEqual(64, BackgroundPreviewGeometry.TotalText());
 
             cbn.DisplayLabels = false;
 
-            Assert.AreEqual(0, Geometry.TotalText());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalText());
         }
 
         [Test]
@@ -206,7 +207,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(6, Geometry.TotalCurves());
+            Assert.AreEqual(6, BackgroundPreviewGeometry.TotalCurves());
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
@@ -216,13 +217,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
-            Assert.AreEqual(6, Geometry.TotalText());
-        }
-
-        [Test]
-        public void Node_MixedGeometryOutput_Deleted_AllGeometryGone()
-        {
-            Assert.Inconclusive("Finish me!");
+            Assert.AreEqual(6, BackgroundPreviewGeometry.TotalText());
         }
 
         #endregion
@@ -232,7 +227,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Workspace_Empty_NothingRenders()
         {
-            Assert.True(Geometry.HasNoUserCreatedModel3DObjects());
+            Assert.True(BackgroundPreviewGeometry.HasNoUserCreatedModel3DObjects());
         }
 
         [Test]
@@ -243,13 +238,13 @@ namespace DynamoCoreWpfTests
             OpenVisualizationTest("ASM_points.dyn");
 
             //ensure that we have some visualizations
-            Assert.Greater(Geometry.TotalPoints(), 0);
+            Assert.Greater(BackgroundPreviewGeometry.TotalPoints(), 0);
 
             //now clear the workspace
             model.ClearCurrentWorkspace();
 
             //ensure that we have no visualizations
-            Assert.AreEqual(Geometry.TotalPoints(), 0);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalPoints(), 0);
         }
 
         [Test]
@@ -258,14 +253,14 @@ namespace DynamoCoreWpfTests
             OpenVisualizationTest("ASM_points.dyn");
 
             // Ensure we have some geometry
-            Assert.Greater(Geometry.TotalPoints(), 0);
+            Assert.Greater(BackgroundPreviewGeometry.TotalPoints(), 0);
 
             // Open an empty file. This will test whether opening a
             // workspace causes any geometry to be left behind.
 
             OpenVisualizationTest("empty.dyn");
 
-            Assert.AreEqual(Geometry.TotalPoints(), 0);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalPoints(), 0);
         }
 
         [Test]
@@ -275,7 +270,7 @@ namespace DynamoCoreWpfTests
 
             //all nodes are set to not preview in the file
             //ensure that we have no visualizations
-            Assert.AreEqual(Geometry.TotalCurves(), 0);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalCurves(), 0);
         }
 
         #endregion
@@ -287,7 +282,7 @@ namespace DynamoCoreWpfTests
         {
             OpenVisualizationTest("ASM_thicken.dyn");
 
-            Assert.True(Geometry.HasAnyMeshes());
+            Assert.True(BackgroundPreviewGeometry.HasAnyMeshes());
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
         }
@@ -297,7 +292,7 @@ namespace DynamoCoreWpfTests
         {
             OpenVisualizationTest("ASM_cuboid.dyn");
 
-            Assert.AreEqual(Geometry.TotalMeshVerticesToRender(), 36);
+            Assert.AreEqual(BackgroundPreviewGeometry.TotalMeshVerticesToRender(), 36);
         }
 
         [Test]
@@ -517,7 +512,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
             var watch3DNode = ws.FirstNodeFromWorkspace<Watch3D>();
-            var totalPointsInView = Geometry.TotalPoints();
+            var totalPointsInView = BackgroundPreviewGeometry.TotalPoints();
             Assert.Greater(totalPointsInView, 3);
 
             // Disconnect the port coming into the watch3d node.
@@ -599,16 +594,6 @@ namespace DynamoCoreWpfTests
 
             Assert.True(ws.HasAnyColorMappedMeshes());
         }
-
-        //private void viz_ResultsReadyToVisualize(VisualizationEventArgs args)
-        //{
-        //    if (args.Id == Guid.Empty)
-        //    {
-        //        return;
-        //    }
-
-        //    Assert.AreEqual(Geometry.TotalPoints(), 0);
-        //}
 
         private void OpenVisualizationTest(string fileName)
         {

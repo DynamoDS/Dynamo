@@ -17,7 +17,6 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -30,11 +29,10 @@ namespace Dynamo.Nodes
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
         private Watch3D watch3dModel;
-        private HelixWatch3DViewModel viewModel;
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
-            model.ViewModel = nodeView.ViewModel.DynamoViewModel;
+            var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             watch3dModel = model;
             
             var renderingTier = (RenderCapability.Tier >> 16);
@@ -42,27 +40,27 @@ namespace Dynamo.Nodes
 
             var vmParams = new Watch3DViewModelStartupParams()
             {
-                Model = model.ViewModel.Model,
-                Factory = model.ViewModel.RenderPackageFactoryViewModel.Factory,
-                ViewModel = model.ViewModel,
+                Model = dynamoViewModel.Model,
+                Factory = dynamoViewModel.RenderPackageFactoryViewModel.Factory,
+                ViewModel = dynamoViewModel,
                 IsActiveAtStart = true,
                 Name = string.Format("{0} Preview", watch3dModel.GUID)
             };
 
-            viewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
+            model.viewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
 
             model.View = new Watch3DView()
             {
                 Width = model.WatchWidth,
                 Height = model.WatchHeight,
-                DataContext = viewModel
+                DataContext = model.viewModel
             };
 
             var pos = model.CameraPosition;
             var viewDir = model.LookDirection;
 
-            viewModel.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
-            viewModel.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
+            model.viewModel.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
+            model.viewModel.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
@@ -117,12 +115,7 @@ namespace Dynamo.Nodes
             watch3dModel.LookDirection = new Vector3D(viewDir.X, -viewDir.Z, viewDir.Y);
         }
 
-        /// <summary>
-        /// Create an IRenderPackage object provided an IGraphicItem
-        /// </summary>
-        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
-        /// <returns>An IRenderPackage object.</returns>
-        public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
+        private IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
         {
             var factory = new HelixRenderPackageFactory();
             var renderPackage = factory.CreateRenderPackage();
@@ -134,7 +127,7 @@ namespace Dynamo.Nodes
         {
             if (watch3dModel.View == null) return;
 
-            viewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            watch3dModel.viewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -170,8 +163,9 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
     {
+        internal HelixWatch3DViewModel viewModel;
+
         internal Watch3DView View { get; set; }
-        //public bool canNavigateBackground { get; private set; }
         public double WatchWidth { get; private set; }
         public double WatchHeight { get; private set; }
         public Point3D CameraPosition { get; set; }
@@ -186,35 +180,6 @@ namespace Dynamo.Nodes
                 RequestUpdateLatestCameraPosition();
             }
         }
-
-        #region public properties
-
-        //public DelegateCommand ToggleCanNavigateBackgroundCommand
-        //{
-        //    get
-        //    {
-        //        return this.ViewModel.ToggleCanNavigateBackgroundCommand;
-        //    }
-        //}
-
-        //public bool IsBackgroundPreview { get { return false; } }
-
-        //public bool CanNavigateBackground
-        //{
-        //    get
-        //    {
-        //        return canNavigateBackground;
-        //    }
-        //    set
-        //    {
-        //        canNavigateBackground = value;
-        //        RaisePropertyChanged("CanNavigateBackground");
-        //    }
-        //}
-
-        public DynamoViewModel ViewModel { get; set; }
-
-        #endregion
 
         #region constructors
 

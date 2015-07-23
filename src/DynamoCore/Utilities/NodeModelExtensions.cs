@@ -11,6 +11,26 @@ namespace Dynamo.Utilities
 {
     public static class NodeModelExtensions
     {
+        internal static void VisibleUpstreamNodes(this NodeModel node, List<NodeModel> gathered)
+        {
+            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
+                ToList();
+
+            foreach (var n in upstream)
+            {
+                if (gathered.Contains(n)) continue;
+
+                gathered.Add(n);
+
+                if (n.IsUpstreamVisible == false)
+                {
+                    continue;
+                }
+                
+                n.VisibleUpstreamNodes(gathered);
+            }
+        } 
+
         internal static IEnumerable<NodeModel> UpstreamNodesMatchingPredicate(this NodeModel node, List<NodeModel> gathered, Predicate<NodeModel> match)
         {
             var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
