@@ -389,6 +389,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             switch (e.PropertyName)
             {
+                case "IsUpdated":
                 case "DisplayLabels":
                     node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
                     break;
@@ -405,12 +406,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
                     }
-                    break;
-
-                case "IsUpdated":
-                    node.RequestVisualUpdateAsync(model.Scheduler,
-                        model.EngineController,
-                        factory);
                     break;
             }
         }
