@@ -43,7 +43,7 @@ namespace DynamoCoreWpfTests
 
         private Watch3DView BackgroundPreview
         {
-            get { return (Watch3DView)View.background_grid.FindName("background_preview"); }
+            get { return (Watch3DView)View.background_grid.FindName("BackgroundPreview"); }
         }
 
         #region node tests
