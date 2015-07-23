@@ -110,6 +110,14 @@ namespace FFITarget
             return x + y;
         }
 
+        public static IList JoinList(params IList[] lists)
+        {
+            var result = new ArrayList();
+            foreach (IList list in lists)
+                result.AddRange(list);
+            return result;
+        }
+
         public object[] GetMixedObjects()
         {
             object[] objs = { new DerivedDummy(), new Derived1(), new TestDispose(), new DummyDispose() };

@@ -9,7 +9,7 @@ using Microsoft.Office.Interop.Excel;
 using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
-
+using Dynamo.Models;
 namespace DSOffice
 {
     internal class ExcelCloseEventArgs : EventArgs
@@ -281,7 +281,7 @@ namespace DSOffice
             return ws.Data;
         }
 
-        [Obsolete("Use File.FromPath -> Excel.ReadFromFile node instead.")]
+        [NodeObsolete("ReadObsolete", typeof(Properties.Resources))]
         public static object[][] Read(string filePath, string sheetName)
         {
             return ReadFromFile(new FileInfo(filePath), sheetName);

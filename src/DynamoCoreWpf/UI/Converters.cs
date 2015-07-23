@@ -2060,7 +2060,7 @@ namespace Dynamo.Controls
             // But in ClassInformation view ViewModel is ClassInformationViewModel.
             // So, if viewModel is null, that means we are in ClassInformationView
             // and there is no need to create additional margin.
-            if(viewModel == null)
+            if (viewModel == null)
                 return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
 
             var searchText = viewModel.SearchText;

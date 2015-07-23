@@ -25,6 +25,7 @@ IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2016 (
 
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\nodes %cwd%\temp\bin\nodes *.dll *.xml /e
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\extensions %cwd%\temp\bin\extensions *.xml /e
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\viewExtensions %cwd%\temp\bin\viewExtensions *.dll *.xml /e
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\UI %cwd%\temp\bin\UI /E
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\DSCoreNodes_DynamoCustomization.xml %cwd%\temp\bin\DSCoreNodes_DynamoCustomization.xml
 copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCustomization.xml %cwd%\temp\bin\ProtoGeometry_DynamoCustomization.xml

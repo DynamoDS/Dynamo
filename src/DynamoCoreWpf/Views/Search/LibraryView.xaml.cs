@@ -10,7 +10,6 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.UI.Controls;
 using Dynamo.Wpf.Utilities;
-
 namespace Dynamo.UI.Views
 {
     /// <summary>
@@ -23,7 +22,7 @@ namespace Dynamo.UI.Views
 
         public LibraryView()
         {
-            InitializeComponent();
+            InitializeComponent(); 
 
             // Invalidate the DataContext here because it will be set at a later 
             // time through data binding expression. This way debugger will not 

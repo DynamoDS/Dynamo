@@ -652,9 +652,9 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="arguments"></param>
         /// <returns></returns>
-        private StackValue ReportFunctionGroupNotFound(RuntimeCore runtimeCore)
+        private StackValue ReportFunctionGroupNotFound(RuntimeCore runtimeCore, List<StackValue> arguments)
         {
-            runtimeCore.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
+            runtimeCore.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName, classScope, arguments);
             return StackValue.Null;
         }
 
@@ -1447,7 +1447,7 @@ namespace ProtoCore
                 if (runtimeCore.Options.DumpFunctionResolverLogic)
                     runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
 
-                return ReportFunctionGroupNotFound(runtimeCore);
+                return ReportFunctionGroupNotFound(runtimeCore, arguments);
             }
 
 
@@ -1506,8 +1506,9 @@ namespace ProtoCore
                 return ReportMethodNotFoundForArguments(runtimeCore, arguments);
             }
 
+            arguments.ForEach(x => runtimeCore.AddCallSiteGCRoot(CallSiteID, x));
             StackValue ret = Execute(resolvesFeps, context, arguments, replicationInstructions, stackFrame, runtimeCore, funcGroup);
-
+            runtimeCore.RemoveCallSiteGCRoot(CallSiteID);
             return ret;
         }
 
@@ -1762,7 +1763,7 @@ namespace ProtoCore
                     retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
-
+                    runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
                     retTrace.NestedData[i] = cleanRetTrace;
 
@@ -1877,10 +1878,11 @@ namespace ProtoCore
                     retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore,
                                                     funcGroup, lastExecTrace, cleanRetTrace);
 
-
+                    runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
                     retTrace.NestedData[i] = cleanRetTrace;
                 }
+
 
                 StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs);
                 return ret;

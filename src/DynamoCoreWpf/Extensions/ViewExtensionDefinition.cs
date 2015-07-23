@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Dynamo.Wpf.Extensions
     internal class ViewExtensionDefinition
     {
         [DataMember]
-        public string AssemblyName { get; set; }
+        public string AssemblyPath { get; set; }
 
         [DataMember]
         public string TypeName { get; set; }
