@@ -57,8 +57,11 @@ namespace Dynamo.PackageManager
                 {
                     _uploading = value;
                     RaisePropertyChanged("Uploading");
-                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
-                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() =>
+                    {
+                        SubmitCommand.RaiseCanExecuteChanged();
+                        PublishLocallyCommand.RaiseCanExecuteChanged();
+                    });
                 }
             }
 
@@ -160,8 +163,11 @@ namespace Dynamo.PackageManager
                 {
                     _Description = value;
                     RaisePropertyChanged("Description");
-                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
-                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() =>
+                    {
+                        SubmitCommand.RaiseCanExecuteChanged();
+                        PublishLocallyCommand.RaiseCanExecuteChanged();
+                    });
                 }
             }
         }
@@ -222,8 +228,11 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MinorVersion = value;
                     RaisePropertyChanged("MinorVersion");
-                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
-                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() =>
+                    {
+                        SubmitCommand.RaiseCanExecuteChanged();
+                        PublishLocallyCommand.RaiseCanExecuteChanged();
+                    });
                 }
             }
         }
@@ -245,8 +254,11 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _BuildVersion = value;
                     RaisePropertyChanged("BuildVersion");
-                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
-                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() =>
+                    {
+                        SubmitCommand.RaiseCanExecuteChanged();
+                        PublishLocallyCommand.RaiseCanExecuteChanged();
+                    });
                 }
             }
         }
@@ -268,8 +280,11 @@ namespace Dynamo.PackageManager
                     if (value.Length != 1) value = value.TrimStart(new char[] { '0' });
                     _MajorVersion = value;
                     RaisePropertyChanged("MajorVersion");
-                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
-                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() =>
+                    {
+                        SubmitCommand.RaiseCanExecuteChanged();
+                        PublishLocallyCommand.RaiseCanExecuteChanged();
+                    });
                 }
             }
         }
@@ -343,8 +358,11 @@ namespace Dynamo.PackageManager
                 {
                     _name = value;
                     RaisePropertyChanged("Name");
-                    BeginInvoke(() => SubmitCommand.RaiseCanExecuteChanged());
-                    BeginInvoke(() => PublishLocallyCommand.RaiseCanExecuteChanged());
+                    BeginInvoke(() =>
+                    {
+                        SubmitCommand.RaiseCanExecuteChanged();
+                        PublishLocallyCommand.RaiseCanExecuteChanged();
+                    });
                 }
             }
         }
@@ -1027,7 +1045,7 @@ namespace Dynamo.PackageManager
                 dynamoViewModel.Model.Logger.Log(e);
             }
 
-            return null;
+            return new string[] {};
         }
 
         private string GetPublishFolder()
@@ -1054,21 +1072,22 @@ namespace Dynamo.PackageManager
             if (index == -1 && subFolderIndex == -1)
             {
                 setting.CustomPackageFolders.Insert(0, folder);
-                pathManager.LoadCustomPackageFolders(setting.CustomPackageFolders);
-                return folder;
             }
-
-            // This folder has a package subfolder that is in the list.
-            // Make the subfolder the default
-            if (subFolderIndex != -1)
+            else
             {
-                index = subFolderIndex;
-                folder = pkgSubFolder;
-            }
+                // This folder has a package subfolder that is in the list.
+                // Make the subfolder the default
+                if (subFolderIndex != -1)
+                {
+                    index = subFolderIndex;
+                    folder = pkgSubFolder;
+                }
 
-            var temp = setting.CustomPackageFolders[index];
-            setting.CustomPackageFolders[index] = setting.CustomPackageFolders[0];
-            setting.CustomPackageFolders[0] = temp;
+                var temp = setting.CustomPackageFolders[index];
+                setting.CustomPackageFolders[index] = setting.CustomPackageFolders[0];
+                setting.CustomPackageFolders[0] = temp;
+
+            }
 
             pathManager.LoadCustomPackageFolders(setting.CustomPackageFolders);
             return folder;
