@@ -44,6 +44,15 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event PublishSuccessHandler PublishSuccess;
 
+        public event EventHandler<PackagePathEventArgs> RequestShowFolderBrowserDialog;
+        public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
+        {
+            if (RequestShowFolderBrowserDialog != null)
+            {
+                RequestShowFolderBrowserDialog(sender, e);
+            }
+        }
+
         /// <summary>
         /// This dialog is in one of two states.  Uploading or the user is filling out the dialog
         /// </summary>
@@ -1053,15 +1062,17 @@ namespace Dynamo.PackageManager
             var pathManager = DynamoViewModel.Model.PathManager as PathManager;
             var setting = DynamoViewModel.PreferenceSettings;
 
-            var folderBrowser = new DynamoFolderBrowserDialog
+            var args = new PackagePathEventArgs
             {
-                SelectedPath = pathManager.DefaultPackagesDirectory
+                Path = pathManager.DefaultPackagesDirectory
             };
 
-            if (folderBrowser.ShowDialog() != DialogResult.OK)
+            OnRequestShowFileDialog(this, args);
+
+            if (args.Cancel)
                 return string.Empty;
 
-            var folder = folderBrowser.SelectedPath;
+            var folder = args.Path;
             var pkgSubFolder = Path.Combine(folder, PathManager.PackagesDirectoryName);
 
             var index = pathManager.PackagesDirectories.IndexOf(folder);

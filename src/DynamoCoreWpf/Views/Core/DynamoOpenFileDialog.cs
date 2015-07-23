@@ -6,6 +6,8 @@ using System.Text;
 using System.Windows.Forms;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.ViewModels;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace Dynamo.UI
 {
@@ -112,6 +114,8 @@ namespace Dynamo.UI
             set { dialog.SetTitle(value); }
         }
 
+        public Window Owner { get; set; }
+
         public string SelectedPath
         {
             get
@@ -143,22 +147,28 @@ namespace Dynamo.UI
 
         public DialogResult ShowDialog()
         {
-            var result = dialog.Show(GetActiveWindow());
-            if (result < 0)
+            try
             {
-                if ((uint)result == (uint)HRESULT.E_CANCELLED)
-                    return DialogResult.Cancel;
-                throw Marshal.GetExceptionForHR(result);
-            }
+                IntPtr hWnd = new WindowInteropHelper(Owner).Handle;
+                var result = dialog.Show(hWnd);
+                if (result < 0)
+                {
+                    if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                        return DialogResult.Cancel;
+                    throw Marshal.GetExceptionForHR(result);
+                }
 
-            return DialogResult.OK;
+                return DialogResult.OK;
+            }
+            finally 
+            {
+                if (dialog != null)
+                    Marshal.FinalReleaseComObject(dialog);
+            }
         }
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         public static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] out object ppv);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern IntPtr GetActiveWindow();
     }
 
     [ComImport]

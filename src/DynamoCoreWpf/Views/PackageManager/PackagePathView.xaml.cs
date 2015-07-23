@@ -102,7 +102,8 @@ namespace Dynamo.Wpf.Views.PackageManager
             var dialog = new DynamoFolderBrowserDialog
             {
                 // Navigate to initial folder.
-                SelectedPath = args.Path
+                SelectedPath = args.Path,
+                Owner = this
             };
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
