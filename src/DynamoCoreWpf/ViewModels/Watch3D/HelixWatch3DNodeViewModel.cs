@@ -44,7 +44,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void PortDisconnectedHandler(PortModel obj)
         {
-            OnSceneClear();
+            OnClear();
         }
 
         protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)

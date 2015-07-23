@@ -278,7 +278,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             InitializeHelix();
         }
 
-        protected override void OnSceneUpdated(IEnumerable<IRenderPackage> packages)
+        protected override void OnBeginUpdate(IEnumerable<IRenderPackage> packages)
         {
             if (Active == false)
             {
@@ -290,7 +290,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnRequestCreateModels(packages);
         }
 
-        protected override void OnSceneClear()
+        protected override void OnClear()
         {
             lock (Model3DDictionaryMutex)
             {
@@ -309,6 +309,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
+        }
+
+        protected override void OnActiveStateChanged()
+        {
+            model.PreferenceSettings.IsBackgroundPreviewActive = active;
+
+            if (active == false && viewModel.CanNavigateBackground)
+            {
+                viewModel.CanNavigateBackground = false;
+            }
         }
 
         protected override void OnWorkspaceCleared(object sender, EventArgs e)

@@ -23,6 +23,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public string Name { get; set; }
     }
 
+    /// <summary>
+    /// The Watch3DViewModelBase is the base class for all 3D previews in Dynamo.
+    /// Classes which derive from this base are used to prepare geometry for 
+    /// rendering by various render targets. The base class handles the registration
+    /// of all necessary event handlers on models, workspaces, and nodes.
+    /// </summary>
     public class Watch3DViewModelBase : NotificationObject
     {
         protected DynamoModel model;
@@ -30,9 +36,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected IRenderPackageFactory factory;
         protected int renderingTier;
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
-        private bool active;
+        protected bool active;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
 
+        /// <summary>
+        /// A flag which indicates whether geometry should be processed.
+        /// </summary>
         public bool Active
         {
             get { return active; }
@@ -44,17 +53,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
-                model.PreferenceSettings.IsBackgroundPreviewActive = value;
-
-                if (value == false && viewModel.CanNavigateBackground)
-                {
-                    viewModel.CanNavigateBackground = false;
-                }
-
                 RaisePropertyChanged("Active");
+
+                OnActiveStateChanged();
             }
         }
 
+        /// <summary>
+        /// A name which identifies this view model when multiple
+        /// Watch3DViewModel objects exist.
+        /// </summary>
         public string Name { get; protected set; }
 
         protected Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
@@ -78,14 +86,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in inherited classes.
         }
 
-        protected virtual void OnSceneUpdated(IEnumerable<IRenderPackage> packages)
+        protected virtual void OnBeginUpdate(IEnumerable<IRenderPackage> packages)
         {
             // Override in inherited classes.
         }
 
-        protected virtual void OnSceneClear()
+        protected virtual void OnClear()
         {
             // Override in inherited classes.
+        }
+
+        protected virtual void OnActiveStateChanged()
+        {
+            UnregisterEventHandlers();
+            OnClear();
         }
 
         private void RegisterEventHandlers()
@@ -157,7 +171,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             model.WorkspaceCleared += OnWorkspaceCleared;
             model.ShutdownStarted += OnModelShutdownStarted;
-            model.CleaningUp += OnSceneClear;
+            model.CleaningUp += OnClear;
             model.EvaluationCompleted += OnEvaluationCompleted;
         }
 
@@ -170,7 +184,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             model.WorkspaceCleared -= OnWorkspaceCleared;
             model.ShutdownStarted -= OnModelShutdownStarted;
-            model.CleaningUp -= OnSceneClear;
+            model.CleaningUp -= OnClear;
         }
 
         private void UnregisterWorkspaceEventHandlers(DynamoModel model)
@@ -227,7 +241,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnWorkspaceCleared(object sender, EventArgs e)
         {
-            OnSceneClear();
+            OnClear();
         }
 
         protected virtual void OnWorkspaceOpening(XmlDocument doc)
@@ -258,7 +272,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 UnregisterNodeEventHandlers(node);
             }
 
-            OnSceneClear();
+            OnClear();
         }
 
         protected virtual void OnWorkspaceSaving(XmlDocument doc)
@@ -333,7 +347,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void OnUpdatedRenderPackagesAvailable(NodeModel updatedNode, IEnumerable<IRenderPackage> packages)
         {
-            OnSceneUpdated(packages);
+            OnBeginUpdate(packages);
         }
 
         public virtual void GenerateViewGeometryFromRenderPackagesAndRequestUpdate(
