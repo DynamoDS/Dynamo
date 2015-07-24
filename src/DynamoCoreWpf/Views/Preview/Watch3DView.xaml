@@ -93,6 +93,15 @@
 
                 <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuZoomToFit}"
                           Click="OnZoomToFitClickedHandler" />
+
+                <MenuItem Header="Show Preview Settings Control" Focusable="False" IsCheckable="True">
+                    <MenuItem.IsChecked>
+                        <Binding Path="PlacementTarget.DataContext.ShowWatchSettingsControl"
+                                 Mode="TwoWay"
+                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                    </MenuItem.IsChecked>
+                </MenuItem>
+                
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -127,9 +136,8 @@
             </hx:Viewport3DX.InputBindings>            
         </hx:Viewport3DX>
 
-        <Grid Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <preview:Watch3DSettingsControl x:Name="watchSettingsControl"  
-                                            DataContext=""
+        <Grid Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BoolToVisibilityConverter}}">
+            <preview:Watch3DSettingsControl x:Name="WatchSettingsControl"  
                                             HorizontalAlignment="Left" 
                                             VerticalAlignment="Top" Margin="10,30" />
         </Grid>

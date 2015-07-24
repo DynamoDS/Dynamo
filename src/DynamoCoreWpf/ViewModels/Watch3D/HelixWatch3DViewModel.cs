@@ -14,18 +14,15 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
-using Dynamo.Core;
-using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.Properties;
 using Dynamo.Selection;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
+using Color = SharpDX.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
@@ -717,7 +714,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Geometry = Grid,
                 Transform = Model1Transform,
-                Color = SharpDX.Color.White,
+                Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
                 Name = DefaultGridName
@@ -732,7 +729,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Geometry = Axes,
                 Transform = Model1Transform,
-                Color = SharpDX.Color.White,
+                Color = Color.White,
                 Thickness = 0.3,
                 IsHitTestVisible = false,
                 Name = DefaultAxesName
@@ -776,22 +773,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(50, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(SharpDX.Color.Red);
-            axesColors.Add(SharpDX.Color.Red);
+            axesColors.Add(Color.Red);
+            axesColors.Add(Color.Red);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 5, 0));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(SharpDX.Color.Blue);
-            axesColors.Add(SharpDX.Color.Blue);
+            axesColors.Add(Color.Blue);
+            axesColors.Add(Color.Blue);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
             axesPositions.Add(new Vector3(0, 0, -50));
             axesIndices.Add(axesPositions.Count - 1);
-            axesColors.Add(SharpDX.Color.Green);
-            axesColors.Add(SharpDX.Color.Green);
+            axesColors.Add(Color.Green);
+            axesColors.Add(Color.Green);
 
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
@@ -802,9 +799,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private static void DrawGridPatch(
             Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
         {
-            var c1 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#c5d1d8");
+            var c1 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#c5d1d8");
             c1.Clamp();
-            var c2 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#ddeaf2");
+            var c2 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#ddeaf2");
             c2.Clamp();
 
             var darkGridColor = new Color4(new Vector4(c1.ScR, c1.ScG, c1.ScB, 1));
@@ -1117,7 +1114,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Geometry = HelixRenderPackage.InitLineGeometry(),
                 Transform = Model1Transform,
-                Color = SharpDX.Color.White,
+                Color = Color.White,
                 Thickness = 0.5,
                 IsHitTestVisible = true,
                 IsSelected = rp.IsSelected
@@ -1131,7 +1128,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Geometry = HelixRenderPackage.InitPointGeometry(),
                 Transform = Model1Transform,
-                Color = SharpDX.Color.White,
+                Color = Color.White,
                 Figure = PointGeometryModel3D.PointFigure.Ellipse,
                 Size = defaultPointSize,
                 IsHitTestVisible = true,
