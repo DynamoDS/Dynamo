@@ -30,9 +30,15 @@ namespace DSCore.File
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             if (context == AstBuilder.CompilationContext.NodeToCode)
-                Value = Value.Replace(@"\", @"\\");
-
-            return base.BuildAst(inputAstNodes, context);
+            {
+                var rhs = AstFactory.BuildStringNode(Value.Replace(@"\", @"\\"));
+                var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+                return new[] { assignment };
+            }
+            else
+            {
+                return base.BuildAst(inputAstNodes, context);
+            }
         }
     }
 
