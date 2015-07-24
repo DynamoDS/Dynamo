@@ -340,7 +340,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert;Units;Length;Area;Volume.
+        ///   Looks up a localized string similar to Convert;Units;Length;Area;Volume;convertbetweenunits;.
         /// </summary>
         internal static string DynamoConvertSearchTags {
             get {
@@ -808,7 +808,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to numberrange;.
+        ///   Looks up a localized string similar to numberrange;numbersequence;.
         /// </summary>
         internal static string NumberRangeSearchTags {
             get {
@@ -822,6 +822,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string NumberSequenceDescription {
             get {
                 return ResourceManager.GetString("NumberSequenceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to numbersequence;.
+        /// </summary>
+        internal static string NumberSequenceSearchTags {
+            get {
+                return ResourceManager.GetString("NumberSequenceSearchTags", resourceCulture);
             }
         }
         

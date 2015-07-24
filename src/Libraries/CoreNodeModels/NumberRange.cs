@@ -52,6 +52,7 @@ namespace DSCoreNodesUI
     [NodeName("Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("NumberSequenceDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("NumberSequenceSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class NumberSeq : NodeModel
     {
