@@ -102,8 +102,12 @@ namespace Dynamo.Nodes
 
             this.selectionType = selectionType;
             this.selectionObjectType = selectionObjectType;
-
-            OutPortData.Add(new PortData("Elements", Resources.SelectionPortDataResultToolTip));
+            if (selectionMessage.Equals("Select Model Element"))
+            {
+                OutPortData.Add(new PortData("Element", Resources.SelectionPortDataResultToolTip));
+            }
+            else 
+                OutPortData.Add(new PortData("Elements", Resources.SelectionPortDataResultToolTip));
             RegisterAllPorts();
 
             Prefix = prefix;
