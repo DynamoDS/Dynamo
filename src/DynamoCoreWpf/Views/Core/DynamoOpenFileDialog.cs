@@ -107,46 +107,29 @@ namespace Dynamo.UI
 
     class DynamoFolderBrowserDialog
     {
-        private readonly NativeFileOpenDialog dialog;
-        private string selectedPath = string.Empty;
-
-        public string Title
-        {
-            set { dialog.SetTitle(value); }
-        }
-
+        public string Title { get; set; }
         public Window Owner { get; set; }
-
-        public string SelectedPath
-        {
-            get
-            {
-                return selectedPath;
-            }
-            set
-            {
-                selectedPath = value;
-                object item;
-                // IShellItem GUID
-                Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
-                int hresult = SHCreateItemFromParsingName(value, IntPtr.Zero, ref guid, out item);
-                if (hresult != 0)
-                    throw new System.ComponentModel.Win32Exception(hresult);
-
-                dialog.SetFolder((IShellItem)item);
-            }
-        }
-
-        public DynamoFolderBrowserDialog()
-        {
-            dialog = new NativeFileOpenDialog();
-            dialog.SetOptions(FOS.FOS_PICKFOLDERS | FOS.FOS_FORCEFILESYSTEM | FOS.FOS_FILEMUSTEXIST);
-        }
+        public string SelectedPath { get; set; }
 
         public DialogResult ShowDialog()
         {
+            NativeFileOpenDialog dialog = null;
             try
             {
+                dialog = new NativeFileOpenDialog();
+
+                dialog.SetTitle(Title);
+
+                object shellItem;
+                // IShellItem GUID
+                Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
+                int hresult = SHCreateItemFromParsingName(SelectedPath, IntPtr.Zero, ref guid, out shellItem);
+                if (hresult != 0)
+                    throw new System.ComponentModel.Win32Exception(hresult);
+                dialog.SetFolder((IShellItem)shellItem);
+
+                dialog.SetOptions(FOS.FOS_PICKFOLDERS | FOS.FOS_FORCEFILESYSTEM | FOS.FOS_FILEMUSTEXIST);
+
                 IntPtr hWnd = new WindowInteropHelper(Owner).Handle;
                 var result = dialog.Show(hWnd);
                 if (result < 0)
