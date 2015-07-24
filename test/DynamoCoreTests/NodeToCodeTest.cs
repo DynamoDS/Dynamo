@@ -1032,6 +1032,23 @@ namespace Dynamo.Tests
             Assert.IsTrue(cbn.Code.Contains(@"D:\\foo\\bar"));
         }
 
+        [Test]
+        public void TestNodeWithVarArgument()
+        {
+            OpenModel(@"core\node2code\splitstring.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, new[] { "foo", "bar", "qux" });
+        }
 
         private void SelectAll(IEnumerable<NodeModel> nodes)
         {
