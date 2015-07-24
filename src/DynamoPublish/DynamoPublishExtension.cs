@@ -82,7 +82,7 @@ namespace Dynamo.Publish
             MenuItem item = new MenuItem();
             item.Header = Resource.DynamoViewMenuItemPublishTitle;
 
-            var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel; // && publishModel.HasAuthProvider;
+            var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
 
             item.IsEnabled = isEnabled;
 
