@@ -145,43 +145,43 @@
     <value>"Port" is not set. Please, set port in configuration file.</value>
   </data>
   <data name="ProvideAuthProviderMessage" xml:space="preserve">
-    <value>Couldn't connect to server with this authentication provider. Try to use another provider.</value>
+    <value>Dynamo could not authenticate. Please report this message to the Dynamo team.</value>
   </data>
   <data name="ProvideWorskspaceDescriptionMessage" xml:space="preserve">
-    <value>Please, provide workspace description.</value>
+    <value>Please provide a description of your customizer.</value>
   </data>
   <data name="ProvideWorskspaceNameMessage" xml:space="preserve">
-    <value>Please, provide workspace name.</value>
+    <value>Please provide a name for your customizer.</value>
   </data>
   <data name="PublishButtonTitle" xml:space="preserve">
     <value>Publish</value>
   </data>
   <data name="PublishViewDefaultDescriptionTitle" xml:space="preserve">
-    <value>enter description here</value>
+    <value>A description of your customizer.</value>
   </data>
   <data name="PublishViewDefaultNameTitle" xml:space="preserve">
-    <value>defaults to file name</value>
+    <value>A name of your customizer.</value>
   </data>
   <data name="PublishViewDescriptionTitle" xml:space="preserve">
-    <value>Description:</value>
+    <value>Description</value>
   </data>
   <data name="PublishViewNameTitle" xml:space="preserve">
-    <value>Name:</value>
+    <value>Name</value>
   </data>
   <data name="PublishViewShareLinkTitle" xml:space="preserve">
-    <value>Share Link:</value>
+    <value>Share Link</value>
   </data>
   <data name="PublishViewTitle" xml:space="preserve">
     <value>Publish Customizer</value>
   </data>
   <data name="ReadyForPublishMessage" xml:space="preserve">
-    <value>Workspace is ready for publish.</value>
+    <value>Your workspace is ready to be published!</value>
   </data>
   <data name="ServerNotFoundMessage" xml:space="preserve">
     <value>Server not found.</value>
   </data>
   <data name="UnknownServerErrorMessage" xml:space="preserve">
-    <value>Error on the server side. Please, connect dynamo team for more information.</value>
+    <value>There was an error when trying to publish your workspace. Please report this message to the Dynamo team.</value>
   </data>
   <data name="UploadingMessage" xml:space="preserve">
     <value>Uploading...</value>

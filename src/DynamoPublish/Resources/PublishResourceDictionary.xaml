@@ -4,7 +4,7 @@
     <SolidColorBrush x:Key="PublishViewBackground"
                      Color="#3c3c3c" />
     <SolidColorBrush x:Key="PublishViewTextColor"
-                     Color="WhiteSmoke" />
+                     Color="DarkGray" />
     <SolidColorBrush x:Key="PublishStatePanelNormalBackground"
                      Color="LightSkyBlue" />
     <SolidColorBrush x:Key="PublishStatePanelErrorBackground"

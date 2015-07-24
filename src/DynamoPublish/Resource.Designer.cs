@@ -142,7 +142,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn&apos;t connect to server with this authentication provider. Try to use another provider..
+        ///   Looks up a localized string similar to Dynamo could not authenticate. Please report this message to the Dynamo team..
         /// </summary>
         public static string ProvideAuthProviderMessage {
             get {
@@ -151,7 +151,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please, provide workspace description..
+        ///   Looks up a localized string similar to Please provide a description of your customizer..
         /// </summary>
         public static string ProvideWorskspaceDescriptionMessage {
             get {
@@ -160,7 +160,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please, provide workspace name..
+        ///   Looks up a localized string similar to Please provide a name for your customizer..
         /// </summary>
         public static string ProvideWorskspaceNameMessage {
             get {
@@ -178,7 +178,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to enter description here.
+        ///   Looks up a localized string similar to A description of your customizer..
         /// </summary>
         public static string PublishViewDefaultDescriptionTitle {
             get {
@@ -187,7 +187,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to defaults to file name.
+        ///   Looks up a localized string similar to A name of your customizer..
         /// </summary>
         public static string PublishViewDefaultNameTitle {
             get {
@@ -196,7 +196,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Description:.
+        ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string PublishViewDescriptionTitle {
             get {
@@ -205,7 +205,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name:.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string PublishViewNameTitle {
             get {
@@ -214,7 +214,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share Link:.
+        ///   Looks up a localized string similar to Share Link.
         /// </summary>
         public static string PublishViewShareLinkTitle {
             get {
@@ -232,7 +232,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Workspace is ready for publish..
+        ///   Looks up a localized string similar to Your workspace is ready to be published!.
         /// </summary>
         public static string ReadyForPublishMessage {
             get {
@@ -250,7 +250,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error on the server side. Please, connect dynamo team for more information..
+        ///   Looks up a localized string similar to There was an error when trying to publish your workspace. Please report this message to the Dynamo team..
         /// </summary>
         public static string UnknownServerErrorMessage {
             get {
