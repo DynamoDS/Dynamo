@@ -11,6 +11,7 @@ using DSCoreNodesUI.Properties;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
+using Dynamo.DSEngine;
 
 namespace DSCore.File
 {
@@ -38,6 +39,20 @@ namespace DSCore.File
         {
             ShouldDisplayPreviewCore = false;
         }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
+        {
+            if (context == AstBuilder.CompilationContext.NodeToCode)
+            {
+                var rhs = AstFactory.BuildStringNode(Value.Replace(@"\", @"\\"));
+                var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+                return new[] { assignment };
+            }
+            else
+            {
+                return base.BuildAst(inputAstNodes, context);
+            }
+       }
     }
 
     [NodeName("Directory Path")]
