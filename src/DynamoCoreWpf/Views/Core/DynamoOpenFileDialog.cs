@@ -124,19 +124,19 @@ namespace Dynamo.UI
                 // IShellItem GUID
                 Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
                 int hresult = SHCreateItemFromParsingName(SelectedPath, IntPtr.Zero, ref guid, out shellItem);
-                if (hresult != 0)
-                    throw new System.ComponentModel.Win32Exception(hresult);
+                if ((uint)hresult != (uint)HRESULT.S_OK)
+                    throw Marshal.GetExceptionForHR(hresult);
                 dialog.SetFolder((IShellItem)shellItem);
 
                 dialog.SetOptions(FOS.FOS_PICKFOLDERS | FOS.FOS_FORCEFILESYSTEM | FOS.FOS_FILEMUSTEXIST);
 
                 IntPtr hWnd = new WindowInteropHelper(Owner).Handle;
-                var result = dialog.Show(hWnd);
-                if (result < 0)
+                hresult = dialog.Show(hWnd);
+                if (hresult < 0)
                 {
-                    if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                    if ((uint)hresult == (uint)HRESULT.E_CANCELLED)
                         return DialogResult.Cancel;
-                    throw Marshal.GetExceptionForHR(result);
+                    throw Marshal.GetExceptionForHR(hresult);
                 }
 
                 string path;
