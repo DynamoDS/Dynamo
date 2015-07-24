@@ -5,8 +5,8 @@
         xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         Title="{x:Static resx:Resource.PublishViewTitle}"
-        Width="605"
-        Height="510">
+        Height="510"
+        Width="605">
     <Window.Resources>
         <ResourceDictionary>
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
