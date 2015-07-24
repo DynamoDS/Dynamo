@@ -23,6 +23,7 @@ namespace Dynamo.Nodes
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("CodeBlockDescription",typeof(Dynamo.Properties.Resources))]
+    [NodeSearchTags("CodeBlockSearchTags", typeof(Dynamo.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {

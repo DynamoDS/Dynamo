@@ -30,7 +30,7 @@ namespace DSCore
         /// <param name="value1">One end of the range for the random number.</param>
         /// <param name="value2">One end of the range for the random number.</param>
         /// <returns name="number">Random number in the range [lowValue, highValue).</returns>
-        /// <search>random</search>
+        /// <search>random,numberrange</search>
         public static double Random(double value1, double value2)
         {
             double result = Min(value1, value2) + Abs(value2 - value1) * mRandom.NextDouble();
@@ -43,7 +43,7 @@ namespace DSCore
         /// </summary>
         /// <param name="amount">Amount of random numbers the result list will contain.</param>
         /// <returns name="number">List of random numbers between 0 and 1.</returns>
-        /// <search>random</search>
+        /// <search>random,listcontains</search>
         public static IList RandomList(int amount)
         {
             var result = new ArrayList();
@@ -387,7 +387,7 @@ namespace DSCore
         ///     Produce a random number in the range [0, 1).
         /// </summary>
         /// <returns name="number">Random number in the range [0, 1).</returns>
-        /// <search>random</search>
+        /// <search>random,numberrange</search>
         //[IsVisibleInDynamoLibrary(false)] //Keeping for compatibility, Random() supercedes this --SJE
         public static double Rand()
         {
