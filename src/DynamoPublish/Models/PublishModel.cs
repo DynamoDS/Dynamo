@@ -28,6 +28,15 @@ namespace Dynamo.Publish.Models
             Failed
         }
 
+        public enum UploadErrorType
+        {
+            None,
+            AuthenticationFailed,
+            ServerNotFound,
+            AuthProviderNotFound,
+            UnknownServerError
+        }
+
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
 
@@ -86,6 +95,25 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        private UploadErrorType errorType;
+        /// <summary>
+        /// Indicates the type of error.
+        /// </summary>
+        public UploadErrorType Error
+        {
+            get
+            {
+                return errorType;
+            }
+            private set
+            {
+                errorType = value;
+
+                if (errorType != UploadErrorType.None)
+                    State = UploadState.Failed;
+            }
+        }
+
         internal event Action<UploadState> UploadStateChanged;
         private void OnUploadStateChanged(UploadState state)
         {
@@ -105,7 +133,7 @@ namespace Dynamo.Publish.Models
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new Exception(Resource.ServerErrorMessage);
+                throw new Exception(Resource.ServerNotFoundMessage);
 
             port = appSettings.Settings["Port"].Value;
             if (String.IsNullOrWhiteSpace(port))
@@ -133,14 +161,21 @@ namespace Dynamo.Publish.Models
         {
             // Manager must be initialized in constructor.
             if (authenticationProvider == null)
-                throw new Exception(Resource.AuthenticationErrorMessage);
+            {
+                Error = UploadErrorType.AuthProviderNotFound;
+                return;
+            }
 
-            authenticationProvider.Login();
+            var loggedIn = authenticationProvider.Login();
+
+            if (!loggedIn)
+            {
+                Error = UploadErrorType.AuthenticationFailed;
+            }
         }
 
         internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
         {
-
             State = UploadState.Uploading;
 
             Task.Factory.StartNew(() =>
@@ -148,9 +183,16 @@ namespace Dynamo.Publish.Models
                     var result = this.Send(workspaces);
 
                     if (result == Resource.WorkspacesSendSucceededServerResponse)
+                    {
                         State = UploadState.Succeeded;
+                        Error = UploadErrorType.None;
+                    }
                     else
-                        State = UploadState.Failed;
+                    {
+                        // If there wasn't any error during uploading, 
+                        // that means it's some error on the server side.
+                        Error = UploadErrorType.UnknownServerError;
+                    }
                 });
 
         }
@@ -161,11 +203,23 @@ namespace Dynamo.Publish.Models
         /// <returns>String which is response from server.</returns>
         internal string Send(IEnumerable<IWorkspaceModel> workspaces)
         {
-            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
-                throw new Exception(Resource.ServerErrorMessage);
+            if (String.IsNullOrWhiteSpace(serverUrl))
+            {
+                Error = UploadErrorType.ServerNotFound;
+                return Resource.FailedMessage;
+            }
+
+            if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
+            {
+                Error = UploadErrorType.AuthenticationFailed;
+                return Resource.FailedMessage;
+            }
 
             if (authenticationProvider == null)
-                throw new Exception(Resource.AuthenticationErrorMessage);
+            {
+                Error = UploadErrorType.AuthProviderNotFound;
+                return Resource.FailedMessage;
+            }
 
             string fullServerAdress = serverUrl + ":" + port;
 
@@ -190,7 +244,16 @@ namespace Dynamo.Publish.Models
                     CustomNodeWorkspaces.Add(customNodeWs);
             }
 
-            return reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+            string result;
+            try
+            {
+                result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+            }
+            catch
+            {
+                result = Resource.FailedMessage;
+            }
+            return result;
         }
     }
 
