@@ -55,6 +55,23 @@ namespace Dynamo.Publish.ViewModels
             get { return model; }
         }
 
+        private bool isUploading;
+        public bool IsUploading
+        {
+            get
+            {
+                return isUploading;
+            }
+            set
+            {
+                if (isUploading != value)
+                {
+                    isUploading = value;
+                    RaisePropertyChanged("IsUploading");
+                }
+            }
+        }
+
         public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
         public IWorkspaceModel CurrentWorkspaceModel { get; set; }
 
@@ -73,6 +90,7 @@ namespace Dynamo.Publish.ViewModels
             this.model = model;
 
             PublishCommand = new DelegateCommand(OnPublish);
+            model.UploadStateChanged += OnModelStateChanged;
         }
 
         #endregion
@@ -81,13 +99,18 @@ namespace Dynamo.Publish.ViewModels
 
         private void OnPublish(object obj)
         {
-            if (!model.IsLoggedIn)            
-                model.Authenticate();            
+            if (!model.IsLoggedIn)
+                model.Authenticate();
 
             if (!model.IsLoggedIn)
                 return;
 
-            model.Send(Workspaces);
+            model.SendAsynchronously(Workspaces);
+        }
+
+        private void OnModelStateChanged(PublishModel.UploadState state)
+        {
+            IsUploading = state == PublishModel.UploadState.Uploading;
         }
 
         #endregion

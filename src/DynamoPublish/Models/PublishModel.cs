@@ -13,11 +13,21 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Dynamo.Publish.Models
 {
     public class PublishModel
     {
+
+        public enum UploadState
+        {
+            Uninitialized,
+            Succeeded,
+            Uploading,
+            Failed
+        }
+
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
 
@@ -55,6 +65,35 @@ namespace Dynamo.Publish.Models
             }
         }
 
+
+        private UploadState state;
+        /// <summary>
+        /// Indicates the state of workspace publishing.
+        /// </summary>
+        public UploadState State
+        {
+            get
+            {
+                return state;
+            }
+            private set
+            {
+                if (state != value)
+                {
+                    state = value;
+                    OnUploadStateChanged(state);
+                }
+            }
+        }
+
+        internal event Action<UploadState> UploadStateChanged;
+        private void OnUploadStateChanged(UploadState state)
+        {
+            if (UploadStateChanged != null)
+                UploadStateChanged(state);
+        }
+
+
         #region Initialization
 
         internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
@@ -78,6 +117,8 @@ namespace Dynamo.Publish.Models
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
+
+            State = UploadState.Uninitialized;
         }
 
         internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
@@ -97,10 +138,28 @@ namespace Dynamo.Publish.Models
             authenticationProvider.Login();
         }
 
+        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
+        {
+
+            State = UploadState.Uploading;
+
+            Task.Factory.StartNew(() =>
+                {
+                    var result = this.Send(workspaces);
+
+                    if (result == Resource.WorkspacesSendSucceededServerResponse)
+                        State = UploadState.Succeeded;
+                    else
+                        State = UploadState.Failed;
+                });
+
+        }
+
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
-        internal void Send(IEnumerable<IWorkspaceModel> workspaces)
+        /// <returns>String which is response from server.</returns>
+        internal string Send(IEnumerable<IWorkspaceModel> workspaces)
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
                 throw new Exception(Resource.ServerErrorMessage);
@@ -131,7 +190,8 @@ namespace Dynamo.Publish.Models
                     CustomNodeWorkspaces.Add(customNodeWs);
             }
 
-            var result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+            return reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
         }
     }
+
 }
