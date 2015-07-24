@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Reflection;
+
+using Dynamo.Utilities;
 
 using NUnit.Framework;
 
@@ -8,10 +11,12 @@ namespace Dynamo
 {
     public class UnitTestBase
     {
+        private static string alternativeSampleDirectory = string.Empty;
+
         private static string executingDirectory;
-        protected static string ExecutingDirectory 
-        { 
-            get 
+        protected static string ExecutingDirectory
+        {
+            get
             {
                 if (executingDirectory == null)
                 {
@@ -22,10 +27,13 @@ namespace Dynamo
         }
 
         private static string sampleDirectory;
-        public static string SampleDirectory 
-        { 
+        public static string SampleDirectory
+        {
             get
             {
+                if (!string.IsNullOrEmpty(alternativeSampleDirectory))
+                    return alternativeSampleDirectory;
+
                 if (sampleDirectory == null)
                 {
                     var directory = new FileInfo(ExecutingDirectory);
@@ -40,8 +48,8 @@ namespace Dynamo
         protected string TempFolder { get; private set; }
 
         private static string testDirectory;
-        public static string TestDirectory 
-        { 
+        public static string TestDirectory
+        {
             get
             {
                 if (testDirectory == null)
@@ -78,17 +86,26 @@ namespace Dynamo
             var guid = Guid.NewGuid().ToString();
             return Path.Combine(
                 TempFolder,
-                string.IsNullOrWhiteSpace(fileExtension) 
-                    ? guid 
+                string.IsNullOrWhiteSpace(fileExtension)
+                    ? guid
                     : Path.ChangeExtension(guid, fileExtension));
         }
 
         protected void SetupDirectories()
         {
+            var path = this.GetType().Assembly.Location;
+            var config = ConfigurationManager.OpenExeConfiguration(path);
+            if (config!=null)
+            {
+                var key = config.AppSettings.Settings["alternativeSampleDirectory"];
+                alternativeSampleDirectory = key == null ? string.Empty : key.Value;
+                
+            }
+            
             string tempPath = Path.GetTempPath();
 
             TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
-            
+
             if (!Directory.Exists(TempFolder))
                 Directory.CreateDirectory(TempFolder);
 
