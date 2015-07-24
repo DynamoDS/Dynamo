@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Media.Media3D;
 using SystemTestServices;
 using Dynamo.Controls;
@@ -103,10 +102,11 @@ namespace DynamoCoreWpfTests
 
         private bool CameraHasDefaultOrientation()
         {
+            var defaultData = new CameraData();
             var cam = ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).Camera;
-            return cam.Position == HelixWatch3DViewModel.DefaultCameraPosition &&
-                cam.LookDirection == HelixWatch3DViewModel.DefaultCameraLookDirection &&
-                cam.UpDirection == HelixWatch3DViewModel.DefaultCameraUpDirection;
+            return cam.Position == defaultData.EyePosition &&
+                cam.LookDirection == defaultData.LookDirection &&
+                cam.UpDirection == defaultData.UpDirection;
         }
     }
 }

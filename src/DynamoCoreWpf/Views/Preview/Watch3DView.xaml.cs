@@ -182,7 +182,9 @@ namespace Dynamo.Controls
         private void CompositionTargetRenderingHandler(object sender, EventArgs e)
         {
             var sceneBounds = watch_view.FindBounds();
-            viewModel.ComputeFrameUpdate(sceneBounds);
+            viewModel.UpdateNearClipPlaneForSceneBounds(sceneBounds);
+
+            viewModel.ComputeFrameUpdate();
         }
 
         private void OnZoomToFitClickedHandler(object sender, RoutedEventArgs e)

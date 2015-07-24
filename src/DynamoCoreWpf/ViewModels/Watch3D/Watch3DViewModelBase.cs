@@ -29,7 +29,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// rendering by various render targets. The base class handles the registration
     /// of all necessary event handlers on models, workspaces, and nodes.
     /// </summary>
-    public class Watch3DViewModelBase : NotificationObject
+    public class Watch3DViewModelBase : NotificationObject, ILogSource
     {
         protected DynamoModel model;
         protected DynamoViewModel viewModel;
@@ -411,6 +411,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 //OnResultsReadyToVisualize(
                 //    new VisualizationEventArgs(allPackages, selPackages, Guid.Empty));
+            }
+        }
+
+        public event Action<ILogMessage> MessageLogged;
+
+        protected void OnMessageLogged(ILogMessage message)
+        {
+            if (MessageLogged != null)
+            {
+                MessageLogged(message);
             }
         }
     }

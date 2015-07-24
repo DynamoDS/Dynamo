@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
+using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -84,6 +84,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             base.OnUpdatedRenderPackagesAvailable(updatedNode, renderPackages);
+        }
+
+        protected override void OnWorkspaceSaving(XmlDocument doc)
+        {
+            // In the node version of this view model, we don't save when 
+            // the workspace is saving. See Watch3D.SeralizeCore where we call
+            // the view model's SerializeCamera method, and Watch3D.DeserializeCore 
+            // where we call the view model's DeserializeCamera method.
         }
     }
 }

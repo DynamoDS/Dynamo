@@ -422,8 +422,20 @@ namespace DynamoCoreWpfTests
             var height = original.Height * (1.0 + random.NextDouble());
             original.SetSize(Math.Floor(width), Math.Floor(height));
 
-            original.CameraPosition = new Point3D(10, 20, 30);
-            original.LookDirection = new Vector3D(15, 25, 35);
+            var vmParams = new Watch3DViewModelStartupParams()
+            {
+                Model = ViewModel.Model,
+                Factory = ViewModel.RenderPackageFactoryViewModel.Factory,
+                ViewModel = ViewModel,
+                IsActiveAtStart = true,
+                Name = "Test"
+            };
+
+            original.viewModel = HelixWatch3DNodeViewModel.Start(original, vmParams);
+            var cam = original.viewModel.Camera;
+
+            cam.Position = new Point3D(10, 20, 30);
+            cam.LookDirection = new Vector3D(15, 25, 35);
 
             // Ensure the serialization survives through file, undo, and copy.
             var document = new XmlDocument();
@@ -439,35 +451,44 @@ namespace DynamoCoreWpfTests
             nodeFromUndo.Deserialize(undoElement, SaveContext.Undo);
             nodeFromCopy.Deserialize(copyElement, SaveContext.Copy);
 
+            // Create a view model for the watch3D node loaded from the 
+            // file. Set the camera data on this view model from the 
+            // initialCameraData on the model. This would normally occur
+            // in the node view customization, but none is being applied here.
+            nodeFromFile.viewModel = HelixWatch3DNodeViewModel.Start(original, vmParams);
+            nodeFromFile.viewModel.SetCameraData(nodeFromFile.initialCameraData);
+
+            var newCam = nodeFromFile.viewModel.Camera;
+
             // Making sure we have properties preserved through file operation.
             Assert.AreEqual(original.WatchWidth, nodeFromFile.WatchWidth);
             Assert.AreEqual(original.WatchHeight, nodeFromFile.WatchHeight);
-            Assert.AreEqual(original.CameraPosition.X, nodeFromFile.CameraPosition.X);
-            Assert.AreEqual(original.CameraPosition.Y, nodeFromFile.CameraPosition.Y);
-            Assert.AreEqual(original.CameraPosition.Z, nodeFromFile.CameraPosition.Z);
-            Assert.AreEqual(original.LookDirection.X, nodeFromFile.LookDirection.X);
-            Assert.AreEqual(original.LookDirection.Y, nodeFromFile.LookDirection.Y);
-            Assert.AreEqual(original.LookDirection.Z, nodeFromFile.LookDirection.Z);
+            Assert.AreEqual(cam.Position.X, newCam.Position.X);
+            Assert.AreEqual(cam.Position.Y, newCam.Position.Y);
+            Assert.AreEqual(cam.Position.Z, newCam.Position.Z);
+            Assert.AreEqual(cam.LookDirection.X, newCam.LookDirection.X);
+            Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
+            Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
 
             // Making sure we have properties preserved through undo operation.
             Assert.AreEqual(original.WatchWidth, nodeFromUndo.WatchWidth);
             Assert.AreEqual(original.WatchHeight, nodeFromUndo.WatchHeight);
-            Assert.AreEqual(original.CameraPosition.X, nodeFromUndo.CameraPosition.X);
-            Assert.AreEqual(original.CameraPosition.Y, nodeFromUndo.CameraPosition.Y);
-            Assert.AreEqual(original.CameraPosition.Z, nodeFromUndo.CameraPosition.Z);
-            Assert.AreEqual(original.LookDirection.X, nodeFromUndo.LookDirection.X);
-            Assert.AreEqual(original.LookDirection.Y, nodeFromUndo.LookDirection.Y);
-            Assert.AreEqual(original.LookDirection.Z, nodeFromUndo.LookDirection.Z);
+            Assert.AreEqual(cam.Position.X, newCam.Position.X);
+            Assert.AreEqual(cam.Position.Y, newCam.Position.Y);
+            Assert.AreEqual(cam.Position.Z, newCam.Position.Z);
+            Assert.AreEqual(cam.LookDirection.X, newCam.LookDirection.X);
+            Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
+            Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
 
             // Making sure we have properties preserved through copy operation.
             Assert.AreEqual(original.WatchWidth, nodeFromCopy.WatchWidth);
             Assert.AreEqual(original.WatchHeight, nodeFromCopy.WatchHeight);
-            Assert.AreEqual(original.CameraPosition.X, nodeFromCopy.CameraPosition.X);
-            Assert.AreEqual(original.CameraPosition.Y, nodeFromCopy.CameraPosition.Y);
-            Assert.AreEqual(original.CameraPosition.Z, nodeFromCopy.CameraPosition.Z);
-            Assert.AreEqual(original.LookDirection.X, nodeFromCopy.LookDirection.X);
-            Assert.AreEqual(original.LookDirection.Y, nodeFromCopy.LookDirection.Y);
-            Assert.AreEqual(original.LookDirection.Z, nodeFromCopy.LookDirection.Z);
+            Assert.AreEqual(cam.Position.X, newCam.Position.X);
+            Assert.AreEqual(cam.Position.Y, newCam.Position.Y);
+            Assert.AreEqual(cam.Position.Z, newCam.Position.Z);
+            Assert.AreEqual(cam.LookDirection.X, newCam.LookDirection.X);
+            Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
+            Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
         }
 
         [Test]
