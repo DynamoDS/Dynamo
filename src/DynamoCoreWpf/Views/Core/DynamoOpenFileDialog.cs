@@ -114,8 +114,16 @@ namespace Dynamo.UI
         public DialogResult ShowDialog()
         {
             NativeFileOpenDialog dialog = null;
+
             try
             {
+                // If the caller did not specify a starting path, or set it to null,
+                // it is not healthy as it causes SHCreateItemFromParsingName to 
+                // throw E_INVALIDARG (0x80070057). Setting it to an empty string.
+                // 
+                if (SelectedPath == null)
+                    SelectedPath = string.Empty;
+
                 dialog = new NativeFileOpenDialog();
 
                 dialog.SetTitle(Title);
