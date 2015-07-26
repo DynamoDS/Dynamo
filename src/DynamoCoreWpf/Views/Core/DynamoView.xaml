@@ -580,7 +580,7 @@
 
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPreviewNavigate}"
                                       IsEnabled="{Binding Path=BackgroundPreviewActive}"
-                                      IsChecked="{Binding Path=CanNavigateBackground}"
+                                      IsChecked="{Binding Path=BackgroundPreviewViewModel.CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
                                       Command="{Binding ToggleCanNavigateBackgroundCommand}" />
@@ -811,11 +811,11 @@
               Grid.Column="2"
               Grid.RowSpan="3"
               Background="#232323"
-              Name="background_grid">
+              Name="background_grid"
+              IsHitTestVisible="{Binding BackgroundPreviewViewModel.CanNavigateBackground}">
             <Canvas Name="backgroundCanvas"
                     Margin="0,20,0,0"
-                    ClipToBounds="True"
-                    IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+                    ClipToBounds="True">
                 <Canvas.Background>
                     <SolidColorBrush Color="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
@@ -824,8 +824,7 @@
             <controls:Watch3DView x:Name="BackgroundPreview" 
                                   DataContext="{Binding BackgroundPreviewViewModel}"
                                   Margin="0,20,0,0"
-                                  Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                  IsHitTestVisible="{Binding WatchPreviewHitTest}">
+                                  Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
             </controls:Watch3DView>
             
         </Grid>

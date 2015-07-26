@@ -316,9 +316,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             model.PreferenceSettings.IsBackgroundPreviewActive = active;
 
-            if (active == false && viewModel.CanNavigateBackground)
+            if (active == false && CanNavigateBackground)
             {
-                viewModel.CanNavigateBackground = false;
+                CanNavigateBackground = false;
             }
         }
 

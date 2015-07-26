@@ -65,6 +65,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         public string Name { get; protected set; }
 
+        private bool canNavigateBackground = false;
+        public bool CanNavigateBackground
+        {
+            get { return canNavigateBackground; }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+
         protected Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
         {
             model = parameters.Model;

@@ -94,8 +94,9 @@
                 ClipToBounds="True"
                 PreviewMouseDown="OnCanvasClicked">
             <Canvas.IsHitTestVisible>
-                <Binding Path="DataContext.ShouldBeHitTestVisible"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
+                <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" 
+                         Converter="{StaticResource InverseBooleanConverter}"/>
             </Canvas.IsHitTestVisible>
 
             <controls:ZoomBorder x:Name="zoomBorder"
@@ -128,7 +129,7 @@
                                         <SolidColorBrush Color="Transparent" />
                                     </Canvas.Background>
                                     <Canvas.Opacity>
-                                        <Binding Path="DataContext.CanNavigateBackground"
+                                        <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                                                  RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                                                  Converter="{StaticResource NavigationToOpacityConverter}">
                                         </Binding>
@@ -363,7 +364,7 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
                 <ui:ImageCheckBox.Visibility>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              Converter="{StaticResource BooleanToVisibilityConverter}"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Visibility>
@@ -384,7 +385,7 @@
                               ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}"
                               >
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
             </ui:ImageCheckBox>
@@ -395,7 +396,7 @@
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
                               ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                              Converter="{StaticResource InverseBooleanConverter}" />
                 </ui:ImageCheckBox.IsChecked>
