@@ -388,8 +388,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     SetSelection(e.NewItems, true);
                     return;
             }
-
-            OnRequestViewRefresh();
         }
 
         protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
