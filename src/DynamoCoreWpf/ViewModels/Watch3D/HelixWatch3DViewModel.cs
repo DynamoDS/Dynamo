@@ -388,6 +388,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     SetSelection(e.NewItems, true);
                     return;
             }
+
+            OnRequestViewRefresh();
         }
 
         protected override void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -972,7 +974,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
-                        pointGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
+                        //pointGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                     }
 
                     var l = rp.Lines;
@@ -1013,7 +1015,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         lineGeometry3D.Geometry = lineSet;
                         lineGeometry3D.Name = baseId;
-                        lineGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
+                        //lineGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                     }
 
                     var m = rp.Mesh;
@@ -1059,7 +1061,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     meshGeometry3D.Geometry = mesh;
                     meshGeometry3D.Name = baseId;
-                    meshGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
+                    //meshGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                 }
 
                 AttachAllGeometryModel3DToRenderHost();
