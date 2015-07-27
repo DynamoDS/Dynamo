@@ -103,9 +103,9 @@ namespace Dynamo.Tests
             // output will be 6 points from vertices of Mesh
             for (int i = 0; i < 5; i++)
             {
-                var solids = GetPreviewValueAtIndex
+                var points = GetPreviewValueAtIndex
                                 (meshVerticesNodeID, i) as Autodesk.DesignScript.Geometry.Point;
-                Assert.IsNotNull(solids);
+                Assert.IsNotNull(points);
             }
         }
 
@@ -165,9 +165,9 @@ namespace Dynamo.Tests
             // output will be 6 points from vertices of Mesh
             for (int i = 0; i < 5; i++)
             {
-                var solids = GetPreviewValueAtIndex
+                var points = GetPreviewValueAtIndex
                                 (meshVerticesNodeID, i) as Autodesk.DesignScript.Geometry.Point;
-                Assert.IsNotNull(solids);
+                Assert.IsNotNull(points);
             }
 
 
