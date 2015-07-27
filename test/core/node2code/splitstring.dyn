@@ -1,0 +1,19 @@
+<Workspace Version="0.8.2.1957" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="11d59acc-86b0-42c5-852e-df9b4be72f46" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="390" y="428" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="&quot;,&quot;;&#xA;&quot;.&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSVarArgFunction guid="0e3566f6-e230-4892-ab34-5cfacffd9b3b" type="Dynamo.Nodes.DSVarArgFunction" nickname="String.Split" x="608.5" y="339" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" inputcount="3" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="f1ca8d01-029d-45b1-afc2-4ada1e92791e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="382" y="330" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="&quot;foo,bar.qux&quot;;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="11d59acc-86b0-42c5-852e-df9b4be72f46" start_index="0" end="0e3566f6-e230-4892-ab34-5cfacffd9b3b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="11d59acc-86b0-42c5-852e-df9b4be72f46" start_index="1" end="0e3566f6-e230-4892-ab34-5cfacffd9b3b" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f1ca8d01-029d-45b1-afc2-4ada1e92791e" start_index="0" end="0e3566f6-e230-4892-ab34-5cfacffd9b3b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

@@ -120,6 +120,7 @@ limitations under the License.
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="Extensions\ExtensionLoader.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="Interfaces\ICustomNodeWorkspaceModel.cs" />
     <Compile Include="Interfaces\IWorkspaceModel.cs" />
     <Compile Include="Rendering\DefaultRenderPackageFactory.cs" />
     <Compile Include="Extensions\ExtensionDefinition.cs" />

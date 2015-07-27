@@ -563,16 +563,16 @@
 
                     <Border x:Name="container"
                             Background="Transparent"
-                            BorderBrush="#3F3F3F"
+                            BorderBrush="#3c3c3c"
                             BorderThickness="1">
                         <Grid x:Name="inner"
-                              Background="#CCCCCC">
+                              Background="#373737">
 
                             <TextBlock x:Name="text"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        Margin="10, 10, 10, 10"
-                                       Foreground="#3F3F3F"
+                                       Foreground="#bbbbbb"
                                        FontSize="14px"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
                         </Grid>
@@ -584,52 +584,40 @@
                                  Value="true">
                             <Setter TargetName="container"
                                     Property="BorderBrush"
-                                    Value="#4192D9" />
+                                    Value="#656565" />
                             <Setter TargetName="inner"
                                     Property="Background"
-                                    Value="#CCCCCC" />
-                            <Setter TargetName="text"
-                                    Property="Foreground"
-                                    Value="#3F3F3F" />
+                                    Value="#373737" />
                         </Trigger>
 
                         <Trigger Property="Button.IsPressed"
                                  Value="true">
                             <Setter TargetName="container"
                                     Property="BorderBrush"
-                                    Value="#4192D9" />
+                                    Value="#656565" />
                             <Setter TargetName="inner"
                                     Property="Background"
-                                    Value="#CCCCCC" />
-                            <Setter TargetName="text"
-                                    Property="Foreground"
-                                    Value="#3F3F3F" />
+                                    Value="#272727" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled"
                                  Value="true">
-                            <Setter TargetName="container"
-                                    Property="BorderBrush"
-                                    Value="#3F3F3F" />
-                            <Setter TargetName="inner"
-                                    Property="Background"
-                                    Value="#CCCCCC" />
                             <Setter TargetName="text"
                                     Property="Foreground"
-                                    Value="#3F3F3F" />
+                                    Value="#bbbbbb" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled"
                                  Value="false">
                             <Setter TargetName="container"
                                     Property="BorderBrush"
-                                    Value="#666666" />
+                                    Value="Transparent" />
                             <Setter TargetName="inner"
                                     Property="Background"
-                                    Value="#666666" />
+                                    Value="#373737" />
                             <Setter TargetName="text"
                                     Property="Foreground"
-                                    Value="#777777" />
+                                    Value="#555555" />
                         </Trigger>
 
                     </ControlTemplate.Triggers>

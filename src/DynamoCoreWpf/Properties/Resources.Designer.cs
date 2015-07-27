@@ -4308,6 +4308,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Area.
+        /// </summary>
+        public static string UnitArea {
+            get {
+                return ResourceManager.GetString("UnitArea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Centimeters.
         /// </summary>
         public static string UnitCentimeters {
@@ -4407,6 +4416,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Length.
+        /// </summary>
+        public static string UnitLength {
+            get {
+                return ResourceManager.GetString("UnitLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Litres.
         /// </summary>
         public static string UnitLitres {
@@ -4430,6 +4448,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnitMillimeters {
             get {
                 return ResourceManager.GetString("UnitMillimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Units:.
+        /// </summary>
+        public static string Units {
+            get {
+                return ResourceManager.GetString("Units", resourceCulture);
             }
         }
         
@@ -4484,6 +4511,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnitUSGallons {
             get {
                 return ResourceManager.GetString("UnitUSGallons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume.
+        /// </summary>
+        public static string UnitVolume {
+            get {
+                return ResourceManager.GetString("UnitVolume", resourceCulture);
             }
         }
         
