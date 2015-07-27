@@ -1250,7 +1250,7 @@ namespace Dynamo.Models
                         totalY += node.Y;
                         undoHelper.RecordDeletion(node);
                         RemoveNode(node);
-                        #endregion 
+                        #endregion
                     }
                     #endregion
 
