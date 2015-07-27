@@ -183,7 +183,7 @@ namespace DSCore
         ///     Finds the inverse sine, the angle whose sine is the given ratio.
         /// </summary>
         /// <param name="ratio">The sine of the angle, a number in the range [-1, 1].</param>
-        /// <returns name="angle">The angle whose cosine is the input ratio.</returns>
+        /// <returns name="angle">The angle whose sine is the input ratio.</returns>
         /// <search>asine,arcsin</search>
         public static double Asin(double ratio)
         {
@@ -276,7 +276,7 @@ namespace DSCore
         ///     Returns the first integer smaller than the number.
         /// </summary>
         /// <param name="number">Number to round up.</param>
-        /// <returns name="integer">First integer greater than the number.</returns>
+        /// <returns name="integer">First integer smaller than the number.</returns>
         /// <search>round</search>
         public static long Floor(double number)
         {
