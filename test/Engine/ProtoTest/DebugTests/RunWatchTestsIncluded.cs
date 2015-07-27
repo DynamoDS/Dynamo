@@ -1821,6 +1821,7 @@ class VisibilityAttribute
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch94_basic_1()
         {
@@ -10643,6 +10644,7 @@ a 		  = MyPoint.ByXYcoordinates(2.0);
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch414_T023_Defect_1459789_10()
         {
@@ -21270,6 +21272,7 @@ n;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch772_T011_Defect_ModifierStack()
         {
@@ -21289,6 +21292,7 @@ result = {a1,a2,a3,a4,a5};
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch773_T011_SomeNulls_ModifierStack()
         {
@@ -21584,6 +21588,7 @@ result =
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch785_T021_CountTrue_ModifierStack()
         {
@@ -21885,6 +21890,7 @@ result =
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch797_T032_CountFalse_ModifierStack()
         {
@@ -22157,6 +22163,7 @@ a = {{true},{false},{false},
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch809_T043_AllFalse_ModifierStack()
         {
@@ -22498,6 +22505,7 @@ result = Sum(a);//12.0";
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch823_T055_Sum_ModifierStack()
         {
@@ -22708,6 +22716,7 @@ c = Average({m})..Average({n});//3.0,4.0,5.0";
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch834_T065_Average_ModifierStack()
         {
@@ -22752,6 +22761,7 @@ r2 = Print(arr2);";
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch837_T068_Abs_2()
         {
@@ -22807,6 +22817,7 @@ t7 = foo(2);
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch838_T068_Cosh_2()
         {
@@ -22862,6 +22873,7 @@ t7 = foo(2);
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch839_T068_DivRem_2()
         {
@@ -22920,6 +22932,7 @@ t7 = foo();
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch840_T068_Factorial_2()
         {
@@ -22976,6 +22989,7 @@ t8 = Math.Factorial(arr);
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch841_T068_IEEERemainder_2()
         {
@@ -23031,6 +23045,7 @@ t7 = foo();
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch842_T068_Max_2()
         {
@@ -23143,6 +23158,7 @@ t8 = 0;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch844_T068_Pow_2()
         {
@@ -23199,6 +23215,7 @@ t8 = 0;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch845_T068_Round_2()
         {
@@ -23255,6 +23272,7 @@ t8 = 0;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch846_T068_Sign_2()
         {
@@ -23310,6 +23328,7 @@ t7 = foo(-2);
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch847_T068_Sinh_2()
         {
@@ -27042,6 +27061,7 @@ b = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch961_T77_Defect_1460274_Class_Update_2()
         {
@@ -27082,6 +27102,7 @@ test3 = pointGroup3.X;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch962_T77_Defect_1460274_Class_Update_3()
         {
@@ -41465,6 +41486,7 @@ def foo(x:var)
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1531_T10_String_ModifierStack()
         {
@@ -41509,6 +41531,7 @@ m = m+n;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1534_Test()
         {
@@ -43840,6 +43863,7 @@ y = { a1.a1, a1.a2, a1.a3, a1.a4, a1.a5, a1.a6, a1.a8 };
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1613_T27_Modifier_Stack_Inside_Class_3()
         {
@@ -46146,6 +46170,7 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1693_T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
@@ -46196,6 +46221,7 @@ test = mySurface.x; //expected : 4
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1694_T008_long_hand_surface_trim_Robert()
         {
@@ -50250,6 +50276,7 @@ numpts = length(pts); ";
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1811_Regress_1459630()
         {
@@ -50298,6 +50325,7 @@ r2 = r1+1;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1814_Regress_1459900_1()
         {
