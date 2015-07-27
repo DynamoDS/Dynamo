@@ -816,6 +816,46 @@ namespace Dynamo.Tests
             Assert.AreEqual("Autodesk.Point.ByCoordinates(t1, 0)", expr.RightNode.ToString());
         }
 
+        [Test]
+        public void TestPropertyWontBeReplaced1()
+        {
+            // Point.X; Point.X;
+            OpenModel(@"core\node2code\property.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith(".X"));
+            Assert.IsTrue(rhs.All(r => r));
+        }
+
+        [Test]
+        public void TestPropertyWontBeReplaced2()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\staticproperty.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith("ElementResolverTarget.StaticProperty"));
+            Assert.IsTrue(rhs.All(r => r));
+        }
+ 
+
         private void TestNodeToCodeUndoBase(string filePath)
         {
             // Verify after undo all nodes and connectors should be resotored back
@@ -998,6 +1038,56 @@ namespace Dynamo.Tests
             Assert.IsNotNull(binaryExpr);
 
             Assert.IsTrue(binaryExpr.RightNode is RangeExprNode); ;
+        }
+
+        [Test]
+        public void TestFilePathToCode()
+        {
+            OpenModel(@"core\node2code\filepath.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains(@"D:\\foo\\bar"));
+        }
+
+        [Test]
+        public void TestDirectoryToCode()
+        {
+            OpenModel(@"core\node2code\directory.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains(@"D:\\foo\\bar"));
+        }
+
+        [Test]
+        public void TestNodeWithVarArgument()
+        {
+            OpenModel(@"core\node2code\splitstring.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, new[] { "foo", "bar", "qux" });
         }
 
         private void SelectAll(IEnumerable<NodeModel> nodes)

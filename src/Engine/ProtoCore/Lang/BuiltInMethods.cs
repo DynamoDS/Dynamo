@@ -618,7 +618,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValue,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
+                    MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),  
                 },
 
@@ -631,7 +631,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
+                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true), 
                 },
 
