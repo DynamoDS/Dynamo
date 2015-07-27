@@ -16,6 +16,7 @@ namespace DSCoreNodesUI.Input
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("IntegerSliderNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("IntegerSliderSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class IntegerSlider : SliderBase<int>

@@ -151,6 +151,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to colorrange;.
+        /// </summary>
+        internal static string ColorRangeSearchTags {
+            get {
+                return ResourceManager.GetString("ColorRangeSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Combinator.
         /// </summary>
         internal static string CombinatorPortDataCombToolTip {
@@ -286,6 +295,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to directorypath;filepath;.
+        /// </summary>
+        internal static string DirectoryPathSearchTags {
+            get {
+                return ResourceManager.GetString("DirectoryPathSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a number..
         /// </summary>
         internal static string DoubleInputNodeDescription {
@@ -313,7 +331,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to double;number;float;integer;slider.
+        ///   Looks up a localized string similar to double;number;float;integer;slider;numberslider;.
         /// </summary>
         internal static string DoubleSliderSearchTags {
             get {
@@ -331,7 +349,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert;Units;Length;Area;Volume.
+        ///   Looks up a localized string similar to Convert;Units;Length;Area;Volume;convertbetweenunits;.
         /// </summary>
         internal static string DynamoConvertSearchTags {
             get {
@@ -390,6 +408,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string FilePathDescription {
             get {
                 return ResourceManager.GetString("FilePathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to filepath;.
+        /// </summary>
+        internal static string FilePathSearchTags {
+            get {
+                return ResourceManager.GetString("FilePathSearchTags", resourceCulture);
             }
         }
         
@@ -543,6 +570,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string IntegerSliderNodeDescription {
             get {
                 return ResourceManager.GetString("IntegerSliderNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to integerslider;.
+        /// </summary>
+        internal static string IntegerSliderSearchTags {
+            get {
+                return ResourceManager.GetString("IntegerSliderSearchTags", resourceCulture);
             }
         }
         
@@ -781,11 +817,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to numberrange;numbersequence;.
+        /// </summary>
+        internal static string NumberRangeSearchTags {
+            get {
+                return ResourceManager.GetString("NumberRangeSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a sequence of numbers..
         /// </summary>
         internal static string NumberSequenceDescription {
             get {
                 return ResourceManager.GetString("NumberSequenceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to numbersequence;.
+        /// </summary>
+        internal static string NumberSequenceSearchTags {
+            get {
+                return ResourceManager.GetString("NumberSequenceSearchTags", resourceCulture);
             }
         }
         
@@ -1096,7 +1150,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to image;inspect image;pixels;display;panel;.
+        ///   Looks up a localized string similar to image;inspect image;pixels;display;panel;watchimage;.
         /// </summary>
         internal static string WatchImageSearchTags {
             get {

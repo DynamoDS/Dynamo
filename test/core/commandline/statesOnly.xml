@@ -1,0 +1,34 @@
+<Workspace Version="0.8.2.1605" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+<Presets>
+    <PresetModel Name="state1" Description="10" guid="be5146ea-806e-42a2-be42-45130b9c8ec0">
+      <Dynamo.Nodes.CodeBlockNodeModel guid="2ef55ca9-1342-43d5-b5e1-44abb09fb2f5" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="216.146596858639" y="69.8848167539266" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
+      <Dynamo.Nodes.DoubleInput guid="c67de4ff-96ab-4386-94ba-5a680688e8f8" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="216.523560209424" y="242.659685863874" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+        <System.Double value="2" />
+      </Dynamo.Nodes.DoubleInput>
+      <DSCoreNodesUI.Input.DoubleSlider guid="aeb94820-ee65-428c-932c-929948eb680b" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="51.6649214659685" y="358.261780104712" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+        <System.Double>0</System.Double>
+        <Range min="0" max="100" step="0.1" />
+      </DSCoreNodesUI.Input.DoubleSlider>
+    </PresetModel>
+    <PresetModel Name="state2" Description="31" guid="1190406a-ef14-4963-9c53-cba5518da8ac">
+      <Dynamo.Nodes.CodeBlockNodeModel guid="2ef55ca9-1342-43d5-b5e1-44abb09fb2f5" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="216.146596858639" y="69.8848167539266" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="6;" ShouldFocus="false" />
+      <Dynamo.Nodes.DoubleInput guid="c67de4ff-96ab-4386-94ba-5a680688e8f8" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="216.523560209424" y="242.659685863874" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+        <System.Double value="1" />
+      </Dynamo.Nodes.DoubleInput>
+      <DSCoreNodesUI.Input.DoubleSlider guid="aeb94820-ee65-428c-932c-929948eb680b" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="51.6649214659685" y="358.261780104712" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+        <System.Double>25</System.Double>
+        <Range min="0" max="100" step="0.1" />
+      </DSCoreNodesUI.Input.DoubleSlider>
+    </PresetModel>
+    <PresetModel Name="state3" Description="20" guid="f3f9fe5e-a203-4db7-860a-44f445397740">
+      <Dynamo.Nodes.CodeBlockNodeModel guid="2ef55ca9-1342-43d5-b5e1-44abb09fb2f5" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="216.146596858639" y="69.8848167539266" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0.5;" ShouldFocus="false" />
+      <Dynamo.Nodes.DoubleInput guid="c67de4ff-96ab-4386-94ba-5a680688e8f8" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="216.523560209424" y="242.659685863874" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+        <System.Double value="0" />
+      </Dynamo.Nodes.DoubleInput>
+      <DSCoreNodesUI.Input.DoubleSlider guid="aeb94820-ee65-428c-932c-929948eb680b" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="51.6649214659685" y="358.261780104712" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+        <System.Double>20</System.Double>
+        <Range min="0" max="20" step="0.1" />
+      </DSCoreNodesUI.Input.DoubleSlider>
+    </PresetModel>
+  </Presets>
+</Workspace>

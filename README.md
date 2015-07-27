@@ -9,8 +9,15 @@ Dynamo is a visual programming tool that aims to be accessible to both non-progr
 Looking to learn or download Dynamo?  Check out [dynamobim.org](http://dynamobim.org/learn/)!
 
 
-## Build ###
+## Develop ###
+### Create a Node Library for Dynamo ###
+#### COMING SOON - NUGET PACKAGES ARE BEING BUILT AGAINST DYNAMO 0.8.2 ####
+If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).  
+These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
 
+You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development).
+
+### Build Dynamo from Source ###
 You will need the following to build Dynamo:
 
 - Microsoft Visual Studio 2013

@@ -18,52 +18,12 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate x:Key="MemberDataTemplate">
-                <StackPanel Name="ImageAndNodeName"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <Image Margin="16,0,16,0"
-                           Height="36"
-                           Width="32"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           Source="{Binding SmallIcon}"
-                           Name="SmallIcon" />
-                    <TextBlock Name="memberName"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               Text="{Binding Name}"
-                               Margin="5,0,0,0"
-                               Foreground="{StaticResource CommonSidebarTextColor}"
-                               FontSize="13" />
-                    <StackPanel.Style>
-                        <Style TargetType="{x:Type StackPanel}">
-                            <Setter Property="Background"
-                                    Value="{StaticResource LibraryItemHostBackground}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},
-                                                               Path=IsMouseOver}"
-                                             Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource LibraryMemberOnHover}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},
-                                                               Path=DataContext.IsSelected}"
-                                             Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource LibraryMemberOnHover}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </StackPanel.Style>
-                </StackPanel>
-            </DataTemplate>
-
             <HierarchicalDataTemplate x:Key="MemberGroupsDataTemplate"
                                       ItemsSource="{Binding Path=Members}">
-                <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
-                           FontSize="12"
-                           Margin="16,8,0,8">
+                <Border Background="{StaticResource LibraryItemHostBackground}">
+                    <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
+                               FontSize="12"
+                               Margin="16,8,0,8">
                                                             <Run Text="{Binding Prefix, Mode=OneWay}"
                                                                  MouseDown="OnPrefixTextBlockMouseDown" /><Run Text="{Binding GroupName, Mode=OneWay}">
                                                                 <Run.Style>
@@ -80,7 +40,8 @@
                                                                 </Style> 
                                                                 </Run.Style>
                                                             </Run>
-                </TextBlock>
+                    </TextBlock>
+                </Border>
             </HierarchicalDataTemplate>
 
             <HierarchicalDataTemplate x:Key="NestedCategoryDataTemplate"
@@ -128,7 +89,7 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self},
                                                                                      Path=IsMouseOver}"
-                                         Value="True">
+                                             Value="True">
                                     <Setter Property="Background"
                                             Value="{StaticResource RootElementOnHover}" />
                                 </DataTrigger>
@@ -145,7 +106,7 @@
             </Style>
 
             <controls:LibrarySearchTreeTemplateSelector x:Key="LibrarySearchTreeTemplateSelector"
-                                                        MemberTemplate="{StaticResource MemberDataTemplate}"
+                                                        MemberTemplate="{StaticResource MemberTemplate}"
                                                         MemberGroupsTemplate="{StaticResource MemberGroupsDataTemplate}"
                                                         CategoryTemplate="{StaticResource NestedCategoryDataTemplate}" />
 
@@ -163,7 +124,9 @@
                             <Button Command="{Binding ClickedCommand}"
                                     Focusable="False"
                                     MouseEnter="OnMemberMouseEnter"
-                                    MouseLeave="OnPopupMouseLeave">
+                                    MouseLeave="OnPopupMouseLeave"
+                                    PreviewMouseLeftButtonDown="OnButtonMouseLeftButtonDown"
+                                    PreviewMouseMove="OnButtonPreviewMouseMove">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <ContentPresenter />
@@ -183,7 +146,7 @@
                                     </Border>
 
                                     <ItemsPresenter x:Name="ItemsHost"
-                                                    Grid.Row="1"/>
+                                                    Grid.Row="1" />
                                 </Grid>
                             </Button>
 
@@ -194,12 +157,42 @@
                                             TargetName="ItemsHost"
                                             Value="Collapsed" />
                                 </Trigger>
-                                <Trigger Property="IsSelected"
-                                         Value="true">
+
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected"
+                                                   Value="True" />
+                                        <Condition Property="IsMouseOver"
+                                                   Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <MultiTrigger.Setters>
+                                        <Setter Property="Background"
+                                                TargetName="ContentPresenterBorder"
+                                                Value="{StaticResource LibraryMemberOnHover}" />
+                                    </MultiTrigger.Setters>
+                                </MultiTrigger>
+                                
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected"
+                                                   Value="False" />
+                                        <Condition Property="IsMouseOver"
+                                                   Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <MultiTrigger.Setters>
+                                        <Setter Property="Background"
+                                                TargetName="ContentPresenterBorder"
+                                                Value="{StaticResource LibraryItemHostBackground}" />
+                                    </MultiTrigger.Setters>
+                                </MultiTrigger>
+
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
                                     <Setter Property="Background"
                                             TargetName="ContentPresenterBorder"
                                             Value="{StaticResource LibraryMemberOnHover}" />
                                 </Trigger>
+
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -233,7 +226,7 @@
                     <DataTemplate>
                         <Border BorderThickness="2,0,0,0"
                                 BorderBrush="Yellow">
-                            <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                            <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
                         </Border>
                     </DataTemplate>
                 </TreeView.ItemTemplate>

@@ -14,7 +14,9 @@ namespace Dynamo.Core.Threading
             internalThread = new Thread(ThreadProc)
             {
                 IsBackground = true,
-                Name = "DynamoSchedulerThread"
+                Name = "DynamoSchedulerThread",
+                CurrentCulture = Thread.CurrentThread.CurrentCulture,
+                CurrentUICulture = Thread.CurrentThread.CurrentUICulture
             };
 
             internalThread.Start();

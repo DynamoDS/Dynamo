@@ -132,7 +132,7 @@ namespace Dynamo.Core
             return Enumerable.Empty<AnnotationModel>();
         }
 
-        private static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph ,ILogger logger)
+        public static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph ,ILogger logger)
         {
             XmlNodeList PresetsNodes = xmlDoc.GetElementsByTagName("Presets");
             XmlNode presetlist = PresetsNodes[0];

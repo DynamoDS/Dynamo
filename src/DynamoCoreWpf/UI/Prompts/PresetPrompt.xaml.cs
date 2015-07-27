@@ -27,7 +27,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return this.nameBox.Text;
+                return this.nameBox.Text.Trim();
             }
 
             set
@@ -95,7 +95,7 @@ namespace Dynamo.Nodes
                
         private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (this.nameBox.Text.Length > this.nameBox.MaxLength)
+            if (this.Text.Length > this.nameBox.MaxLength)
             {
                 this.Text = this.Text.Substring(0, MaxLength);
             }

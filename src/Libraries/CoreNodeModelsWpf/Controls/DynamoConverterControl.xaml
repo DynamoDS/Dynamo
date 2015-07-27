@@ -25,8 +25,14 @@
                 ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
                 Grid.Row="0"
                 Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
-                SelectedItem="{Binding SelectedMetricConversion}"/>
-        
+                SelectedItem="{Binding SelectedMetricConversion}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}"></TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
         <Grid Grid.Row="1">
             
             <Grid.ColumnDefinitions>

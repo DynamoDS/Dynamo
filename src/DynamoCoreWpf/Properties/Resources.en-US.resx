@@ -1356,7 +1356,7 @@ You will get a chance to save your work.</value>
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
   </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
-    <value>Publish a Package Online</value>
+    <value>Publish a Package</value>
   </data>
   <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
     <value>Website Url (optional)</value>
@@ -1650,7 +1650,7 @@ Do you want to install the latest Dynamo update?</value>
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
   </data>
   <data name="PublishPackage" xml:space="preserve">
-    <value>Publish Package !</value>
+    <value>Publish Online</value>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>What's New</value>
@@ -1829,7 +1829,63 @@ Do you want to install the latest Dynamo update?</value>
   <data name="AddButton" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
+    <value>Manage Node and Package Paths...</value>
+    <comment>Setting menu | Custom node definition and package paths</comment>
+  </data>
+  <data name="PackagePathViewAccept" xml:space="preserve">
+    <value>Accept Changes</value>
+    <comment>Accept changes button on the package path dialog</comment>
+  </data>
+  <data name="PackagePathViewHeading" xml:space="preserve">
+    <value>Paths:</value>
+    <comment>Package path management dialog content</comment>
+  </data>
+  <data name="PackagePathViewSummary1" xml:space="preserve">
+    <value>Add paths to make nodes and packages show up in the library.</value>
+    <comment>Package path management dialog content</comment>
+  </data>
+  <data name="PackagePathViewSummary2" xml:space="preserve">
+    <value>Top path is the default save location.</value>
+    <comment>Package path management dialog content that describes about the first entry being the default save location.</comment>
+  </data>
+  <data name="PackagePathViewTitle" xml:space="preserve">
+    <value>Manage Node and Package Paths</value>
+    <comment>Package path management dialog title</comment>
+  </data>
+  <data name="PackagePathViewToolTipDown" xml:space="preserve">
+    <value>Move the selected path downward</value>
+    <comment>Tool-tip for down arrow</comment>
+  </data>
+  <data name="PackagePathViewToolTipMinus" xml:space="preserve">
+    <value>Remove the selected path from list</value>
+    <comment>Tool-tip for minus icon</comment>
+  </data>
+  <data name="PackagePathViewToolTipPlus" xml:space="preserve">
+    <value>Add a new path to the list</value>
+    <comment>Tool-tip for plus icon</comment>
+  </data>
+  <data name="PackagePathViewToolTipUp" xml:space="preserve">
+    <value>Move the selected path upward</value>
+    <comment>Tool-tip for up arrow</comment>
+  </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
+  </data>
+
+  <data name="UnitArea" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="UnitLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="UnitVolume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>Units:</value>
+  </data>
+  <data name="PublishPackageLocally" xml:space="preserve">
+    <value>Publish Locally</value>
   </data>
 </root>
