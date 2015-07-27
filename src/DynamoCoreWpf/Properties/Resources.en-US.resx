@@ -1872,6 +1872,19 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>
+
+  <data name="UnitArea" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="UnitLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="UnitVolume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>Units:</value>
+  </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
   </data>

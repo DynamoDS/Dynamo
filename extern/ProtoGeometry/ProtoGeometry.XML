@@ -3037,7 +3037,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
              <summary>
-             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and (Plane Y axis length).
+             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and height (Plane Y axis length).
              </summary>
             <search>
             rectangle,rectbylengths

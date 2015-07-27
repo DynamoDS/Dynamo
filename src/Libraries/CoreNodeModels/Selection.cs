@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
             this.selectionType = selectionType;
             this.selectionObjectType = selectionObjectType;
 
-            OutPortData.Add(new PortData("Elements", Resources.SelectionPortDataResultToolTip));
+            OutPortData.Add(new PortData("Elements", Resources.SelectionPortDataResultToolTip));       
             RegisterAllPorts();
 
             Prefix = prefix;
