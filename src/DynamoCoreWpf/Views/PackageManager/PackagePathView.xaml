@@ -12,7 +12,7 @@
         Height="450"
         Width="550"
         MinWidth="550"
-        MaxWidth="550"
+        MinHeight="450"
         d:DesignHeight="300"
         d:DesignWidth="300"
         Background="#515151"
