@@ -14,7 +14,7 @@ namespace Dynamo.Manipulation
         /// <param name="node"></param>
         /// <param name="manipulatorContext"></param>
         /// <returns></returns>
-        public IManipulator Create(Dynamo.Models.NodeModel node, INodeManipulatorContext manipulatorContext)
+        public IManipulator Create(Dynamo.Models.NodeModel node, NodeManipulatorContext manipulatorContext)
         {
             throw new NotImplementedException();
         }
@@ -24,7 +24,7 @@ namespace Dynamo.Manipulation
     {
         public abstract void Dispose();
 
-        public abstract void Tessellate(IRenderPackage package, TessellationParameters parameters);
+        //public abstract void Tessellate(IRenderPackage package, TessellationParameters parameters);
     }
 
     public class CompositeManipulator : Manipulator
@@ -40,9 +40,9 @@ namespace Dynamo.Manipulation
             subManipulators.ForEach(x => x.Dispose());
         }
 
-        public override void Tessellate(IRenderPackage package, TessellationParameters parameters)
-        {
-            subManipulators.ForEach(x => x.Tessellate(package, parameters));
-        }
+        //public override void Tessellate(IRenderPackage package, TessellationParameters parameters)
+        //{
+        //    subManipulators.ForEach(x => x.Tessellate(package, parameters));
+        //}
     }
 }

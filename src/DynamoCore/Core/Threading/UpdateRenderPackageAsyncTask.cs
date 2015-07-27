@@ -49,7 +49,6 @@ namespace Dynamo.Core.Threading
         private bool displayLabels;
         private bool isNodeSelected;
         private string previewIdentifierName;
-        private EngineController engineController;
         private IEnumerable<string> drawableIds;
         private readonly List<IRenderPackage> renderPackages;
         private IRenderPackageFactory factory;
@@ -63,6 +62,8 @@ namespace Dynamo.Core.Threading
         {
             get { return TaskPriority.Normal; }
         }
+
+        internal EngineController EngineController { get; private set; }
 
         #endregion
 
@@ -106,7 +107,7 @@ namespace Dynamo.Core.Threading
             displayLabels = nodeModel.DisplayLabels;
             isNodeSelected = nodeModel.IsSelected;
             factory = initParams.RenderPackageFactory;
-            engineController = initParams.EngineController;
+            EngineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
 
             nodeGuid = nodeModel.GUID;
@@ -126,7 +127,7 @@ namespace Dynamo.Core.Threading
             }
 
             var data = from varName in drawableIds
-                       select engineController.GetMirror(varName)
+                       select EngineController.GetMirror(varName)
                            into mirror
                            where mirror != null
                            select mirror.GetData();
@@ -284,7 +285,7 @@ namespace Dynamo.Core.Threading
 
                 package.DisplayLabels = displayLabels;
                 package.IsSelected = isNodeSelected;
-
+                
                 renderPackages.Add(package);
                 count++;
             }

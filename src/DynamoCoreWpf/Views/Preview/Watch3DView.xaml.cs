@@ -202,6 +202,12 @@ namespace Dynamo.Controls
             }
         }
 
+        public Model3D GetGeometryModel3D(string id)
+        {
+            Model3D val;
+            return Model3DDictionary.TryGetValue(id, out val) ? val : null;
+        }
+
         public double NearPlaneDistanceFactor
         {
             get { return nearPlaneDistanceFactor; }
@@ -553,7 +559,7 @@ namespace Dynamo.Controls
         /// </summary> 
         private void VisualizationManager_WorkspaceOpenedClosedHandled()
         {
-            List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText"};
+            List<string> keysList = new List<string> { "DirectionalLight", "Grid", "Axes","BillBoardText" };
             if (Text != null && Text.TextInfo.Any())
             {
                 Text.TextInfo.Clear();               

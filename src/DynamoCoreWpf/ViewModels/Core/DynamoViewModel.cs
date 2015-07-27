@@ -463,7 +463,7 @@ namespace Dynamo.ViewModels
 
         public IBrandingResourceProvider BrandingResourceProvider { get; private set; }
 
-        public IManipulatorDaemonInitializer ManipulatorDaemonInitializer { get; private set; }
+        public IManipulatorDaemonInitializer ManipulatorDaemonInitializer { get; set; }
 
         public bool EnablePresetOptions
         {

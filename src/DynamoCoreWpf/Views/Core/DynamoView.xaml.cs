@@ -142,8 +142,11 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
-            if(dynamoViewModel.ManipulatorDaemonInitializer != null)
+            if (dynamoViewModel.ManipulatorDaemonInitializer != null)
+            {
+                
                 manipulatorDaemon = ManipulatorDaemon.Create(dynamoViewModel.ManipulatorDaemonInitializer);
+            }
         }
 
         #region NodeViewCustomization
@@ -693,8 +696,9 @@ namespace Dynamo.Controls
             if (e.NewItems == null)
                 return;
 
+            var manipulatorContext = new NodeManipulatorContext(this);
             foreach (var nm in e.NewItems.OfType<NodeModel>())
-                manipulatorDaemon.CreateManipulator(nm);
+                manipulatorDaemon.CreateManipulator(nm, manipulatorContext);
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)

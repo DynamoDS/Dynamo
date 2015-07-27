@@ -9,20 +9,18 @@ namespace Dynamo.Manipulation
     {
         private readonly Dictionary<Type, IEnumerable<INodeManipulatorCreator>> registeredManipulatorCreators;
         private readonly Dictionary<Guid, IDisposable> activeManipulators = new Dictionary<Guid, IDisposable>();
-        private readonly INodeManipulatorContext manipulatorContext;
 
-        private ManipulatorDaemon(Dictionary<Type, IEnumerable<INodeManipulatorCreator>> creators, INodeManipulatorContext manipulatorContext)
+        private ManipulatorDaemon(Dictionary<Type, IEnumerable<INodeManipulatorCreator>> creators)
         {
             registeredManipulatorCreators = creators;
-            this.manipulatorContext = manipulatorContext;
         }
 
         public static ManipulatorDaemon Create(IManipulatorDaemonInitializer initializer)
         {
-            return new ManipulatorDaemon(initializer.GetManipulatorCreators(), initializer.ManipulatorContext);
+            return new ManipulatorDaemon(initializer.GetManipulatorCreators());
         }
 
-        public void CreateManipulator(NodeModel model)
+        public void CreateManipulator(NodeModel model, NodeManipulatorContext manipulatorContext)
         {
             var creators = registeredManipulatorCreators.Where(pair => pair.Key.IsInstanceOfType(model)).SelectMany(pair => pair.Value);
             activeManipulators[model.GUID] = new CompositeManipulator(

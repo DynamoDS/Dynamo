@@ -8,13 +8,22 @@ using Dynamo.Models;
 
 namespace Dynamo.Manipulation
 {
-    public interface INodeManipulatorContext
+    //public interface INodeManipulatorContext
+    //{
+    //}
+
+    public class NodeManipulatorContext
     {
+        public IDisposable Context { get; private set; }
+
+        public NodeManipulatorContext(IDisposable context)
+        {
+            Context = context;
+        }
     }
 
     public interface IManipulatorDaemonInitializer
     {
-        INodeManipulatorContext ManipulatorContext { get; }    
         Dictionary<Type, IEnumerable<INodeManipulatorCreator>> GetManipulatorCreators();
     }
 
@@ -23,10 +32,10 @@ namespace Dynamo.Manipulation
     /// </summary>
     public interface INodeManipulatorCreator
     {
-        IManipulator Create(NodeModel node, INodeManipulatorContext manipulatorContext);
+        IManipulator Create(NodeModel node, NodeManipulatorContext manipulatorContext);
     }
 
-    public interface IManipulator : IGraphicItem, IDisposable
+    public interface IManipulator : IDisposable
     {
 
     }
