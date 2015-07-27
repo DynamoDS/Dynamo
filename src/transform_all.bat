@@ -17,12 +17,16 @@ dir *.tt /b > t4list.txt
 echo the following T4 templates will be transformed:
 type t4list.txt
 
+set TextTransform=%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\11.0\TextTransform.exe
+IF NOT EXIST "%TextTransform%" set TextTransform=%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\12.0\TextTransform.exe
+
+
 :: transform all the templates
 for /f %%d in (t4list.txt) do (
 set file_name=%%d
 set file_name=!file_name:~0,-3!.%extension%
 echo:  \--^> !file_name!    
-"%COMMONPROGRAMFILES(x86)%\microsoft shared\TextTemplating\11.0\TextTransform.exe" -out !file_name! %%d
+"%TextTransform%" -out !file_name! %%d
 )
 
 :: delete T4 list and return to previous directory
