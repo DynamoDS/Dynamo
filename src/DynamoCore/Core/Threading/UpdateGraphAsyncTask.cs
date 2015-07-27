@@ -112,14 +112,19 @@ namespace Dynamo.Core.Threading
             // Comparing to another UpdateGraphAsyncTask, verify 
             // that they are updating a similar set of nodes.
 
+            var deletedNodes = graphSyncData.DeletedSubtrees ?? Enumerable.Empty<Subtree>();
+            var otherDeletedNodes = theOtherTask.graphSyncData.DeletedSubtrees ?? Enumerable.Empty<Subtree>();
+
             // Other node is either equal or a superset of this task
-            if (ModifiedNodes.All(x => theOtherTask.ModifiedNodes.Contains(x)))
+            if (ModifiedNodes.All(theOtherTask.ModifiedNodes.Contains) &&
+                deletedNodes.All(otherDeletedNodes.Contains))
             {
                 return TaskMergeInstruction.KeepOther;
             }
 
             // This node is a superset of the other
-            if (theOtherTask.ModifiedNodes.All(x => ModifiedNodes.Contains(x)))
+            if (theOtherTask.ModifiedNodes.All(ModifiedNodes.Contains) &&
+                otherDeletedNodes.All(deletedNodes.Contains))
             {
                 return TaskMergeInstruction.KeepThis;
             }
