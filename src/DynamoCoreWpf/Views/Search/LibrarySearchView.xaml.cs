@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Search.SearchElements;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.UI.Views
 {
@@ -20,6 +21,7 @@ namespace Dynamo.UI.Views
     public partial class LibrarySearchView : UserControl
     {
         private SearchViewModel viewModel;
+        private LibraryDragAndDrop dragDropHelper = new LibraryDragAndDrop();
 
         public LibrarySearchView()
         {
@@ -42,19 +44,6 @@ namespace Dynamo.UI.Views
             viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
             // When workspace was changed, we should hide tooltip. 
             viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
-        }
-
-        private void OnPreviewMouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton != MouseButtonState.Pressed)
-                return;
-            var senderButton = e.OriginalSource as FrameworkElement;
-
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-                return;
-
-            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
         }
 
         private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)
@@ -118,6 +107,28 @@ namespace Dynamo.UI.Views
         private void OnRequestCloseToolTip(object sender, EventArgs e)
         {
             CloseToolTipInternal(true);
+        }
+
+        #endregion
+
+        #region Drag&Drop
+
+        private void OnButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var senderButton = e.OriginalSource as FrameworkElement;
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+        }
+
+        private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            var senderButton = e.OriginalSource as FrameworkElement;
+            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
         }
 
         #endregion
