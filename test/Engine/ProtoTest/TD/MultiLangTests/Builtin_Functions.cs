@@ -387,6 +387,7 @@ n;
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T011_SomeNulls_ModifierStack()
         {
@@ -414,6 +415,7 @@ a = {
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T011_Defect_ModifierStack()
         {
@@ -718,6 +720,7 @@ result =
             thisTest.Verify("result", 1, 0);
         }
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T021_CountTrue_ModifierStack()
         {
@@ -1036,6 +1039,7 @@ result =
             thisTest.Verify("result", 1, 0);
         }
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T032_CountFalse_ModifierStack()
         {
@@ -1315,6 +1319,7 @@ a = {{true},{false},{false},
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T043_AllFalse_ModifierStack()
         {
@@ -1668,6 +1673,7 @@ result = Sum(a);//12.0";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest"), Category("Failure")]
         public void T055_Sum_ModifierStack()
         {
@@ -1908,6 +1914,7 @@ c = Average({m})..Average({n});//3.0,4.0,5.0";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T065_Average_ModifierStack()
         {
@@ -2167,6 +2174,7 @@ r = CountTrue(arr);
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("Built in Functions")]
         public void TV_1467322_CountTrue_ModifierStack()
         {
