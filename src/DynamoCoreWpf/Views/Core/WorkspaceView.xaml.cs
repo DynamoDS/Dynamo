@@ -224,22 +224,16 @@ namespace Dynamo.Views
 
         private void VmOnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
         {
-            var originalLt = new Point(e.X, e.Y);
-            var translatedLt = WorkBench.TranslatePoint(originalLt, outerCanvas);
-
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Position))
             {
-                Canvas.SetLeft(this.selectionBox, translatedLt.X);
-                Canvas.SetTop(this.selectionBox, translatedLt.Y);
+                Canvas.SetLeft(this.selectionBox, e.X);
+                Canvas.SetTop(this.selectionBox, e.Y);
             }
 
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Dimension))
             {
-                var originalRb = new Point(e.X + e.Width, e.Y + e.Height);
-                var translatedRb = WorkBench.TranslatePoint(originalRb, outerCanvas);
-
-                selectionBox.Width = translatedRb.X - translatedLt.X;
-                selectionBox.Height = translatedRb.Y - translatedLt.Y;
+                selectionBox.Width = e.Width;
+                selectionBox.Height = e.Height;
             }
 
             if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Visibility))
