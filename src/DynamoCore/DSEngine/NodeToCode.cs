@@ -154,19 +154,17 @@ namespace Dynamo.DSEngine
             {
                 if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
                 {
-                    if (node.RightNode is FunctionCallNode)
+                    if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)
                     {
                         var lhs = node.LeftNode.ToString();
                         if (core.ClassTable.IndexOf(lhs) < 0)
                         {
                             node.LeftNode.Accept(this);
                         }
-                        node.RightNode.Accept(this);
-                        return;
-                    }
-                    else if (node.RightNode is IdentifierNode)
-                    {
-                        node.LeftNode.Accept(this);
+
+                        if (!(node.RightNode is IdentifierNode))
+                            node.RightNode.Accept(this);
+
                         return;
                     }
                 }
