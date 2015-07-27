@@ -819,14 +819,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestPropertyWontBeReplaced1()
         {
-            /*
-            string libraryPath = "FFITarget.dll";
-            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
-            {
-                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
-            }
-            */
-
+            // Point.X; Point.X;
             OpenModel(@"core\node2code\property.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
@@ -839,6 +832,29 @@ namespace Dynamo.Tests
             var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith(".X"));
             Assert.IsTrue(rhs.All(r => r));
         }
+
+        [Test]
+        public void TestPropertyWontBeReplaced2()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\staticproperty.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith("ElementResolverTarget.StaticProperty"));
+            Assert.IsTrue(rhs.All(r => r));
+        }
+ 
 
         private void TestNodeToCodeUndoBase(string filePath)
         {
