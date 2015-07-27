@@ -44,7 +44,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, ILibraryLoader, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         #region private members
 
@@ -570,7 +570,8 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, this, CustomNodeManager);
+                    pathManager, new ExtensionLibraryLoader(this), 
+                    CustomNodeManager);
 
                 foreach (var ext in extensions)
                 {
@@ -919,7 +920,7 @@ namespace Dynamo.Models
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
-        public void LoadNodeLibrary(Assembly assem)
+        internal void LoadNodeLibrary(Assembly assem)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
@@ -1949,5 +1950,20 @@ namespace Dynamo.Models
         }
 
         #endregion
+    }
+
+    public class ExtensionLibraryLoader : ILibraryLoader
+    {
+        private readonly DynamoModel model;
+
+        internal ExtensionLibraryLoader(DynamoModel model)
+        {
+            this.model = model;
+        }
+
+        public void LoadNodeLibrary(Assembly library)
+        {
+            model.LoadNodeLibrary(library);
+        }
     }
 }

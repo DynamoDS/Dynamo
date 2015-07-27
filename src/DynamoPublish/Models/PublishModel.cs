@@ -238,7 +238,7 @@ namespace Dynamo.Publish.Models
             CustomNodeWorkspaces = new List<ICustomNodeWorkspaceModel>();
             foreach (var dependency in dependencies)
             {
-                ICustomNodeWorkspaceModel customNodeWs;
+                CustomNodeWorkspaceModel customNodeWs;
                 var isWorkspaceCreated = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
                 if (isWorkspaceCreated && !CustomNodeWorkspaces.Contains(customNodeWs))
                     CustomNodeWorkspaces.Add(customNodeWs);

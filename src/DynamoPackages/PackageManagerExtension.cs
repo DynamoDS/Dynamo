@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 
@@ -7,12 +8,17 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 
 using Greg;
+using System.Reflection;
 
 namespace Dynamo.PackageManager
 {
     public class PackageManagerExtension : IExtension, ILogSource
     {
         #region Fields & Properties
+
+        private Action<Assembly> RequestLoadNodeLibraryHandler;
+        private Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler; 
+
         public event Action<ILogMessage> MessageLogged;
 
         public string Name { get { return "DynamoPackageManager"; } }
@@ -50,7 +56,17 @@ namespace Dynamo.PackageManager
         public void Dispose()
         {
             PackageLoader.MessageLogged -= OnMessageLogged;
-            PackageLoader.Dispose();
+
+            if (RequestLoadNodeLibraryHandler != null)
+            {
+                PackageLoader.RequestLoadNodeLibrary -= RequestLoadNodeLibraryHandler;
+            }
+
+            if (RequestLoadCustomNodeDirectoryHandler != null)
+            {
+                PackageLoader.RequestLoadCustomNodeDirectory -=
+                    RequestLoadCustomNodeDirectoryHandler;
+            }
         }
 
         /// <summary>
@@ -76,14 +92,16 @@ namespace Dynamo.PackageManager
 
             PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
             PackageLoader.MessageLogged += OnMessageLogged;
-            PackageLoader.RequestLoadNodeLibrary += startupParams.LibraryLoader.LoadNodeLibrary;
-            PackageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => startupParams.CustomNodeManager
+            RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
+            RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
 
+            PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
+            PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
+                
             var dirBuilder = new PackageDirectoryBuilder(
                 new MutatingFileSystem(),
-                new CustomNodePathRemapper(startupParams.CustomNodeManager as CustomNodeManager, DynamoModel.IsTestMode));
+                new CustomNodePathRemapper(startupParams.CustomNodeManager, DynamoModel.IsTestMode));
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 

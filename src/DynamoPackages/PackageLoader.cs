@@ -342,25 +342,5 @@ namespace Dynamo.PackageManager
 
             preferences.PackageDirectoriesToUninstall.RemoveAll(pkgDirsRemoved.Contains);
         }
-
-        internal void Dispose()
-        {
-            if (RequestLoadNodeLibrary != null)
-            {
-                foreach (var d in RequestLoadNodeLibrary.GetInvocationList())
-                {
-                    RequestLoadNodeLibrary -= (d as Action<Assembly>);
-                }
-            }
-
-            if (RequestLoadCustomNodeDirectory != null)
-            {
-                foreach (var d in RequestLoadCustomNodeDirectory.GetInvocationList())
-                {
-                    RequestLoadCustomNodeDirectory -=
-                        (d as Func<string, IEnumerable<CustomNodeInfo>>);
-                }
-            }
-        }
     }
 }
