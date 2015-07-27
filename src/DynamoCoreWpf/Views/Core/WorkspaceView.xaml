@@ -91,7 +91,8 @@
 
     <Grid Name="outerCanvas"
           HorizontalAlignment="Stretch"
-          VerticalAlignment="Stretch">
+          VerticalAlignment="Stretch"
+          PreviewMouseDown="OnCanvasClicked">
         <Grid.IsHitTestVisible>
             <Binding Path="DataContext.ShouldBeHitTestVisible"
                      RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
