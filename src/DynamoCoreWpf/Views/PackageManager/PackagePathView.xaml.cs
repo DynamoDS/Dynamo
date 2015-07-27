@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.UI;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace Dynamo.Wpf.Views.PackageManager
 {
@@ -49,6 +50,7 @@ namespace Dynamo.Wpf.Views.PackageManager
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
             viewModel.PropertyChanged += OnPropertyChanged;
             UpdateVisualToReflectSelectionState();
+            PreviewKeyDown += OnPackagePathDialogKeyDown;
         }
 
         #endregion
@@ -121,5 +123,19 @@ namespace Dynamo.Wpf.Views.PackageManager
         }
 
         #endregion
+
+        private void OnPackagePathDialogKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+            else if (e.Key == Key.Return)
+            {
+                ViewModel.SaveSettingCommand.Execute(null);
+                e.Handled = true;
+                Close();
+            }
+        }
     }
 }
