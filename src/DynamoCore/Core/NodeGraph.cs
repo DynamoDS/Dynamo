@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Core
 {
@@ -16,6 +17,7 @@ namespace Dynamo.Core
         public List<NoteModel> Notes { get; private set; }
         public List<AnnotationModel> Annotations { get; private set; }
         public ElementResolver ElementResolver { get; private set; }
+        public List<PresetModel> Presets { get; private set; }
   
         private NodeGraph() { }
 
@@ -130,6 +132,23 @@ namespace Dynamo.Core
             return Enumerable.Empty<AnnotationModel>();
         }
 
+        public static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph ,ILogger logger)
+        {
+            XmlNodeList PresetsNodes = xmlDoc.GetElementsByTagName("Presets");
+            XmlNode presetlist = PresetsNodes[0];
+            if (presetlist != null)
+            {
+                return from XmlElement stateNode in presetlist.ChildNodes
+                       select PresetFromXml(stateNode, nodesInNodeGraph, logger);
+            }
+            return Enumerable.Empty<PresetModel>();
+        }
+
+        private static PresetModel PresetFromXml(XmlElement stateNode, IEnumerable<NodeModel> nodesInNodeGraph, ILogger logger)
+        {
+            return PresetModel.LoadFromXml(stateNode, nodesInNodeGraph, logger);
+        }
+
         /// <summary>
         ///     Loads NodeModels, ConnectorModels, and NoteModels from an XmlDocument.
         /// </summary>
@@ -143,8 +162,9 @@ namespace Dynamo.Core
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
             var annotations = LoadAnnotationsFromXml(xmlDoc, nodes, notes).ToList();
+            var presets = LoadPresetsFromXml(xmlDoc,nodes,nodeFactory.AsLogger()).ToList();
 
-            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations};
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations,Presets = presets};
         }
 
     }

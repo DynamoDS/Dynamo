@@ -219,12 +219,18 @@ namespace Dynamo.UI
 
         #endregion
 
-        #region StandardPanel
+        #region ClassInformationView
 
         public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
         public static string HeaderCreate = Resources.HeaderCreate;
         public static string HeaderAction = Resources.HeaderAction;
         public static string HeaderQuery = Resources.HeaderQuery;
+
+        #endregion
+
+        #region InCanvasSearch
+
+        public const double InCanvasSearchTextBoxHeight = 40.0;
 
         #endregion
 

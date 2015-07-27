@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-
+using Dynamo.Models;
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structure point analysis data.
     /// </summary>
-    public class PointData : IStructuredData<Point, double>, IGraphicItem
+    [IsVisibleInDynamoLibrary(false)]
+    public class PointData : IStructuredData<Point, double> //, IGraphicItem
     {
         /// <summary>
         /// A list of Points.
         /// </summary>
+        [NodeObsolete("ValueLocationObsolete", typeof(Properties.Resources))]
         public IEnumerable<Point> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of lists of double values.
         /// </summary>
+        [NodeObsolete("ValuesObsolete", typeof(Properties.Resources))]
         public IList<double> Values { get; internal set; }
 
         protected PointData(
@@ -35,6 +36,7 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of Points.</param>
         /// <param name="values">A list of double values.</param>
+        [NodeObsolete("ByPointsAndValueObsolete", typeof(Properties.Resources))]
         public static PointData ByPointsAndValues(IEnumerable<Point> points, IList<double> values)
         {
             if (points == null)
@@ -63,34 +65,6 @@ namespace Analysis
             }
 
             return new PointData(points, values);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
-        {
-            if (!Values.Any() || Values == null)
-            {
-                return;
-            }
-
-            var min = Values.Min();
-            var max = Values.Max();
-            var normalizedValues = Values.Select(v => (v - min)/(max - min));
-
-            var colorRange = Utils.CreateAnalyticalColorRange();
-
-            var data = ValueLocations.Zip(
-                normalizedValues,
-                (p, v) => new Tuple<Point, double>(p, v));
-
-            foreach (var d in data)
-            {
-                var pt = d.Item1;
-
-                var color = colorRange.GetColorAtParameter(d.Item2);
-                package.AddPointVertex(pt.X, pt.Y, pt.Z);
-                package.AddPointVertexColor(color.Red, color.Green, color.Blue, color.Alpha);
-            }
         }
     }
 }

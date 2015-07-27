@@ -44,7 +44,7 @@ namespace Dynamo.Tests
             var workspace = dynamoModel.CurrentWorkspace;
             Assert.AreEqual(false, workspace.CanUndo);
             Assert.AreEqual(false, workspace.CanRedo);
-            Assert.AreEqual(0, workspace.Nodes.Count); // An empty workspace
+            Assert.AreEqual(0, workspace.Nodes.Count()); // An empty workspace
 
             var addNode = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             var createNodeCommand = new DynamoModel.CreateNodeCommand(
@@ -52,7 +52,7 @@ namespace Dynamo.Tests
 
             // Create a new node in the empty workspace.
             ViewModel.ExecuteCommand(createNodeCommand);
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
 
             Assert.AreEqual(true, workspace.CanUndo);
             Assert.AreEqual(false, workspace.CanRedo);
@@ -451,9 +451,9 @@ namespace Dynamo.Tests
 
             // make change
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
-            dynamoModel.CurrentWorkspace.AddNode(node, false);
+            dynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             // save
             var newPath = GetNewFileNameOnTempPath("dyn");
@@ -481,9 +481,9 @@ namespace Dynamo.Tests
             Assert.IsFalse(def.HasUnsavedChanges);
 
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
-            def.AddNode(node, false);
+            def.AddAndRegisterNode(node, false);
             Assert.IsTrue(def.HasUnsavedChanges);
-            Assert.AreEqual(1, def.Nodes.Count );
+            Assert.AreEqual(1, def.Nodes.Count() );
             
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
@@ -640,10 +640,10 @@ namespace Dynamo.Tests
             model.CurrentWorkspace = ViewModel.HomeSpace;
             var newCustNodeInstance =
                 model.CustomNodeManager.CreateCustomNodeInstance(nodeWorkspace.CustomNodeId);
-            model.CurrentWorkspace.AddNode(newCustNodeInstance, false);
+            model.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
 
             // run expression
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
 
             // run expression is correct
             ViewModel.HomeSpace.Run();
@@ -721,7 +721,7 @@ namespace Dynamo.Tests
             foreach (var _ in Enumerable.Range(0, 10))
             {
                 var node = model.CustomNodeManager.CreateCustomNodeInstance(oldId);
-                model.CurrentWorkspace.AddNode(node, false);
+                model.CurrentWorkspace.AddAndRegisterNode(node, false);
             }
 
             // SaveAs
@@ -735,7 +735,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(nodeWorkspace.CustomNodeDefinition);
 
             // can get instances of original custom node
-            Assert.AreEqual(10, homeWorkspace.Nodes.Count);
+            Assert.AreEqual(10, homeWorkspace.Nodes.Count());
             var funcs =
                 homeWorkspace.Nodes.OfType<Function>()
                     .Where(x => x.Definition.FunctionId == nodeWorkspace.CustomNodeId)
@@ -939,6 +939,41 @@ namespace Dynamo.Tests
                 var newId = workspace.CustomNodeDefinition.FunctionId;
                 Assert.AreEqual(node.ID, newId);
             }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CustomNodeWorkspaceSavedToSamePlaceNotCausingDuplicatedLibraryItems()
+        {
+            // open file
+            // save to the temporary folder
+            // save to another temporary folder
+            // save to the old temporary folder
+            // there should be only two library items instead of three
+
+            var dynamoModel = ViewModel.Model;
+            var nodeName = Guid.NewGuid().ToString();
+            var catName = "Custom Nodes";
+
+            var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
+
+            var tempPath1 = Path.Combine(TempFolder, nodeName + ".dyf");
+            var tempPath2 = Path.Combine(TempFolder, nodeName, nodeName + ".dyf");
+
+            var res = def.SaveAs(tempPath1, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            Assert.IsTrue(res);
+            Thread.Sleep(1);
+
+            res = def.SaveAs(tempPath2, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            Assert.IsTrue(res);
+            Thread.Sleep(1);
+
+            res = def.SaveAs(tempPath1, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            Assert.IsTrue(res);
+
+            var count = dynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+                            x => string.CompareOrdinal(x.Name, nodeName) == 0).Count();
+            Assert.AreEqual(count, 2);
         }
         #endregion
     }

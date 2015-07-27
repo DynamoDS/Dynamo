@@ -21,12 +21,13 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels.Core;
-
+using Dynamo.PackageManager;
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.ViewModels;
 using DynamoUtilities;
 
 namespace Dynamo.ViewModels
@@ -399,16 +400,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTessellationDivisions
-        {
-            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
-            set
-            {
-                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
-                model.OnRequestsRedraw(this, EventArgs.Empty);
-            }
-        }
-
         public bool VerboseLogging
         {
             get { return model.DebugSettings.VerboseLogging; }
@@ -467,6 +458,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
+
+        public bool EnablePresetOptions
+        {
+            get { return this.Model.CurrentWorkspace.Presets.Any(); }            
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -511,8 +509,9 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
-            this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
+            var pmExtension = model.GetPackageManagerExtension();
+            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+            this.SearchViewModel = new SearchViewModel(this);
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
@@ -548,6 +547,21 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
 
             SubscribeDispatcherHandlers();
+
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(this.VisualizationManager.RenderPackageFactory);
+            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+        }
+
+        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowEdges":
+                    Model.PreferenceSettings.ShowEdges =
+                        VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges;
+                    break;
+            }
+            VisualizationManager.UpdateAllNodeVisualsAndNotify();
         }
 
         internal event EventHandler NodeViewReady;
@@ -574,6 +588,7 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
+            RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
         }
 
         private void InitializeRecentFiles()
@@ -795,6 +810,7 @@ namespace Dynamo.ViewModels
             DeleteCommand.RaiseCanExecuteChanged();
             UngroupModelCommand.RaiseCanExecuteChanged();
             AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
+            ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1092,15 +1108,30 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Open a definition or workspace.
         /// </summary>
-        /// <param name="parameters">The path the the file.</param>
+        /// <param name="parameters"></param>
+        /// For most cases, parameters variable refers to the file path to open
+        /// However, when this command is used in OpenFileDialog, the variable is
+        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
         private void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
             try
             {
-                var xmlFilePath = parameters as string;
-                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
+                string xmlFilePath = string.Empty;
+                bool forceManualMode = false;
+                var packedParams = parameters as Tuple<string, bool>;
+                if (packedParams != null)
+                {
+                    xmlFilePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    xmlFilePath = parameters as string;
+                }
+                ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath, forceManualMode));
             }
             catch (Exception e)
             {
@@ -1129,7 +1160,7 @@ namespace Dynamo.ViewModels
                     return;
             }
 
-            FileDialog _fileDialog = new OpenFileDialog()
+            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
             {
                 Filter = string.Format(Resources.FileDialogDynamoDefinitions,
                          BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
@@ -1157,13 +1188,15 @@ namespace Dynamo.ViewModels
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
-                    Open(_fileDialog.FileName);
+                {
+                    Open(new Tuple<string,bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+                }
             }
         }
 
         private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         private void OpenRecent(object path)
@@ -1173,7 +1206,7 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenRecent(object path)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         /// <summary>
@@ -1281,6 +1314,11 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ManagePackagePaths(object parameters)
+        {
+            OnRequestPackagePathsDialog(this, EventArgs.Empty);
+        }
+
         /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
@@ -1360,6 +1398,30 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Present the new preset dialogue and add a new presetModel 
+        /// to the preset set on this graph
+        /// </summary>
+        private void ShowNewPresetStateDialogAndMakePreset(object parameter)
+        {
+            //trigger the event to request the display
+            //of the preset name dialogue
+            var args = new PresetsNamePromptEventArgs();
+            this.Model.OnRequestPresetNamePrompt(args);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            if (args.Success)
+            {
+                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+                //Presets created - this will enable the Restore / Delete presets
+                RaisePropertyChanged("EnablePresetOptions");    
+            }
+        }
+        private bool CanShowNewPresetStateDialog(object parameter)
+        {
+            RaisePropertyChanged("EnablePresetOptions");
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = this;
@@ -1397,7 +1459,7 @@ namespace Dynamo.ViewModels
             else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var pathManager = vm.model.PathManager;
-                _fileDialog.InitialDirectory = pathManager.UserDefinitions;
+                _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -1524,7 +1586,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         private void CloseHomeWorkspace(object parameter)
@@ -1539,7 +1601,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return true;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         /// <summary>

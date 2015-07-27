@@ -17,7 +17,6 @@ using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Properties;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -66,11 +65,31 @@ namespace Dynamo.Models
                 RequestsFunctionNamePrompt(this, e);
         }
 
+
+        public event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
+        public void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
+        {
+            if (RequestPresetsNamePrompt != null)
+                RequestPresetsNamePrompt(e);
+        }
         public event WorkspaceHandler WorkspaceSaved;
         internal void OnWorkspaceSaved(WorkspaceModel model)
         {
             if (WorkspaceSaved != null)
                 WorkspaceSaved(model);
+        }
+
+        /// <summary>
+        /// Event that is fired during the opening of the workspace.
+        /// 
+        /// Use the XmlDocument object provided to conduct additional
+        /// workspace opening operations.
+        /// </summary>
+        public event Action<XmlDocument> WorkspaceOpening;
+        internal void OnWorkspaceOpening(XmlDocument obj)
+        {
+            var handler = WorkspaceOpening;
+            if (handler != null) handler(obj);
         }
 
         /// <summary>
@@ -183,22 +202,14 @@ namespace Dynamo.Models
         /// <summary>
         ///     Manages all extensions for Dynamo
         /// </summary>
-        //public readonly IExtensionManager ExtensionManager; // MAGN-7366
+        public IExtensionManager ExtensionManager { get { return extensionManager; } }
+
+        private readonly ExtensionManager extensionManager;
 
         /// <summary>
         ///     Manages all loaded NodeModel libraries.
         /// </summary>
         public readonly NodeModelAssemblyLoader Loader;
-
-        /// <summary>
-        ///     Manages loading of packages.
-        /// </summary>
-        public readonly PackageLoader PackageLoader;
-
-        /// <summary>
-        ///     Dynamo Package Manager Instance.
-        /// </summary>
-        internal readonly PackageManagerClient PackageManagerClient;
 
         /// <summary>
         ///     Custom Node Manager instance, manages all loaded custom nodes.
@@ -314,6 +325,8 @@ namespace Dynamo.Models
         /// </summary>
         public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
 
+        public AuthenticationManager AuthenticationManager { get; set; }
+
         #endregion
 
         #region initialization and disposal
@@ -383,7 +396,7 @@ namespace Dynamo.Models
             ISchedulerThread SchedulerThread { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
-            string PackageManagerAddress { get; set; }
+            IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -400,7 +413,7 @@ namespace Dynamo.Models
             public ISchedulerThread SchedulerThread { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
-            public string PackageManagerAddress { get; set; }
+            public IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -437,12 +450,18 @@ namespace Dynamo.Models
             });
 
             // Ensure we have all directories in place.
-            pathManager.EnsureDirectoryExistence();
+            var exceptions = new List<Exception>();
+            pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
+
+            foreach (var exception in exceptions)
+            {
+                Logger.Log(exception); // Log all exceptions.
+            }
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
             MigrationManager.MessageLogged += LogMessage;
@@ -489,6 +508,16 @@ namespace Dynamo.Models
                 }
             }
 
+            // At this point, pathManager.PackageDirectories only has 1 element which is the directory
+            // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
+            // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
+            // PackageFolders
+            if (PreferenceSettings.CustomPackageFolders.Count == 0)
+                PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
+            else
+                pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
+
+
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
@@ -499,14 +528,12 @@ namespace Dynamo.Models
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
 
+            extensionManager = new ExtensionManager();
+            extensionManager.MessageLogged += LogMessage;
+            var extensions = config.Extensions ?? ExtensionManager.ExtensionLoader.LoadDirectory(pathManager.ExtensionsDirectory);
+
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
-
-            PackageLoader = new PackageLoader(pathManager.PackagesDirectory);
-            PackageLoader.MessageLogged += LogMessage;
-            PackageLoader.RequestLoadNodeLibrary += LoadNodeLibrary;
-            PackageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode, true);
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -526,29 +553,65 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode)
+            {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
+            }
             
-            Logger.Log(
-                string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
-
-            var url = config.PackageManagerAddress ??
-                      AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
-
-            PackageManagerClient = InitializePackageManager(config.AuthProvider, url,
-                PackageLoader.RootPackagesDirectory, CustomNodeManager, config.StartInTestMode);
-
-            Logger.Log("Dynamo will use the package manager server at : " + url);
+            Logger.Log(string.Format("Dynamo -- Build {0}", 
+                                        Assembly.GetExecutingAssembly().GetName().Version));
 
             InitializeNodeLibrary(preferences);
+
+            if (extensions.Any())
+            {
+                var startupParams = new StartupParams(config.AuthProvider,
+                    pathManager, CustomNodeManager);
+
+                foreach (var ext in extensions)
+                {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += LogMessage;
+
+                    ext.Startup(startupParams);
+                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
+                    ext.Load(preferences, pathManager);
+                    ExtensionManager.Add(ext);
+                }
+            }
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
             StartBackupFilesTimer();
 
-            TraceReconciliationProcessor = this;
+            TraceReconciliationProcessor = this; 
+            
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                try
+                {
+                    ext.Ready(new ReadyParams(this));
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.Message);
+                }
+            }
+        }
+            
+        private void RemoveExtension(IExtension ext)
+        {
+            ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
+            ExtensionManager.Remove(ext);
+
+            var logSource = ext as ILogSource;
+            if (logSource != null)
+                logSource.MessageLogged -= LogMessage;
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
@@ -678,6 +741,14 @@ namespace Dynamo.Models
         {
             EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
 
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
+            }
+
+            ExtensionManager.Dispose();
+            extensionManager.MessageLogged -= LogMessage;
+
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             
@@ -706,31 +777,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        ///     Validate the package manager url and initialize the PackageManagerClient object
-        /// </summary>
-        /// <param name="provider">A possibly null IAuthProvider</param>
-        /// <param name="url">The end point for the package manager server</param>
-        /// <param name="rootDirectory">The root directory for the package manager</param>
-        /// <param name="customNodeManager">A valid CustomNodeManager object</param>
-        /// <returns>Newly created object</returns>
-        private static PackageManagerClient InitializePackageManager(IAuthProvider provider, string url, string rootDirectory,
-            CustomNodeManager customNodeManager, bool isTestMode )
-        {
-            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            {
-                throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
-            }
-            
-            var dirBuilder = new PackageDirectoryBuilder(
-                new MutatingFileSystem(), 
-                new CustomNodePathRemapper(customNodeManager, isTestMode));
-
-            var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
-
-            return new PackageManagerClient( new GregClient(provider, url), uploadBuilder );
-        }
-
         private void InitializeCustomNodeManager()
         {
             CustomNodeManager.MessageLogged += LogMessage;
@@ -740,6 +786,22 @@ namespace Dynamo.Models
             {
                 if (customNodeSearchRegistry.Contains(info.FunctionId))
                     return;
+
+                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+                                x =>
+                                {
+                                    return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
+                                }).ToList();
+
+                if (elements.Any())
+                {
+                    foreach (var element in elements)
+                    {
+                        element.SyncWithCustomNodeInfo(info);
+                        SearchModel.Update(element);
+                    }
+                    return;
+                }
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -858,16 +920,9 @@ namespace Dynamo.Models
             DumpLibrarySnapshot(functionGroups);
 #endif
 
-            // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadAll(new LoadPackageParams
-            {
-                Preferences = preferences,
-                PathManager = pathManager
-            });
-
             // Load local custom nodes
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
+            foreach (var directory in pathManager.DefinitionDirectories)
+                CustomNodeManager.AddUninitializedCustomNodesInPath(directory, IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
@@ -1069,13 +1124,13 @@ namespace Dynamo.Models
         ///     Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
         /// <param name="xmlPath"></param>
-        public void OpenFileFromPath(string xmlPath)
+        public void OpenFileFromPath(string xmlPath, bool forceManualExecutionMode = false)
         {
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
 
             WorkspaceInfo workspaceInfo;
-            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
+            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
             {
                 if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
                 {
@@ -1101,6 +1156,8 @@ namespace Dynamo.Models
                         }
 
                         AddWorkspace(ws);
+
+                        OnWorkspaceOpening(xmlDoc);
 
                         // TODO: #4258
                         // Remove this ResetEngine call when multiple home workspaces is supported.
@@ -1146,7 +1203,7 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-
+            
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
@@ -1154,7 +1211,8 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                nodeGraph.Annotations,               
+                nodeGraph.Annotations,
+                nodeGraph.Presets,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
@@ -1169,9 +1227,12 @@ namespace Dynamo.Models
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
+            newWorkspace.RefreshCompleted += OnRefreshCompleted;
+
             newWorkspace.Disposed += () =>
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
+                newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
         }
 
@@ -1197,7 +1258,7 @@ namespace Dynamo.Models
                 {
                     if (!workspace.HasUnsavedChanges)
                     {
-                        if (workspace.Nodes.Count == 0 &&
+                        if (workspace.Nodes.Any() &&
                             workspace.Notes.Count == 0)
                             continue;
 
@@ -1211,7 +1272,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null);
+                    workspace.SaveAs(savePath, null, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict.Add(workspace.Guid, savePath);
@@ -1429,7 +1490,7 @@ namespace Dynamo.Models
         /// <param name="centered"></param>
         public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
         {
-            CurrentWorkspace.AddNode(node, centered);
+            CurrentWorkspace.AddAndRegisterNode(node, centered);
 
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
             DynamoSelection.Instance.ClearSelection();
@@ -1560,7 +1621,7 @@ namespace Dynamo.Models
             // Add the new NodeModel's to the Workspace
             foreach (var newNode in newNodeModels)
             {
-                CurrentWorkspace.AddNode(newNode, false);
+                CurrentWorkspace.AddAndRegisterNode(newNode, false);
                 createdModels.Add(newNode);
                 AddToSelection(newNode);
             }

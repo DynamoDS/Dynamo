@@ -35,7 +35,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var polyCurveNodeID = GetPreviewValue("0d02fdfe-adda-404e-958e-e950742a8f1c") as PolyCurve;
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var cCsNodeID = GetPreviewValue("5991cebf-b559-44a9-8d93-de0800386f89") as CoordinateSystem;
@@ -92,7 +92,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(46, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(46, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(56, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var curvesFromSurface = "754f9095-08dc-4cde-aa68-a0605c441d9e";
@@ -123,7 +123,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             //CGet Curve.PointAtParameter node and copy paste it.
@@ -138,11 +138,11 @@ namespace Dynamo.Tests
             RunCurrentModel();
 
             // check all the nodes and connectors are updated
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             // Make sure we are able to get copy pasted PointAtParameter node.
-            var newPointAtPArameterNode = CurrentDynamoModel.CurrentWorkspace.Nodes[4];
+            var newPointAtPArameterNode = CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(4);
             var guid = newPointAtPArameterNode.GUID.ToString();
 
             // Checking there is no Warning or Error on node after copy paste.
@@ -175,7 +175,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var nurbsCurve = GetPreviewValue("0cd25749-5f49-4e2c-82f7-ac278e35ac7f") as NurbsCurve;
@@ -239,7 +239,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var curves = "0503d40e-812b-47ae-8198-d4ed0ee91c91";
@@ -269,7 +269,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var surface = GetPreviewValue("3d0b5d5b-4100-442f-b94d-b33184e4829d") as Surface;
@@ -302,7 +302,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var point = GetPreviewValueAtIndex("7f3fe860-9f4b-4bbf-848f-1a18606eb5f8", 0) as Point;
@@ -346,7 +346,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(11, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var finalSolid = GetPreviewValue("7ad36ecb-21f3-41f0-acb9-15017c48a19d") as Solid;
@@ -368,7 +368,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var groupedObjects = "3c2f5adb-7967-47ca-962a-a4d24aaea8a9";
@@ -404,7 +404,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var groupPoints = "de1cd6bd-6afd-4fc5-aefe-ecec6be87a7c";
@@ -453,7 +453,7 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             //get List.Map guid
@@ -487,8 +487,23 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(exportPreview.Contains("exported.sat"));
         }
-     
 
-        
+        [Test]
+        public void TestCoordinateSystem()
+        {
+            //This test is use to test coordinate system
+            //Newly added Default arguments are missing for entire CoordinateSystem class.
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7517
+            string openPath = Path.Combine(
+                TestDirectory,
+                @"core\geometryui\coordinateSystem.dyn");
+
+            RunModel(openPath);
+
+            var csPreview = GetPreviewValue("c7a317fc-c980-43f9-90c5-df50c9703f95") as CoordinateSystem;
+            Assert.AreEqual(0,csPreview.Origin.X );
+            Assert.AreEqual(0,csPreview.Origin.Y);
+            Assert.AreEqual(0, csPreview.Origin.Z); 
+        }       
     }
 }

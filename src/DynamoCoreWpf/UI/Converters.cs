@@ -2054,6 +2054,15 @@ namespace Dynamo.Controls
 
             var textBlock = values[0] as TextBlock;
             var viewModel = values[1] as SearchViewModel;
+
+            // This converter is used in Library view and in ClassInformation view.
+            // In Library view ViewModel is SearchViewModel, that's why it can't be null.
+            // But in ClassInformation view ViewModel is ClassInformationViewModel.
+            // So, if viewModel is null, that means we are in ClassInformationView
+            // and there is no need to create additional margin.
+            if (viewModel == null)
+                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+
             var searchText = viewModel.SearchText;
             var typeface = viewModel.RegularTypeface;
             var fullText = textBlock.Text;
@@ -2202,6 +2211,31 @@ namespace Dynamo.Controls
         }
     }
 
+    public class GroupTitleVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null) return Visibility.Visible;
+            if (parameter.ToString() == "FlipTextblock")
+            {
+                if ((Visibility) value == Visibility.Collapsed)
+                {
+                    return Visibility.Visible;
+                }
+            }
+            else if (parameter.ToString() == "FlipTextbox")
+            {
+                return (Visibility)value; 
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
         /// Converts element type of node search element in short string.
         /// E.g. ElementTypes.Packaged => PKG.
@@ -2243,5 +2277,42 @@ namespace Dynamo.Controls
             {
                 throw new NotImplementedException();
             }
-        }    
-}
+        }
+
+        /// <summary>
+        /// Converter is used in search library view. If current mode is LibraryView, then hide found members.
+        /// Otherwise show found members.
+        /// </summary>
+        public class LibraryViewModeToBoolConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var mode = (SearchViewModel.ViewMode)value;
+                return mode == SearchViewModel.ViewMode.LibraryView;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Converter is used in WorkspaceView. It makes context menu longer.
+        /// Since context menu includes now inCanvasSearch, it should be align according its' new height.
+        /// </summary>
+        public class WorkspaceContextMenuHeightConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                double actualContextMenuHeight = (double)value;
+
+                return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeight;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }

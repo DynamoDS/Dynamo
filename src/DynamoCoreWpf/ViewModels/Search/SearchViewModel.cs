@@ -10,6 +10,7 @@ using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Services;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
@@ -61,6 +62,12 @@ namespace Dynamo.ViewModels
         ///     Maximum number of items to show in search.
         /// </summary>
         public int MaxNumSearchResults { get; set; }
+
+        /// <summary>
+        /// Position, where canvas was clicked. 
+        /// After node will be called, it will be created at the same place.
+        /// </summary>
+        public Point InCanvasSearchPosition; 
 
         /// <summary>
         ///     Indicates whether the node browser is visible or not
@@ -192,9 +199,9 @@ namespace Dynamo.ViewModels
 
         #region Initialization
 
-        internal SearchViewModel(DynamoViewModel dynamoViewModel, NodeSearchModel model)
+        internal SearchViewModel(DynamoViewModel dynamoViewModel)
         {
-            Model = model;
+            Model = dynamoViewModel.Model.SearchModel;
             this.dynamoViewModel = dynamoViewModel;
 
             IPathManager pathManager = null;
@@ -205,6 +212,15 @@ namespace Dynamo.ViewModels
 
             MaxNumSearchResults = 15;
 
+            selectionNavigator = new SelectionNavigator(SearchRootCategories);
+            InitializeCore();
+        }
+
+        // Just for tests.
+        internal SearchViewModel(NodeSearchModel model)
+        {
+            Model = model;
+            selectionNavigator = new SelectionNavigator(SearchRootCategories);
             InitializeCore();
         }
 
@@ -238,7 +254,7 @@ namespace Dynamo.ViewModels
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
 
-            ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
+            ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY_CATEGORY, true);
         }
 
         private void OnDynamoViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -349,7 +365,7 @@ namespace Dynamo.ViewModels
                 parent.Items.Remove(target);
 
                 // Check to see if all items under "parent" are removed, leaving behind only one 
-                // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).
+                // entry that is "ClassInformationViewModel" (a class used to show ClassInformationView).
                 // If that is the case, remove the "ClassInformationViewModel" at the same time.
                 if (parent.Items.Count == 1 && parent.Items[0] is ClassInformationViewModel)
                     parent.Items.RemoveAt(0);
@@ -668,6 +684,7 @@ namespace Dynamo.ViewModels
             if (Visible != true)
                 return;
 
+            InstrumentationLogger.LogPiiInfo("Search", query);
 
             // if the search query is empty, go back to the default treeview
             if (string.IsNullOrEmpty(query))
@@ -679,6 +696,8 @@ namespace Dynamo.ViewModels
 
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
+
+            selectionNavigator.UpdateRootCategories(SearchRootCategories);
         }
 
 
@@ -699,7 +718,7 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<NodeSearchElementViewModel> Search(string search, int maxNumSearchResults)
         {
-            var foundNodes = Model.Search(search).Take(maxNumSearchResults);
+            var foundNodes = Model.Search(search);
 
             ClearSearchCategories();
             PopulateSearchCategories(foundNodes);
@@ -731,9 +750,6 @@ namespace Dynamo.ViewModels
                 UpdateTopResult(searchRootCategories.FirstOrDefault().MemberGroups.FirstOrDefault());
             else
                 UpdateTopResult(null);
-
-            // Order found categories by name.
-            searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
 
             SortSearchCategoriesChildren();
         }
@@ -834,12 +850,25 @@ namespace Dynamo.ViewModels
 
         #region Selection
 
-        /// <summary>
-        ///     Increments the selected element by 1, unless it is the last element already
-        /// </summary>
-        public void SelectNext()
-        {
+        private SelectionNavigator selectionNavigator;
 
+        /// <summary>
+        /// Selected member is  library search view.
+        /// </summary>
+        public NodeSearchElementViewModel CurrentlySelectedMember
+        {
+            get
+            {
+                return selectionNavigator.CurrentlySelection;
+            }
+        }
+
+        /// <summary>
+        /// Used during library search key navigation. Counts next selected member index.
+        /// </summary>
+        public void MoveSelection(NavigationDirection direction)
+        {
+            selectionNavigator.MoveSelection(direction);
         }
 
         private void UpdateTopResult(SearchMemberGroup memberGroup)
@@ -854,6 +883,12 @@ namespace Dynamo.ViewModels
             topMemberGroup.AddMember(memberGroup.Members.First());
 
             TopResult = topMemberGroup;
+        }
+
+        internal void ExecuteSelectedMember()
+        {
+            if (CurrentlySelectedMember != null)
+                CurrentlySelectedMember.ClickedCommand.Execute(null);
         }
 
         #endregion
@@ -916,9 +951,12 @@ namespace Dynamo.ViewModels
             //SearchText = SearchResults[SelectedIndex].Model.Name;
         }
 
-        public void OnSearchElementClicked(NodeModel nodeModel)
+        public void OnSearchElementClicked(NodeModel nodeModel, Point position)
         {
-            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, 0, 0, true, true));
+            bool useDeafultPosition = position.X == 0 && position.Y == 0;
+
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+                nodeModel, position.X, position.Y, useDeafultPosition, true));
         }
         #endregion
 

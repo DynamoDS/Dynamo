@@ -135,7 +135,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("aa03e3b7-066b-4564-91bc-69c247bc8bdb");
@@ -285,7 +285,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("d36759fb-da7a-475a-a43a-9c85996ad55d");
@@ -379,7 +379,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("0f912454-b278-499f-b15f-c42c039a5453");
@@ -411,7 +411,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("0f912454-b278-499f-b15f-c42c039a5453");
@@ -469,7 +469,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("294a2376-6751-43c3-a8b1-5492fa942dbe");
@@ -575,7 +575,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("9e19aed1-90ec-4de3-bb5d-e0b547f69138");
@@ -694,7 +694,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("a20ad56b-cd14-4aa3-b39c-d9bd0ac0e9f8");
@@ -754,7 +754,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("6b6593df-5c71-4472-a91b-7fc69feb14d4");
@@ -814,7 +814,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             NodeModel nodeModel = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("6a6a3d81-57bc-44ae-af37-9dabcf25b8e4");

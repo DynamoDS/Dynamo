@@ -647,20 +647,48 @@ namespace ProtoCore.Utils
         ///     Return: "A"
         /// Given: A.B[0].C
         ///     Return: "A.B[0].C"
+        /// Given: A().B (global function)
+        ///     Return: empty string
+        /// Given: A.B[0].C()
+        ///     Return: "A.B[0]"
         /// </summary>
         /// <param name="identList"></param>
         /// <returns></returns>
-        public static string GetIdentifierExceptMethodName(ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        public static string GetIdentifierExceptMethodName(IdentifierListNode identList)
         {
             Validity.Assert(null != identList);
-            string identListString = identList.ToString();
-            int removeIndex = identListString.IndexOf('(');
-            if (removeIndex > 0)
+
+            var leftNode = identList.LeftNode;
+            var rightNode = identList.RightNode;
+
+            var intermediateNodes = new List<AssociativeNode>();
+            if (!(rightNode is FunctionCallNode))
             {
-                identListString = identListString.Remove(removeIndex);
-                identListString = identListString.Remove(identListString.LastIndexOf('.'));
+                intermediateNodes.Insert(0, rightNode);
             }
-            return identListString;
+
+            while (leftNode is IdentifierListNode)
+            {
+                rightNode = ((IdentifierListNode) leftNode).RightNode;
+                if (rightNode is FunctionCallNode)
+                {
+                    intermediateNodes.Clear();
+                }
+                else
+                {
+                    intermediateNodes.Insert(0, rightNode);
+                }
+                leftNode = ((IdentifierListNode)leftNode).LeftNode;
+                
+            }
+            if (leftNode is FunctionCallNode)
+            {
+                intermediateNodes.Clear();
+                return "";
+            }
+            intermediateNodes.Insert(0, leftNode);
+
+            return CreateNodeByCombiningIdentifiers(intermediateNodes).ToString();
         }
 
         /// <summary>

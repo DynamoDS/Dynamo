@@ -33,7 +33,8 @@ namespace Dynamo.Nodes
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
 
 
-        public const string GEOMETRY = "Geometry";
+        public const string GEOMETRY_CATEGORY = "Geometry";
+        public const string GEOMETRY = "Geometry.Geometry";
 
         public const string ANALYZE_SOLAR = "Analyze.Solar";
 
@@ -547,9 +548,10 @@ namespace Dynamo.Nodes
                     continue;
                 }
 
-                if (row != lastRow)
+                if (row != lastRow || rows.Count() == 1)
                 {
                     // Rows other than the last get dots appended to the end.
+                    // Or if there is only one row.
                     results.Add(row.Substring(0, maxAfterTruncate) + Configurations.TwoDots);
                 }
                 else

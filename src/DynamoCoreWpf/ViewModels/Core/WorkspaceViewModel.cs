@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -48,6 +48,12 @@ namespace Dynamo.ViewModels
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
         public PortViewModel portViewModel { get; set; }
         public bool IsSnapping { get; set; }
+
+        /// <summary>
+        /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
+        /// </summary>
+        public SearchViewModel InCanvasSearchViewModel { get; private set; }
+
         /// <summary>
         /// For requesting registered workspace to zoom in center
         /// </summary>
@@ -253,11 +259,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-#if DEBUG
                 return true;
-#else
-                return false;
-#endif
             }
         }
 
@@ -297,7 +299,11 @@ namespace Dynamo.ViewModels
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
-            Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
+
+            Model.NodeAdded += Model_NodeAdded;
+            Model.NodeRemoved += Model_NodeRemoved;
+            Model.NodesCleared += Model_NodesCleared;
+
             Model.Notes.CollectionChanged += Notes_CollectionChanged;
             Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
             Model.ConnectorAdded += Connectors_ConnectorAdded;
@@ -308,12 +314,18 @@ namespace Dynamo.ViewModels
                 (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
-            Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
+
+            
+            foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
+
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
+            InCanvasSearchViewModel.Visible = true;
         }
+
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -397,44 +409,39 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
-        
-        void Nodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+
+
+        void Model_NodesCleared()
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        if (item is NodeModel)
-                        {
-                            var node = item as NodeModel;
+            _nodes.Clear();
+            Errors.Clear();
+            PostNodeChangeActions();
+        }
 
-                            var nodeViewModel = new NodeViewModel(this, node);
-                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;  
-                            nodeViewModel.NodeLogic.Modified +=OnNodeModified;
-                            _nodes.Add(nodeViewModel);
-                            Errors.Add(nodeViewModel.ErrorBubble);
-                            nodeViewModel.UpdateBubbleContent();
-                        }
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _nodes.Clear();
-                    Errors.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
-                        Errors.Remove(nodeViewModel.ErrorBubble);
-                        _nodes.Remove(nodeViewModel);
+        void Model_NodeRemoved(NodeModel node)
+        {
+            NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == node);
+            Errors.Remove(nodeViewModel.ErrorBubble);
+            _nodes.Remove(nodeViewModel);
 
-                    }
-                    break;
-            }
+            PostNodeChangeActions();
+        }
 
+        void Model_NodeAdded(NodeModel node)
+        {
+            var nodeViewModel = new NodeViewModel(this, node);
+            nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
+            nodeViewModel.NodeLogic.Modified += OnNodeModified;
+            _nodes.Add(nodeViewModel);
+            Errors.Add(nodeViewModel.ErrorBubble);
+            nodeViewModel.UpdateBubbleContent();
+
+            PostNodeChangeActions();
+        }
+
+        void PostNodeChangeActions()
+        {
             if (RunSettingsViewModel == null) return;
-
             CheckAndSetPeriodicRunCapability();
         }
 
@@ -1063,7 +1070,7 @@ namespace Dynamo.ViewModels
 
         private void DoGraphAutoLayout(object o)
         {
-            if (Model.Nodes.Count == 0)
+            if (Model.Nodes.Count() == 0)
                 return;
 
             var graph = new GraphLayout.Graph();
@@ -1133,27 +1140,6 @@ namespace Dynamo.ViewModels
             // New workspace or swapped workspace to follow it offset and zoom
             this.Model.OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(Model.X, Model.Y)));
             this.Model.OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
-        }
-
-        private void PauseVisualizationManagerUpdates(object parameter)
-        {
-            DynamoViewModel.VisualizationManager.Stop();
-        }
-
-        private static bool CanPauseVisualizationManagerUpdates(object parameter)
-        {
-            return true;
-        }
-
-        private void UnPauseVisualizationManagerUpdates(object parameter)
-        {
-            var update = (bool)parameter;
-            DynamoViewModel.VisualizationManager.Start(update);
-        }
-
-        private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
-        {
-            return true;
         }
 
         private void RefreshViewOnSelectionChange()

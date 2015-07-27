@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -167,13 +168,11 @@ namespace Dynamo
         {
             dynamoModel = model;
 
-            dynamoModel.WorkspaceClearing += Stop;
-            dynamoModel.WorkspaceCleared += ClearVisualizationsAndRestart;
-            
+            dynamoModel.WorkspaceCleared += ClearVisualizations;
+       
             dynamoModel.WorkspaceAdded += WorkspaceAdded;
             dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
 
-            dynamoModel.DeletionStarted += Stop;
             dynamoModel.DeletionComplete += dynamoModel_DeletionComplete; 
 
             dynamoModel.CleaningUp += Clear;
@@ -190,44 +189,12 @@ namespace Dynamo
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
             renderPackageFactory = new HelixRenderPackageFactory();
-
-            Start();
+            RenderPackageFactory.TessellationParameters.ShowEdges = model.PreferenceSettings.ShowEdges;
         }
 
         #endregion
 
         #region public methods
-
-        /// <summary>
-        /// Stop the visualization manager.
-        /// When the visualization manager is stopped, no rendering
-        /// will occur.
-        /// </summary>
-        public void Stop()
-        {
-#if DEBUG
-            Debug.WriteLine("Visualization manager stopped.");
-#endif
-            updatingPaused = true;
-        }
-
-        /// <summary>
-        /// Start the visualization manager.
-        /// When the visualization manager is started, the visualization
-        /// manager begins rendering again.
-        /// </summary>
-        /// <param name="update">If update is True, after starting, the
-        /// visualization manager will immediately update render pacakage. The
-        /// default is False.</param>
-        public void Start(bool update = false)
-        {
-#if DEBUG
-            Debug.WriteLine("Visualization manager started.");
-#endif
-            updatingPaused = false;
-            if(update)
-                OnRenderComplete();
-        }
 
         /// <summary>
         /// Display a label for one or several render packages 
@@ -311,12 +278,11 @@ namespace Dynamo
 
             UnregisterEventListeners();
 
-            dynamoModel.WorkspaceCleared -= ClearVisualizationsAndRestart;
+            dynamoModel.WorkspaceCleared -= ClearVisualizations;
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
 
-            dynamoModel.DeletionStarted -= Stop;
             dynamoModel.DeletionComplete -= dynamoModel_DeletionComplete;
 
             dynamoModel.CleaningUp -= Clear;
@@ -359,6 +325,7 @@ namespace Dynamo
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
         {
             node.PropertyChanged -= NodePropertyChanged;
+            OnNodeDeletionHandled(node);
         }
 
         private void NodeAddedToHomeWorkspace(NodeModel node)
@@ -382,12 +349,43 @@ namespace Dynamo
             }
         }
 
+        public event Action<IEnumerable> SelectionHandled;
+        protected virtual void OnSelectionChanged(IEnumerable items)
+        {
+            if (SelectionHandled != null)
+                SelectionHandled(items);
+        }
+
+        public event Action<NodeModel> DeletionHandled;
+        protected virtual void OnNodeDeletionHandled(NodeModel node)
+        {
+            if (DeletionHandled != null)
+                DeletionHandled(node);
+        }
+
+        public event Action WorkspaceOpenedClosedHandled;
+        protected virtual void OnWorkspaceOpenedClosed()
+        {
+            if (WorkspaceOpenedClosedHandled != null)
+                WorkspaceOpenedClosedHandled();
+        }
+
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
-                return;
+            Debug.WriteLine("SELECTION: {0}", e.Action);
 
-            Debug.WriteLine("Viz manager responding to selection changed.");
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                //Calling with NULL to make sure nothing is selected
+                OnSelectionChanged(null);
+                return;
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                OnSelectionChanged(e.OldItems);
+                return;
+            }
 
             // When a node is added to the workspace, it is also added
             // to the selection. When running automatically, this addition
@@ -403,7 +401,7 @@ namespace Dynamo
                 return;
             }
 
-            OnRenderComplete();
+            OnSelectionChanged(e.NewItems);
         }
 
         #endregion
@@ -419,12 +417,9 @@ namespace Dynamo
                     hws.RunSettings.RunType == RunType.Periodic)
                 {
                     // We need to force a visualization update.
-                    Start(true);
-                    return;
+                    OnRenderComplete();
                 }
             }
-
-            Start();
         }
 
         private void UnregisterEventListeners()
@@ -512,10 +507,11 @@ namespace Dynamo
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, new List<IRenderPackage>{}, Guid.Empty));
         }
 
-        private void ClearVisualizationsAndRestart(object sender, EventArgs e)
+        private void ClearVisualizations(object sender, EventArgs e)
         {
+            OnWorkspaceOpenedClosed();
             Clear();
-            Start();
+            OnRenderComplete();
         }
 
         #endregion
@@ -537,8 +533,13 @@ namespace Dynamo
         public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
         {
             var renderPackage = renderPackageFactory.CreateRenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, renderPackageFactory.MaxTessellationDivisions);
+            gItem.Tessellate(renderPackage, renderPackageFactory.TessellationParameters);
             return renderPackage;
+        }
+
+        public void UpdateAllNodeVisualsAndNotify()
+        {
+            RequestNodeVisualUpdateAsync(null, renderPackageFactory);
         }
     }
 

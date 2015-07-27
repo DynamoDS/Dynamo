@@ -279,7 +279,18 @@ namespace ProtoFFI
                 if (ex.InnerException != null)
                 {
                     System.Exception exc = ex.InnerException;
-                    if (exc is System.ArgumentException)
+                    var exception = exc as ArgumentNullException;
+                    if (exception != null)
+                    {
+                        var innerMessage = string.Format(Resources.ArgumentNullException, exception.ParamName);
+                        var msg = string.Format(Resources.OperationFailType2, 
+                            ReflectionInfo.DeclaringType.Name, 
+                            ReflectionInfo.Name, 
+                            innerMessage);
+
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, msg);
+                    }
+                    else if (exc is System.ArgumentException)
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, ErrorString(exc));
                     else if (exc is System.NullReferenceException)
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ErrorString(null));
@@ -321,6 +332,16 @@ namespace ProtoFFI
                 }
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation, ex.Message);
             }
+            catch (ArgumentNullException ex)
+            {
+                var innerMessage = string.Format(Resources.ArgumentNullException, ex.ParamName);
+                var msg = string.Format(Resources.OperationFailType2,
+                    ReflectionInfo.DeclaringType.Name,
+                    ReflectionInfo.Name,
+                    innerMessage);
+
+                dsi.LogWarning(ProtoCore.Runtime.WarningID.kInvalidArguments, msg);
+            }
             catch (System.ArgumentException ex)
             {
                 if (ex.InnerException != null)
@@ -349,9 +370,9 @@ namespace ProtoFFI
 
             string msg = (ex == null) ? "" : ex.Message;
             if (string.IsNullOrEmpty(msg) || msg.Contains("operation failed"))
-                return string.Format("{0}.{1} operation failed.", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
+                return string.Format(Resources.OperationFailType1, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name);
 
-            return string.Format("{0}.{1} operation failed. \n{2}", ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
+            return string.Format(Resources.OperationFailType2, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
         }
 
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
@@ -400,7 +421,7 @@ namespace ProtoFFI
                         //This is going to cause a cast exception. This is a very frequently called problem, so we want to short-cut the execution
 
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.kAccessViolation,
-                            string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
+                            string.Format(Resources.FailedToCastFromNull, paraminfos[i].ParameterType.Name));
                         
                             return null;
                         //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
@@ -505,10 +526,12 @@ namespace ProtoFFI
                 {
                     var runtimeCore = dsi.runtime.RuntimeCore;
                     int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
-                    StackValue oldValue = dsi.runtime.rmem.Heap.GetHeapElement(thisObject).GetValue(idx, runtimeCore);
+
+                    var obj = runtimeCore.Heap.ToHeapObject<DSObject>(thisObject);
+                    StackValue oldValue = obj.GetValueFromIndex(idx, runtimeCore);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
-                        dsi.runtime.rmem.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);
+                        obj.SetValueAtIndex(idx, propValue, runtimeCore);
                     }
                 }
             }

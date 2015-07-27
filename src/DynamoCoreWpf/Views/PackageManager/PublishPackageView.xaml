@@ -52,14 +52,14 @@
 
                         <Label Content="{x:Static p:Resources.PublishPackageViewPackageName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                             <Label.ToolTip>
-                                <TextBlock>A unique name for the package.</TextBlock>
+                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" />
                             </Label.ToolTip>
                         </Label>
                         <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" IsEnabled ="{Binding Path=CanEditName}" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <Label Content="{x:Static p:Resources.PublishPackageViewPackageDescription}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
                             <Label.ToolTip>
-                                <TextBlock>A description that helps people understand what the package might be used for.</TextBlock>
+                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageDescriptionTooltip}" />
                             </Label.ToolTip>
                         </Label>
                         <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -133,10 +133,27 @@
 
         </Border>
 
-        <StackPanel Grid.Row="2" Background="#444">
-            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" Content="{x:Static p:Resources.PublishPackage}"></Button>
+        <StackPanel Grid.Row="2"
+                    Background="#444">
+            <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <Button Style="{DynamicResource ResourceKey=STextButton}"
+                        Width="auto"
+                        MinWidth="130"
+                        Margin="10,5"
+                        HorizontalAlignment="Right"
+                        Command="{Binding Path=PublishLocallyCommand}"
+                        Content="{x:Static p:Resources.PublishPackageLocally}"></Button>
+                <Button Style="{DynamicResource ResourceKey=STextButton}"
+                        Width="auto"
+                        MinWidth="130"
+                        Margin="10,5"
+                        HorizontalAlignment="Right"
+                        Command="{Binding Path=SubmitCommand}"
+                        Content="{x:Static p:Resources.PublishPackage}"></Button>
+            </StackPanel>
         </StackPanel>
- 
+
         <Grid Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1">
 
             <Grid.RowDefinitions>
@@ -408,8 +425,15 @@
                     </ListBox>
                 </ScrollViewer>
 
-                <TextBlock Grid.Row="1" Grid.ZIndex="0" Grid.Column="0" Grid.ColumnSpan="1" Margin="10" TextAlignment="Center" Foreground="#888" Visibility="{Binding Path=HasNoDependencies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                    None
+                <TextBlock Grid.Row="1"
+                           Grid.ZIndex="0"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="1"
+                           Margin="10"
+                           TextAlignment="Center"
+                           Foreground="#888"
+                           Visibility="{Binding Path=HasNoDependencies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                           Text="{x:Static p:Resources.PackageUploadNoDependency}">
                 </TextBlock>
                 
             </Grid>
@@ -421,7 +445,12 @@
         </StackPanel>
 
         <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="1" Background="LightSkyBlue" Visibility="{Binding Path=ErrorString, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">
-            <TextBlock Foreground="White" Margin="10"  HorizontalAlignment="Left" Name="UploadState" TextWrapping="Wrap" Text="{Binding UploadState}" />
+            <TextBlock Foreground="White"
+                       Margin="10"
+                       HorizontalAlignment="Left"
+                       Name="UploadState"
+                       TextWrapping="Wrap"
+                       Text="{Binding UploadState, Converter={StaticResource PackageUploadStateToStringConverter}}" />
         </StackPanel>
 
     </Grid>

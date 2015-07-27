@@ -13,6 +13,8 @@ using Dynamo.Nodes;
 using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
+using ProtoCore.Mirror;
+using System;
 
 namespace DynamoCoreWpfTests
 {
@@ -65,7 +67,7 @@ namespace DynamoCoreWpfTests
             var node = new DoubleInput { CanUpdatePeriodically = true };
 
             var homeSpace = GetHomeSpace();
-            homeSpace.AddNode(node, true);
+            homeSpace.AddAndRegisterNode(node, true);
             
             var item = View.RunSettingsControl.RunTypesComboBox.Items[2] as RunTypeItem;
             Assert.True(item.Enabled);
@@ -146,6 +148,26 @@ namespace DynamoCoreWpfTests
             homeSpace = GetHomeSpace();
             Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Periodic);
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 10);
+        }
+
+        // This test is now irrelevant due to the follow fix:
+        //   https://github.com/DynamoDS/Dynamo/pull/4674
+        // 
+        [Test, Ignore]
+        [Category("Failure")]
+        public void RunSettingsDisableRun()
+        {
+            string openPath = Path.Combine(workingDirectory, @"..\..\..\test\core\math\Add.dyn");
+
+            Model.OpenFileFromPath(openPath);
+            var homeSpace = GetHomeSpace();
+            homeSpace.RunSettings.RunEnabled = false;
+            homeSpace.Run();
+
+            string varname = GetVarName("4c5889ac-7b91-4fb5-aaad-a2128b533279");
+            var mirror = GetRuntimeMirror(varname);
+
+            Assert.IsNull(mirror);
         }
 
         private RoutedEventArgs GetKeyboardEnterEventArgs(Visual visual)

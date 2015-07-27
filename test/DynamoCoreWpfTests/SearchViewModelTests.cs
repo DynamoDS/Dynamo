@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         public void Init()
         {
             model = new NodeSearchModel();
-            viewModel = new SearchViewModel(null, model);
+            viewModel = new SearchViewModel(model);
         }
 
         [Test]
@@ -627,6 +627,69 @@ namespace Dynamo.Tests
                 Entries.First(e => e.Name == "Member");
             Assert.IsNotNull(elementVM);
             Assert.AreEqual("BBB", elementVM.Description);
+        }
+
+        #endregion
+
+        #region Key navigation
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectNextTest()
+        {
+            var element = CreateCustomNode("A", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AA", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AAA", "Category2");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("a");
+
+            Assert.Greater(viewModel.SearchResults.Count, 0);
+            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.MoveSelection(NavigationDirection.Forward);
+            Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.MoveSelection(NavigationDirection.Forward);
+            Assert.AreEqual("AAA", viewModel.CurrentlySelectedMember.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectPreviousTest()
+        {
+            var element = CreateCustomNode("A", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AA", "Category1");
+            model.Add(element);
+
+            element = CreateCustomNode("AAA", "Category2");
+            model.Add(element);
+
+            viewModel.Visible = true;
+            viewModel.SearchAndUpdateResults("a");
+
+            Assert.Greater(viewModel.SearchResults.Count, 0);
+            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.MoveSelection(NavigationDirection.Forward);
+
+            viewModel.MoveSelection(NavigationDirection.Backward);
+            Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
+
+            viewModel.MoveSelection(NavigationDirection.Forward);
+            viewModel.MoveSelection(NavigationDirection.Forward);
+
+            viewModel.MoveSelection(NavigationDirection.Backward);
+            Assert.AreEqual("AA", viewModel.CurrentlySelectedMember.Name);
         }
 
         #endregion

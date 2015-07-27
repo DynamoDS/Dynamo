@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        Title="Edit Python Script..." Height="500" Width="600">
+        xmlns:p="clr-namespace:DSIronPythonNode.Properties"
+        Title="{x:Static p:Resources.PythonScriptEditorCaption}" Height="500" Width="600">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -19,8 +20,8 @@
             <avalonedit:TextEditor Name="editText" FontFamily="Consolas" FontSize="10pt" ShowLineNumbers="True" Background="#272822" Foreground="#F8F8F2" HorizontalScrollBarVisibility="Disabled"/>
         </Border>
 
-        <Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2" Name="button1" VerticalAlignment="Bottom" Width="75" Click="OnCancelClicked" />
-        <Button Content="Accept Changes" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2 2 80 2" Name="button2" VerticalAlignment="Bottom" Width="130" Click="OnAcceptClicked" />
+        <Button Content="{x:Static p:Resources.PythonScriptEditoCancelButton}" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2" Name="button1" VerticalAlignment="Bottom" Width="75" Click="OnCancelClicked" />
+        <Button Content="{x:Static p:Resources.PythonScriptEditorAcceptChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" HorizontalAlignment="Right" Margin="2 2 80 2" Name="button2" VerticalAlignment="Bottom" Width="130" Click="OnAcceptClicked" />
 
     </Grid>
     

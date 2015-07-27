@@ -420,7 +420,7 @@ namespace DynamoCoreWpfTests
         {
             // Create number node
             var numNode = new DoubleInput { X = 100, Y = 100 };
-            ViewModel.Model.CurrentWorkspace.AddNode(numNode, true);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numNode, true);
         }
 
         #endregion
@@ -525,6 +525,39 @@ namespace DynamoCoreWpfTests
             #endregion
 
             View.Close();
+        }
+
+        [Test]
+        public void PreferenceSettings_ShowEdges_DefaultFalse()
+        {
+            var settings = new PreferenceSettings();
+            Assert.False(settings.ShowEdges);
+        }
+
+        [Test]
+        public void PreferenceSettings_ShowEdges_Toggle()
+        {
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
+            Assert.False(Model.PreferenceSettings.ShowEdges);
+
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
+            Assert.True(Model.PreferenceSettings.ShowEdges);
+        }
+
+        [Test]
+        public void PreferenceSettings_ShowEdges_Save()
+        {
+            // Test if variable can be serialize and deserialize without any issue
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            var initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            initalSetting.ShowEdges = true;
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+            Assert.True(resultSetting.ShowEdges);
         }
 
         private void RestartTestSetup(bool startInTestMode)
@@ -645,8 +678,8 @@ namespace DynamoCoreWpfTests
         public void TestDraggedNode()
         {
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+")) { X = 16, Y = 32 };
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
-            NodeModel locatable = ViewModel.Model.CurrentWorkspace.Nodes[0];
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            NodeModel locatable = ViewModel.Model.CurrentWorkspace.Nodes.First();
 
             var startPoint = new Point2D(8, 64);
             var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);

@@ -5,9 +5,9 @@ using System.Linq;
 using System;
 
 using Autodesk.DesignScript.Geometry;
-
-
+using Dynamo.Models;
 using NUnit.Framework;
+
 
 namespace Dynamo.Tests
 {
@@ -21,6 +21,7 @@ namespace Dynamo.Tests
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
             libraries.Add("DSIronPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
+            libraries.Add("Optimize.ds");       // Required for NewtonRoot node test.
             base.GetLibrariesToPreload(libraries);
             
         }
@@ -136,7 +137,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check List.Transpose
             var listTranspose = "53ee9988-6ed7-497f-92d8-2132f1a76ae3";
@@ -155,7 +156,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Points
             var points = "8980c6be-1e52-43ee-86aa-45c467ca5530";
@@ -180,7 +181,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(16, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //Check curve.Extrude that linked with CBN which has value 3
             var curveExtrude = "2abb7d97-6b23-4b26-91af-c11407503a66";
@@ -203,7 +204,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(201, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check minus -
             string minus = "7355f590-ddb8-45d2-b6fb-155f3f3c4f00";
@@ -244,7 +245,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(44, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(36, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(36, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check List.Map
             var map1 = "34986114-3561-4feb-993b-3c53c9ef352f";
@@ -294,7 +295,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Count
             var count = "6e2bc5c1-a774-4c54-b7e4-9f1dc87360d1";
@@ -322,7 +323,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Flatten
             var count = "9348354d-1aae-49bf-b1cd-33f650dd42dd";
@@ -344,7 +345,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check List.Create
             var count = "cd7d56c0-3e0d-46c7-9dad-777008030045";
@@ -389,7 +390,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(68, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(89, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check preview values of CBNs
             var cbn = "27c2f333-f51f-4a0c-9f71-70dc64f2ecbe";
@@ -470,7 +471,7 @@ namespace Dynamo.Tests
 
             // check the number of nodes and connectors
             Assert.AreEqual(31, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Geometry.Rotate
             var rotate = "dfdfa7b1-533b-4dca-afa2-1d9d62233b7f";
@@ -495,7 +496,7 @@ namespace Dynamo.Tests
 
             // check the number of nodes and connectors
             Assert.AreEqual(53, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(45, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(45, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Curve.ExtrudeAsSolid
             var solid = "9349f9d5-aa7c-43d9-a336-5610004ed7ef";
@@ -520,7 +521,7 @@ namespace Dynamo.Tests
 
             // check the number of nodes and connectors
             Assert.AreEqual(199, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(141, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(141, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Surface.Thicken
             var solid1 = "db78b128-fec5-40b9-9e59-0ca371a4de43";
@@ -556,7 +557,7 @@ namespace Dynamo.Tests
 
             // check the number of nodes and connectors
             Assert.AreEqual(13, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check List.GetItemAtIndex
             var getItemAtIndex1 = "b1be50ed-f93c-4d9c-b7c4-55d97e820672";
@@ -568,6 +569,69 @@ namespace Dynamo.Tests
         }
         #endregion
 
+        #region File test
+
+        [Test]
+        public void Test_File_Migration()
+        {
+            string directory = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\File Migration");
+            string openPath = Path.Combine(directory,"File.dyn");
+            OpenModel(openPath);
+
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, workspace.Connectors.Count());
+            Assert.AreEqual(11, workspace.Nodes.Count());
+
+            // give absolute path
+            var textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("545b092b-8b2c-4cd4-b15e-9e4162dd4579");
+            textFileName.Value = Path.Combine(directory, textFileName.Value);
+
+            textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("23f8f80b-eca7-4651-a082-7e2cce93c88d");
+            textFileName.Value = Path.Combine(directory, textFileName.Value);
+
+            var imgFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("c20d8f16-4bf7-465f-93ca-6afd05fe02a2");
+            imgFileName.Value = Path.Combine(directory, imgFileName.Value);
+
+            var imgDirectory = workspace.NodeFromWorkspace<DSCore.File.Directory>("729b5ffd-7813-4e09-94a2-74a1e4619c5f");
+            imgDirectory.Value = directory;
+
+            var xlsxFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("b8f8f48b-c546-4ae8-b7f6-45e52310e361");
+            xlsxFileName.Value = Path.Combine(directory, xlsxFileName.Value);
+
+            // run the graph
+            BeginRun();
+
+            // test reading
+            var readText = "b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b";
+            var text = GetPreviewValue(readText) as string;
+            Assert.AreEqual(text,"1234");
+
+            // test writting. Write text is not obsolete but the
+            // namespace needs to be migrated, no warning should
+            // be shown in this node
+            var writeText = "ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9";
+            var nodeModel = workspace.NodeFromWorkspace(writeText);
+            Assert.AreEqual(ElementState.Active, nodeModel.State);
+
+            // test reading image. There are 100 Colors object that is generated since 
+            // the sampling in x and y direction is 10.
+            var readImage = "7fba95f1-fd7a-4033-a7a9-5dfb91c7e886";
+            Assert.AreEqual(100,GetFlattenedPreviewValues(readImage).Count);
+
+            // test load image from path and writing image in a CBN
+            var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
+            AssertPreviewValue(codeBlock,true);
+
+            // text writing to csv, persistent warning should be shown
+            // since the node is obsolete
+            var writeCSV = "3ddc75fb-e607-4932-8e08-f215ee86211e";
+            nodeModel = workspace.NodeFromWorkspace(writeCSV);
+            Assert.AreEqual(ElementState.PersistentWarning, nodeModel.State);
+        }
+
+        #endregion
 
         [Test]
         public void Test_Lacing()
@@ -581,7 +645,7 @@ namespace Dynamo.Tests
 
             // check the number of nodes and connectors
             Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check List.ByStartPointEndPoint
             var list = "5c02325a-f5fc-403c-b46f-0a492cbce5cf";
@@ -606,7 +670,7 @@ namespace Dynamo.Tests
 
             // check the number of nodes and connectors
             Assert.AreEqual(32, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check List.Map
             var list = "34986114-3561-4feb-993b-3c53c9ef352f";
@@ -633,7 +697,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check preview values of CBNs
             var cbn = "1db3330e-bd1b-4116-b5ca-df4a18e78960";
@@ -681,7 +745,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(16, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check preview values of Curve.Extrude
             var curve = "2abb7d97-6b23-4b26-91af-c11407503a66";
@@ -716,7 +780,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check preview values of List.Map, List.Reverse
             var map = "45ea27b6-a33c-429d-bf20-6d147d3c5893";
@@ -748,7 +812,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check preview values of List.Sort
             var sort = "e537e6b8-aa95-42ec-b33b-95cda3d1f20e";
@@ -770,7 +834,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(10, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(9, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check preview values of PolyCurve.ByPoint
             var sort = "7c636447-6099-48ab-8a1c-758ee8feecaf";
@@ -799,7 +863,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(21, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(21, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check CBN
             var cbn = "9ab004ca-0917-4858-85bc-57ae681e33e8";
@@ -836,7 +900,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Point.ByCoordinates
             var points = "5462da5b-1473-44a6-a3f8-9f5098b4675a";
@@ -874,7 +938,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check CBN that contains 84 lines
             var lineID = "93a30c71-6a3d-4cf3-8140-b5acc1d33cd6";
@@ -913,7 +977,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Cylinder.ByPointsRadius
             var lineID = "c8aaaf1b-975a-4075-99e0-fb0092a232fb";
@@ -947,7 +1011,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(64, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Surface.Thicken
             var surfaceID = "a7b4e678-3278-4554-8ce2-7c76faca79d7";
@@ -978,7 +1042,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(38, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(29, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(29, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Surface.ByLoft
             var surface1ID = "3675e40d-1d1d-4869-b3e1-f8ea67286486";
@@ -1024,7 +1088,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Plane.XY
             var planeID = "80f6e70a-b6e4-452e-9ec3-dffa1106ee28";
@@ -1060,7 +1124,7 @@ namespace Dynamo.Tests
 
             //check the number of nodes and connectors
             Assert.AreEqual(48, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(33, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(33, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Line.ByStartPointEndPoint
             var lineID = "ead8e061-d570-436b-aece-c66c2cd02326";
@@ -1084,6 +1148,135 @@ namespace Dynamo.Tests
             var rectangular2 = GetPreviewValue(rectangular2ID) as Rectangle;
             Assert.AreEqual(rectangular1.ToString(), rectangular2.ToString());
         }
+
+        [Test]
+        public void Test_NewtonRootFind()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\NewtonRoot.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(56, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(26, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            double EPS = 1E-9;
+            object prev;
+            double root;
+
+            // input function f(x) = (x-1)(x-2)(x-3) + 5
+            // NewtonRootFind1DNoDeriv node
+            prev = GetPreviewValue("dd1857b4-a08d-4195-9694-b831530ece61");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.0958391408650794, EPS);
+
+            prev = GetPreviewValue("4ebbd113-a838-4549-9a3b-f03465d6c73a");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.0958391408650794, EPS);
+
+            prev = GetPreviewValue("bf5577fd-6717-428d-ab03-6b7ffc251867");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.0958391408650794, EPS);
+
+            // input function f(x) = (x-1)(x-2)(x-3) + 5
+            // NewtonRootFind1DWithDeriv node
+            prev = GetPreviewValue("48e0819a-b0c6-4ab7-bfe2-9033cb1a038c");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.0958391408650794, EPS);
+
+            prev = GetPreviewValue("a9590adc-f1d0-4b6a-92ab-5da8639c5d66");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.0958391408650794, EPS);
+
+            prev = GetPreviewValue("0bcd0f82-801f-4c38-98d1-844dd7dad3e4");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.0958391408650794, EPS);
+
+            // input function f(x) = (x-1)(x+2)(x-3) - 5
+            // NewtonRootFind1DNoDeriv node
+            prev = GetPreviewValue("2d881d8f-89d8-45ec-aeb3-7f49bb72e682");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, -1.57577347265194, EPS);
+
+            prev = GetPreviewValue("db968241-0b10-4987-88a6-98e055ce33bb");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, -1.57577347265194, EPS);
+
+            prev = GetPreviewValue("7717f496-4aae-4b8f-bccf-6cb9a9311aa2");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.187283725110224, EPS);
+
+            prev = GetPreviewValue("8b7bb56a-c5cc-4d6c-9a93-4f436d4514c2");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.187283725110224, EPS);
+
+            prev = GetPreviewValue("b7b5d015-f06f-4e6f-817c-a50e2787f45f");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 3.38848974754171, EPS);
+
+            // input function f(x) = (x-1)(x+2)(x-3) - 5
+            // NewtonRootFind1DWithDeriv node
+            prev = GetPreviewValue("b57455ac-7650-41e5-8d41-4fd205d2a2ce");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, -1.57577347265194, EPS);
+
+            prev = GetPreviewValue("d23dbe66-8785-4566-82d9-58cc6cb965db");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, -1.57577347265194, EPS);
+
+            prev = GetPreviewValue("e5a5cbc7-0afc-4edd-b976-aa2a74be06fc");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.187283725110224, EPS);
+
+            prev = GetPreviewValue("26444379-21f2-4c4c-b482-74cf2d17fda4");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 0.187283725110224, EPS);
+
+            prev = GetPreviewValue("586d42c8-7e13-4403-8e17-6f6fe64c06ad");
+            Assert.IsNotNull(prev);
+            double.TryParse(prev.ToString(), out root);
+            Assert.AreEqual(root, 3.38848974754171, EPS);
+        }
         #endregion
+
+
+        [Test]
+        public void Test_WorkFlowTestForCSV()
+        {
+            //Create automation for Dynamo file :WorkflowtestForCSV
+            //This is a training file to import file from CSV and
+            // we check the NurbsCurve.ByPoint won't cause Dynamo crash when
+            // the input degree is negative
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7214
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\01 Dynamo Basics\WorkflowtestForCSV.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            //check the number of nodes and connectors
+            Assert.AreEqual(7, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            //check NurbsCurve.ByPoints with negative input value: degree is -3
+            var curveID = "7caf2032-141d-460a-a482-cc76ddd48ff1";         
+            var nurbsCurve = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(curveID);
+            Assert.AreEqual(ElementState.Warning, nurbsCurve.State);   
+        }
     }
 }

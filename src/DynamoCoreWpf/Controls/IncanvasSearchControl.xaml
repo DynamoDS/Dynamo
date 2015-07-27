@@ -6,11 +6,11 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
-             MaxHeight="350"
-             Width="250"
+             MinWidth="250"
              IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,14 +23,24 @@
             <Style x:Key="SearchMemberStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                             Handler="OnMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="OnMouseLeftButtonUp" />
+                <EventSetter Event="MouseEnter"
+                             Handler="OnMouseEnter" />
+                <EventSetter Event="MouseLeave"
+                             Handler="OnMouseLeave" />
+            </Style>
+            
+            <Style TargetType="{x:Type ScrollViewer}"
+                   BasedOn="{StaticResource LibraryScrollViewerStyle}">
+                <Setter Property="Template"
+                        Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid PreviewKeyDown="OnInCanvasSearchKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -96,8 +106,7 @@
                              MinWidth="200"
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
                              Margin="26,0,0,-1"
-                             TextChanged="OnSearchTextBoxTextChanged"
-                             KeyDown="OnSearchTextBoxKeyDown" />
+                             TextChanged="OnSearchTextBoxTextChanged" />
                 </Grid>
             </Border>
         </Grid>
@@ -106,26 +115,26 @@
                 Background="{StaticResource LibraryCommonBackground}"
                 Margin="1,2,1,0"
                 Grid.Row="1"
-                Name="FoundMembers">
-            <ScrollViewer>
-                <ListBox Name="MembersListBox"
-                         Background="Transparent"
-                         BorderBrush="Transparent"
-                         ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                         ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
-                         TargetUpdated="OnMembersListBoxUpdated">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <ContentControl Template="{StaticResource MemberControlTemplate}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.Template>
-                        <ControlTemplate>
-                            <ItemsPresenter />
-                        </ControlTemplate>
-                    </ListBox.Template>
-                </ListBox>
-            </ScrollViewer>
+                Name="FoundMembers"
+                MaxHeight="250">
+            <ListBox Name="MembersListBox"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{StaticResource SearchMemberStyle}"
+                     ItemsSource="{Binding SearchResults, NotifyOnTargetUpdated=True}"
+                     TargetUpdated="OnMembersListBoxUpdated"
+                     PreviewMouseWheel="OnMembersListBoxMouseWheel">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                                      Style="{StaticResource InCanvasScrollViewerStyle}"
+                                      CanContentScroll="True"
+                                      Width="250">
+                            <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
+                        </ScrollViewer>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
@@ -138,8 +147,9 @@
                                     Value="Collapsed" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Path=CurrentMode}"
-                                     Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
+                        <DataTrigger Binding="{Binding Path=CurrentMode,
+                                                       Converter={StaticResource LibraryViewModeToBoolConverter}}"
+                                     Value="True">
                             <Setter Property="Visibility"
                                     Value="Collapsed" />
                         </DataTrigger>
@@ -147,5 +157,16 @@
                 </Style>
             </Border.Style>
         </Border>
+
+
+        <Border Margin="-3,0,-3,0">
+            <Popup StaysOpen="True"
+                   AllowsTransparency="True"
+                   Placement="Right"
+                   x:Name="toolTipPopup">
+                <uicontrols:ToolTipWindow />
+            </Popup>
+        </Border>
+
     </Grid>
 </UserControl>

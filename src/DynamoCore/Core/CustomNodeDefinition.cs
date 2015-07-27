@@ -20,7 +20,7 @@ namespace Dynamo
         public CustomNodeDefinition(
             Guid functionId,
             string displayName="",
-            IList<NodeModel> nodeModels=null)
+            IEnumerable<NodeModel> nodeModels=null)
         {
             if (functionId == Guid.Empty)
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");
@@ -237,9 +237,12 @@ namespace Dynamo
             
             FunctionId = functionId;
             Name = name;
-            Category = category;
             Description = description;
             Path = path;
+
+            Category = category;
+            if (String.IsNullOrWhiteSpace(Category))
+                Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
 
         public Guid FunctionId { get; set; }

@@ -16,6 +16,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Dynamo.Models;
+using Dynamo.Controls;
+using Dynamo.Utilities;
+using Dynamo.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -28,14 +31,29 @@ namespace Dynamo.UI.Controls
 
         internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
 
-        private SearchViewModel ViewModel
+        public SearchViewModel ViewModel
         {
             get { return DataContext as SearchViewModel; }
         }
 
+        private WorkspaceView workspaceView;
+        private DynamoView dynamoView;
+
         public InCanvasSearchControl()
         {
             InitializeComponent();
+
+            this.Loaded += (sender, e) =>
+            {
+                if (workspaceView == null)
+                    workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this.Parent);
+                if (dynamoView == null)
+                {
+                    dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this.Parent);
+                    if (dynamoView != null)
+                        dynamoView.Deactivated += (s, args) => { OnRequestShowInCanvasSearch(ShowHideFlags.Hide); };
+                }
+            };
         }
 
         private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
@@ -56,10 +74,11 @@ namespace Dynamo.UI.Controls
                 ViewModel.SearchCommand.Execute(null);
         }
 
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null) return;
+            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+
             ExecuteSearchElement(listBoxItem);
             OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
             e.Handled = true;
@@ -70,8 +89,25 @@ namespace Dynamo.UI.Controls
             var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
             if (searchElement != null)
             {
+                searchElement.Position = ViewModel.InCanvasSearchPosition;
                 searchElement.ClickedCommand.Execute(null);
             }
+        }
+
+        private void OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            FrameworkElement fromSender = sender as FrameworkElement;
+            if (fromSender == null) return;
+
+            toolTipPopup.DataContext = fromSender.DataContext;
+            toolTipPopup.IsOpen = true;
+
+        }
+
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            toolTipPopup.DataContext = null;
+            toolTipPopup.IsOpen = false;
         }
 
         private void OnInCanvasSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -105,6 +141,9 @@ namespace Dynamo.UI.Controls
                 MembersListBox.ItemContainerGenerator.StatusChanged -= OnMembersListBoxIcgStatusChanged;
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
+                    var scrollViewer = MembersListBox.ChildOfType<ScrollViewer>();
+                    scrollViewer.ScrollToTop();
+
                     UpdateHighlightedItem(GetListItemByIndex(MembersListBox, 0));
                 }),
                     DispatcherPriority.Loaded);
@@ -124,7 +163,10 @@ namespace Dynamo.UI.Controls
 
             // Select new value.
             if (HighlightedItem != null)
+            {
                 HighlightedItem.IsSelected = true;
+                HighlightedItem.BringIntoView();
+            }
         }
 
         private ListBoxItem GetListItemByIndex(ListBox parent, int index)
@@ -138,21 +180,78 @@ namespace Dynamo.UI.Controls
             return null;
         }
 
-        private void OnSearchTextBoxKeyDown(object sender, KeyEventArgs e)
+        private void OnInCanvasSearchKeyDown(object sender, KeyEventArgs e)
         {
             var key = e.Key;
 
-            if (key == Key.Escape)
-                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+            int index;
+            var members = MembersListBox.Items.Cast<NodeSearchElementViewModel>();
+            NodeSearchElementViewModel highlightedMember = null;
+            if (HighlightedItem != null)
+                highlightedMember = HighlightedItem.DataContext as NodeSearchElementViewModel;
 
-            if (key != Key.Enter)
+            switch (key)
+            {
+                case Key.Escape:
+                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    break;
+                case Key.Enter:
+                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                    {
+                        ExecuteSearchElement(HighlightedItem);
+                        OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    }
+                    break;
+                case Key.Up:
+                    index = MoveToNextMember(false, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
+                    break;
+                case Key.Down:
+                    index = MoveToNextMember(true, members, highlightedMember);
+                    UpdateHighlightedItem(GetListItemByIndex(MembersListBox, index));
+                    break;
+            }
+        }
+
+        internal int MoveToNextMember(bool moveForward,
+            IEnumerable<NodeSearchElementViewModel> members, NodeSearchElementViewModel selectedMember)
+        {
+            int selectedMemberIndex = -1;
+            for (int i = 0; i < members.Count(); i++)
+            {
+                var member = members.ElementAt(i);
+                if (member.Equals(selectedMember))
+                {
+                    selectedMemberIndex = i;
+                    break;
+                }
+            }
+
+            int nextselectedMemberIndex = selectedMemberIndex;
+            if (moveForward)
+                nextselectedMemberIndex++;
+            else
+                nextselectedMemberIndex--;
+
+            if (nextselectedMemberIndex < 0 || (nextselectedMemberIndex >= members.Count()))
+                return selectedMemberIndex;
+
+            return nextselectedMemberIndex;
+        }
+
+        private void OnMembersListBoxMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var listBox = sender as FrameworkElement;
+            if (listBox == null)
                 return;
 
-            if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
-            {
-                ExecuteSearchElement(HighlightedItem);
-                OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
-            }
+            var scrollViewer = listBox.ChildOfType<ScrollViewer>();
+            if (scrollViewer == null)
+                return;
+
+            // Make delta less to achieve smooth scrolling and not jump over other elements.
+            var delta = e.Delta / 100;
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - delta);
         }
     }
 }

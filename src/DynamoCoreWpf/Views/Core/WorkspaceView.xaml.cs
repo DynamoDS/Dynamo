@@ -92,11 +92,6 @@ namespace Dynamo.Views
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
 
-            var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
-            searchViewModel.Visible = true;
-
-            InCanvasSearchBar.DataContext = searchViewModel;
-
             var ctrl = InCanvasSearchBar.Child as InCanvasSearchControl;
             if (ctrl != null)
             {
@@ -115,34 +110,6 @@ namespace Dynamo.Views
             if (ctrl != null)
             {
                 ctrl.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
-            }
-        }
-
-        /// <summary>
-        /// Handler for the state machine's drag start event.
-        /// Instructs the visualization manager to bypass updating the visualization.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void OnViewModelDragSelectionEnded(object sender, EventArgs e)
-        {
-            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(true))
-            {
-                ViewModel.UnPauseVisualizationManagerCommand.Execute(true);
-            }
-        }
-
-        /// <summary>
-        /// Handler for the state machine's drag end event.
-        /// Instructs the visualization manager to update visualizations and begin tracking selections again.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void OnViewModelDragSelectionStarted(object sender, EventArgs e)
-        {
-            if (ViewModel.PauseVisualizationManagerCommand.CanExecute(true))
-            {
-                ViewModel.PauseVisualizationManagerCommand.Execute(true);
             }
         }
 
@@ -205,8 +172,6 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-                oldViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
-                oldViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
             }
 
             if (ViewModel != null)
@@ -222,8 +187,6 @@ namespace Dynamo.Views
                 ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
-                ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
-                ViewModel.DragSelectionEnded += OnViewModelDragSelectionEnded;
 
                 ViewModel.Loaded();
             }
@@ -725,6 +688,8 @@ namespace Dynamo.Views
             return HitTestResultBehavior.Continue;
         }
 
+        private Point inCanvasSearchPosition;
+
         private void ShowHideInCanvasControl(ShowHideFlags flag)
         {
             switch (flag)
@@ -735,6 +700,7 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     InCanvasSearchBar.IsOpen = this.IsMouseOver;
+                    ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
             }
         }
@@ -749,6 +715,52 @@ namespace Dynamo.Views
             var mousePosition = e.GetPosition(this.WorkspaceElements);
             ViewModel.DynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 nodeModel, mousePosition.X, mousePosition.Y, false, true));
+        }
+
+        private void OnInCanvasSearchContextMenuKeyDown(object sender, KeyEventArgs e)
+        {
+            var contextMenu = sender as ContextMenu;
+            if (e.Key == Key.Enter)
+            {
+                ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
+                if (contextMenu != null)
+                    contextMenu.IsOpen = false;
+            }
+        }
+
+        /// <summary>
+        /// MouseUp is used to close context menu. Only if original sender was Thumb(i.e. scroll bar),
+        /// then context menu is left open.
+        /// Or if original sender was TextBox, then context menu is left open as well.
+        /// </summary>
+        private void OnInCanvasSearchContextMenuMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var contextMenu = sender as ContextMenu;
+            if (!(e.OriginalSource is System.Windows.Controls.Primitives.Thumb) && !(e.OriginalSource is TextBox)
+                && contextMenu != null)
+                contextMenu.IsOpen = false;
+        }
+
+        /// <summary>
+        /// MouseDown is used to set place, where node will be created.
+        /// </summary>
+        private void OnInCanvasSearchContextMenuMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
+        }
+
+        /// <summary>
+        /// Determines position of mouse, when user clicks on canvas.
+        /// Both left and right mouse clicks.
+        /// </summary>
+        private void OnCanvasClicked(object sender, MouseButtonEventArgs e)
+        {
+            inCanvasSearchPosition = Mouse.GetPosition(this.WorkspaceElements);
+        }
+
+        private void OnContextMenuOpened(object sender, RoutedEventArgs e)
+        {
+            ViewModel.InCanvasSearchViewModel.SearchText = String.Empty;
         }
 
     }

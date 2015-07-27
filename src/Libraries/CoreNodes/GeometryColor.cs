@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
@@ -12,8 +10,6 @@ namespace DSCore
     {
         internal Geometry geometry;
         internal Color color;
-
-        private bool renderEdges = false;
 
         private Display(Geometry geometry, Color color)
         {
@@ -43,7 +39,7 @@ namespace DSCore
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             package.RequiresPerVertexColoration = true;
 
@@ -51,16 +47,16 @@ namespace DSCore
             // to keep track of the index where this coloration will 
             // start from.
 
-            geometry.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, parameters);
 
-            if (renderEdges)
+            if (parameters.ShowEdges)
             {
                 var surf = geometry as Surface;
                 if (surf != null)
                 {
                     foreach (var curve in surf.PerimeterCurves())
                     {
-                        curve.Tessellate(package, tol, maxGridLines);
+                        curve.Tessellate(package, parameters);
                         curve.Dispose();
                     }
                 }
@@ -70,7 +66,7 @@ namespace DSCore
                 {
                     foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
                     {
-                        geom.Tessellate(package, tol, maxGridLines);
+                        geom.Tessellate(package, parameters);
                         geom.Dispose();
                     }
                 }
@@ -90,16 +86,6 @@ namespace DSCore
             {
                 package.ApplyMeshVertexColors(CreateColorByteArrayOfSize(package.MeshVertexCount, color.Red, color.Green, color.Blue, color.Alpha));
             }
-            
-            //var existingVerts = package.TriangleVertices;
-            //var existingNormals = package.TriangleNormals;
-
-            //var newVerts = new List<double>();
-            //for (var i = 0; i < existingVerts.Count; i += 3)
-            //{
-            //    newVerts.AddRange(NudgeVertexAlongVector(existingVerts, existingNormals, i, 0.001));
-            //}
-            //package.TriangleVertices = newVerts;
         }
 
         private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
@@ -119,22 +105,5 @@ namespace DSCore
         {
             return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, color);
         }
-
-        //private static IEnumerable<double> NudgeVertexAlongVector(IList<double> vertices, IList<double> normals, int i, double amount)
-        //{
-        //    var x = (float)vertices[i];
-        //    var y = (float)vertices[i + 1];
-        //    var z = (float)vertices[i + 2];
-        //    var v = Vector.ByCoordinates(x, y, z);
-
-        //    var nx = (float)normals[i];
-        //    var ny = (float)normals[i + 1];
-        //    var nz = (float)normals[i + 2];
-        //    var n = Vector.ByCoordinates(nx, ny, nz);
-
-        //    var nudge = v.Add(n.Normalized().Scale(amount));
-
-        //    return new [] { nudge.X, nudge.Y, nudge.Z };
-        //}
     }
 }

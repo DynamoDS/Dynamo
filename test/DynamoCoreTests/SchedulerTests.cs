@@ -73,7 +73,7 @@ namespace Dynamo.Tests
     {
         private List<string> results;
 
-        override internal TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
         }
@@ -113,7 +113,7 @@ namespace Dynamo.Tests
     {
         internal int CurrPriority { get; private set; }
 
-        override internal TaskPriority Priority
+        override public TaskPriority Priority
         {
             get { return TaskPriority.AboveNormal; }
         }
@@ -160,7 +160,7 @@ namespace Dynamo.Tests
     {
         internal int Punch { get; private set; }
 
-        override internal TaskPriority Priority
+        override public TaskPriority Priority
         {
             get { return TaskPriority.BelowNormal; }
         }
@@ -216,7 +216,7 @@ namespace Dynamo.Tests
     {
         internal int Value { get; private set; }
 
-        override internal TaskPriority Priority
+        override public TaskPriority Priority
         {
             // Same as PrioritizedAsyncTask.
             get { return TaskPriority.AboveNormal; }
@@ -1253,10 +1253,10 @@ namespace Dynamo.Tests
             var workspace = dynamoModel.CurrentWorkspace;
             foreach (var node in nodes)
             {
-                workspace.AddNode(node, false);
+                workspace.AddAndRegisterNode(node, false);
             }
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             return nodes;
         }
 

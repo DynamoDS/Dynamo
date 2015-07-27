@@ -3,12 +3,15 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using System;
+using Autodesk.DesignScript.Geometry;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using Dynamo.Utilities;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Mirror;
+using ProtoCore.Utils;
 using Dynamo.Core;
+using ProtoCore.Namespace;
 
 namespace Dynamo.DSEngine
 {
@@ -150,7 +153,7 @@ namespace Dynamo.DSEngine
             public override void VisitIdentifierListNode(IdentifierListNode node)
             {
                 if ((node.LeftNode is IdentifierNode ||
-                    node.RightNode is IdentifierListNode) &&
+                    node.LeftNode is IdentifierListNode) &&
                     node.RightNode is FunctionCallNode)
                 {
                     var lhs = node.LeftNode.ToString();
@@ -207,30 +210,132 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Replace a fully qualified function call with short name. 
         /// </summary>
-        private class UnqualifiedNameReplacer : AstReplacer
+        private class ShortestQualifiedNameReplacer : AstReplacer
         {
-            private ProtoCore.Core core;
+            private readonly ClassTable classTable;
+            private readonly ElementResolver resolver;
 
-            public UnqualifiedNameReplacer(ProtoCore.Core core)
+            public ShortestQualifiedNameReplacer(ClassTable classTable, ElementResolver resolver)
             {
-                this.core = core;
+                this.classTable = classTable;
+                this.resolver = resolver;
             }
 
             public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
             {
-                if ((node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
-                    && node.RightNode is FunctionCallNode)
+                // First pass attempt to resolve the node class name 
+                // and shorten it before traversing it deeper
+                AssociativeNode shortNameNode;
+                if (TryShortenClassName(node, out shortNameNode))
+                    return shortNameNode;
+
+                var rightNode = node.RightNode;
+                var leftNode = node.LeftNode;
+
+                rightNode = rightNode.Accept(this);
+                var newLeftNode = leftNode.Accept(this);
+
+                node = new IdentifierListNode
                 {
-                    var fullName = node.LeftNode.ToString();
-                    if (core.ClassTable.IndexOf(fullName) >= 0 && fullName.Contains("."))
-                    {
-                        node.LeftNode = AstFactory.BuildIdentifier(fullName.Split('.').Last());
-                    }
+                    LeftNode = newLeftNode,
+                    RightNode = rightNode,
+                    Optr = Operator.dot
+                };
+                return leftNode != newLeftNode ? node : RewriteNodeWithShortName(node);
+            }
 
-                    node.RightNode.Accept(this);
+            private bool TryShortenClassName(IdentifierListNode node, out AssociativeNode shortNameNode)
+            {
+                shortNameNode = null;
+                
+                string qualifiedName = CoreUtils.GetIdentifierExceptMethodName(node);
+
+                // if it is a global method with no class
+                if (string.IsNullOrEmpty(qualifiedName))
+                    return false;
+
+                // Make sure qualifiedName is not a property
+                var matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
+                if (matchingClasses.Length == 0)
+                    return false;
+
+                string className = qualifiedName.Split('.').Last();
+
+                var symbol = new ProtoCore.Namespace.Symbol(qualifiedName);
+                if (!symbol.Matches(node.ToString()))
+                    return false;
+
+                shortNameNode = CreateNodeFromShortName(className, qualifiedName);
+                return shortNameNode != null;
+            }
+
+            private IdentifierListNode RewriteNodeWithShortName(IdentifierListNode node)
+            {
+                // Get class name from AST
+                string qualifiedName = CoreUtils.GetIdentifierExceptMethodName(node);
+
+                // if it is a global method
+                if (string.IsNullOrEmpty(qualifiedName))
+                    return node;
+
+                // Make sure qualifiedName is not a property
+                var lNode = node.LeftNode;
+                var matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
+                while (matchingClasses.Length == 0 && lNode is IdentifierListNode)
+                {
+                    qualifiedName = lNode.ToString();
+                    matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
+                    lNode = ((IdentifierListNode)lNode).LeftNode;
                 }
+                qualifiedName = lNode.ToString();
+                string className = qualifiedName.Split('.').Last();
 
+                var newIdentList = CreateNodeFromShortName(className, qualifiedName);
+                if (newIdentList == null)
+                    return node;
+
+                // Replace class name in input node with short name (newIdentList)
+                node = new IdentifierListNode
+                {
+                    LeftNode = newIdentList,
+                    RightNode = node.RightNode,
+                    Optr = Operator.dot
+                };
                 return node;
+            }
+
+            private AssociativeNode CreateNodeFromShortName(string className, string qualifiedName)
+            {
+                // Get the list of conflicting namespaces that contain the same class name
+                var matchingClasses = CoreUtils.GetResolvedClassName(classTable, AstFactory.BuildIdentifier(className));
+                if (matchingClasses.Length == 0)
+                    return null;
+
+                string shortName;
+                // if there is no class conflict simply use the class name as the shortest name
+                if (matchingClasses.Length == 1)
+                {
+                    shortName = className;
+                }
+                else
+                {
+                    shortName = resolver != null ? resolver.LookupShortName(qualifiedName) : null;
+
+                    if (string.IsNullOrEmpty(shortName))
+                    {
+                        // Use the namespace list as input to derive the list of shortest unique names
+                        var symbolList =
+                            matchingClasses.Select(matchingClass => new ProtoCore.Namespace.Symbol(matchingClass))
+                                .ToList();
+                        var shortNames = ProtoCore.Namespace.Symbol.GetShortestUniqueNames(symbolList);
+
+                        // Get the shortest name corresponding to the fully qualified name
+                        shortName = shortNames[new ProtoCore.Namespace.Symbol(qualifiedName)];
+                    }
+                }
+                // Rewrite the AST using the shortest name
+                var newIdentList = CoreUtils.CreateNodeFromString(shortName);
+                return newIdentList;
             }
         }
 
@@ -634,6 +739,27 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        /// Check if this identifier is a temporary variable that output from
+        /// other code block node. 
+        /// </summary>
+        /// <param name="ident"></param>
+        /// <param name="renamingMap"></param>
+        /// <returns></returns>
+        private static bool IsTempVarFromCodeBlockNode(string ident,
+            Dictionary<string, string> renamingMap)
+        {
+            if (!ident.StartsWith(Constants.kTempVarForNonAssignment))
+                return false;
+
+            string renamedVariable = string.Empty;
+            // ident is: Constants.TempVarForNonAssignment_guid
+            if (!renamingMap.TryGetValue(ident, out renamedVariable))
+                return false;
+
+            return renamedVariable.StartsWith(Constants.kTempVarForNonAssignment);
+        }
+
+        /// <summary>
         /// Renumber variables used in astNode.
         /// </summary>
         /// <param name="astNode"></param>
@@ -653,9 +779,11 @@ namespace Dynamo.DSEngine
             {
                 var ident = n.Value;
 
-                // This ident is from other node's output port, it is not necessary to 
-                // do renumbering.
-                if (inputMap.ContainsKey(ident))
+                // This ident is from external non-code block node's output 
+                // port, or it is from a temporary variable in code block node,
+                // it is not necessary to do renumbering because the name is 
+                // unique.
+                if (inputMap.ContainsKey(ident) || /*IsTempVarFromCodeBlockNode(ident, renamingMap)*/ renamingMap.ContainsKey(ident))
                     return;
 
                 NumberingState ns; 
@@ -861,20 +989,22 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Replace fully qualified class name with unqualified name. 
+        /// Replace fully qualified class name with shortest uniquely qualified name. 
         /// 
-        /// For example, replace
+        /// For example, in presence of Rhino.Geometry.Point, replace
         /// 
         ///     Autodesk.Geometry.Point.ByCoordinates(...)
         ///     
         /// with
         /// 
-        ///     Point.ByCoordinates(...)
+        ///     Autodesk.Point.ByCoordinates(...)
         /// </summary>
+        /// <param name="classTable"></param>
         /// <param name="asts">Input ASTs</param>
-        public static void ReplaceWithUnqualifiedName(ProtoCore.Core core, IEnumerable<AssociativeNode> asts)
+        /// <param name="resolver"></param>
+        public static void ReplaceWithShortestQualifiedName(ClassTable classTable, IEnumerable<AssociativeNode> asts, ElementResolver resolver = null)
         {
-            UnqualifiedNameReplacer replacer = new UnqualifiedNameReplacer(core);
+            ShortestQualifiedNameReplacer replacer = new ShortestQualifiedNameReplacer(classTable, resolver);
             foreach (var ast in asts)
             {
                 ast.Accept(replacer);

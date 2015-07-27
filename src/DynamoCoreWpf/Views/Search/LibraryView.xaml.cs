@@ -10,7 +10,6 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.UI.Controls;
 using Dynamo.Wpf.Utilities;
-
 namespace Dynamo.UI.Views
 {
     /// <summary>
@@ -20,10 +19,11 @@ namespace Dynamo.UI.Views
     {
         // See OnExpanderButtonMouseLeftButtonUp for details.
         private bool ignoreMouseEnter;
+        private LibraryDragAndDrop dragDropHelper = new LibraryDragAndDrop();
 
         public LibraryView()
         {
-            InitializeComponent();
+            InitializeComponent(); 
 
             // Invalidate the DataContext here because it will be set at a later 
             // time through data binding expression. This way debugger will not 
@@ -71,7 +71,7 @@ namespace Dynamo.UI.Views
         }
 
         /// When a category is collapsed, the selection of underlying sub-category 
-        /// list is cleared. As a result any visible StandardPanel will be hidden.
+        /// list is cleared. As a result any visible ClassInformationView will be hidden.
         private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
         {
             var expanderContent = (sender as FrameworkElement);
@@ -97,8 +97,12 @@ namespace Dynamo.UI.Views
             }
 
             FrameworkElement fromSender = sender as FrameworkElement;
-            libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            var memberVM = fromSender.DataContext as NodeSearchElementViewModel;
+            if (memberVM != null)
+            {
+                libraryToolTipPopup.PlacementTarget = fromSender;
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            }
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -138,13 +142,13 @@ namespace Dynamo.UI.Views
                     classInfoPanel.Loaded += (send, handler) =>
                         {
                             // This call is made whenever a class button is clicked on to expand the class 
-                            // information (right after the corresponding "StandardPanel" view is created).
+                            // information (right after the corresponding "ClassInformationView" view is created).
                             // "selectedElement" here can either be the TextBlock or Image on the class button.
                             // 
-                            // Required height is calculated by adding class button and "StandardPanel" heights.
+                            // Required height is calculated by adding class button and "ClassInformationView" heights.
                             // If the required height is larger than the visible library height, then the class 
                             // button is placed on the top of library, with the rest of the space occupied by the 
-                            // "StandardPanel".
+                            // "ClassInformationView".
 
                             var selectedClassButton = WpfUtilities.FindUpVisualTree<Border>(selectedElement);
                             var height = classInfoPanel.RenderSize.Height + selectedClassButton.RenderSize.Height;
@@ -155,7 +159,7 @@ namespace Dynamo.UI.Views
                             else
                             {
                                 // If the class button is already visible on the library, simply bring the 
-                                // "StandardPanel" into view. Otherwise, the class button is brought into view.
+                                // "ClassInformationView" into view. Otherwise, the class button is brought into view.
                                 if (IsElementVisible(selectedClassButton, ScrollLibraryViewer))
                                     classInfoPanel.BringIntoView();
                                 else
@@ -287,54 +291,27 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        /// <summary>
-        /// Position of mouse, when user clicks on button.
-        /// </summary>
-        private Point startPosition;
+        #region Drag&Drop
 
-        /// <summary>
-        /// Indicates whether item is dragging or not, so that there won't be more than one DoDragDrop event.
-        /// </summary>
-        private bool IsDragging;
+        private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var senderButton = e.OriginalSource as FrameworkElement;
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+        }
 
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton != MouseButtonState.Pressed)
                 return;
 
-            Point currentPosition = e.GetPosition(null);
-
-            // If item was dragged enough, then fire DoDragDrop. 
-            // Otherwise it means user click on item and there is no need to fire DoDragDrop.
-            if ((System.Math.Abs(currentPosition.X - startPosition.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                System.Math.Abs(currentPosition.Y - startPosition.Y) > SystemParameters.MinimumVerticalDragDistance) &&
-                !IsDragging)
-            {
-                StartDrag(e);
-            }
-
-        }
-
-        private void StartDrag(MouseEventArgs e)
-        {
-            IsDragging = true;
             var senderButton = e.OriginalSource as FrameworkElement;
-
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-            {
-                IsDragging = false;
-                return;
-            }
-
-            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
-            IsDragging = false;
+            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
         }
 
-        private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            startPosition = e.GetPosition(null);
-        }
+        #endregion
 
     }
 }

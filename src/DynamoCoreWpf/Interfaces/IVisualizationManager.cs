@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections;
 using Dynamo.Models;
 using Dynamo.Interfaces;
 using Autodesk.DesignScript.Interfaces;
@@ -43,16 +43,6 @@ namespace Dynamo.Interfaces
         event Action<VisualizationEventArgs> ResultsReadyToVisualize;
 
         /// <summary>
-        /// Stop the visualization manager.
-        /// </summary>
-        void Stop();
-
-        /// <summary>
-        /// Unpause the visualization manager.
-        /// </summary>
-        void Start(bool update = false);
-
-        /// <summary>
         /// Request updated visuals for a branch of the graph.
         /// </summary>
         void RequestBranchUpdate(NodeModel node);
@@ -66,5 +56,24 @@ namespace Dynamo.Interfaces
         /// Create an IRenderPackage given an IGraphicItem
         /// </summary>
         IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem graphicItem);
+
+        /// <summary>
+        /// An event triggered on the Selection of model.
+        /// </summary>
+        event Action<IEnumerable> SelectionHandled;
+
+        /// <summary>
+        /// An event triggered on the Deletion of model.
+        /// </summary>
+        event Action<NodeModel> DeletionHandled;
+
+        /// <summary>
+        /// An event triggered when a workspace is closed / open.
+        /// </summary>
+        event Action WorkspaceOpenedClosedHandled;
+
+        /// Update all Node RenderPackages and raise notification.
+        /// </summary>
+        void UpdateAllNodeVisualsAndNotify();
     }
 }

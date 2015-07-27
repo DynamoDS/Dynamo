@@ -6,10 +6,11 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
 using ProtoCore.Namespace;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Models
 {
-    public class CustomNodeWorkspaceModel : WorkspaceModel
+    public class CustomNodeWorkspaceModel : WorkspaceModel, ICustomNodeWorkspaceModel
     {
         public Guid CustomNodeId
         {
@@ -39,17 +40,18 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
-            NodeFactory factory, 
+            NodeFactory factory,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
+            IEnumerable<PresetModel> presets,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
-            : base(e, n,a,info, factory)
-
+            : base(e, n,a, info, factory,presets)
         {
             HasUnsavedChanges = false;
 
@@ -61,7 +63,6 @@ namespace Dynamo.Models
             {
                 ElementResolver.CopyResolutionMap(elementResolver);
             }
-
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -194,14 +195,18 @@ namespace Dynamo.Models
             if (handler != null) handler(oldId);
         }
 
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
+        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
         {
+            if (isBackUp)
+                return base.SaveAs(newPath, runtimeCore, isBackUp);
+
             var originalPath = FileName;
 
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
             if (originalPath != newPath)
             {
+                FileName = newPath;
                 // If it is a newly created node, no need to generate a new guid
                 if (!string.IsNullOrEmpty(originalPath))
                     CustomNodeId = Guid.NewGuid();
@@ -211,7 +216,7 @@ namespace Dynamo.Models
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return base.SaveAs(newPath, runtimeCore);
+            return base.SaveAs(newPath, runtimeCore, isBackUp);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)

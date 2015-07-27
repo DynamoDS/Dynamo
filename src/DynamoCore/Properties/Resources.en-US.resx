@@ -286,7 +286,7 @@ Sorry about that.</value>
     <value>Loading node definition for "{0}" from: {1}</value>
   </data>
   <data name="NodeProblemEncountered" xml:space="preserve">
-    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}</value>
+    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:</value>
   </data>
   <data name="OpeningHomeWorkspace" xml:space="preserve">
     <value>Opening home workspace {0}...</value>
@@ -519,7 +519,12 @@ value: bool = false</value>
     <value>Instance of a Custom Node</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false</value>
+    <value>A function parameter, use with custom nodes.
+
+You can specify the type and default value for parameter. E.g.,
+
+input : var[]..[]
+value : bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
     <value>Custom node definition is not loaded!</value>
@@ -601,5 +606,16 @@ value: bool = false</value>
   <data name="SymbolSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
     <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
+  </data>
+  <data name="DefaultCustomNodeCategory" xml:space="preserve">
+    <value>Custom nodes</value>
+    <comment>Used for uncategorised custom nodes.</comment>
+  </data>
+  <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
+    <value>The folder '{0}' does not exist</value>
+    <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
+  </data>
+  <data name="CodeBlockSearchTags" xml:space="preserve">
+    <value>codeblock;</value>
   </data>
 </root>

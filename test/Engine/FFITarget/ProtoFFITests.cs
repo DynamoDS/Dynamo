@@ -110,6 +110,14 @@ namespace FFITarget
             return x + y;
         }
 
+        public static IList JoinList(params IList[] lists)
+        {
+            var result = new ArrayList();
+            foreach (IList list in lists)
+                result.AddRange(list);
+            return result;
+        }
+
         public object[] GetMixedObjects()
         {
             object[] objs = { new DerivedDummy(), new Derived1(), new TestDispose(), new DummyDispose() };
@@ -937,6 +945,11 @@ namespace FFITarget
             {
                 var p = new Point { dX = x, dY = y, dZ = z };
                 return p;
+            }
+
+            public static Point ByCoordinates(double x, double y, double z)
+            {
+                return XYZ(x, y, z);
             }
 
             public double dX { get; set; }

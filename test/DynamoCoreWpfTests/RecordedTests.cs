@@ -157,6 +157,7 @@ namespace DynamoCoreWpfTests
             }
 
             var geometryFactoryPath = string.Empty;
+            //preloadGeometry = true;
             if (preloadGeometry && (preloader == null))
             {
                 var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -282,6 +283,7 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class RecordedTests : RecordedUnitTestBase
     {
+
         #region Recorded Test Cases for Command Framework
 
         [Test, RequiresSTA]
@@ -289,7 +291,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("SnowPeashooter.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
@@ -540,7 +542,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "Run")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
                     AssertPreviewValue("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c", 12);
                 }
@@ -564,7 +566,7 @@ namespace DynamoCoreWpfTests
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "Run")
                 {
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     AssertPreviewValue("fb5bf7c3-8312-42e8-85cb-e17fbee1fbae", 2);
                     AssertPreviewValue("fb9c8be5-7fc2-4735-a33c-c1c9b2a97f18", 2);
@@ -588,7 +590,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "Run")
                 {
                     AssertPreviewValue("9eb488ec-c232-4048-a30c-e610f10deeb5", 4);
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
                 }
             });
@@ -647,16 +649,16 @@ namespace DynamoCoreWpfTests
 
             // 1 custom node + 1 number node
             Assert.AreEqual(1, workspace.Connectors.Count());
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             var customWorkspace = workspaces.ElementAt(1);
             Assert.IsNotNull(customWorkspace);
 
             // 1 inputs + 1 output 
             Assert.AreEqual(1, customWorkspace.Connectors.Count());
-            Assert.AreEqual(2, customWorkspace.Nodes.Count);
+            Assert.AreEqual(2, customWorkspace.Nodes.Count());
 
-            var node = customWorkspace.Nodes[0];
+            var node = customWorkspace.Nodes.First();
             var outports = node.OutPorts;
 
             AssertPreviewValue("04f6dab5-0a0b-4563-9f20-d0e58fcae7a5", 1.0);
@@ -676,14 +678,14 @@ namespace DynamoCoreWpfTests
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(2, workspace.Connectors.Count());
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
 
                     var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
                     Assert.AreEqual(3, customWorkspace.Connectors.Count());
-                    Assert.AreEqual(4, customWorkspace.Nodes.Count);
+                    Assert.AreEqual(4, customWorkspace.Nodes.Count());
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
                     Assert.AreEqual(2, node.InPorts.Count);
@@ -700,14 +702,14 @@ namespace DynamoCoreWpfTests
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(3, workspace.Connectors.Count());
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
 
                     var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
-                    Assert.AreEqual(1, customWorkspace.Nodes.Count);
+                    Assert.AreEqual(1, customWorkspace.Nodes.Count());
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
                     Assert.AreEqual(3, node.InPorts.Count);
                     Assert.AreEqual(1, node.OutPorts.Count);
@@ -749,13 +751,13 @@ namespace DynamoCoreWpfTests
                     Assert.IsNotNull(workspaces);
                     Assert.AreEqual(2, workspaces.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
 
                     var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
-                    Assert.AreEqual(1, customWorkspace.Nodes.Count);
+                    Assert.AreEqual(1, customWorkspace.Nodes.Count());
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
                 }
@@ -765,11 +767,11 @@ namespace DynamoCoreWpfTests
                     Assert.AreEqual(2, workspaces.Count());
 
                     Assert.AreEqual(2, workspace.Connectors.Count());
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
-                    Assert.AreEqual(1, customWorkspace.Nodes.Count);
+                    Assert.AreEqual(1, customWorkspace.Nodes.Count());
                 }
             });
         }
@@ -788,14 +790,14 @@ namespace DynamoCoreWpfTests
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(1, workspace.Connectors.Count());
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
 
                     var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
-                    Assert.AreEqual(3, customWorkspace.Nodes.Count);
+                    Assert.AreEqual(3, customWorkspace.Nodes.Count());
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
 
@@ -810,14 +812,14 @@ namespace DynamoCoreWpfTests
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(1, workspace.Connectors.Count());
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
 
                     var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
-                    Assert.AreEqual(3, customWorkspace.Nodes.Count);
+                    Assert.AreEqual(3, customWorkspace.Nodes.Count());
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
                     Assert.AreEqual(2, node.InPorts.Count);
                     Assert.AreEqual(3, node.OutPorts.Count);
@@ -843,7 +845,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestCreateNodeCommandWithMultyGuids.xml");
 
             // 1 Number node + 1 CodeBlock node
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             // 1 connection between them
             Assert.AreEqual(1, workspace.Connectors.Count());
 
@@ -890,7 +892,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestMakeConnectionCommandWithMultiGuids.xml");
 
             // 1 Number node + 1 CodeBlock node
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             // Should be only 1 connection
             Assert.AreEqual(1, workspace.Connectors.Count());
@@ -902,7 +904,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestDeleteModelCommandWithMultiGuids.xml");
 
             // Only 1 node should left after multiple deletion
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
 
             var node = GetNode("184470e6-e4d2-47de-bfc7-2d39bdc011b4");
             Assert.NotNull(node);
@@ -914,7 +916,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestModelEventCommandWithMultiGuids.xml");
 
             // 2 nodes
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             // Sould contain  3 Input ports
             var node = GetNode("4ac8c08a-da16-422d-a40d-ff465bac90d8") as NodeModel;
@@ -931,7 +933,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestUpdateModelValueCommandWithMultiGuids.xml");
 
             // 3 nodes
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
 
             // All Number nodes should contain value 5
             Assert.AreEqual(3, workspace.Nodes.OfType<DoubleInput>().Count(node => node.Value == "5"));
@@ -943,7 +945,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestUngroupModelCommandWithMultiGuids.xml");
 
             // 3 nodes
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
 
             // 1 group
             Assert.AreEqual(1, workspace.Annotations.Count());
@@ -984,7 +986,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
             Assert.AreEqual(0, workspace.Connectors.Count());
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
             var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonNode;
@@ -998,7 +1000,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("ModifyPythonNodesUndo.xml");
             Assert.AreEqual(0, workspace.Connectors.Count());
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
             var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonNode;
@@ -1012,7 +1014,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
             Assert.AreEqual(0, workspace.Connectors.Count());
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as PythonNode;
             var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonNode;
@@ -1031,14 +1033,14 @@ namespace DynamoCoreWpfTests
 
             // 1 custom node + 3 number nodes + 1 watch node
             Assert.AreEqual(4, workspace.Connectors.Count());
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
 
             var customWorkspace = workspaces.ElementAt(1);
             Assert.IsNotNull(customWorkspace);
 
             // 3 inputs + 1 output + 1 addition + 1 multiplication
             Assert.AreEqual(5, customWorkspace.Connectors.Count());
-            Assert.AreEqual(6, customWorkspace.Nodes.Count);
+            Assert.AreEqual(6, customWorkspace.Nodes.Count());
 
             AssertPreviewValue("345cd2d4-5f3b-4eb0-9d5f-5dd90c5a7493", 36.0);
         }
@@ -1121,7 +1123,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "EnsureTwoNodesOneConnector")
                 {
                     Assert.AreEqual(1, workspace.Connectors.Count());
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
 
                     // Ensure the only connector does show up on the view.
                     Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.Connectors.Count);
@@ -1129,7 +1131,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "EnsureOnlyTwoNodes")
                 {
                     Assert.AreEqual(0, workspace.Connectors.Count());
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
 
                     // Ensure the removed connector has its view removed.
                     Assert.AreEqual(0, ViewModel.CurrentSpaceViewModel.Connectors.Count);
@@ -1137,7 +1139,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "EnsureOnlyOneNode")
                 {
                     Assert.AreEqual(0, workspace.Connectors.Count());
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
 
                     // Ensure the removed connector view stays removed.
                     Assert.AreEqual(0, ViewModel.CurrentSpaceViewModel.Connectors.Count);
@@ -1145,7 +1147,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "EnsureTwoNodesRestored")
                 {
                     Assert.AreEqual(0, workspace.Connectors.Count());
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
 
                     // Ensure the removed connector view stays removed.
                     Assert.AreEqual(0, ViewModel.CurrentSpaceViewModel.Connectors.Count);
@@ -1153,7 +1155,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "EnsureAllRestored")
                 {
                     Assert.AreEqual(1, workspace.Connectors.Count());
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
 
                     // Ensure the restored connector shows itself on the view.
                     Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.Connectors.Count);
@@ -1308,7 +1310,7 @@ namespace DynamoCoreWpfTests
         public void TestDeleteCommands_DS()
         {
             RunCommandsFromFile("TestDeleteCommands_DS.xml");
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             // This dictionary maps each of the node GUIDs, to a Boolean 
@@ -1349,7 +1351,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("TestUpdateNodeCaptions_DS.xml");
             Assert.AreEqual(0, workspace.Connectors.Count());
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             var cbn = GetNode("5cf9dff2-4a3e-428a-a98a-60d0de0d323e") as CodeBlockNodeModel;
 
@@ -1416,6 +1418,36 @@ namespace DynamoCoreWpfTests
 
         #region Defect Verifications Test Cases
 
+        [Test, RequiresSTA]
+        public void UpdatingCbnShouldCauseDownstreamExecution()
+        {
+            // This test is meant to verify the fix for MAGN-7575 where updating
+            // a code block node causes downstream addition node to result in "null"
+            // instead of retaining its value of "16". Modifying the code block node
+            // in this case should not have caused such issue.
+            // 
+            RunCommandsFromFile("UpdatingCbnShouldCauseDownstreamExecution.xml", (commandTag) =>
+            {
+                switch (commandTag)
+                {
+                    case "AfterFileOpen":
+                        DynamoModel.IsTestMode = false; // Simulate normal UI interaction mode.
+                        AssertPreviewValue("556efc56-6043-4f96-8012-e5b716174d62", 16); // Addition node.
+                        AssertPreviewValue("505023ef-9b86-4220-a1f2-e0bf7cf415f1", 8);  // Code block node.
+                        break;
+
+                    case "CbnUpdatedTo9":
+                        AssertPreviewValue("556efc56-6043-4f96-8012-e5b716174d62", 17); // Addition node.
+                        AssertPreviewValue("505023ef-9b86-4220-a1f2-e0bf7cf415f1", 9);  // Code block node.
+                        break;
+
+                    case "CbnUpdatedTo12":
+                        AssertPreviewValue("556efc56-6043-4f96-8012-e5b716174d62", 20); // Addition node.
+                        AssertPreviewValue("505023ef-9b86-4220-a1f2-e0bf7cf415f1", 12); // Code block node.
+                        break;
+                }
+            });
+        }
 
         [Test, RequiresSTA, Category("RegressionTests")]
         public void Defect_MAGN_1956()
@@ -1432,7 +1464,7 @@ namespace DynamoCoreWpfTests
 
             RunCommandsFromFile("Defect_MAGN_159.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
@@ -1448,7 +1480,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
             RunCommandsFromFile("Defect_MAGN_164_DS.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -1470,7 +1502,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
             RunCommandsFromFile("Defect_MAGN_190_DS.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -1493,7 +1525,7 @@ namespace DynamoCoreWpfTests
 
             RunCommandsFromFile("Defect_MAGN_225_DS.xml");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
         }
@@ -1505,7 +1537,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
             RunCommandsFromFile("Defect_MAGN_397_DS.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
@@ -1516,7 +1548,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-411
             RunCommandsFromFile("Defect_MAGN_411.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
 
             var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
             Assert.NotNull(cbn);
@@ -1533,7 +1565,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
             RunCommandsFromFile("Defect_MAGN_429_DS.xml");
 
-            Assert.AreEqual(0, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
         }
@@ -1561,7 +1593,7 @@ namespace DynamoCoreWpfTests
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
             Assert.AreEqual(2, connectors.Count());
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
 
             // Get to the only two connectors in the session.
             ConnectorViewModel firstConnector = connectors[0];
@@ -1584,7 +1616,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
             RunCommandsFromFile("Defect_MAGN_520_DS.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
@@ -1597,7 +1629,7 @@ namespace DynamoCoreWpfTests
             // Same XML can be used for this test case as well.
             RunCommandsFromFile("Defect_MAGN_520_WithCrossSelection.xml");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
@@ -1608,7 +1640,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
             RunCommandsFromFile("Defect_MAGN_581_DS.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
         }
 
@@ -1636,7 +1668,7 @@ namespace DynamoCoreWpfTests
         {
             // The third undo operation should not crash.
             RunCommandsFromFile("Defect_MAGN_775.xml");
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
@@ -1927,7 +1959,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
             RunCommandsFromFile("Defect_MAGN_613.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -1949,7 +1981,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-904
             RunCommandsFromFile("Defect_MAGN_904.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -1975,7 +2007,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-830
             RunCommandsFromFile("Defect_MAGN_830.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -2000,7 +2032,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-803
             RunCommandsFromFile("Defect_MAGN_803.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -2056,7 +2088,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-902
             RunCommandsFromFile("Defect_MAGN_902.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             ////Check the CBN for input and output ports count
@@ -2078,7 +2110,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
             RunCommandsFromFile("Defect_MAGN_422.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -2103,7 +2135,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
             RunCommandsFromFile("Defect_MAGN_422_1.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for input and output ports count
@@ -2128,7 +2160,7 @@ namespace DynamoCoreWpfTests
             // test for function redefinition - evalaute function
             RunCommandsFromFile("Function_redef01.xml");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
 
             var cbn = GetNode("babc4816-96e6-495c-8489-7a650d1bfb25") as CodeBlockNodeModel;
@@ -2154,7 +2186,7 @@ namespace DynamoCoreWpfTests
             // test for function redefinition - evalaute function
             RunCommandsFromFile("Function_redef02.xml");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
 
             AssertValue("d_0ce2353ce5d6445f83b72db7e3861ce0", 1);
@@ -2177,7 +2209,7 @@ namespace DynamoCoreWpfTests
             // test for function redefinition - evalaute function
             RunCommandsFromFile("Function_redef03.xml");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
 
             AssertValue("c_f34e01e225e446349eb8e815e8ee580d", 0);
@@ -2200,7 +2232,7 @@ namespace DynamoCoreWpfTests
             // test for function redefinition - evalaute function
             RunCommandsFromFile("Function_redef04.xml");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
 
             AssertValue("c_275d7a3d2b984f0e808d2aba03c6ff4f", 1);
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
@@ -2291,7 +2323,7 @@ namespace DynamoCoreWpfTests
             // This is a UI test to test for interaction crashes the application
 
             RunCommandsFromFile("Defect_MAGN_1412_CreateList.xml");
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
         }
         [Test, RequiresSTA]
@@ -2302,7 +2334,7 @@ namespace DynamoCoreWpfTests
 
             preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
         }
         [Test, RequiresSTA]
@@ -2312,7 +2344,7 @@ namespace DynamoCoreWpfTests
             // This is a UI test to test for interaction crashes the application
 
             RunCommandsFromFile("Defect_MAGN_2208_DeleteCBN.xml");
-            Assert.AreEqual(0, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Nodes.Count());
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
@@ -2320,14 +2352,14 @@ namespace DynamoCoreWpfTests
         {
             preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2201_WatchCBN.xml");
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
         }
         [Test, RequiresSTA]
         [Category("RegressionTests")]
         public void Defect_MAGN_747_MultiReference()
         {
             RunCommandsFromFile("Defect_MAGN_747_MultiReference.xml");
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             AssertPreviewValue("a76409a1-1280-428c-9cf7-16580c48ff96", 1);
 
         }
@@ -2397,7 +2429,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "Point-10")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
 
                     AssertPreviewValue("d6f7a52b-b5a9-48fb-b83b-ea27804b21f8", 10);
@@ -2433,7 +2465,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "WithWarning")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     NodeModel nodeModel = workspace.NodeFromWorkspace("45d600d2-3b29-4c9f-898f-d51683534557");
@@ -2463,7 +2495,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "WithWrongInput")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
@@ -2472,7 +2504,7 @@ namespace DynamoCoreWpfTests
                 }
                 else if (commandTag == "WithCorrectInput")
                 {
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(4, workspace.Connectors.Count());
 
                     NodeModel nodeModel = workspace.NodeFromWorkspace("3d9904f8-8a44-4eea-b629-2849b7571a89");
@@ -2497,7 +2529,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
 
                     AssertPreviewValue("3f309016-7b00-4487-9b68-f0640e892d39", 10);
@@ -2530,7 +2562,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "Start")
                 {
                     Assert.AreEqual(0, workspace.Connectors.Count());
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
 
                     var node1 = GetNode("37da4958-1b88-408b-b09d-3deba0ba3835");
                     var node2 = GetNode("b12ce9c8-8c23-43c4-987d-759c6f623998");
@@ -2540,23 +2572,23 @@ namespace DynamoCoreWpfTests
                 }
                 else if (commandTag == "Delete1")
                 {
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                 }
                 else if (commandTag == "UndoDelete1")
                 {
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                 }
                 else if (commandTag == "RedoDelete1")
                 {
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                 }
                 else if (commandTag == "Delete2")
                 {
-                    Assert.AreEqual(0, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Nodes.Count());
                 }
                 else if (commandTag == "UndoDelete2")
                 {
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                 }
             });
         }
@@ -2575,7 +2607,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("d480bc8e-4a77-44ea-ab07-52070ec6a5b6", 6);
@@ -2605,7 +2637,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2528
             RunCommandsFromFile("Defect_MAGN_2528.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             //Check the CBN for error
@@ -2629,7 +2661,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     AssertPreviewValue("ab11bb36-b428-4297-ac25-7afeeefff487", new int[] { 0, 2 });
@@ -2697,7 +2729,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150", new int[] { 5 });
@@ -2705,7 +2737,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
@@ -2714,7 +2746,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "ThirdRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(5, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
@@ -2723,7 +2755,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "FourthRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(4, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
@@ -2733,7 +2765,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("2be171fb-2f81-4244-88ec-a8827a77e150",
@@ -2755,7 +2787,7 @@ namespace DynamoCoreWpfTests
             var workspace = ViewModel.Model.CurrentWorkspace;
 
             // check for number of Nodes and Connectors
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
 
             // Only in the UI it is showing {6, null}, but still this test make sense to add for 
@@ -2778,7 +2810,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(7, workspace.Nodes.Count);
+                    Assert.AreEqual(7, workspace.Nodes.Count());
                     Assert.AreEqual(13, workspace.Connectors.Count());
 
                     AssertPreviewValue("ae25b50c-c644-440e-861b-0824c14b7632",
@@ -2807,7 +2839,7 @@ namespace DynamoCoreWpfTests
 
             RunCommandsFromFile("Defect_MAGN_2563.xml");
 
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Connectors.Count());
 
 
@@ -2831,7 +2863,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count());
                     Assert.AreEqual(5, workspace.Connectors.Count());
 
                     AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
@@ -2839,7 +2871,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count());
                     Assert.AreEqual(4, workspace.Connectors.Count());
 
                     AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 10);
@@ -2847,7 +2879,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(6, workspace.Nodes.Count);
+                    Assert.AreEqual(6, workspace.Nodes.Count());
                     Assert.AreEqual(5, workspace.Connectors.Count());
 
                     AssertPreviewValue("308100d3-a47f-431c-b99b-d53b9f8aa01a", 15);
@@ -2870,7 +2902,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -2879,7 +2911,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -2903,7 +2935,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("55b87e32-7279-49bf-982c-91d06b349439",
@@ -2912,7 +2944,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -2925,7 +2957,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -2952,7 +2984,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     AssertPreviewValue("bdfcf8ef-11fa-4881-9b65-73ca99bb2b58", 0);
@@ -2960,7 +2992,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -2991,7 +3023,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
 
                     AssertPreviewValue("826ba392-b385-4960-89cc-c076c3abffb0",
@@ -3004,7 +3036,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -3038,7 +3070,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("3df462b5-d4e6-4c28-9d1c-9bf6099ba77a",
@@ -3051,14 +3083,14 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
                 }
 
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("3df462b5-d4e6-4c28-9d1c-9bf6099ba77a",
@@ -3088,7 +3120,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3100,7 +3132,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3133,7 +3165,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3145,7 +3177,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3160,7 +3192,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "ThirdRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3175,7 +3207,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "FourthRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     // check preview value of CBN
@@ -3185,7 +3217,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3218,7 +3250,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3232,7 +3264,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "LastRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports
@@ -3331,7 +3363,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "WithWarning1")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and Warning should be there on CBN.
@@ -3343,7 +3375,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "WithWarning2")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and now there should be warning.
@@ -3373,7 +3405,7 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "WithWarning")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and Warning should be there on CBN.
@@ -3385,7 +3417,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "WithoutWarning")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     Assert.AreEqual(1, workspace.Connectors.Count());
 
                     //Check the CBN for input/output ports and now there should be warning.
@@ -3422,14 +3454,14 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "File2")
                 {
 
-                    Assert.AreEqual(2, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Nodes.Count());
                     AssertPreviewValue("22318709-d001-45c0-afde-f9a7ff94ed39", 2);
 
                 }
                 else if (commandTag == "File3")
                 {
 
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     AssertPreviewValue("a383d8d7-328b-4515-9e8f-836a2b62341a", new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
                 }
@@ -3441,6 +3473,7 @@ namespace DynamoCoreWpfTests
 
         [Test, RequiresSTA]
         [Category("RegressionTests")]
+        [Category("Failure")]
         public void EqualEqualTest_Defect6694()
         {
             // Details are available in defect 
@@ -3455,43 +3488,81 @@ namespace DynamoCoreWpfTests
                 if (commandTag == "FirstRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     AssertPreviewValue(equalequalNode, false );
                 }
                 else if (commandTag == "SecondRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     AssertPreviewValue(equalequalNode, true);
                 }
                 else if (commandTag == "ThirdRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     AssertPreviewValue(equalequalNode, false);
                 }
                 else if (commandTag == "FourthRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     AssertPreviewValue(equalequalNode, false);
                 }
                 else if (commandTag == "FifthRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     Assert.AreEqual(0, workspace.Connectors.Count());
                 }
                 else if (commandTag == "FinalRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Nodes.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     AssertPreviewValue(equalequalNode, false);
+                }
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void PointDoesntUpdateProperlyWithRageChange_MAGN7635()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-67635
+
+            RunCommandsFromFile("7635_PointDoesntUpdateProperlyWithRageChange.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                string pointNodeID = "037a09ae-9fc0-4687-8ea5-6e29d4720bec";
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count());
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 10);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count());
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 5);
+                }
+                else if (commandTag == "FinalRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(2, workspace.Nodes.Count());
+                    Assert.AreEqual(1, workspace.Connectors.Count());
+                    AssertPreviewCount(pointNodeID, 10);
                 }
             });
 
@@ -3510,7 +3581,7 @@ namespace DynamoCoreWpfTests
 
             RunCommandsFromFile("Defect_MAGN_159.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             AssertPreviewValue("045decd1-7454-4b85-b92e-d59d35f31ab2", 8);
@@ -3524,7 +3595,7 @@ namespace DynamoCoreWpfTests
             // List node cannot be created  ( current limitation for button click)
             RunCommandsFromFile("Defect_MAGN_160.xml");
 
-            //Assert.AreEqual(1, workspace.Nodes.Count);
+            //Assert.AreEqual(1, workspace.Nodes.Count());
             //Assert.AreEqual(0, workspace.Connectors.Count());
 
             //var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
@@ -3539,7 +3610,7 @@ namespace DynamoCoreWpfTests
 
             RunCommandsFromFile("Defect_MAGN_164.xml");
 
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
             AssertPreviewValue("56e07af9-6a16-4f61-a673-54e33a8556d8", 0);
@@ -3552,7 +3623,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
             RunCommandsFromFile("Defect_MAGN_190.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
 
         }
@@ -3578,7 +3649,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
             RunCommandsFromFile("Defect_MAGN_397.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
         }
 
@@ -3589,7 +3660,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
             RunCommandsFromFile("Defect_MAGN_429.xml");
 
-            Assert.AreEqual(0, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
 
         }
@@ -3636,7 +3707,7 @@ namespace DynamoCoreWpfTests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
             RunCommandsFromFile("Defect_MAGN_520.xml");
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
             AssertPreviewValue("41f52d8e-1a88-4f09-a2f1-f14e61d81f2c", 4);
         }
@@ -3648,7 +3719,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
             RunCommandsFromFile("Defect_MAGN_520_WithCrossSelection.xml");
 
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
             Assert.AreEqual(0, workspace.Connectors.Count());
         }
 
@@ -3661,7 +3732,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
             RunCommandsFromFile("Defect_MAGN_57.xml");
 
-            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(7, workspace.Nodes.Count());
             Assert.AreEqual(5, workspace.Connectors.Count());
 
         }
@@ -3673,7 +3744,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
             RunCommandsFromFile("Defect_MAGN_581.xml");
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
             Assert.AreEqual(1, workspace.Connectors.Count());
         }
 
@@ -3682,7 +3753,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("ShiftSelectAllNode.xml");
 
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(4, workspace.Connectors.Count());
         }
 
@@ -3705,14 +3776,14 @@ namespace DynamoCoreWpfTests
         public void TestCreateNodes()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count());
         }
 
         [Test, Category("Failure")]
         public void TestDeleteCommands()
         {
             RunCommandsFromFile("CreateAndDeleteNodes.xml");
-            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Nodes.Count());
             Assert.AreEqual(2, workspace.Connectors.Count());
 
             // This dictionary maps each of the node GUIDs, to a Boolean 
@@ -3754,7 +3825,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("UpdateNodeCaptions.xml");
             Assert.AreEqual(0, workspace.Connectors.Count());
             Assert.AreEqual(1, workspace.Notes.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count());
 
             var number = GetNode("a9762506-2ab6-4b50-8166-138de5b0c704") as DoubleInput;
             var note = GetNode("21c66403-d102-42bd-97ae-9e7b9c0b6e7d") as NoteModel;
@@ -3773,7 +3844,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("UpdateNodeContents.xml");
             Assert.AreEqual(2, workspace.Connectors.Count());
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
 
             var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
             var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider;
@@ -3802,7 +3873,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("VerifyRuntimeValues.xml");
             Assert.AreEqual(2, workspace.Connectors.Count());
-            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count());
 
             AssertPreviewValue("9182323d-a4fd-40eb-905b-8ec415d17926", 69.12);
         }
@@ -3865,12 +3936,12 @@ namespace DynamoCoreWpfTests
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "FirstRun")
                 {
-                    Assert.AreEqual(2, workspace.Nodes.Count); 
+                    Assert.AreEqual(2, workspace.Nodes.Count()); 
                 }
                 else if (commandTag == "SecondRun")
                 {
 
-                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(1, workspace.Nodes.Count());
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("c5f12fff-e9bb-4182-ae32-626177252aa0");
 
@@ -3887,12 +3958,12 @@ namespace DynamoCoreWpfTests
                 var workspace = ViewModel.Model.CurrentWorkspace;
                 if (commandTag == "FirstRun")
                 {
-                    Assert.AreEqual(1, workspace.Nodes.Count); // assert that  CBN is created
+                    Assert.AreEqual(1, workspace.Nodes.Count()); // assert that  CBN is created
                 }
                 else if (commandTag == "SecondRun")
                 {
 
-                    Assert.AreEqual(0, workspace.Nodes.Count); // assert that  CBN is created                  
+                    Assert.AreEqual(0, workspace.Nodes.Count()); // assert that  CBN is created                  
                 }
             });
         }
@@ -3908,7 +3979,7 @@ namespace DynamoCoreWpfTests
                 // check for number of Nodes and Connectors
                 if (commandTag == "FirstRun")
                 {
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
@@ -3917,7 +3988,7 @@ namespace DynamoCoreWpfTests
                 }
                 else if (commandTag == "SecondRun")
                 {
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -3930,7 +4001,7 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "ThirdRun")
                 {
                     // check for number of Nodes and Connectors
-                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(4, workspace.Nodes.Count());
                     Assert.AreEqual(3, workspace.Connectors.Count());
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
@@ -3945,6 +4016,1227 @@ namespace DynamoCoreWpfTests
 
         }
         #endregion
+
+        #region writing Recording Tests for Colin Zach training files
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Vignette_01_Plane_Offset()
+        {
+            preloadGeometry = true;
+
+            //Create planes
+            //Scenario
+            //1. Create one plane with plane.XY 
+            //2. Give positive length and width values and test the Rectangle.ByWidthHeight
+            //3. Create plane.Offset with heigth 2; test Rectangle.ByWidthHeight
+            //4. disconnect rectangle.BywidthHeight's width and length;
+            //5. reconnect rectangle.BywidthHeight's width and length;
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_Vignette_01_Plane_Offset.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(5, workspace.Nodes.Count());
+                    Assert.AreEqual(3, workspace.Connectors.Count());       
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("8042e93f-a000-49b0-8fc4-edcbc6fc767e");
+                    Assert.AreEqual(ElementState.Active, node.State);
+                                   
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    var rectangle = GetPreviewValue("8042e93f-a000-49b0-8fc4-edcbc6fc767e");
+                    Assert.IsNotNull(rectangle);
+                    Assert.AreEqual(rectangle.ToString(), "Rectangle(Width = 12.000, Height = 15.000)");
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    var plane = GetPreviewValue("4d97bcf7-bb6d-4e47-b37e-d5e871bc1fd5");
+                    Assert.IsNotNull(plane);
+                    Assert.AreEqual(plane.ToString(), "Plane(Origin = Point(X = 0.000, Y = 0.000, Z = 2.000), Normal = Vector(X = 0.000, Y = 0.000, Z = 1.000, Length = 1.000), XAxis = Vector(X = 1.000, Y = 0.000, Z = 0.000, Length = 1.000), YAxis = Vector(X = 0.000, Y = 1.000, Z = 0.000, Length = 1.000))");
+                }
+                else if (commandTag == "ForthRun")
+                {
+                    var plane = GetPreviewValue("9f55dd08-63c2-448c-aa57-2d7481b67b93");
+                    Assert.IsNotNull(plane);
+                    Assert.AreEqual(plane.ToString(), "Rectangle(Width = 12.000, Height = 15.000)");
+                }
+
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Vignette_01_Wireframe_Section()
+        {
+            preloadGeometry = true;
+
+            //Create planes
+            //Scenario
+            //1. Create nodes and connect them correctly, try two create two lines with the same start and end points
+            //2. Give the valid input values and make two lines to be active, and check results
+            //3. change the input and reconnect nodes, check the result       
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_Vignette_01_Wireframe_Section.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {   
+                    Assert.AreEqual(33, workspace.Nodes.Count());
+                    //check the last two Line.BystartPointEndPoint
+                    NodeModel line1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("39699a12-ab28-45c2-a213-3feee21e482a");
+                    Assert.AreEqual(ElementState.Warning, line1.State);
+
+                    NodeModel line2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("19edfa3e-d0e3-4f7e-822a-ade06f8af58b");
+                    Assert.AreEqual(ElementState.Warning, line2.State);
+
+                }
+               else if (commandTag == "SecondRun")
+                {
+                    //check the last two Line.BystartPointEndPoint
+                    NodeModel line1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("39699a12-ab28-45c2-a213-3feee21e482a");
+                    Assert.AreEqual(ElementState.Active, line1.State);
+                    var line1Value = GetPreviewValueAtIndex("39699a12-ab28-45c2-a213-3feee21e482a", 0);
+                    Assert.AreEqual(line1Value.ToString(), "Line(StartPoint = Point(X = 7.967, Y = 0.000, Z = 18.800), EndPoint = Point(X = -7.967, Y = 0.000, Z = 18.800), Direction = Vector(X = -15.934, Y = 0.000, Z = 0.000, Length = 15.934))");
+                    NodeModel line2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("19edfa3e-d0e3-4f7e-822a-ade06f8af58b");
+                    Assert.AreEqual(ElementState.Active, line2.State);
+                    var line2Value = GetPreviewValueAtIndex("19edfa3e-d0e3-4f7e-822a-ade06f8af58b", 0);
+                    Assert.AreEqual(line2Value.ToString(), "Line(StartPoint = Point(X = 12.713, Y = 0.000, Z = 30.000), EndPoint = Point(X = -12.713, Y = 0.000, Z = 30.000), Direction = Vector(X = -25.426, Y = 0.000, Z = 0.000, Length = 25.426))");
+ 
+                }
+               else if (commandTag == "ThirdRun")
+                {
+                    var line1Value = GetPreviewValueAtIndex("39699a12-ab28-45c2-a213-3feee21e482a", 0);
+                    Assert.AreEqual(line1Value.ToString(), "Line(StartPoint = Point(X = 6.501, Y = 0.000, Z = 18.800), EndPoint = Point(X = -6.501, Y = 0.000, Z = 18.800), Direction = Vector(X = -13.002, Y = 0.000, Z = 0.000, Length = 13.002))");
+                    NodeModel line2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("19edfa3e-d0e3-4f7e-822a-ade06f8af58b");
+                    Assert.AreEqual(ElementState.Active, line2.State);
+                    var line2Value = GetPreviewValueAtIndex("19edfa3e-d0e3-4f7e-822a-ade06f8af58b", 0);
+                    Assert.AreEqual(line2Value.ToString(), "Line(StartPoint = Point(X = 10.374, Y = 0.000, Z = 30.000), EndPoint = Point(X = -10.374, Y = 0.000, Z = 30.000), Direction = Vector(X = -20.748, Y = 0.000, Z = 0.000, Length = 20.748))");
+                }
+            });
+        }
+
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_ListLacing()
+        {
+            preloadGeometry = true;
+
+            // Create Lines
+            // Scenario
+            //  a) By connecting nodes
+            //  b) Reconnecting nodes
+            //  c) Negative Inputs 
+            //  d) Incomplete Nodes  
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_ListLacing.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // In firstRun, Line.BystartPointEndPoint are with two same startpoints and endpoints, which should give a warning.
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(5, workspace.Nodes.Count());
+                    Assert.AreEqual(7, workspace.Connectors.Count());
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("8eef399d-655d-4ca9-a8d8-d81d6c29e4f1");
+                    Assert.AreEqual(ElementState.Warning, node.State);
+
+                }
+                 //In Second Run, Line.ByStartPointEndPoint are with the valid inputs 
+                else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("8eef399d-655d-4ca9-a8d8-d81d6c29e4f1");
+                    Assert.AreEqual(ElementState.Active, node.State);
+                }
+                //In Third Run, Create a new Line.ByStartPointEndPoint that with the valid inputs and longest lacing.
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewCount("4f197c05-bcbb-4b8d-8fa0-02a69de5d502", 10);
+                    AssertPreviewCount("8eef399d-655d-4ca9-a8d8-d81d6c29e4f1", 6);
+                }
+                // In Forth Run, given a negative input to Line.ByStartPointEndPoint will generate warning message
+                else if (commandTag == "ForthRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                         ("4f197c05-bcbb-4b8d-8fa0-02a69de5d502");
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+                 // In FifthRun, create Line.ByStartPointEndPoint with cross product lacing 
+                else if (commandTag == "FifthRun")
+                {
+                    AssertPreviewCount("6f9c4eeb-a3d6-4b97-9a36-f6af013a96de", 10);
+                    var line = GetFlattenedPreviewValues("6f9c4eeb-a3d6-4b97-9a36-f6af013a96de");
+                    Assert.AreEqual(line.Count, 60);
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_AttractorPoint()
+        {
+            preloadGeometry = true;
+
+            // Create Cylinders
+            // Scenario
+            //  a) By connecting nodes
+            //  b) Reconnecting nodes
+            //  c) Negative Inputs 
+            //  d) Incomplete Nodes  
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_AttractorPoint.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // the correct connections, with no error. Cylinder.ByPointsRadius generates 10 cylinders
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(14, workspace.Nodes.Count());
+                    Assert.AreEqual(19, workspace.Connectors.Count());
+                    AssertPreviewCount("948ad0f5-82e8-4053-9568-db06d69f77e0", 10);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var cylinder = GetPreviewValueAtIndex("948ad0f5-82e8-4053-9568-db06d69f77e0", i);
+                        Assert.IsNotNull(cylinder);
+                    }
+                }
+                //Negative radius input.
+                else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("948ad0f5-82e8-4053-9568-db06d69f77e0");
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+                //In Third Run,Reconnect nodes in valid way
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewCount("948ad0f5-82e8-4053-9568-db06d69f77e0", 10);                  
+                }
+                //In Forth Run,no radius input.
+                else if (commandTag == "ForthRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("948ad0f5-82e8-4053-9568-db06d69f77e0");
+                    Assert.AreEqual(ElementState.Active, node.State);
+                }   
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_RangeSyntax()
+        {
+           
+            // Check Number Range
+            // Scenario
+            //  a) By connecting nodes
+            //  b) Reconnecting nodes
+            //  c) Negative Inputs 
+            //  d) Incomplete Nodes  
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_RangeSyntax.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // the correct connections, with no error. number range is from 0 to 10.
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(6, workspace.Nodes.Count());
+                    Assert.AreEqual(4, workspace.Connectors.Count());
+                    AssertPreviewCount("8a7591cf-0271-4c47-989f-583ab7c028ca", 6);
+                    AssertPreviewValue("8a7591cf-0271-4c47-989f-583ab7c028ca", new object[] { 0, 2, 4, 6, 8, 10 });
+                }
+                // checking number sequence
+                else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("b1335d53-2746-4aa4-b4d3-6ea8af3387c7");
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewValue("b1335d53-2746-4aa4-b4d3-6ea8af3387c7", new object[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 });
+                }
+                //In Third Run,no step input for number range
+                else if (commandTag == "ThirdRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                         ("8a7591cf-0271-4c47-989f-583ab7c028ca");
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+                //In Forth Run, reconnect nodes with 2 as step value for both number sequence and number range
+                else if (commandTag == "ForthRun")
+                {
+                    AssertPreviewValue("b1335d53-2746-4aa4-b4d3-6ea8af3387c7", new object[] { 0, -2, -4, -6, -8, -10, -12, -14, -16, -18 });
+                    Assert.IsNull(GetPreviewValue("8a7591cf-0271-4c47-989f-583ab7c028ca"));
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_ReadFromCSV()
+        {
+
+            // Check Number Range
+            // Scenario
+            // check nurbscurve value
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_ReadFromCSV.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // the correct connections, with no error. number range is from 0 to 10.
+                if (commandTag == "FirstRun")
+                {                                 
+                    AssertPreviewValue(GetPreviewValue("fea25a37-f260-47b4-8fd1-6d7741495a62").ToString(), "NurbsCurve(Degree = 3)");
+                }
+            });             
+        }
+
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_PassingFunction()
+        {
+            preloadGeometry = true;
+            // Check Number Range
+            // Scenario
+            //  a) By connecting node
+            //  b) reconnect node
+            //  c) give negative input
+            //  d) No input is given 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            RunCommandsFromFile("MAGN_7348_PassingFuntion.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // the correct connections, with no error.
+                if (commandTag == "FirstRun")
+                {
+                    //check Curve.Extrude
+                    AssertPreviewCount("b185e493-5811-4b4d-a5ab-d426915e1f40", 2);
+                    AssertPreviewCount("253ff233-e1af-4a48-bef8-7e1da90f6b28", 8);
+                    var surface1 = GetFlattenedPreviewValues("b185e493-5811-4b4d-a5ab-d426915e1f40");
+                    var surface2 = GetFlattenedPreviewValues("253ff233-e1af-4a48-bef8-7e1da90f6b28");
+                    foreach (var sur in surface1)
+                    {
+                        Assert.IsNotNull(sur);
+                        Assert.AreEqual(sur.ToString(), "Surface");
+                    }
+
+                    foreach (var sur in surface2)
+                    {
+                        Assert.IsNotNull(sur);
+                        Assert.AreEqual(sur.ToString(), "Surface");
+                    }
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    // give zero value as distance of Curve.Extrude
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a21ec34-4f9b-4743-93e1-a93c20586c50");
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    // reconnect nodes and one Curve.Extrude is given valid input, and one without input
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a21ec34-4f9b-4743-93e1-a93c20586c50");
+                    Assert.AreEqual(ElementState.Active, node.State);
+
+                    NodeModel node2 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("b185e493-5811-4b4d-a5ab-d426915e1f40");
+                    Assert.AreEqual(ElementState.Dead, node2.State);
+                }
+            });
+        }
+
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Math()
+        {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) reconnect inputs
+            //  c)check nodes preview value
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+             RunCommandsFromFile("MAGN_7348_Math.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // check minus and fomular
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewValue("93d9bb4d-4da0-422e-add0-3b6d71cee598", 3);//minus node
+                    AssertPreviewValue("9b00f9cf-9590-468f-9579-89e76a0d1ab5", 3);//cbn node
+                    AssertPreviewValue("013c4b13-2b50-4385-adb2-39861ca5fa1d", 3);//formula node
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewValue("93d9bb4d-4da0-422e-add0-3b6d71cee598", -3);//minus node
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    AssertPreviewValue("fc7308e1-546b-4f60-8342-d607692db435", 1);//formula node
+                    AssertPreviewValue("3507e4b6-209f-46d1-9ebd-cf9b66088c65", 1);//remainder node
+                    AssertPreviewValue("37592d1c-992e-4101-8bad-f1f4c031634c", 1);//cbn node
+                }
+                else if (commandTag == "ForthRun")
+                {
+                    AssertPreviewValue("f260729d-842a-45c5-b50a-6e2ddafd1344", true);// > node
+                }
+                else if (commandTag == "FifthRun")
+                {
+                    AssertPreviewValue("389b90e5-83ea-4f38-966a-fbce6d5cb550", false);// <= node
+                    AssertPreviewValue("fd2c046b-5b3a-46e1-972c-b4deabb7d72f", false);//cbn node
+                    AssertPreviewValue("d9cc11a5-58a0-43c3-939b-30e5e238e37d", false);//formula node         
+                }
+                else if (commandTag == "SixthRun")
+                {
+                    AssertPreviewValue("194b2c6c-226d-42a0-acab-db55c5cc74ea", false); //== node
+                    AssertPreviewValue("48c497fb-376e-473b-b31c-f7865b7c2229", false);//formula node
+                    AssertPreviewValue("23ee05b2-1e02-4537-83f0-1ac8a65bc87a", false);//cbn 
+                }
+                else if (commandTag == "SeventhRun")
+                {
+                    AssertPreviewValue("56064d57-1bae-4cd7-a8ca-d7dab89f22a1", 3);//math.floor
+                    AssertPreviewValue("f05d5e47-4ee9-4b9e-8dde-c06509167709", 3);//Math.Round
+                    AssertPreviewValue("c66cb574-116c-4acc-93a8-5774fa02f0da", 4);//match.celling
+                }                        
+              
+            });
+        }
+
+
+        [Test,Category("Failure")]
+        public void MAGN_7348_Math_Point_Formular_CBN()
+        {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) reconnect inputs
+            //  c)check nodes preview value
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            // issue link is here :http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7519
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_MAGN_7348_Math_Point_Formular_CBN.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // check minus and fomular
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(GetPreviewValue("b5b44e73-e79a-4f0b-99f7-50ac13660ca4").ToString(), "NurbsCurve(Degree = 3)");//check cbn
+                    AssertPreviewCount("016b4fbe-5a97-4308-9ab6-2950d3c36f1e", 20);//check Math.DegreesToRadians
+                    Assert.AreEqual(GetPreviewValue("f96439d0-6f79-4a30-955c-80e826a6ab69").ToString(), "Point(X = 10.000, Y = 20.000, Z = 0.000)");               
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Math_Point()
+        {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) compare two lines' values 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Math_Point.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+               
+                if (commandTag == "FirstRun")
+                {
+                    var line = GetPreviewValue("e615f564-b830-48cd-adfa-06c846b6c91b");
+                    Assert.IsNotNull(line);
+                    AssertPreviewValue("5a28bff1-af6f-4236-b924-ff43a4e5efb4", 247.821);
+                    var line2 = GetPreviewValue("cfb83855-b371-4ceb-b816-31109afd708f");
+                    Assert.IsNotNull(line2);
+                    Assert.AreEqual(line.ToString(), line2.ToString());                  
+                }                           
+            });
+        }
+
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Math_Point_Formula()
+        {
+            // Check Math function
+            // Scenario
+            //  a) By connecting node
+            //  b) change point lacing from cross product to shortest 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Math_Point_Formula.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    AssertPreviewCount("b735b5a2-4081-4e1d-9532-c742ef60930a", 20);//check nurbscurve
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("acb743b6-d4df-4d04-ac6f-cc68f6380e00");// check surface.byloft
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    Assert.AreEqual(GetPreviewValue("acb743b6-d4df-4d04-ac6f-cc68f6380e00").ToString(), "Surface");
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                      ("acb743b6-d4df-4d04-ac6f-cc68f6380e00");// check surface.byloft
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                    var cbnID = "a3bcf5b1-fbb5-45cd-a51e-743827d31a60";
+                    AssertPreviewCount(cbnID, 20);
+                    for(int i =0;i<20;i++){
+                        var ele = GetPreviewValueAtIndex(cbnID, i);
+                        Assert.IsNotNull(ele);
+                    }
+                }
+            });
+        }
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_WriteToExcel()
+        {
+            // Check WriteToExcel
+            // Scenario
+            //  a) By connecting node, check cbns
+            //  b) complete inputs
+            //  c) check values of CBN
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_WriteToExcel.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                   
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("67ef5890-7aa6-4db6-ae82-c4532efc0c01");// check cbn 
+                    Assert.AreEqual(ElementState.Warning, node.State);               
+                    NodeModel cbn = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                      ("a4667733-11ec-44f9-bcd7-d8695dad09af");// check CBN
+                    Assert.AreEqual(ElementState.Active, cbn.State);
+                    AssertPreviewCount("a4667733-11ec-44f9-bcd7-d8695dad09af", 65);
+                  
+                }
+               else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("67ef5890-7aa6-4db6-ae82-c4532efc0c01");// check cbn 
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("67ef5890-7aa6-4db6-ae82-c4532efc0c01", 3);       
+                }         
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Core_Python()
+        {
+            // Check Python nodes
+            // Scenario
+            //  a) By connecting node
+            //  b) change python script
+            //  c) reconnect/invalid input
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Core_Python.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3");// check list.GetItemAtIndex 
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3");// check list.GetItemAtIndex 
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3", 11);
+                    for (int i = 0; i < 11; i++)
+                    {
+                        Assert.IsNotNull(GetPreviewValueAtIndex("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3", i));
+                    }
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("8a747cdc-7891-4c8a-bfb6-63ad5fbc54c3");// check list.GetItemAtIndex 
+                    Assert.AreEqual(ElementState.Warning, node.State);
+                     NodeModel python = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("3617330e-a33d-4fd6-b13d-b3eee9da5f18");// check python script
+                    Assert.AreEqual(ElementState.Warning, python.State);
+                    
+                }
+
+            });
+        }
+
+
+        [Test,Category("Failure")]
+        public void MAGN_7348_Combine()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) change surface.pointAtParameter to cross product
+            //  c) check the value of List and surface
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            //issue link: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Combin.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("85feef2b-8bc6-4546-bc3d-54fe03303859");// check surface.byloft
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("85feef2b-8bc6-4546-bc3d-54fe03303859", 15);
+
+                    //Check List.combine
+                    AssertPreviewCount("75f2f348-ac18-47cf-85b2-2d64469c232d", 15);
+                    var flatCombine = GetFlattenedPreviewValues("75f2f348-ac18-47cf-85b2-2d64469c232d");
+                    foreach (var ele in flatCombine)
+                    {
+                        Assert.IsNotNull(ele);
+                    }
+                }       
+            });
+        }
+
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_CreateList()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check List.Create
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            // issue link :http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_CreateList.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("c9bcb187-5eb7-4931-9a88-aee2ae40293b");// check List.Create
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("c9bcb187-5eb7-4931-9a88-aee2ae40293b", 3);
+                    var list = GetFlattenedPreviewValues("c9bcb187-5eb7-4931-9a88-aee2ae40293b");
+
+                    Assert.AreEqual(list, new object[] { 42, "The answer to everything", "foo", "bar" });
+
+                    
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Count()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check List.Combine
+            //  c) change inputs and check new result
+            //  d) incomplete input 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Count.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                       ("923d1dbb-9009-41af-94bf-d100fa76b9cd");// check List.Combine
+                    Assert.AreEqual(ElementState.Active, node.State);
+                    AssertPreviewCount("923d1dbb-9009-41af-94bf-d100fa76b9cd", 43);                 
+                   for (int i = 0; i < 43; i++)
+                    {
+                        string temp = "foo"+i.ToString();
+                        var list = GetPreviewValueAtIndex("923d1dbb-9009-41af-94bf-d100fa76b9cd", i);
+                        Assert.AreEqual(list.ToString(), temp);
+                    }
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    AssertPreviewCount("923d1dbb-9009-41af-94bf-d100fa76b9cd", 4);// check List.Combine
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    Assert.IsNull(GetPreviewValue("923d1dbb-9009-41af-94bf-d100fa76b9cd"));// check List.Combine           
+                }
+            });
+        }
+
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_Flatten()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check Flatten and List.Flatten
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            // issue link:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Flatten.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "FirstRun")
+                {
+                    //check flatten
+                    var flatten = GetPreviewValue("b3dc4fee-c451-42ff-bb3d-24a299dd85f0");
+                    AssertPreviewCount("b3dc4fee-c451-42ff-bb3d-24a299dd85f0", 18);
+
+                    //check List.Flatten
+                    var listFlatten = GetPreviewValue("bb2adfac-3aaf-44ce-89cf-745f3aa5e58d");
+                    AssertPreviewCount("bb2adfac-3aaf-44ce-89cf-745f3aa5e58d", 9);
+                    var flatListFlatten = GetFlattenedPreviewValues("bb2adfac-3aaf-44ce-89cf-745f3aa5e58d");
+                    Assert.AreEqual(flatListFlatten.Count, 54);                  
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_MinMax()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node, 
+            //  b) check minimum and maximum item in a list
+            //  c) change nodes with incomplete nodes
+            //  d) change nodes with valid input, and reconnect them
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_MinMax.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        
+                            var max = GetPreviewValue("b80b5001-efa7-4831-9161-ebcfa65d5505");
+                            Assert.AreEqual(max, "Tyrian");
+                            var min = GetPreviewValue("f323299b-e841-4d47-b8bd-f6596034814f");
+                            Assert.AreEqual(min, "a");
+
+                            //check List.MaximumItem
+                            //check number in  List.MinimumItem, List.MaximumItem
+                            var max1 = GetPreviewValue("adbce23a-f2ce-46a7-be2d-146762033571");
+                            Assert.AreEqual(max1, 42);
+                            var min1 = GetPreviewValue("64616918-bdcf-47e7-b093-8c4b4c8ed62c");
+                            Assert.AreEqual(min1, 0);
+                            break;
+                    case "SecondRun":
+                            NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("b80b5001-efa7-4831-9161-ebcfa65d5505");// check List.Create
+                            Assert.AreEqual(ElementState.Dead, node.State);
+                            var max2 = GetPreviewValue("adbce23a-f2ce-46a7-be2d-146762033571");
+                            Assert.AreEqual(max2, 1);  
+                            break;  
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Reverse()
+        {
+            // Check List
+            // Scenario
+            //  a) By connecting node,
+            //  b) check List.Reverse
+            //  c) combine new list using List.Create
+            //  d) check new values of Curve.Extrude with valid inputs
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Reverse.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check List.Reverse
+                        AssertPreviewCount("c6aba751-6d0c-4326-b4df-affe3f40e64f", 6);
+                        var list = GetFlattenedPreviewValues("c6aba751-6d0c-4326-b4df-affe3f40e64f");
+                        Assert.AreEqual(list, new int[] { 5, 4, 3, 2, 1, 0 });
+
+                        break;
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Sort()
+        {
+            // Check Sort function
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check List.Sort
+            //  c) change inputs 
+            //  d) check new values
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Sort.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check List.Sort
+                        AssertPreviewCount("d3682b84-d365-437e-a1e5-e570123e7b2c", 5);
+                        var list = GetFlattenedPreviewValues("d3682b84-d365-437e-a1e5-e570123e7b2c");
+                        Assert.AreEqual(list, new object[] { -2,42.000,"cadd","Cda","da" });
+                        break;
+                    case "SecondRun":
+                        //Check List.Sort
+                        AssertPreviewCount("d3682b84-d365-437e-a1e5-e570123e7b2c", 2);
+                        var newlist = GetFlattenedPreviewValues("d3682b84-d365-437e-a1e5-e570123e7b2c");
+                        Assert.AreEqual(newlist, new object[] { "dsfdd", 1, 2, 3 });
+                        break;
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_SortGeometry()
+        {
+            // Check Sort function
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check List.Sort
+            //  c) change inputs 
+            //  d) check new values
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_SortGeometry.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check SortByKey
+                        AssertPreviewCount("63896361-9e41-4cbe-8b5f-8a93d81705a5", 16);
+                        var list = GetPreviewValue("63896361-9e41-4cbe-8b5f-8a93d81705a5");
+                        for (int i = 0; i < 16; i++)
+                        {
+                            var point = GetPreviewValueAtIndex("63896361-9e41-4cbe-8b5f-8a93d81705a5", i);
+                            Assert.IsNotNull(point);
+                        }
+                            break;
+                    case "SecondRun":
+                        //Check PolyCurve.ByPoints
+                        Assert.AreEqual(GetPreviewValue("61429b13-5af6-48c5-8fea-eab94ba69f62").ToString(),"PolyCurve(NumberOfCurves = 16)");
+                        break;
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Surface()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check Surface.ByLoft and CBN
+            //  c) change inputs and disconnect the input of CBN, check the state of nodes
+            //  d) reconnect nodes and give new input value and check the result
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Surface.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check Surface.ByLoft
+                        Assert.AreEqual(GetPreviewValue("74e69db3-82c3-4b6e-827b-fd29ced48a67").ToString(), "Surface");
+
+                        //check CBN with a list of nurbsCurve
+                        AssertPreviewCount("f3cbd915-8b15-40be-9cfe-0070b56861c1", 3);
+                       
+                        for (int i = 0; i < 3; i++)
+                        {
+                            var curve = GetPreviewValueAtIndex("f3cbd915-8b15-40be-9cfe-0070b56861c1", i);
+                            Assert.IsNotNull(curve);
+                        }
+                        break;
+                    case "SecondRun":
+                        //Check the state of Surface.ByLoft
+                        NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("74e69db3-82c3-4b6e-827b-fd29ced48a67");
+                        Assert.AreEqual(ElementState.Warning, node.State);
+                        //check CBN
+                        var nullvalue = GetPreviewValueAtIndex("f3cbd915-8b15-40be-9cfe-0070b56861c1", 2);
+                        Assert.IsNull(nullvalue);
+                        break;
+
+                    case "ThirdRun":
+                        //check the state of Surface.ByLoft
+                        NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("74e69db3-82c3-4b6e-827b-fd29ced48a67");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+                        Assert.AreEqual(GetPreviewValue("74e69db3-82c3-4b6e-827b-fd29ced48a67").ToString(), "Surface");
+
+                        //Check the * node
+                        AssertPreviewCount("ba4a6597-e4ce-40d1-9de4-6bfe51a37135", 16);
+                        for (int i = 0; i < 16; i++)
+                        {
+                            Assert.IsNotNull(GetPreviewValueAtIndex("ba4a6597-e4ce-40d1-9de4-6bfe51a37135", i));
+                        }
+                            break;
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Transpose()
+        {
+            // Check Transpose function
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check List.Transpose
+            //  c) change lacing to cross product 
+            //  d) check new result of List.Transpose
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Transpose.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        //Check List.Transpose
+                        AssertPreviewCount("6e6ef08e-e743-493d-9941-293e3eee00e9", 10);
+                       
+                        for (int i = 0; i < 10; i++)
+                        {
+                            var point = GetPreviewValueAtIndex("6e6ef08e-e743-493d-9941-293e3eee00e9", i);
+                            Assert.IsNotNull(point);
+                        }
+
+                        //compare Points and list.Transpose
+                        var points = GetPreviewValue("8d8be654-f5ba-4cac-87a8-0f795a22a483");
+                        var transpose = GetPreviewValue("6e6ef08e-e743-493d-9941-293e3eee00e9");
+                        Assert.AreEqual(points,transpose);
+                        break;
+                    case "SecondRun":
+                        //change to croose product ; and check new result of Transpose and nurbscurve
+                        AssertPreviewCount("f4d5ef15-fb8f-49c4-a606-702286cc3d0c", 10);
+                        for (int i = 0; i < 10; i++)
+                        {
+                            var nurbCurve = GetPreviewValueAtIndex("f4d5ef15-fb8f-49c4-a606-702286cc3d0c", i);
+                            Assert.AreEqual(nurbCurve.ToString(), "NurbsCurve(Degree = 3)");
+                        }
+
+                        var flatPoints = GetFlattenedPreviewValues("8d8be654-f5ba-4cac-87a8-0f795a22a483");
+                        var flatTranspose = GetFlattenedPreviewValues("6e6ef08e-e743-493d-9941-293e3eee00e9");
+                        for (int i = 0; i < 10; i++)
+                        {
+                            for (int j = 0; j < 10; j++)
+                            {
+                                Assert.AreEqual(flatPoints[i * 10 + j], flatTranspose[j * 10 + i]);
+                            }
+                        }                       
+                        break;
+                }
+            });
+        }
+
+
+        [Test, Category("WorkshopFiles")]
+        public void MAGN_7348_Basket1()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check Vector.Rotate and Geometry.Rotate
+            //  c) change inputs and disconnect the input of vectror.rotate, check the state of nodes
+            //  d) reconnect nodes and give new input value and check the result
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Basket1.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+                        
+                        //Check Geometry.Rotate
+                        AssertPreviewCount("821f7a34-8c9b-472e-902b-7d3756742241", 12);
+                        for (int i = 0; i < 12; i++)
+                        {
+                            var ele = GetPreviewValueAtIndex("821f7a34-8c9b-472e-902b-7d3756742241", i);
+                            Assert.IsNotNull(ele);
+                            Assert.AreEqual(ele.ToString(), "Solid");
+                        }
+                        //Check Vector.Rotate
+                        AssertPreviewCount("951f7f92-117d-4bf6-bd9a-625f16d2991b", 12);
+                        for (int i = 0; i < 12; i++)
+                        {
+                            var ele = GetPreviewValueAtIndex("951f7f92-117d-4bf6-bd9a-625f16d2991b", i);
+                            Assert.IsNotNull(ele);
+                        }                      
+                        break;
+
+                    case "SecondRun":
+                        //Check the state of Geometry.Rotate
+                        NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("821f7a34-8c9b-472e-902b-7d3756742241");
+                        Assert.AreEqual(ElementState.Dead, node.State);
+                        break;
+
+                    case "ThirdRun":                 
+                        //check the state of Geometry.Rotate
+                        NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("821f7a34-8c9b-472e-902b-7d3756742241");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+
+                        // check the new value of Vecotr.Rotate. 
+                        var firstValue = GetPreviewValueAtIndex("951f7f92-117d-4bf6-bd9a-625f16d2991b", 0);
+                        Assert.AreEqual(firstValue.ToString(), "Vector(X = 2.873, Y = 1.340, Z = 0.000, Length = 3.170)");                      
+                        break;          
+                }
+            });
+        }
+
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_ListJoin()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check list.Join
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+            // issue link:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_ListJoin.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check Geometry.Rotate
+                        AssertPreviewCount("43e9707c-0c98-4925-a099-8fcc1ca33dbd", 17);
+                        for (int i = 0; i < 17; i++)
+                        {
+                            var ele = GetPreviewValueAtIndex("43e9707c-0c98-4925-a099-8fcc1ca33dbd", i);
+                            Assert.IsNotNull(ele);     
+                        }                     
+                        break;
+                }
+            });
+        }
+       
+
+        [Test, Category("Failure")]
+        public void MAGN_7348_Basket2()
+        {
+            // Check surface
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check curve.extrude, polycurve.bypoint
+            // issue link:  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7455
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7348
+
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7348_Basket2.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check polycurve.bypoints, curve.Extrude
+                        var polycurve = GetPreviewValue("0fab80eb-7096-4f96-8f31-9832ff4c2617");
+                        Assert.AreEqual(polycurve.ToString(), "PolyCurve(NumberOfCurves = 10)");
+                        // check curve.Extrude
+                        NodeModel node1 = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                               ("45d1b208-a9de-4f75-80f1-e8088d8061c7");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+                        AssertPreviewCount("45d1b208-a9de-4f75-80f1-e8088d8061c7", 63);
+                        for (int i = 0; i < 63; i++)
+                        {
+                            var surface = GetPreviewValueAtIndex("45d1b208-a9de-4f75-80f1-e8088d8061c7", i);
+                            Assert.AreEqual(surface.ToString(), "Surface");
+                        }
+                            break;
+                }
+            });
+        }
+        #endregion
+
+        [Test]
+        public void MAGN_7638_assignValueToVariable()
+        {
+            // Check whether connections are swapping after assigning
+            // value to variable
+            // Scenario
+            //  a) create -,/ node and connect the input with value 10,20;
+            //  b) assign input value to variable a and b,check the result
+            // issue link: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5453#
+
+
+            RunCommandsFromFile("MAGN-7638assignValueToVariable.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                var divisorID = "2b213bb4-8d6f-4d82-86a7-29f83b6b9272";
+                var minusID = "6024f3ae-d6b7-4ee5-8dac-67100c631189";
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check / ,-;
+                        AssertPreviewValue( divisorID,0.666667);
+                        AssertPreviewValue(minusID,-1);
+                        break;
+
+                    case "SecondRun":
+                        //Check / ,-;                       
+                        AssertPreviewValue(divisorID, 0.666667);
+                        AssertPreviewValue(minusID, -1);
+                        break;
+
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7159_ImagePixel()
+        {
+            // Check Image.pixel
+            // Scenario
+            //  a) Connect nodes 
+            //  b) check image.Pixel
+            //  c) change input value and check image.Pixel
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7159#
+            preloadGeometry = true;
+            RunCommandsFromFile("MAGN_7159_ImagePixel.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // give absolute path
+                string directory = Path.Combine(TestDirectory, @"core\recorded");
+                var textFileName = workspace.NodeFromWorkspace<DSCore.File.Filename>("3a22370f-7f07-4bd6-b4fb-5680ec82e8d4");
+                textFileName.Value = Path.Combine(directory, textFileName.Value);
+
+                switch (commandTag)
+                {
+                    case "FirstRun":
+
+                        //Check Image.Pixel
+                        AssertPreviewCount("e2f85c04-d992-41dd-8e0b-1def88f2c834", 4);
+                        var colorList = GetFlattenedPreviewValues("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        foreach (var ele in colorList)
+                        {
+                            Assert.IsNotNull(ele);
+                        }
+                        NodeModel node1 = workspace.NodeFromWorkspace
+                              ("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        Assert.AreEqual(ElementState.Active, node1.State);
+                        break;
+                    case "SecondRun":
+
+                        //Check Image.Pixel
+                        AssertPreviewCount("e2f85c04-d992-41dd-8e0b-1def88f2c834", 5);
+                        var colorListt = GetFlattenedPreviewValues("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        foreach (var ele in colorListt)
+                        {
+                            Assert.IsNotNull(ele);
+                        }
+                        NodeModel node11 = workspace.NodeFromWorkspace
+                              ("e2f85c04-d992-41dd-8e0b-1def88f2c834");
+                        Assert.AreEqual(ElementState.Active, node11.State);
+                        break;
+                }
+            });
+        }
+
+
+        [Test]
+        public void MAGN_7883_01()
+        {
+            RunCommandsFromFile("UndoSimple01.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("eb506dff-f1b7-4bfd-8b53-a7562362c9e7", 1);
+                }
+                
+            });
+        }
+
+        [Test]
+        public void MAGN_7883_02()
+        {
+            RunCommandsFromFile("UndoSimple02.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("b77b23d5-0fd5-4979-8b50-4e7dbb8bda96", 3);
+                }
+
+            });
+        }
+
     }
 
 }

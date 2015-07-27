@@ -31,7 +31,8 @@ namespace Dynamo.Models
         protected virtual void OpenFileImpl(OpenFileCommand command)
         {
             string xmlFilePath = command.XmlFilePath;
-            OpenFileFromPath(xmlFilePath);
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenFileFromPath(xmlFilePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
@@ -373,5 +374,22 @@ namespace Dynamo.Models
             // We don't attempt to null-check here, we need it to fail fast.
             CurrentWorkspace = Workspaces.ElementAt(command.WorkspaceModelIndex);
         }
+
+        void CreatePresetStateImpl(AddPresetCommand command)
+        {
+            this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.ModelGuids);
+        }
+        void SetWorkSpaceToStateImpl(ApplyPresetCommand command)
+        {
+            var workspaceToSet = this.Workspaces.Where(x => x.Guid == command.WorkSpaceID).First();
+            if (workspaceToSet == null)
+            {
+                return;
+            }
+            var state = workspaceToSet.Presets.Where(x => x.Guid == command.StateID).FirstOrDefault();
+
+            workspaceToSet.ApplyPreset (state);
+        }
+
     }
 }

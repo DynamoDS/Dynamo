@@ -1,0 +1,14 @@
+<Workspace Version="0.8.2.1465" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSRevitNodesUI.FamilyTypes guid="071c6c11-5f7b-45f2-84e9-bd4c03a11f68" type="DSRevitNodesUI.FamilyTypes" nickname="Family Types" x="1634.67143029212" y="384.534732754884" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="39:Space Planning - Rectangle:Space Planning - Rectangle" />
+    <DSRevitNodesUI.ElementsOfCategory guid="de745c17-d6ef-4ff8-ac09-0d1703f58de5" type="DSRevitNodesUI.ElementsOfCategory" nickname="All Elements of Category" x="516.827951415609" y="221.723530753818" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations>
+    <Dynamo.Models.AnnotationModel guid="ce97bb23-ad59-461b-ae81-17e8c48cf8de" annotationText="&lt;Click here to edit the group title&gt;" left="506.827951415609" top="191.723530753818" width="264.8" height="136.2" fontSize="14" InitialTop="221.723530753818" InitialHeight="136.2" TextblockHeight="20" backgrouund="#FFC1D676">
+      <Models ModelGuid="de745c17-d6ef-4ff8-ac09-0d1703f58de5" />
+    </Dynamo.Models.AnnotationModel>
+  </Annotations>
+</Workspace>

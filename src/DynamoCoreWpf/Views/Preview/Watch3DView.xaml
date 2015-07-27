@@ -101,15 +101,15 @@
             ShowViewCube="False" 
             CameraRotationMode="Turntable"
             IsHitTestVisible="True"
-            MouseLeftButtonDown="Watch_view_OnMouseDown" 
             ShowCoordinateSystem="False"
             RenderTechnique="{Binding RenderTechnique}"
-            Camera="{Binding Camera}" RotationSensitivity="1"
-            IsShadowMappingEnabled="{Binding ShowShadows}" 
+            Camera="{Binding Camera}" 
+            RotationSensitivity="1"
             UseDefaultGestures="False" 
             IsInertiaEnabled="False" 
             IsChangeFieldOfViewEnabled="False" 
             SpinReleaseTime="0" 
+            ItemsSource="{Binding Model3DValues}"
             ShowFieldOfView="False" BackgroundColor="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}">
             <hx:Viewport3DX.InputBindings>
                 <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+E"/>
@@ -122,17 +122,7 @@
                 <MouseBinding Command="hx:ViewportCommands.SetTarget" Gesture="Ctrl+RightDoubleClick"/>
                 <MouseBinding Command="hx:ViewportCommands.Reset" Gesture="Ctrl+MiddleDoubleClick"/>
                 <MouseBinding Command="{Binding LeftClickCommand}" Gesture="LeftClick"/>
-            </hx:Viewport3DX.InputBindings>
-            <hx:DirectionalLight3D Name="key" Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
-            <hx:LineGeometryModel3D x:Name="linesView"  Geometry="{Binding Lines}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.5" IsHitTestVisible="False" />
-            <hx:LineGeometryModel3D x:Name="linesSelectedView"  Geometry="{Binding LinesSelected}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="1.0" IsHitTestVisible="False" />
-            <hx:PointGeometryModel3D x:Name="pointsView" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Size="8 8" Figure="Ellipse"/>
-            <hx:MeshGeometryModel3D x:Name="meshView" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False" />
-            <hx:MeshGeometryModel3D x:Name="meshSelectedView" Geometry="{Binding MeshSelected}" Transform = "{Binding Model1Transform}" Material="{Binding SelectedMaterial}" IsHitTestVisible="False" />
-            <rendering:PerVertexMeshGeometryModel3D x:Name="perVertexMeshView" Geometry="{Binding PerVertexMesh}" Transform="{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False"/>
-            <hx:BillboardTextModel3D x:Name="textView" Geometry="{Binding Text}" Transform="{Binding Model1Transform}"/>
-            <hx:LineGeometryModel3D x:Name="gridView" Geometry="{Binding Grid}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
-            <hx:LineGeometryModel3D x:Name="axesView" Geometry="{Binding Axes}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
+            </hx:Viewport3DX.InputBindings>            
         </hx:Viewport3DX>
 
         <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"

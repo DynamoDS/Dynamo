@@ -159,8 +159,8 @@
   <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
     <value>A function call is not allowed on the left hand side of an assignment</value>
   </data>
-  <data name="FUNCTION_GROUP_RESOLUTION_FAILURE" xml:space="preserve">
-    <value>No function called {0} could be found. Please check the name of the function</value>
+  <data name="FunctionGroupNotFound" xml:space="preserve">
+    <value>No function called {0} on a {1} could be found</value>
   </data>
   <data name="GetKeys" xml:space="preserve">
     <value>Gets all keys from the specified key-value pair list</value>
@@ -349,7 +349,7 @@
     <value>Property '{0}' not found</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>Class '{0}' does not have a property '{1}'</value>
+    <value>No property called {0} on {1} could be found</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>An amount operator cannot be used together with a step operator</value>
@@ -851,5 +851,52 @@
   </data>
   <data name="kInvalidType" xml:space="preserve">
     <value>The type is invalid</value>
+  </data>
+  <data name="AlgorithmNotSupported" xml:space="preserve">
+    <value>Selected algorithm not supported</value>
+  </data>
+  <data name="ArrayWithNotSupported" xml:space="preserve">
+    <value>Array with no common superclass not yet supported: {0}</value>
+  </data>
+  <data name="ErrorCode" xml:space="preserve">
+    <value>Error code: {0}</value>
+  </data>
+  <data name="FailedToResolveSortingFunction" xml:space="preserve">
+    <value>Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)</value>
+  </data>
+  <data name="FunctionDispatchFailed" xml:space="preserve">
+    <value>Function dispatch could not be completed {0}</value>
+  </data>
+  <data name="MaxDimensionExceeded" xml:space="preserve">
+    <value>Replication requested exceeds the available dimensions of the array. This case is not yet supported {0}</value>
+  </data>
+  <data name="MultipleFunctionsFound" xml:space="preserve">
+    <value>Couldn't decide which function to execute. Please provide more specific type information. Possible functions were: </value>
+  </data>
+  <data name="MultipleGuidesNotSupported" xml:space="preserve">
+    <value>Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead. </value>
+  </data>
+  <data name="OneDArrayExpected" xml:space="preserve">
+    <value>Both arguments were expected to be one-dimensional array type!</value>
+  </data>
+  <data name="OperationFailType1" xml:space="preserve">
+    <value>{0}.{1} operation failed.</value>
+  </data>
+  <data name="OperationFailType2" xml:space="preserve">
+    <value>{0}.{1} operation failed. 
+{2}</value>
+  </data>
+  <data name="ZipAlgorithmError" xml:space="preserve">
+    <value>Cannot support Longest and shortest zipped collections</value>
+  </data>
+  <data name="FailedToCastFromNull" xml:space="preserve">
+    <value>Null value cannot be cast to {0}</value>
+  </data>
+  <data name="ArgumentNullException" xml:space="preserve">
+    <value>Value cannot be null.
+Parameter name: {0}</value>
+  </data>
+  <data name="FunctionGroupWithParameterNotFound" xml:space="preserve">
+    <value>No function called {0} on a {1} that takes {2} could be found</value>
   </data>
 </root>

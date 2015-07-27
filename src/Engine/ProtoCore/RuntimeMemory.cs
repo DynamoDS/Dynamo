@@ -283,11 +283,11 @@ namespace ProtoCore
                 // Get the heapstck offset
                 int offset = exe.classTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
 
-                var heapElement = Heap.GetHeapElement(thisptr); 
-                if (null == heapElement.Stack || heapElement.Stack.Length == 0)
+                var obj = Heap.ToHeapObject<DSObject>(thisptr);
+                if (!obj.Values.Any())
                     return StackValue.Null;
 
-                StackValue sv = heapElement.Stack[offset];
+                StackValue sv = obj.GetValueFromIndex(offset, null);
                 Validity.Assert(sv.IsPointer || sv.IsArray|| sv.IsInvalid);
 
                 // Not initialized yet
@@ -302,11 +302,11 @@ namespace ProtoCore
 
                 StackValue nextPtr = sv;
                 Validity.Assert(nextPtr.opdata >= 0);
-                heapElement = Heap.GetHeapElement(nextPtr);
+                obj = Heap.ToHeapObject<DSObject>(nextPtr);
 
-                if (null != heapElement.Stack && heapElement.Stack.Length > 0)
+                if (obj.Values.Any()) 
                 {
-                    StackValue data = heapElement.Stack[0];
+                    StackValue data = obj.GetValueFromIndex(0, null);
                     bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
                     if (isActualData)
                     {
@@ -396,16 +396,6 @@ namespace ProtoCore
                     fp = stackFrame.FramePointer;
                     yield return stackFrame;
                 }
-            }
-
-            /// <summary>
-            /// Mark and sweep garbage collection.
-            /// </summary>
-            /// <param name="gcRootPointers"></param>
-            /// <param name="exe"></param>
-            public void GC(List<StackValue> gcRootPointers, DSASM.Executive exe)
-            {
-                Heap.GCMarkAndSweep(gcRootPointers.ToList(), exe);
             }
         }
     }
