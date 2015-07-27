@@ -416,6 +416,8 @@ namespace Dynamo.Wpf.ViewModels
             }
 
             IsExpanded = endState;
+            if(ClassDetails != null)
+             ClassDetails.IsExpanded = IsExpanded;
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -547,11 +549,8 @@ namespace Dynamo.Wpf.ViewModels
             }
             return nextLargerItemIndex;
         }
-    }
 
-    public class RootNodeCategoryViewModel : NodeCategoryViewModel
-    {
-        private ClassInformationViewModel classDetails;
+        protected ClassInformationViewModel classDetails;
         public ClassInformationViewModel ClassDetails
         {
             get
@@ -559,13 +558,32 @@ namespace Dynamo.Wpf.ViewModels
                 if (classDetails == null && IsClassButton)
                 {
                     classDetails = new ClassInformationViewModel();
-                    classDetails.IsRootCategoryDetails = true;
+                    classDetails.IsRootCategoryDetails = false;
                     classDetails.PopulateMemberCollections(this);
                 }
 
                 return classDetails;
             }
         }
+    }
+
+    public class RootNodeCategoryViewModel : NodeCategoryViewModel
+    {
+        //private ClassInformationViewModel classDetails;
+        //public ClassInformationViewModel ClassDetails
+        //{
+        //    get
+        //    {
+        //        if (classDetails == null && IsClassButton)
+        //        {
+        //            classDetails = new ClassInformationViewModel();
+        //            classDetails.IsRootCategoryDetails = true;
+        //            classDetails.PopulateMemberCollections(this);
+        //        }
+
+        //        return classDetails;
+        //    }
+        //}
 
         public RootNodeCategoryViewModel(string name) : base(name) { }
 

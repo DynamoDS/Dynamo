@@ -6,6 +6,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:vms="clr-namespace:Dynamo.Wpf.ViewModels"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="525"
@@ -287,90 +288,79 @@
                 </StackPanel>
             </DataTemplate>
 
-            <!-- This data template is used to show 2nd level subcategory.
-            This helps in controlling the margin in the tree view.-->
-            <DataTemplate  x:Key="ClassDetailsDataTemplate">
-                <StackPanel Orientation="Horizontal"                           
-                            VerticalAlignment="Center" Margin="0,0,0,-10">
-                    <Image Margin="16,0,16,0"
-                           Height="36"
-                           Width="24"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           Source="{Binding SmallIcon}"/>
-                    <TextBlock HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               Margin="5,0,0,0"
-                               Foreground="{StaticResource CommonSidebarTextColor}"
-                               FontSize="13"
-                               Text="{Binding Name}" />
-                    <StackPanel.Style>
-                        <Style TargetType="{x:Type StackPanel}">
-                            <Setter Property="Background"
-                                    Value="Transparent" />
-                            <Setter Property="Width">
-                                <Setter.Value>
-                                    <Binding Path="ActualWidth"
-                                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource LibraryMemberOnHover}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </StackPanel.Style>
-                </StackPanel>
-            </DataTemplate>
-
             <!-- This data template is used to show one subcategory. -->
             <HierarchicalDataTemplate  x:Key="ClassObjectDataTemplate"
-                                       ItemsSource="{Binding Entries}"
-                                       ItemTemplate="{StaticResource ClassDetailsDataTemplate }">
-                <StackPanel Name ="SubClassTreeNodes" Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <Image Margin="-25,0,16,0"
-                           Height="36"
-                           Width="24"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           Source="{Binding SmallIcon}" />
-                    <TextBlock HorizontalAlignment="Left"
+                                       ItemsSource="{Binding Entries}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Name="SubClassTreeNodes"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Grid.Row="0">
+                        <Image Margin="0,0,16,0"
+                               Height="36"
+                               Width="24"
+                               HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               Margin="5,0,0,0"
-                               Foreground="{StaticResource CommonSidebarTextColor}"
-                               FontSize="13"
-                               Text="{Binding Name}" />
-                    <StackPanel.Style>
-                        <Style TargetType="{x:Type StackPanel}">
-                            <Setter Property="Background"
-                                    Value="Transparent" />
-                            <Setter Property="Width">
-                                <Setter.Value>
-                                    <Binding Path="ActualWidth"
-                                             RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            Value="{StaticResource LibraryMemberOnHover}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </StackPanel.Style>
-                </StackPanel>
+                               Source="{Binding SmallIcon}" />
+                        <TextBlock HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Margin="5,0,0,0"
+                                   Foreground="{StaticResource CommonSidebarTextColor}"
+                                   FontSize="13"
+                                   Text="{Binding Name}" />
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="Width">
+                                    <Setter.Value>
+                                        <Binding Path="ActualWidth"
+                                                 RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver"
+                                             Value="True">
+                                        <Setter Property="Background"
+                                                Value="{StaticResource LibraryMemberOnHover}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
+                    <!--<StackPanel Orientation="Vertical"
+                                DataContext="{Binding ClassDetails}"
+                                Grid.Row="1"
+                                Visibility="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+
+                        <Label Content ="Create"></Label>
+                            <ListBox ItemsSource="{Binding CreateMembers}"
+                                     ItemTemplate="{StaticResource MemberControlTemplate}"
+                                     Background="Transparent" />
+
+                        <Label Content ="Action"></Label>
+                        <ListBox ItemsSource="{Binding ActionMembers}"
+                                     ItemTemplate="{StaticResource MemberControlTemplate}"
+                                     Background="Transparent" />
+
+                        <Label Content ="Query"></Label>
+                        <ListBox ItemsSource="{Binding QueryMembers}"
+                                     ItemTemplate="{StaticResource MemberControlTemplate}"
+                                     Background="Transparent" />
+                        
+                    </StackPanel>-->
+                </Grid>
             </HierarchicalDataTemplate>
 
             <!-- This data template is used to show the list of subcategories. -->
             <HierarchicalDataTemplate x:Key="SubclassesTemplate">
                 <TreeView Name="SubCategoryListView"
-                          ItemsSource="{Binding Items}"
                           ItemTemplate="{StaticResource ClassObjectDataTemplate}"
+                          ItemsSource="{Binding Items}"
                           Background="{StaticResource LibraryItemHostBackground}"
                           ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                           BorderThickness="0"
