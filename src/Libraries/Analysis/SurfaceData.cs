@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
-
+using Dynamo.Models;
 namespace Analysis
 {
     /// <summary>
@@ -16,19 +16,19 @@ namespace Analysis
         /// <summary>
         /// The surface which contains the locations.
         /// </summary>
-        [Obsolete("Use the Surface available elsewhere in your graph.")]
+        [NodeObsolete("SurfaceObsolete", typeof(Properties.Resources))]
         public Surface Surface { get; set; }
 
         /// <summary>
         /// A list of UV locations on the surface.
         /// </summary>
-        [Obsolete("Use the UV locations available elsewhere in your graph.")]
+        [NodeObsolete("ValueLocationsObsolete", typeof(Properties.Resources))]
         public IEnumerable<UV> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of lists of doubles.
         /// </summary>
-        [Obsolete("Use the values provided by the node conducting the analysis.")]
+        [NodeObsolete("ValueSurfaceObsolete", typeof(Properties.Resources))]
         public IList<double> Values { get; internal set; }
 
         protected SurfaceData(
@@ -46,7 +46,7 @@ namespace Analysis
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
         /// <returns></returns>
-        [Obsolete("Use Surface and UV nodes as direct inputs to nodes which previously used SurfaceData nodes.")]
+        [NodeObsolete("BySurfacePointObsolete", typeof(Properties.Resources))]
         public static SurfaceData BySurfaceAndPoints(Surface surface, IEnumerable<UV> uvs)
         {
             if (surface == null)
@@ -73,7 +73,7 @@ namespace Analysis
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
         /// <param name="values">A list of double values.</param>
-        [Obsolete("Use Surface, UV, and Number nodes as direct inputs to nodes which previously used SurfaceData nodes.")]
+        [NodeObsolete("BySurfacePointsAndValues", typeof(Properties.Resources))]
         public static SurfaceData BySurfacePointsAndValues(Surface surface, IEnumerable<UV> uvs, IList<double> values)
         {
             if (surface == null)

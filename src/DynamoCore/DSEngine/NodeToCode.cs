@@ -152,17 +152,21 @@ namespace Dynamo.DSEngine
 
             public override void VisitIdentifierListNode(IdentifierListNode node)
             {
-                if ((node.LeftNode is IdentifierNode ||
-                    node.LeftNode is IdentifierListNode) &&
-                    node.RightNode is FunctionCallNode)
+                if (node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
                 {
-                    var lhs = node.LeftNode.ToString();
-                    if (core.ClassTable.IndexOf(lhs) < 0)
+                    if (node.RightNode is FunctionCallNode || node.RightNode is IdentifierNode)
                     {
-                        node.LeftNode.Accept(this);
+                        var lhs = node.LeftNode.ToString();
+                        if (core.ClassTable.IndexOf(lhs) < 0)
+                        {
+                            node.LeftNode.Accept(this);
+                        }
+
+                        if (!(node.RightNode is IdentifierNode))
+                            node.RightNode.Accept(this);
+
+                        return;
                     }
-                    node.RightNode.Accept(this);
-                    return;
                 }
                 base.VisitIdentifierListNode(node);
             }

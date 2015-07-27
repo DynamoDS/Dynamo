@@ -51,6 +51,7 @@ namespace DSCore.IO
         ///     Gets the directory name of a file path.
         /// </summary>
         /// <param name="path">Path to get directory information of.</param>
+        /// <search>directorypath</search>
         public static string DirectoryName(string path)
         {
             return Path.GetDirectoryName(path);
@@ -134,6 +135,7 @@ namespace DSCore.IO
         ///     Determines if a file exists at the given path.
         /// </summary>
         /// <param name="path"></param>
+        /// <search>filepath</search>
         public static bool Exists(string path)
         {
             return System.IO.File.Exists(path);
@@ -144,7 +146,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="text">Text content</param>
-        /// <search>write file,text,file</search>
+        /// <search>write file,text,file,filepath</search>
         public static void WriteText(string filePath, string text)
         {
             System.IO.File.WriteAllText(filePath, text);
@@ -152,7 +154,8 @@ namespace DSCore.IO
 
         #region Obsolete Methods
 
-        [Obsolete("Use File.FromPath -> Image.ReadFromFile -> Image.Pixels nodes instead.")]
+
+        [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
         public static Color[] ReadImage(string path, int xSamples, int ySamples)
         {
             var info = FromPath(path);
@@ -160,19 +163,19 @@ namespace DSCore.IO
             return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
         }
 
-        [Obsolete("Use File.FromPath -> Image.ReadFromFile nodes instead.")]
+        [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
         public static Bitmap LoadImageFromPath(string path)
         {
             return Image.ReadFromFile(FromPath(path));
         }
 
-        [Obsolete("Use File.FromPath -> File.ReadText nodes instead.")]
+        [NodeObsolete("ReadTextObsolete", typeof(Properties.Resources))]
         public static string ReadText(string path)
         {
             return ReadText(FromPath(path));
         }
 
-        [Obsolete("Use Image.WriteToFile node instead.")]
+        [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
         public static bool WriteImage(string filePath, string fileName, Bitmap image)
         {
             fileName = Path.ChangeExtension(fileName, "png");
@@ -180,7 +183,7 @@ namespace DSCore.IO
             return true;
         }
 
-        [Obsolete("Use CSV.WriteToFile node instead.")]
+        [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
         public static void ExportToCSV(string filePath, object[][] data)
         {
             CSV.WriteToFile(filePath, data);
@@ -283,6 +286,7 @@ namespace DSCore.IO
         ///     Determines if a directory exists at the given path.
         /// </summary>
         /// <param name="path">Path to a directory on disk.</param>
+        /// <search>directorypath</search>
         public static bool Exists(string path)
         {
             return System.IO.Directory.Exists(path);
@@ -403,7 +407,7 @@ namespace DSCore.IO
         /// <param name="path"></param>
         /// <param name="image">The image to write</param>
         /// <returns name="ok">It is successful or not.</returns>
-        /// <search>write image,image,file</search>
+        /// <search>write image,image,file,filepath</search>
         public static void WriteToFile(string path, Bitmap image)
         {
             image.Save(path);

@@ -1,0 +1,22 @@
+<Workspace Version="0.8.2.1957" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="3264fb12-f32c-41fd-b12f-65df8a8c3a8c" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="608.5" y="339" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="8c169e2d-c859-4f07-8454-eebe2a6cd1a2" type="Dynamo.Nodes.DSFunction" nickname="Point.X" x="787.5" y="271" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.X" />
+    <Dynamo.Nodes.DSFunction guid="601353b4-9c1a-47af-80b3-2ca50124e211" type="Dynamo.Nodes.DSFunction" nickname="Point.X" x="797.5" y="392" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.X" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3264fb12-f32c-41fd-b12f-65df8a8c3a8c" start_index="0" end="8c169e2d-c859-4f07-8454-eebe2a6cd1a2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3264fb12-f32c-41fd-b12f-65df8a8c3a8c" start_index="0" end="601353b4-9c1a-47af-80b3-2ca50124e211" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

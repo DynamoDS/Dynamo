@@ -40,6 +40,11 @@ namespace DSCoreNodesUI
                 base.RemoveInput();
         }
 
+        public override bool IsConvertible
+        {
+            get { return true; }
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (IsPartiallyApplied)

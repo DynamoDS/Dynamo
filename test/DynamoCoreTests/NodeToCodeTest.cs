@@ -738,8 +738,8 @@ namespace Dynamo.Tests
             var command = new DynamoModel.ConvertNodesToCodeCommand();
             CurrentDynamoModel.ExecuteCommand(command);
 
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
             CurrentDynamoModel.ExecuteCommand(undo);
@@ -816,6 +816,46 @@ namespace Dynamo.Tests
             Assert.AreEqual("Autodesk.Point.ByCoordinates(t1, 0)", expr.RightNode.ToString());
         }
 
+        [Test]
+        public void TestPropertyWontBeReplaced1()
+        {
+            // Point.X; Point.X;
+            OpenModel(@"core\node2code\property.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith(".X"));
+            Assert.IsTrue(rhs.All(r => r));
+        }
+
+        [Test]
+        public void TestPropertyWontBeReplaced2()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\staticproperty.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var rhs = result.AstNodes.Skip(1).Select(b => (b as BinaryExpressionNode).RightNode.ToString().EndsWith("ElementResolverTarget.StaticProperty"));
+            Assert.IsTrue(rhs.All(r => r));
+        }
+ 
+
         private void TestNodeToCodeUndoBase(string filePath)
         {
             // Verify after undo all nodes and connectors should be resotored back
@@ -862,7 +902,6 @@ namespace Dynamo.Tests
         }
 
 
-
         [Test]
         [Category("UnitTest")]
         public void TestNodeToCodeUndoRecorder()
@@ -872,6 +911,183 @@ namespace Dynamo.Tests
             recorder.RecordCreation(dummyModel);
             recorder.RecordDeletion(dummyModel);
             Assert.AreEqual(0, recorder.ActionCount());
+        }
+
+        [Test]
+        public void TestUINode_String()
+        {
+            OpenModel(@"core\node2code\stringNode.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.FirstOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("\"42\"", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_IntegerSlider()
+        {
+            OpenModel(@"core\node2code\integerSlider.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.FirstOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("42", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_NumberSlider()
+        {
+            OpenModel(@"core\node2code\numberSlider.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.FirstOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("42", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_BoolSelector()
+        {
+            OpenModel(@"core\node2code\boolSelector.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.FirstOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("true", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_CreateList()
+        {
+            OpenModel(@"core\node2code\CreateList.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            Assert.AreEqual(3, result.AstNodes.Count());
+            var assignment = result.AstNodes.LastOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.AreEqual("{t1, t2}", binaryExpr.RightNode.ToString());
+        }
+
+        [Test]
+        public void TestUINode_NumberSequence()
+        {
+            OpenModel(@"core\node2code\numberSequence.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.LastOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.IsTrue(binaryExpr.RightNode is RangeExprNode);
+        }
+
+        [Test]
+        public void TestUINode_NumberRange()
+        {
+            OpenModel(@"core\node2code\numberRange.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.IsNotNull(result.AstNodes);
+
+            var assignment = result.AstNodes.LastOrDefault();
+            Assert.IsNotNull(assignment);
+
+            var binaryExpr = assignment as BinaryExpressionNode;
+            Assert.IsNotNull(binaryExpr);
+
+            Assert.IsTrue(binaryExpr.RightNode is RangeExprNode); ;
+        }
+
+        [Test]
+        public void TestFilePathToCode()
+        {
+            OpenModel(@"core\node2code\filepath.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains(@"D:\\foo\\bar"));
+        }
+
+        [Test]
+        public void TestDirectoryToCode()
+        {
+            OpenModel(@"core\node2code\directory.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+
+            SelectAll(nodes);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.Code.Contains(@"D:\\foo\\bar"));
+        }
+
+        [Test]
+        public void TestNodeWithVarArgument()
+        {
+            OpenModel(@"core\node2code\splitstring.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, new[] { "foo", "bar", "qux" });
         }
 
         private void SelectAll(IEnumerable<NodeModel> nodes)

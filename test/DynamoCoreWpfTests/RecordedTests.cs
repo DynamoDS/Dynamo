@@ -5207,6 +5207,36 @@ namespace DynamoCoreWpfTests
                 }
             });
         }
+
+
+        [Test]
+        public void MAGN_7883_01()
+        {
+            RunCommandsFromFile("UndoSimple01.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("eb506dff-f1b7-4bfd-8b53-a7562362c9e7", 1);
+                }
+                
+            });
+        }
+
+        [Test]
+        public void MAGN_7883_02()
+        {
+            RunCommandsFromFile("UndoSimple02.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("b77b23d5-0fd5-4979-8b50-4e7dbb8bda96", 3);
+                }
+
+            });
+        }
+
     }
 
 }

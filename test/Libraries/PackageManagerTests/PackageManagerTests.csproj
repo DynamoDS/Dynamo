@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ExtensionTests.cs" />
     <Compile Include="PackageDirectoryBuilderTests.cs" />
+    <Compile Include="PackageLoaderCustomTest.cs" />
     <Compile Include="PackageLoaderTests.cs" />
     <Compile Include="PackageManagerClientTests.cs" />
     <Compile Include="PackageTests.cs" />
