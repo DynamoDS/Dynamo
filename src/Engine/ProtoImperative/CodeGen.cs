@@ -2624,6 +2624,8 @@ namespace ProtoImperative
                 whileStatement.Body = forNode.body;
                 whileStatement.endLine = node.endLine;
                 whileStatement.endCol = node.endCol;
+                whileStatement.LeftParenthesis = forNode.LeftParenthesis;
+                whileStatement.RightParenthesis = forNode.RightParenthesis;
 
                 type.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
                 EmitWhileStmtNode(whileStatement, ref type, isBooleanOp, graphNode);

@@ -24,12 +24,28 @@ namespace ProtoCore.AST.ImperativeAST
     {
     }
 
-    public class LeftParenthesisNode: SymbolAstNode
+    public sealed class LeftParenthesisNode: SymbolAstNode
     {
     }
 
-    public class RightParenthesisNode: SymbolAstNode
+    public sealed class RightParenthesisNode: SymbolAstNode
     {
+    }
+
+    public class BlockNode : ImperativeNode
+    {
+        public BlockNode()
+        {
+        }
+
+        public BlockNode(BlockNode rhs): base(rhs)
+        {
+            this.LeftParenthesis = rhs.LeftParenthesis;
+            this.RightParenthesis = rhs.RightParenthesis;
+        }
+
+        public LeftParenthesisNode LeftParenthesis { get; set; }
+        public RightParenthesisNode RightParenthesis { get; set; }
     }
 
     public class LanguageBlockNode : ImperativeNode
@@ -1034,7 +1050,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class WhileStmtNode : ImperativeNode
+    public class WhileStmtNode : BlockNode
     {
         public WhileStmtNode()
         {
@@ -1197,7 +1213,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class ForLoopNode : ImperativeNode
+    public class ForLoopNode : BlockNode
     {
         public ForLoopNode()
         {
@@ -1220,9 +1236,6 @@ namespace ProtoCore.AST.ImperativeAST
             KwForCol = rhs.KwForCol;
             KwInLine = rhs.KwInLine;
             KwInCol = rhs.KwInCol;
-
-            LeftParenthesis = rhs.LeftParenthesis;
-            RightParenthesis = rhs.RightParenthesis;
         }
 
         public int KwForLine { get; set; }
@@ -1232,8 +1245,6 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode loopVar { get; set; }
         public ImperativeNode expression { get; set; }
         public List<ImperativeNode> body { get; set; }
-        public LeftParenthesisNode LeftParenthesis { get; set; }
-        public RightParenthesisNode RightParenthesis { get; set; }
 
         public override bool Equals(object other)
         {
