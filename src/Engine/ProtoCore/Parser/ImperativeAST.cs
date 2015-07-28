@@ -1022,7 +1022,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class WhileStmtNode : ImperativeNode 
+    public class WhileStmtNode : ImperativeNode
     {
         public WhileStmtNode()
         {
@@ -1185,7 +1185,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class ForLoopNode : ImperativeNode 
+    public class ForLoopNode : ImperativeNode
     {
         public ForLoopNode()
         {
@@ -1217,6 +1217,7 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode loopVar { get; set; }
         public ImperativeNode expression { get; set; }
         public List<ImperativeNode> body { get; set; }
+
 
         public override bool Equals(object other)
         {

@@ -2485,6 +2485,7 @@ namespace ProtoImperative
                 ForLoopNode forNode = node as ForLoopNode;
                 ++core.ForLoopBlockIndex;   //new forloop beginning. increment loop counter 
 
+                // Insert a dummy block for for-loop so that loopvar is in scope.
                 ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                         context.guid,
                         ProtoCore.DSASM.CodeBlockType.kConstruct,
@@ -2515,7 +2516,7 @@ namespace ProtoImperative
                     loopvarInit.Optr = ProtoCore.DSASM.Operator.assign;
                     loopvarInit.LeftNode = loopvar;
                     loopvarInit.RightNode = new NullNode();
-                    
+ 
                     ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvarInit, forNode);
                     loopvarInit.endLine = loopvarInit.line;
                     loopvarInit.endCol = loopvarInit.col + 3;
