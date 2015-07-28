@@ -21,6 +21,8 @@
                     Value="#999999" />
             <Setter Property="FontSize"
                     Value="9" />
+            <Setter Property="FontStyle"
+                    Value="Italic"/>
         </Style>
         <Style x:Key="HeaderListButtonStyle"
                TargetType="{x:Type Button}">
@@ -62,8 +64,8 @@
 
         <DataTemplate x:Key="SingleItemListTemplate">
             <Border x:Name="container"
-                    Padding="8,3,8,3"
-                    Background="#393939">
+                    Padding="0,3,8,3"
+                    Background="Transparent">
                 <TextBlock x:Name="text"
                            Style="{StaticResource HeaderTextBlockStyle}"
                            Text="{Binding SelectedItem.Text, ElementName=HeaderStripControl}">
@@ -76,7 +78,7 @@
                      BorderThickness="0">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Template">
+                        <!--<Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate>
                                     <Button Margin="0,0,16,0"
@@ -93,7 +95,7 @@
                                     </Button>
                                 </ControlTemplate>
                             </Setter.Value>
-                        </Setter>
+                        </Setter>-->
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemsPanel>

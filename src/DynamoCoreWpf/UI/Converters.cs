@@ -1987,7 +1987,8 @@ namespace Dynamo.Controls
             var incomingString = value as string;
 
             if (string.IsNullOrEmpty(incomingString))
-                throw new ArgumentException("value string should not be empty.");
+                //throw new ArgumentException("value string should not be empty.");
+                return new Thickness(5, 0, 0, 0);
 
             var c = Configurations.CategoryDelimiterString[0];
             var numberOfPoints = incomingString.Count(x => x == c);
@@ -2315,4 +2316,21 @@ namespace Dynamo.Controls
                 throw new NotImplementedException();
             }
         }
+
+        public class TreeViewLineConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                TreeViewItem item = (TreeViewItem)value;
+                ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+                return ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+   
     }

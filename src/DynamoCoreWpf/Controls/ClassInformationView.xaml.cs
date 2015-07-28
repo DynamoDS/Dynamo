@@ -28,18 +28,18 @@ namespace Dynamo.UI.Controls
 
         private void OnHeaderButtonClick(object sender, RoutedEventArgs e)
         {
-            var selectedItem = (sender as FrameworkElement).DataContext as HeaderStripItem;
-            if (selectedItem.Text == Configurations.HeaderAction)
-            {
-                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
-                secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
-            }
+            //var selectedItem = (sender as FrameworkElement).DataContext as HeaderStripItem;
+            //if (selectedItem.Text == Configurations.HeaderAction)
+            //{
+            //    castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Action;
+            //    secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
+            //}
 
-            if (selectedItem.Text == Configurations.HeaderQuery)
-            {
-                castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
-                secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
-            }
+            //if (selectedItem.Text == Configurations.HeaderQuery)
+            //{
+            //    castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
+            //    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
+            //}
 
             e.Handled = true;
         }
@@ -100,8 +100,21 @@ namespace Dynamo.UI.Controls
             bool hasQueryMembers = castedDataContext.QueryMembers.Any();
 
             primaryHeaderStrip.HeaderStripItems = castedDataContext.PrimaryHeaderItems;
-            secondaryHeaderStrip.HeaderStripItems = castedDataContext.SecondaryHeaderItems;
 
+            //Assuming Secondary headers have more items.
+            for (int i = 0; i < castedDataContext.SecondaryHeaderItems.Count(); i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        secondaryHeaderStrip.HeaderStripItems = new List<HeaderStripItem>() { castedDataContext.SecondaryHeaderItems[0] };
+                        break;
+                    case 1:
+                        queryHeaderStrip.HeaderStripItems = new List<HeaderStripItem>() { castedDataContext.SecondaryHeaderItems[1] };
+                        break;
+                }
+            }
+           
             castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.None;
 
             castedDataContext.HiddenSecondaryMembersCount = 0;
@@ -119,12 +132,12 @@ namespace Dynamo.UI.Controls
 
                     secondaryMembers.ItemsSource = castedDataContext.ActionMembers;
                 }
-                else if (hasQueryMembers)
+                if (hasQueryMembers)
                 {
                     // No "Action" members but "Query" members are available.
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
-                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
+                    queryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
                 return;
@@ -141,7 +154,7 @@ namespace Dynamo.UI.Controls
                 {
                     castedDataContext.CurrentDisplayMode = ClassInformationViewModel.DisplayMode.Query;
 
-                    secondaryMembers.ItemsSource = castedDataContext.QueryMembers;
+                    queryMembers.ItemsSource = castedDataContext.QueryMembers;
                 }
 
                 return;
