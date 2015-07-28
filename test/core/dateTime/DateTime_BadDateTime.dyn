@@ -1,0 +1,15 @@
+<Workspace Version="0.8.2.1540" X="-1233.94143009528" Y="-613.145464556897" zoom="2.45244625" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.DateTime guid="c5ecbba8-30f5-4094-8731-c859c76bf44c" type="DSCoreNodesUI.DateTime" nickname="Date Time" x="637.810245331574" y="364.447655070932" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.DateTime>foo</System.DateTime>
+    </DSCoreNodesUI.DateTime>
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>
