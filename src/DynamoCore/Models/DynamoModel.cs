@@ -1951,19 +1951,4 @@ namespace Dynamo.Models
 
         #endregion
     }
-
-    public class ExtensionLibraryLoader : ILibraryLoader
-    {
-        private readonly DynamoModel model;
-
-        internal ExtensionLibraryLoader(DynamoModel model)
-        {
-            this.model = model;
-        }
-
-        public void LoadNodeLibrary(Assembly library)
-        {
-            model.LoadNodeLibrary(library);
-        }
-    }
 }
