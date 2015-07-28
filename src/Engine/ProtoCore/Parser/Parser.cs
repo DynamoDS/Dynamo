@@ -3303,9 +3303,15 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Expect(11);
 		if (la.kind == 46) {
 			Get();
+			ProtoCore.AST.ImperativeAST.LeftParenthesisNode left = new ProtoCore.AST.ImperativeAST.LeftParenthesisNode();
+			NodeUtils.SetNodeLocation(left, t); 
+			loopNode.LeftParenthesis = left; 
 			Imperative_stmtlist(out body);
 			loopNode.body = body; 
 			Expect(47);
+			ProtoCore.AST.ImperativeAST.RightParenthesisNode right = new ProtoCore.AST.ImperativeAST.RightParenthesisNode();
+			NodeUtils.SetNodeLocation(right, t); 
+			loopNode.RightParenthesis = right;
 			NodeUtils.SetNodeEndLocation(loopNode, t); 
 		} else if (StartOf(22)) {
 			ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; 

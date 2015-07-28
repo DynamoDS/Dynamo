@@ -20,6 +20,18 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
+    public class SymbolAstNode : ImperativeNode
+    {
+    }
+
+    public class LeftParenthesisNode: SymbolAstNode
+    {
+    }
+
+    public class RightParenthesisNode: SymbolAstNode
+    {
+    }
+
     public class LanguageBlockNode : ImperativeNode
     {
         public LanguageBlockNode()
@@ -1208,6 +1220,9 @@ namespace ProtoCore.AST.ImperativeAST
             KwForCol = rhs.KwForCol;
             KwInLine = rhs.KwInLine;
             KwInCol = rhs.KwInCol;
+
+            LeftParenthesis = rhs.LeftParenthesis;
+            RightParenthesis = rhs.RightParenthesis;
         }
 
         public int KwForLine { get; set; }
@@ -1217,7 +1232,8 @@ namespace ProtoCore.AST.ImperativeAST
         public ImperativeNode loopVar { get; set; }
         public ImperativeNode expression { get; set; }
         public List<ImperativeNode> body { get; set; }
-
+        public LeftParenthesisNode LeftParenthesis { get; set; }
+        public RightParenthesisNode RightParenthesis { get; set; }
 
         public override bool Equals(object other)
         {
