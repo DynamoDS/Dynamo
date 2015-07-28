@@ -1306,13 +1306,25 @@ namespace Dynamo.Models
         internal void Undo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Undo();
+
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
+                // Request run for every undo action
+                RequestRun();
+            }
         }
 
         internal void Redo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Redo();
+
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
+                // Request run for every redo action
+                RequestRun();
+            }
         }
 
         internal void ClearUndoRecorder()
@@ -1612,7 +1624,7 @@ namespace Dynamo.Models
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 
-                AddNode(nodeModel);
+                AddAndRegisterNode(nodeModel);
                 
                 //check whether this node belongs to a group
                 foreach (var annotation in Annotations)

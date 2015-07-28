@@ -375,6 +375,11 @@ namespace Dynamo.Core
             return false;
         }
 
+        public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
+        {
+            return TryGetFunctionWorkspace(id, isTestMode, out ws);
+        }
+
         /// <summary>
         ///     Get the function definition from a guid.
         /// </summary>

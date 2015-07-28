@@ -711,7 +711,7 @@ namespace ProtoFFI
             Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, 
                 string.Format("Operand type {0} not supported for marshalling", 
                 dsObject.optype));
-            
+
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
             if (DSObjectMap.TryGetValue(dsObject, out clrObject))
@@ -726,8 +726,10 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets marshaler for the given clrType and if it fails
+        /// If clrType is IEnumerable, returns a CollectionMarshaler, otherwise
+        /// gets marshaler for the given clrType and if it fails
         /// to get one, it tries to get primitive marshaler based on dsType.
+        /// 
         /// We want to get correct marshaler specific to the input type because
         /// more than one type gets map to same type in DS.
         /// </summary>
@@ -738,10 +740,6 @@ namespace ProtoFFI
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, AddressType dsType)
         {
-            //If the input ds object is pointer type then it can't be marshaled as primitive.
-            if (dsType == AddressType.Pointer)
-                return null;
-
             FFIObjectMarshler marshaler = null;
             //Expected CLR type is object, get marshaled clrType from dsType
             Type expectedType = clrType;
@@ -757,11 +755,17 @@ namespace ProtoFFI
             if (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType))
                 collection = true;
 
+            // If the expected type is collection, always marshal to collection
             if (collection)
             {
                 ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return new CollectionMarshaler(this, type);
+            }
+            // If the input ds object is pointer type then it can't be marshaled as primitive.
+            else if (dsType == AddressType.Pointer)
+            {
+                return null;
             }
 
             if (!mPrimitiveMarshalers.TryGetValue(expectedType, out marshaler))

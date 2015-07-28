@@ -46,6 +46,7 @@ Name: "{app}\libg_221"
 Name: "{app}\libg_locale"
 Name: "{app}\nodes"
 Name: "{app}\extensions"
+Name: "{app}\viewExtensions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\definitions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\Logs"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
@@ -68,6 +69,7 @@ Source: "Extra\DynamoAddinGenerator.exe"; Flags: dontcopy
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: temp\bin\extensions\*; DestDir: {app}\extensions; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\viewExtensions\*; DestDir: {app}\viewExtensions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: temp\bin\README.txt; DestDir: {app}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore

@@ -1447,7 +1447,8 @@ namespace Dynamo.Controls
 
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
-            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            if (WorkspaceTabs.SelectedIndex >= 0)
+                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
 
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
