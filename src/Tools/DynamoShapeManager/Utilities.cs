@@ -61,18 +61,19 @@ namespace DynamoShapeManager
 
                 //Fallback mechanism, look inside libg folders if any of them
                 //contain ASM dlls.
-                var rootDir = new DirectoryInfo(rootFolder);
-                var dirs = rootDir.GetDirectories("libg_*");
-                foreach (var dir in dirs)
+                foreach (var v in versions)
                 {
+                    var folderName = string.Format("libg_{0}", (int)v);
+                    var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
+                    if (!dir.Exists)
+                        continue;
+
                     var files = dir.GetFiles("ASMAHL*.dll");
-                    if (files.Any())
-                    {
-                        location = dir.FullName;
-                        return
-                            versions.FirstOrDefault(
-                                v => dir.Name.Equals(string.Format("libg_{0}", (int)v)));
-                    }
+                    if (!files.Any())
+                        continue;
+
+                    location = dir.FullName;
+                    return v; // Found version.
                 }                
             }
             catch (Exception)
