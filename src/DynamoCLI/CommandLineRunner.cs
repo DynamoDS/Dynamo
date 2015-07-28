@@ -54,7 +54,7 @@ namespace DynamoCLI
                 var presetsDoc = XmlHelper.CreateDocument("presetstempworkspace");
                 presetsDoc.Load(cmdLineArgs.PresetFilePath);
                 //when we load the presets we need to pass in the nodeModels from the original graph
-                var presets = NodeGraph.LoadPresetsFromXml(presetsDoc, graph.Nodes, model.NodeFactory.AsLogger());
+                var presets = NodeGraph.LoadPresetsFromXml(presetsDoc, graph.Nodes);
 
                 //load the presets contained in the presetsfile into the workspace,
                 model.CurrentWorkspace.ImportPresets(presets);

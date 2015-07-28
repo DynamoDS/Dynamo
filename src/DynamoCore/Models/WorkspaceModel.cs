@@ -1645,7 +1645,7 @@ namespace Dynamo.Models
 
             else if (typeName.Contains("PresetModel"))
             {
-              var preset = PresetModel.LoadFromXml(modelData,this.nodes,NodeFactory.AsLogger());
+                var preset = new PresetModel(this.Nodes);
               presets.Add(preset);
             }
             else // Other node types.
