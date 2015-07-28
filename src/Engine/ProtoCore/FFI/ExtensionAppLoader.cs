@@ -12,15 +12,11 @@ namespace ProtoFFI
         System.Collections.Hashtable mExtensionApps = new System.Collections.Hashtable();
         string mProtoInterface = string.Empty;
 
-        private static ExtensionAppLoader mInstance;
+        // http://csharpindepth.com/articles/general/singleton.aspx
+        private static readonly Lazy<ExtensionAppLoader> lazy = new Lazy<ExtensionAppLoader>(() => new ExtensionAppLoader());
         public static ExtensionAppLoader Instance
         {
-            get
-            {
-                if (null == mInstance)
-                    mInstance = new ExtensionAppLoader();
-                return mInstance;
-            }
+            get { return lazy.Value; }
         }
 
         private ExtensionAppLoader()
@@ -90,7 +86,6 @@ namespace ProtoFFI
             }
             mExtensionApps.Clear();
             mAssemblies.Clear();
-            mInstance = null;
         }
 
         private Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
