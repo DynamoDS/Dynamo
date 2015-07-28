@@ -2485,16 +2485,43 @@ namespace ProtoImperative
                 ForLoopNode forNode = node as ForLoopNode;
                 ++core.ForLoopBlockIndex;   //new forloop beginning. increment loop counter 
 
+                ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
+                        ProtoCore.DSASM.CodeBlockType.kConstruct,
+                        Language.kInvalid,
+                        core.CodeBlockIndex++,
+                        new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("dummy"), core.RuntimeTableIndex++),
+                        null,
+                        true,
+                        core);
+
+                core.CodeBlockIndex++;
+                localCodeBlock.instrStream = codeBlock.instrStream;
+                localCodeBlock.parent = codeBlock;
+
+                codeBlock.children.Add(localCodeBlock);
+                codeBlock = localCodeBlock;
+                EmitPushBlockID(localCodeBlock.codeBlockId);
+
+
                 ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0);
 
                 // val = null; 
                 IdentifierNode loopvar = nodeBuilder.BuildIdentfier(forNode.loopVar.Name) as IdentifierNode;
-                loopvar.ArrayName = forNode.expression.Name;
-                ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
-
-                // None op for debugging
-                EmitNone(forNode.line, forNode.col, forNode.line, forNode.col + 3);
-                EmitInstrConsole("none");
+                {
+                    loopvar.ArrayName = forNode.expression.Name;
+                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
+                    loopvar.ArrayName = forNode.expression.Name;
+                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
+                    BinaryExpressionNode loopvarInit = new BinaryExpressionNode();
+                    loopvarInit.Optr = ProtoCore.DSASM.Operator.assign;
+                    loopvarInit.LeftNode = loopvar;
+                    loopvarInit.RightNode = new NullNode();
+                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvarInit, forNode);
+                    loopvarInit.endLine = loopvarInit.line;
+                    loopvarInit.endCol = loopvarInit.col + 3;
+                    EmitBinaryExpressionNode(loopvarInit, ref type, isBooleanOp, graphNode);
+                }
 
                 // %key = null;
                 string keyIdent = GetForLoopKeyIdent();
@@ -2629,6 +2656,10 @@ namespace ProtoImperative
 
                 type.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
                 EmitWhileStmtNode(whileStatement, ref type, isBooleanOp, graphNode);
+
+                EmitInstrConsole(ProtoCore.DSASM.kw.retcn);
+                EmitRetcn(localCodeBlock.codeBlockId);
+                codeBlock = localCodeBlock.parent;
                 //}
 
                 // Comment Jun: The for loop counter must be unique and does not need to reset
