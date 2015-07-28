@@ -99,14 +99,18 @@
                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
             </Canvas.IsHitTestVisible>
 
+            <!-- Assigning a ZoomBorder.Background so that it can receive mouse input -->
+
             <controls:ZoomBorder x:Name="zoomBorder"
                                  ClipToBounds="True"
                                  BorderThickness="0"
+                                 Background="Transparent"
                                  Width="{Binding Path=ActualWidth, ElementName=outerCanvas}"
                                  Height="{Binding Path=ActualHeight, ElementName=outerCanvas}"
                                  Cursor="{Binding CurrentCursor}"
                                  ForceCursor="{Binding IsCursorForced}">
                 <Grid>
+
                     <ItemsControl Name="WorkspaceElements"
                                   ItemsSource="{Binding WorkspaceElements}">
 
@@ -159,6 +163,7 @@
                                    StrokeThickness="1"
                                    IsHitTestVisible="False" />
                     </Canvas>
+
                 </Grid>
 
             </controls:ZoomBorder>
