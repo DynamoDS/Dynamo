@@ -264,24 +264,6 @@ namespace DynamoCoreWpfTests
             Assert.Greater(img.ActualHeight, 10);
         }
 
-        [Test, Category("Failure")]
-        public void Watch3DContainsExpectedGeometry()
-        {
-            OpenAndRun(@"UI\WatchUINodes.dyn");
-
-            var nodeView = NodeViewWithGuid("6edc4c28-15ef-4d60-af6d-6ed829871973");
-                // NodeViewOf<Dynamo.Nodes.Watch3D>();
-
-            var watch3ds = nodeView.ChildrenOfType<Watch3DView>();
-
-            Assert.AreEqual(1, watch3ds.Count());
-
-            var watch3DView = watch3ds.First();
-
-            //Assert.AreEqual(1, watch3DView.Points.Positions.Count);
-            Assert.AreEqual(1, Model.CurrentWorkspace.TotalPointsToRender());
-        }
-
         [Test]
         public void CustomNodeIsCustomized()
         {

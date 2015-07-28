@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -45,6 +44,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             gathered.ForEach(n => n.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory));
+        }
+
+        protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CurrentWorkspace":
+                    UpdateUpstream();
+                    break;
+            }
         }
 
         protected override void PortDisconnectedHandler(PortModel obj)

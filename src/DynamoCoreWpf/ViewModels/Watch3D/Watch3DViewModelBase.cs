@@ -184,11 +184,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             model.ShutdownStarted += OnModelShutdownStarted;
             model.CleaningUp += OnClear;
             model.EvaluationCompleted += OnEvaluationCompleted;
+            model.PropertyChanged += OnModelPropertyChanged;
+        }
+
+        protected virtual void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Override in derived classes
         }
 
         protected virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            // Override in derived classed
+            // Override in derived classes
         }
 
         private void UnregisterModelEventHandlers(DynamoModel model)
@@ -376,53 +382,53 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Display a label for one or several render packages 
         /// based on the paths of those render packages.
         /// </summary>
-        public void TagRenderPackageForPath(string path)
-        {
-            var packages = new List<IRenderPackage>();
+        //public void TagRenderPackageForPath(string path)
+        //{
+        //    var packages = new List<IRenderPackage>();
 
-            //This also isn't thread safe
-            foreach (var node in model.CurrentWorkspace.Nodes)
-            {
-                lock (node.RenderPackagesMutex)
-                {
-                    //Note(Luke): this seems really inefficent, it's doing an O(n) search for a tag
-                    //This is also a target for memory optimisation
+        //    //This also isn't thread safe
+        //    foreach (var node in model.CurrentWorkspace.Nodes)
+        //    {
+        //        lock (node.RenderPackagesMutex)
+        //        {
+        //            //Note(Luke): this seems really inefficent, it's doing an O(n) search for a tag
+        //            //This is also a target for memory optimisation
 
-                    packages.AddRange(
-                        node.RenderPackages.Where(x => x.Description == path || x.Description.Contains(path + ":")));
-                }
-            }
+        //            packages.AddRange(
+        //                node.RenderPackages.Where(x => x.Description == path || x.Description.Contains(path + ":")));
+        //        }
+        //    }
 
-            if (packages.Any())
-            {
-                //clear any labels that might have been drawn on this
-                //package already and add the one we want
-                if (currentTaggedPackages.Any())
-                {
-                    currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
-                    currentTaggedPackages.Clear();
-                }
+        //    if (packages.Any())
+        //    {
+        //        //clear any labels that might have been drawn on this
+        //        //package already and add the one we want
+        //        if (currentTaggedPackages.Any())
+        //        {
+        //            currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
+        //            currentTaggedPackages.Clear();
+        //        }
 
-                packages.ToList().ForEach(x => x.DisplayLabels = true);
-                currentTaggedPackages.AddRange(packages);
+        //        packages.ToList().ForEach(x => x.DisplayLabels = true);
+        //        currentTaggedPackages.AddRange(packages);
 
-                var allPackages = new List<IRenderPackage>();
-                var selPackages = new List<IRenderPackage>();
+        //        var allPackages = new List<IRenderPackage>();
+        //        var selPackages = new List<IRenderPackage>();
 
-                foreach (var node in model.CurrentWorkspace.Nodes)
-                {
-                    lock (node.RenderPackagesMutex)
-                    {
-                        allPackages.AddRange(
-                            node.RenderPackages.Where(x => x.HasRenderingData && !x.IsSelected));
-                        selPackages.AddRange(
-                            node.RenderPackages.Where(x => x.HasRenderingData && x.IsSelected));
-                    }
-                }
+        //        foreach (var node in model.CurrentWorkspace.Nodes)
+        //        {
+        //            lock (node.RenderPackagesMutex)
+        //            {
+        //                allPackages.AddRange(
+        //                    node.RenderPackages.Where(x => x.HasRenderingData && !x.IsSelected));
+        //                selPackages.AddRange(
+        //                    node.RenderPackages.Where(x => x.HasRenderingData && x.IsSelected));
+        //            }
+        //        }
 
-                //OnResultsReadyToVisualize(
-                //    new VisualizationEventArgs(allPackages, selPackages, Guid.Empty));
-            }
-        }
+        //        //OnResultsReadyToVisualize(
+        //        //    new VisualizationEventArgs(allPackages, selPackages, Guid.Empty));
+        //    }
+        //}
     }
 }

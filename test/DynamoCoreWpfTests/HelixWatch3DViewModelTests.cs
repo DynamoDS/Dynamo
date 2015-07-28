@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using SystemTestServices;
-using Autodesk.DesignScript.Interfaces;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -300,11 +299,9 @@ namespace DynamoCoreWpfTests
         {
             OpenVisualizationTest("ASM_coordinateSystem.dyn");
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            Assert.AreEqual(1, ws.TotalLinesOfColorToRender(new Color4(1f, 0f, 0f, 1f)));
-            Assert.AreEqual(1, ws.TotalLinesOfColorToRender(new Color4(0f, 1f, 0f, 1f)));
-            Assert.AreEqual(1, ws.TotalLinesOfColorToRender(new Color4(0f, 0f, 1f, 1f)));
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalCurveVerticesOfColor(new Color4(1f, 0f, 0f, 1f)));
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalCurveVerticesOfColor(new Color4(0f, 1f, 0f, 1f)));
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalCurveVerticesOfColor(new Color4(0f, 0f, 1f, 1f)));
         }
 
         [Test]
@@ -325,15 +322,17 @@ namespace DynamoCoreWpfTests
             // 30 mesh vertices
             //ensure that the number of visualizations matches the 
             //number of pieces of geometry in the collection
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, ws.TotalMeshVerticesToRender());
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, 
+                BackgroundPreviewGeometry.TotalMeshVerticesToRender());
 
             var testColor = new Color4(0, 0, 0, 10.0f / 255.0f);
-            Assert.True(ws.HasMeshVerticesAllOfColor(testColor));
+            Assert.True(BackgroundPreviewGeometry.HasMeshVerticesAllOfColor(testColor));
 
             // Increase the number of planes
             numberOfPlanes = numberOfPlanes + 5;
             numberOfPlanesNode.Value = numberOfPlanes.ToString();
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, ws.TotalMeshVerticesToRender());
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, 
+                BackgroundPreviewGeometry.TotalMeshVerticesToRender());
         }
 
         #endregion
@@ -357,7 +356,7 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
             //ensure that we have some visualizations
-            Assert.Greater(ws.TotalPointsToRender(), 0);
+            Assert.Greater(BackgroundPreviewGeometry.TotalPoints(), 0);
         }
 
         [Test]
@@ -373,7 +372,7 @@ namespace DynamoCoreWpfTests
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
-            Assert.AreEqual(1, ws.TotalLinesToRender());
+            Assert.AreEqual(1, BackgroundPreviewGeometry.TotalCurves());
 
             // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
             var workspace = model.CurrentWorkspace;
@@ -401,9 +400,9 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.Selection.Add(node);
 
             // No preview in the background
-            Assert.AreEqual(0, customSpace.TotalPointsToRender());
-            Assert.AreEqual(0, customSpace.TotalLinesToRender());
-            Assert.AreEqual(0, customSpace.TotalMeshesToRender());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalPoints());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalCurves());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalMeshes());
         }
 
         #endregion
@@ -547,13 +546,13 @@ namespace DynamoCoreWpfTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalCurves());
 
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
-            Assert.AreEqual(12, ws.TotalLinesToRender());
+            Assert.AreEqual(12, BackgroundPreviewGeometry.TotalCurves());
 
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
-            Assert.AreEqual(0, ws.TotalLinesToRender());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalCurves());
         }
 
         #endregion
@@ -563,12 +562,10 @@ namespace DynamoCoreWpfTests
         {
             OpenVisualizationTest("ASM_python.dyn");
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
             //total points are the two strips of points at the top and
             //bottom of the mesh, duplicated 11x2x2 plus the one mesh
-            Assert.AreEqual(1000, ws.TotalPointsToRender());
-            Assert.AreEqual(1000, ws.TotalMeshesToRender());
+            Assert.AreEqual(1000, BackgroundPreviewGeometry.TotalPoints());
+            Assert.AreEqual(1000 * 36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
         }
 
         [Test]
@@ -580,7 +577,7 @@ namespace DynamoCoreWpfTests
 
             RunCurrentModel();
 
-            Assert.True(ws.HasAnyVertexColoredMeshesOfColor(new Color4(new Color3(1.0f,0,1.0f))));
+            Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
         }
 
         [Test]
@@ -592,7 +589,7 @@ namespace DynamoCoreWpfTests
 
             RunCurrentModel();
 
-            Assert.True(ws.HasAnyColorMappedMeshes());
+            Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
         }
 
         private void OpenVisualizationTest(string fileName)
@@ -655,7 +652,15 @@ namespace DynamoCoreWpfTests
                 : 0;
         }
 
-        public static bool HasNumberOfPointsCurvesAndMeshes(this IEnumerable<Model3D> geometry, int numberOfPoints, int numberOfCurves, int numberOfMeshes)
+        public static int TotalCurveVerticesOfColor(this IEnumerable<Model3D> dictionary, Color4 color)
+        {
+            var geoms = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name)).Cast<LineGeometryModel3D>();
+
+            return geoms.Sum(g => g.Geometry.Colors.Count(c => c == color));
+        }
+
+        public static bool HasNumberOfPointsCurvesAndMeshes(this IEnumerable<Model3D> geometry, int numberOfPoints, 
+            int numberOfCurves, int numberOfMeshes)
         {
             return geometry.TotalPoints() == numberOfPoints &&
                    geometry.TotalCurves() == numberOfCurves &&
@@ -701,143 +706,26 @@ namespace DynamoCoreWpfTests
 
             return geoms.Any()? geoms.SelectMany(g=>g.Geometry.Positions).Count() : 0;
         }
-    }
 
-    internal static class WorkspaceExtensions
-    {
-        public static bool HasAnyVertexColoredMeshesOfColor(this WorkspaceModel workspace, Color4 color)
+        public static bool HasAnyMeshVerticesOfColor(this IEnumerable<Model3D> dictionary, Color4 color)
         {
-            var colorMeshCount = workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Where(rp => rp.RequiresPerVertexColoration).
-                Where(rp => rp.MeshVertexColors.IsArrayOfColor(color));
+            var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
-            return colorMeshCount.Any();
+            return geoms.Any(g => g.Geometry.Colors.Any(c => c == color));
         }
 
-        public static bool HasAnyColorMappedMeshes(this WorkspaceModel workspace)
+        public static bool HasMeshVerticesAllOfColor(this IEnumerable<Model3D> dictionary, Color4 color)
         {
-            var colorMeshCount = workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Where(rp => rp.Colors != null);
+            var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
-            return colorMeshCount.Any();
+            return geoms.All(g => g.Geometry.Colors.All(c => c == color));
         }
 
-        public static int TotalLinesOfColorToRender(this WorkspaceModel workspace, Color4 color)
+        public static bool HasAnyColorMappedMeshes(this IEnumerable<Model3D> dictionary)
         {
-            var colorLineCount = workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Where(rp => rp.LineVertexCount > 0).
-                Sum(rp => rp.TotalCurvesOfColor(color));
+            var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
-            return colorLineCount;
-        }
-
-        public static int TotalPointsToRender(this WorkspaceModel workspace)
-        {
-            var vertexCount = workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Sum(rp => rp.PointVertexCount);
-
-            return vertexCount;
-        }
-
-        public static int TotalTextObjectsToRender(this WorkspaceModel workspace)
-        {
-            var labelledPackages = workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Where(rp => rp.DisplayLabels).ToArray();
-
-            int total = 0;
-
-            total += labelledPackages.
-                Where(rp => rp.PointVertexCount > 0).
-                Sum(rp => rp.PointVertexCount);
-
-            total += labelledPackages.
-                Where(rp => rp.LineVertexCount > 0).
-                Sum(rp => rp.LineStripVertexCounts.Count(c => c > 0));
-
-            total += labelledPackages.Count(rp => rp.MeshVertexCount > 0);
-
-            return total;
-        }
-
-        public static int TotalMeshesToRender(this WorkspaceModel workspace)
-        {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages).Count(rp => rp.MeshVertexCount > 0);
-        }
-
-        public static bool HasAnyMeshes(this WorkspaceModel workspace)
-        {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages).Any(rp => rp.MeshVertexCount > 0);
-        }
-
-        public static bool HasMeshVerticesAllOfColor(this WorkspaceModel workspace, Color4 color)
-        {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages)
-                .All(rp => rp.MeshVertexColors.IsArrayOfColor(color));
-        }
-
-        public static int TotalMeshVerticesToRender(this WorkspaceModel workspace)
-        {
-            return workspace.Nodes.SelectMany(n => n.RenderPackages).Sum(rp => rp.MeshVertexCount);
-        }
-
-        public static int TotalLinesToRender(this WorkspaceModel workspace)
-        {
-            return workspace.Nodes.
-                SelectMany(n => n.RenderPackages).
-                Where(rp => rp.LineStripVertexCounts.Any()).
-                Sum(rp => rp.LineStripVertexCounts.Count(c => c > 0));
-        }
-
-        public static bool HasSomethingToRender(this WorkspaceModel workspace)
-        {
-            var allPackages = workspace.Nodes.
-                SelectMany(n => n.RenderPackages);
-
-            return allPackages.Any();
-        }
-
-        private static int TotalCurvesOfColor(this IRenderPackage package, Color4 color)
-        {
-            var count = 0;
-            var idx = 0;
-            for (var i = 0; i < package.LineStripVertexCounts.Count(); i++)
-            {
-                var currCount = package.LineStripVertexCounts.ElementAt(i);
-                if (currCount == 0) continue;
-
-                var colorBytes = package.LineStripVertexColors.Skip(idx).Take(currCount * 4);
-                if (colorBytes.IsArrayOfColor(color))
-                {
-                    count++;
-                }
-                idx += currCount * 4;
-            }
-
-            return count;
-        }
-
-        private static bool IsArrayOfColor(this IEnumerable<byte> colorBytes, Color4 color)
-        {
-            var colorArr = colorBytes.ToArray();
-
-            for (var i = 0; i < colorArr.Count(); i += 4)
-            {
-                var r = colorArr[i] == (byte)(color.Red * 255);
-                var g = colorArr[i + 1] == (byte)(color.Green * 255);
-                var b = colorArr[i + 2] == (byte)(color.Blue * 255);
-                var a = colorArr[i + 3] == (byte)(color.Alpha * 255);
-                if (!a || !r || !g || !b)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return geoms.Any(g => ((PhongMaterial)g.Material).DiffuseMap != null);
         }
     }
 }
