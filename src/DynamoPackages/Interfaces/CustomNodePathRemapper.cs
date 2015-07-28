@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Dynamo.Models;
 using Dynamo.Interfaces;
-using Dynamo.Core;
 
 namespace Dynamo.PackageManager
 {
@@ -25,10 +24,10 @@ namespace Dynamo.PackageManager
     /// </summary>
     internal class CustomNodePathRemapper : IPathRemapper
     {
-        private readonly CustomNodeManager customNodeManager;
+        private readonly ICustomNodeManager customNodeManager;
         private readonly bool isTestMode;
 
-        internal CustomNodePathRemapper(CustomNodeManager customNodeManager, bool isTestMode)
+        internal CustomNodePathRemapper(ICustomNodeManager customNodeManager, bool isTestMode)
         {
             this.customNodeManager = customNodeManager;
             this.isTestMode = isTestMode;
@@ -38,7 +37,7 @@ namespace Dynamo.PackageManager
         {
             var id = customNodeManager.GuidFromPath(originalPath);
 
-            CustomNodeWorkspaceModel def;
+            ICustomNodeWorkspaceModel def;
             var res = customNodeManager.TryGetFunctionWorkspace(id, this.isTestMode, out def);
 
             if (!res) return false;
