@@ -103,6 +103,7 @@ namespace Dynamo.PackageManager
                 new MutatingFileSystem(),
                 new CustomNodePathRemapper(startupParams.CustomNodeManager, DynamoModel.IsTestMode));
 
+            PackageUploadBuilder.SetEngineVersion(startupParams.DynamoVersion);
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
             PackageManagerClient = new PackageManagerClient(
