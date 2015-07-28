@@ -1039,7 +1039,7 @@ namespace Dynamo.Controls
         {
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
-            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.Guid));
+            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.GUID));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)

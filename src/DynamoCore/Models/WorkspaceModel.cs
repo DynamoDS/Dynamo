@@ -865,32 +865,34 @@ namespace Dynamo.Models
         /// <param name="description">a description of what the state does</param>
         /// <param name="currentSelection">a set of NodeModels that are to be serialized in this state</param>
         /// <param name="id">a GUID id for the state, if not supplied, a new GUID will be generated, cannot be a duplicate</param>
-        private void AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
+        private void AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection)
         {
             if (currentSelection == null || currentSelection.Count() < 1)
             {
                 throw new ArgumentException("currentSelection is empty or null");
             }
             var inputs = currentSelection;
-
-            if (Presets.Any(x => x.Guid == id))
+            using (var undoGroup = this.undoRecorder.BeginActionGroup())
+            {
+                var newstate = new PresetModel(name, description, inputs);
+                  if (Presets.Any(x => x.GUID == newstate.GUID))
             {
                 throw new ArgumentException("duplicate id in collection");
             }
-            using (var undoGroup = this.undoRecorder.BeginActionGroup())
-            {
-                var newstate = new PresetModel(name, description, inputs, id);
+
                 UndoRecorder.RecordCreationForUndo(newstate);
                 presets.Add(newstate);
             }
+
+          
+
         }
 
         public void RemovePreset(PresetModel state)
         {
-            //start an undoBeginGroup
-            using (var undoGroup = this.undoRecorder.BeginActionGroup())
-            {
-
+           //start an undoBeginGroup
+           using (var undoGroup = this.undoRecorder.BeginActionGroup())
+          {
                 if (Presets.Contains(state))
                 {
                     UndoRecorder.RecordDeletionForUndo(state);
@@ -1690,9 +1692,10 @@ namespace Dynamo.Models
         public ModelBase GetModelInternal(Guid modelGuid)
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
-                ??  Nodes.FirstOrDefault(node => node.GUID == modelGuid) as ModelBase)
-                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid) 
-                ??  Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase) ;
+                ?? Nodes.FirstOrDefault(node => node.GUID == modelGuid) as ModelBase)
+                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid)
+                ?? Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase
+                ?? Presets.FirstOrDefault(preset => preset.GUID == modelGuid) as ModelBase);
 
             return foundModel;
         }

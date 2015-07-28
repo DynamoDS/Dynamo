@@ -90,7 +90,7 @@ namespace DynamoCLI
                 var state = model.CurrentWorkspace.Presets.Where(x => x.Name == stateName).FirstOrDefault();
                 if (state != null)
                 {
-                    stateGuid = state.Guid;
+                    stateGuid = state.GUID;
                 }
                 
                 model.ExecuteCommand(new DynamoModel.ApplyPresetCommand(model.CurrentWorkspace.Guid, stateGuid));

@@ -16,7 +16,7 @@ namespace Dynamo.Models
     /// </summary>
     public class PresetModel:ModelBase
     {
-        private Guid guid;
+        
         private readonly List<NodeModel> nodes;
         private readonly List<XmlElement> serializedNodes;
 
@@ -35,14 +35,7 @@ namespace Dynamo.Models
         /// </summary>
         public IEnumerable<XmlElement> SerializedNodes { get { return serializedNodes; }}
 
-        /// <summary>
-        /// A unique identifier for the state.
-        /// </summary>
-        public Guid Guid
-        {
-            get { return guid; }
-        }
-
+       
         public const string GuidAttributeName = "guid";
         public const string NameAttributeName = "Name";
         public const string DescriptionAttributeName = "Description";
@@ -60,7 +53,7 @@ namespace Dynamo.Models
         /// <param name="description">description of the state, can be null</param>
         /// <param name="inputsToSave">set of nodeModels, must not be null</param>
         /// <param name="id">an id GUID, can be empty GUID</param>
-        public PresetModel(string name, string description, IEnumerable<NodeModel> inputsToSave, Guid id)
+        public PresetModel(string name, string description, IEnumerable<NodeModel> inputsToSave):base()
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -72,16 +65,7 @@ namespace Dynamo.Models
                 throw new ArgumentNullException("inputsToSave");
             } 
 
-            //if we have not supplied a guid at construction then create a new one
-            if (id == Guid.Empty)
-            {
-                guid = Guid.NewGuid();
-            }
-            else
-            {
-                guid = id;
-            }
-            
+           
             Name = name;
             Description = description;
             nodes = inputsToSave.ToList();
@@ -103,15 +87,8 @@ namespace Dynamo.Models
             Description = description;
             this.nodes = nodes;
             this.serializedNodes = serializedNodes;
-            //if we have not supplied a guid at load then create a new one
-            if (id == Guid.Empty)
-            {
-                guid = Guid.NewGuid();
-            }
-            else
-            {
-                guid = id;
-            }
+            GUID = id;
+            
         }
         #endregion
 
@@ -125,7 +102,7 @@ namespace Dynamo.Models
         {
             element.SetAttribute(NameAttributeName, this.Name);
             element.SetAttribute(DescriptionAttributeName, this.Description);
-            element.SetAttribute(GuidAttributeName, this.Guid.ToString());
+            element.SetAttribute(GuidAttributeName, this.GUID.ToString());
             //the states are already serialized
             foreach (var serializedNode in this.SerializedNodes)
             {
