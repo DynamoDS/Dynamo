@@ -3812,7 +3812,7 @@ namespace ProtoCore.DSASM
                         if (CoreUtils.TryGetPropertyName(procName, out property))
                         {
                             string classname = exe.classTable.ClassNodes[type].name;
-                            string message = String.Format(Resources.kPropertyOfClassNotFound, classname, property);
+                            string message = String.Format(Resources.kPropertyOfClassNotFound, property, classname);
                             runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure, message);
                         }
                         else

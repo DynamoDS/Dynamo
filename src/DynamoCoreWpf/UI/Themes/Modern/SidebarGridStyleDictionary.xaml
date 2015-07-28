@@ -228,20 +228,17 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="MemberControlTemplate">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+    <DataTemplate x:Key="MemberTemplate">
+        <StackPanel Name="ImageAndNodeName"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center">
             <Image HorizontalAlignment="Left"
                    Height="32"
                    Margin="16,0,16,0"
                    VerticalAlignment="Center"
                    Width="32"
                    Source="{Binding SmallIcon}" />
-            <Border Grid.Column="1"
-                    Margin="5,10,0,10">
+            <Grid Margin="5,10,0,10">
                 <Rectangle Fill="#3E464C"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch">
@@ -254,17 +251,16 @@
                         </MultiBinding>
                     </Rectangle.Margin>
                 </Rectangle>
-            </Border>
-            <TextBlock Grid.Column="1"
-                       Name="memberName"
-                       HorizontalAlignment="Left"
-                       Text="{Binding UserFriendlyName}"
-                       VerticalAlignment="Top"
-                       Margin="5,10,0,0"
-                       Foreground="{StaticResource CommonSidebarTextColor}"
-                       FontSize="13" />
-        </Grid>
-    </ControlTemplate>
+                <TextBlock Grid.Column="1"
+                           Name="memberName"
+                           HorizontalAlignment="Left"
+                           Text="{Binding UserFriendlyName}"
+                           VerticalAlignment="Top"
+                           Foreground="{StaticResource CommonSidebarTextColor}"
+                           FontSize="13" />
+            </Grid>            
+        </StackPanel>
+    </DataTemplate>
 
     <!--EndRegion-->
 

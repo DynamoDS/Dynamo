@@ -14,6 +14,7 @@ namespace DSCoreNodesUI
     [NodeName("Color Range")]
     [NodeCategory("Core.Color.Create")]
     [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ColorRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     public class ColorRange : NodeModel
     {
         public event Action RequestChangeColorRange;

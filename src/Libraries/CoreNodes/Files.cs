@@ -51,6 +51,7 @@ namespace DSCore.IO
         ///     Gets the directory name of a file path.
         /// </summary>
         /// <param name="path">Path to get directory information of.</param>
+        /// <search>directorypath</search>
         public static string DirectoryName(string path)
         {
             return Path.GetDirectoryName(path);
@@ -134,6 +135,7 @@ namespace DSCore.IO
         ///     Determines if a file exists at the given path.
         /// </summary>
         /// <param name="path"></param>
+        /// <search>filepath</search>
         public static bool Exists(string path)
         {
             return System.IO.File.Exists(path);
@@ -144,7 +146,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="text">Text content</param>
-        /// <search>write file,text,file</search>
+        /// <search>write file,text,file,filepath</search>
         public static void WriteText(string filePath, string text)
         {
             System.IO.File.WriteAllText(filePath, text);
@@ -284,6 +286,7 @@ namespace DSCore.IO
         ///     Determines if a directory exists at the given path.
         /// </summary>
         /// <param name="path">Path to a directory on disk.</param>
+        /// <search>directorypath</search>
         public static bool Exists(string path)
         {
             return System.IO.Directory.Exists(path);
@@ -404,7 +407,7 @@ namespace DSCore.IO
         /// <param name="path"></param>
         /// <param name="image">The image to write</param>
         /// <returns name="ok">It is successful or not.</returns>
-        /// <search>write image,image,file</search>
+        /// <search>write image,image,file,filepath</search>
         public static void WriteToFile(string path, Bitmap image)
         {
             image.Save(path);

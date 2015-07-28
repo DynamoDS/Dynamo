@@ -99,7 +99,7 @@ namespace Dynamo.PackageManager
 
             var dirBuilder = new PackageDirectoryBuilder(
                 new MutatingFileSystem(),
-                new CustomNodePathRemapper(startupParams.CustomNodeManager, DynamoModel.IsTestMode));
+                new CustomNodePathRemapper(startupParams.CustomNodeManager as CustomNodeManager, DynamoModel.IsTestMode));
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 

@@ -6,6 +6,7 @@ using Dynamo.Wpf.Extensions;
 using System;
 using System.Windows.Controls;
 using System.Linq;
+using Dynamo.Models;
 
 namespace Dynamo.Publish
 {
@@ -41,6 +42,7 @@ namespace Dynamo.Publish
                 return;
 
             publishViewModel.Workspaces = p.WorkspaceModels;
+            publishViewModel.CurrentWorkspaceModel = p.CurrentWorkspaceModel;
 
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
@@ -79,6 +81,10 @@ namespace Dynamo.Publish
         {
             MenuItem item = new MenuItem();
             item.Header = Resource.DynamoViewMenuItemPublishTitle;
+
+            var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
+
+            item.IsEnabled = isEnabled;
 
             item.Click += (sender, args) =>
                 {

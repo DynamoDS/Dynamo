@@ -27,5 +27,13 @@ namespace Dynamo.Extensions
                 return dynamoModel.Workspaces;
             }
         }
+
+        public IWorkspaceModel CurrentWorkspaceModel
+        {
+            get
+            {
+                return dynamoModel.CurrentWorkspace;
+            }
+        }
     }
 }
