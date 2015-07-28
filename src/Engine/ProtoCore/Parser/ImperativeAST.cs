@@ -20,34 +20,6 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class SymbolAstNode : ImperativeNode
-    {
-    }
-
-    public sealed class LeftParenthesisNode: SymbolAstNode
-    {
-    }
-
-    public sealed class RightParenthesisNode: SymbolAstNode
-    {
-    }
-
-    public class BlockNode : ImperativeNode
-    {
-        public BlockNode()
-        {
-        }
-
-        public BlockNode(BlockNode rhs): base(rhs)
-        {
-            this.LeftParenthesis = rhs.LeftParenthesis;
-            this.RightParenthesis = rhs.RightParenthesis;
-        }
-
-        public LeftParenthesisNode LeftParenthesis { get; set; }
-        public RightParenthesisNode RightParenthesis { get; set; }
-    }
-
     public class LanguageBlockNode : ImperativeNode
     {
         public LanguageBlockNode()
@@ -1050,7 +1022,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class WhileStmtNode : BlockNode
+    public class WhileStmtNode : ImperativeNode 
     {
         public WhileStmtNode()
         {
@@ -1213,7 +1185,7 @@ namespace ProtoCore.AST.ImperativeAST
         }
     }
 
-    public class ForLoopNode : BlockNode
+    public class ForLoopNode : ImperativeNode 
     {
         public ForLoopNode()
         {

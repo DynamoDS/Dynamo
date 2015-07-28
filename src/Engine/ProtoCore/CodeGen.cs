@@ -2053,18 +2053,6 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitNone(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = OpCode.NONE;
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, pc);
-            AppendInstruction(instr, line, col);
-        }
-
         protected void EmitIntNode(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
         {
             if (subPass == ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier) 

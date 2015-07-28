@@ -2511,12 +2511,11 @@ namespace ProtoImperative
                 {
                     loopvar.ArrayName = forNode.expression.Name;
                     ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
-                    loopvar.ArrayName = forNode.expression.Name;
-                    ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvar, forNode.loopVar);
                     BinaryExpressionNode loopvarInit = new BinaryExpressionNode();
                     loopvarInit.Optr = ProtoCore.DSASM.Operator.assign;
                     loopvarInit.LeftNode = loopvar;
                     loopvarInit.RightNode = new NullNode();
+                    
                     ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvarInit, forNode);
                     loopvarInit.endLine = loopvarInit.line;
                     loopvarInit.endCol = loopvarInit.col + 3;
@@ -2651,8 +2650,6 @@ namespace ProtoImperative
                 whileStatement.Body = forNode.body;
                 whileStatement.endLine = node.endLine;
                 whileStatement.endCol = node.endCol;
-                whileStatement.LeftParenthesis = forNode.LeftParenthesis;
-                whileStatement.RightParenthesis = forNode.RightParenthesis;
 
                 type.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
                 EmitWhileStmtNode(whileStatement, ref type, isBooleanOp, graphNode);

@@ -6884,12 +6884,6 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.NONE:
-                    {
-                        pc++;
-                        return;
-                    }
-
                 default: //Unknown OpCode
                     throw new NotImplementedException("Unknown Op code, NIE Marker: {D6028708-CD47-4D0B-97FC-E681BD65DB5C}");
             }
