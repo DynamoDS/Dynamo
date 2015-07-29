@@ -23,13 +23,8 @@
         <controls:InfoBubbleView></controls:InfoBubbleView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:InfiniteGridViewModel}">
-        <controls:InfiniteGridView></controls:InfiniteGridView>
-    </DataTemplate>
-
     <DataTemplate DataType="{x:Type viewModels:AnnotationViewModel}">
         <nodes:AnnotationView></nodes:AnnotationView>
     </DataTemplate>
-
 
 </ResourceDictionary>

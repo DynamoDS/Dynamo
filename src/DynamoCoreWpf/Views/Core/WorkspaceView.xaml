@@ -244,6 +244,8 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
+        <controls:InfiniteGridView></controls:InfiniteGridView>
+
         <!-- Assigning a ZoomBorder.Background so that it can receive mouse input -->
 
         <controls:ZoomBorder x:Name="zoomBorder"
