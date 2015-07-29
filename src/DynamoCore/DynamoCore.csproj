@@ -151,6 +151,7 @@ limitations under the License.
     <Compile Include="Core\AuthenticationManager.cs" />
     <Compile Include="Utilities\AssemblyConfiguration.cs" />
     <Compile Include="Utilities\FailFunc.cs" />
+    <Compile Include="Utilities\NodeModelExtensions.cs" />
     <Compile Include="Utilities\OrderedSet.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
@@ -168,8 +169,6 @@ limitations under the License.
     <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
-    <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
-    <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
     <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Core\Threading\PreviewGraphAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />

@@ -1723,6 +1723,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Available Previews.
+        /// </summary>
+        public static string DynamoViewViewMenuAvailablePreviews {
+            get {
+                return ResourceManager.GetString("DynamoViewViewMenuAvailablePreviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Connectors.
         /// </summary>
         public static string DynamoViewViewMenuConnector {

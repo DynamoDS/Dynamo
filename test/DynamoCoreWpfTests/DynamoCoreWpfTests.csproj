@@ -103,7 +103,6 @@
     <Compile Include="IconsTests.cs" />
     <Compile Include="InCanvasSearchTests.cs" />
     <Compile Include="LibraryTests.cs" />
-    <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackagePathTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
@@ -124,7 +123,7 @@
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
-    <Compile Include="VisualizationManagerUITests.cs" />
+    <Compile Include="HelixWatch3DViewModelTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
     <Compile Include="WorkspaceOpeningTests.cs" />

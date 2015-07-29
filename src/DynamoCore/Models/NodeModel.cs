@@ -57,36 +57,12 @@ namespace Dynamo.Models
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
-        private List<IRenderPackage> renderPackages = new List<IRenderPackage>();
-
         #endregion
 
         #region public members
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
-        public Object RenderPackagesMutex = new object();
-        public List<IRenderPackage> RenderPackages
-        {
-            get
-            {
-                lock (RenderPackagesMutex)
-                {
-                    return renderPackages; 
-                }
-            }
-            set
-            {
-                lock (RenderPackagesMutex)
-                {
-                    renderPackages = value;
-                }
-                RaisePropertyChanged("RenderPackages");
-            }
-        }
-
-        public bool HasRenderPackages { get; set; }
 
         /// <summary>
         /// The unique name that was created the node by
@@ -487,6 +463,8 @@ namespace Dynamo.Models
                         cachedMirrorData = null;
                     }
                 }
+
+                RaisePropertyChanged("IsUpdated");
             }
         }
 
@@ -645,17 +623,6 @@ namespace Dynamo.Models
                 {
                     case ("OverrideName"):
                         RaisePropertyChanged("NickName");
-                        break;
-                    case ("IsSelected"):
-                        // Synchronize the selected state of any render packages for this node
-                        // with the selection state of the node.
-                        if (HasRenderPackages)
-                        {
-                            lock (RenderPackagesMutex)
-                            {
-                                RenderPackages.ForEach(rp => rp.IsSelected = IsSelected);
-                            }
-                        }
                         break;
                 }
             };
@@ -1671,21 +1638,6 @@ namespace Dynamo.Models
         /// tessellation divisions to use for regenerating render packages.</param>
         public void RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
-            //if (Workspace.DynamoModel == null)
-            //    return;
-
-            // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
-            // called in quick succession from the UI thread -- the first task may 
-            // be updating '_renderPackages' when the second call gets here. In 
-            // this case '_renderPackages' should be protected against concurrent 
-            // accesses.
-            // 
-            lock (RenderPackagesMutex)
-            {
-                renderPackages.Clear();
-                HasRenderPackages = false;
-            }
-
             RequestVisualUpdateAsyncCore(scheduler, engine, factory);
         }
 
@@ -1731,12 +1683,10 @@ namespace Dynamo.Models
         /// 
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
-            lock (RenderPackagesMutex)
+            var task = asyncTask as UpdateRenderPackageAsyncTask;
+            if (task.RenderPackages.Any())
             {
-                var task = asyncTask as UpdateRenderPackageAsyncTask;
-                renderPackages.Clear();
-                renderPackages.AddRange(task.RenderPackages);
-                HasRenderPackages = renderPackages.Any();
+                OnUpdatedRenderPackagesAvailable(task.RenderPackages);
             }
         }
 
@@ -1819,6 +1769,16 @@ namespace Dynamo.Models
         }
 
         protected bool ShouldDisplayPreviewCore { get; set; }
+        
+        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+
+        public void OnUpdatedRenderPackagesAvailable(IEnumerable<IRenderPackage> packages)
+        {
+            if(RenderPackagesUpdated != null)
+            {
+                RenderPackagesUpdated(this, packages);
+            }
+        }
     }
 
     public enum ElementState

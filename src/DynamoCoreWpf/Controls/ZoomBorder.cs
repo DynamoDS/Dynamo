@@ -209,7 +209,7 @@ namespace Dynamo.Controls
 		private void CreateBinding()
         {
             // Visibility Binding
-            this.itemsControl.SetBinding(FrameworkElement.VisibilityProperty, new Binding("FullscreenWatchShowing")
+            this.itemsControl.SetBinding(FrameworkElement.VisibilityProperty, new Binding("BackgroundPreviewActive")
             {
                 Converter = new InverseBoolToVisibilityConverter(),
                 Mode = BindingMode.OneWay

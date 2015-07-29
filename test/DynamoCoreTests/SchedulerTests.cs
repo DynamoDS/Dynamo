@@ -288,24 +288,6 @@ namespace Dynamo.Tests
         }
     }
 
-    internal class FakeAggregateRenderPackageAsyncTask : AggregateRenderPackageAsyncTask
-    {
-        private readonly FakeAsyncTaskData data;
-
-        internal Guid TargetedNodeId { set { targetedNodeId = value; } }
-
-        internal FakeAggregateRenderPackageAsyncTask(FakeAsyncTaskData data)
-            : base(data.Scheduler)
-        {
-            this.data = data;
-        }
-
-        protected override void HandleTaskExecutionCore()
-        {
-            data.WriteExecutionLog(this);
-        }
-    }
-
     internal class FakeCompileCustomNodeAsyncTask : CompileCustomNodeAsyncTask
     {
         private readonly FakeAsyncTaskData data;
@@ -327,22 +309,6 @@ namespace Dynamo.Tests
         private readonly FakeAsyncTaskData data;
 
         internal FakeDelegateBasedAsyncTask(FakeAsyncTaskData data)
-            : base(data.Scheduler)
-        {
-            this.data = data;
-        }
-
-        protected override void HandleTaskExecutionCore()
-        {
-            data.WriteExecutionLog(this);
-        }
-    }
-
-    internal class FakeNotifyRenderPackagesReadyAsyncTask : NotifyRenderPackagesReadyAsyncTask
-    {
-        private readonly FakeAsyncTaskData data;
-
-        internal FakeNotifyRenderPackagesReadyAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -995,8 +961,6 @@ namespace Dynamo.Tests
                 MakeUpdateRenderPackageAsyncTask(nodes[2].GUID),
 
                 // These older tasks are to be dropped.
-                MakeNotifyRenderPackagesReadyAsyncTask(),
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),
 
                 // This higher priority task moves to the front.
                 MakeUpdateGraphAsyncTask(),
@@ -1010,10 +974,6 @@ namespace Dynamo.Tests
 
                 // This higher priority task moves to the front.
                 MakeUpdateGraphAsyncTask(),
-
-                // These newer tasks will be kept.
-                MakeNotifyRenderPackagesReadyAsyncTask(),
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),
             };
 
             // Due to defaulting to auto-run mode, multiple UpdateGraphAsyncTask
@@ -1060,10 +1020,8 @@ namespace Dynamo.Tests
                 MakeSetTraceDataAsyncTask(),                        // Highest
                 MakeCompileCustomNodeAsyncTask(),                   // Above normal
                 MakeUpdateGraphAsyncTask(),                         // Above normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
                 MakeDelegateBasedAsyncTask(),                       // Normal
                 MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
-                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
             };
 
@@ -1080,10 +1038,8 @@ namespace Dynamo.Tests
                 "FakeSetTraceDataAsyncTask: 0",
                 "FakeCompileCustomNodeAsyncTask: 1",
                 "FakeUpdateGraphAsyncTask: 2",
-                "FakeAggregateRenderPackageAsyncTask: 3",
                 "FakeDelegateBasedAsyncTask: 4",
                 "FakeQueryMirrorDataAsyncTask: 5",
-                "FakeNotifyRenderPackagesReadyAsyncTask: 6",
                 "FakeUpdateRenderPackageAsyncTask: 7"
             };
 
@@ -1103,10 +1059,8 @@ namespace Dynamo.Tests
             var tasksToSchedule = new List<AsyncTask>()
             {
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
-                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
                 MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
                 MakeDelegateBasedAsyncTask(),                       // Normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
                 MakeUpdateGraphAsyncTask(),                         // Above normal
                 MakeCompileCustomNodeAsyncTask(),                   // Above normal
                 MakeSetTraceDataAsyncTask(),                        // Highest
@@ -1126,10 +1080,8 @@ namespace Dynamo.Tests
                 "FakeUpdateGraphAsyncTask: 5",
                 "FakeCompileCustomNodeAsyncTask: 6",
                 "FakeUpdateRenderPackageAsyncTask: 0",
-                "FakeNotifyRenderPackagesReadyAsyncTask: 1",
                 "FakeQueryMirrorDataAsyncTask: 2",
-                "FakeDelegateBasedAsyncTask: 3",
-                "FakeAggregateRenderPackageAsyncTask: 4",
+                "FakeDelegateBasedAsyncTask: 3"
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1150,13 +1102,8 @@ namespace Dynamo.Tests
             var tasksToSchedule = new List<AsyncTask>()
             {
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
-                MakeNotifyRenderPackagesReadyAsyncTask(),           // Normal
                 MakeDelegateBasedAsyncTask(),                       // Normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
-                MakeAggregateRenderPackageAsyncTask(specificGuid),  // Normal
                 MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
-                MakeAggregateRenderPackageAsyncTask(Guid.Empty),    // Normal
-                MakeAggregateRenderPackageAsyncTask(specificGuid),  // Normal
                 MakeQueryMirrorDataAsyncTask("variableName"),       // Normal
                 MakeUpdateGraphAsyncTask(),                         // Above normal
                 MakeCompileCustomNodeAsyncTask(),                   // Above normal
@@ -1176,12 +1123,8 @@ namespace Dynamo.Tests
                 "FakeSetTraceDataAsyncTask: 11",
                 "FakeUpdateGraphAsyncTask: 9",
                 "FakeCompileCustomNodeAsyncTask: 10",
-                "FakeUpdateRenderPackageAsyncTask: 0",
-                "FakeNotifyRenderPackagesReadyAsyncTask: 1",
                 "FakeDelegateBasedAsyncTask: 2",
                 "FakeQueryMirrorDataAsyncTask: 5",
-                "FakeAggregateRenderPackageAsyncTask: 6",
-                "FakeAggregateRenderPackageAsyncTask: 7",
                 "FakeQueryMirrorDataAsyncTask: 8",
             };
 
@@ -1264,14 +1207,6 @@ namespace Dynamo.Tests
 
         #region AsyncTask Class Creation Methods
 
-        private AsyncTask MakeAggregateRenderPackageAsyncTask(Guid nodeGuid)
-        {
-            return new FakeAggregateRenderPackageAsyncTask(MakeAsyncTaskData())
-            {
-                TargetedNodeId = nodeGuid
-            };
-        }
-
         private AsyncTask MakeCompileCustomNodeAsyncTask()
         {
             return new FakeCompileCustomNodeAsyncTask(MakeAsyncTaskData());
@@ -1280,11 +1215,6 @@ namespace Dynamo.Tests
         private AsyncTask MakeDelegateBasedAsyncTask()
         {
             return new FakeDelegateBasedAsyncTask(MakeAsyncTaskData());
-        }
-
-        private AsyncTask MakeNotifyRenderPackagesReadyAsyncTask()
-        {
-            return new FakeNotifyRenderPackagesReadyAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeQueryMirrorDataAsyncTask(string variableName)
