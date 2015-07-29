@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -1144,6 +1145,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
             var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
             Camera.NearPlaneDistance = Math.Max(CalculateNearClipPlane(maxDim), 0.1);
+        }
+
+        internal override void ExportToSTL(string path, string modelName)
+        {
+            var geoms = SceneItems.Where(i => i is DynamoGeometryModel3D).
+                Cast<DynamoGeometryModel3D>();
+
+            using (TextWriter tw = new StreamWriter(path))
+            {
+                tw.WriteLine("solid {0}", model.CurrentWorkspace.Name);
+                foreach (var g in geoms)
+                {
+                    var n = ((MeshGeometry3D) g.Geometry).Normals.ToList();
+                    var t = ((MeshGeometry3D)g.Geometry).Triangles.ToList();
+
+                    for (var i = 0; i < t.Count(); i ++)
+                    {
+                        var nCount = i*3;
+                        tw.WriteLine("\tfacet normal {0} {1} {2}", n[nCount].X, n[nCount].Y, n[nCount].Z);
+                        tw.WriteLine("\t\touter loop");
+                        tw.WriteLine("\t\t\tvertex {0} {1} {2}", t[i].P0.X, t[i].P0.Y, t[i].P0.Z);
+                        tw.WriteLine("\t\t\tvertex {0} {1} {2}", t[i].P1.X, t[i].P1.Y, t[i].P1.Z);
+                        tw.WriteLine("\t\t\tvertex {0} {1} {2}", t[i].P2.X, t[i].P2.Y, t[i].P2.Z);
+                        tw.WriteLine("\t\tendloop");
+                        tw.WriteLine("\tendfacet");
+                    }
+                }
+                tw.WriteLine("endsolid {0}", model.CurrentWorkspace.Name);
+            }
         }
 
         #endregion

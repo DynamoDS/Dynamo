@@ -1974,19 +1974,14 @@ namespace Dynamo.ViewModels
 
         private void ExportToSTL(object parameter)
         {
-            FileDialog _fileDialog = null;
-
-            if (_fileDialog == null)
+            FileDialog _fileDialog = null ?? new SaveFileDialog()
             {
-                _fileDialog = new SaveFileDialog()
-                {
-                    AddExtension = true,
-                    DefaultExt = ".stl",
-                    FileName = Resources.FileDialogDefaultSTLModelName,
-                    Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
-                    Title = Resources.SaveModelToSTLDialogTitle,
-                };
-            }
+                AddExtension = true,
+                DefaultExt = ".stl",
+                FileName = Resources.FileDialogDefaultSTLModelName,
+                Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
+                Title = Resources.SaveModelToSTLDialogTitle,
+            };
 
             // if you've got the current space path, use it as the inital dir
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
@@ -1997,7 +1992,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                STLExport.ExportToSTL(this.Model, _fileDialog.FileName, HomeSpace.Name);
+                BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
             }
         }
 

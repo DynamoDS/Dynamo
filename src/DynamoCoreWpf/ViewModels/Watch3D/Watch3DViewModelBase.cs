@@ -378,6 +378,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes.
         }
 
+        internal virtual void ExportToSTL(string path, string modelName)
+        {
+            // Override in derived classes
+        }
+
         /// <summary>
         /// Display a label for one or several render packages 
         /// based on the paths of those render packages.
