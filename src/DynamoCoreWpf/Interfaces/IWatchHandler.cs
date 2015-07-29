@@ -99,6 +99,11 @@ namespace Dynamo.Interfaces
             return new WatchViewModel(value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
+        private WatchViewModel ProcessThing(DateTime value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        {
+            return new WatchViewModel(value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture), tag);
+        }
+
         private WatchViewModel ProcessThing(long value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return new WatchViewModel(value.ToString(CultureInfo.InvariantCulture), tag);
