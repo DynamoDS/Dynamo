@@ -30,8 +30,7 @@ namespace Dynamo.Utilities
         internal static IEnumerable<NodeModel> UpstreamNodesMatchingPredicate(this NodeModel node, List<NodeModel> gathered, Predicate<NodeModel> match)
         {
             var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
-                Where(n => match(n)).
-                ToList();
+                Where(n => match(n));
 
             foreach (var n in upstream.Where(n => !gathered.Contains(n)))
             {
