@@ -317,11 +317,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             catch (Exception ex)
             {
                 const string msg = "CAMERA: Camera position information could not be saved.";
-                OnMessageLogged(LogMessage.Error(msg));
-                OnMessageLogged(LogMessage.Error(ex));
+                logger.LogError(msg);
+                logger.Log(ex);
             }
         }
 
+        /// <summary>
+        /// Create a CameraData object from an XmlNode representing the Camera's serialized
+        /// position data.
+        /// </summary>
+        /// <param name="cameraNode">The XmlNode containing the camera position data.</param>
+        /// <returns></returns>
         public static CameraData DeserializeCamera(XmlNode cameraNode)
         {
             if (cameraNode.Attributes == null || cameraNode.Attributes.Count == 0)
@@ -354,10 +360,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             catch (Exception ex)
             {
-                const string msg = "CAMERA: Camera position information could not be loaded from the file.";
-                //OnMessageLogged(LogMessage.Error(msg));
-                //OnMessageLogged(LogMessage.Error(ex));
-                return new CameraData();
+                throw new Exception("Camera position information could not be loaded from the file.", ex);
             }
         }
 
@@ -423,8 +426,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
             {
-                var camData = DeserializeCamera(cameraNode);
-                SetCameraData(camData);
+                try
+                {
+                    var camData = DeserializeCamera(cameraNode);
+                    SetCameraData(camData);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex.Message);
+                    logger.Log(ex);
+                }
             }
         }
 

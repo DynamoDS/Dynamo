@@ -492,18 +492,13 @@ namespace Dynamo.ViewModels
                 Factory = RenderPackageFactoryViewModel.Factory,
                 ViewModel = this,
                 IsActiveAtStart = Model.PreferenceSettings.IsBackgroundPreviewActive,
-                Name = "Background 3D Preview"
+                Name = "Background 3D Preview",
+                Logger = Model.Logger
             };
 
             var vm = HelixWatch3DViewModel.Start(backgroundPreviewParams);
             Watch3DViewModels.Add(vm);
             vm.PropertyChanged += HelixWatch3DViewModelPropertyChanged;
-            vm.MessageLogged += Watch3DViewModelMessageLoggedHandler;
-        }
-
-        void Watch3DViewModelMessageLoggedHandler(ILogMessage message)
-        {
-            Model.Logger.Log(message);
         }
 
         void HelixWatch3DViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -263,12 +263,12 @@ namespace Dynamo.Nodes
                     var cameraElement = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name == "Camera");
                     initialCameraData = HelixWatch3DViewModel.DeserializeCamera(cameraElement);
                 }
-
             }
             catch (Exception ex)
             {
                 Log(LogMessage.Error(ex));
                 Log("View attributes could not be read from the file.");
+                initialCameraData = new CameraData();
             }
 
         }
