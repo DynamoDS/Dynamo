@@ -308,7 +308,10 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
-            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null)); 
+
         }
 
         #endregion

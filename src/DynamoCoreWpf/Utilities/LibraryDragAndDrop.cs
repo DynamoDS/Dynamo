@@ -29,18 +29,24 @@ namespace Dynamo.Wpf.Utilities
 
         internal void HandleMouseMove(FrameworkElement sender, Point currentPosition)
         {
-            if (isDragging || nodeViewModel == null)
+            if (isDragging)
                 return;
 
             // If item was dragged enough, then fire DoDragDrop. 
             // Otherwise it means user click on item and there is no need to fire DoDragDrop.
             var deltaX = System.Math.Abs(currentPosition.X - startPosition.X);
             if (deltaX < SystemParameters.MinimumHorizontalDragDistance)
+            {
+                isDragging = false;
                 return;
+            }
 
             var deltaY = System.Math.Abs(currentPosition.Y - startPosition.Y);
             if (deltaY < SystemParameters.MinimumVerticalDragDistance)
+            {
+                isDragging = false;
                 return;
+            }
 
             StartDrag(sender, nodeViewModel);
 
