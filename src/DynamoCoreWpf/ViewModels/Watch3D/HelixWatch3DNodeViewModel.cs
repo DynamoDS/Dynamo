@@ -38,11 +38,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             var gathered = new List<NodeModel>();
             node.VisibleUpstreamNodes(gathered);
-            if (gathered.Any())
-            {
-                gathered.ForEach(n => n.IsUpdated = true);
-            }
 
+            gathered.ForEach(n => n.IsUpdated = true);
             gathered.ForEach(n => n.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory));
         }
 
