@@ -16,6 +16,8 @@ namespace Dynamo.Models
     /// </summary>
     public class PresetModel:ModelBase
     {
+        //this field is used on deserialization, so that we can identify missing nodes
+        //it will be null if the preset is created by a user.
         private readonly List<NodeModel> nodesInWorkspaceAtConstruction;
         private List<NodeModel> nodes;
         private List<XmlElement> serializedNodes;

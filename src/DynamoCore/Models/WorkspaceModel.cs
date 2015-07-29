@@ -865,39 +865,29 @@ namespace Dynamo.Models
         /// <param name="description">a description of what the state does</param>
         /// <param name="currentSelection">a set of NodeModels that are to be serialized in this state</param>
         /// <param name="id">a GUID id for the state, if not supplied, a new GUID will be generated, cannot be a duplicate</param>
-        private void AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection)
+        private PresetModel AddPresetCore(string name, string description, IEnumerable<NodeModel> currentSelection)
         {
             if (currentSelection == null || currentSelection.Count() < 1)
             {
                 throw new ArgumentException("currentSelection is empty or null");
             }
             var inputs = currentSelection;
-            using (var undoGroup = this.undoRecorder.BeginActionGroup())
-            {
-                var newstate = new PresetModel(name, description, inputs);
-                  if (Presets.Any(x => x.GUID == newstate.GUID))
+
+            var newstate = new PresetModel(name, description, inputs);
+            if (Presets.Any(x => x.GUID == newstate.GUID))
             {
                 throw new ArgumentException("duplicate id in collection");
             }
 
-                UndoRecorder.RecordCreationForUndo(newstate);
-                presets.Add(newstate);
-            }
-
-          
-
+            presets.Add(newstate);
+            return newstate;
         }
 
         public void RemovePreset(PresetModel state)
         {
-           //start an undoBeginGroup
-           using (var undoGroup = this.undoRecorder.BeginActionGroup())
-          {
-                if (Presets.Contains(state))
-                {
-                    UndoRecorder.RecordDeletionForUndo(state);
-                    presets.Remove(state);
-                }
+            if (Presets.Contains(state))
+            {
+                presets.Remove(state);
             }
         }
 
@@ -916,7 +906,6 @@ namespace Dynamo.Models
                 {
                     //check that node still exists in this workspace, 
                     //otherwise bail on this node, check by GUID instead of nodemodel
-                    if (nodes.Select(x=>x.GUID).Contains(node.GUID))
                     {
                         var originalpos = node.Position;
                         var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
@@ -936,13 +925,14 @@ namespace Dynamo.Models
                 }
             }
         }
-        internal void AddPreset(string name, string description, IEnumerable<Guid> IDSToSave)
+        internal PresetModel AddPreset(string name, string description, IEnumerable<Guid> IDSToSave)
         {
                 //lookup the nodes by their ID, can also check that we find all of them....
                 var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID));
                 //access the presetsCollection and add a new state based on the current selection
-                this.AddPresetCore(name, description, nodesFromIDs);
+                var newpreset = this.AddPresetCore(name, description, nodesFromIDs);
                 HasUnsavedChanges = true;
+                return newpreset;
         }
 
         public void ImportPresets(IEnumerable<PresetModel> presetCollection)
@@ -1646,7 +1636,8 @@ namespace Dynamo.Models
             else if (typeName.Contains("PresetModel"))
             {
                 var preset = new PresetModel(this.Nodes);
-              presets.Add(preset);
+                preset.Deserialize(modelData, SaveContext.Undo);
+                presets.Add(preset);
             }
             else // Other node types.
             {
