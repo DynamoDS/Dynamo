@@ -467,6 +467,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (model != null)
                     {
                         model.MouseDown3D -= MeshGeometry3DMouseDown3DHandler;
+                        model.Detach();
                     }
                     Model3DDictionary.Remove(kvp.Key);
                 }
