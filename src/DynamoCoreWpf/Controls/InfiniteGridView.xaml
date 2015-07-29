@@ -8,6 +8,6 @@
              d:DesignHeight="300"
              d:DesignWidth="300">
     <Grid Background="Transparent">
-        <local:GridVisualHost IsHitTestVisible="True"></local:GridVisualHost>
+        <local:GridVisualHost></local:GridVisualHost>
     </Grid>
 </UserControl>

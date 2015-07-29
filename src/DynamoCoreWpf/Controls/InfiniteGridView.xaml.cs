@@ -28,9 +28,6 @@ namespace Dynamo.Controls
         private const double MaxMajorGridSpacing = MinMajorGridSpacing * MinorDivisions;
         private const double ScaleFactor = MaxMajorGridSpacing / MinMajorGridSpacing;
 
-        // Zoom dependent data members.
-        private double startX, startY;
-
         private WorkspaceModel workspaceModel;
         private Pen majorGridPen, minorGridPen;
         private DrawingVisual drawingVisual = new DrawingVisual();
@@ -84,8 +81,7 @@ namespace Dynamo.Controls
         {
             switch (e.PropertyName)
             {
-                case "X":
-                case "Y":
+                case "X": // Do not handle 'Y' since it's the same as 'X'.
                 case "Zoom":
                     UpdateDrawingVisual();
                     break;
@@ -105,11 +101,72 @@ namespace Dynamo.Controls
             if (workspaceModel == null)
                 return;
 
+            #region Scale Adjustment
+
+            // Bring scale factor to within zoom boundaries.
             var localScale = workspaceModel.Zoom;
             while (localScale * MajorGridLineSpacing < MinMajorGridSpacing)
                 localScale = localScale * ScaleFactor;
             while (localScale * MajorGridLineSpacing > MaxMajorGridSpacing)
                 localScale = localScale / ScaleFactor;
+
+            #endregion
+
+            #region Positional Adjustment
+
+            // The scale is know, adjust the top-left corner.
+            var startX = workspaceModel.X;
+            var startY = workspaceModel.Y;
+            var scaledMajorGridSpacing = localScale * MajorGridLineSpacing;
+
+            if (startX > 0)
+            {
+                // Assuming after applying scale factor, the major grid lines 
+                // are 10px apart. If the current WorkspaceModel.X is 24px, then 
+                // 
+                //      v = floor(24/10) = floor(2.4) = 2
+                //      w = 24 - 2 x 10 = 4
+                // 
+                // We could start drawing the major grid line from 4px, but that 
+                // leaves a gap at the left edge. So it would be nice if major 
+                // grid line starts from 4 - 10 = -6px, so that it appears that 
+                // the left-most grid line is beyond the left edge.
+                // 
+                var v = ((int)Math.Floor(startX / scaledMajorGridSpacing));
+                var w = (startX - (v * scaledMajorGridSpacing));
+                startX = w - scaledMajorGridSpacing;
+            }
+            else if (startX < -scaledMajorGridSpacing)
+            {
+                // Assuming after applying scale factor, the major grid lines 
+                // are 10px apart. If the current WorkspaceModel.X is -24px, then 
+                // 
+                //      startX = abs(-24) = 24
+                //      v = floor(24/10) = floor(2.4) = 2
+                //      w = 24 - 2 x 10 = 4
+                //      startX = -w = -4
+                // 
+                startX = Math.Abs(startX);
+                var v = ((int)Math.Floor(startX / scaledMajorGridSpacing));
+                var w = (startX - (v * scaledMajorGridSpacing));
+                startX = -w;
+            }
+
+            if (startY > 0)
+            {
+                var v = ((int)Math.Floor(startY / scaledMajorGridSpacing));
+                var w = (startY - (v * scaledMajorGridSpacing));
+                startY = w - scaledMajorGridSpacing;
+            }
+            else if (startY < -scaledMajorGridSpacing)
+            {
+                startY = Math.Abs(startY);
+                var v = ((int)Math.Floor(startY / scaledMajorGridSpacing));
+                var w = (startY - (v * scaledMajorGridSpacing));
+                startY = -w;
+            }
+
+            #endregion
 
             var unitGrid = (localScale * (MajorGridLineSpacing / MinorDivisions));
             var context = drawingVisual.RenderOpen();
@@ -125,7 +182,7 @@ namespace Dynamo.Controls
                 var isMajorGridLine = ((counter % MinorDivisions) == 0);
 
                 var offset = unitGrid * counter++;
-                if (offset > ActualWidth)
+                if (offset > ActualWidth + scaledMajorGridSpacing)
                     break;
 
                 var pen = isMajorGridLine ? majorGridPen : minorGridPen;
@@ -147,7 +204,7 @@ namespace Dynamo.Controls
                 var isMajorGridLine = ((counter % MinorDivisions) == 0);
 
                 var offset = unitGrid * counter++;
-                if (offset > ActualHeight)
+                if (offset > ActualHeight + scaledMajorGridSpacing)
                     break;
 
                 var pen = isMajorGridLine ? majorGridPen : minorGridPen;
