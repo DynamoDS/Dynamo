@@ -11,24 +11,6 @@ using Dynamo.Wpf.UI;
 
 namespace Dynamo.ViewModels
 {
-
-    /// <summary>
-    /// In a nutshell, EndlessGrid is the grid lines in canvas. It is one of the key features of 
-    /// infinite canvas.
-    /// 
-    /// (a) It is to catch the mouse events that happened in the DragCanvas and subsequently bubble
-    ///     them up the event tree to be handled.
-    /// 
-    /// (b) EndlessGrid follows the viewport by resetting its location everytime the canvas is being 
-    ///     panned a certain distance. This creates the impression that the grid lines are
-    ///     infinitely extended but in actual fact it is just being resetted back to its previous
-    ///     location seamlessly. This is achieve by offsetting per GridSize and not pixel.
-    ///     
-    /// With these two properties, it supports mouse click outside region of DragCanvas. It also
-    /// rely on DragCanvas Property of ClipToBound to be false. Allowing object to be visible
-    /// even when placed outside DragCanvas.
-    ///     
-    /// </summary>
     partial class InfiniteGridViewModel : ViewModelBase
     {
         private ObservableCollection<Line> gridLines;
