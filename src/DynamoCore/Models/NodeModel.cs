@@ -1711,6 +1711,7 @@ namespace Dynamo.Models
                 DrawableIds = GetDrawableIds(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name
             };
+            
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
             if (task.Initialize(initParams))
@@ -1736,6 +1737,11 @@ namespace Dynamo.Models
                 var task = asyncTask as UpdateRenderPackageAsyncTask;
                 renderPackages.Clear();
                 renderPackages.AddRange(task.RenderPackages);
+
+                cachedMirrorData = GetCachedValueFromEngine(task.EngineController);
+                OnRenderPackageUpdate();
+                
+
                 HasRenderPackages = renderPackages.Any();
             }
         }
@@ -1769,6 +1775,33 @@ namespace Dynamo.Models
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
             return output == null ? null : output.ToString();
         }
+
+        #endregion
+
+        #region Manipulator Events
+
+        public delegate void RenderPackageUpdateHandler();
+
+        public event RenderPackageUpdateHandler RenderPackageUpdate;
+
+        public void OnRenderPackageUpdate()
+        {
+            if (RenderPackageUpdate != null)
+            {
+                RenderPackageUpdate();
+            }
+        }
+
+        //public delegate void NodeGeometrySelectedHandler();
+
+        //public event NodeGeometrySelectedHandler NodeGeometrySelected;
+        //public void OnNodeGeometrySelected()
+        //{
+        //    if (NodeGeometrySelected != null)
+        //    {
+        //        NodeGeometrySelected();
+        //    }
+        //}
 
         #endregion
 
