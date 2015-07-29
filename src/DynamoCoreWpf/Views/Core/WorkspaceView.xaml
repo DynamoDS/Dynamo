@@ -237,7 +237,13 @@
 
         <!-- Infinite grid view should not be hittable by mouse -->
 
-        <controls:InfiniteGridView IsHitTestVisible="False"></controls:InfiniteGridView>
+        <controls:InfiniteGridView IsHitTestVisible="False">
+            <controls:InfiniteGridView.Visibility>
+                <Binding Path="DataContext.FullscreenWatchShowing"
+                         Converter="{StaticResource InverseBoolToVisibilityConverter}"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+            </controls:InfiniteGridView.Visibility>
+        </controls:InfiniteGridView>
 
         <!-- Assigning a ZoomBorder.Background so that it can receive mouse input -->
 
