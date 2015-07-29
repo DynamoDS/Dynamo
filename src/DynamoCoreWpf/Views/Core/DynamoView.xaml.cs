@@ -128,6 +128,10 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += Log;
+
                     ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
                 }

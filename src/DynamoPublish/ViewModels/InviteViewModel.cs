@@ -7,6 +7,8 @@ using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -15,44 +17,51 @@ namespace Dynamo.Publish.ViewModels
     public class InviteViewModel : NotificationObject
     {
         #region Properties
-
-        private string name;
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                RaisePropertyChanged("Name");
-            }
-        }
-
-        private string description;
-        public string Description
-        {
-            get { return description; }
-            set
-            {
-                description = value;
-                RaisePropertyChanged("Description");
-            }
-        }
-
-        private string shareLink;
-        public string ShareLink
-        {
-            get { return shareLink; }
-            set
-            {
-                shareLink = value;
-                RaisePropertyChanged("ShareLink");
-            }
-        }
-
+              
         private readonly InviteModel model;
         internal InviteModel Model
         {
             get { return model; }
+        }
+
+        private string statusText;
+        public string StatusText
+        {
+            get
+            {
+                return statusText;
+            }
+            set
+            {
+                statusText = value;
+                RaisePropertyChanged("StatusText");
+            }
+        }
+
+        private bool hasError;
+
+        public bool HasError
+        {
+            get { return hasError; }
+            set
+            {
+                hasError = value;
+                RaisePropertyChanged("HasError");
+            }
+        }
+
+        private Visibility isTextblockVisible;
+        public Visibility IsTextblockVisible
+        {
+            get
+            {
+                return isTextblockVisible;                
+            }
+            set
+            {
+                isTextblockVisible = value;
+                RaisePropertyChanged("IsTextblockVisible");
+            }
         }
       
         #endregion
@@ -67,22 +76,36 @@ namespace Dynamo.Publish.ViewModels
 
         internal InviteViewModel(InviteModel model)
         {
-            this.model = model;
-
+            this.model = model;    
+            model.UpdateStatusMessage +=model_UpdateStatusMessage;           
+            IsTextblockVisible = Visibility.Hidden;
             InviteCommand = new DelegateCommand(OnInvite);
         }
 
+        private void model_UpdateStatusMessage(string status, bool hasError = false)
+        {
+            StatusText = status;
+            HasError = hasError;
+            IsTextblockVisible = Visibility.Visible;
+        }
+        
         #endregion
 
         #region Helpers
 
         private void OnInvite(object obj)
         {
-            //if (!model.IsLoggedIn)            
-            //    model.Authenticate();            
+            model_UpdateStatusMessage(Resource.InviteRequestStart);
+            if (!model.IsLoggedIn)
+            {
+                model.Authenticate();
+            }
 
-            //if (!model.IsLoggedIn)
-            //    return;
+            if (!model.IsLoggedIn)
+            {
+                model_UpdateStatusMessage(Resource.AuthenticationFailedMessage,true);
+                return;
+            }
 
             model.Send();
         }

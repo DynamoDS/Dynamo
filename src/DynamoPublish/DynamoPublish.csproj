@@ -111,10 +111,11 @@
     <EmbeddedResource Include="Resource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\InviteView.xaml">
+    <Page Include="Views\InviteView.xaml" />
     <Page Include="Resources\PublishResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

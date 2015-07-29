@@ -189,4 +189,25 @@
   <data name="WorkspacesSendSucceededServerResponse" xml:space="preserve">
     <value>{"message":"Workspaces saved."}</value>
   </data>
+  <data name="InviteViewMenuTitle" xml:space="preserve">
+     <value>Sign up for Customizer…</value>
+  </data>
+  <data name="InviteViewMenuDialogTitle" xml:space="preserve">
+     <value>Customizer Service Early Access Invite</value>
+  </data>
+  <data name="InviteMenuText" xml:space="preserve">
+     <value>Sign up for an early access invite to the Dynamo Reach Customizer Service</value>
+  </data>
+  <data name="InviteMenuButtonText" xml:space="preserve">
+     <value>Request Invite</value>
+  </data>
+  <data name="InviteRequestStart" xml:space="preserve">
+    <value>Sending Request...</value>
+  </data>
+  <data name="InviteRequestSuccess" xml:space="preserve">
+    <value>Request sent successfully.</value>
+  </data>
+  <data name="InviteRequestFailed" xml:space="preserve">
+    <value>Failed to send a request. Try again later</value>
+  </data>
 </root>

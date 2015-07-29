@@ -17,13 +17,13 @@ using RestSharp;
 
 namespace Dynamo.Publish.Models
 {
-    public class InviteModel
+    public class InviteModel : ILogSource
     {
         private readonly IAuthProvider authenticationProvider;       
 
         private readonly string serverUrl;
         private readonly string port;
-        private readonly string page;
+        private readonly string invite;
         
         private RestClient restClient;
 
@@ -43,6 +43,13 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        internal event Action<string,bool> UpdateStatusMessage;
+        private void OnUpdateStatusMessage(String text, bool hasError)
+        {
+            if (UpdateStatusMessage != null)
+                UpdateStatusMessage(text, hasError);
+        }
+
         #region Initialization
 
         internal InviteModel(IAuthProvider dynamoAuthenticationProvider)
@@ -54,14 +61,14 @@ namespace Dynamo.Publish.Models
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new Exception(Resource.ServerErrorMessage);
+                throw new Exception(Resource.ServerNotFoundMessage);
 
             port = appSettings.Settings["Port"].Value;
             if (String.IsNullOrWhiteSpace(port))
                 throw new Exception(Resource.PortErrorMessage);
 
-            page = appSettings.Settings["Invite"].Value;
-            if (String.IsNullOrWhiteSpace(page))
+            invite = appSettings.Settings["Invite"].Value;
+            if (String.IsNullOrWhiteSpace(invite))
                 throw new Exception(Resource.PageErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;            
@@ -79,35 +86,71 @@ namespace Dynamo.Publish.Models
         {
             // Manager must be initialized in constructor.
             if (authenticationProvider == null)
-                throw new Exception(Resource.AuthenticationErrorMessage);
+            {
+                OnUpdateStatusMessage(Resource.AuthManagerNotFoundMessage,true);
+                return;
+            }
 
             authenticationProvider.Login();
         }
 
-        /// <summary>
-        /// Sends workspace and its' dependencies to Flood.
-        /// </summary>
-        internal void Send()
-        {
-            //if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
-            //    throw new Exception(Resource.ServerErrorMessage);
 
-            //if (authenticationProvider == null)
-            //    throw new Exception(Resource.AuthenticationErrorMessage);
+        /// <summary>
+        /// Sends request to flood. Returns true if success.
+        /// </summary>
+        /// <returns></returns>
+        internal bool  Send()
+        {
+            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
+            {
+                OnUpdateStatusMessage(Resource.ServerNotFoundMessage, true);
+                return false;
+            }
+
+            if (authenticationProvider == null)
+            {                
+                OnUpdateStatusMessage(Resource.AuthenticationFailedMessage, true);
+                return false;
+            }
 
             string fullServerAdress = serverUrl + ":" + port;
-
-            //Construct the client here
+            
             if (restClient == null)
             {
                 restClient = new RestClient(fullServerAdress);
             }
             
-            var  request = new RestRequest(page, Method.POST);
+            var  request = new RestRequest(invite, Method.POST);
             
-            //authenticationProvider.SignRequest(ref request,restClient);
+            authenticationProvider.SignRequest(ref request,restClient);
+        
+            var response = restClient.Execute(request);      
+      
+            if(response.ErrorException == null)
+                OnUpdateStatusMessage(Resource.InviteRequestSuccess, false);
+            else
+            {
+                OnUpdateStatusMessage(Resource.InviteRequestFailed, true);
+                Log(LogMessage.Error(response.ErrorException));
+                return false;
+            }
 
-            var response = restClient.Execute(request);
+            return true;
         }
+
+        #region ILogSource implementation
+        public event Action<ILogMessage> MessageLogged;
+
+        protected void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
+
+        protected void Log(string msg)
+        {
+            Log(LogMessage.Info(msg));
+        }       
+        #endregion
     }
 }

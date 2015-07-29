@@ -12,7 +12,6 @@ namespace Dynamo.Publish
 {
     public class DynamoPublishExtension : IViewExtension, ILogSource
     {
-
         private PublishViewModel publishViewModel;
         private PublishModel publishModel;
         private InviteViewModel inviteViewModel;
@@ -37,8 +36,9 @@ namespace Dynamo.Publish
         {
             publishModel = new PublishModel(p.AuthProvider, p.CustomNodeManager);
             publishViewModel = new PublishViewModel(publishModel);
-
+           
             inviteModel = new InviteModel(p.AuthProvider);
+            inviteModel.MessageLogged += this.OnMessageLogged;
             inviteViewModel = new InviteViewModel(inviteModel);            
         }
 
@@ -55,12 +55,7 @@ namespace Dynamo.Publish
             p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
 
             inviteMenuItem = GenerateInviteMenuItem();
-            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
-
-            //Create a new Menu item here. Call it as Invite Menuitem
-            //Create a new view - InviteView - with Invitemodel and InviteVM.
-            //Configure the client in InviteModel. Use Restsharp / GregClient.cs
-            //then add the endpoint in JS file.
+            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);            
         }
 
         public void Shutdown()
@@ -117,11 +112,11 @@ namespace Dynamo.Publish
         private MenuItem GenerateInviteMenuItem()
         {
             MenuItem item = new MenuItem();
-            item.Header = "Request for Access";
+            item.Header = Resource.InviteViewMenuTitle;
 
-            //var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
+            var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
 
-            //item.IsEnabled = isEnabled;
+            item.IsEnabled = isEnabled;
 
             item.Click += (sender, args) =>
             {
