@@ -2655,9 +2655,20 @@ namespace ProtoImperative
                 type.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
                 EmitWhileStmtNode(whileStatement, ref type, isBooleanOp, graphNode);
 
+                // As we add a dummy code block around forloop node, RETCN 
+                // instruction will get debugging information from 
+                // localCodeBlockNode, which is forloop node. We temporarily set
+                // lcoalCodeBlockNode to a dummy node so that RETCN won't have 
+                // debugging information.
+                var dummyCodeBlockNode = new CodeBlockNode();
+                var backUpLocalCodeBlockNode = localCodeBlockNode;
+                localCodeBlockNode = dummyCodeBlockNode;
+
                 EmitInstrConsole(ProtoCore.DSASM.kw.retcn);
                 EmitRetcn(localCodeBlock.codeBlockId);
+
                 codeBlock = localCodeBlock.parent;
+                localCodeBlockNode = backUpLocalCodeBlockNode;
                 //}
 
                 // Comment Jun: The for loop counter must be unique and does not need to reset
