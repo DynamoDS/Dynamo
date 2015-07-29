@@ -33,12 +33,9 @@ namespace Dynamo.Utilities
                 Where(n => match(n)).
                 ToList();
 
-            foreach (var n in upstream)
+            foreach (var n in upstream.Where(n => !gathered.Contains(n)))
             {
-                if (!gathered.Contains(n))
-                {
-                    gathered.Add(n);
-                }
+                gathered.Add(n);
             }
 
             foreach (var n in upstream)
@@ -51,15 +48,11 @@ namespace Dynamo.Utilities
 
         internal static IEnumerable<NodeModel> AllUpstreamNodes(this NodeModel node, List<NodeModel> gathered)
         {
-            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
-                ToList();
+            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner));
 
-            foreach (var n in upstream)
+            foreach (var n in upstream.Where(n => !gathered.Contains(n)))
             {
-                if (!gathered.Contains(n))
-                {
-                    gathered.Add(n);
-                }
+                gathered.Add(n);
             }
 
             foreach (var n in upstream)
