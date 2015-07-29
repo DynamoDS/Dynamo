@@ -106,6 +106,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Resources\PublishResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PublishView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

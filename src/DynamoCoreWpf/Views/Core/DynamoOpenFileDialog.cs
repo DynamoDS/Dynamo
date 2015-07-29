@@ -107,56 +107,51 @@ namespace Dynamo.UI
 
     class DynamoFolderBrowserDialog
     {
-        private readonly NativeFileOpenDialog dialog;
-
-        public string Title
-        {
-            set { dialog.SetTitle(value); }
-        }
-
+        public string Title { get; set; }
         public Window Owner { get; set; }
-
-        public string SelectedPath
-        {
-            get
-            {
-                string selectedPath;
-                IShellItem item;
-                dialog.GetResult(out item);
-                item.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out selectedPath);
-                return selectedPath;
-            }
-            set
-            {
-                object item;
-                // IShellItem GUID
-                Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
-                int hresult = SHCreateItemFromParsingName(value, IntPtr.Zero, ref guid, out item);
-                if (hresult != 0)
-                    throw new System.ComponentModel.Win32Exception(hresult);
-
-                dialog.SetFolder((IShellItem)item);
-            }
-        }
-
-        public DynamoFolderBrowserDialog()
-        {
-            dialog = new NativeFileOpenDialog();
-            dialog.SetOptions(FOS.FOS_PICKFOLDERS | FOS.FOS_FORCEFILESYSTEM | FOS.FOS_FILEMUSTEXIST);
-        }
+        public string SelectedPath { get; set; }
 
         public DialogResult ShowDialog()
         {
+            NativeFileOpenDialog dialog = null;
+
             try
             {
+                // If the caller did not specify a starting path, or set it to null,
+                // it is not healthy as it causes SHCreateItemFromParsingName to 
+                // throw E_INVALIDARG (0x80070057). Setting it to an empty string.
+                // 
+                if (SelectedPath == null)
+                    SelectedPath = string.Empty;
+
+                dialog = new NativeFileOpenDialog();
+
+                dialog.SetTitle(Title);
+
+                object shellItem;
+                // IShellItem GUID
+                Guid guid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE");
+                int hresult = SHCreateItemFromParsingName(SelectedPath, IntPtr.Zero, ref guid, out shellItem);
+                if ((uint)hresult != (uint)HRESULT.S_OK)
+                    throw Marshal.GetExceptionForHR(hresult);
+                dialog.SetFolder((IShellItem)shellItem);
+
+                dialog.SetOptions(FOS.FOS_PICKFOLDERS | FOS.FOS_FORCEFILESYSTEM | FOS.FOS_FILEMUSTEXIST);
+
                 IntPtr hWnd = new WindowInteropHelper(Owner).Handle;
-                var result = dialog.Show(hWnd);
-                if (result < 0)
+                hresult = dialog.Show(hWnd);
+                if (hresult < 0)
                 {
-                    if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                    if ((uint)hresult == (uint)HRESULT.E_CANCELLED)
                         return DialogResult.Cancel;
-                    throw Marshal.GetExceptionForHR(result);
+                    throw Marshal.GetExceptionForHR(hresult);
                 }
+
+                string path;
+                IShellItem item;
+                dialog.GetResult(out item);
+                item.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out path);
+                SelectedPath = path;
 
                 return DialogResult.OK;
             }

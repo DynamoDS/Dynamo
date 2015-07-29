@@ -117,14 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AuthenticationErrorMessage" xml:space="preserve">
+  <data name="AuthenticationFailedMessage" xml:space="preserve">
+    <value>Authentication failed.</value>
+  </data>
+  <data name="AuthManagerNotFoundMessage" xml:space="preserve">
     <value>Authentication manager is not found. Please, provide correct authentication manager.</value>
   </data>
   <data name="BadXMLConfigurationFileMessage" xml:space="preserve">
     <value>Malformed configuration file.</value>
   </data>
+  <data name="CloseButtonTitle" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CopyLinkButtonTitle" xml:space="preserve">
+    <value>Copy Link</value>
+  </data>
   <data name="DynamoViewMenuItemPublishTitle" xml:space="preserve">
     <value>Publish Customizer...</value>
+  </data>
+  <data name="FailedMessage" xml:space="preserve">
+    <value>Failed</value>
   </data>
   <data name="PageErrorMessage" xml:space="preserve">
     <value>"Page" is not set. set. Please, set server page in configuration file.</value>
@@ -132,10 +144,49 @@
   <data name="PortErrorMessage" xml:space="preserve">
     <value>"Port" is not set. Please, set port in configuration file.</value>
   </data>
+  <data name="ProvideAuthProviderMessage" xml:space="preserve">
+    <value>Dynamo could not authenticate. Please report this message to the Dynamo team.</value>
+  </data>
+  <data name="ProvideWorskspaceDescriptionMessage" xml:space="preserve">
+    <value>Please provide a description of your customizer.</value>
+  </data>
+  <data name="ProvideWorskspaceNameMessage" xml:space="preserve">
+    <value>Please provide a name for your customizer.</value>
+  </data>
+  <data name="PublishButtonTitle" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="PublishViewDefaultDescriptionTitle" xml:space="preserve">
+    <value>A description of your customizer.</value>
+  </data>
+  <data name="PublishViewDefaultNameTitle" xml:space="preserve">
+    <value>The name of your customizer.</value>
+  </data>
+  <data name="PublishViewDescriptionTitle" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PublishViewNameTitle" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PublishViewShareLinkTitle" xml:space="preserve">
+    <value>Share Link</value>
+  </data>
   <data name="PublishViewTitle" xml:space="preserve">
     <value>Publish Customizer</value>
   </data>
-  <data name="ServerErrorMessage" xml:space="preserve">
+  <data name="ReadyForPublishMessage" xml:space="preserve">
+    <value>Your workspace is ready to be published!</value>
+  </data>
+  <data name="ServerNotFoundMessage" xml:space="preserve">
     <value>Server not found.</value>
+  </data>
+  <data name="UnknownServerErrorMessage" xml:space="preserve">
+    <value>There was an error when trying to publish your customizer. Please report this message to the Dynamo team.</value>
+  </data>
+  <data name="UploadingMessage" xml:space="preserve">
+    <value>Uploading...</value>
+  </data>
+  <data name="WorkspacesSendSucceededServerResponse" xml:space="preserve">
+    <value>{"message":"Workspaces saved."}</value>
   </data>
 </root>

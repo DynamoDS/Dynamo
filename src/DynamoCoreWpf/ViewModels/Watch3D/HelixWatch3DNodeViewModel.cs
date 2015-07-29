@@ -10,7 +10,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class HelixWatch3DNodeViewModel : HelixWatch3DViewModel
     {
-        private NodeModel node;
+        private readonly NodeModel node;
 
         public static HelixWatch3DNodeViewModel Start(NodeModel node, Watch3DViewModelStartupParams parameters)
         {
@@ -39,12 +39,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             var gathered = new List<NodeModel>();
             node.VisibleUpstreamNodes(gathered);
-            if (gathered.Any())
-            {
-                gathered.ForEach(n => n.IsUpdated = true);
-            }
 
+            gathered.ForEach(n => n.IsUpdated = true);
             gathered.ForEach(n => n.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory));
+        }
+
+        protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CurrentWorkspace":
+                    UpdateUpstream();
+                    break;
+            }
         }
 
         protected override void PortDisconnectedHandler(PortModel obj)
@@ -72,18 +79,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             base.OnNodePropertyChanged(sender, e);
         }
 
-        protected override void OnUpdatedRenderPackagesAvailable(NodeModel updatedNode,
+        protected override void OnRenderPackagesUpdated(NodeModel updatedNode,
             IEnumerable<IRenderPackage> renderPackages)
         {
+            if (node == null) return;
+
             var visibleUpstream = new List<NodeModel>();
             node.VisibleUpstreamNodes(visibleUpstream);
 
-            if (node == null || !visibleUpstream.Contains(updatedNode))
+            if (!visibleUpstream.Contains(updatedNode))
             {
                 return;
             }
 
-            base.OnUpdatedRenderPackagesAvailable(updatedNode, renderPackages);
+            base.OnRenderPackagesUpdated(updatedNode, renderPackages);
         }
 
         protected override void OnWorkspaceSaving(XmlDocument doc)

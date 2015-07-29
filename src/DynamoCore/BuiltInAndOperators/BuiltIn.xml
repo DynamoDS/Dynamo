@@ -14,7 +14,7 @@
         </member>
 		<member name="Rank">
             <param name="list">list of values</param>
-            <search>rank,depth,nesting</search>
+            <search>rank,depth,nesting,ranks</search>
         </member>
 		<member name="Flatten">
             <param name="list">list of values</param>

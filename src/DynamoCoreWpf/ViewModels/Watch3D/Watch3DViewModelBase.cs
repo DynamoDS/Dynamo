@@ -21,6 +21,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public DynamoViewModel ViewModel { get; set; }
         public bool IsActiveAtStart { get; set; }
         public string Name { get; set; }
+        public ILogger Logger { get; set; }
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// rendering by various render targets. The base class handles the registration
     /// of all necessary event handlers on models, workspaces, and nodes.
     /// </summary>
-    public class Watch3DViewModelBase : NotificationObject, ILogSource
+    public class Watch3DViewModelBase : NotificationObject
     {
         protected DynamoModel model;
         protected DynamoViewModel viewModel;
@@ -38,6 +39,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
+        protected ILogger logger;
 
         /// <summary>
         /// A flag which indicates whether geometry should be processed.
@@ -65,6 +67,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         public string Name { get; protected set; }
 
+        private bool canNavigateBackground = false;
+        public bool CanNavigateBackground
+        {
+            get { return canNavigateBackground; }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+
         protected Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
         {
             model = parameters.Model;
@@ -72,6 +85,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             factory = parameters.Factory;
             Active = parameters.IsActiveAtStart;
             Name = parameters.Name;
+            logger = parameters.Logger;
 
             RegisterEventHandlers();
         }
@@ -173,11 +187,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             model.ShutdownStarted += OnModelShutdownStarted;
             model.CleaningUp += OnClear;
             model.EvaluationCompleted += OnEvaluationCompleted;
+            model.PropertyChanged += OnModelPropertyChanged;
+        }
+
+        protected virtual void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Override in derived classes
         }
 
         protected virtual void OnEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            // Override in derived classed
+            // Override in derived classes
         }
 
         private void UnregisterModelEventHandlers(DynamoModel model)
@@ -214,7 +234,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach (var node in ws.Nodes)
                 {
                     node.PropertyChanged += OnNodePropertyChanged;
-                    node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
+                    node.RenderPackagesUpdated += OnRenderPackagesUpdated;
                 }
             }
         }
@@ -299,7 +319,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void RegisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged += OnNodePropertyChanged;
-            node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
+            node.RenderPackagesUpdated += OnRenderPackagesUpdated;
 
             RegisterPortEventHandlers(node);
         }
@@ -307,7 +327,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void UnregisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
-            node.UpdatedRenderPackagesAvailable -= OnUpdatedRenderPackagesAvailable;
+            node.RenderPackagesUpdated -= OnRenderPackagesUpdated;
 
             UnregisterPortEventHandlers(node);
         }
@@ -345,7 +365,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        protected virtual void OnUpdatedRenderPackagesAvailable(NodeModel updatedNode, IEnumerable<IRenderPackage> packages)
+        protected virtual void OnRenderPackagesUpdated(NodeModel updatedNode, IEnumerable<IRenderPackage> packages)
         {
             OnBeginUpdate(packages);
         }
@@ -361,67 +381,62 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes.
         }
 
+        internal virtual void ExportToSTL(string path, string modelName)
+        {
+            // Override in derived classes
+        }
+
         /// <summary>
         /// Display a label for one or several render packages 
         /// based on the paths of those render packages.
         /// </summary>
-        public void TagRenderPackageForPath(string path)
-        {
-            var packages = new List<IRenderPackage>();
+        //public void TagRenderPackageForPath(string path)
+        //{
+        //    var packages = new List<IRenderPackage>();
 
-            //This also isn't thread safe
-            foreach (var node in model.CurrentWorkspace.Nodes)
-            {
-                lock (node.RenderPackagesMutex)
-                {
-                    //Note(Luke): this seems really inefficent, it's doing an O(n) search for a tag
-                    //This is also a target for memory optimisation
+        //    //This also isn't thread safe
+        //    foreach (var node in model.CurrentWorkspace.Nodes)
+        //    {
+        //        lock (node.RenderPackagesMutex)
+        //        {
+        //            //Note(Luke): this seems really inefficent, it's doing an O(n) search for a tag
+        //            //This is also a target for memory optimisation
 
-                    packages.AddRange(
-                        node.RenderPackages.Where(x => x.Description == path || x.Description.Contains(path + ":")));
-                }
-            }
+        //            packages.AddRange(
+        //                node.RenderPackages.Where(x => x.Description == path || x.Description.Contains(path + ":")));
+        //        }
+        //    }
 
-            if (packages.Any())
-            {
-                //clear any labels that might have been drawn on this
-                //package already and add the one we want
-                if (currentTaggedPackages.Any())
-                {
-                    currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
-                    currentTaggedPackages.Clear();
-                }
+        //    if (packages.Any())
+        //    {
+        //        //clear any labels that might have been drawn on this
+        //        //package already and add the one we want
+        //        if (currentTaggedPackages.Any())
+        //        {
+        //            currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
+        //            currentTaggedPackages.Clear();
+        //        }
 
-                packages.ToList().ForEach(x => x.DisplayLabels = true);
-                currentTaggedPackages.AddRange(packages);
+        //        packages.ToList().ForEach(x => x.DisplayLabels = true);
+        //        currentTaggedPackages.AddRange(packages);
 
-                var allPackages = new List<IRenderPackage>();
-                var selPackages = new List<IRenderPackage>();
+        //        var allPackages = new List<IRenderPackage>();
+        //        var selPackages = new List<IRenderPackage>();
 
-                foreach (var node in model.CurrentWorkspace.Nodes)
-                {
-                    lock (node.RenderPackagesMutex)
-                    {
-                        allPackages.AddRange(
-                            node.RenderPackages.Where(x => x.HasRenderingData && !x.IsSelected));
-                        selPackages.AddRange(
-                            node.RenderPackages.Where(x => x.HasRenderingData && x.IsSelected));
-                    }
-                }
+        //        foreach (var node in model.CurrentWorkspace.Nodes)
+        //        {
+        //            lock (node.RenderPackagesMutex)
+        //            {
+        //                allPackages.AddRange(
+        //                    node.RenderPackages.Where(x => x.HasRenderingData && !x.IsSelected));
+        //                selPackages.AddRange(
+        //                    node.RenderPackages.Where(x => x.HasRenderingData && x.IsSelected));
+        //            }
+        //        }
 
-                //OnResultsReadyToVisualize(
-                //    new VisualizationEventArgs(allPackages, selPackages, Guid.Empty));
-            }
-        }
-
-        public event Action<ILogMessage> MessageLogged;
-
-        protected void OnMessageLogged(ILogMessage message)
-        {
-            if (MessageLogged != null)
-            {
-                MessageLogged(message);
-            }
-        }
+        //        //OnResultsReadyToVisualize(
+        //        //    new VisualizationEventArgs(allPackages, selPackages, Guid.Empty));
+        //    }
+        //}
     }
 }

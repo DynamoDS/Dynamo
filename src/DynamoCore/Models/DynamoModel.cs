@@ -570,7 +570,8 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, CustomNodeManager);
+                    pathManager, new ExtensionLibraryLoader(this), 
+                    CustomNodeManager, GetType().Assembly.GetName().Version);
 
                 foreach (var ext in extensions)
                 {
@@ -579,7 +580,6 @@ namespace Dynamo.Models
                         logSource.MessageLogged += LogMessage;
 
                     ext.Startup(startupParams);
-                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
                     ext.Load(preferences, pathManager);
                     ExtensionManager.Add(ext);
                 }
@@ -606,7 +606,6 @@ namespace Dynamo.Models
             
         private void RemoveExtension(IExtension ext)
         {
-            ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
             ExtensionManager.Remove(ext);
 
             var logSource = ext as ILogSource;
@@ -740,11 +739,6 @@ namespace Dynamo.Models
         public void Dispose()
         {
             EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
-
-            foreach (var ext in ExtensionManager.Extensions)
-            {
-                ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
-            }
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
@@ -926,7 +920,7 @@ namespace Dynamo.Models
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
-        private void LoadNodeLibrary(Assembly assem)
+        internal void LoadNodeLibrary(Assembly assem)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {

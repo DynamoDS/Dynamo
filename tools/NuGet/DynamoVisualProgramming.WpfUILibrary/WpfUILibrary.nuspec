@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DynamoVisualProgramming.WpfUILibrary</id>
+    <version>0.8.2</version>
+    <authors>Autodesk</authors>
+    <owners>Autodesk</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Build node libraries for Dynamo with custom UI in WPF.</description>
+    <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI in WPF.</summary>
+    <copyright>Copyright Autodesk 2015</copyright>
+    <frameworkAssemblies>
+        <frameworkAssembly assemblyName="System.Xaml"/>
+        <frameworkAssembly assemblyName="WindowsBase"/>
+        <frameworkAssembly assemblyName="PresentationCore"/>
+        <frameworkAssembly assemblyName="PresentationFramework"/>
+    </frameworkAssemblies>
+    <dependencies>
+        <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="0.8.2"/>
+        <dependency id="Prism" version="4.1"/>
+    </dependencies>
+  </metadata>
+</package>

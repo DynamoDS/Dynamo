@@ -110,6 +110,7 @@ namespace DSCore
         ///     Gets the hue value for this color.
         /// </summary>
         /// <returns name="hue">double between 0 and 1 inclusive.</returns>
+        /// <search>hues</search>
         public static float Hue(Color c)
         {
             return c.color.GetHue();
@@ -505,7 +506,7 @@ namespace DSCore
         /// </summary>
         /// <param name="colors">A list of colors.</param>
         /// <param name="parameters">A list of parameters between (0.0,0.0) and (1.0,1.0).</param>
-        /// <returns>A ColorRange1D object.</returns>
+        /// <returns>A ColorRange2D object.</returns>
         public static ColorRange2D ByColorsAndParameters(
             IList<Color> colors, IList<UV> parameters)
         {

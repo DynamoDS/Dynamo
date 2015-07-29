@@ -216,10 +216,4 @@ namespace Dynamo.Controls
 
         #endregion
     }
-
-    internal class PackageAggregationParams
-    {
-        public IEnumerable<HelixRenderPackage> Packages { get; set; } 
-        public BillboardText3D Text { get; set; }
-    }
 }

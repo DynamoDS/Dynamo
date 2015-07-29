@@ -339,7 +339,7 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestViewOperation(ViewOperationEventArgs e)
         {
-            if (dynamoViewModel.CanNavigateBackground == false)
+            if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground == false)
                 return;
 
             switch (e.ViewOperation)
@@ -956,14 +956,14 @@ namespace Dynamo.Controls
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                dynamoViewModel.WatchEscapeIsDown = true;
+                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
-                dynamoViewModel.WatchEscapeIsDown = false;
+                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
             }
         }

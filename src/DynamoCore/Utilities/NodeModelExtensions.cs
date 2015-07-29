@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -13,13 +12,10 @@ namespace Dynamo.Utilities
     {
         internal static void VisibleUpstreamNodes(this NodeModel node, List<NodeModel> gathered)
         {
-            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
-                ToList();
+            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner));
 
-            foreach (var n in upstream)
+            foreach (var n in upstream.Where(n => !gathered.Contains(n)))
             {
-                if (gathered.Contains(n)) continue;
-
                 gathered.Add(n);
 
                 if (n.IsUpstreamVisible == false)
@@ -29,20 +25,16 @@ namespace Dynamo.Utilities
                 
                 n.VisibleUpstreamNodes(gathered);
             }
-        } 
+        }
 
         internal static IEnumerable<NodeModel> UpstreamNodesMatchingPredicate(this NodeModel node, List<NodeModel> gathered, Predicate<NodeModel> match)
         {
             var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
-                Where(n => match(n)).
-                ToList();
+                Where(n => match(n));
 
-            foreach (var n in upstream)
+            foreach (var n in upstream.Where(n => !gathered.Contains(n)))
             {
-                if (!gathered.Contains(n))
-                {
-                    gathered.Add(n);
-                }
+                gathered.Add(n);
             }
 
             foreach (var n in upstream)
@@ -55,15 +47,11 @@ namespace Dynamo.Utilities
 
         internal static IEnumerable<NodeModel> AllUpstreamNodes(this NodeModel node, List<NodeModel> gathered)
         {
-            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).
-                ToList();
+            var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner));
 
-            foreach (var n in upstream)
+            foreach (var n in upstream.Where(n => !gathered.Contains(n)))
             {
-                if (!gathered.Contains(n))
-                {
-                    gathered.Add(n);
-                }
+                gathered.Add(n);
             }
 
             foreach (var n in upstream)

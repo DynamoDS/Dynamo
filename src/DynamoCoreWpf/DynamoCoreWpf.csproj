@@ -143,6 +143,7 @@
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
+    <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -347,7 +348,6 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
-    <Compile Include="VisualizationManager\STLExport.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">

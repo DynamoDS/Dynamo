@@ -999,7 +999,7 @@
              Approximate a Curve with a collection of Arcs and Lines
              </summary>
             <search>
-            rationalizecurve,fitarcs,fitlines
+            rationalizecurve,fitarcs,fitlines,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
@@ -1102,7 +1102,7 @@
              Create an arc by providing three sequential points along its circumference.
              </summary>
             <search>
-            arc
+            arc,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,Autodesk.DesignScript.Geometry.Vector)">
@@ -1110,7 +1110,7 @@
              Create an arc by providing it's center point, radius, angle sweep, and normal vector
              </summary>
             <search>
-            arc,center
+            arc,center,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,Autodesk.DesignScript.Geometry.Vector)">
@@ -1118,7 +1118,7 @@
              Create an arc by providing it's center point, start point, sweep point, and normal
              </summary>
             <search>
-            arc,center
+            arc,center,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointEndPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
@@ -1126,7 +1126,7 @@
              Create an arc by providing it's center point, start point, and end point
              </summary>
             <search>
-            arc,center
+            arc,center,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByFillet(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Double)">
@@ -1134,7 +1134,7 @@
              Create an arc by filleting twp curves with given radius
              </summary>
             <search>
-            arc,fillet,round,smooth
+            arc,fillet,round,smooth,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByFilletTangentToCurve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
@@ -1142,7 +1142,7 @@
              Create an arc by filleting two curves tangent to given curve at internal point
              </summary>
             <search>
-            arc,fillet,round,smooth
+            arc,fillet,round,smooth,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByBestFitThroughPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
@@ -1150,7 +1150,7 @@
              best fit arc through points
              </summary>
             <search>
-            arc,approximate
+            arc,approximate,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartEndAndTangencies(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -1158,7 +1158,7 @@
              Create an arc or tangent bi arc by start and end points and tangencies at start and end
              </summary>
             <search>
-            arc,tangent
+            arc,tangent,arcs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartPointEndPointStartTangent(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
@@ -1166,7 +1166,7 @@
              Create an Arc from start Point to end Point with start tangent to Vector
              </summary>
             <search>
-            arc,tangent
+            arc,tangent,arcs
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.CenterPoint">
@@ -1174,23 +1174,32 @@
              The center point of the arc
              </summary>
             <search>
-            midpoint
+            midpoint,arcs,arc
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.Radius">
             <summary>
             The radius of the arc
             </summary>
+			<search>
+            arc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.StartAngle">
             <summary>
             The start angle in degrees
             </summary>
+			<search>
+            arc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.SweepAngle">
             <summary>
             The total sweep angle in degrees
             </summary>
+			<search>
+            arc,arcs
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToString">
             <summary>
@@ -1289,7 +1298,7 @@
              Get the BoundingBox as a Solid Cuboid
              </summary>
             <search>
-            converttosolid,bb2cube,bb2cub,bounding tosolid
+            converttosolid,bb2cube,bb2cub,bounding tosolid,cubes
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToPolySurface">
@@ -1548,7 +1557,7 @@
              Create a Cone with given base radius at start Point, extending to a  apex at end Point.
              </summary>
             <search>
-            cone
+            cone,cones
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
@@ -1556,51 +1565,72 @@
              Create a Cone with axis from start Point to end Point, with given  radiuses at start and end. This object does not have an apex, and can be thought of as a trimmed Cone.
              </summary>
             <search>
-            trimmed cone,cone
+            trimmed cone,cone,cones
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
             <summary>
             Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular base in the CoordinateSystem XY Plane.
             </summary>
+			<search>
+            cone,cones
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
              <summary>
              Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular bases in the CoordinateSystem XY Plane.
              </summary>
             <search>
-            cone,cone by height
+            cone,cone by height,cones
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.StartPoint">
             <summary>
             The start point
             </summary>
+			<search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.EndPoint">
             <summary>
             The end point
             </summary>
+			<search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.RadiusRatio">
             <summary>
             Ratio between the top and bottom radius
             </summary>
+			<search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.StartRadius">
             <summary>
             The radius at the base
             </summary>
+			<search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.EndRadius">
             <summary>
             The radius at the bottom
             </summary>
+			<search>
+            cone,cones
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.Height">
             <summary>
             The total height
             </summary>
+			<search>
+            cone,cones
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ToString">
             <summary>
@@ -1612,7 +1642,7 @@
              Create a Cuboid centered at WCS origin, with width, length, and height.
              </summary>
             <search>
-            box,cube
+            box,cube,cubes
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double)">
@@ -1620,7 +1650,7 @@
              Create a Cuboid centered at input Point, with specified width, length,  and height.
              </summary>
             <search>
-            box,cube,cubebysize,bycenter
+            box,cube,cubebysize,bycenter,cubes
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
@@ -1628,7 +1658,7 @@
              Create a Cuboid centered and oriented to input CoordinateSystem, with  specified width, length, and height.
              </summary>
             <search>
-            box,cube,cubebysize,bycoord
+            box,cube,cubebysize,bycoord,cubes
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
@@ -1636,7 +1666,7 @@
              Create an Cuboid spanning from low Point to high Point.
              </summary>
             <search>
-            box,cube,byminmax,by corners,by points
+            box,cube,byminmax,by corners,by points,cubes
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
@@ -1767,33 +1797,48 @@
              Create an EllipseArc in a plane with the given the radii along the X and Y axes and the angles to sweep through
              </summary>
             <search>
-            ellipsearc
+            ellipsearc,arcs
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.CenterPoint">
             <summary>
             The center of the Ellipse
             </summary>
+			<search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.MajorAxis">
             <summary>
             The major axis of the Ellipse.  This is the longer axis.  The length of the Vector is the Major radius.
             </summary>
+			<search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.MinorAxis">
             <summary>
             The minor axis of the Ellipse.  This is the shorter axis.  The length of the Vector is the Minor radius.
             </summary>
+			<search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.StartAngle">
             <summary>
             The start angle in degrees
             </summary>
+			<search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.SweepAngle">
             <summary>
             The total sweep angle in degrees
             </summary>
+			<search>
+            ellipsearc,arcs
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Face.ToString">
             <summary>
@@ -1879,7 +1924,7 @@
              Create an IndexGroup storing four indices
              </summary>
             <search>
-            quad,polygon,mesh
+            quad,polygon,mesh,meshes
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.ByIndices(System.UInt32,System.UInt32,System.UInt32)">
@@ -1887,7 +1932,7 @@
              Create an IndexGroup storing three indices
              </summary>
             <search>
-            tri,polygon,mesh
+            tri,polygon,mesh,meshes
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.IndexGroup.Count">
@@ -1925,7 +1970,7 @@
              Creates a straight Line between two input Points.
              </summary>
             <search>
-            line,linebypoints
+            line,linebypoints,lines
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
@@ -1933,7 +1978,7 @@
              Creates a Line best approximating a scatter plot of Points.
              </summary>
             <search>
-            line,approximate
+            line,approximate,lines
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByTangency(Autodesk.DesignScript.Geometry.Curve,System.Double)">
@@ -1941,7 +1986,7 @@
              Create a Line tangent to the input Curve, positioned at the parameter Point of the input Curve.
              </summary>
             <search>
-            tangentline,tangentto
+            tangentline,tangentto,lines
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
@@ -1949,7 +1994,7 @@
              Create a straight Line starting at start Point, extending in Vector direction by specified length.
              </summary>
             <search>
-            linebyvector
+            linebyvector,lines
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Line.Direction">
@@ -1967,23 +2012,32 @@
              Create a mesh from a collection of Points and a collection of IndexGroups referencing the Point collection
              </summary>
             <search>
-            mesh
+            mesh,meshes
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.FaceIndices">
             <summary>
             The vertex indices that make up each face in a counterclockwise fashion
             </summary>
+			<search>
+            mesh,meshes
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.VertexNormals">
             <summary>
             The normal vector at this vertex
             </summary>
+			<search>
+            mesh,meshes
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.VertexPositions">
             <summary>
             The positions of the vertices
             </summary>
+			<search>
+            mesh,meshes
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ToString">
             <summary>
@@ -2183,7 +2237,7 @@
              Return the UV parameter pair at the input Point. This is the inverse of Point at parameter.
              </summary>
             <search>
-            evaluateatpoint,surfaceatpoint,uvatpoint
+            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
@@ -2983,7 +3037,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
              <summary>
-             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and (Plane Y axis length).
+             Create a Rectangle centered at input Plane root, with input width  (Plane X axis length) and height (Plane Y axis length).
              </summary>
             <search>
             rectangle,rectbylengths
@@ -3075,18 +3129,24 @@
              Create a UV from two doubles.
              </summary>
             <search>
-            surfaceparam,parameters,uv
+            surfaceparam,parameters,uv,uvs
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.UV.U">
             <summary>
             Get the U component of a UV
             </summary>
+			<search>
+            uv,uvs
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.UV.V">
             <summary>
             Get the V component of a V
             </summary>
+			<search>
+            uv,uvs
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
             <summary>

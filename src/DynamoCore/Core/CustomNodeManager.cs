@@ -375,6 +375,11 @@ namespace Dynamo.Core
             return false;
         }
 
+        public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
+        {
+            return TryGetFunctionWorkspace(id, isTestMode, out ws);
+        }
+
         /// <summary>
         ///     Get the function definition from a guid.
         /// </summary>
@@ -872,7 +877,6 @@ namespace Dynamo.Core
                     // compiled to AST, literally it is still in global scope
                     // instead of in function scope.
                     node.GUID = Guid.NewGuid();
-                    node.RenderPackages.Clear();
 
                     // shift nodes
                     node.X = node.X - leftShift;

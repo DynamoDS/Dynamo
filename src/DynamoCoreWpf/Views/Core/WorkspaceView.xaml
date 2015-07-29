@@ -19,6 +19,7 @@
              IsHitTestVisible="{Binding IsCurrentSpace}"
              AllowDrop="True"
              Drop="OnWorkspaceDrop">
+
     <UserControl.Resources>
         <Style TargetType="{x:Type ContextMenu}"
                x:Key="WorkspaceContextMenuStyle">
@@ -78,7 +79,7 @@
                 </Setter.Value>
             </Setter>
             <EventSetter Event="Opened"
-                         Handler="OnContextMenuOpened"/>
+                         Handler="OnContextMenuOpened" />
             <EventSetter Event="PreviewKeyDown"
                          Handler="OnInCanvasSearchContextMenuKeyDown" />
             <EventSetter Event="PreviewMouseUp"
@@ -94,8 +95,9 @@
                 ClipToBounds="True"
                 PreviewMouseDown="OnCanvasClicked">
             <Canvas.IsHitTestVisible>
-                <Binding Path="DataContext.ShouldBeHitTestVisible"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
+                <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" 
+                         Converter="{StaticResource InverseBooleanConverter}"/>
             </Canvas.IsHitTestVisible>
 
             <controls:ZoomBorder x:Name="zoomBorder"
@@ -128,7 +130,7 @@
                                         <SolidColorBrush Color="Transparent" />
                                     </Canvas.Background>
                                     <Canvas.Opacity>
-                                        <Binding Path="DataContext.CanNavigateBackground"
+                                        <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                                                  RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                                                  Converter="{StaticResource NavigationToOpacityConverter}">
                                         </Binding>
@@ -202,18 +204,17 @@
                         </MenuItem>
                     </MenuItem>
 
-
                     <MenuItem IsEnabled="{Binding Path=HasSelection}"
                               Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
                               Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
                               CommandParameter="true"
-                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                     <MenuItem IsEnabled="{Binding Path=HasSelection}"
                               Header="{x:Static p:Resources.ContextMenuHideAllGeometry}"
                               Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
                               CommandParameter="false"
-                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                     <MenuItem IsEnabled="{Binding Path=HasSelection}"
                               Header="{x:Static  p:Resources.ContextMenuShowUpstreamPreview}"
@@ -259,15 +260,15 @@
                                Command="{Binding NodeFromSelectionCommand}" />
 
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuCreatePreset}"
-                              Command="{Binding DynamoViewModel.ShowNewPresetsDialogCommand}" />
+                               Command="{Binding DynamoViewModel.ShowNewPresetsDialogCommand}" />
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
-                               Command="{Binding NodeToCodeCommand}" 
-                               Visibility="{Binding Path=CanRunNodeToCode, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+                               Command="{Binding NodeToCodeCommand}"
+                               Visibility="{Binding Path=CanRunNodeToCode, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
-                    <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
+                    <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
                                Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
-                    
+
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                                Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                Command="{Binding FindNodesFromSelectionCommand}" />
@@ -363,7 +364,7 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
                 <ui:ImageCheckBox.Visibility>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              Converter="{StaticResource BooleanToVisibilityConverter}"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Visibility>
@@ -381,10 +382,9 @@
                               Margin="4,4,0,4"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
-                              ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}"
-                              >
+                              ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}">
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
             </ui:ImageCheckBox>
@@ -395,7 +395,7 @@
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
                               ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                              Converter="{StaticResource InverseBooleanConverter}" />
                 </ui:ImageCheckBox.IsChecked>

@@ -15,6 +15,11 @@ namespace Dynamo.TestInfrastructure
     /// </summary>
     public class MutatorDriver
     {
+        /// <summary>
+        /// Number of mutations to run
+        /// </summary>
+        private const int NUMBER_OF_CYCLES = 1000;
+
         private readonly DynamoViewModel dynamoViewModel;
 
         public MutatorDriver(DynamoViewModel dynamoViewModel)
@@ -34,6 +39,8 @@ namespace Dynamo.TestInfrastructure
 
             new Thread(() =>
             {
+                Random rand = new Random(1);
+
                 try
                 {
                     Assembly assembly = Assembly.GetExecutingAssembly();
@@ -51,8 +58,14 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
 
-                    foreach (var mutator in mutators)
+                    System.Diagnostics.Debug.WriteLine("Mutators list: " + mutators.ToList());
+
+                    for (int cycleCounter = 0; cycleCounter < NUMBER_OF_CYCLES; cycleCounter++)
+                    {
+                        int mutatorIndex = rand.Next(0, mutators.Count);
+                        var mutator = mutators[mutatorIndex];
                         InvokeTest(mutator, writer);
+                    }
                 }
                 finally
                 {
@@ -79,10 +92,14 @@ namespace Dynamo.TestInfrastructure
 
             var nodes = dynamoViewModel.Model.CurrentWorkspace.Nodes.ToList();
             if (type != typeof(NodeModel))
-                nodes = dynamoViewModel.Model.CurrentWorkspace.Nodes.Where(t => t.GetType() == type).ToList();
+                nodes = nodes.Where(t => t.GetType() == type).ToList();
 
             if (nodes.Count == 0)
+            {
+                writer.WriteLine("No nodes for mutator: " + mutator.GetType());
                 return;
+
+            }
 
             try
             {

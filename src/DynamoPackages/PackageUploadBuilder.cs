@@ -21,6 +21,15 @@ namespace Dynamo.PackageManager
     {
         private readonly IPackageDirectoryBuilder builder;
         private readonly IFileCompressor fileCompressor;
+        private static string engineVersion;
+
+        internal static void SetEngineVersion(Version version)
+        {
+            if (version != null)
+            {
+                engineVersion = version.ToString();
+            }
+        }
 
         internal const long MaximumPackageSize = 100 * 1024 * 1024;
 
@@ -39,11 +48,11 @@ namespace Dynamo.PackageManager
         {
             if (package == null) throw new ArgumentNullException("package");
 
-            var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            var version = engineVersion ?? Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
             return new PackageUploadRequestBody(package.Name, package.VersionName, package.Description, package.Keywords, package.License, package.Contents, PackageManagerClient.PackageEngineName,
-                                                         engineVersion, engineMetadata, package.Group, package.Dependencies,
+                                                         version, engineMetadata, package.Group, package.Dependencies,
                                                          package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, package.NodeLibraries.Select(x => x.FullName));
         }
 

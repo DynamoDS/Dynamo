@@ -38,9 +38,8 @@ namespace Dynamo.ViewModels
 
         private readonly DynamoModel model;
         private Point transformOrigin;
-        private bool canNavigateBackground = false;
         private bool showStartPage = false;
-        private bool watchEscapeIsDown = false;
+        
         private List<Watch3DViewModelBase> watch3DViewModels = new List<Watch3DViewModelBase>();
 
         /// <summary>
@@ -207,43 +206,6 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        public bool WatchEscapeIsDown
-        {
-            get { return watchEscapeIsDown; }
-            set
-            {
-                watchEscapeIsDown = value;
-                RaisePropertyChanged("WatchEscapeIsDown");
-                RaisePropertyChanged("ShouldBeHitTestVisible");
-                RaisePropertyChanged("WatchPreviewHitTest");
-            }
-        }
-
-        public bool WatchPreviewHitTest
-        {
-            // This is directly opposite of "ShouldBeHitTestVisible".
-            get { return (WatchEscapeIsDown || CanNavigateBackground); }
-        }
-
-        public bool ShouldBeHitTestVisible
-        {
-            // This is directly opposite of "WatchPreviewHitTest".
-            get { return (!WatchEscapeIsDown && (!CanNavigateBackground)); }
-        }
-
-        public bool CanNavigateBackground
-        {
-            get { return canNavigateBackground; }
-            set
-            {
-                canNavigateBackground = value;
-                WatchEscapeIsDown = value;
-
-                RaisePropertyChanged("CanNavigateBackground");
-                RaisePropertyChanged("WatchBackgroundHitTest");
             }
         }
 
@@ -522,7 +484,7 @@ namespace Dynamo.ViewModels
 
             SubscribeDispatcherHandlers();
 
-            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model);
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
 
             var backgroundPreviewParams = new Watch3DViewModelStartupParams
             {
@@ -1468,15 +1430,15 @@ namespace Dynamo.ViewModels
             if (!BackgroundPreviewActive)
                 return;
 
-            CanNavigateBackground = !CanNavigateBackground;
+            BackgroundPreviewViewModel.CanNavigateBackground = !BackgroundPreviewViewModel.CanNavigateBackground;
 
-            if (CanNavigateBackground)
+            if (BackgroundPreviewViewModel.CanNavigateBackground)
                 InstrumentationLogger.LogAnonymousScreen("Geometry");
             else
                 InstrumentationLogger.LogAnonymousScreen("Nodes");
 
 
-            if (!CanNavigateBackground)
+            if (!BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 // Return focus back to Search View (Search Field)
                 this.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
@@ -1886,7 +1848,7 @@ namespace Dynamo.ViewModels
 
         internal void ZoomIn(object parameter)
         {
-            if (CanNavigateBackground)
+            if (BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomIn;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));
@@ -1904,7 +1866,7 @@ namespace Dynamo.ViewModels
 
         private void ZoomOut(object parameter)
         {
-            if (CanNavigateBackground)
+            if (BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomOut;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));
@@ -1922,7 +1884,7 @@ namespace Dynamo.ViewModels
 
         private void FitView(object parameter)
         {
-            if (CanNavigateBackground)
+            if (BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.FitView;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));
@@ -2018,19 +1980,14 @@ namespace Dynamo.ViewModels
 
         private void ExportToSTL(object parameter)
         {
-            FileDialog _fileDialog = null;
-
-            if (_fileDialog == null)
+            FileDialog _fileDialog = null ?? new SaveFileDialog()
             {
-                _fileDialog = new SaveFileDialog()
-                {
-                    AddExtension = true,
-                    DefaultExt = ".stl",
-                    FileName = Resources.FileDialogDefaultSTLModelName,
-                    Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
-                    Title = Resources.SaveModelToSTLDialogTitle,
-                };
-            }
+                AddExtension = true,
+                DefaultExt = ".stl",
+                FileName = Resources.FileDialogDefaultSTLModelName,
+                Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
+                Title = Resources.SaveModelToSTLDialogTitle,
+            };
 
             // if you've got the current space path, use it as the inital dir
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
@@ -2041,7 +1998,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                STLExport.ExportToSTL(this.Model, _fileDialog.FileName, HomeSpace.Name);
+                BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
             }
         }
 

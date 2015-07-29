@@ -2,11 +2,44 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:resx="clr-namespace:Dynamo.Publish"
+        xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+        xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         Title="{x:Static resx:Resource.PublishViewTitle}"
-        Height="400"
-        Width="600">
+        Height="480"
+        Width="605">
+    <Window.Resources>
+        <ResourceDictionary>
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+            <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
+                                              TrueBrush="{StaticResource PublishStatePanelNormalBackground}"
+                                              FalseBrush="{StaticResource PublishStatePanelErrorBackground}" />
 
-    <Grid Name="mainGrid">
+            <Style TargetType="{x:Type TextBox}"
+                   x:Key="PublishTextBoxStyle"
+                   BasedOn="{StaticResource SDarkTextBox}">
+                <Setter Property="IsEnabled"
+                        Value="True" />
+
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsUploading}"
+                                 Value="True">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                </Style.Triggers>
+
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoPublish;component/Resources/PublishResourceDictionary.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Grid Name="mainGrid"
+          Background="{StaticResource PublishViewBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40" />
             <ColumnDefinition Width="*" />
@@ -15,6 +48,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -33,19 +67,24 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Name:"
-                           Grid.Row="0" />
+                <TextBlock Text="{x:Static resx:Resource.PublishViewNameTitle}"
+                           Grid.Row="0"
+                           Foreground="{StaticResource PublishViewTextColor}"
+                           Height="28" />
 
                 <TextBox Name="textBoxName"
                          Grid.Row="1"
-                         Text="{Binding Name, Mode=TwoWay}" />
+                         Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource PublishTextBoxStyle}" />
                 <TextBlock Name="textBlockDefaultName"
-                           Text="defaults to file name"
+                           Text="{x:Static resx:Resource.PublishViewDefaultNameTitle}"
                            Grid.Row="1"
                            Margin="5,0,5,0"
                            Foreground="#FF808080"
                            FontStyle="Italic"
-                           IsHitTestVisible="False">
+                           IsHitTestVisible="False"
+                           Padding="5"
+                           FontSize="14">
 
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -82,21 +121,26 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Description:"
-                           Grid.Row="0" />
+                <TextBlock Text="{x:Static resx:Resource.PublishViewDescriptionTitle}"
+                           Grid.Row="0"
+                           Foreground="{StaticResource PublishViewTextColor}"
+                           Height="28" />
 
                 <TextBox Name="textBoxDescription"
                          MinHeight="150"
                          Grid.Row="1"
-                         Grid.ColumnSpan="2"
-                         Text="{Binding Description, Mode=TwoWay}" />
+                         Grid.ColumnSpan="3"
+                         Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource PublishTextBoxStyle}" />
                 <TextBlock Name="textBlockDefaultDescription"
-                           Text="enter description here"
+                           Text="{x:Static resx:Resource.PublishViewDefaultDescriptionTitle}"
                            Grid.Row="1"
                            Margin="5,0,5,0"
                            Foreground="#FF808080"
                            FontStyle="Italic"
-                           IsHitTestVisible="False">
+                           IsHitTestVisible="False"
+                           Padding="5"
+                           FontSize="14">
 
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -120,11 +164,12 @@
 
                 <Button Name="buttonPublish"
                         Grid.Row="2"
-                        Content="Publish"
+                        Content="{x:Static resx:Resource.PublishButtonTitle}"
                         Command="{Binding PublishCommand}"
                         Width="100"
                         Grid.Column="1"
-                        Margin="0,10,0,0" />
+                        Margin="0,10,5,0"
+                        Style="{StaticResource STextButton}" />
 
             </Grid>
 
@@ -133,9 +178,10 @@
         <Grid Grid.Column="1"
               Grid.Row="1"
               Name="gridShareLink"
-              Margin="0,20,0,0">
+              Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -145,23 +191,37 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Share Link:"
-                       Grid.Row="0" />
+            <TextBlock Text="{x:Static resx:Resource.PublishViewShareLinkTitle}"
+                       Grid.Row="0"
+                       Foreground="{StaticResource PublishViewTextColor}"
+                       Height="28" />
             <TextBox Name="textBoxShareLink"
                      Grid.Row="1"
-                     Text="{Binding ShareLink, Mode=TwoWay}" />
+                     Text="{Binding ShareLink, Mode=TwoWay}"
+                     Style="{StaticResource SDarkTextBox}" />
             <Button Name="buttonCopyLink"
-                    Content="Copy Link"
+                    Content="{x:Static resx:Resource.CopyLinkButtonTitle}"
                     Grid.Row="1"
-                    Grid.Column="1"
-                    Width="100" />
-            <Button Name="buttonClose"
-                    Content="Close"
-                    Grid.Row="2"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Width="100"
-                    Margin="0,10,0,0" />
+                    Height="30"
+                    Style="{StaticResource SBadgeButton}" />
+
         </Grid>
+
+
+        <StackPanel Name="PublishUploadStatePanel"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Background="{Binding IsReadyToUpload, Converter={StaticResource BooleanToBrushConverter}}"
+                    Height="30">
+            <TextBlock Name="UploadStateTextBlock"
+                       Text="{Binding UploadStateMessage}"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Margin="10,7,0,0" />
+        </StackPanel>
 
     </Grid>
 </Window>

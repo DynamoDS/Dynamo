@@ -147,7 +147,7 @@
     <comment>Description for Unit Types</comment>
   </data>
   <data name="UnitTypesSearchTags" xml:space="preserve">
-    <value>units</value>
+    <value>units;unittypes;</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="VolumeFromStringDescription" xml:space="preserve">
