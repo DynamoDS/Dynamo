@@ -14,15 +14,21 @@ using System.Windows.Shapes;
 
 namespace Dynamo.Controls
 {
-    public class VisualHost : FrameworkElement
+    public class GridVisualHost : FrameworkElement
     {
-        private const int divisions = 5;
-        private const int minMajorGap = 100;
+        private const int MinorDivisions = 5;
+        private const int MajorGridLineSpacing = 100;
+        private const double MinMajorGridSpacing = 50;
+        private const double MaxMajorGridSpacing = MinMajorGridSpacing * MinorDivisions;
+        private const double ScaleFactor = MaxMajorGridSpacing / MinMajorGridSpacing;
+
+        // Zoom dependent data members.
+        private double startX, startY, scale = 1.0;
 
         private Pen majorGridPen, minorGridPen;
         private DrawingVisual drawingVisual = new DrawingVisual();
 
-        public VisualHost()
+        public GridVisualHost()
         {
             var majorBrush = new SolidColorBrush(Color.FromArgb(255, 127, 127, 127));
             var minorBrush = new SolidColorBrush(Color.FromArgb(255, 195, 195, 195));
@@ -31,6 +37,15 @@ namespace Dynamo.Controls
 
             AddVisualChild(drawingVisual);
             this.SizeChanged += (s, e) => UpdateDrawingVisual();
+            this.MouseWheel += (s, e) =>
+            {
+                scale += scale * ((e.Delta > 0) ? 0.1 : -0.1);
+                UpdateDrawingVisual();
+            };
+        }
+
+        void VisualHost_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
         }
 
         protected override int VisualChildrenCount
@@ -45,9 +60,15 @@ namespace Dynamo.Controls
 
         private void UpdateDrawingVisual()
         {
-            double startX = 0.0, startY = 0.0;
-            var unitGrid = minMajorGap / divisions;
+            var localScale = scale;
+            while (localScale * MajorGridLineSpacing < MinMajorGridSpacing)
+                localScale = localScale * ScaleFactor;
+            while (localScale * MajorGridLineSpacing > MaxMajorGridSpacing)
+                localScale = localScale / ScaleFactor;
+
+            var unitGrid = (localScale * (MajorGridLineSpacing / MinorDivisions));
             var context = drawingVisual.RenderOpen();
+            // context.DrawRectangle(Brushes.LimeGreen, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
             #region Vertical grid lines
 
@@ -57,7 +78,7 @@ namespace Dynamo.Controls
 
             while (true)
             {
-                var isMajorGridLine = ((counter % divisions) == 0);
+                var isMajorGridLine = ((counter % MinorDivisions) == 0);
 
                 var offset = unitGrid * counter++;
                 if (offset > ActualWidth)
@@ -79,7 +100,7 @@ namespace Dynamo.Controls
 
             while (true)
             {
-                var isMajorGridLine = ((counter % divisions) == 0);
+                var isMajorGridLine = ((counter % MinorDivisions) == 0);
 
                 var offset = unitGrid * counter++;
                 if (offset > ActualHeight)
