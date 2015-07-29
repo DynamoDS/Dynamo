@@ -630,5 +630,29 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 42, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
+
+        [Test]
+        public void Test_MarshlingPointerToCollection()
+        {
+            String code =
+            @"                import (TestData from ""FFITarget.dll"");
+
+                d = TestData.TestData();
+                arr1 = TestData.JoinList({d, {1,2,3}});
+                arr2 = TestData.JoinList({d, d, d});
+
+                type1 = ToString(arr1[0]);
+                rank1 = Rank(arr1);
+
+                type2 = ToString(arr2[0]);
+                rank2 = Rank(arr2);
+            ";
+            ValidationData[] data = { 
+                new ValidationData { ValueName = "type1", ExpectedValue = "FFITarget.TestData", BlockIndex = 0 }, 
+                new ValidationData { ValueName = "rank1", ExpectedValue = 1, BlockIndex = 0 }, 
+                new ValidationData { ValueName = "type2", ExpectedValue = "FFITarget.TestData", BlockIndex = 0 }, 
+                new ValidationData { ValueName = "rank2", ExpectedValue = 1, BlockIndex = 0 } };
+            ExecuteAndVerify(code, data);
+        }
     }
 }

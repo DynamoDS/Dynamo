@@ -79,7 +79,8 @@ namespace Dynamo.Core
         {
             get
             {
-                return this.pathManager.PackagesDirectory;
+                // Only return the default package directory.
+                return pathManager.DefaultPackagesDirectory;
             }
         }
 
@@ -87,7 +88,8 @@ namespace Dynamo.Core
         {
             get
             {
-                return this.pathManager.UserDefinitions;
+                // Only return the default custom node directory.
+                return pathManager.DefaultUserDefinitions;
             }
         }
 

@@ -25,7 +25,8 @@ namespace Dynamo.Publish.Views
         public PublishView(PublishViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = viewModel;            
-        }        
+            DataContext = viewModel;
+            viewModel.UIDispatcher = Dispatcher;
+        }
     }
 }

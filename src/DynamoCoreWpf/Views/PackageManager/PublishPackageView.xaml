@@ -133,10 +133,27 @@
 
         </Border>
 
-        <StackPanel Grid.Row="2" Background="#444">
-            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="auto" MinWidth="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" Content="{x:Static p:Resources.PublishPackage}"></Button>
+        <StackPanel Grid.Row="2"
+                    Background="#444">
+            <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <Button Style="{DynamicResource ResourceKey=STextButton}"
+                        Width="auto"
+                        MinWidth="130"
+                        Margin="10,5"
+                        HorizontalAlignment="Right"
+                        Command="{Binding Path=PublishLocallyCommand}"
+                        Content="{x:Static p:Resources.PublishPackageLocally}"></Button>
+                <Button Style="{DynamicResource ResourceKey=STextButton}"
+                        Width="auto"
+                        MinWidth="130"
+                        Margin="10,5"
+                        HorizontalAlignment="Right"
+                        Command="{Binding Path=SubmitCommand}"
+                        Content="{x:Static p:Resources.PublishPackage}"></Button>
+            </StackPanel>
         </StackPanel>
- 
+
         <Grid Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1">
 
             <Grid.RowDefinitions>

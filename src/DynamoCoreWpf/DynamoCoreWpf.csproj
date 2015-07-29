@@ -143,6 +143,7 @@
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
+    <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
@@ -226,6 +227,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -244,6 +246,9 @@
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
+      <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
@@ -1013,6 +1018,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageManager\PackagePathView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\TermsOfUseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1185,6 +1194,10 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-minus.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-down.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-up.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-plus.png" />
     <Resource Include="UI\Images\drag_move.cur" />
     <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />

@@ -84,6 +84,7 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="DateTimeTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="AnnotationViewTests.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="LibraryTests.cs" />
     <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
+    <Compile Include="PackagePathTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
     <Compile Include="PackageManager\PackageDependencyTests.cs" />
     <Compile Include="PackageManager\PackageManagerSearchViewModelTests.cs" />

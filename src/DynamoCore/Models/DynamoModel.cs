@@ -450,12 +450,18 @@ namespace Dynamo.Models
             });
 
             // Ensure we have all directories in place.
-            pathManager.EnsureDirectoryExistence();
+            var exceptions = new List<Exception>();
+            pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
+
+            foreach (var exception in exceptions)
+            {
+                Logger.Log(exception); // Log all exceptions.
+            }
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
             MigrationManager.MessageLogged += LogMessage;
@@ -501,6 +507,16 @@ namespace Dynamo.Models
                     this.PreferenceSettings.IsFirstRun = isFirstRun;
                 }
             }
+
+            // At this point, pathManager.PackageDirectories only has 1 element which is the directory
+            // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
+            // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
+            // PackageFolders
+            if (PreferenceSettings.CustomPackageFolders.Count == 0)
+                PreferenceSettings.CustomPackageFolders = new List<string> {pathManager.UserDataDirectory};
+            else
+                pathManager.LoadCustomPackageFolders(PreferenceSettings.CustomPackageFolders);
+
 
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
@@ -554,12 +570,16 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, CustomNodeManager);
+                    pathManager, new ExtensionLibraryLoader(this), 
+                    CustomNodeManager, GetType().Assembly.GetName().Version);
 
                 foreach (var ext in extensions)
                 {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += LogMessage;
+
                     ext.Startup(startupParams);
-                    ext.RequestLoadNodeLibrary += LoadNodeLibrary;
                     ext.Load(preferences, pathManager);
                     ExtensionManager.Add(ext);
                 }
@@ -586,8 +606,11 @@ namespace Dynamo.Models
             
         private void RemoveExtension(IExtension ext)
         {
-            ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
             ExtensionManager.Remove(ext);
+
+            var logSource = ext as ILogSource;
+            if (logSource != null)
+                logSource.MessageLogged -= LogMessage;
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
@@ -716,11 +739,6 @@ namespace Dynamo.Models
         public void Dispose()
         {
             EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
-
-            foreach (var ext in ExtensionManager.Extensions)
-            {
-                ext.RequestLoadNodeLibrary -= LoadNodeLibrary;
-            }
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
@@ -897,11 +915,12 @@ namespace Dynamo.Models
 #endif
 
             // Load local custom nodes
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
+            foreach (var directory in pathManager.DefinitionDirectories)
+                CustomNodeManager.AddUninitializedCustomNodesInPath(directory, IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
-        private void LoadNodeLibrary(Assembly assem)
+        internal void LoadNodeLibrary(Assembly assem)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {

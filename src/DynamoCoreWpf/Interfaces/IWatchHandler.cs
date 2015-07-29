@@ -7,7 +7,7 @@ using DynamoUnits;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-
+using Dynamo.Extensions;
 namespace Dynamo.Interfaces
 {
     /// <summary>
@@ -75,6 +75,10 @@ namespace Dynamo.Interfaces
                 }
                 node = new WatchViewModel(visualizationManager, stringValue, tag);
             }
+            else if (value is Enum)
+            {
+                return new WatchViewModel(visualizationManager, ((Enum)value).GetDescription(), tag);
+            }
             else
             {
                 node = new WatchViewModel(visualizationManager, ToString(value), tag);
@@ -96,6 +100,11 @@ namespace Dynamo.Interfaces
         private WatchViewModel ProcessThing(double value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return new WatchViewModel(visualizationManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
+        }
+
+        private WatchViewModel ProcessThing(DateTime value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        {
+            return new WatchViewModel(visualizationManager, value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture), tag);
         }
 
         private WatchViewModel ProcessThing(long value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
@@ -121,6 +130,10 @@ namespace Dynamo.Interfaces
                 }
 
                 return node;
+            }
+            if (data.Data is Enum)
+            {
+                return new WatchViewModel(visualizationManager, ((Enum)data.Data).GetDescription(), tag);
             }
 
             if (data.Data == null)

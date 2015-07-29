@@ -109,26 +109,8 @@
                      Grid.ColumnSpan="2"
                      Background="Transparent"
                      BorderBrush="Transparent"
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Image HorizontalAlignment="Left"
-                                   Height="32"
-                                   Margin="16,0,16,0"
-                                   VerticalAlignment="Center"
-                                   Width="32"
-                                   Source="{Binding SmallIcon}" />
-                            <TextBlock HorizontalAlignment="Left"
-                                       Text="{Binding Name}"
-                                       VerticalAlignment="Top"
-                                       Margin="5,10,0,0"
-                                       Foreground="{StaticResource CommonSidebarTextColor}"
-                                       FontSize="13" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                     ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                     ItemTemplate="{StaticResource MemberTemplate}" />
 
             <Border Padding="16,10,0,10"
                     Grid.Row="2"
@@ -145,31 +127,14 @@
                      Background="Transparent"
                      BorderBrush="Transparent"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     ItemTemplate="{StaticResource MemberTemplate}">
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </ListBox.Visibility>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Image HorizontalAlignment="Left"
-                                   Height="32"
-                                   Margin="16,0,16,0"
-                                   VerticalAlignment="Center"
-                                   Width="32"
-                                   Source="{Binding SmallIcon}" />
-                            <TextBlock HorizontalAlignment="Left"
-                                       Text="{Binding Name}"
-                                       VerticalAlignment="Top"
-                                       Margin="5,10,0,0"
-                                       Foreground="{StaticResource CommonSidebarTextColor}"
-                                       FontSize="13" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
             </ListBox>
-            
+
             <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                             StaysOpen="True"
                                             AllowsTransparency="True"

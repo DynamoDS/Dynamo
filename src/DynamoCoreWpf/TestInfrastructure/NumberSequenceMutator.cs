@@ -53,7 +53,7 @@ namespace Dynamo.TestInfrastructure
             }
 
             int numberOfUndosNeeded = Mutate(node);
-            Thread.Sleep(100);
+            Thread.Sleep(10);
 
             writer.WriteLine("### - Beginning undo");
             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
@@ -65,23 +65,12 @@ namespace Dynamo.TestInfrastructure
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
             writer.WriteLine("### - undo complete");
             writer.Flush();
 
-            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-            {
-                DynamoModel.RunCancelCommand runCancel =
-                    new DynamoModel.RunCancelCommand(false, false);
-
-                DynamoViewModel.ExecuteCommand(runCancel);
-            }));
-            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-            {
-                Thread.Sleep(10);
-            }
-
+            ExecuteAndWait();
             writer.WriteLine("### - Beginning test of NumberSequence");
             if (node.OutPorts.Count > 0)
             {

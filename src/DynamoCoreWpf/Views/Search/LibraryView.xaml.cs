@@ -19,6 +19,7 @@ namespace Dynamo.UI.Views
     {
         // See OnExpanderButtonMouseLeftButtonUp for details.
         private bool ignoreMouseEnter;
+        private LibraryDragAndDrop dragDropHelper = new LibraryDragAndDrop();
 
         public LibraryView()
         {
@@ -96,8 +97,12 @@ namespace Dynamo.UI.Views
             }
 
             FrameworkElement fromSender = sender as FrameworkElement;
-            libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            var memberVM = fromSender.DataContext as NodeSearchElementViewModel;
+            if (memberVM != null)
+            {
+                libraryToolTipPopup.PlacementTarget = fromSender;
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            }
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -286,54 +291,27 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
-        /// <summary>
-        /// Position of mouse, when user clicks on button.
-        /// </summary>
-        private Point startPosition;
+        #region Drag&Drop
 
-        /// <summary>
-        /// Indicates whether item is dragging or not, so that there won't be more than one DoDragDrop event.
-        /// </summary>
-        private bool IsDragging;
+        private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var senderButton = e.OriginalSource as FrameworkElement;
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+        }
 
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton != MouseButtonState.Pressed)
                 return;
 
-            Point currentPosition = e.GetPosition(null);
-
-            // If item was dragged enough, then fire DoDragDrop. 
-            // Otherwise it means user click on item and there is no need to fire DoDragDrop.
-            if ((System.Math.Abs(currentPosition.X - startPosition.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                System.Math.Abs(currentPosition.Y - startPosition.Y) > SystemParameters.MinimumVerticalDragDistance) &&
-                !IsDragging)
-            {
-                StartDrag(e);
-            }
-
-        }
-
-        private void StartDrag(MouseEventArgs e)
-        {
-            IsDragging = true;
             var senderButton = e.OriginalSource as FrameworkElement;
-
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-            {
-                IsDragging = false;
-                return;
-            }
-
-            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
-            IsDragging = false;
+            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
         }
 
-        private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            startPosition = e.GetPosition(null);
-        }
+        #endregion
 
     }
 }

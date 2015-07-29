@@ -37,7 +37,8 @@ namespace ProtoTest.DebugTests
             base.TearDown();
         }
 
-        [Test] 
+        [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpression1()
         {
@@ -925,6 +926,7 @@ class Vector
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void TestWatchExpressionInClassMember1()
         {
@@ -8339,6 +8341,7 @@ test = a1.x; //expected : { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("Debugger")]
         public void Defect_IDE_434()
         {
@@ -9807,6 +9810,7 @@ b = 2;";
             }
         }
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void Testmemberpropertyinwatch_476()
         {
@@ -9873,6 +9877,7 @@ b = 2;";
 
         }
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_476_2()
         {
@@ -9938,6 +9943,7 @@ b = 2;";
             }
         }
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void Testprivatememberpropertyinwatch_476_3()
         {
@@ -11169,6 +11175,7 @@ surfaceGeom = sphere.Faces[0].SurfaceGeometry.SetVisibility(true);", runnerConfi
         [Test]
         [Category("Debugger")]
         [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void Defect_IDE_656_1()
         {
             fsr.PreStart(
@@ -11296,6 +11303,7 @@ c = 90;", runnerConfig);
         [Test]
         [Category("Debugger")]
         [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void Defect_IDE_656_2()
         {
             fsr.PreStart(
@@ -11454,6 +11462,7 @@ b = 2;", runnerConfig);
 
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("Debugger")]
         public void Defect_IDE_721()
         {
@@ -12134,6 +12143,7 @@ lines = Line.ByStartPointEndPoint( startPts<1>, endPts<2> );
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
 
         public void inlineconditional_stepin_656_1()
@@ -12894,6 +12904,7 @@ c = 90;
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_13()
         {
@@ -12946,7 +12957,7 @@ a =
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
-
+        [Category("ModifierBlock")] 
         public void inlineconditional_stepin_656_13()
         {
             // Execute and verify the main script in a debug session
@@ -13188,6 +13199,7 @@ list3 = GetCoor(list1);
         }
 
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner")]
         public void inlineconditional_stepnext_656_14()
         {
@@ -13238,6 +13250,7 @@ a =
         [Test]
         [Category("ExpressionInterpreterRunner")]
         [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void inlineconditional_stepin_656_14()
         {
             // Execute and verify the main script in a debug session
@@ -14442,6 +14455,7 @@ a : Dummy = null;
             Assert.AreEqual(2, (Int64)objExecVal.Payload);
         }
         [Test]
+        [Category("ModifierBlock")] 
         [Category("ExpressionInterpreterRunner"), Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestDebug_757()
         {
