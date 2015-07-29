@@ -26,13 +26,18 @@ namespace Dynamo.Extensions
         public ICustomNodeManager CustomNodeManager { get { return customNodeManager; } }
         private readonly ICustomNodeManager customNodeManager;
 
+        public Version DynamoVersion { get { return dynamoVersion; } }
+        private readonly Version dynamoVersion;
+
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
-            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager)
+            ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
+            Version dynamoVersion)
         {
             this.authProvider = provider;
             this.pathManager = pathManager;
             this.libraryLoader = libraryLoader;
             this.customNodeManager = customNodeManager;
+            this.dynamoVersion = dynamoVersion;
         }
     }
 }
