@@ -29,7 +29,7 @@ namespace Dynamo.Controls
         private const double ScaleFactor = MaxMajorGridSpacing / MinMajorGridSpacing;
 
         // Zoom dependent data members.
-        private double startX, startY, scale = 1.0;
+        private double startX, startY;
 
         private WorkspaceModel workspaceModel;
         private Pen majorGridPen, minorGridPen;
@@ -77,32 +77,35 @@ namespace Dynamo.Controls
             }
 
             workspaceModel = workspaceView.ViewModel.Model;
-            workspaceModel.ZoomChanged += OnWorkspaceZoomChanged;
-            workspaceModel.CurrentOffsetChanged += OnWorkspaceOffsetChanged;
+            workspaceModel.PropertyChanged += OnWorkspacePropertyChanged;
         }
 
-        private void OnWorkspaceZoomChanged(object sender, EventArgs e)
+        void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateDrawingVisual();
-        }
-
-        private void OnWorkspaceOffsetChanged(object sender, EventArgs e)
-        {
-            UpdateDrawingVisual();
+            switch (e.PropertyName)
+            {
+                case "X":
+                case "Y":
+                case "Zoom":
+                    UpdateDrawingVisual();
+                    break;
+            }
         }
 
         private void UninitializeOnce()
         {
             if (workspaceModel != null)
             {
-                workspaceModel.ZoomChanged -= OnWorkspaceZoomChanged;
-                workspaceModel.CurrentOffsetChanged -= OnWorkspaceOffsetChanged;
+                workspaceModel.PropertyChanged -= OnWorkspacePropertyChanged;
             }
         }
 
         private void UpdateDrawingVisual()
         {
-            var localScale = scale;
+            if (workspaceModel == null)
+                return;
+
+            var localScale = workspaceModel.Zoom;
             while (localScale * MajorGridLineSpacing < MinMajorGridSpacing)
                 localScale = localScale * ScaleFactor;
             while (localScale * MajorGridLineSpacing > MaxMajorGridSpacing)
