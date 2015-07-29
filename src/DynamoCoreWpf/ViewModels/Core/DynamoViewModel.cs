@@ -484,7 +484,7 @@ namespace Dynamo.ViewModels
 
             SubscribeDispatcherHandlers();
 
-            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model);
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
 
             var backgroundPreviewParams = new Watch3DViewModelStartupParams
             {
