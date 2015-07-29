@@ -44,7 +44,7 @@ namespace Dynamo.Publish
 
         public void Loaded(ViewLoadedParams p)
         {
-            if (publishViewModel == null)
+            if (publishViewModel == null || inviteViewModel == null)
                 return;
 
             publishViewModel.Workspaces = p.WorkspaceModels;
@@ -65,7 +65,7 @@ namespace Dynamo.Publish
 
         public void Dispose()
         {
-            ClearMenuItem(extensionMenuItem);
+            ClearMenuItem(extensionMenuItem,inviteMenuItem);             
         }
 
         #endregion
@@ -130,16 +130,18 @@ namespace Dynamo.Publish
         /// <summary>
         /// Delete menu item from Dynamo.
         /// </summary>
-        private void ClearMenuItem(MenuItem menuItem)
+        private void ClearMenuItem(params MenuItem[] menuItem)
         {
             if (dynamoMenu == null)
                 return;
+            foreach (var item in menuItem)
+            {
+                var dynamoItem = SearchForMenuItemRecursively(dynamoMenu.Items, item);
+                if (dynamoItem == null)
+                    return;
 
-            var dynamoItem = SearchForMenuItemRecursively(dynamoMenu.Items, menuItem);
-            if (dynamoItem == null)
-                return;
-
-            dynamoItem.Items.Remove(menuItem);
+                dynamoItem.Items.Remove(menuItem);
+            }
         }
 
 
