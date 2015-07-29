@@ -84,10 +84,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected override void OnUpdatedRenderPackagesAvailable(NodeModel updatedNode,
             IEnumerable<IRenderPackage> renderPackages)
         {
+            if (node == null) return;
+
             var visibleUpstream = new List<NodeModel>();
             node.VisibleUpstreamNodes(visibleUpstream);
 
-            if (node == null || !visibleUpstream.Contains(updatedNode))
+            if (!visibleUpstream.Contains(updatedNode))
             {
                 return;
             }
