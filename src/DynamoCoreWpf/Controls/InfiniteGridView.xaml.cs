@@ -1,5 +1,9 @@
-﻿using System;
+﻿using Dynamo.Models;
+using Dynamo.Utilities;
+using Dynamo.Views;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -16,6 +20,8 @@ namespace Dynamo.Controls
 {
     public class GridVisualHost : FrameworkElement
     {
+        #region Private Class Data Members
+
         private const int MinorDivisions = 5;
         private const int MajorGridLineSpacing = 100;
         private const double MinMajorGridSpacing = 50;
@@ -25,8 +31,13 @@ namespace Dynamo.Controls
         // Zoom dependent data members.
         private double startX, startY, scale = 1.0;
 
+        private WorkspaceModel workspaceModel;
         private Pen majorGridPen, minorGridPen;
         private DrawingVisual drawingVisual = new DrawingVisual();
+
+        #endregion
+
+        #region Public Class Methods
 
         public GridVisualHost()
         {
@@ -37,15 +48,8 @@ namespace Dynamo.Controls
 
             AddVisualChild(drawingVisual);
             this.SizeChanged += (s, e) => UpdateDrawingVisual();
-            this.MouseWheel += (s, e) =>
-            {
-                scale += scale * ((e.Delta > 0) ? 0.1 : -0.1);
-                UpdateDrawingVisual();
-            };
-        }
-
-        void VisualHost_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
+            this.Loaded += (s, e) => InitializeOnce();
+            this.Unloaded += (s, e) => UninitializeOnce();
         }
 
         protected override int VisualChildrenCount
@@ -58,6 +62,44 @@ namespace Dynamo.Controls
             return drawingVisual;
         }
 
+        #endregion
+
+        #region Private Class Helper and Event Handlers
+
+        private void InitializeOnce()
+        {
+            var workspaceView = WpfUtilities.FindUpVisualTree<WorkspaceView>(this);
+
+            if (workspaceView == null)
+            {
+                throw new InvalidOperationException(
+                    "InfiniteGridView should be a nested element of WorkspaceView");
+            }
+
+            workspaceModel = workspaceView.ViewModel.Model;
+            workspaceModel.ZoomChanged += OnWorkspaceZoomChanged;
+            workspaceModel.CurrentOffsetChanged += OnWorkspaceOffsetChanged;
+        }
+
+        private void OnWorkspaceZoomChanged(object sender, EventArgs e)
+        {
+            UpdateDrawingVisual();
+        }
+
+        private void OnWorkspaceOffsetChanged(object sender, EventArgs e)
+        {
+            UpdateDrawingVisual();
+        }
+
+        private void UninitializeOnce()
+        {
+            if (workspaceModel != null)
+            {
+                workspaceModel.ZoomChanged -= OnWorkspaceZoomChanged;
+                workspaceModel.CurrentOffsetChanged -= OnWorkspaceOffsetChanged;
+            }
+        }
+
         private void UpdateDrawingVisual()
         {
             var localScale = scale;
@@ -68,7 +110,6 @@ namespace Dynamo.Controls
 
             var unitGrid = (localScale * (MajorGridLineSpacing / MinorDivisions));
             var context = drawingVisual.RenderOpen();
-            // context.DrawRectangle(Brushes.LimeGreen, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
             #region Vertical grid lines
 
@@ -116,6 +157,8 @@ namespace Dynamo.Controls
 
             context.Close();
         }
+
+        #endregion
     }
 
     public partial class InfiniteGridView : UserControl
