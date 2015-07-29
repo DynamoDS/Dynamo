@@ -484,13 +484,16 @@ Imperative_whilestmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                     .)
         '{'
             Imperative_stmtlist<out body>       (. whileStmtNode.Body = body; .)                  
-        '}'                         (. NodeUtils.SetNodeEndLocation(whileStmtNode, t);  .)
-                                    (. node = whileStmtNode;                            .)
+        '}'                         
+                                    (. 
+                                       NodeUtils.SetNodeEndLocation(whileStmtNode, t);
+                                       node = whileStmtNode;
+                                    .)
+
 .
 Imperative_forloop<out ProtoCore.AST.ImperativeAST.ImperativeNode forloop>
 =
                                         (. 
-                                            ProtoCore.AST.ImperativeAST.IfStmtNode dummyIfNode = new ProtoCore.AST.ImperativeAST.IfStmtNode();
                                             ProtoCore.AST.ImperativeAST.ImperativeNode node;
                                             ProtoCore.AST.ImperativeAST.ForLoopNode loopNode = new ProtoCore.AST.ImperativeAST.ForLoopNode();
                                             List<ProtoCore.AST.ImperativeAST.ImperativeNode> body = null;   
@@ -503,10 +506,12 @@ Imperative_forloop<out ProtoCore.AST.ImperativeAST.ImperativeNode forloop>
         ')'
         (
             (
-                '{'                                     
-                    Imperative_stmtlist<out body>           (. loopNode.body = body; .)
+                '{'                                         
+                Imperative_stmtlist<out body>   
+                    (.  loopNode.body = body; .)
                 '}'
-                                                            (. NodeUtils.SetNodeEndLocation(loopNode, t); .)
+
+                    (.  NodeUtils.SetNodeEndLocation(loopNode, t); .)
             )
             |
             (                               (. ProtoCore.AST.ImperativeAST.ImperativeNode singleStmt = null; .)
@@ -514,14 +519,7 @@ Imperative_forloop<out ProtoCore.AST.ImperativeAST.ImperativeNode forloop>
             )
         )                                                   
         (.
-            dummyIfNode.IfExprNode
-            = new ProtoCore.AST.ImperativeAST.BooleanNode(true);
-            dummyIfNode.IfBody.Add(loopNode);
-            dummyIfNode.line = loopNode.line;
-            dummyIfNode.col = loopNode.col;
-            dummyIfNode.endLine = loopNode.endLine;
-            dummyIfNode.endCol = loopNode.endCol;
-            forloop = dummyIfNode;
+            forloop = loopNode;
         .)
 .
 

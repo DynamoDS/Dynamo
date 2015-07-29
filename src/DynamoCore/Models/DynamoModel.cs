@@ -571,7 +571,7 @@ namespace Dynamo.Models
             {
                 var startupParams = new StartupParams(config.AuthProvider,
                     pathManager, new ExtensionLibraryLoader(this), 
-                    CustomNodeManager);
+                    CustomNodeManager, GetType().Assembly.GetName().Version);
 
                 foreach (var ext in extensions)
                 {
