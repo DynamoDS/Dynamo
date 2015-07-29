@@ -25,7 +25,7 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <dynui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <dynui:SharedResourceDictionary Source="{x:Static dynui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="{x:Type ContextMenu}"
