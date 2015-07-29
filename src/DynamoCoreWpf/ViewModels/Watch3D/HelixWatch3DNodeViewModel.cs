@@ -9,7 +9,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class HelixWatch3DNodeViewModel : HelixWatch3DViewModel
     {
-        private NodeModel node;
+        private readonly NodeModel node;
 
         public static HelixWatch3DNodeViewModel Start(NodeModel node, Watch3DViewModelStartupParams parameters)
         {
