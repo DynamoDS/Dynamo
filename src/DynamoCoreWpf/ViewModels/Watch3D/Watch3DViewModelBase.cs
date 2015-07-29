@@ -231,7 +231,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach (var node in ws.Nodes)
                 {
                     node.PropertyChanged += OnNodePropertyChanged;
-                    node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
+                    node.RenderPackagesUpdated += OnRenderPackagesUpdated;
                 }
             }
         }
@@ -316,7 +316,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void RegisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged += OnNodePropertyChanged;
-            node.UpdatedRenderPackagesAvailable += OnUpdatedRenderPackagesAvailable;
+            node.RenderPackagesUpdated += OnRenderPackagesUpdated;
 
             RegisterPortEventHandlers(node);
         }
@@ -324,7 +324,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void UnregisterNodeEventHandlers(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
-            node.UpdatedRenderPackagesAvailable -= OnUpdatedRenderPackagesAvailable;
+            node.RenderPackagesUpdated -= OnRenderPackagesUpdated;
 
             UnregisterPortEventHandlers(node);
         }
@@ -362,7 +362,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        protected virtual void OnUpdatedRenderPackagesAvailable(NodeModel updatedNode, IEnumerable<IRenderPackage> packages)
+        protected virtual void OnRenderPackagesUpdated(NodeModel updatedNode, IEnumerable<IRenderPackage> packages)
         {
             OnBeginUpdate(packages);
         }

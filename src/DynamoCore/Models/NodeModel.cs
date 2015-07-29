@@ -1770,13 +1770,13 @@ namespace Dynamo.Models
 
         protected bool ShouldDisplayPreviewCore { get; set; }
         
-        public event Action<NodeModel, IEnumerable<IRenderPackage>> UpdatedRenderPackagesAvailable;
+        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
 
         public void OnUpdatedRenderPackagesAvailable(IEnumerable<IRenderPackage> packages)
         {
-            if(UpdatedRenderPackagesAvailable != null)
+            if(RenderPackagesUpdated != null)
             {
-                UpdatedRenderPackagesAvailable(this, packages);
+                RenderPackagesUpdated(this, packages);
             }
         }
     }

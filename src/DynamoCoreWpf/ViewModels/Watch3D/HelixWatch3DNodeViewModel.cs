@@ -78,7 +78,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             base.OnNodePropertyChanged(sender, e);
         }
 
-        protected override void OnUpdatedRenderPackagesAvailable(NodeModel updatedNode,
+        protected override void OnRenderPackagesUpdated(NodeModel updatedNode,
             IEnumerable<IRenderPackage> renderPackages)
         {
             if (node == null) return;
@@ -91,7 +91,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
             }
 
-            base.OnUpdatedRenderPackagesAvailable(updatedNode, renderPackages);
+            base.OnRenderPackagesUpdated(updatedNode, renderPackages);
         }
     }
 }
