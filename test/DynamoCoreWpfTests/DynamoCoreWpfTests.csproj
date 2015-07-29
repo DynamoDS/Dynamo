@@ -103,7 +103,6 @@
     <Compile Include="IconsTests.cs" />
     <Compile Include="InCanvasSearchTests.cs" />
     <Compile Include="LibraryTests.cs" />
-    <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackagePathTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
