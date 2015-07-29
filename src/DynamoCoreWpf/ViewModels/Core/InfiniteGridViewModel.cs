@@ -29,7 +29,7 @@ namespace Dynamo.ViewModels
     /// even when placed outside DragCanvas.
     ///     
     /// </summary>
-    partial class EndlessGridViewModel : ViewModelBase
+    partial class InfiniteGridViewModel : ViewModelBase
     {
         private ObservableCollection<Line> gridLines;
         public ObservableCollection<Line> GridLines
@@ -137,7 +137,7 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public EndlessGridViewModel(WorkspaceViewModel workspaceVM)
+        public InfiniteGridViewModel(WorkspaceViewModel workspaceVM)
         {
             this.workspaceVM = workspaceVM;
         }

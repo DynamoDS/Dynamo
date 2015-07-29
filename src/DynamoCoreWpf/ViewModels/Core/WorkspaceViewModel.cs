@@ -292,9 +292,8 @@ namespace Dynamo.ViewModels
             var annotationsColl = new CollectionContainer {Collection = Annotations};
             _workspaceElements.Add(annotationsColl);
 
-            // Add EndlessGrid
-            // var endlessGrid = new EndlessGridViewModel(this);
-            // _workspaceElements.Add(endlessGrid);
+            var infiniteGrid = new InfiniteGridViewModel(this);
+            _workspaceElements.Add(infiniteGrid);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes

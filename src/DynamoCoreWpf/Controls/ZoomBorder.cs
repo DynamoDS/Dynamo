@@ -201,7 +201,7 @@ namespace Dynamo.Controls
             this.Background = Brushes.Transparent;
 
             // Call ViewModel to compute data required for View
-            ((EndlessGridViewModel)this.DataContext).InitializeOnce();
+            ((InfiniteGridViewModel)this.DataContext).InitializeOnce();
 
             CreateBinding();
         }

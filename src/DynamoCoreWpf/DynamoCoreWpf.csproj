@@ -231,6 +231,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\Core\InfiniteGridViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
@@ -330,7 +331,6 @@
     <Compile Include="ViewModels\Core\DynamoViewModelDelegates.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEventArgs.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
-    <Compile Include="ViewModels\Core\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="ViewModels\Preview\IWatchViewModel.cs" />
