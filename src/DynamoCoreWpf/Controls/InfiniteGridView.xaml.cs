@@ -46,12 +46,11 @@ namespace Dynamo.Controls
             AddVisualChild(drawingVisual);
             this.SizeChanged += (s, e) => UpdateDrawingVisual();
             this.Loaded += (s, e) => InitializeOnce();
-            this.Unloaded += (s, e) => UninitializeOnce();
         }
 
         internal void HandleViewSettingsChange(double x, double y, double zoom)
         {
-            UpdateDrawingVisual();
+            UpdateDrawingVisual(x, y, zoom);
         }
 
         protected override int VisualChildrenCount
@@ -79,26 +78,6 @@ namespace Dynamo.Controls
             }
 
             workspaceModel = workspaceView.ViewModel.Model;
-            workspaceModel.PropertyChanged += OnWorkspacePropertyChanged;
-        }
-
-        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "X": // Do not handle 'Y' since it's the same as 'X'.
-                case "Zoom":
-                    UpdateDrawingVisual();
-                    break;
-            }
-        }
-
-        private void UninitializeOnce()
-        {
-            if (workspaceModel != null)
-            {
-                workspaceModel.PropertyChanged -= OnWorkspacePropertyChanged;
-            }
         }
 
         private void UpdateDrawingVisual()
@@ -106,10 +85,15 @@ namespace Dynamo.Controls
             if (workspaceModel == null)
                 return;
 
+            UpdateDrawingVisual(workspaceModel.X, workspaceModel.Y, workspaceModel.Zoom);
+        }
+
+        private void UpdateDrawingVisual(double x, double y, double zoom)
+        {
             #region Scale Adjustment
 
             // Bring scale factor to within zoom boundaries.
-            var localScale = workspaceModel.Zoom;
+            var localScale = zoom;
             while (localScale * MajorGridLineSpacing < MinMajorGridSpacing)
                 localScale = localScale * ScaleFactor;
             while (localScale * MajorGridLineSpacing > MaxMajorGridSpacing)
@@ -120,8 +104,8 @@ namespace Dynamo.Controls
             #region Positional Adjustment
 
             // The scale is know, adjust the top-left corner.
-            var startX = workspaceModel.X;
-            var startY = workspaceModel.Y;
+            var startX = x;
+            var startY = y;
             var scaledMajorGridSpacing = localScale * MajorGridLineSpacing;
 
             if (startX > 0)
