@@ -1447,7 +1447,7 @@ namespace Dynamo.Models
                     else if (model is PresetModel)
                     {
                         undoRecorder.RecordDeletionForUndo(model);
-                        presets.Remove(model as PresetModel);
+                        RemovePreset(model as PresetModel);
                     }
 
                     else if (model is NodeModel)

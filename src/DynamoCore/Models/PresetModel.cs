@@ -120,11 +120,7 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// this method will never be called for a presetModel but needs to exist for modelbase
-        /// </summary>
-        /// <param name="nodeElement"></param>
-        /// <param name="context"></param>
+        
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             var stateName = nodeElement.GetAttribute(NameAttributeName);
