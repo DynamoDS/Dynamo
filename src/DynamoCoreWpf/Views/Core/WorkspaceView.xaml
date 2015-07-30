@@ -237,7 +237,8 @@
 
         <!-- Infinite grid view should not be hittable by mouse -->
 
-        <controls:InfiniteGridView IsHitTestVisible="False">
+        <controls:InfiniteGridView x:Name="infiniteGridView"
+                                   IsHitTestVisible="False">
             <controls:InfiniteGridView.Visibility>
                 <Binding Path="DataContext.FullscreenWatchShowing"
                          Converter="{StaticResource InverseBoolToVisibilityConverter}"

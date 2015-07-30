@@ -49,6 +49,11 @@ namespace Dynamo.Controls
             this.Unloaded += (s, e) => UninitializeOnce();
         }
 
+        internal void HandleViewSettingsChange(double x, double y, double zoom)
+        {
+            UpdateDrawingVisual();
+        }
+
         protected override int VisualChildrenCount
         {
             get { return 1; }
@@ -77,7 +82,7 @@ namespace Dynamo.Controls
             workspaceModel.PropertyChanged += OnWorkspacePropertyChanged;
         }
 
-        void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -226,6 +231,21 @@ namespace Dynamo.Controls
         public InfiniteGridView()
         {
             InitializeComponent();
+        }
+
+        internal void AttachToZoomBorder(ZoomBorder zoomBorder)
+        {
+            zoomBorder.ViewSettingsChanged += OnViewSettingsChanged;
+        }
+
+        internal void DetachFromZoomBorder(ZoomBorder zoomBorder)
+        {
+            zoomBorder.ViewSettingsChanged -= OnViewSettingsChanged;
+        }
+
+        private void OnViewSettingsChanged(ViewSettingsChangedEventArgs e)
+        {
+            gridVisualHost.HandleViewSettingsChange(e.X, e.Y, e.Zoom);
         }
     }
 }

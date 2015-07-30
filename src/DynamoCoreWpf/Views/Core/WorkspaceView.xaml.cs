@@ -97,6 +97,8 @@ namespace Dynamo.Views
             {
                 ctrl.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             }
+
+            infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -111,6 +113,8 @@ namespace Dynamo.Views
             {
                 ctrl.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             }
+
+            infiniteGridView.DetachFromZoomBorder(zoomBorder);
         }
 
         private void LoadCursorState()
