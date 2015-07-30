@@ -906,6 +906,7 @@ namespace Dynamo.Models
                 {
                     //check that node still exists in this workspace, 
                     //otherwise bail on this node, check by GUID instead of nodemodel
+                    if (nodes.Select(x=>x.GUID).Contains(node.GUID))
                     {
                         var originalpos = node.Position;
                         var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
