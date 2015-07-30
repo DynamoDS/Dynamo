@@ -78,14 +78,7 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
                 WorkspaceSaved(model);
         }
-
-        public event Action RequestPresetsWarningPrompt;
-        public void OnRequestPresetWarningPrompt()
-        {
-            if (RequestPresetsWarningPrompt != null)
-                RequestPresetsWarningPrompt();
-        }
-
+     
         /// <summary>
         /// Event that is fired during the opening of the workspace.
         /// 

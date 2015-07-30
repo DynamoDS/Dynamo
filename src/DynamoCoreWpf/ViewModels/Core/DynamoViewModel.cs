@@ -1379,9 +1379,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowNewFunctionDialogAndMakeFunction(object parameter)
-        {
-            //trigger the event to request the display
-            //of the function name dialogue
+        {           
             var args = new FunctionNamePromptEventArgs();
             this.Model.OnRequestsFunctionNamePrompt(this, args);
 
@@ -1404,12 +1402,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
-            var selectedNodes = GetInputNodes().ToList();
+            var selectedNodes = GetSelectedInputNodes().ToList();
 
             //If there are NO input nodes then show the error message
             if (!selectedNodes.Any())
             {
-                this.Model.OnRequestPresetWarningPrompt();
+                this.OnRequestPresetWarningPrompt();
             }
             else
             {
@@ -1419,13 +1417,13 @@ namespace Dynamo.ViewModels
                 this.Model.OnRequestPresetNamePrompt(args);
 
                 //Select only Input nodes for preset
-                var IDS = selectedNodes.Select(x => x.GUID).ToList();
+                var ids = selectedNodes.Select(x => x.GUID).ToList();
                 if (args.Success)
                 {
-                    this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+                    this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, ids));
                 }
  
-                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
+                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, ids));
                 //Presets created - this will enable the Restore / Delete presets
                 RaisePropertyChanged("EnablePresetOptions");     
             }
@@ -1437,10 +1435,14 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
-        public IEnumerable<NodeModel> GetInputNodes()
+        /// <summary>
+        /// Gets the selected "input" nodes
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<NodeModel> GetSelectedInputNodes()
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>()
-                                .Where(x => x.IsInputNode).ToList();
+                                .Where(x => x.IsInputNode);
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)

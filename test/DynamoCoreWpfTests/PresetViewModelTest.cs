@@ -73,7 +73,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.Selection.Add(numberNode);
 
             //Check for input nodes
-            Assert.AreEqual(true, ViewModel.GetInputNodes().Any());
+            Assert.AreEqual(true, ViewModel.GetSelectedInputNodes().Any());
 
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
             ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
@@ -82,12 +82,12 @@ namespace DynamoCoreWpfTests
 
             DynamoSelection.Instance.Selection.Add(addNode);
 
-            Assert.AreEqual(false, ViewModel.GetInputNodes().Any());
+            Assert.AreEqual(false, ViewModel.GetSelectedInputNodes().Any());
 
             DynamoSelection.Instance.Selection.Add(numberNode);
 
             //Check for input nodes
-            Assert.AreEqual(true, ViewModel.GetInputNodes().Any());
+            Assert.AreEqual(true, ViewModel.GetSelectedInputNodes().Any());
 
         }
     }

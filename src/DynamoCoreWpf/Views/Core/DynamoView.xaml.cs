@@ -418,7 +418,7 @@ namespace Dynamo.Controls
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestPresetNamePrompt;
-            dynamoViewModel.Model.RequestPresetsWarningPrompt += DynamoViewModelRequestPresetWarningPrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt += DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
@@ -934,7 +934,7 @@ namespace Dynamo.Controls
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestPresetNamePrompt;
-            dynamoViewModel.Model.RequestPresetsWarningPrompt -= DynamoViewModelRequestPresetWarningPrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt -= DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
