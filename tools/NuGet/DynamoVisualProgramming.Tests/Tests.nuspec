@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>DynamoVisualProgramming.Tests</id>
-    <version>0.7.5.2</version>
+    <version>0.8.2</version>
     <authors>Autodesk</authors>
     <owners>Autodesk</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
@@ -10,6 +10,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Unit and system test infrastructure for Dynamo.</description>
     <summary>This package contains all that is required to get up and running creating tests for Dynamo libraries.</summary>
-    <copyright>Copyright Autodesk 2014</copyright>
+    <copyright>Copyright Autodesk 2015</copyright>
+    <dependencies>
+        <dependency id="Prism" version="4.1"/>
+        <dependency id="NUnit" version="2.6.3"/>
+    </dependencies>
   </metadata>
 </package>
