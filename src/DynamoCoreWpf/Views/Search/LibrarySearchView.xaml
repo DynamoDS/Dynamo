@@ -124,7 +124,9 @@
                             <Button Command="{Binding ClickedCommand}"
                                     Focusable="False"
                                     MouseEnter="OnMemberMouseEnter"
-                                    MouseLeave="OnPopupMouseLeave">
+                                    MouseLeave="OnPopupMouseLeave"
+                                    PreviewMouseLeftButtonDown="OnButtonMouseLeftButtonDown"
+                                    PreviewMouseMove="OnButtonPreviewMouseMove">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <ContentPresenter />

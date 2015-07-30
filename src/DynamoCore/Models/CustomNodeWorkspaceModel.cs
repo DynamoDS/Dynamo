@@ -6,10 +6,11 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
 using ProtoCore.Namespace;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Models
 {
-    public class CustomNodeWorkspaceModel : WorkspaceModel
+    public class CustomNodeWorkspaceModel : WorkspaceModel, ICustomNodeWorkspaceModel
     {
         public Guid CustomNodeId
         {

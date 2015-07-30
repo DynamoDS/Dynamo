@@ -270,7 +270,7 @@ namespace DSOffice
         /// <param name="sheetName">Name of the worksheet containing the data.</param>
         /// <param name="readAsStrings">toggle to switch between reading Excel file as strings only or not</param>
         /// <returns name="data">Rows of data from the Excel worksheet.</returns>
-        /// <search>office,excel,spreadsheet</search>
+        /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
         public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false)
         {
             WorkBook wb = WorkBook.ReadExcelFile(file.FullName);

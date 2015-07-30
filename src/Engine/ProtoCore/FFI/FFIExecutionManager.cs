@@ -15,7 +15,7 @@ namespace ProtoFFI
         }
 
         Dictionary<RuntimeCore, FFIExecutionSession> mSessions = new Dictionary<RuntimeCore, FFIExecutionSession>();
-        ExtensionAppLoader mApploader = new ExtensionAppLoader();
+        ExtensionAppLoader mApploader = ExtensionAppLoader.Instance;
 
         static FFIExecutionManager mSelf;
 
