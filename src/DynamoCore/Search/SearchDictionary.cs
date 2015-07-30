@@ -237,10 +237,6 @@ namespace Dynamo.Search
             int numberOfMatchSymbols = 0;
             int numberOfAllSymbols = 0;
 
-            int a = 0;
-            if (key.Contains("cube"))
-                a = 1;
-
             foreach (var subPattern in subPatterns)
             {
                 for (int i = subPattern.Length; i >= 1; i--)
