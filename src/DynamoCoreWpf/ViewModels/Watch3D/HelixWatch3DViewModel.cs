@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Wpf.Rendering;
@@ -24,7 +23,6 @@ using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
-using Geometry3D = HelixToolkit.Wpf.SharpDX.Geometry3D;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
@@ -217,8 +215,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                if (viewModel.IsPanning) return ViewportCommands.Pan;
-                if (viewModel.IsOrbiting) return ViewportCommands.Rotate;
+                if (IsPanning) return ViewportCommands.Pan;
+                if (IsOrbiting) return ViewportCommands.Rotate;
 
                 return null;
             }
@@ -312,7 +310,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void OnActiveStateChanged()
         {
-            model.PreferenceSettings.IsBackgroundPreviewActive = active;
+            preferences.IsBackgroundPreviewActive = active;
 
             if (active == false && CanNavigateBackground)
             {
@@ -400,7 +398,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "IsUpdated":
                 case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, viewModel.RenderPackageFactoryViewModel.Factory);
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     break;
 
                 case "IsVisible":
@@ -412,7 +410,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
 
                     node.IsUpdated = true;
-                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
+                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
 
                     break;
             }
@@ -465,7 +463,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var model = Model3DDictionary[kvp.Key] as GeometryModel3D;
                     if (model != null)
                     {
-                        model.MouseDown3D -= MeshGeometry3DMouseDown3DHandler;
                         model.Detach();
                     }
                     Model3DDictionary.Remove(kvp.Key);
@@ -487,7 +484,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
                         node.IsUpdated = true;
-                        node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
+                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
                     }
                     break;
             }
@@ -571,9 +568,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void LogCameraWarning(string msg, Exception ex)
         {
-            model.Logger.Log(msg, LogLevel.Console);
-            model.Logger.Log(msg, LogLevel.File);
-            model.Logger.Log(ex.Message, LogLevel.File);
+            logger.LogWarning(msg, WarningLevel.Mild);
+            logger.Log(msg);
+            logger.Log(ex.Message);
         }
 
         private void SaveCamera(XmlElement camerasElement)
@@ -907,7 +904,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
-                        //pointGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                     }
 
                     var l = rp.Lines;
@@ -946,7 +942,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         lineGeometry3D.Geometry = lineSet;
                         lineGeometry3D.Name = baseId;
-                        //lineGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                     }
 
                     var m = rp.Mesh;
@@ -990,7 +985,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     meshGeometry3D.Geometry = mesh;
                     meshGeometry3D.Name = baseId;
-                    //meshGeometry3D.MouseDown3D += MeshGeometry3DMouseDown3DHandler;
                 }
 
                 AttachAllGeometryModel3DToRenderHost();
@@ -1094,21 +1088,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             foreach (var model3D in Model3DDictionary.Select(kvp => kvp.Value))
             {
                 OnRequestAttachToScene(model3D);
-            }
-        }
-
-        private void MeshGeometry3DMouseDown3DHandler(object sender, RoutedEventArgs e)
-        {
-            var args = e as Mouse3DEventArgs;
-            if (args == null) return;
-            if (args.Viewport == null) return;
-
-            foreach (var node in model.CurrentWorkspace.Nodes)
-            {
-                var foundNode = node.AstIdentifierBase.Contains(((GeometryModel3D)e.OriginalSource).Name);
-                if (!foundNode) continue;
-                DynamoSelection.Instance.ClearSelection();
-                viewModel.Model.AddToSelection(node);
             }
         }
 

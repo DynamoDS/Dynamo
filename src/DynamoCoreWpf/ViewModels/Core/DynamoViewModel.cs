@@ -26,13 +26,17 @@ using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using HelixToolkit.Wpf.SharpDX;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ISelectable = Dynamo.Selection.ISelectable;
 
 namespace Dynamo.ViewModels
 {
-    public partial class DynamoViewModel : ViewModelBase
+    public interface IDynamoViewModel : INotifyPropertyChanged
+    {
+        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
+    }
+
+    public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
         #region properties
 
@@ -257,22 +261,6 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
-        public bool IsPanning
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
-            }
-        }
-
-        public bool IsOrbiting
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
-            }
-        }
-
         public ConnectorType ConnectorType
         {
             get
@@ -486,14 +474,7 @@ namespace Dynamo.ViewModels
 
             RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
 
-            var backgroundPreviewParams = new Watch3DViewModelStartupParams
-            {
-                Model = Model,
-                Factory = RenderPackageFactoryViewModel.Factory,
-                ViewModel = this,
-                IsActiveAtStart = Model.PreferenceSettings.IsBackgroundPreviewActive,
-                Name = Resources.BackgroundPreviewName
-            };
+            var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
             var vm = HelixWatch3DViewModel.Start(backgroundPreviewParams);
             Watch3DViewModels.Add(vm);

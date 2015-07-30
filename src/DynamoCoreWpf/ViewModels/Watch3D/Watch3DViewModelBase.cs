@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Core;
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -14,13 +15,32 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
-    public struct Watch3DViewModelStartupParams
+    public class Watch3DViewModelStartupParams
     {
-        public DynamoModel Model { get; set; }
-        public IRenderPackageFactory Factory { get; set; }
-        public DynamoViewModel ViewModel { get; set; }
+        public IDynamoModel Model { get; set; }
+        public IScheduler Scheduler { get; set; }
+        public ILogger Logger { get; set; }
+        public IPreferences Preferences { get; set; }
+        public IEngineControllerManager EngineControllerManager { get; set; }
+        public IRenderPackageFactory RenderPackageFactory { get; set; }
+        public IDynamoViewModel ViewModel { get; set; }
+        public INotifyPropertyChanged RenderPackageFactoryViewModel { get;set; }
         public bool IsActiveAtStart { get; set; }
         public string Name { get; set; }
+
+        public Watch3DViewModelStartupParams(DynamoModel model, DynamoViewModel viewModel, string name)
+        {
+            Model = model;
+            Scheduler = model.Scheduler;
+            Logger = model.Logger;
+            Preferences = model.PreferenceSettings;
+            EngineControllerManager = model;
+            RenderPackageFactory = viewModel.RenderPackageFactoryViewModel.Factory;
+            ViewModel = viewModel;
+            RenderPackageFactoryViewModel = viewModel.RenderPackageFactoryViewModel;
+            IsActiveAtStart = true;
+            Name = name;
+        }
     }
 
     /// <summary>
@@ -31,9 +51,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class Watch3DViewModelBase : NotificationObject
     {
-        protected readonly DynamoModel model;
-        protected readonly DynamoViewModel viewModel;
-        protected readonly IRenderPackageFactory factory;
+        protected readonly IDynamoModel model;
+        protected readonly IScheduler scheduler;
+        protected readonly IPreferences preferences;
+        protected readonly ILogger logger;
+        protected readonly IEngineControllerManager engineManager;
+        protected readonly IRenderPackageFactory renderPackageFactory;
+        protected readonly IDynamoViewModel viewModel;
+        protected readonly INotifyPropertyChanged renderPackageFactoryViewModel;
+
         protected int renderingTier;
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
@@ -65,6 +91,30 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         protected string Name { get; set; }
 
+        internal WorkspaceViewModel CurrentSpaceViewModel
+        {
+            get
+            {
+                return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+            }
+        }
+
+        public bool IsPanning
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
+            }
+        }
+
+        public bool IsOrbiting
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
+            }
+        }
+
         private bool canNavigateBackground = false;
         public bool CanNavigateBackground
         {
@@ -79,8 +129,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected Watch3DViewModelBase(Watch3DViewModelStartupParams parameters)
         {
             model = parameters.Model;
+            scheduler = parameters.Scheduler;
+            preferences = parameters.Preferences;
+            logger = parameters.Logger;
+            engineManager = parameters.EngineControllerManager;
+            renderPackageFactory = parameters.RenderPackageFactory;
             viewModel = parameters.ViewModel;
-            factory = parameters.Factory;
+            renderPackageFactoryViewModel = parameters.RenderPackageFactoryViewModel;
+
             Active = parameters.IsActiveAtStart;
             Name = parameters.Name;
 
@@ -121,7 +177,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
+            renderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
 
             RegisterModelEventhandlers(model);
 
@@ -135,14 +191,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             viewModel.PropertyChanged -= OnViewModelPropertyChanged;
 
-            viewModel.RenderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
+            renderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
 
             UnregisterModelEventHandlers(model);
 
             UnregisterWorkspaceEventHandlers(model);
         }
 
-        private void OnModelShutdownStarted(DynamoModel model)
+        private void OnModelShutdownStarted(IDynamoModel model)
         {
             UnregisterEventHandlers();
             OnShutdown();
@@ -167,18 +223,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
             var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
 
-            model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-            model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported),
-                LogLevel.File);
-            model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported),
-                LogLevel.File);
-            model.Logger.Log(
-                string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-            model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize),
-                LogLevel.File);
+            logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier));
+            logger.LogError(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported));
+            logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported));
+            logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported));
+            logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize));
         }
 
-        private void RegisterModelEventhandlers(DynamoModel model)
+        private void RegisterModelEventhandlers(IDynamoModel model)
         {
             model.WorkspaceCleared += OnWorkspaceCleared;
             model.ShutdownStarted += OnModelShutdownStarted;
@@ -197,14 +249,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        private void UnregisterModelEventHandlers(DynamoModel model)
+        private void UnregisterModelEventHandlers(IDynamoModel model)
         {
             model.WorkspaceCleared -= OnWorkspaceCleared;
             model.ShutdownStarted -= OnModelShutdownStarted;
             model.CleaningUp -= OnClear;
         }
 
-        private void UnregisterWorkspaceEventHandlers(DynamoModel model)
+        private void UnregisterWorkspaceEventHandlers(IDynamoModel model)
         {
             model.WorkspaceAdded -= OnWorkspaceAdded;
             model.WorkspaceRemoved -= OnWorkspaceRemoved;
@@ -216,7 +268,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void RegisterWorkspaceEventHandlers(DynamoModel model)
+        private void RegisterWorkspaceEventHandlers(IDynamoModel model)
         {
             model.WorkspaceAdded += OnWorkspaceAdded;
             model.WorkspaceRemoved += OnWorkspaceRemoved;
@@ -241,8 +293,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             switch (e.PropertyName)
             {
                 case "ShowEdges":
-                    model.PreferenceSettings.ShowEdges =
-                        factory.TessellationParameters.ShowEdges;
+                    preferences.ShowEdges = renderPackageFactory.TessellationParameters.ShowEdges;
                     break;
             }
 
@@ -251,8 +302,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             foreach (var node in
                 model.CurrentWorkspace.Nodes)
             {
-                node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController,
-                        factory);
+                node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController,
+                        renderPackageFactory);
             }
         }
 

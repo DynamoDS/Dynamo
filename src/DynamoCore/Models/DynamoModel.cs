@@ -22,7 +22,6 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using DynamoServices;
@@ -44,7 +43,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         #region private members
 
