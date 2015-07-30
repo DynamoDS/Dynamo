@@ -1300,6 +1300,7 @@
             <search>
             converttosolid,bb2cube,bb2cub,bounding tosolid,cubes
             </search>
+			<weights>0.5,0.4,0.3,0.5,0.3</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToPolySurface">
              <summary>
