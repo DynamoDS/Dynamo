@@ -31,9 +31,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class Watch3DViewModelBase : NotificationObject
     {
-        protected DynamoModel model;
-        protected DynamoViewModel viewModel;
-        protected IRenderPackageFactory factory;
+        protected readonly DynamoModel model;
+        protected readonly DynamoViewModel viewModel;
+        protected readonly IRenderPackageFactory factory;
         protected int renderingTier;
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
@@ -63,7 +63,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// A name which identifies this view model when multiple
         /// Watch3DViewModel objects exist.
         /// </summary>
-        public string Name { get; protected set; }
+        protected string Name { get; set; }
 
         private bool canNavigateBackground = false;
         public bool CanNavigateBackground
