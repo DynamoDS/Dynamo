@@ -840,7 +840,12 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
+                    RaisePropertyChanged("EnablePresetOptions");
                     //RaisePropertyChanged("RunEnabled");
+                    break;
+
+                case "EnablePresetOptions":
+                    RaisePropertyChanged("EnablePresetOptions");
                     break;
             }
         }

@@ -58,5 +58,50 @@ namespace DynamoCoreWpfTests
             //Check the Preset option visibility.
             Assert.AreEqual(false, ViewModel.EnablePresetOptions);
         }
+
+        [Test]
+        public void TooglePresetVisibilityWithUndoRedo()
+        {
+            //Create a Node
+            var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+
+            //verify the node was created
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+
+            //Check the Preset option visibility.
+            Assert.AreEqual(false, ViewModel.EnablePresetOptions);
+
+            DynamoSelection.Instance.Selection.Add(addNode);
+
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            //create the preset from 2 nodes
+            ViewModel.Model.ExecuteCommand(new DynamoModel.AddPresetCommand("state1", "a state with 2 numbers", IDS));
+            
+            //assert that the preset has been created
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.Count(), 1);
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.First().Nodes.Count(), 1);
+
+            //Check the Preset option visibility.
+            Assert.AreEqual(true, ViewModel.EnablePresetOptions);
+
+            //undo the preset creation
+            ViewModel.CurrentSpace.UndoRecorder.Undo();
+
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.Count(), 0);
+
+            //Check the Preset option visibility.
+            Assert.AreEqual(false, ViewModel.EnablePresetOptions);
+
+            //redo the preset creation
+            ViewModel.CurrentSpace.UndoRecorder.Redo();
+
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.Count(), 1);
+
+            //Check the Preset option visibility.
+            Assert.AreEqual(true, ViewModel.EnablePresetOptions);
+
+        }
+
     }
 }

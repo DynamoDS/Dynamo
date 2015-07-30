@@ -1639,6 +1639,11 @@ namespace Dynamo.Models
                 var preset = new PresetModel(this.Nodes);
                 preset.Deserialize(modelData, SaveContext.Undo);
                 presets.Add(preset);
+                //we raise this property change here so that this event bubbles up through
+                //the model and to the DynamoViewModel so that presets show in the UI menu if our undo/redo
+                //created the first preset
+                RaisePropertyChanged("EnablePresetOptions");
+               
             }
             else // Other node types.
             {

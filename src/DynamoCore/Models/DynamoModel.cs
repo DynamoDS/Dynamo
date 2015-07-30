@@ -1953,6 +1953,9 @@ namespace Dynamo.Models
         {
             if (args.PropertyName == "RunEnabled")
                 OnPropertyChanged("RunEnabled");
+
+            if (args.PropertyName == "EnablePresetOptions")
+                OnPropertyChanged("EnablePresetOptions");
         }
 
         #endregion
