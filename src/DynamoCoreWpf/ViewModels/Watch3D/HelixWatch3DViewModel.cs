@@ -405,16 +405,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 case "IsVisible":
                     var geoms = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
-                    if (geoms.Any())
+                    foreach(var g in geoms)
                     {
-                        geoms.ToList()
-                            .ForEach(g => g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden);
-                        RaisePropertyChanged("SceneItems");
+                        g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden;
+                        //RaisePropertyChanged("SceneItems");
                     }
-                    else
-                    {
-                        node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
-                    }
+
+                    node.IsUpdated = true;
+                    node.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory);
+
                     break;
             }
         }

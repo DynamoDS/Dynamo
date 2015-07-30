@@ -79,7 +79,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisibleCurves(), 0);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void Node_PreviewUpstreamToggled_RenderingUpToDate()
         {
             var model = ViewModel.Model;
@@ -217,6 +217,37 @@ namespace DynamoCoreWpfTests
             crvNode.DisplayLabels = true;
 
             Assert.AreEqual(6, BackgroundPreviewGeometry.TotalText());
+        }
+
+        [Test]
+        public void Node_VisibilityOff_CachedValueUpdated_VisibilityOn_RenderDataCorrect()
+        {
+            var model = ViewModel.Model;
+
+            OpenVisualizationTest("ASM_points_line.dyn");
+
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+
+            //now flip off the preview on one of the points
+            //and ensure that the visualization updates without re-running
+            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
+            p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
+
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
+            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 1);
+
+            // Now change the number of points
+            var cbn =
+                Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "cbc582bf-1040-4184-9b28-2d8d5419e411") as CodeBlockNodeModel;
+            Assert.NotNull(cbn);
+            cbn.SetCodeContent("0..2", Model.CurrentWorkspace.ElementResolver);
+
+            // Flip the point visibility back on and ensure the visualization returns
+            p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
+
+            // Ensure that the new visualization matches the updated values.
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(4, 3, 0));
+            Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 0);
         }
 
         #endregion
