@@ -95,7 +95,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// A name which identifies this view model when multiple
         /// Watch3DViewModel objects exist.
         /// </summary>
-        protected string Name { get; set; }
+        public string Name { get; set; }
 
         internal WorkspaceViewModel CurrentSpaceViewModel
         {
