@@ -2884,7 +2884,7 @@ namespace ProtoCore
                 buildStatus.LogSemanticError(string.Format(Resources.UnknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
-            attribute.ClassIndex = cix;
+            attribute.ClassNode = core.ClassTable.ClassNodes[cix];
             attribute.Arguments = new List<Node>();
             foreach (dynamic attr in anode.FormalArguments)
             {

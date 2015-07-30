@@ -15,7 +15,8 @@ namespace ProtoCore
     /// </summary>
     public class InternalAttributes
     {
-        private const string kInternalClassName = "InternalClassAttribute";
+        private const string kAttributeSuffix = "Attribute";
+        public const string kInternalClassName = "InternalClass";
 
         public ProtoCore.DSASM.ClassTable ClassTable { get; private set; }
 
@@ -31,7 +32,7 @@ namespace ProtoCore
 
             ClassNode cnode = null;
 
-            cnode = new ClassNode { name = kInternalClassName};
+            cnode = new ClassNode { name = kInternalClassName + kAttributeSuffix };
             ClassTable.Append(cnode);
         }
     }

@@ -5382,14 +5382,50 @@ namespace ProtoAssociative
             unPopulatedClasses.Remove(thisClassIndex);
         }
 
+        /// <summary>
+        /// Determines if a class is allowed to be codegened based on certain conditions in the class node
+        /// </summary>
+        /// <param name="classNode"></param>
+        /// <returns></returns>
+        private bool IsClassAllowed(ClassDeclNode classDecl)
+        {
+            if (classDecl.Attributes != null)
+            {
+                // If at least one attribute is internal then the class is allowed
+                List<AttributeEntry> attributesList = PopulateAttributes(classDecl.Attributes);
+                foreach (AttributeEntry entry in attributesList)
+                {
+                    if (entry.IsInternalClassAttribute())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private void EmitClassDeclNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone,
             GraphNode graphNode = null)
         {
             ClassDeclNode classDecl = node as ClassDeclNode;
 
+            // Restrict classes 
+            if (!IsClassAllowed(classDecl))
+            {
+                buildStatus.LogWarning(
+                    WarningID.kUserDefinedClassNotAllowed, 
+                    "User defined classes are not allowed", 
+                    core.CurrentDSFileName,
+                    classDecl.line,
+                    classDecl.col,
+                    graphNode);
+
+                return;
+            }
             // Handling n-pass on class declaration
             if (ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassName == compilePass)
             {
+
                 // Class name pass
                 // Populating the class tables with the class names
                 if (null != codeBlock.parent)
@@ -5599,6 +5635,7 @@ namespace ProtoAssociative
                     {
                         thisClass.Attributes = PopulateAttributes(classDecl.Attributes);
                     }
+
                     // member variable
                     int ix = -1;
                     int currentClassScope = -1;

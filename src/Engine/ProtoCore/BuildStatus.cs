@@ -50,6 +50,7 @@ namespace ProtoCore
             kAlreadyImported,
             kMultipleSymbolFound,
             kMultipleSymbolFoundFromName,
+            kUserDefinedClassNotAllowed,
             kWarnMax
         }
 
