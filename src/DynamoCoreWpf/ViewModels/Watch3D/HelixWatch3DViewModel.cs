@@ -16,6 +16,7 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
@@ -224,6 +225,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public DelegateCommand ToggleOrbitCommand { get; set; }
 
+        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
+
         /// <summary>
         /// The LeftClickCommand is set according to the
         /// ViewModel's IsPanning or IsOrbiting properties.
@@ -279,6 +282,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private bool canNavigateBackground = false;
+        public bool CanNavigateBackground
+        {
+            get { return canNavigateBackground; }
+            set
+            {
+                canNavigateBackground = value;
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+
         #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
@@ -287,6 +301,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
+            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
         }
 
         public static HelixWatch3DViewModel Start(Watch3DViewModelStartupParams parameters)
@@ -1213,6 +1228,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         private static bool CanToggleOrbit(object parameter)
+        {
+            return true;
+        }
+
+        public void ToggleCanNavigateBackground(object parameter)
+        {
+            if (!Active)
+                return;
+
+            CanNavigateBackground = !CanNavigateBackground;
+
+            InstrumentationLogger.LogAnonymousScreen(CanNavigateBackground ? "Geometry" : "Nodes");
+        }
+
+        internal bool CanToggleCanNavigateBackground(object parameter)
         {
             return true;
         }

@@ -385,9 +385,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public Watch3DViewModelBase BackgroundPreviewViewModel
+        public HelixWatch3DViewModel BackgroundPreviewViewModel
         {
-            get { return Watch3DViewModels.First(vm => vm is HelixWatch3DViewModel); }
+            get
+            {
+                var result = Watch3DViewModels.FirstOrDefault(vm => vm is HelixWatch3DViewModel);
+
+                return (HelixWatch3DViewModel) result;
+            }
         }
 
         public bool BackgroundPreviewActive
@@ -476,9 +481,9 @@ namespace Dynamo.ViewModels
 
             var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
 
-            var vm = HelixWatch3DViewModel.Start(backgroundPreviewParams);
-            Watch3DViewModels.Add(vm);
-            vm.PropertyChanged += HelixWatch3DViewModelPropertyChanged;
+            var watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);
+            Watch3DViewModels.Add(watch3DViewModel);
+            watch3DViewModel.PropertyChanged += HelixWatch3DViewModelPropertyChanged;
         }
 
         void HelixWatch3DViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -487,7 +492,14 @@ namespace Dynamo.ViewModels
             {
                 case "Active":
                     RaisePropertyChanged("BackgroundPreviewActive");
-                    RaisePropertyChanged("CanNavigateBackground");
+                    
+                    break;
+                case "CanNavigateBackground":
+                    if (!((HelixWatch3DViewModel)BackgroundPreviewViewModel).CanNavigateBackground)
+                    {
+                        // Return focus back to Search View (Search Field)
+                        SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
+                    }
                     break;
             }
         }
@@ -1396,31 +1408,6 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanShowSaveDialogAndSaveResult(object parameter)
-        {
-            return true;
-        }
-
-        public void ToggleCanNavigateBackground(object parameter)
-        {
-            if (!BackgroundPreviewActive)
-                return;
-
-            BackgroundPreviewViewModel.CanNavigateBackground = !BackgroundPreviewViewModel.CanNavigateBackground;
-
-            if (BackgroundPreviewViewModel.CanNavigateBackground)
-                InstrumentationLogger.LogAnonymousScreen("Geometry");
-            else
-                InstrumentationLogger.LogAnonymousScreen("Nodes");
-
-
-            if (!BackgroundPreviewViewModel.CanNavigateBackground)
-            {
-                // Return focus back to Search View (Search Field)
-                this.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
-            }
-        }
-
-        internal bool CanToggleCanNavigateBackground(object parameter)
         {
             return true;
         }

@@ -34,57 +34,44 @@
     
     <Grid Name="inputGrid"
             x:FieldModifier="public"
-            MinHeight="100" MinWidth="100">
+            MinHeight="100" MinWidth="100" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:Watch3DView}}}">
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public">
+                         x:FieldModifier="public"
+                         DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
 
-                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuSwitchView}">
-                    <MenuItem.Command>
-                        <Binding Path="PlacementTarget.DataContext.ToggleCanNavigateBackgroundCommand"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
-                    </MenuItem.Command>
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuSwitchView}" 
+                          Command="{Binding Path=ToggleCanNavigateBackgroundCommand}">
                     <MenuItem.Visibility>
-                        <Binding Path="PlacementTarget.DataContext"
+                        <Binding Path=""
                                  Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
                                  Converter="{StaticResource Watch3DViewModelTypeToVisibilityConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 
-                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuRotate}">
-                    <MenuItem.Command>
-                        <Binding Path="PlacementTarget.DataContext.ToggleOrbitCommand"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
-                    </MenuItem.Command>
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuRotate}" 
+                          Command="{Binding Path=ToggleOrbitCommand}">
                     <MenuItem.IsChecked>
-                        <Binding Path="PlacementTarget.DataContext.IsOrbiting"
-                                 Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                        <Binding Path="IsOrbiting"
+                                 Mode="OneWay"/>
                     </MenuItem.IsChecked>
                     <MenuItem.Visibility>
-                        <Binding Path="PlacementTarget.DataContext"
+                        <Binding Path=""
                                  Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
                                  Converter="{StaticResource Watch3DViewModelTypeToVisibilityConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 
-                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuPan}">
-                    <MenuItem.Command>
-                        <Binding Path="PlacementTarget.DataContext.TogglePanCommand"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
-                    </MenuItem.Command>
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuPan}" 
+                          Command="{Binding Path=TogglePanCommand}">
                     <MenuItem.IsChecked>
-                        <Binding Path="PlacementTarget.DataContext.IsPanning"
-                                 Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                        <Binding Path="IsPanning"
+                                 Mode="OneWay"/>
                     </MenuItem.IsChecked>
                     <MenuItem.Visibility>
-                        <Binding Path="PlacementTarget.DataContext"
+                        <Binding Path=""
                                  Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
                                  Converter="{StaticResource Watch3DViewModelTypeToVisibilityConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
@@ -94,9 +81,8 @@
 
                 <MenuItem Header="Show Preview Settings Control" Focusable="False" IsCheckable="True">
                     <MenuItem.IsChecked>
-                        <Binding Path="PlacementTarget.DataContext.ShowWatchSettingsControl"
-                                 Mode="TwoWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                        <Binding Path="ShowWatchSettingsControl"
+                                 Mode="TwoWay"/>
                     </MenuItem.IsChecked>
                 </MenuItem>
                 

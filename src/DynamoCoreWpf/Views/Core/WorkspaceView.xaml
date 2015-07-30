@@ -286,7 +286,7 @@
                     <Separator />
 
                     <MenuItem Header="{x:Static p:Resources.ContextMenuGeometryView}"
-                              Command="{Binding DynamoViewModel.ToggleCanNavigateBackgroundCommand}" />
+                              Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                     <MenuItem Header="{x:Static p:Resources.ContextMenuPan}"
                               Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.TogglePanCommand}">
                         <MenuItem.IsChecked>

@@ -2323,7 +2323,7 @@ namespace Dynamo.Controls
             {
                 if(value is HelixWatch3DNodeViewModel)
                 {
-                    return Visibility.Hidden;
+                    return Visibility.Collapsed;
                 }
 
                 return Visibility.Visible;

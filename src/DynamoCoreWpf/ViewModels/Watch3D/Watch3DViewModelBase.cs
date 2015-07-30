@@ -69,7 +69,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
-        
+
         /// <summary>
         /// A flag which indicates whether geometry should be processed.
         /// </summary>
@@ -84,6 +84,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
                 active = value;
+
                 RaisePropertyChanged("Active");
 
                 OnActiveStateChanged();
@@ -101,17 +102,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             get
             {
                 return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
-            }
-        }
-
-        private bool canNavigateBackground = false;
-        public bool CanNavigateBackground
-        {
-            get { return canNavigateBackground; }
-            set
-            {
-                canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
             }
         }
 
