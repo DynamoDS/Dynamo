@@ -5408,9 +5408,9 @@ namespace ProtoAssociative
             GraphNode graphNode = null)
         {
             ClassDeclNode classDecl = node as ClassDeclNode;
-
+            
             // Restrict classes 
-            if (!IsClassAllowed(classDecl))
+            if (!classDecl.IsExternLib && !IsClassAllowed(classDecl))
             {
                 buildStatus.LogWarning(
                     WarningID.kUserDefinedClassNotAllowed, 
