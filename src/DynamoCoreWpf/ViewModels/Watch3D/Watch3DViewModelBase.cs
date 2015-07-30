@@ -362,7 +362,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        protected virtual void OnRenderPackagesUpdated(NodeModel updatedNode, IEnumerable<IRenderPackage> packages)
+        protected virtual void OnRenderPackagesUpdated(Guid nodeGuid, IEnumerable<IRenderPackage> packages)
         {
             OnBeginUpdate(packages);
         }
