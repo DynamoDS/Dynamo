@@ -16,6 +16,7 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Commands;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
@@ -203,6 +204,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        public bool IsPanning
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
+            }
+        }
+
+        public bool IsOrbiting
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
+            }
+        }
+
+        public DelegateCommand TogglePanCommand { get; set; }
+
+        public DelegateCommand ToggleOrbitCommand { get; set; }
+
         /// <summary>
         /// The LeftClickCommand is set according to the
         /// ViewModel's IsPanning or IsOrbiting properties.
@@ -263,6 +284,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
         {
             IsResizable = false;
+
+            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
         }
 
         public static HelixWatch3DViewModel Start(Watch3DViewModelStartupParams parameters)
@@ -1153,6 +1177,44 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 tw.WriteLine("endsolid {0}", model.CurrentWorkspace.Name);
             }
+        }
+
+        #endregion
+
+        #region command methods
+
+        internal override void TogglePan(object parameter)
+        {
+            CurrentSpaceViewModel.RequestTogglePanMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
+            RaisePropertyChanged("LeftClickCommand");
+        }
+
+        private static bool CanTogglePan(object parameter)
+        {
+            return true;
+        }
+
+        private void ToggleOrbit(object parameter)
+        {
+            CurrentSpaceViewModel.RequestToggleOrbitMode();
+
+            // Since panning and orbiting modes are exclusive from one another,
+            // turning one on may turn the other off. This is the reason we must
+            // raise property change for both at the same time to update visual.
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
+            RaisePropertyChanged("LeftClickCommand");
+        }
+
+        private static bool CanToggleOrbit(object parameter)
+        {
+            return true;
         }
 
         #endregion

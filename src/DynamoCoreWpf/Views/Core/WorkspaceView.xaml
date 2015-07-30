@@ -288,9 +288,9 @@
                     <MenuItem Header="{x:Static p:Resources.ContextMenuGeometryView}"
                               Command="{Binding DynamoViewModel.ToggleCanNavigateBackgroundCommand}" />
                     <MenuItem Header="{x:Static p:Resources.ContextMenuPan}"
-                              Command="{Binding DynamoViewModel.TogglePanCommand}">
+                              Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.TogglePanCommand}">
                         <MenuItem.IsChecked>
-                            <Binding Path="DynamoViewModel.IsPanning"
+                            <Binding Path="DynamoViewModel.BackgroundPreviewViewModel.IsPanning"
                                      Mode="OneWay" />
                         </MenuItem.IsChecked>
                     </MenuItem>
@@ -340,11 +340,11 @@
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-check.png">
                 <ui:ImageCheckBox.Command>
-                    <Binding Path="DataContext.TogglePanCommand"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.TogglePanCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.IsPanning"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsPanning"
                              Mode="OneWay"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
@@ -355,11 +355,11 @@
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-check.png">
                 <ui:ImageCheckBox.Command>
-                    <Binding Path="DataContext.ToggleOrbitCommand"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.ToggleOrbitCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.IsOrbiting"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsOrbiting"
                              Mode="OneWay"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>

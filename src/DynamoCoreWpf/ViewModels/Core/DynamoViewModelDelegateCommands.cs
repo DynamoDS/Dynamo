@@ -68,8 +68,6 @@ namespace Dynamo.ViewModels
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
-            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
-            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
@@ -142,8 +140,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
-        public DelegateCommand TogglePanCommand { get; set; }
-        public DelegateCommand ToggleOrbitCommand { get; set; }
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }

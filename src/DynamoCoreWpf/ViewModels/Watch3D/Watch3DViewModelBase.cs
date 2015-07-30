@@ -69,7 +69,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
-
+        
         /// <summary>
         /// A flag which indicates whether geometry should be processed.
         /// </summary>
@@ -101,22 +101,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             get
             {
                 return viewModel.Workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
-            }
-        }
-
-        public bool IsPanning
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
-            }
-        }
-
-        public bool IsOrbiting
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
             }
         }
 
@@ -180,8 +164,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             LogVisualizationCapabilities();
 
-            viewModel.PropertyChanged += OnViewModelPropertyChanged;
-
             renderPackageFactoryViewModel.PropertyChanged += OnRenderPackageFactoryViewModelPropertyChanged;
 
             RegisterModelEventhandlers(model);
@@ -194,8 +176,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
 
-            viewModel.PropertyChanged -= OnViewModelPropertyChanged;
-
             renderPackageFactoryViewModel.PropertyChanged -= OnRenderPackageFactoryViewModelPropertyChanged;
 
             UnregisterModelEventHandlers(model);
@@ -203,21 +183,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             UnregisterWorkspaceEventHandlers(model);
         }
 
-        private void OnModelShutdownStarted(IDynamoModel model)
+        private void OnModelShutdownStarted(IDynamoModel dynamoModel)
         {
             UnregisterEventHandlers();
             OnShutdown();
-        }
-
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "IsPanning":
-                case "IsOrbiting":
-                    RaisePropertyChanged("LeftClickCommand");
-                    break;
-            }
         }
 
         private void LogVisualizationCapabilities()
@@ -235,13 +204,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize));
         }
 
-        private void RegisterModelEventhandlers(IDynamoModel model)
+        private void RegisterModelEventhandlers(IDynamoModel dynamoModel)
         {
-            model.WorkspaceCleared += OnWorkspaceCleared;
-            model.ShutdownStarted += OnModelShutdownStarted;
-            model.CleaningUp += OnClear;
-            model.EvaluationCompleted += OnEvaluationCompleted;
-            model.PropertyChanged += OnModelPropertyChanged;
+            dynamoModel.WorkspaceCleared += OnWorkspaceCleared;
+            dynamoModel.ShutdownStarted += OnModelShutdownStarted;
+            dynamoModel.CleaningUp += OnClear;
+            dynamoModel.EvaluationCompleted += OnEvaluationCompleted;
+            dynamoModel.PropertyChanged += OnModelPropertyChanged;
         }
 
         protected virtual void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -437,6 +406,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal virtual void ExportToSTL(string path, string modelName)
         {
             // Override in derived classes
+        }
+
+        internal virtual void TogglePan(object parameter)
+        {
+            // Override in derived classes.
         }
 
         /// <summary>

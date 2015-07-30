@@ -1900,38 +1900,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal void TogglePan(object parameter)
-        {
-            CurrentSpaceViewModel.RequestTogglePanMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-        }
-
-        internal bool CanTogglePan(object parameter)
-        {
-            return true;
-        }
-
-        internal void ToggleOrbit(object parameter)
-        {
-            CurrentSpaceViewModel.RequestToggleOrbitMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-        }
-
-        internal bool CanToggleOrbit(object parameter)
-        {
-            return true;
-        }
-
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
