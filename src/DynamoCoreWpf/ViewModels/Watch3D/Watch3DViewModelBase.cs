@@ -28,6 +28,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public bool IsActiveAtStart { get; set; }
         public string Name { get; set; }
 
+        public Watch3DViewModelStartupParams()
+        {
+            
+        }
+
         public Watch3DViewModelStartupParams(DynamoModel model, DynamoViewModel viewModel, string name)
         {
             Model = model;
