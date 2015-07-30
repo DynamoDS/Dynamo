@@ -10,6 +10,7 @@ namespace ProtoTest.TD.FFI
     class FFITest : ProtoTestBase
     {
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T003_ClassTest()
         {
@@ -102,6 +103,7 @@ resultH = tuple1.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T004_Tuple4_XYZ_Simple_WithGetMethods()
         {
@@ -194,6 +196,7 @@ resultH = tuple1.get_H();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T005_Tuple4_ByCoordinate3_Simple()
         {
@@ -285,6 +288,7 @@ result4 = tuple1.Coordinates4();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T006_Tuple4_ByCoordinate4_Simple()
         {
@@ -376,6 +380,7 @@ result4 = tuple1.Coordinates4();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T007_Tuple4_Multiply_Simple()
         {
@@ -467,6 +472,7 @@ multiply = tuple1.Multiply(tuple2);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T008_Transform_ByDate_Simple()
         {
@@ -647,6 +653,7 @@ c3_H = c3.H;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T009_Transform_ByTuples_Simple()
         {
@@ -830,6 +837,7 @@ c3_H = c3.H;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T010_Transform_ApplyTransform()
         {
@@ -1011,6 +1019,7 @@ h = result.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T011_Transform_NativeMultiply()
         {
@@ -1214,6 +1223,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T012_Transform_NativePreMultiply()
         {
@@ -1417,6 +1427,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T013_Transform_TransformVector()
         {
@@ -1603,6 +1614,7 @@ resultz = resultVector.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T014_Transform_TransformPoint()
         {
@@ -1809,6 +1821,7 @@ resultz = resultPoint.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T015_Transform_Identity()
         {
@@ -2007,6 +2020,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T016_Transform_GetTuples()
         {
@@ -2214,6 +2228,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T017_Transform_GetData()
         {

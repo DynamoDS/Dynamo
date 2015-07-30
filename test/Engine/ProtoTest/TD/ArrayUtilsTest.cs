@@ -29,6 +29,7 @@ namespace ProtoTest.UtilsTests
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void StackValueDiffTestUserDefined()
         {
             String code =
@@ -56,6 +57,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void StackValueDiffTestProperty01()
         {
             String code =
@@ -83,6 +85,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void StackValueDiffTestProperty02()
         {
             String code =
@@ -212,6 +215,7 @@ a;b;c;d;e;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestArrayGetCommonSuperType()
         {
             String code =
@@ -338,6 +342,7 @@ tCCC = {C.C(), C.C(), C.C()};
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void Defect_TestArrayGetCommonSuperType()
         {
             String code =
@@ -397,6 +402,7 @@ tCD = { c, d };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_2_EmptyArray()
         {
@@ -442,6 +448,7 @@ tE = {};//empty array
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         public void Defect_TestArrayGetCommonSuperType_3()
         {

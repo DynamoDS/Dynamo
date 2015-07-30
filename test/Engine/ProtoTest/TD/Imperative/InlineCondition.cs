@@ -248,6 +248,7 @@ h;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T011_Inline_Using_Variables()
         {
@@ -298,6 +299,7 @@ temp;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T012_Inline_Using_Fun_Calls()
         {
@@ -343,6 +345,7 @@ x7 = power(f) >= power(i) ? power(1) : power(0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T013_Inline_Using_Class()
         {
@@ -447,6 +450,7 @@ c1;c2;c3;c4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T015_Inline_In_Class_Scope()
         {
             // Assert.Fail("1467168 - Sprint24 : rev 3137 : Compiler error from  Inline Condition and class inheritance issue");
