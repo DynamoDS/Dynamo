@@ -1890,4 +1890,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
   </data>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>Background Preview</value>
+    <comment>The name of the 3D background preview.</comment>
+  </data>
 </root>

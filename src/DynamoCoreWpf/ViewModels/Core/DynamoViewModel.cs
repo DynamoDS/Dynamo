@@ -492,7 +492,7 @@ namespace Dynamo.ViewModels
                 Factory = RenderPackageFactoryViewModel.Factory,
                 ViewModel = this,
                 IsActiveAtStart = Model.PreferenceSettings.IsBackgroundPreviewActive,
-                Name = "Background 3D Preview"
+                Name = Resources.BackgroundPreviewName
             };
 
             var vm = HelixWatch3DViewModel.Start(backgroundPreviewParams);
