@@ -58,12 +58,16 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <!--<Rectangle x:Name="HorLn" Height="1" Stroke="#8888"  Margin="0,0,0,0" 
-                                                           SnapsToDevicePixels="true"/>
-                                                <Rectangle x:Name="VerLn" Width="1" Stroke="#8888" Grid.RowSpan="2" 
-                                                           SnapsToDevicePixels="true"/>-->
+                                                <!--<Rectangle x:Name="HorLn"  Height="1" Stroke="Gray" 
+                                                           SnapsToDevicePixels="True"
+                                                           Margin="{Binding Margin, ElementName=Expander}">
+                                                </Rectangle>
+                                                <Rectangle x:Name="VerLn" Width="1" Stroke="Gray" 
+                                                           Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White"
+                                                           Margin="{Binding Margin, ElementName=Expander}">
+                                                </Rectangle>-->
 
-                                                <ToggleButton x:Name="Expander"
+                                                <ToggleButton x:Name="ExpanderParent"
                                                               Background="Transparent"
                                                               IsHitTestVisible="False"
                                                               Style="{StaticResource LibraryExpandCollapseToggleStyle}"
@@ -239,77 +243,10 @@
                                 <Trigger Property="HasItems"
                                          Value="false">
                                     <Setter Property="Visibility"
-                                            TargetName="Expander"
+                                            TargetName="ExpanderParent"
                                             Value="Collapsed" />
                                 </Trigger>
-                                <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource TreeViewLineConverter}}" Value="true">
-                                    <Setter TargetName="VerLn"
-                    Property="Height"
-                    Value="6"/>
-                                    <Setter TargetName="VerLn"
-                    Property="VerticalAlignment"
-                    Value="Top"/>
-                                </DataTrigger>
-                                <Trigger Property="IsExpanded"
-                   Value="false">
-                                    <Setter TargetName="ItemsHost"
-                    Property="Visibility"
-                    Value="Collapsed"/>
-                                </Trigger>
-                                <Trigger Property="HasItems"
-                   Value="false">
-                                    <Setter TargetName="Expander"
-                    Property="Visibility"
-                    Value="Hidden"/>
-                                </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="HasHeader"
-                         Value="false"/>
-                                        <Condition Property="Width"
-                         Value="Auto"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="PART_Header"
-                    Property="MinWidth"
-                    Value="75"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="HasHeader"
-                         Value="false"/>
-                                        <Condition Property="Height"
-                         Value="Auto"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="PART_Header"
-                    Property="MinHeight"
-                    Value="19"/>
-                                </MultiTrigger>
-                                <Trigger Property="IsSelected"
-                   Value="true">
-                                    <Setter TargetName="Bd"
-                    Property="Background"
-                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                    <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
-                                </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected"
-                         Value="true"/>
-                                        <Condition Property="IsSelectionActive"
-                         Value="false"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd"
-                    Property="Background"
-                    Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                    <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                                </MultiTrigger>
-                                <Trigger Property="IsEnabled"
-                   Value="false">
-                                    <Setter Property="Foreground"
-                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                </Trigger>-->
+                             
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -357,10 +294,15 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <Rectangle x:Name="HorLn" Margin="5,1,43,0" Height="1" Stroke="Gray" 
-                                                           SnapsToDevicePixels="True"/>
+                                               
                                                 <Rectangle x:Name="VerLn" Width="1" Stroke="Gray" 
-                                                           Margin="-50,-50,10,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White"/>
+                                                           SnapsToDevicePixels="true" Fill="White"
+                                                           Margin="{Binding Margin, ElementName=ExpanderParent}">
+                                                </Rectangle>
+                                                <!--<Rectangle x:Name="HorLn"  Height="1" Stroke="Gray" 
+                                                           SnapsToDevicePixels="True"
+                                                           Margin="5,1,43,0">
+                                                </Rectangle>-->
 
                                                 <ToggleButton x:Name="Expander"
                                                               Background="Transparent"
