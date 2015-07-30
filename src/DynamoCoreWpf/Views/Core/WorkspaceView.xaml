@@ -95,11 +95,6 @@
            HorizontalAlignment="Stretch"
            VerticalAlignment="Stretch">
 
-        <Grid.IsHitTestVisible>
-            <Binding Path="DataContext.ShouldBeHitTestVisible"
-                     RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
-        </Grid.IsHitTestVisible>
-
         <Grid.ContextMenu>
             <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}">
                 <MenuItem Name="WorkspaceLacingMenu"
@@ -254,6 +249,11 @@
                              Background="Transparent"
                              Cursor="{Binding CurrentCursor}"
                              ForceCursor="{Binding IsCursorForced}">
+
+            <controls:ZoomBorder.IsHitTestVisible>
+                <Binding Path="DataContext.ShouldBeHitTestVisible"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
+            </controls:ZoomBorder.IsHitTestVisible>
 
             <ItemsControl Name="WorkspaceElements"
                           ItemsSource="{Binding WorkspaceElements}">
