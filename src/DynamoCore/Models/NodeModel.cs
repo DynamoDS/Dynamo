@@ -1668,7 +1668,7 @@ namespace Dynamo.Models
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
             {
-                OnUpdatedRenderPackagesAvailable(task.RenderPackages);
+                OnRenderPackagesUpdated(task.RenderPackages);
             }
         }
 
@@ -1754,7 +1754,7 @@ namespace Dynamo.Models
         
         public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
 
-        public void OnUpdatedRenderPackagesAvailable(IEnumerable<IRenderPackage> packages)
+        private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
         {
             if(RenderPackagesUpdated != null)
             {
