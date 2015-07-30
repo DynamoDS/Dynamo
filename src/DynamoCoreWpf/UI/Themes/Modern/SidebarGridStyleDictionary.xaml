@@ -154,7 +154,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-
+                <Rectangle x:Name="ExpandPath" Width="1" Height="5" Stroke="Black" SnapsToDevicePixels="true"/>
+                <Rectangle Width="5" Height="1" Stroke="Black" SnapsToDevicePixels="true"/>
                 <Image x:Name="ExpandCollapseStateIcon"
                        Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
                        Width="16"
