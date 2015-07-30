@@ -1632,28 +1632,11 @@ namespace Dynamo.Models
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
         /// </summary>
-        /// <param name="engine"></param>
-        /// <param name="scheduler"></param>
-        /// <param name="maxTessellationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        public void RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
-        {
-            RequestVisualUpdateAsyncCore(scheduler, engine, factory);
-        }
-
-        /// <summary>
-        /// When called, the base implementation of this method schedules an 
-        /// UpdateRenderPackageAsyncTask to regenerate its render packages 
-        /// asynchronously. Derived classes can optionally override this method 
-        /// to prevent render packages to be generated if they do not require 
-        /// geometric preview.
-        /// </summary>
-        /// <param name="engine"></param>
-        /// <param name="scheduler"></param>
-        /// <param name="maxTesselationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        protected virtual void 
-            RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
+        /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
+        /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
+        /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        internal virtual void
+            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             var initParams = new UpdateRenderPackageParams()
             {
@@ -1665,11 +1648,10 @@ namespace Dynamo.Models
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (task.Initialize(initParams))
-            {
-                task.Completed += OnRenderPackageUpdateCompleted;
-                scheduler.ScheduleForExecution(task);
-            }
+            if (!task.Initialize(initParams)) return;
+
+            task.Completed += OnRenderPackageUpdateCompleted;
+            scheduler.ScheduleForExecution(task);
         }
 
         /// <summary>

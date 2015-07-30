@@ -313,7 +313,7 @@ namespace Dynamo.Nodes
 
         }
 
-        protected override void RequestVisualUpdateAsyncCore(
+        internal override void RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // No visualization update is required for this node type.
