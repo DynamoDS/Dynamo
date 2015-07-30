@@ -111,7 +111,7 @@ namespace Dynamo.Controls
                 vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
 
                 // Reset Fit View Toggle
-                if ( vm.ResetFitViewToggleCommand.CanExecute(null) )
+                if (vm.ResetFitViewToggleCommand.CanExecute(null))
                     vm.ResetFitViewToggleCommand.Execute(null);
             }
         }
@@ -119,7 +119,7 @@ namespace Dynamo.Controls
         private void child_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (child != null &&
-                ( e.ChangedButton == MouseButton.Middle
+                (e.ChangedButton == MouseButton.Middle
                 || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
                 var tt = GetTranslateTransform(child);
@@ -131,8 +131,8 @@ namespace Dynamo.Controls
 
         private void child_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (child != null && 
-                ( e.ChangedButton == MouseButton.Middle
+            if (child != null &&
+                (e.ChangedButton == MouseButton.Middle
                 || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
                 child.ReleaseMouseCapture();
@@ -151,12 +151,11 @@ namespace Dynamo.Controls
                     tt.X = origin.X - v.X;
                     tt.Y = origin.Y - v.Y;
 
-                    
                     WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
 
                     // Update WorkspaceModel without triggering property changed
                     vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
-                    
+
                     // Reset Fit View Toggle
                     if (vm.ResetFitViewToggleCommand.CanExecute(null))
                         vm.ResetFitViewToggleCommand.Execute(null);
@@ -172,7 +171,7 @@ namespace Dynamo.Controls
         #endregion
     }
 
-    public class EndlessGrid : Canvas 
+    public class EndlessGrid : Canvas
     {
         private ItemsControl itemsControl;
 
@@ -194,7 +193,7 @@ namespace Dynamo.Controls
             template.VisualTree = factoryPanel;
 
             itemsControl.ItemsPanel = template;
-            
+
 
             this.Children.Add(itemsControl);
 
@@ -205,8 +204,8 @@ namespace Dynamo.Controls
 
             CreateBinding();
         }
-		
-		private void CreateBinding()
+
+        private void CreateBinding()
         {
             // Visibility Binding
             this.itemsControl.SetBinding(FrameworkElement.VisibilityProperty, new Binding("FullscreenWatchShowing")

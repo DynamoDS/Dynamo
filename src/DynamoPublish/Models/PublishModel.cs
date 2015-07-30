@@ -13,11 +13,30 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Dynamo.Publish.Models
 {
     public class PublishModel
     {
+
+        public enum UploadState
+        {
+            Uninitialized,
+            Succeeded,
+            Uploading,
+            Failed
+        }
+
+        public enum UploadErrorType
+        {
+            None,
+            AuthenticationFailed,
+            ServerNotFound,
+            AuthProviderNotFound,
+            UnknownServerError
+        }
+
         private readonly IAuthProvider authenticationProvider;
         private readonly ICustomNodeManager customNodeManager;
 
@@ -41,7 +60,7 @@ namespace Dynamo.Publish.Models
             private set;
         }
 
-        public List<CustomNodeWorkspaceModel> CustomNodeWorkspaces
+        public List<ICustomNodeWorkspaceModel> CustomNodeWorkspaces
         {
             get;
             private set;
@@ -55,6 +74,54 @@ namespace Dynamo.Publish.Models
             }
         }
 
+
+        private UploadState state;
+        /// <summary>
+        /// Indicates the state of workspace publishing.
+        /// </summary>
+        public UploadState State
+        {
+            get
+            {
+                return state;
+            }
+            private set
+            {
+                if (state != value)
+                {
+                    state = value;
+                    OnUploadStateChanged(state);
+                }
+            }
+        }
+
+        private UploadErrorType errorType;
+        /// <summary>
+        /// Indicates the type of error.
+        /// </summary>
+        public UploadErrorType Error
+        {
+            get
+            {
+                return errorType;
+            }
+            private set
+            {
+                errorType = value;
+
+                if (errorType != UploadErrorType.None)
+                    State = UploadState.Failed;
+            }
+        }
+
+        internal event Action<UploadState> UploadStateChanged;
+        private void OnUploadStateChanged(UploadState state)
+        {
+            if (UploadStateChanged != null)
+                UploadStateChanged(state);
+        }
+
+
         #region Initialization
 
         internal PublishModel(IAuthProvider dynamoAuthenticationProvider, ICustomNodeManager dynamoCustomNodeManager)
@@ -66,7 +133,7 @@ namespace Dynamo.Publish.Models
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new Exception(Resource.ServerErrorMessage);
+                throw new Exception(Resource.ServerNotFoundMessage);
 
             port = appSettings.Settings["Port"].Value;
             if (String.IsNullOrWhiteSpace(port))
@@ -78,6 +145,8 @@ namespace Dynamo.Publish.Models
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
+
+            State = UploadState.Uninitialized;
         }
 
         internal PublishModel(IAuthProvider provider, ICustomNodeManager manager, IWorkspaceStorageClient client) :
@@ -92,21 +161,65 @@ namespace Dynamo.Publish.Models
         {
             // Manager must be initialized in constructor.
             if (authenticationProvider == null)
-                throw new Exception(Resource.AuthenticationErrorMessage);
+            {
+                Error = UploadErrorType.AuthProviderNotFound;
+                return;
+            }
 
-            authenticationProvider.Login();
+            var loggedIn = authenticationProvider.Login();
+
+            if (!loggedIn)
+            {
+                Error = UploadErrorType.AuthenticationFailed;
+            }
+        }
+
+        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
+        {
+            State = UploadState.Uploading;
+
+            Task.Factory.StartNew(() =>
+                {
+                    var result = this.Send(workspaces);
+
+                    if (result == Resource.WorkspacesSendSucceededServerResponse)
+                    {
+                        State = UploadState.Succeeded;
+                        Error = UploadErrorType.None;
+                    }
+                    else
+                    {
+                        // If there wasn't any error during uploading, 
+                        // that means it's some error on the server side.
+                        Error = UploadErrorType.UnknownServerError;
+                    }
+                });
+
         }
 
         /// <summary>
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
-        internal void Send(IEnumerable<IWorkspaceModel> workspaces)
+        /// <returns>String which is response from server.</returns>
+        internal string Send(IEnumerable<IWorkspaceModel> workspaces)
         {
-            if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
-                throw new Exception(Resource.ServerErrorMessage);
+            if (String.IsNullOrWhiteSpace(serverUrl))
+            {
+                Error = UploadErrorType.ServerNotFound;
+                return Resource.FailedMessage;
+            }
+
+            if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
+            {
+                Error = UploadErrorType.AuthenticationFailed;
+                return Resource.FailedMessage;
+            }
 
             if (authenticationProvider == null)
-                throw new Exception(Resource.AuthenticationErrorMessage);
+            {
+                Error = UploadErrorType.AuthProviderNotFound;
+                return Resource.FailedMessage;
+            }
 
             string fullServerAdress = serverUrl + ":" + port;
 
@@ -122,16 +235,26 @@ namespace Dynamo.Publish.Models
                 dependencies.AddRange(node.Definition.Dependencies);
             }
 
-            CustomNodeWorkspaces = new List<CustomNodeWorkspaceModel>();
+            CustomNodeWorkspaces = new List<ICustomNodeWorkspaceModel>();
             foreach (var dependency in dependencies)
             {
-                CustomNodeWorkspaceModel customNodeWs;
+                ICustomNodeWorkspaceModel customNodeWs;
                 var isWorkspaceCreated = customNodeManager.TryGetFunctionWorkspace(dependency.FunctionId, false, out customNodeWs);
                 if (isWorkspaceCreated && !CustomNodeWorkspaces.Contains(customNodeWs))
                     CustomNodeWorkspaces.Add(customNodeWs);
             }
 
-            var result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces);
+            string result;
+            try
+            {
+                result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+            }
+            catch
+            {
+                result = Resource.FailedMessage;
+            }
+            return result;
         }
     }
+
 }

@@ -476,7 +476,7 @@
     <comment>Description for Watch Image</comment>
   </data>
   <data name="WatchImageSearchTags" xml:space="preserve">
-    <value>image;inspect image;pixels;display;panel;</value>
+    <value>image;inspect image;pixels;display;panel;watchimage;</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WatchNodeDescription" xml:space="preserve">
@@ -517,11 +517,11 @@
     <comment>search tags for list.create</comment>
   </data>
   <data name="DoubleSliderSearchTags" xml:space="preserve">
-    <value>double;number;float;integer;slider</value>
+    <value>double;number;float;integer;slider;numberslider;</value>
     <comment>Search tags for DoubleSlider node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="DynamoConvertSearchTags" xml:space="preserve">
-    <value>Convert;Units;Length;Area;Volume</value>
+    <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
     <comment>Search tags for DynamoConvert node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ListCreateInPortToolTip" xml:space="preserve">
@@ -538,5 +538,26 @@
   </data>
   <data name="UnitNodeToPortToolTip" xml:space="preserve">
     <value>A converted numeric value.</value>
+  </data>
+  <data name="DateTimeDescription" xml:space="preserve">
+      <value>Create a DateTime object from a formatted date and time string. Date and time must be of the format "April 12, 1977 12:00 PM"</value>
+  </data>
+  <data name="ColorRangeSearchTags" xml:space="preserve">
+    <value>colorrange;</value>
+  </data>
+  <data name="DirectoryPathSearchTags" xml:space="preserve">
+    <value>directorypath;filepath;</value>
+  </data>
+  <data name="FilePathSearchTags" xml:space="preserve">
+    <value>filepath;</value>
+  </data>
+  <data name="IntegerSliderSearchTags" xml:space="preserve">
+    <value>integerslider;</value>
+  </data>
+  <data name="NumberRangeSearchTags" xml:space="preserve">
+    <value>numberrange;numbersequence;</value>
+  </data>
+  <data name="NumberSequenceSearchTags" xml:space="preserve">
+    <value>numbersequence;</value>
   </data>
 </root>

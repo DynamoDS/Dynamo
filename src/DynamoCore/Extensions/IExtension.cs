@@ -62,10 +62,5 @@ namespace Dynamo.Extensions
         /// <param name="pathManager">IPathManager instance 
         /// with set of directories paths needed for Package Manager</param>
         void Load(IPreferences preferences, IPathManager pathManager);
-
-        /// <summary>
-        /// Event which is fired, when it needs to load an assembly with nodes
-        /// </summary>
-        event Action<Assembly> RequestLoadNodeLibrary;
     }
 }
