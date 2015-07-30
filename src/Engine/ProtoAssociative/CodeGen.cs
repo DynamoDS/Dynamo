@@ -5389,16 +5389,20 @@ namespace ProtoAssociative
         /// <returns></returns>
         private bool IsClassAllowed(ClassDeclNode classDecl)
         {
+            // If its an FFI class, it is allowed
+            if (classDecl.IsExternLib)
+            {
+                return true;
+            }
+
+            // Check the class attributes
             if (classDecl.Attributes != null)
             {
                 // If at least one attribute is internal then the class is allowed
                 List<AttributeEntry> attributesList = PopulateAttributes(classDecl.Attributes);
-                foreach (AttributeEntry entry in attributesList)
+                if (attributesList.Where(a => a.IsInternalClassAttribute()).Count() > 0)
                 {
-                    if (entry.IsInternalClassAttribute())
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -5410,22 +5414,13 @@ namespace ProtoAssociative
             ClassDeclNode classDecl = node as ClassDeclNode;
             
             // Restrict classes 
-            if (!classDecl.IsExternLib && !IsClassAllowed(classDecl))
+            if (!IsClassAllowed(classDecl))
             {
-                buildStatus.LogWarning(
-                    WarningID.kUserDefinedClassNotAllowed, 
-                    "User defined classes are not allowed", 
-                    core.CurrentDSFileName,
-                    classDecl.line,
-                    classDecl.col,
-                    graphNode);
-
                 return;
             }
             // Handling n-pass on class declaration
             if (ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassName == compilePass)
             {
-
                 // Class name pass
                 // Populating the class tables with the class names
                 if (null != codeBlock.parent)

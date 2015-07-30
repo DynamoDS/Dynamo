@@ -11,7 +11,8 @@ using System.Text;
 namespace ProtoCore
 {
     /// <summary>
-    /// These are DS class attributes defined and and used internally by the compiler
+    /// These are DS defined class attributes 
+    /// These attributes are used internally by the compiler
     /// </summary>
     public class InternalAttributes
     {
