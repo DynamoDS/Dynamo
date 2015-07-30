@@ -2894,24 +2894,7 @@ namespace ProtoCore
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
-            }
-
-            // TODO(Jiong): Do a check on the number of arguments 
-            bool hasMatchedConstructor = false;
-            foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].vtable.procList)
-            {
-                if (pn.isConstructor && pn.argInfoList.Count == attribute.Arguments.Count)
-                {
-                    hasMatchedConstructor = true;
-                    break;
-                }
-            }
-            if (!hasMatchedConstructor)
-            {
-                buildStatus.LogSemanticError(string.Format(Resources.NoConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
-                return null;
-            }
-            
+            }   
             return attribute;
         }
 
