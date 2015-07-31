@@ -11,6 +11,7 @@ namespace ProtoTest.Associative
     class ReferenceCount : ProtoTestBase
     {
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount_BaseCase01()
         {
             string code = @"class A{}[Associative]{    a = A.A();    as = {a};}";
@@ -19,6 +20,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount01_NoFunctionCall()
         {
             string code =
@@ -37,6 +39,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount01_NoFunctionCall_Dispose()
         {
             string code =
@@ -47,6 +50,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount02_FunctionNonArray()
         {
             string code =
@@ -65,6 +69,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount02_FunctionNonArray_Dispose()
         {
             string code =
@@ -75,6 +80,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount03_FunctionReplication()
         {
             string code =
@@ -93,6 +99,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount03_FunctionReplication_Dispose()
         {
             string code =
@@ -103,6 +110,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount04_FunctionArray()
         {
             string code =
@@ -121,6 +129,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount04_FunctionArray_Dispose()
         {
             string code =
@@ -131,6 +140,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount05_StaticFunctionNonArray()
         {
             string code =
@@ -149,6 +159,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount05_StaticFunctionNonArray_Dispose()
         {
             string code =
@@ -159,6 +170,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount06_StaticFunctionReplication()
         {
             string code =
@@ -177,6 +189,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount06_StaticFunctionReplication_Dispose()
         {
             string code =
@@ -187,6 +200,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount07_StaticFunctionArray()
         {
             string code =
@@ -205,6 +219,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount07_StaticFunctionArray_Dispose()
         {
             string code =
@@ -215,6 +230,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount08_MemFunctionNonArray()
         {
             string code =
@@ -233,6 +249,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount08_MemFunctionNonArray_Dispose()
         {
             string code =
@@ -243,6 +260,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount09_MemFunctionReplication()
         {
             string code =
@@ -261,6 +279,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount09_MemFunctionReplication_Dispose()
         {
             string code =
@@ -271,6 +290,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount10_MemFunctionArray()
         {
             string code =
@@ -289,6 +309,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount10_MemFunctionArray_Dispose()
         {
             string code =
@@ -299,6 +320,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount11_ReplicationNonArray()
         {
             string code =
@@ -317,6 +339,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount11_ReplicationNonArray_Dispose()
         {
             string code =
@@ -327,6 +350,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount12_ReplicationReplication()
         {
             string code =
@@ -345,6 +369,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount12_ReplicationReplication_Dispose()
         {
             string code =
@@ -355,6 +380,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount13_ReplicationArray()
         {
             string code =
@@ -373,6 +399,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount13_ReplicationArray_Dispose()
         {
             string code =
@@ -383,6 +410,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount14_GlobalFunctionTwoArguments()
         {
             string code =
@@ -399,6 +427,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount14_GlobalFunctionTwoArguments_Dispose()
         {
             string code =
@@ -409,6 +438,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount15_GlobalFunctionTwoArguments()
         {
             string code =
@@ -422,6 +452,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount15_GlobalFunctionTwoArguments_Dispose()
         {
             string code =
@@ -432,6 +463,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount16_GlobalFunctionTwoArguments()
         {
             string code =
@@ -448,6 +480,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount16_GlobalFunctionTwoArguments_Dispose()
         {
             string code =
@@ -458,6 +491,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount17_StaticFunctionTwoArguments()
         {
             string code =
@@ -474,6 +508,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount17_StaticFunctionTwoArguments_Dispose()
         {
             string code =
@@ -484,6 +519,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount18_StaticFunctionTwoArguments()
         {
             string code =
@@ -497,6 +533,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount18_StaticFunctionTwoArguments_Dispose()
         {
             string code =
@@ -507,6 +544,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount19_StaticFunctionTwoArguments()
         {
             string code =
@@ -523,6 +561,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount19_StaticFunctionTwoArguments_Dispose()
         {
             string code =
@@ -533,6 +572,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount20_MemberFunctionTwoArguments()
         {
             string code =
@@ -550,6 +590,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount20_MemberFunctionTwoArguments_Dispose()
         {
             string code =
@@ -561,6 +602,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount21_MemberFunctionTwoArguments()
         {
             string code =
@@ -578,6 +620,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount21_MemberFunctionTwoArguments_Dispose()
         {
             string code =
@@ -589,6 +632,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount22_MemberFunctionTwoArguments()
         {
             string code =
@@ -606,6 +650,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount22_MemberFunctionTwoArguments_Dispose()
         {
             string code =
@@ -617,6 +662,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount23_MemberFunctionTwoArguments()
         {
             string code =
@@ -637,6 +683,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount23_MemberFunctionTwoArguments_Dispose()
         {
             string code =
@@ -648,6 +695,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount24_MemberFunctionTwoArguments()
         {
             string code =
@@ -668,6 +716,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount24_MemberFunctionTwoArguments_Dispose()
         {
             string code =
@@ -679,6 +728,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount25_MemberFunctionTwoArguments()
         {
             string code =
@@ -699,6 +749,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount25_MemberFunctionTwoArguments_Dispose()
         {
             string code =
@@ -710,6 +761,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount26_GlobalFunctionReturnArray()
         {
             string code =
@@ -731,6 +783,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount26_GlobalFunctionReturnArray_Dispose()
         {
             string code =
@@ -742,6 +795,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount27_GlobalFunctionReturnArray()
         {
             string code =
@@ -763,6 +817,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount27_GlobalFunctionReturnArray_Dispose()
         {
             string code =
@@ -774,6 +829,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount28_GlobalFunctionReturnArray()
         {
             string code =
@@ -795,6 +851,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount28_GlobalFunctionReturnArray_Dispose()
         {
             string code =
@@ -806,6 +863,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount29_MemberFunctionReturnArray()
         {
             string code =
@@ -827,6 +885,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount29_MemberFunctionReturnArray_Dispose()
         {
             string code =
@@ -838,6 +897,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount30_MemberFunctionReturnArray()
         {
             string code =
@@ -859,6 +919,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount30_MemberFunctionReturnArray_Dispose()
         {
             string code =
@@ -870,6 +931,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount31_MemberFunctionReturnArray()
         {
             string code =
@@ -891,6 +953,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount31_MemberFunctionReturnArray_Dispose()
         {
             string code =
@@ -902,6 +965,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount32_StaticFunctionReturnArray()
         {
             string code =
@@ -923,6 +987,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount32_StaticFunctionReturnArray_Dispose()
         {
             string code =
@@ -934,6 +999,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount33_StaticFunctionReturnArray()
         {
             string code =
@@ -955,6 +1021,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount33_StaticFunctionReturnArray_Dispose()
         {
             string code =
@@ -966,6 +1033,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount34_StaticFunctionReturnArray()
         {
             string code =
@@ -987,6 +1055,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount34_StaticFunctionReturnArray_Dispose()
         {
             string code =
@@ -998,6 +1067,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount35_StaticFunctionReturnObject()
         {
             string code =
@@ -1019,6 +1089,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount35_StaticFunctionReturnObject_Dispose()
         {
             string code =
@@ -1030,6 +1101,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount36_StaticFunctionReturnObject()
         {
             string code =
@@ -1051,6 +1123,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount36_StaticFunctionReturnObject_Dispose()
         {
             string code =
@@ -1062,6 +1135,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount37_MemberFunctionReturnObject()
         {
             string code =
@@ -1083,6 +1157,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount37_MemberFunctionReturnObject_Dispose()
         {
             string code =
@@ -1094,6 +1169,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount38_MemberFunctionReturnObject()
         {
             string code =
@@ -1115,6 +1191,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount38_MemberFunctionReturnObject_Dispose()
         {
             string code =
@@ -1126,6 +1203,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount39_GlobalFunctionReturnObject()
         {
             string code =
@@ -1147,6 +1225,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount39_GlobalFunctionReturnObject_Dispose()
         {
             string code =
@@ -1158,6 +1237,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount40_GlobalFunctionReturnObject()
         {
             string code =
@@ -1179,6 +1259,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount40_GlobalFunctionReturnObject_Dispose()
         {
             string code =
@@ -1190,6 +1271,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount41_MemberFunctionReturnArray()
         {
             string code =
@@ -1211,6 +1293,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount41_MemberFunctionReturnArray_Dispose()
         {
             string code =
@@ -1222,6 +1305,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount42_MemberFunctionReturnArray()
         {
             string code =
@@ -1243,6 +1327,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount42_MemberFunctionReturnArray_Dispose()
         {
             string code =
@@ -1254,6 +1339,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount43_MemberFunctionReturnArray()
         {
             string code =
@@ -1275,6 +1361,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount43_MemberFunctionReturnArray_Dispose()
         {
             string code =
@@ -1286,6 +1373,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount44_MemberFunctionReturnObject()
         {
             string code =
@@ -1307,6 +1395,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount44_MemberFunctionReturnObject_Dispose()
         {
             string code =
@@ -1318,6 +1407,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount45_MemberFunctionReturnObject()
         {
             string code =
@@ -1339,6 +1429,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount45_MemberFunctionReturnObject_Dispose()
         {
             string code =
@@ -1350,6 +1441,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount46_GlobalFunctionReturnNewArray()
         {
             string code =
@@ -1371,6 +1463,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount46_GlobalFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1382,6 +1475,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount47_GlobalFunctionReturnNewArray()
         {
             string code =
@@ -1403,6 +1497,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount47_GlobalFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1414,6 +1509,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount48_GlobalFunctionReturnNewArray()
         {
             string code =
@@ -1435,6 +1531,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount48_GlobalFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1446,6 +1543,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount49_MemberFunctionReturnNewArray()
         {
             string code =
@@ -1467,6 +1565,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount49_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1478,6 +1577,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount50_MemberFunctionReturnNewArray()
         {
             string code =
@@ -1499,6 +1599,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount50_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1510,6 +1611,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount51_MemberFunctionReturnNewArray()
         {
             string code =
@@ -1531,6 +1633,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount51_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1542,6 +1645,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount52_StaticFunctionReturnNewArray()
         {
             string code =
@@ -1563,6 +1667,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount52_StaticFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1574,6 +1679,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount53_StaticFunctionReturnNewArray()
         {
             string code =
@@ -1595,6 +1701,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount53_StaticFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1606,6 +1713,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount54_StaticFunctionReturnNewArray()
         {
             string code =
@@ -1627,6 +1735,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount54_StaticFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1638,6 +1747,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount55_StaticFunctionReturnNewObject()
         {
             string code =
@@ -1659,6 +1769,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount55_StaticFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1670,6 +1781,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount56_StaticFunctionReturnNewObject()
         {
             string code =
@@ -1691,6 +1803,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount56_StaticFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1702,6 +1815,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount57_MemberFunctionReturnNewObject()
         {
             string code =
@@ -1723,6 +1837,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount57_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1734,6 +1849,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount58_MemberFunctionReturnNewObject()
         {
             string code =
@@ -1755,6 +1871,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount58_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1766,6 +1883,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount59_GlobalFunctionReturnNewObject()
         {
             string code =
@@ -1787,6 +1905,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount59_GlobalFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1798,6 +1917,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount60_GlobalFunctionReturnNewObject()
         {
             string code =
@@ -1819,6 +1939,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount60_GlobalFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1830,6 +1951,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount61_MemberFunctionReturnNewArray()
         {
             string code =
@@ -1851,6 +1973,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount61_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1862,6 +1985,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount62_MemberFunctionReturnNewArray()
         {
             string code =
@@ -1883,6 +2007,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount62_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1894,6 +2019,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount63_MemberFunctionReturnNewArray()
         {
             string code =
@@ -1915,6 +2041,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount63_MemberFunctionReturnNewArray_Dispose()
         {
             string code =
@@ -1926,6 +2053,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount64_MemberFunctionReturnNewObject()
         {
             string code =
@@ -1947,6 +2075,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount64_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1958,6 +2087,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount65_MemberFunctionReturnNewObject()
         {
             string code =
@@ -1979,6 +2109,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount65_MemberFunctionReturnNewObject_Dispose()
         {
             string code =
@@ -1990,6 +2121,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount66_DID1467277()
         {
             string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }    def foo()    {        return = null;    }}class B{    def CreateA(i)    {        return = A.A(i);    }}b = B.B();r = b.CreateA(0..1).foo();t = A.s_dispose;";
@@ -2000,6 +2132,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount67_DID1467277_02()
         {
             string code = @"class A{    x;    static s_dispose = 0;    constructor A(i)    {        x = i;    }    def _Dispose()    {        s_dispose = s_dispose + 1;        return = null;    }    def foo()    {        return = null;    }}r = A.A(0..1).foo();t = A.s_dispose;";
@@ -2010,6 +2143,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount68_TemporaryArrayIndexing01()
         {
             string code = @"class A{    static s_dispose = 0;    constructor A()    {    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }}[Associative]{    a = {A.A(), A.A(), A.A()}[1];}__GC();d = A.s_dispose;";
@@ -2019,6 +2153,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount69_TemporaryArrayIndexing02()
         {
             string code = @"class A{    static s_dispose = 0;    constructor A()    {    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }}t = [Associative]{    a = {A.A(), A.A(), A.A()}[1];    return = a;}__GC();d = A.s_dispose;";
@@ -2028,6 +2163,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount70_TemporaryArrayIndexing03()
         {
             string code = @"class A{    static s_dispose = 0;    constructor A()    {    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }}t = [Associative]{    def foo()    {        return = {A.A(), A.A(), A.A()};    }    a = (foo())[1];    return = a;}__GC();
@@ -2038,6 +2174,7 @@ d = A.s_dispose;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount71_TemporaryArrayIndexing04()
         {
             string code = @"class A{    static s_dispose = 0;    constructor A(i:int)    {    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }}t = [Associative]{    a = (A.A(0..4))[1];    return = a;}__GC();
@@ -2048,6 +2185,7 @@ d = A.s_dispose;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount72_TemporaryDefaultArgument()
         {
             string code = @"class A{    static s_dispose = 0;    constructor A(i:int)    {    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }}def foo(a = A.A()){}t = foo();__GC();
@@ -2058,6 +2196,7 @@ d = A.s_dispose;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCount73_FunctionPointer()
         {
             string code = @"class A{    static s_dispose = 0;    constructor A(i:int)    {    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }}def foo(a = A.A()){    return = null;}t = foo; def bar(f:function){    return = f();}[Associative]{    r = bar(t);}__GC();d = A.s_dispose;";
@@ -2067,6 +2206,7 @@ d = A.s_dispose;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T074_DG1465049()
         {
             string code = @"class A{    static s_dispose = 0;    mi : int;    constructor A(i:int)    {        mi = i;    }        def _Dispose()    {        s_dispose = s_dispose + 1;    }    def Translate(i)    {        newi = mi + i;        return = A.A(newi);    }}as = {A.A(2), A.A(3), A.A(5)};as[1] = as[1].Translate(100);as = null;__GC();d = A.s_dispose;";
@@ -2078,6 +2218,7 @@ d = A.s_dispose;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCountForMembers()
         {
             string code = @"a_dispose = 0;class A{    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class B{    as : A[]..[];    constructor B()    {        [Imperative]        {            as = {A.A()};        }    }}[Associative]{    b = B.B();}__GC();";
@@ -2086,6 +2227,7 @@ d = A.s_dispose;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCountForStaticMembers()
         {
             string code = @"a_dispose = 0;class A{    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class B{    static sas : A[]..[];    constructor B()    {        [Imperative]        {            sas[0] = {A.A()};        }    }}[Associative]{    b = B.B();    b.sas = null;}__GC();";
@@ -2094,6 +2236,7 @@ d = A.s_dispose;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestReferenceCountForStaticMembers2()
         {
             string code = @"a_dispose = 0;class A{    static x;    def _Dispose()    {        a_dispose = a_dispose + 1;    }}class B{    sas : A[]..[];    constructor B()    {        [Imperative]        {            sas = {A.A()};            sas = {A.A()};        }    }}[Associative]{    b = B.B();    b.sas = null;}__GC();";

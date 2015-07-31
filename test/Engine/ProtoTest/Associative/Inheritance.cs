@@ -8,6 +8,7 @@ namespace ProtoTest.Associative
     class InheritaceTest : ProtoTestBase
     {
         [Test]
+        [Category("DSDefinedClass")]
         public void InheritanceTest01()
         {
             String code =
@@ -19,6 +20,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void InheritanceTest02()
         {
             String code =
@@ -28,6 +30,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void InheritanceTest03()
         {
             String code =
@@ -37,6 +40,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void InheritanceTest04()
         {
             String code =
@@ -47,6 +51,7 @@ namespace ProtoTest.Associative
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void InheritanceTest05()
         {
             String code =
