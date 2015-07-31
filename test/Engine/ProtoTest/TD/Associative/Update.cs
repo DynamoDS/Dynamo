@@ -2171,6 +2171,7 @@ q = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T036_Defect_1467491()
         {
