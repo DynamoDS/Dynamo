@@ -194,6 +194,7 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")] 
         public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
@@ -246,6 +247,7 @@ test = mySurface.x; //expected : 4
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T008_long_hand_surface_trim_Robert()
         {

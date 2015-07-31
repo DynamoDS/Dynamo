@@ -278,7 +278,8 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Removes an amount of items from the start of the list.
+        ///     Removes an amount of items from the start of the list. If the amount is a negative value,
+        ///     items are removed from the end of the list.
         /// </summary>
         /// <param name="list">List to remove items from.</param>
         /// <param name="amount">

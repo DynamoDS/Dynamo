@@ -271,6 +271,7 @@ t2 = lines[1][2].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T00010_Geometry_007_specialPoint_2()
         {
@@ -452,6 +453,7 @@ x8 = tube_3.StartPoint.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T00013_Geometry_009_nested_user_defined_feature_2b()
         {
@@ -533,6 +535,7 @@ x3 = triangle0002.Side_b_c.MidPoint.X;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T00014_Geometry_010_nested_user_defined_feature_rand_2()
         {
@@ -613,6 +616,7 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Feature")]
         public void T00015_Geometry_011_nested_user_defined_feature_with_partial_class_1()
         {

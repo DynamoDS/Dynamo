@@ -3123,6 +3123,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestExecution()
         {
             List<string> codes = new List<string>() 
