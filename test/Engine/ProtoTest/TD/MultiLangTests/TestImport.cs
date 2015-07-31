@@ -75,8 +75,9 @@ c = Scale(a,b);";
             thisTest.Verify("c", expectedC);
         }
 
-        
+
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T007_BasicImport_TestClassConstructorAndProperties()
         {
@@ -100,6 +101,7 @@ myPointZ = myPoint.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T008_BasicImport_TestClassConstructorAndProperties_UserDefinedClass()
         {
@@ -138,6 +140,7 @@ endPtZ = endPt.Z;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T009_BasicImport_TestClassInstanceMethod()
         {
@@ -210,6 +213,7 @@ import (""BaseImportImperative.ds"");";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T014_BasicImport_BeforeImperative()
         {
@@ -297,6 +301,7 @@ arr = Scale(midValue, 4.0);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T019_MultipleImport_ClashFunctionClassRedifinition()
         {
