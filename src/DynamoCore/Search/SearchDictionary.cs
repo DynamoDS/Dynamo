@@ -102,7 +102,8 @@ namespace Dynamo.Search
                 OnEntryAdded(value);
             }
 
-            for (int i = 0; i < tags.Count(); i++)
+            int tagsCount = tags.Count();
+            for (int i = 0; i < tagsCount; i++)
             {
                 var tag = tags.ElementAt(i).ToLower();
                 keys[tag] = weights.ElementAt(i);

@@ -57,13 +57,20 @@ namespace Dynamo.Search.SearchElements
                     keywordsWeights.Add(weight);
             }
 
+            int weightsCount = weights.Count();
             // If there weren't added weights for search tags, then add default value - 0.5
-            if (weights.Count() != SearchKeywords.Count)
+            if (weightsCount != SearchKeywords.Count)
             {
-                int numberOfLackingWeights = SearchKeywords.Count - weights.Count();
-                for (int i = 0; i < numberOfLackingWeights; i++)
+                int numberOfLackingWeights = SearchKeywords.Count - weightsCount;
+
+                // Number of lacking weights should be more than 0.
+                // It can be less then 0 only if there was some mistake in xml file.
+                if (numberOfLackingWeights > 0)
                 {
-                    keywordsWeights.Add(0.5);
+                    for (int i = 0; i < numberOfLackingWeights; i++)
+                    {
+                        keywordsWeights.Add(0.5);
+                    }
                 }
 
             }
