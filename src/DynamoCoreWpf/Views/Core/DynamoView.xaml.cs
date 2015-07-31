@@ -963,7 +963,16 @@ namespace Dynamo.Controls
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            if (e.Key == Key.Escape && dynamoViewModel.WatchEscapeIsDown)
+            {
+                dynamoViewModel.WatchEscapeIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+            }
+        }
+
+        void DynamoView_LostFocus(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.WatchEscapeIsDown)
             {
                 dynamoViewModel.WatchEscapeIsDown = false;
                 dynamoViewModel.EscapeCommand.Execute(null);

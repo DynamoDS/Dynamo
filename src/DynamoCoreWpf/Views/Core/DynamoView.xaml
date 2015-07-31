@@ -29,6 +29,7 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
+        LostFocus="DynamoView_LostFocus"
         Background="#FF353535"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
