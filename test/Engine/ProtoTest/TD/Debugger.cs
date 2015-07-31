@@ -30,6 +30,7 @@ namespace ProtoTest.TD
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Debugger")]
         public void T001_SampleTest()
         {

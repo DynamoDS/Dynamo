@@ -2254,6 +2254,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch118_T01_TestGCArray()
         {
@@ -2287,6 +2288,7 @@ v3 = DisposeVerify.x; // 6
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch119_T02_TestGCEndofIfBlk()
         {
@@ -2309,6 +2311,7 @@ v = DisposeVerify.x; // 3";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch120_T03_TestGCEndofLangBlk()
         {
@@ -2334,6 +2337,7 @@ v2 = DisposeVerify.x; // 3";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch121_T04_TestGCReturnFromLangBlk()
         {
@@ -2359,6 +2363,7 @@ v2 = DisposeVerify.x; // 2";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch122_T05_TestGCReturnFromFunction()
         {
@@ -2386,6 +2391,7 @@ v2 = DisposeVerify.x; // 4
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch123_T06_TestGCEndofWhileBlk()
         {
@@ -2422,6 +2428,7 @@ v3 = DisposeVerify.x; // 7
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch124_T07_TestGCEndofForBlk()
         {
@@ -2457,6 +2464,7 @@ v3 = DisposeVerify.x; // 7
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch125_T08_TestGCArray02()
         {
@@ -2500,6 +2508,7 @@ v7 = DisposeVerify.x; // 7
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch126_T09_TestGCPassingArguments()
         {
@@ -2533,6 +2542,7 @@ v6 = DisposeVerify.x; // 9";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch127_T10_TestGCReturnArguments()
         {
@@ -2558,6 +2568,7 @@ v2 = DisposeVerify.x; // 4
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch128_T11_TestGCLangBlkInFunction()
         {
@@ -2583,6 +2594,7 @@ v1 = DisposeVerify.x; // 2
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch129_T12_TestGCIfElseInFunction()
         {
@@ -2619,6 +2631,7 @@ v2 = DisposeVerify.x; // 4";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch130_T13_GCTestComplexCase()
         {
@@ -38736,6 +38749,7 @@ midValue = myPoint.MidValue();";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1385_T010_BaseImportWithVariableClassInstance_top()
         {
@@ -38809,6 +38823,7 @@ a = 10;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1392_T018_MultipleImport()
         {
