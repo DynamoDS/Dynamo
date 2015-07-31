@@ -157,6 +157,7 @@ midValue = myPoint.MidValue();";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T010_BaseImportWithVariableClassInstance_top()
         {
@@ -283,6 +284,7 @@ a = 10;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T018_MultipleImport()
         {
