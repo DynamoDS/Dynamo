@@ -38673,6 +38673,7 @@ d = Sin(30.0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1382_T007_BasicImport_TestClassConstructorAndProperties()
         {
@@ -38691,6 +38692,7 @@ myPointZ = myPoint.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1383_T008_BasicImport_TestClassConstructorAndProperties_UserDefinedClass()
         {
@@ -38718,6 +38720,7 @@ endPtZ = endPt.Z;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1384_T009_BasicImport_TestClassInstanceMethod()
         {
@@ -38763,6 +38766,7 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1388_T014_BasicImport_BeforeImperative()
         {
@@ -38820,6 +38824,7 @@ arr = Scale(midValue, 4.0);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1393_T019_MultipleImport_ClashFunctionClassRedifinition()
         {
@@ -39165,6 +39170,7 @@ g = d[f+1]; // c
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1404_Test_4_12_isRectangular()
         {
@@ -39313,6 +39319,7 @@ l = i<1> + j<2>; // unpredictable*/";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1413_Test_4_4_properties_1()
         {
@@ -42278,6 +42285,7 @@ t6 = cartesian_sum[2][0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1539_T00004_Geometry_002_line_by_points_replication_simple()
         {
@@ -42301,6 +42309,7 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1540_T00005_Geometry_002_line_by_points_replication_simple_correction()
         {
@@ -42327,6 +42336,7 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1541_T00006_Geometry_003_line_by_points_replication_array()
         {
@@ -42355,6 +42365,7 @@ startPt = Point.ByCartesianCoordinates( 2, 1, 0 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1542_T00007_Geometry_004_circle_all_combinations()
         {
@@ -42373,6 +42384,7 @@ t4 = lines[3][0].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1543_T00008_Geometry_005_circle_adjacent_pairs_externalised()
         {
@@ -42393,6 +42405,7 @@ t3 = lines[2].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1544_T00009_Geometry_006_circle_all_unique_combinations()
         {
@@ -42506,6 +42519,7 @@ t5 = tubes[4].EndPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1547_T00012_Geometry_008a_alternative_method_invocations_1()
         {
@@ -46327,6 +46341,7 @@ i = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1683_T88_1461985_Update_In_Nested_Blocks_1()
         {
@@ -46897,6 +46912,7 @@ y = {
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1697_T011_Cyclic_Dependency_From_Geometry()
         {
@@ -46919,6 +46935,7 @@ projectVector = Vector.ByCoordinates(5.0,0,-1);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1698_T012_property_test_on_collections_2_Robert()
         {
@@ -46935,6 +46952,7 @@ t2= line2.Color;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1699_T013_nested_programming_blocks_1_Robert()
         {
