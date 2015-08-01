@@ -133,6 +133,7 @@ e;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T05_Collection_Assignment_Using_Class()
         {
@@ -166,6 +167,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T06_Collection_Assignment_Using_Class_2()
         {
@@ -245,6 +247,7 @@ def foo ( a )
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T09_2D_Collection_Assignment_In_Class_Scope()
         {
@@ -452,6 +455,7 @@ p1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T16_Assigning_Class_Collection_Property()
         {
@@ -542,6 +546,7 @@ b = a[1];";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T20_Defect_1458567_2()
         {
@@ -756,6 +761,7 @@ x = createArray ( { 1, 2, 3, 4 } );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
         {
@@ -819,6 +825,7 @@ collection = { };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Class_Scope()
         {
@@ -862,6 +869,7 @@ p = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Class_Scope_2()
         {
@@ -905,6 +913,7 @@ b3 = a.Count1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Class_Scope_3()
         {
@@ -1030,6 +1039,7 @@ a = b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Passed_As_Int_Array_To_Class_Method()
         {
@@ -1065,6 +1075,7 @@ b1;b2;b3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T24_Dynamic_Array_Passed_As_Primitive_Array_To_Function()
         {
@@ -1201,6 +1212,7 @@ x = add(x);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_Elements_To_Array_Class()
         {
@@ -1233,6 +1245,7 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704()
         {
@@ -1264,6 +1277,7 @@ x = y.add(); //x = {{0,0},{1,1,1},{2,2,2,2}}
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_2()
         {
@@ -1294,6 +1308,7 @@ x = add(y); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_3()
         {
@@ -1327,6 +1342,7 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_4()
         {
@@ -1366,6 +1382,7 @@ z=y.test();//z = {{0,0},{1,1,1},{2,false,{2,2}},1}
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_5()
         {
@@ -1404,6 +1421,7 @@ z=y.add();//z = {{0,0},{4,4}}
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_6()
         {
@@ -1436,6 +1454,7 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_tomemberofclass_1465704_7()
         {
@@ -1471,6 +1490,7 @@ return=z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_MemberClass_imperative_1465704_8()
         {
@@ -1505,6 +1525,7 @@ return=y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_MemberClass_imperative_1465704_9()
         {
@@ -1541,6 +1562,7 @@ return=y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Adding_elements_MemberClass_imperative_1465704_10()
         {
@@ -1576,6 +1598,7 @@ return=z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T25_Class_Assignment_dynamic_imperative_1465637_1()
         {
@@ -1670,6 +1693,7 @@ c = b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T26_Defct_DNL_1459616_4()
         {
@@ -1706,6 +1730,7 @@ c = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Variable resolution")]
         [Category("Failure")]
         public void T26_Defct_DNL_1459616_5()
@@ -1766,6 +1791,7 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_inline()
         {
@@ -1793,6 +1819,7 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_class()
         {
@@ -1845,6 +1872,7 @@ count = -2..-1;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_memberof_class()
         {
@@ -1870,7 +1898,7 @@ t2 = a.CreateArray(  count );";
 
 
         [Test]
-
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T27_defect_1464429_DynamicArray_class_inherit()
         {
@@ -1905,6 +1933,7 @@ t2 = a.CreateArray(  count );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T27_DynamicArray_Class_1465802_Argument()//not
         {
@@ -1939,6 +1968,8 @@ b31=aa.foo(a);
             thisTest.Verify("b2", b);
             thisTest.Verify("b31", b);
         }
+
+        [Category("DSDefinedClass")]
         public void T27_DynamicArray_Class_1465802_Argument_2()
         {
             string code = @"
@@ -1967,6 +1998,7 @@ b1=aa.foo(cy);
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T27_DynamicArray_Class_1465802_member()//not
         {
@@ -2019,6 +2051,7 @@ b=a[2];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T27_DynamicArray_Invalid_Index_1465614_2()
         {
             string code = @"
@@ -2068,6 +2101,7 @@ z=basePoint[0].Z;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T27_DynamicArray_Invalid_Index_1467104()
         {
             string code = @"
@@ -2089,6 +2123,7 @@ aa = pts[null].x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T27_DynamicArray_Invalid_Index_1467104_2()
         {
             string code = @"
@@ -2114,6 +2149,7 @@ aa = pts[null].x[null];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T27_DynamicArray_Invalid_Index_1467104_3()
         {
             string code = @"
@@ -2277,6 +2313,7 @@ y = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T40_Index_usingFunction_class_1467064_2()
         {
@@ -2300,6 +2337,7 @@ a = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T40_Index_byFunction_class_imperative_1467064_3()
         {
@@ -2327,6 +2365,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T40_Index_byFunction_argument_1467064_4()
         {
@@ -2372,6 +2411,7 @@ y = x;
          }*/
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Properties_From_Array_Elements()
         {
@@ -2403,6 +2443,7 @@ d = c[1].x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083()
         {
@@ -2434,6 +2475,7 @@ d = c[1].x;//null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083_2()
         {
@@ -2465,6 +2507,7 @@ e1 = c[2].x2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T41_Accessing_Non_Existent_Property_FromArray_1467083_3()
         {
@@ -2501,6 +2544,7 @@ f1 = d[1].x2;//null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Variable resolution")]
         public void T61_Accessing_Non_Existent_Array_Properties_1467082()
         {
@@ -2546,6 +2590,7 @@ t4=p[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T61_Accessing_Non_Existent_Array_Properties_1467082_2()
         {
@@ -2570,6 +2615,7 @@ q=p[0].X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T61_Accessing_Non_Existent_Array_Properties_1467082_3()
         {
@@ -2600,6 +2646,7 @@ s=c[0].X[0];// access non array variable as if its array ";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T61_Assign_Non_Existent_Array_Properties_1467082_4()
         {
@@ -2639,6 +2686,7 @@ s = f[1][0].x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T61_Assign_Non_Existent_Array_Properties_1467094()
         {
@@ -2795,6 +2843,7 @@ b[2]=-5;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T62_Create_Dynamic_Array_OnTheFly_inaClass()
         {
@@ -2819,6 +2868,7 @@ c= a.b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T62_Create_Dynamic_Array_OnTheFly_passargument()
         {
@@ -2845,6 +2895,7 @@ c= a.b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T62_Create_Dynamic_Array_OnTheFly_inaClass_methodoverload()
         {
@@ -2896,6 +2947,7 @@ a=test(d);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T63_Dynamic_array_onthefly_argument_class__1467139()
         {
@@ -2992,6 +3044,7 @@ b[0]=10;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T65_Array_Alias_ByVal_1467165_2()
         {
             string code = @"
@@ -3030,6 +3083,7 @@ b[0]=false;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Design Issue")]
         public void T65_Array_Alias_ByVal_1467165_4()
         {
@@ -3055,6 +3109,7 @@ d=b[0].id;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T65_Array_Alias_ByVal_1467165_5()
         {
             string code = @"
@@ -3179,6 +3234,7 @@ b = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T44_Defect_1467264()
         {
@@ -3578,6 +3634,7 @@ test = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T46_Defect_1467502_9_2()
         {
             String code =
@@ -3640,6 +3697,7 @@ test = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T46_Defect_1467502_9_4()
         {
             String code =
@@ -3673,6 +3731,7 @@ test = A.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T46_Defect_1467502_9_5()
         {
             String code =
@@ -3707,6 +3766,7 @@ test = foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T46_Defect_1467502_9_6()
         {
             String code =
@@ -3744,6 +3804,7 @@ test = A.foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T47_Defect_1467561_1()
         {
             String code =
@@ -3783,6 +3844,7 @@ test = A.foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T47_Defect_1467561_2()
         {
             String code =
@@ -3822,6 +3884,7 @@ test = aa.foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T47_Defect_1467561_3()
         {
             String code =
@@ -3966,7 +4029,9 @@ test = A.foo().x;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 10);
         }
+
         [Test]
+        [Category("DSDefinedClass")]
         public void T55_DictionaryKeyinClass()
         {
 
@@ -3994,6 +4059,7 @@ test = A.foo().x;
 
         }
         [Test]
+        [Category("DSDefinedClass")]
         public void T56_DictionaryKeyinClass_2()
         {
 
@@ -4022,6 +4088,7 @@ test = A.foo().x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T57_DictionaryKeyinClass_inheritance()
         {
 
@@ -4059,6 +4126,7 @@ test = A.foo().x;
 
         }
         [Test]
+        [Category("DSDefinedClass")]
         public void T58_DictionaryKeyinClass_inheritance2()
         {
 
@@ -4101,6 +4169,7 @@ test = A.foo().x;
 
         }
         [Test]
+        [Category("DSDefinedClass")]
         public void T59_DotOperator()
         {
 
@@ -4123,6 +4192,7 @@ test = A.foo().x;
             thisTest.Verify("r", 5);
         }
         [Test]
+        [Category("DSDefinedClass")]
         public void T60_DictionaryDotOperator()
         {
 

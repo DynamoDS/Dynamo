@@ -423,6 +423,7 @@ result;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399()
         {
@@ -453,6 +454,7 @@ test=CurveProperties(null);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void Z002_Defect_1461399_2()
         {
@@ -498,6 +500,7 @@ a = function1({null,null});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestCallFunctionReturningObjectMultipleTimes()
         {
             string code = @"
@@ -570,6 +573,7 @@ x = f();
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestDefaultArgumentPointer01()
         {
             string code = @"    
@@ -628,6 +632,7 @@ x = f();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestDefaultArgumentUntyped03()
         {
             string code = @"    
