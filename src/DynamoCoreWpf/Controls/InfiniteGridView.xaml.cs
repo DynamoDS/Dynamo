@@ -104,56 +104,9 @@ namespace Dynamo.Controls
             #region Positional Adjustment
 
             // The scale is know, adjust the top-left corner.
-            var startX = x;
-            var startY = y;
             var scaledMajorGridSpacing = localScale * MajorGridLineSpacing;
-
-            if (startX > 0)
-            {
-                // Assuming after applying scale factor, the major grid lines 
-                // are 10px apart. If the current WorkspaceModel.X is 24px, then 
-                // 
-                //      v = floor(24/10) = floor(2.4) = 2
-                //      w = 24 - 2 x 10 = 4
-                // 
-                // We could start drawing the major grid line from 4px, but that 
-                // leaves a gap at the left edge. So it would be nice if major 
-                // grid line starts from 4 - 10 = -6px, so that it appears that 
-                // the left-most grid line is beyond the left edge.
-                // 
-                var v = ((int)Math.Floor(startX / scaledMajorGridSpacing));
-                var w = (startX - (v * scaledMajorGridSpacing));
-                startX = w - scaledMajorGridSpacing;
-            }
-            else if (startX < -scaledMajorGridSpacing)
-            {
-                // Assuming after applying scale factor, the major grid lines 
-                // are 10px apart. If the current WorkspaceModel.X is -24px, then 
-                // 
-                //      startX = abs(-24) = 24
-                //      v = floor(24/10) = floor(2.4) = 2
-                //      w = 24 - 2 x 10 = 4
-                //      startX = -w = -4
-                // 
-                startX = Math.Abs(startX);
-                var v = ((int)Math.Floor(startX / scaledMajorGridSpacing));
-                var w = (startX - (v * scaledMajorGridSpacing));
-                startX = -w;
-            }
-
-            if (startY > 0)
-            {
-                var v = ((int)Math.Floor(startY / scaledMajorGridSpacing));
-                var w = (startY - (v * scaledMajorGridSpacing));
-                startY = w - scaledMajorGridSpacing;
-            }
-            else if (startY < -scaledMajorGridSpacing)
-            {
-                startY = Math.Abs(startY);
-                var v = ((int)Math.Floor(startY / scaledMajorGridSpacing));
-                var w = (startY - (v * scaledMajorGridSpacing));
-                startY = -w;
-            }
+            var startX = NormalizeStartPoint(x, scaledMajorGridSpacing);
+            var startY = NormalizeStartPoint(y, scaledMajorGridSpacing);
 
             #endregion
 
@@ -205,6 +158,44 @@ namespace Dynamo.Controls
             #endregion
 
             context.Close();
+        }
+
+        private double NormalizeStartPoint(double value, double scaledMajorGridSpacing)
+        {
+            if (value > 0)
+            {
+                // Assuming after applying scale factor, the major grid lines 
+                // are 10px apart. If the current WorkspaceModel.X is 24px, then 
+                // 
+                //      v = floor(24/10) = floor(2.4) = 2
+                //      w = 24 - 2 x 10 = 4
+                // 
+                // We could start drawing the major grid line from 4px, but that 
+                // leaves a gap at the left edge. So it would be nice if major 
+                // grid line starts from 4 - 10 = -6px, so that it appears that 
+                // the left-most grid line is beyond the left edge.
+                // 
+                var v = ((int)Math.Floor(value / scaledMajorGridSpacing));
+                var w = (value - (v * scaledMajorGridSpacing));
+                value = w - scaledMajorGridSpacing;
+            }
+            else if (value < -scaledMajorGridSpacing)
+            {
+                // Assuming after applying scale factor, the major grid lines 
+                // are 10px apart. If the current WorkspaceModel.X is -24px, then 
+                // 
+                //      value = abs(-24) = 24
+                //      v = floor(24/10) = floor(2.4) = 2
+                //      w = 24 - 2 x 10 = 4
+                //      value = -w = -4
+                // 
+                value = Math.Abs(value);
+                var v = ((int)Math.Floor(value / scaledMajorGridSpacing));
+                var w = (value - (v * scaledMajorGridSpacing));
+                value = -w;
+            }
+
+            return value;
         }
 
         #endregion
