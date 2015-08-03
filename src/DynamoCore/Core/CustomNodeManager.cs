@@ -850,6 +850,7 @@ namespace Dynamo.Core
                     currentWorkspace.Connectors.Where(
                         conn =>
                             selectedNodeSet.Contains(conn.Start.Owner)
+
                                 || selectedNodeSet.Contains(conn.End.Owner)).ToList();
 
                 foreach (var connector in partiallySelectedConns)
@@ -896,7 +897,10 @@ namespace Dynamo.Core
                     group.SelectedModels = group.DeletedModelBases;
                     newAnnotations.Add(group);
                 }
-
+                
+                // Now all selected nodes already moved to custom workspace,
+                // clear the selection.
+                DynamoSelection.Instance.ClearSelection();
 
                 foreach (var conn in fullySelectedConns)
                 {
@@ -1142,7 +1146,8 @@ namespace Dynamo.Core
                 {
                     undoRecorder.RecordCreationForUndo(connector);
                 }
-            }
+            } 
+
             return newWorkspace;
         }
 
