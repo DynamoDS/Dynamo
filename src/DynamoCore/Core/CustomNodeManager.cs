@@ -377,7 +377,10 @@ namespace Dynamo.Core
 
         public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
         {
-            return TryGetFunctionWorkspace(id, isTestMode, out ws);
+            CustomNodeWorkspaceModel workSpace;
+            var result = TryGetFunctionWorkspace(id, isTestMode, out workSpace);
+            ws = workSpace;
+            return result;
         }
 
         /// <summary>
