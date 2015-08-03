@@ -46,7 +46,7 @@ namespace Dynamo.Publish.ViewModels
         public string ShareLink
         {
             get { return shareLink; }
-            set
+            private set
             {
                 shareLink = value;
                 RaisePropertyChanged("ShareLink");
@@ -124,6 +124,7 @@ namespace Dynamo.Publish.ViewModels
 
             PublishCommand = new DelegateCommand(OnPublish, CanPublish);
             model.UploadStateChanged += OnModelStateChanged;
+            model.CustomizerURLChanged += OnCustomizerURLChanged;
         }
 
         #endregion
@@ -145,6 +146,12 @@ namespace Dynamo.Publish.ViewModels
         {
             IsUploading = state == PublishModel.UploadState.Uploading;
             BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
+        }
+
+
+        private void OnCustomizerURLChanged(string url)
+        {
+            ShareLink = url;
         }
 
         private bool CanPublish(object obj)
