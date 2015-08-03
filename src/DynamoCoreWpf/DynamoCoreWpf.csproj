@@ -69,6 +69,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -83,6 +84,9 @@
   <ItemGroup>
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
       <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InfiniteGridView.xaml.cs">
+      <DependentUpon>InfiniteGridView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -326,7 +330,6 @@
     <Compile Include="ViewModels\Core\DynamoViewModelDelegates.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEventArgs.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
-    <Compile Include="ViewModels\Core\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="ViewModels\Preview\IWatchViewModel.cs" />
@@ -360,6 +363,10 @@
     <Page Include="Controls\InCanvasSearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InfiniteGridView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Login.xaml">
       <SubType>Designer</SubType>
