@@ -2,6 +2,7 @@
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Publish.Properties;
 using Dynamo.Wpf.Authentication;
 using Greg;
 using Greg.AuthProviders;
@@ -133,15 +134,15 @@ namespace Dynamo.Publish.Models
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new Exception(Resource.ServerNotFoundMessage);
+                throw new Exception(Resources.ServerNotFoundMessage);
 
             port = appSettings.Settings["Port"].Value;
             if (String.IsNullOrWhiteSpace(port))
-                throw new Exception(Resource.PortErrorMessage);
+                throw new Exception(Resources.PortErrorMessage);
 
             page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
-                throw new Exception(Resource.PageErrorMessage);
+                throw new Exception(Resources.PageErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
@@ -182,7 +183,7 @@ namespace Dynamo.Publish.Models
                 {
                     var result = this.Send(workspaces);
 
-                    if (result == Resource.WorkspacesSendSucceededServerResponse)
+                    if (result == Resources.WorkspacesSendSucceededServerResponse)
                     {
                         State = UploadState.Succeeded;
                         Error = UploadErrorType.None;
@@ -206,19 +207,19 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(serverUrl))
             {
                 Error = UploadErrorType.ServerNotFound;
-                return Resource.FailedMessage;
+                return Resources.FailedMessage;
             }
 
             if (String.IsNullOrWhiteSpace(authenticationProvider.Username))
             {
                 Error = UploadErrorType.AuthenticationFailed;
-                return Resource.FailedMessage;
+                return Resources.FailedMessage;
             }
 
             if (authenticationProvider == null)
             {
                 Error = UploadErrorType.AuthProviderNotFound;
-                return Resource.FailedMessage;
+                return Resources.FailedMessage;
             }
 
             string fullServerAdress = serverUrl + ":" + port;
@@ -251,7 +252,7 @@ namespace Dynamo.Publish.Models
             }
             catch
             {
-                result = Resource.FailedMessage;
+                result = Resources.FailedMessage;
             }
             return result;
         }
