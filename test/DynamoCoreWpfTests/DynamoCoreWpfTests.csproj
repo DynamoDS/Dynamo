@@ -85,6 +85,7 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="DateTimeTests.cs" />
+    <Compile Include="NodeToCodeTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="AnnotationViewTests.cs" />
