@@ -57,6 +57,7 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
+                                              
 
                                                 <!--<Rectangle x:Name="HorLn"  Height="1" Stroke="Gray" 
                                                            SnapsToDevicePixels="True"
@@ -246,7 +247,7 @@
                                             TargetName="ExpanderParent"
                                             Value="Collapsed" />
                                 </Trigger>
-                             
+
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -267,7 +268,8 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                            <Button Command="{Binding ClickedCommand}">
+                            
+                            <Button x:Name="outerButton" Command="{Binding ClickedCommand}">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <ContentPresenter />
@@ -280,10 +282,10 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
-
+                                        
                                         <Border BorderBrush="{StaticResource LibraryItemHostBackground}">
                                             <Grid Name="OuterGrid" Background="Transparent">
-                                                <Grid.ColumnDefinitions>
+                                                <Grid.ColumnDefinitions>                                                    
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="Auto" />
@@ -294,15 +296,24 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                               
-                                                <Rectangle x:Name="VerLn" Width="1" Stroke="Gray" 
-                                                           SnapsToDevicePixels="true" Fill="White"
-                                                           Margin="{Binding Margin, ElementName=ExpanderParent}">
+                                                <Rectangle x:Name="VerLn" Width="1" Stroke="DarkGray"                                                            
+                                                             Fill="White">                                                  
+                                                    <Rectangle.Margin>
+                                                        <MultiBinding Converter="{StaticResource TreeViewLineMarginConverter}">
+                                                            <Binding  ElementName="Expander"/>                                                           
+                                                            <Binding Path="Margin" ElementName="Expander"/>
+                                                        </MultiBinding>
+                                                    </Rectangle.Margin>
                                                 </Rectangle>
-                                                <!--<Rectangle x:Name="HorLn"  Height="1" Stroke="Gray" 
-                                                           SnapsToDevicePixels="True"
-                                                           Margin="5,1,43,0">
-                                                </Rectangle>-->
+                                                <Rectangle x:Name="HorLn"  Height="1" Stroke="DarkGray" 
+                                                           SnapsToDevicePixels="True">
+                                                    <Rectangle.Margin>
+                                                        <MultiBinding Converter="{StaticResource TreeViewHLineMarginConverter}">
+                                                            <Binding Path="Margin" ElementName="VerLn"/>
+                                                            <Binding Path="Margin" ElementName="Expander"/>
+                                                        </MultiBinding>
+                                                    </Rectangle.Margin>
+                                                </Rectangle>
 
                                                 <ToggleButton x:Name="Expander"
                                                               Background="Transparent"
@@ -475,6 +486,24 @@
                                     <Setter Property="Visibility"
                                             TargetName="ItemsHost"
                                             Value="Collapsed" />
+                                    <!--<Setter Property="Margin"
+                                            TargetName="VerLn"
+                                            Value="{Binding Path=Margin, 
+                                            Converter={StaticResource TreeViewVLineMarginConverter},
+                                            ConverterParameter=0,
+                                            ElementName=VerLn}">                                        
+                                    </Setter>-->
+                                </Trigger>
+
+                                <Trigger Property="IsExpanded"
+                                         Value="True">
+                                    <Setter Property="Margin"
+                                            TargetName="VerLn"
+                                            Value="{Binding Path=Margin, 
+                                            Converter={StaticResource TreeViewVLineMarginConverter},
+                                            ConverterParameter=0,
+                                            ElementName=VerLn}">                                        
+                                    </Setter>
                                 </Trigger>
 
                                 <Trigger Property="HasItems"
@@ -482,7 +511,16 @@
                                     <Setter Property="Visibility"
                                             TargetName="Expander"
                                             Value="Collapsed" />
-                                </Trigger>                                                                 
+                                </Trigger>
+
+
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                    Converter={StaticResource TreeViewLineConverter}}" Value="true">
+                                    <Setter TargetName="VerLn" Property="Height" Value="17"/>
+                                    <Setter TargetName="VerLn" Property="VerticalAlignment" Value="Top"/>
+                                </DataTrigger>
+
+                                
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -552,7 +590,8 @@
             <!-- This data template is used to show one subcategory. -->
             <HierarchicalDataTemplate  x:Key="ClassObjectDataTemplate"
                                        ItemsSource="{Binding TreeViewItems}"
-                                       ItemTemplate="{StaticResource ClassDetailsDataTemplate}">
+                                       ItemTemplate="{StaticResource ClassDetailsDataTemplate}"
+                                       >
                 <Grid Name="InternalGrid">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -615,7 +654,8 @@
 
             <!-- Used for nested categories. E.g. nodes stucture for Revit root. -->
             <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
-                                      ItemsSource="{Binding Path=Items}">
+                                      ItemsSource="{Binding Path=Items}"
+                                      ItemContainerStyle="{StaticResource ClassTreeViewItem}">
                 <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
                            FontSize="13"
                            Text="{Binding Path=Name}"

@@ -22,7 +22,14 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
+using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
+using Dynamo.Utilities;
 using HelixToolkit.Wpf.SharpDX;
+using FlowDirection = System.Windows.FlowDirection;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using TabControl = System.Windows.Controls.TabControl;
+using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
@@ -2332,5 +2339,140 @@ namespace Dynamo.Controls
             }
         }
 
-   
-    }
+        public class TreeViewLineMarginConverter : IMultiValueConverter
+        {          
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            {
+
+                if (values[0] is ToggleButton)
+                {
+                    var toggle = values[0] as ToggleButton;
+                    var par = WpfUtilities.FindUpVisualTree<Grid>(toggle);
+
+                    var child = WpfUtilities.ChildrenOfType<ToggleButton>(par).FirstOrDefault();
+                    if (child != null)
+                    {
+                        var margin = child.Margin;
+                    }
+                }
+
+                //if (values[0] is Thickness)
+                //{
+                //    var parentMargin = (Thickness)(values[0]);
+                //    var childMargin = (Thickness)(values[1]);
+
+                //    var diff = childMargin.Left - childMargin.Right;
+
+                //    //TODO: change the visibility of the vertical line
+                //    if (childMargin.Left == 0)
+                //    {
+                //        return new Thickness(-10, 0, 0, 0);
+                //    }
+                //    if (childMargin.Left == parentMargin.Left)
+                //    {
+                //        return new Thickness(-10, 0, 0, 0);
+                //    }
+
+                //    if (diff < childMargin.Right)
+                //    {
+                //        return new Thickness(0, 0, childMargin.Left * 2, 0);
+                //    }
+                //    else
+                //    {
+                //        return new Thickness(diff, 0, diff * 2, 0);
+                //    }
+                //}
+                //else
+                    return new Thickness(-10, 0, 0, 0);
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class TreeViewHLineMarginConverter : IMultiValueConverter
+        {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            {
+                var VerLnMargin = (Thickness)(values[0]);
+                var expanderMargin = (Thickness)(values[1]);
+                var left = VerLnMargin.Left + 10;
+                var right = (expanderMargin.Right*2) + 5;
+
+                //case for 3rd level 
+                if (left > right)
+                    right = left + 10;
+
+                //case for 3rd level where vertical margin is negative
+                if (left == 0 && expanderMargin.Right == 0)
+                    left = -10;
+                //case when left margin is not set
+                else if(left == 0)
+                {
+                    left = right + 10;
+                }
+             
+                return new Thickness(left, 0,right, 0);
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class TreeViewVLineMarginConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                Thickness margin = (Thickness)value;
+                int bottom = int.Parse(parameter.ToString());
+
+                //If the margin is not set
+                if (margin.Right == 0)
+                    return new Thickness(-10, 0, 0, 0);
+
+                return new Thickness(margin.Left, margin.Top, margin.Right, bottom);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+        }
+
+        //public class TreeViewVLineMarginConverter : IMultiValueConverter
+        //{
+        //    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        //    {
+        //        var parentMargin = (Thickness)(values[0]);
+        //        var childMargin = (Thickness)(values[1]);
+
+        //        var diff = childMargin.Left - childMargin.Right;
+
+        //        //TODO: change the visibility of the vertical line
+        //        if (childMargin.Left == parentMargin.Left)
+        //        {
+        //            return new Thickness(-10, 0, 0, 0);
+        //        }
+
+        //        if (diff < childMargin.Right)
+        //        {
+        //            return new Thickness(0, 0, childMargin.Left * 2, 0);
+        //        }
+        //        else
+        //        {
+        //            return new Thickness(childMargin.Right, 0, diff * 2, 0);
+        //        }
+        //    }
+
+        //    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
+
+
+   }
