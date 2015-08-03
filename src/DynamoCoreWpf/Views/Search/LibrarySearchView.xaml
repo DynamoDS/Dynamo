@@ -121,8 +121,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                            <Button Command="{Binding ClickedCommand}"
-                                    Focusable="False"
+                            <Button Command="{Binding ClickedCommand}"                                    
                                     MouseEnter="OnMemberMouseEnter"
                                     MouseLeave="OnPopupMouseLeave"
                                     PreviewMouseLeftButtonDown="OnButtonMouseLeftButtonDown"

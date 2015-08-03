@@ -116,10 +116,13 @@ namespace Dynamo.UI.Views
         private void OnButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var senderButton = e.OriginalSource as FrameworkElement;
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (senderButton != null)
+            {
+                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
 
-            if (searchElementVM != null)
-                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+                if (searchElementVM != null)
+                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+            }          
         }
 
         private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
