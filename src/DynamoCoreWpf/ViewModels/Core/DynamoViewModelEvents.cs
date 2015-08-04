@@ -103,5 +103,12 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action RequestPresetsWarningPrompt;
+        private void OnRequestPresetWarningPrompt()
+        {
+            if (RequestPresetsWarningPrompt != null)
+                RequestPresetsWarningPrompt();
+        }
+
     }
 }

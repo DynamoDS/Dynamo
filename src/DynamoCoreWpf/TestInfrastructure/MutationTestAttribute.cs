@@ -3,7 +3,7 @@
 namespace Dynamo.TestInfrastructure
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class MutationTestAttribute : Attribute
+    internal class MutationTestAttribute : Attribute
     {
         private string caption;
 

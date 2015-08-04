@@ -126,9 +126,6 @@ namespace Dynamo.TestInfrastructure
             {
                 Guid guidNumber = Guid.NewGuid();
 
-                double coordinatesX = 120;
-                double coordinatesY = 180;
-
                 DynamoModel.CreateNodeCommand createNodeCmd1 = null;
                     //new DynamoModel.AddNodeCommand(guidNumber, "Number", coordinatesX,
                     //    coordinatesY, false, true);

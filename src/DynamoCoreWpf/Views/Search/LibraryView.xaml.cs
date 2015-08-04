@@ -298,6 +298,8 @@ namespace Dynamo.UI.Views
             var senderButton = e.OriginalSource as FrameworkElement;
             var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
 
+            //sender can be RootSearchElementVM or ClassInformationViewModel. 
+            //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
             if (searchElementVM != null)
                 dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
         }
@@ -308,7 +310,12 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
-            dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            //sender can be RootSearchElementVM or ClassInformationViewModel. 
+            //And we should just fire HandleMouseMove, when ViewModel is NodeSearchElementViewModel
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null)); 
+
         }
 
         #endregion

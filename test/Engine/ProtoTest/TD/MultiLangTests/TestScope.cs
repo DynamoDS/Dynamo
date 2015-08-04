@@ -1807,6 +1807,7 @@ a = 10;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T051_Test_Identifier_Scope_01()
         {
@@ -1958,6 +1959,7 @@ def foo(@a:var)
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T052_DNL_1467464()
         {

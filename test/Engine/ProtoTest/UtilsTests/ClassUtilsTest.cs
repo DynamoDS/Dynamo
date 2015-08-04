@@ -12,6 +12,7 @@ namespace ProtoTest.UtilsTests
     class ClassUtilsTest : ProtoTestBase
     {
         [Test]
+        [Category("DSDefinedClass")]
         public void GetUpcastChainTest()
         {
             String code =

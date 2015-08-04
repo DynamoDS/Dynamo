@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
 using System.Linq;
 using System.Xml;
-
+using DSCoreNodesUI.Properties;
 using Dynamo.Models;
-using Dynamo.Properties;
-using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
@@ -82,7 +79,7 @@ namespace DSCoreNodesUI
 
         protected DSDropDownBase(string outputName)
         {
-            OutPortData.Add(new PortData(outputName, string.Format(Properties.Resources.DropDownPortDataResultToolTip, outputName)));
+            OutPortData.Add(new PortData(outputName, string.Format(Resources.DropDownPortDataResultToolTip, outputName)));
             RegisterAllPorts();
             PopulateItems();
         }
@@ -110,7 +107,7 @@ namespace DSCoreNodesUI
 
             if (selectedIndex < 0)
             {
-                Warning(Resources.NothingIsSelectedWarning);
+                Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
             }
         }
 
