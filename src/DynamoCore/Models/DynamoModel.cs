@@ -78,7 +78,7 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
                 WorkspaceSaved(model);
         }
-
+     
         /// <summary>
         /// Event that is fired during the opening of the workspace.
         /// 

@@ -444,9 +444,15 @@ namespace ProtoCore
 
             if (null != procNode)
             {
+                // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
                 foreach (int cbID in procNode.ChildCodeBlocks)
                 {
                     CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
+
+                    foreach (CodeBlock cb in CodeBlockList)
+                    {
+                        cb.children.RemoveAll(x => x.codeBlockId == cbID);
+                    }
                 }
             }
 

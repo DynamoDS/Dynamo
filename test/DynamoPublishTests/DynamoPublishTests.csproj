@@ -66,12 +66,12 @@
       <Name>DynamoCoreTests</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoPublish\DynamoPublish.csproj">
+    <ProjectReference Include="..\..\src\DynamoPublish\DynamoPublish.csproj">
       <Project>{8eda9f32-9d7d-4d55-9950-52fd695970a9}</Project>
       <Name>DynamoPublish</Name>
       <Private>True</Private>

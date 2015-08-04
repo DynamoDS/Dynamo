@@ -560,7 +560,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanNodeToCode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.Count > 0;
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
