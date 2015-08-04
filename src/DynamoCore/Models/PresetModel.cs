@@ -16,9 +16,7 @@ namespace Dynamo.Models
     /// </summary>
     public class PresetModel:ModelBase
     {
-        //this field is used on deserialization, so that we can identify missing nodes
-        //it will be null if the preset is created by a user.
-        private readonly IEnumerable<NodeModel> nodesInWorkspaceAtConstruction;
+       
         private List<NodeModel> nodes;
         private List<XmlElement> serializedNodes;
 
@@ -98,7 +96,7 @@ namespace Dynamo.Models
  
         public PresetModel(IEnumerable<NodeModel> nodesInGraph)
         {
-            this.nodesInWorkspaceAtConstruction = nodesInGraph;
+            this.nodes = nodesInGraph.ToList();
         }
         #endregion
 
@@ -133,7 +131,7 @@ namespace Dynamo.Models
                 this.Log("unable to parse the GUID for preset state: " + stateName + ", will atttempt to load this state anyway");
             }
 
-            var nodes = new List<NodeModel>();
+            var foundNodes = new List<NodeModel>();
             var deserialzedNodes = new List<XmlElement>();
             //now find the nodes we're looking for by their guids in the loaded nodegraph
             //it's possible they may no longer be present, and we must not fail to set the
@@ -150,10 +148,10 @@ namespace Dynamo.Models
                     continue;
                 }
 
-                var nodebyGuid = nodesInWorkspaceAtConstruction.Where(x => x.GUID == nodeID);
+                var nodebyGuid = this.nodes.Where(x => x.GUID == nodeID);
                 if (nodebyGuid.Count() > 0)
                 {
-                    nodes.Add(nodebyGuid.First());
+                    foundNodes.Add(nodebyGuid.First());
                     deserialzedNodes.Add(node);
                 }
                 else
@@ -167,8 +165,9 @@ namespace Dynamo.Models
             this.GUID = stateID;
             this.Description = stateDescription;
             this.serializedNodes = deserialzedNodes;
-            this.nodes = nodes;
-
+            //at the time of deserialization, nodes contains all the nodes in the nodegraph
+            //we now replace it with the found nodes that this preset serializes
+            this.nodes = foundNodes;
         }
         #endregion
     }
