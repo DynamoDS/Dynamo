@@ -419,6 +419,7 @@ namespace Dynamo.Controls
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestPresetNamePrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt += DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
@@ -833,6 +834,11 @@ namespace Dynamo.Controls
             ShowNewPresetDialog(e);
         }
 
+        void DynamoViewModelRequestPresetWarningPrompt()
+        {
+            ShowPresetWarning();
+        }
+
         /// <summary>
         /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
         /// a preset name/timestamp and description.
@@ -877,6 +883,19 @@ namespace Dynamo.Controls
             } while (!error.Equals(""));
 
             e.Success = true;
+        }
+
+        private void ShowPresetWarning()
+        {
+            var newDialog = new  PresetOverwritePrompt()
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Text =  Wpf.Properties.Resources.PresetWarningMessage,
+                IsCancelButtonVisible = Visibility.Collapsed
+            };
+
+            newDialog.ShowDialog();
         }
         
         private bool PerformShutdownSequenceOnViewModel()
@@ -943,6 +962,7 @@ namespace Dynamo.Controls
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestPresetNamePrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt -= DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;

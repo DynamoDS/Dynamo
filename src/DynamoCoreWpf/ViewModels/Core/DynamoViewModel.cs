@@ -1379,9 +1379,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowNewFunctionDialogAndMakeFunction(object parameter)
-        {
-            //trigger the event to request the display
-            //of the function name dialogue
+        {           
             var args = new FunctionNamePromptEventArgs();
             this.Model.OnRequestsFunctionNamePrompt(this, args);
 
@@ -1404,22 +1402,47 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ShowNewPresetStateDialogAndMakePreset(object parameter)
         {
-            //trigger the event to request the display
-            //of the preset name dialogue
-            var args = new PresetsNamePromptEventArgs();
-            this.Model.OnRequestPresetNamePrompt(args);
-            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
-            if (args.Success)
+            var selectedNodes = GetSelectedInputNodes().ToList();
+
+            //If there are NO input nodes then show the error message
+            if (!selectedNodes.Any())
             {
-                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, IDS));
-                //Presets created - this will enable the Restore / Delete presets
-                RaisePropertyChanged("EnablePresetOptions");    
+                this.OnRequestPresetWarningPrompt();
             }
+            else
+            {
+                //trigger the event to request the display
+                //of the preset name dialogue
+                var args = new PresetsNamePromptEventArgs();
+                this.Model.OnRequestPresetNamePrompt(args);
+
+                //Select only Input nodes for preset
+                var ids = selectedNodes.Select(x => x.GUID).ToList();
+                if (args.Success)
+                {
+                    this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, ids));
+                }
+ 
+                this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, ids));
+                //Presets created - this will enable the Restore / Delete presets
+                RaisePropertyChanged("EnablePresetOptions");     
+            }
+          
         }
         private bool CanShowNewPresetStateDialog(object parameter)
         {
             RaisePropertyChanged("EnablePresetOptions");
             return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        /// <summary>
+        /// Gets the selected "input" nodes
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<NodeModel> GetSelectedInputNodes()
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                                .Where(x => x.IsInputNode);
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)

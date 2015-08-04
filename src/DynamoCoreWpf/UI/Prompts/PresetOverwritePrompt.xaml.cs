@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
 
             this.Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner; 
-            this.Loaded +=PresetOverwritePrompt_Loaded;
+            this.Loaded +=PresetOverwritePrompt_Loaded;           
         }
 
         private void PresetOverwritePrompt_Loaded(object sender, RoutedEventArgs e)
@@ -49,7 +49,19 @@ namespace Dynamo.Nodes
             {
                 this.Indicator.Text = value;               
             }
-        }   
+        }
+
+        public Visibility IsCancelButtonVisible
+        {
+            get
+            {
+                return this.cancelButton.Visibility;
+            }
+            set
+            {
+                this.cancelButton.Visibility = value;
+            }
+        }
      
     }
 }
