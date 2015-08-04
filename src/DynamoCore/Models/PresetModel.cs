@@ -18,7 +18,7 @@ namespace Dynamo.Models
     {
         //this field is used on deserialization, so that we can identify missing nodes
         //it will be null if the preset is created by a user.
-        private readonly List<NodeModel> nodesInWorkspaceAtConstruction;
+        private readonly IEnumerable<NodeModel> nodesInWorkspaceAtConstruction;
         private List<NodeModel> nodes;
         private List<XmlElement> serializedNodes;
 
@@ -98,7 +98,7 @@ namespace Dynamo.Models
  
         public PresetModel(IEnumerable<NodeModel> nodesInGraph)
         {
-            this.nodesInWorkspaceAtConstruction = nodesInGraph.ToList();
+            this.nodesInWorkspaceAtConstruction = nodesInGraph;
         }
         #endregion
 
