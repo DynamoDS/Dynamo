@@ -18,7 +18,7 @@ namespace Dynamo.Search.SearchElements
         protected string iconName;
 
         private readonly HashSet<string> keywords = new HashSet<string>();
-        protected readonly List<double> keywordsWeights = new List<double>();
+        protected readonly List<double> keywordWeights = new List<double>();
         private string description;
         private string userFriendlyName;
         private SearchElementGroup group;
@@ -271,11 +271,11 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        IEnumerable<double> ISearchEntry.TagsWeights
+        IEnumerable<double> ISearchEntry.SearchTagWeights
         {
             get
             {
-                return keywordsWeights;
+                return keywordWeights;
             }
         }
 

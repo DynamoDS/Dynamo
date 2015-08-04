@@ -16,7 +16,7 @@ namespace Dynamo.Search.SearchElements
             {
                 SearchKeywords.Add(aka);
                 // By default search tag has weight = 0.5
-                keywordsWeights.Add(0.5);
+                keywordWeights.Add(0.5);
             }
             FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;

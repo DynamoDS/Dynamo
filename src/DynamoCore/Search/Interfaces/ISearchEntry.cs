@@ -21,7 +21,7 @@ namespace Dynamo.Search.Interfaces
         /// <summary>
         ///     Every search tag should have weight. This weight will be taken into account during search.
         /// </summary>
-        IEnumerable<double> TagsWeights { get; }
+        IEnumerable<double> SearchTagWeights { get; }
 
         /// <summary>
         ///     Description of this search entry.

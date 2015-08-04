@@ -54,7 +54,7 @@ namespace Dynamo.Search.SearchElements
             {
                 // Search tag weight can't be more then 1.
                 if (weight <= 1)
-                    keywordsWeights.Add(weight);
+                    keywordWeights.Add(weight);
             }
 
             int weightsCount = weights.Count();
@@ -69,7 +69,7 @@ namespace Dynamo.Search.SearchElements
                 {
                     for (int i = 0; i < numberOfLackingWeights; i++)
                     {
-                        keywordsWeights.Add(0.5);
+                        keywordWeights.Add(0.5);
                     }
                 }
 
