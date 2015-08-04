@@ -15,7 +15,7 @@ using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
-    class MicroFeatureTests : ProtoTestBase
+    public class MicroFeatureTests : ProtoTestBase
     {
         private ProtoScript.Runners.LiveRunner liveRunner = null;
         private Random randomGen = new Random();
@@ -860,6 +860,37 @@ namespace ProtoTest.LiveRunner
                 value = (double)mirror.GetData().Data;
                 Assert.AreEqual(value, i);
             }
+        }
+
+        [Test]
+        public void TestModifyReplicationGuide01()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+a = (1..2) + (1..2); i = a[0];
+",
+
+@"
+a = (1..2)<1> + (1..2)<2>; i = a[0][0];
+"
+            };
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("i", 2);
+
+            // Modify function def - removed imperative block
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
+
+            syncData = new GraphSyncData(null, null, modified);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("i", 2);
         }
 
         [Test]
