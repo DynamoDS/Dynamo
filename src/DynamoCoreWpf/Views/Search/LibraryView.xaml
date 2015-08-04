@@ -300,8 +300,10 @@
                                                              Fill="White">                                                  
                                                     <Rectangle.Margin>
                                                         <MultiBinding Converter="{StaticResource TreeViewLineMarginConverter}">
-                                                            <Binding  ElementName="Expander"/>                                                           
+                                                            <Binding  Path="Margin" ElementName="ExpanderParent"/>                                                           
                                                             <Binding Path="Margin" ElementName="Expander"/>
+                                                            <Binding  RelativeSource="{RelativeSource FindAncestor,
+                                                                    AncestorType={x:Type TreeViewItem}}"/>
                                                         </MultiBinding>
                                                     </Rectangle.Margin>
                                                 </Rectangle>
@@ -311,6 +313,8 @@
                                                         <MultiBinding Converter="{StaticResource TreeViewHLineMarginConverter}">
                                                             <Binding Path="Margin" ElementName="VerLn"/>
                                                             <Binding Path="Margin" ElementName="Expander"/>
+                                                            <Binding  RelativeSource="{RelativeSource FindAncestor,
+                                                                    AncestorType={x:Type TreeViewItem}}"/>
                                                         </MultiBinding>
                                                     </Rectangle.Margin>
                                                 </Rectangle>
@@ -497,13 +501,13 @@
 
                                 <Trigger Property="IsExpanded"
                                          Value="True">
-                                    <Setter Property="Margin"
+                                    <!--<Setter Property="Margin"
                                             TargetName="VerLn"
                                             Value="{Binding Path=Margin, 
                                             Converter={StaticResource TreeViewVLineMarginConverter},
                                             ConverterParameter=0,
                                             ElementName=VerLn}">                                        
-                                    </Setter>
+                                    </Setter>-->
                                 </Trigger>
 
                                 <Trigger Property="HasItems"
@@ -520,7 +524,19 @@
                                     <Setter TargetName="VerLn" Property="VerticalAlignment" Value="Top"/>
                                 </DataTrigger>
 
-                                
+                                <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
+                                    Converter={StaticResource TreeViewLineConverter}}" Value="false">
+                                    <Setter Property="Margin"
+                                            TargetName="VerLn"
+                                            Value="{Binding RelativeSource={RelativeSource FindAncestor,
+                                        AncestorType={x:Type TreeViewItem}}, 
+                                            Converter={StaticResource TreeViewVLineMarginConverter},
+                                            ConverterParameter=0}"
+                                            >                                        
+                                    </Setter>
+                                </DataTrigger>-->
+
+
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>

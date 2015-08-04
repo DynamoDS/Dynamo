@@ -24,6 +24,7 @@ using RestSharp.Contrib;
 using System.Text;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf.SharpDX;
 using FlowDirection = System.Windows.FlowDirection;
@@ -2329,7 +2330,7 @@ namespace Dynamo.Controls
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
                 TreeViewItem item = (TreeViewItem)value;
-                ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+                ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);                
                 return ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
             }
 
@@ -2343,46 +2344,68 @@ namespace Dynamo.Controls
         {          
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
             {
-
-                if (values[0] is ToggleButton)
+                if (values[0] is Thickness)
                 {
-                    var toggle = values[0] as ToggleButton;
-                    var par = WpfUtilities.FindUpVisualTree<Grid>(toggle);
+                    var parentMargin = (Thickness)(values[0]);
+                    var childMargin = (Thickness)(values[1]);
+                    TreeViewItem item = (TreeViewItem)values[2];
 
-                    var child = WpfUtilities.ChildrenOfType<ToggleButton>(par).FirstOrDefault();
-                    if (child != null)
+                    //get the level
+                    ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+                    var level = -1;
+                    var isLastItem = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+                    if (values[2] is DependencyObject)
                     {
-                        var margin = child.Margin;
+                        var parent = VisualTreeHelper.GetParent(values[2] as DependencyObject);
+                        bool gotParentTree = false;
+                        while (!(gotParentTree) && (parent != null))
+                        {
+                            if (parent is TreeViewItem)
+                                level++;
+                            parent = VisualTreeHelper.GetParent(parent);
+                            if (parent is System.Windows.Controls.TreeView)
+                            {
+                                var view = parent as System.Windows.Controls.TreeView;
+                                if (view.Name == "CategoryTreeView")
+                                {
+                                    gotParentTree = true;
+                                }
+                            }
+                        }                                               
                     }
+
+                    var diff = childMargin.Left - childMargin.Right;
+
+                    //TODO: change the visibility of the vertical line
+                    if (childMargin.Left == 0)
+                    {
+                        return new Thickness(-10, 0, 0, 0);
+                    }
+                    if (childMargin.Left == parentMargin.Left)
+                    {
+                        return new Thickness(-10, 0, 0, 0);
+                    }
+
+                    //if (childMargin.Left > origMargin.Left)
+                    //{
+                    //    return new Thickness(childMargin.Left, 0, diff * 2, 0);
+                    //}
+
+                    if (diff < childMargin.Right)
+                    {
+                        return new Thickness(0, 0, childMargin.Left * 2, 0);
+                    }
+                    else
+                    {
+                        if (level <= 2 || !isLastItem)
+                            return new Thickness(diff, 0, diff * 2, 0);
+                        else
+                        {
+                            return new Thickness(childMargin.Left - childMargin.Right, 0, 50, 0);
+                        }
+                    }                   
                 }
-
-                //if (values[0] is Thickness)
-                //{
-                //    var parentMargin = (Thickness)(values[0]);
-                //    var childMargin = (Thickness)(values[1]);
-
-                //    var diff = childMargin.Left - childMargin.Right;
-
-                //    //TODO: change the visibility of the vertical line
-                //    if (childMargin.Left == 0)
-                //    {
-                //        return new Thickness(-10, 0, 0, 0);
-                //    }
-                //    if (childMargin.Left == parentMargin.Left)
-                //    {
-                //        return new Thickness(-10, 0, 0, 0);
-                //    }
-
-                //    if (diff < childMargin.Right)
-                //    {
-                //        return new Thickness(0, 0, childMargin.Left * 2, 0);
-                //    }
-                //    else
-                //    {
-                //        return new Thickness(diff, 0, diff * 2, 0);
-                //    }
-                //}
-                //else
+                else
                     return new Thickness(-10, 0, 0, 0);
             }
 
@@ -2398,6 +2421,10 @@ namespace Dynamo.Controls
             {
                 var VerLnMargin = (Thickness)(values[0]);
                 var expanderMargin = (Thickness)(values[1]);
+                var item = (TreeViewItem) values[2];
+                ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+                var isLastItem =  ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+
                 var left = VerLnMargin.Left + 10;
                 var right = (expanderMargin.Right*2) + 5;
 
@@ -2413,8 +2440,11 @@ namespace Dynamo.Controls
                 {
                     left = right + 10;
                 }
-             
-                return new Thickness(left, 0,right, 0);
+
+                if (!isLastItem)
+                    return new Thickness(left, 0, right, 0);
+                else
+                    return new Thickness(left, 0, 40, 0); //assuming that last item expander has a margin of 20
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -2435,6 +2465,7 @@ namespace Dynamo.Controls
                     return new Thickness(-10, 0, 0, 0);
 
                 return new Thickness(margin.Left, margin.Top, margin.Right, bottom);
+                
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
