@@ -51,9 +51,9 @@ namespace Dynamo.Tests
             //create the first state with the numbers selected
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
-            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            model.ExecuteCommand(new DynamoModel.AddPresetCommand("state1", "3", IDS));
+            model.ExecuteCommand(new DynamoModel.AddPresetCommand("state1", "3", ids));
 
             //change values
             numberNode1.Value = "2";
@@ -62,9 +62,9 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
-            IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
 
-            model.ExecuteCommand(new DynamoModel.AddPresetCommand("state2", "5", IDS));
+            model.ExecuteCommand(new DynamoModel.AddPresetCommand("state2", "5", ids));
 
             return new List<NodeModel>() { numberNode1, numberNode2,addNode };
         }
@@ -262,7 +262,7 @@ namespace Dynamo.Tests
               var stateWithMissingNodes = model.CurrentWorkspace.Presets.Where(x => x.Name == "4/8/2015 2:57:02 PM").First();
             //get all the serialized nodes that were loaded when the state was loaded
              var nodesInState = stateWithMissingNodes.SerializedNodes.Select(x=>Guid.Parse(x.GetAttribute("guid")));
-            //now assert that one or more of the IDS in the state is missing from the ids in the graph
+            //now assert that one or more of the ids in the state is missing from the ids in the graph
              var nodesInGraph = model.CurrentWorkspace.Nodes.Select(x => x.GUID);
              var nodesInStateAndGraph = nodesInState.Intersect(nodesInGraph);
            
@@ -433,11 +433,11 @@ namespace Dynamo.Tests
             //create the first state with the numbers selected
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
-            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
             model.CurrentWorkspace.AddPreset(
                  "state1",
-                 "3", IDS);
+                 "3", ids);
 
             Assert.AreEqual(1, model.CurrentWorkspace.Presets.Count());
           
@@ -448,11 +448,11 @@ namespace Dynamo.Tests
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(numberNode1);
             DynamoSelection.Instance.Selection.Add(numberNode2);
-            IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
 
             model.CurrentWorkspace.AddPreset(
             "state2",
-            "5", IDS);
+            "5", ids);
 
             //Check for Dirty flag - After the Preset the dirty flag should be set.
             Assert.AreEqual(model.CurrentWorkspace.HasUnsavedChanges, true);
