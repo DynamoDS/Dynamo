@@ -38,12 +38,22 @@ namespace Dynamo.UI.Views
         private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
         {
             viewModel = DataContext as SearchViewModel;
-
+            viewModel.SearchTextChanged +=viewModel_SearchTextChanged;
             // RequestReturnFocusToSearch calls, when workspace was clicked.
             // We should hide tooltip.
             viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
             // When workspace was changed, we should hide tooltip. 
             viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
+        }
+
+        private void viewModel_SearchTextChanged(object sender, EventArgs e)
+        {
+            //Get the scrollview and scroll to top on every text entered
+            var scroll = CategoryTreeView.ChildOfType<ScrollViewer>();
+            if (scroll != null)
+            {               
+                scroll.ScrollToTop();
+            }
         }
 
         private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)

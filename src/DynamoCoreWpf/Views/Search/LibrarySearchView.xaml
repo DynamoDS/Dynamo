@@ -241,7 +241,8 @@
                    ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                    ScrollViewer.CanContentScroll="True"
                    VirtualizingStackPanel.IsVirtualizing="True"
-                   VirtualizingStackPanel.VirtualizationMode="Recycling" />
+                   VirtualizingStackPanel.VirtualizationMode="Recycling" >           
+          </TreeView>
 
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         StaysOpen="True"
