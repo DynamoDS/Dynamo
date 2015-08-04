@@ -36,11 +36,11 @@ namespace DynamoCoreWpfTests
 
             DynamoSelection.Instance.Selection.Add(addNode);
 
-            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
             ViewModel.Model.CurrentWorkspace.AddPreset(
                 "state1",
-                "a state with 2 numbers", IDS);
+                "a state with 2 numbers", ids);
             //assert that the preset has been created
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.Count(), 1);
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.First().Nodes.Count(), 1);
@@ -74,9 +74,9 @@ namespace DynamoCoreWpfTests
 
             DynamoSelection.Instance.Selection.Add(addNode);
 
-            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             //create the preset from 2 nodes
-            ViewModel.Model.ExecuteCommand(new DynamoModel.AddPresetCommand("state1", "a state with 2 numbers", IDS));
+            ViewModel.Model.ExecuteCommand(new DynamoModel.AddPresetCommand("state1", "a state with 2 numbers", ids));
             
             //assert that the preset has been created
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Presets.Count(), 1);
