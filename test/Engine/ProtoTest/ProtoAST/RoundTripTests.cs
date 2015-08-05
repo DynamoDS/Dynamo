@@ -285,6 +285,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestRoundTrip_ClassDecl_PropertyAccess_01()
         {
             int result1 = 10;
@@ -388,6 +389,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestRoundTrip_ClassDecl_MemFunctionCall_01()
         {
             int result1 = 20;
@@ -524,6 +526,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void TestAstToCode()
         {

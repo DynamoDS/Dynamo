@@ -1,6 +1,7 @@
 ﻿using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Publish.Models;
+using Dynamo.Publish.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Authentication;
@@ -45,7 +46,7 @@ namespace Dynamo.Publish.ViewModels
         public string ShareLink
         {
             get { return shareLink; }
-            set
+            private set
             {
                 shareLink = value;
                 RaisePropertyChanged("ShareLink");
@@ -94,7 +95,7 @@ namespace Dynamo.Publish.ViewModels
                     isUploading = value;
                     if (isUploading)
                     {
-                        UploadStateMessage = Resource.UploadingMessage;
+                        UploadStateMessage = Resources.UploadingMessage;
                         IsReadyToUpload = true;
                     }
                     RaisePropertyChanged("IsUploading");
@@ -123,6 +124,7 @@ namespace Dynamo.Publish.ViewModels
 
             PublishCommand = new DelegateCommand(OnPublish, CanPublish);
             model.UploadStateChanged += OnModelStateChanged;
+            model.CustomizerURLChanged += OnCustomizerURLChanged;
         }
 
         #endregion
@@ -146,25 +148,31 @@ namespace Dynamo.Publish.ViewModels
             BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
         }
 
+
+        private void OnCustomizerURLChanged(string url)
+        {
+            ShareLink = url;
+        }
+
         private bool CanPublish(object obj)
         {
             if (String.IsNullOrWhiteSpace(Name))
             {
-                UploadStateMessage = Resource.ProvideWorskspaceNameMessage;
+                UploadStateMessage = Resources.ProvideWorskspaceNameMessage;
                 IsReadyToUpload = false;
                 return false;
             }
 
             if (String.IsNullOrWhiteSpace(Description))
             {
-                UploadStateMessage = Resource.ProvideWorskspaceDescriptionMessage;
+                UploadStateMessage = Resources.ProvideWorskspaceDescriptionMessage;
                 IsReadyToUpload = false;
                 return false;
             }
 
             if (!model.HasAuthProvider)
             {
-                UploadStateMessage = Resource.ProvideAuthProviderMessage;
+                UploadStateMessage = Resources.ProvideAuthProviderMessage;
                 IsReadyToUpload = false;
                 return false;
             }
@@ -184,7 +192,7 @@ namespace Dynamo.Publish.ViewModels
                 return true;
             }
 
-            UploadStateMessage = Resource.ReadyForPublishMessage;
+            UploadStateMessage = Resources.ReadyForPublishMessage;
             IsReadyToUpload = true;
             return true;
         }
@@ -194,16 +202,16 @@ namespace Dynamo.Publish.ViewModels
             switch (model.Error)
             {
                 case PublishModel.UploadErrorType.AuthenticationFailed:
-                    UploadStateMessage = Resource.AuthenticationFailedMessage;
+                    UploadStateMessage = Resources.AuthenticationFailedMessage;
                     break;
                 case PublishModel.UploadErrorType.AuthProviderNotFound:
-                    UploadStateMessage = Resource.AuthManagerNotFoundMessage;
+                    UploadStateMessage = Resources.AuthManagerNotFoundMessage;
                     break;
                 case PublishModel.UploadErrorType.ServerNotFound:
-                    UploadStateMessage = Resource.ServerNotFoundMessage;
+                    UploadStateMessage = Resources.ServerNotFoundMessage;
                     break;
                 case PublishModel.UploadErrorType.UnknownServerError:
-                    UploadStateMessage = Resource.UnknownServerErrorMessage;
+                    UploadStateMessage = Resources.UnknownServerErrorMessage;
                     break;
             }
         }

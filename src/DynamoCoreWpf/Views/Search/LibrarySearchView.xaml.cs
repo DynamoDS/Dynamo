@@ -38,12 +38,22 @@ namespace Dynamo.UI.Views
         private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
         {
             viewModel = DataContext as SearchViewModel;
-
+            viewModel.SearchTextChanged +=viewModel_SearchTextChanged;
             // RequestReturnFocusToSearch calls, when workspace was clicked.
             // We should hide tooltip.
             viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
             // When workspace was changed, we should hide tooltip. 
             viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
+        }
+
+        private void viewModel_SearchTextChanged(object sender, EventArgs e)
+        {
+            //Get the scrollview and scroll to top on every text entered
+            var scroll = CategoryTreeView.ChildOfType<ScrollViewer>();
+            if (scroll != null)
+            {               
+                scroll.ScrollToTop();
+            }
         }
 
         private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)
@@ -116,10 +126,13 @@ namespace Dynamo.UI.Views
         private void OnButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var senderButton = e.OriginalSource as FrameworkElement;
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (senderButton != null)
+            {
+                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
 
-            if (searchElementVM != null)
-                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+                if (searchElementVM != null)
+                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+            }          
         }
 
         private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
@@ -131,6 +144,9 @@ namespace Dynamo.UI.Views
             var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
             if (searchElementVM != null)
                 dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            else
+                dragDropHelper.Clear();
+
         }
 
         #endregion

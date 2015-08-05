@@ -587,6 +587,7 @@ x1; x2; x3; x4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void NegativeIndexOnCollection003()
         {
             String code =
@@ -596,6 +597,7 @@ x1; x2; x3; x4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void PopListWithDimension()
         {
             String code =
@@ -687,6 +689,7 @@ x1; x2; x3; x4;
             Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 2);
         }
         [Test, Ignore]
+        [Category("DSDefinedClass")]
         public void TestTryCatch002()
         {
             string code = @"class MyException{    ex:int;    constructor Create()    {        ex = 100;    }}x;y1;y2;y3;y4;y5;y6;z;[Imperative]{   x = 1;   y1 = 0;   y2 = 0;   y3 = 0;   y4 = 0;   y5 = 0;   y6 = 0;      try   {       y1 = 1;       throw 1 + 2;       y2 = 2;   }   catch (e:boolean)   {       y3 = 3;   }   catch (e:int)   {       y4 = 4;   }   try   {       y5 = 5;       throw MyException.Create();       y6 = 6;   }   catch (e:MyException)   {   }   z = 5;}";
@@ -856,6 +859,7 @@ x1; x2; x3; x4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestAttributeOnGlobalFunction()
         {
             string code = @"class TestAttribute
@@ -884,6 +888,7 @@ class VisibilityAttribute
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestAttributeOnLanguageBlock()
         {
             string code = @"class TestAttribute
@@ -911,6 +916,7 @@ class VisibilityAttribute
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestAttributeWithLanguageBlockAndArrayExpression()
         {
             string code = @"class TestAttribute

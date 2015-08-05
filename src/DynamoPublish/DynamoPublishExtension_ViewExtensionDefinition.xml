@@ -1,4 +1,4 @@
 <ViewExtensionDefinition>
-  <AssemblyPath>\DynamoPublish\DynamoPublish.dll</AssemblyPath>
+  <AssemblyPath>..\DynamoPublish.dll</AssemblyPath>
   <TypeName>Dynamo.Publish.DynamoPublishExtension</TypeName>
 </ViewExtensionDefinition>

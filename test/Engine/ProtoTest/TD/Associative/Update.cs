@@ -156,6 +156,7 @@ b = b + 0.1;    // updates the source member of the collection";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T006_Update_In_Class()
         {
@@ -268,6 +269,7 @@ line_0 = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T007_Update_In_Class()
         {
@@ -350,6 +352,7 @@ a 		= a.incrementRadius(0.2); 						// [POINT does not updates]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T008_Update_Of_Variables()
         {
@@ -449,6 +452,7 @@ r1 = true;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T013_Update_Of_Variables_To_User_Defined_Class()
         {
@@ -476,6 +480,7 @@ t1 = A.A();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T014_Update_Of_Class_Properties()
         {
@@ -500,6 +505,7 @@ c1 = b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T015_Update_Of_Class_Properties()
         {
@@ -526,6 +532,7 @@ c1 = b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T016_Update_Of_Variable_Types()
         {
@@ -548,6 +555,7 @@ x =  { A.A(1).a, A.A(2).a } ;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T017_Update_Of_Class_Instances()
         {
@@ -663,6 +671,7 @@ a 	 = MyPoint.ByAngleRadius(5.0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T018_Update_Inside_Class_Constructor()
         {
@@ -698,6 +707,7 @@ z = p1.addandIncr();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T018_Update_Inside_Class_Constructor_2()
         {
@@ -752,6 +762,7 @@ test = X + Y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T020_Update_Inside_Class_Constructor()
         {
@@ -791,6 +802,7 @@ a = a + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T021_Update_Inside_Class_Constructor()
         {
@@ -832,6 +844,7 @@ a = a + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T022_Defect_1459905()
         {
@@ -853,6 +866,7 @@ a = a.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T022_Defect_1459905_2()
         {
@@ -894,6 +908,7 @@ a1 = a1.foo(); //works fine
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T022_Defect_1459905_3()
         {
@@ -921,6 +936,7 @@ b1 = foo(b1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T022_Defect_1459905_4()
         {
@@ -961,6 +977,7 @@ y = x;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T023_Defect_1459789()
         {
@@ -997,6 +1014,7 @@ a 		  = MyPoint.ByXYcoordinates(2.0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T023_Defect_1459789_2()
         {
@@ -1030,6 +1048,7 @@ a		  = a.incrementX(3.0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T023_Defect_1459789_3()
         {
             string code = @"
@@ -1064,6 +1083,7 @@ b1.a2[0] = b1.a2[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T023_Defect_1459789_4()
         {
             string code = @"
@@ -1099,6 +1119,7 @@ a = { { 1.0, 2} , 3 };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T023_Defect_1459789_5()
         {
@@ -1141,6 +1162,7 @@ b1 = b1.create();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T023_Defect_1459789_6()
         {
@@ -1185,6 +1207,7 @@ b1 = b1.create();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         [Category("Failure")]
         public void T023_Defect_1459789_7()
@@ -1235,6 +1258,7 @@ test1 = b1.a2[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T023_Defect_1459789_8()
         {
@@ -1288,6 +1312,7 @@ test1 = b1.a2[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T023_Defect_1459789_9()
         {
@@ -1336,6 +1361,7 @@ dummy = foo (  );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T023_Defect_1459789_10()
         {
             string err = "1467186 - sprint24 : REGRESSION: rev 3172 : Cyclic dependency detected in update cases";
@@ -1403,6 +1429,7 @@ x = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T024_Defect_1459470_2()
         {
@@ -1494,6 +1521,7 @@ c = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T025_Defect_1459704_2()
         {
@@ -1527,6 +1555,7 @@ a2 = foo(10);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T026_Defect_1459631()
         {
@@ -1552,6 +1581,7 @@ t2 = a1.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T026_Defect_1459631_2()
         {
@@ -1584,6 +1614,7 @@ t4 = a1.w;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T026_Defect_1459631_3()
         {
@@ -1623,6 +1654,7 @@ t4 = a1.w;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T027_Defect_1460741()
         {
@@ -1664,6 +1696,7 @@ x3 = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T027_Defect_1460741_2()
         {
@@ -1752,6 +1785,7 @@ test = X + Y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T030_Defect_1467236_Update_In_Class()
         {
@@ -1799,6 +1833,7 @@ x2 = derivedpoint.B;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T030_Defect_1467236_Update_In_Class_2()
         {
@@ -1901,6 +1936,7 @@ i = 0..2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T031_Defect_1467302_3()
         {
@@ -1940,6 +1976,7 @@ i = 0..2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T032_Defect_1467335_Update_In_class_Constructor()
         {
@@ -1979,6 +2016,7 @@ i = 0..2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T033_Defect_1467187_Update_In_class_collection_property()
         {
@@ -2015,6 +2053,7 @@ dummy = p1.foo(2);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T033_Defect_1467187_Update_In_class_collection_property_2()
         {
@@ -2041,6 +2080,7 @@ b1.a2[0] = b1.a2[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         [Category("Failure")]
         public void T033_Defect_1467187_Update_In_class_collection_property_3()
@@ -2085,6 +2125,7 @@ p1.X[0..1] = -1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         [Category("Failure")]
         public void T034_UpdaetStaticProperty()
@@ -2130,6 +2171,7 @@ q = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T036_Defect_1467491()
         {

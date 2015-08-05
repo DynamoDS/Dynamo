@@ -957,6 +957,8 @@ namespace Dynamo.ViewModels
 
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 nodeModel, position.X, position.Y, useDeafultPosition, true));
+
+            dynamoViewModel.ReturnFocusToSearch();
         }
         #endregion
 
