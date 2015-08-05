@@ -1,0 +1,22 @@
+<Workspace Version="0.8.2.2073" X="-5.49020445532035" Y="-139.216381304424" zoom="1.07386484997055" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="4ce57a3e-c2e9-4393-8610-cc98262be56b" type="Dynamo.Nodes.DSFunction" nickname="Document.Current" x="136.406560028918" y="270.338865277547" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="RevitNodes.dll" function="Revit.Application.Document.Current" />
+    <Dynamo.Nodes.DSFunction guid="a6e61d6f-1d3a-41c7-ae73-b9c57f80ac67" type="Dynamo.Nodes.DSFunction" nickname="Document.IsFamilyDocument" x="368.346554559714" y="465.041779462763" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="RevitNodes.dll" function="Revit.Application.Document.IsFamilyDocument" />
+    <Dynamo.Nodes.DSFunction guid="4911245e-aa7d-4b9a-b144-5a865f9b13bd" type="Dynamo.Nodes.DSFunction" nickname="Document.IsFamilyDocument" x="366.023689689645" y="280.925235206286" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="RevitNodes.dll" function="Revit.Application.Document.IsFamilyDocument" />
+    <Dynamo.Nodes.DSFunction guid="7b4315fb-3ac1-4eeb-b618-36dc39e63c7e" type="Dynamo.Nodes.DSFunction" nickname="Document.Location" x="367.466230898592" y="376.471162707969" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="RevitNodes.dll" function="Revit.Application.Document.Location" />
+    <Dynamo.Nodes.DSFunction guid="ab893330-ca36-46be-bb42-bb56ac78295c" type="Dynamo.Nodes.DSFunction" nickname="Document.ActiveView" x="365.416466626771" y="183.769545146427" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="RevitNodes.dll" function="Revit.Application.Document.ActiveView" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4ce57a3e-c2e9-4393-8610-cc98262be56b" start_index="0" end="a6e61d6f-1d3a-41c7-ae73-b9c57f80ac67" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4ce57a3e-c2e9-4393-8610-cc98262be56b" start_index="0" end="4911245e-aa7d-4b9a-b144-5a865f9b13bd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4ce57a3e-c2e9-4393-8610-cc98262be56b" start_index="0" end="7b4315fb-3ac1-4eeb-b618-36dc39e63c7e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4ce57a3e-c2e9-4393-8610-cc98262be56b" start_index="0" end="ab893330-ca36-46be-bb42-bb56ac78295c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

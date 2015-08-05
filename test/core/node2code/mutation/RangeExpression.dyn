@@ -1,0 +1,21 @@
+<Workspace Version="0.8.2.1915" X="-123.665000786891" Y="2.55222036508201" zoom="0.910063803931439" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="fe7ab249-c180-4a98-94ce-80f41f34aff6" type="Dynamo.Nodes.DSFunction" nickname="Math.Sin" x="382.469651690337" y="274.557213522695" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Math.Sin@double" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="c3ab22b8-ef81-4ecd-a908-61f10cf8e1ec" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="243.26404294676" y="290.134147120325" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..10..1;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="9c383bd6-39a5-4606-9f32-54c00a0242c8" type="Dynamo.Nodes.DSFunction" nickname="Math.Sin" x="370" y="86" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Math.Sin@double" />
+    <Dynamo.Nodes.DoubleInput guid="d77d9050-764c-4091-9574-7f811b5288ad" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="190.4" y="97.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c3ab22b8-ef81-4ecd-a908-61f10cf8e1ec" start_index="0" end="fe7ab249-c180-4a98-94ce-80f41f34aff6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d77d9050-764c-4091-9574-7f811b5288ad" start_index="0" end="9c383bd6-39a5-4606-9f32-54c00a0242c8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>
