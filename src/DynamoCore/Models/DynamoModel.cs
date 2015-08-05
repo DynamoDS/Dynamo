@@ -1207,6 +1207,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
                 nodeGraph.Presets,
+                nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode

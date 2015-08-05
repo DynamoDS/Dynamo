@@ -507,7 +507,8 @@ namespace Dynamo.Models
             IEnumerable<AnnotationModel> a,
             WorkspaceInfo info, 
             NodeFactory factory,
-            IEnumerable<PresetModel> presets)
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver)
         {
             guid = Guid.NewGuid();
 
@@ -532,18 +533,7 @@ namespace Dynamo.Models
             NodeFactory = factory;
 
             this.presets = new List<PresetModel>(presets);
-            // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
-            ElementResolver = new ElementResolver();
-            foreach (var node in nodes)
-            {
-                RegisterNode(node);
-
-                var cbn = node as CodeBlockNodeModel;
-                if (cbn != null && cbn.ElementResolver != null)
-                {
-                    ElementResolver.CopyResolutionMap(cbn.ElementResolver);
-                }
-            }
+            ElementResolver = resolver;
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);

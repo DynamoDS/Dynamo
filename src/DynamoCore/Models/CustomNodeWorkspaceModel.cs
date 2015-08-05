@@ -51,18 +51,13 @@ namespace Dynamo.Models
             IEnumerable<PresetModel> presets,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
-            : base(e, n,a, info, factory,presets)
+            : base(e, n,a, info, factory,presets, elementResolver)
         {
             HasUnsavedChanges = false;
 
             CustomNodeId = Guid.Parse(info.ID);
             Category = info.Category;
             Description = info.Description;
-
-            if (elementResolver != null)
-            {
-                ElementResolver.CopyResolutionMap(elementResolver);
-            }
             PropertyChanged += OnPropertyChanged;
         }
 
