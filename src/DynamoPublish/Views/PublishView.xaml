@@ -205,7 +205,8 @@
                     Grid.Column="2"
                     Width="100"
                     Height="30"
-                    Style="{StaticResource SBadgeButton}" />
+                    Style="{StaticResource SBadgeButton}"
+                    Click="OnButtonCopyLinkClick" />
 
         </Grid>
 
