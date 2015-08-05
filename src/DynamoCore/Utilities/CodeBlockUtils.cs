@@ -259,12 +259,18 @@ namespace Dynamo.Utilities
         }
 
         public static IDictionary<string, KeyValuePair<string, string>> DeserializeElementResolver(
-            XmlElement nodeElement)
+            XmlElement nodeElement,
+            SaveContext context)
         {
             var xmlDoc = nodeElement.OwnerDocument;
             Debug.Assert(xmlDoc != null);
 
-            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
+            var tagName = "NamespaceResolutionMap";
+            XmlNodeList nodes;
+            if (context == SaveContext.File)
+                nodes = xmlDoc.GetElementsByTagName(tagName);
+            else
+                nodes = nodeElement.GetElementsByTagName(tagName);
 
             var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
             if (nodes.Count > 0)

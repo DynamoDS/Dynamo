@@ -278,7 +278,7 @@ namespace Dynamo.Nodes
             code = helper.ReadString("CodeText");
 
             // Lookup namespace resolution map if available and initialize new instance of ElementResolver
-            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
+            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement, context);
             ElementResolver = new ElementResolver(resolutionMap);
 
             ProcessCodeDirect();
