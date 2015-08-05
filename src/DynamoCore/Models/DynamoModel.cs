@@ -841,7 +841,7 @@ namespace Dynamo.Models
             NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader);
             NodeFactory.AddAlsoKnownAs(dsVarArgFuncData.Type, dsVarArgFuncData.AlsoKnownAs);
 
-            var cbnLoader = new CodeBlockNodeLoader(LibraryServices);
+            var cbnLoader = new CodeBlockNodeLoader(LibraryServices, this);
             NodeFactory.AddLoader(cbnData.Type, cbnLoader);
             NodeFactory.AddFactory(cbnData.Type, cbnLoader);
             NodeFactory.AddAlsoKnownAs(cbnData.Type, cbnData.AlsoKnownAs);
@@ -1574,12 +1574,12 @@ namespace Dynamo.Models
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
                     var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices);
+                    newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices, CurrentWorkspace.ElementResolver);
                 }
                 else
                 {
                     var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
-                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy);
+                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, CurrentWorkspace.ElementResolver);
                 }
 
                 var lacing = node.ArgumentLacing.ToString();

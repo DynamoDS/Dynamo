@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
+        public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
         {
@@ -60,10 +60,10 @@ namespace Dynamo.Nodes
             this.ElementResolver = new ElementResolver();
         }
 
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
+        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
+            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices)
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             X = xPos;
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
             GUID = guid;
             ShouldFocus = false;
 
-            ProcessCodeDirect();
+            ProcessCodeDirect(resolver);
         }
 
         public override void Dispose()
@@ -267,7 +267,6 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
             helper.SetAttribute("ShouldFocus", shouldFocus);
-
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -276,12 +275,6 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
-
-            // Lookup namespace resolution map if available and initialize new instance of ElementResolver
-            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement, context);
-            ElementResolver = new ElementResolver(resolutionMap);
-
-            ProcessCodeDirect();
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
@@ -389,12 +382,12 @@ namespace Dynamo.Nodes
 
         #region Private Methods
 
-        internal void ProcessCodeDirect()
+        internal void ProcessCodeDirect(ElementResolver resolver)
         {
             string errorMessage = string.Empty;
             string warningMessage = string.Empty;
 
-            ProcessCode(ref errorMessage, ref warningMessage);
+            ProcessCode(ref errorMessage, ref warningMessage, resolver);
             RaisePropertyChanged("Code");
             
             ClearRuntimeError();

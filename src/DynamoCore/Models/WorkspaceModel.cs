@@ -1268,7 +1268,7 @@ namespace Dynamo.Models
                         code,
                         System.Guid.NewGuid(), 
                         totalX / nodeCount,
-                        totalY / nodeCount, engineController.LibraryServices);
+                        totalY / nodeCount, engineController.LibraryServices, ElementResolver);
                     undoHelper.RecordCreation(codeBlockNode);
                    
                     AddAndRegisterNode(codeBlockNode, false);
@@ -1622,7 +1622,7 @@ namespace Dynamo.Models
             }
             else // Other node types.
             {
-                NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
+                NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo, ElementResolver);
                 
                 AddAndRegisterNode(nodeModel);
                 
