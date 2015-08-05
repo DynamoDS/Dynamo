@@ -70,12 +70,12 @@ namespace Dynamo.Nodes
             Y = yPos;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
-            this.ElementResolver = new ElementResolver();
+            this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
 
-            ProcessCodeDirect(resolver);
+            ProcessCodeDirect();
         }
 
         public override void Dispose()
@@ -267,6 +267,7 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
             helper.SetAttribute("ShouldFocus", shouldFocus);
+
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -275,6 +276,8 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
+
+            ProcessCodeDirect();
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
@@ -382,12 +385,12 @@ namespace Dynamo.Nodes
 
         #region Private Methods
 
-        internal void ProcessCodeDirect(ElementResolver resolver)
+        internal void ProcessCodeDirect()
         {
             string errorMessage = string.Empty;
             string warningMessage = string.Empty;
 
-            ProcessCode(ref errorMessage, ref warningMessage, resolver);
+            ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
             
             ClearRuntimeError();

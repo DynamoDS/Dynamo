@@ -20,8 +20,8 @@ namespace Dynamo.Models.NodeLoaders
         public CodeBlockNodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver)
         {
             var node = CreateNode();
+            node.ElementResolver = resolver;
             node.Deserialize(elNode, context);
-            node.ProcessCodeDirect(resolver);
             return node;
         }
 
