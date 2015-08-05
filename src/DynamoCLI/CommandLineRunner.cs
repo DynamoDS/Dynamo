@@ -137,8 +137,9 @@ namespace DynamoCLI
 
         private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
         {
-            var items =  collection.GetElements().Select(
-                item => item.GetElements()!= null ? (GetStringRepOfCollection(item) ) :", "+item.StringData).ToString();
+
+           var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
+
 
             return "["+items +"]";
 
