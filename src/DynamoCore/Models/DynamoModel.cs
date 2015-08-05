@@ -782,14 +782,13 @@ namespace Dynamo.Models
                     return;
 
                 var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
-                    // First search for common paths.
                                 Where(x =>
                                         {
-                                            return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
-                                        }).
-                    // Then get rid of empty paths. It can be empty just in case it's just created node.
-                                Where(x => !String.IsNullOrEmpty(x.Path)).
-                                ToList();
+                                            // Search for common paths and get rid of empty paths.
+                                            // It can be empty just in case it's just created node.
+                                            return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                                !String.IsNullOrEmpty(x.Path);
+                                        }).ToList();
 
                 if (elements.Any())
                 {
