@@ -535,6 +535,9 @@ namespace Dynamo.Models
             this.presets = new List<PresetModel>(presets);
             ElementResolver = resolver;
 
+            foreach (var node in nodes)
+                RegisterNode(node);
+
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
 
