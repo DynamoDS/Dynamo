@@ -83,7 +83,8 @@
         <Binding Path="ClassDetailsVisibility"
                  Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
     </UserControl.Visibility>
-    <Border Padding="0,10,0,3">
+    <Border Margin="0,-10,0,0"
+        Padding="0,10,0,3">
         <!--<Border.Background>
             <Binding Path="IsRootCategoryDetails"
                      Converter="{StaticResource BooleanToBrushConverter}" />

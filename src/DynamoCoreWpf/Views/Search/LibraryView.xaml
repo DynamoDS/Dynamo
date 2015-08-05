@@ -297,7 +297,7 @@
                                                 </Grid.RowDefinitions>
 
                                                 <Rectangle x:Name="VerLn" Width="1" Stroke="DarkGray"                                                            
-                                                             Fill="White">                                                  
+                                                             Fill="DarkGray">                                                  
                                                     <Rectangle.Margin>
                                                         <MultiBinding Converter="{StaticResource TreeViewLineMarginConverter}">
                                                             <Binding  Path="Margin" ElementName="ExpanderParent"/>                                                           
@@ -308,6 +308,7 @@
                                                     </Rectangle.Margin>
                                                 </Rectangle>
                                                 <Rectangle x:Name="HorLn"  Height="1" Stroke="DarkGray" 
+                                                           Fill="DarkGray"
                                                            SnapsToDevicePixels="True">
                                                     <Rectangle.Margin>
                                                         <MultiBinding Converter="{StaticResource TreeViewHLineMarginConverter}">

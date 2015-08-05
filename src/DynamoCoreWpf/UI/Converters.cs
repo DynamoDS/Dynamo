@@ -2379,33 +2379,37 @@ namespace Dynamo.Controls
                     //TODO: change the visibility of the vertical line
                     if (childMargin.Left == 0)
                     {
+                        //return new Thickness(-10, 0, 30, 0);
                         return new Thickness(-10, 0, 0, 0);
                     }
                     if (childMargin.Left == parentMargin.Left)
                     {
+                        //return new Thickness(-10, 0, 30, 0);
                         return new Thickness(-10, 0, 0, 0);
                     }
-
-                    //if (childMargin.Left > origMargin.Left)
-                    //{
-                    //    return new Thickness(childMargin.Left, 0, diff * 2, 0);
-                    //}
-
+                   
                     if (diff < childMargin.Right)
                     {
                         return new Thickness(0, 0, childMargin.Left * 2, 0);
                     }
                     else
                     {
-                        if (level <= 2 || !isLastItem)
+                        //if (isLastItem)
+                        //{
+                        //    return new Thickness(childMargin.Left - childMargin.Right, 0, 50, 0);
+                        //}
+
                             return new Thickness(diff, 0, diff * 2, 0);
-                        else
-                        {
-                            return new Thickness(childMargin.Left - childMargin.Right, 0, 50, 0);
-                        }
+                        //if (level <= 2 || !isLastItem)
+                        //    return new Thickness(diff, 0, diff * 2, 0);
+                        //else
+                        //{
+                        //    return new Thickness(childMargin.Left - childMargin.Right, 0, 50, 0);
+                        //}
                     }                   
                 }
                 else
+                    //return new Thickness(-10, 0, 30, 0);
                     return new Thickness(-10, 0, 0, 0);
             }
 
@@ -2421,6 +2425,8 @@ namespace Dynamo.Controls
             {
                 var VerLnMargin = (Thickness)(values[0]);
                 var expanderMargin = (Thickness)(values[1]);
+                
+                //Find if the item is last
                 var item = (TreeViewItem) values[2];
                 ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
                 var isLastItem =  ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
@@ -2441,10 +2447,17 @@ namespace Dynamo.Controls
                     left = right + 10;
                 }
 
-                if (!isLastItem)
-                    return new Thickness(left, 0, right, 0);
-                else
-                    return new Thickness(left, 0, 40, 0); //assuming that last item expander has a margin of 20
+                //if (isLastItem)
+                //{
+                //    return new Thickness(left, 0, 40, 0); //assuming that last item expander has a margin of 20
+                //}
+
+                return new Thickness(left, 0, right, 0);
+
+                //if (!isLastItem)
+                //    return new Thickness(left, 0, right, 0);
+                //else
+                //    return new Thickness(left, 0, 40, 0); //assuming that last item expander has a margin of 20
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
