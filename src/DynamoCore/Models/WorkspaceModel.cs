@@ -263,7 +263,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     A description of the workspace
+        ///     A autor of the workspace
         /// </summary>
         public string Author
         {
@@ -273,6 +273,12 @@ namespace Dynamo.Models
                 author = value;
                 RaisePropertyChanged("Author");
             }
+        }
+
+        public string Description
+        {
+            get;
+            set;
         }
 
         /// <summary>

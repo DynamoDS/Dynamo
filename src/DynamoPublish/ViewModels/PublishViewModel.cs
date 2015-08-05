@@ -1,5 +1,6 @@
 ﻿using Dynamo.Core;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Publish.Models;
 using Dynamo.Publish.Properties;
 using Dynamo.UI.Commands;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Linq;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -139,6 +141,10 @@ namespace Dynamo.Publish.ViewModels
             if (!model.IsLoggedIn)
                 return;
 
+            var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().First();
+            homeWorkspace.Name = Name;
+            homeWorkspace.Description = Description;
+
             model.SendAsynchronously(Workspaces);
         }
 
@@ -147,7 +153,6 @@ namespace Dynamo.Publish.ViewModels
             IsUploading = state == PublishModel.UploadState.Uploading;
             BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
         }
-
 
         private void OnCustomizerURLChanged(string url)
         {
