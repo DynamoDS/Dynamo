@@ -11,12 +11,10 @@ namespace Dynamo.Models.NodeLoaders
     public class CodeBlockNodeLoader : INodeLoader<CodeBlockNodeModel>, INodeFactory<CodeBlockNodeModel>
     {
         private readonly LibraryServices libraryServices;
-        private readonly DynamoModel dynamoModel;
 
-        public CodeBlockNodeLoader(LibraryServices manager, DynamoModel model)
+        public CodeBlockNodeLoader(LibraryServices manager)
         {
             libraryServices = manager;
-            dynamoModel = model;
         }
 
         public CodeBlockNodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver)

@@ -841,7 +841,7 @@ namespace Dynamo.Models
             NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader);
             NodeFactory.AddAlsoKnownAs(dsVarArgFuncData.Type, dsVarArgFuncData.AlsoKnownAs);
 
-            var cbnLoader = new CodeBlockNodeLoader(LibraryServices, this);
+            var cbnLoader = new CodeBlockNodeLoader(LibraryServices);
             NodeFactory.AddLoader(cbnData.Type, cbnLoader);
             NodeFactory.AddFactory(cbnData.Type, cbnLoader);
             NodeFactory.AddAlsoKnownAs(cbnData.Type, cbnData.AlsoKnownAs);
