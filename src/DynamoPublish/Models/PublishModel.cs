@@ -215,7 +215,7 @@ namespace Dynamo.Publish.Models
                     {
                         State = UploadState.Succeeded;
                         Error = UploadErrorType.None;
-                        CustomizerURL = String.Concat(serverUrl, serverResponce.Value);
+                        CustomizerURL = String.Concat(serverUrl, ":", port, serverResponce.Value);
                     }
                     else
                     {
