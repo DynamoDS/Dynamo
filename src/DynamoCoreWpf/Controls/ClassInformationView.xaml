@@ -111,10 +111,10 @@
                      Grid.Row="1"
                      Grid.ColumnSpan="2"
                      Background="Transparent"
-                     BorderBrush="DarkGray"
+                     BorderBrush="#686868"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="2,0,0,0"/>
+                     BorderThickness="1,0,0,0"/>
 
             <Border Padding="0,5,0,5"
                     Grid.Row="2"
@@ -129,11 +129,11 @@
                      Grid.Row="3"
                      Grid.ColumnSpan="2"
                      Background="Transparent"
-                     BorderBrush="DarkGray"
+                     BorderBrush="#686868"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="2,0,0,0">
+                     BorderThickness="1,0,0,0">
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
@@ -153,11 +153,11 @@
                      Grid.Row="5"
                      Grid.ColumnSpan="2"
                      Background="Transparent"
-                     BorderBrush="DarkGray"
+                     BorderBrush="#686868"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="2,0,0,0">
+                     BorderThickness="1,0,0,0">
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />

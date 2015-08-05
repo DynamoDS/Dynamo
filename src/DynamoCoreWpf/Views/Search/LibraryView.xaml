@@ -296,8 +296,8 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
 
-                                                <Rectangle x:Name="VerLn" Width="1" Stroke="DarkGray"                                                            
-                                                             Fill="DarkGray">                                                  
+                                                <Rectangle x:Name="VerLn" Width="1" Stroke="#686868"                                                            
+                                                             Fill="#686868">                                                  
                                                     <Rectangle.Margin>
                                                         <MultiBinding Converter="{StaticResource TreeViewLineMarginConverter}">
                                                             <Binding  Path="Margin" ElementName="ExpanderParent"/>                                                           
@@ -307,8 +307,8 @@
                                                         </MultiBinding>
                                                     </Rectangle.Margin>
                                                 </Rectangle>
-                                                <Rectangle x:Name="HorLn"  Height="1" Stroke="DarkGray" 
-                                                           Fill="DarkGray"
+                                                <Rectangle x:Name="HorLn"  Height="1" Stroke="#686868" 
+                                                           Fill="#686868"  
                                                            SnapsToDevicePixels="True">
                                                     <Rectangle.Margin>
                                                         <MultiBinding Converter="{StaticResource TreeViewHLineMarginConverter}">
@@ -486,7 +486,7 @@
                             </Button>
 
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsExpanded"
+                                <Trigger Property="IsExpanded"                                         
                                          Value="false">
                                     <Setter Property="Visibility"
                                             TargetName="ItemsHost"
@@ -500,13 +500,13 @@
                                     </Setter>-->
                                 </Trigger>
 
-                                <Trigger Property="IsExpanded"
+                                <Trigger  Property="IsExpanded"
                                          Value="True">
                                     <!--<Setter Property="Margin"
                                             TargetName="VerLn"
                                             Value="{Binding Path=Margin, 
                                             Converter={StaticResource TreeViewVLineMarginConverter},
-                                            ConverterParameter=0,
+                                            ConverterParameter=15,
                                             ElementName=VerLn}">                                        
                                     </Setter>-->
                                 </Trigger>
@@ -524,20 +524,37 @@
                                     <Setter TargetName="VerLn" Property="Height" Value="17"/>
                                     <Setter TargetName="VerLn" Property="VerticalAlignment" Value="Top"/>
                                 </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsChecked, ElementName=Expander}"
+                                                                           Value="True" />
+                                        <Condition Binding="{Binding ElementName=VerLn,
+                                                                                     Path=Margin,
+                                                                                     Converter={StaticResource TreeViewMarginCheck}}"
+                                                                           Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Margin"
+                                            TargetName="VerLn"
+                                            Value="{Binding Path=Margin, 
+                                            Converter={StaticResource TreeViewVLineMarginConverter},
+                                            ConverterParameter=15,
+                                            ElementName=VerLn}">
+                                        </Setter>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                
 
-                                <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                    Converter={StaticResource TreeViewLineConverter}}" Value="false">
+                                <!--<DataTrigger Binding="{Binding IsChecked, ElementName=Expander}" Value="True" >
                                     <Setter Property="Margin"
                                             TargetName="VerLn"
-                                            Value="{Binding RelativeSource={RelativeSource FindAncestor,
-                                        AncestorType={x:Type TreeViewItem}}, 
+                                            Value="{Binding Path=Margin, 
                                             Converter={StaticResource TreeViewVLineMarginConverter},
-                                            ConverterParameter=0}"
-                                            >                                        
+                                            ConverterParameter=15,
+                                            ElementName=VerLn}">                                        
                                     </Setter>
                                 </DataTrigger>-->
-
-
+                                
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>

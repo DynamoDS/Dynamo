@@ -2476,7 +2476,7 @@ namespace Dynamo.Controls
                 //If the margin is not set
                 if (margin.Right == 0)
                     return new Thickness(-10, 0, 0, 0);
-
+                
                 return new Thickness(margin.Left, margin.Top, margin.Right, bottom);
                 
             }
@@ -2486,6 +2486,29 @@ namespace Dynamo.Controls
                 throw new Exception("The method or operation is not implemented.");
             }
         }
+
+        public class TreeViewMarginCheck : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                Thickness margin = (Thickness)value;
+                 
+                //If the margin is not set
+                if (margin.Right == 0)
+                        return false;
+
+                return true;
+
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+
+        }
+
+   
 
         //public class TreeViewVLineMarginConverter : IMultiValueConverter
         //{
