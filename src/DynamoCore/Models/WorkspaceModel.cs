@@ -263,7 +263,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     A autor of the workspace
+        ///     An autor of the workspace
         /// </summary>
         public string Author
         {
