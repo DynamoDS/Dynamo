@@ -126,10 +126,6 @@ namespace ProtoCore.DSASM
                 fi = rmem.CurrentStackFrame.FunctionScope;
             }
             graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
-            if (graphNodesInProgramScope != null)
-            {
-                graphNodesInProgramScope.RemoveAll(g => !g.isActive);
-            }
         }
 
         /// <summary>
@@ -1462,6 +1458,11 @@ namespace ProtoCore.DSASM
 
             foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodesInProgramScope)
             {
+                if (!graphNode.isActive)
+                {
+                    continue;
+                }
+
                 if (runtimeCore.Options.IsDeltaExecution)
                 {
                     // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
