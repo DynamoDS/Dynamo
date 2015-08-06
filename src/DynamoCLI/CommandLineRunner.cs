@@ -139,9 +139,7 @@ namespace DynamoCLI
         {
 
            var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
-
-
-            return "["+items +"]";
+            return "{"+items +"}";
 
         }
 
