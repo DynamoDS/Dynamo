@@ -31,5 +31,10 @@ namespace Dynamo.Publish.Views
             DataContext = viewModel;
             viewModel.UIDispatcher = Dispatcher;
         }
+
+        private void OnButtonCopyLinkClick(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(textBoxShareLink.Text);
+        }
     }
 }

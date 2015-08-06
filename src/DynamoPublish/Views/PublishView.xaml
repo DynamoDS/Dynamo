@@ -206,10 +206,11 @@
             <Button Name="buttonCopyLink"
                     Content="{x:Static resx:Resources.CopyLinkButtonTitle}"
                     Grid.Row="1"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Width="100"
                     Height="30"
-                    Style="{StaticResource SBadgeButton}" Grid.ColumnSpan="5" Margin="19.6,0.6,0.4,2.2" />
+                    Style="{StaticResource SBadgeButton}"
+                    Click="OnButtonCopyLinkClick" />
 
         </Grid>
 
