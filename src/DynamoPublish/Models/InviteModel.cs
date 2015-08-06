@@ -13,6 +13,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Publish.Properties;
 using RestSharp;
 
 namespace Dynamo.Publish.Models
@@ -61,15 +62,15 @@ namespace Dynamo.Publish.Models
 
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
-                throw new Exception(Resource.ServerNotFoundMessage);
+                throw new Exception(Resources.ServerNotFoundMessage);
 
             port = appSettings.Settings["Port"].Value;
             if (String.IsNullOrWhiteSpace(port))
-                throw new Exception(Resource.PortErrorMessage);
+                throw new Exception(Resources.PortErrorMessage);
 
             invite = appSettings.Settings["Invite"].Value;
             if (String.IsNullOrWhiteSpace(invite))
-                throw new Exception(Resource.PageErrorMessage);
+                throw new Exception(Resources.PageErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;            
         }
@@ -87,7 +88,7 @@ namespace Dynamo.Publish.Models
             // Manager must be initialized in constructor.
             if (authenticationProvider == null)
             {
-                OnUpdateStatusMessage(Resource.AuthManagerNotFoundMessage,true);
+                OnUpdateStatusMessage(Resources.AuthManagerNotFoundMessage, true);
                 return;
             }
 
@@ -103,13 +104,13 @@ namespace Dynamo.Publish.Models
         {
             if (String.IsNullOrWhiteSpace(serverUrl) || String.IsNullOrWhiteSpace(authenticationProvider.Username))
             {
-                OnUpdateStatusMessage(Resource.ServerNotFoundMessage, true);
+                OnUpdateStatusMessage(Resources.ServerNotFoundMessage, true);
                 return false;
             }
 
             if (authenticationProvider == null)
-            {                
-                OnUpdateStatusMessage(Resource.AuthenticationFailedMessage, true);
+            {
+                OnUpdateStatusMessage(Resources.AuthenticationFailedMessage, true);
                 return false;
             }
 
@@ -127,10 +128,10 @@ namespace Dynamo.Publish.Models
             var response = restClient.Execute(request);      
       
             if(response.ErrorException == null)
-                OnUpdateStatusMessage(Resource.InviteRequestSuccess, false);
+                OnUpdateStatusMessage(Resources.InviteRequestSuccess, false);
             else
             {
-                OnUpdateStatusMessage(Resource.InviteRequestFailed, true);
+                OnUpdateStatusMessage(Resources.InviteRequestFailed, true);
                 Log(LogMessage.Error(response.ErrorException));
                 return false;
             }

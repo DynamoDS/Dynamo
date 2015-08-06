@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Dynamo.Publish.Properties;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -95,7 +96,7 @@ namespace Dynamo.Publish.ViewModels
 
         private void OnInvite(object obj)
         {
-            model_UpdateStatusMessage(Resource.InviteRequestStart);
+            model_UpdateStatusMessage(Resources.InviteRequestStart);
             if (!model.IsLoggedIn)
             {
                 model.Authenticate();
@@ -103,7 +104,7 @@ namespace Dynamo.Publish.ViewModels
 
             if (!model.IsLoggedIn)
             {
-                model_UpdateStatusMessage(Resource.AuthenticationFailedMessage,true);
+                model_UpdateStatusMessage(Resources.AuthenticationFailedMessage, true);
                 return;
             }
 
