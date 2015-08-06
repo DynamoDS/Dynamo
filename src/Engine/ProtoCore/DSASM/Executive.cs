@@ -126,7 +126,10 @@ namespace ProtoCore.DSASM
                 fi = rmem.CurrentStackFrame.FunctionScope;
             }
             graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
-            graphNodesInProgramScope.RemoveAll(g => !g.isActive);
+            if (graphNodesInProgramScope.Count > 0)
+            {
+                graphNodesInProgramScope.RemoveAll(g => !g.isActive);
+            }
         }
 
         /// <summary>
