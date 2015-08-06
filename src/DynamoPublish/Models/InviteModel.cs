@@ -113,21 +113,30 @@ namespace Dynamo.Publish.Models
             {
                 restClient = new RestClient(serverUrl);
             }
-            
-            var  request = new RestRequest(invite, Method.POST);
-            
-            authenticationProvider.SignRequest(ref request,restClient);
-        
-            var response = restClient.Execute(request);      
-      
-            if(response.ErrorException == null)
-                OnUpdateStatusMessage(Resources.InviteRequestSuccess, false);
-            else
+
+            try
             {
-                OnUpdateStatusMessage(Resources.InviteRequestFailed, true);
-                Log(LogMessage.Error(response.ErrorException));
+                var request = new RestRequest(invite, Method.POST);
+
+                authenticationProvider.SignRequest(ref request, restClient);
+
+                var response = restClient.Execute(request);
+
+                if (response.ErrorException == null)
+                    OnUpdateStatusMessage(Resources.InviteRequestSuccess, false);
+                else
+                {
+                    OnUpdateStatusMessage(Resources.InviteRequestFailed, true);
+                    Log(LogMessage.Error(response.ErrorException));
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log(ex.Message, WarningLevel.Error);
                 return false;
             }
+            
 
             return true;
         }
@@ -144,7 +153,20 @@ namespace Dynamo.Publish.Models
         protected void Log(string msg)
         {
             Log(LogMessage.Info(msg));
-        }       
+        }
+
+        protected void Log(string msg, WarningLevel severity)
+        {
+            switch (severity)
+            {
+                case WarningLevel.Error:
+                    Log(LogMessage.Error(msg));
+                    break;
+                default:
+                    Log(LogMessage.Warning(msg, severity));
+                    break;
+            }
+        }
         #endregion
     }
 }
