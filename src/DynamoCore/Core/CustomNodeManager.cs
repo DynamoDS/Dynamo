@@ -140,7 +140,7 @@ namespace Dynamo.Core
                 Log(
                     Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
-                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
+                info = new CustomNodeInfo(id, nickname ?? "", "", "", "", true);
             }
 
             if (def == null)
@@ -474,7 +474,8 @@ namespace Dynamo.Core
                     header.Name,
                     header.Category,
                     header.Description, 
-                    path);
+                    path,
+                    header.IsVisibleInDynamoLibrary);
                 return true;
             }
             catch (Exception e)

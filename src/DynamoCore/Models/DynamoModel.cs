@@ -778,7 +778,8 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
-                if (customNodeSearchRegistry.Contains(info.FunctionId))
+                if (customNodeSearchRegistry.Contains(info.FunctionId)
+                        || !info.IsVisibleInDynamoLibrary)
                     return;
 
                 var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
