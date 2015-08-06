@@ -286,5 +286,5 @@ The UserID is randomly generated when the application is first run. The SessionI
 
 ## License ##
 
-Dynamo is licensed under the [Apache License](LICENSE.txt).
+Dynamo is licensed under the Apache License. Dynamo also uses a number of third party libraries, some with different licenses. You can find more information [here](LICENSE.txt).
 
