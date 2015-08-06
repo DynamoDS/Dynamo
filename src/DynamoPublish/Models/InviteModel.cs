@@ -133,6 +133,7 @@ namespace Dynamo.Publish.Models
             }
             catch (Exception ex)
             {
+                OnUpdateStatusMessage(Resources.InviteRequestFailed, true);
                 Log(ex.Message, WarningLevel.Error);
                 return false;
             }
