@@ -1126,6 +1126,51 @@ namespace ProtoTest.LiveRunner
             AssertValue("y", 2);
         }
 
+        [Test]
+        public void TestFunctionDefinitionWithLanguageblocks02()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+def f() 
+{
+    return = [Imperative]
+    {
+        return = 1;
+    }
+}
+",
+
+@"
+def f() 
+{
+    return = 2;
+}
+",
+
+ @" p = f();"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("p", 1);
+
+            // Modify function def - removed imperative block
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[1]));
+
+           syncData = new GraphSyncData(null, null, modified);
+           liveRunner.UpdateGraph(syncData);
+           AssertValue("p", 2);
+        }
+
 
         [Test]
         public void TestFunctionModification01()
@@ -3123,6 +3168,7 @@ r = Equals(x, {41, 42});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestExecution()
         {
             List<string> codes = new List<string>() 

@@ -1,0 +1,27 @@
+<Workspace Version="0.8.2.1957" X="28.4311891972171" Y="53.9823689575513" zoom="0.683620527631289" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCore.File.Filename guid="ea0babea-4ab0-4aae-9a89-5cd423f67885" type="DSCore.File.Filename" nickname="File Path" x="69.9951477050781" y="128.525" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.String>C:\ProgramData\Dynamo\0.8\samples\Data\helix.xlsx</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.StringInput guid="fb5281fe-16ea-4fde-af06-082125e857a9" type="Dynamo.Nodes.StringInput" nickname="String" x="415.730053212046" y="207.783942285196" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.String>helix</System.String>
+      <System.String value="helix" />
+    </Dynamo.Nodes.StringInput>
+    <DSCore.File.FileObject guid="4e8f85e4-5cb7-4424-ac9c-232ce90af7d2" type="DSCore.File.FileObject" nickname="File.FromPath" x="380.056825654114" y="120.170636411515" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
+    <Dynamo.Nodes.DSFunction guid="63670f6b-88c5-463c-822b-13b492de5a77" type="Dynamo.Nodes.DSFunction" nickname="Excel.ReadFromFile" x="545.963281820034" y="126.315319973216" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSOffice.dll" function="DSOffice.Excel.ReadFromFile@var,string,bool">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ea0babea-4ab0-4aae-9a89-5cd423f67885" start_index="0" end="4e8f85e4-5cb7-4424-ac9c-232ce90af7d2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb5281fe-16ea-4fde-af06-082125e857a9" start_index="0" end="63670f6b-88c5-463c-822b-13b492de5a77" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e8f85e4-5cb7-4424-ac9c-232ce90af7d2" start_index="0" end="63670f6b-88c5-463c-822b-13b492de5a77" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

@@ -78,7 +78,7 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
                 WorkspaceSaved(model);
         }
-
+     
         /// <summary>
         /// Event that is fired during the opening of the workspace.
         /// 
@@ -571,7 +571,7 @@ namespace Dynamo.Models
             {
                 var startupParams = new StartupParams(config.AuthProvider,
                     pathManager, new ExtensionLibraryLoader(this), 
-                    CustomNodeManager);
+                    CustomNodeManager, GetType().Assembly.GetName().Version);
 
                 foreach (var ext in extensions)
                 {
@@ -781,11 +781,14 @@ namespace Dynamo.Models
                 if (customNodeSearchRegistry.Contains(info.FunctionId))
                     return;
 
-                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
-                                x =>
-                                {
-                                    return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
-                                }).ToList();
+                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
+                                Where(x =>
+                                        {
+                                            // Search for common paths and get rid of empty paths.
+                                            // It can be empty just in case it's just created node.
+                                            return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                                !String.IsNullOrEmpty(x.Path);
+                                        }).ToList();
 
                 if (elements.Any())
                 {

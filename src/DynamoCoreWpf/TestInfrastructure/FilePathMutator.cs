@@ -44,7 +44,7 @@ namespace Dynamo.TestInfrastructure
             }
 
             int numberOfUndosNeeded = Mutate(node);
-            Thread.Sleep(100);
+            Thread.Sleep(10);
 
             writer.WriteLine("### - Beginning undo");
             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
@@ -63,18 +63,7 @@ namespace Dynamo.TestInfrastructure
             writer.Flush();
             writer.WriteLine("### - Beginning re-exec");
 
-            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-            {
-                DynamoModel.RunCancelCommand runCancel =
-                    new DynamoModel.RunCancelCommand(false, false);
-
-                DynamoViewModel.ExecuteCommand(runCancel);
-            }));
-            Thread.Sleep(10);
-            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-            {
-                Thread.Sleep(10);
-            }
+            ExecuteAndWait();
 
             writer.WriteLine("### - re-exec complete");
             writer.Flush();

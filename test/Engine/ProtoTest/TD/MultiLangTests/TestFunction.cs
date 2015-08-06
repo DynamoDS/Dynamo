@@ -218,6 +218,7 @@ a;b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T08_Function_From_Inside_Class_Constructor()
         {
@@ -262,6 +263,7 @@ a;b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T09_Function_From_Inside_Class_Constructor()
         {
@@ -305,6 +307,7 @@ a;b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T10_Function_From_Inside_Class_Method()
         {
@@ -352,6 +355,7 @@ a;b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T11_Function_From_Inside_Class_Method()
         {
@@ -766,6 +770,7 @@ x;y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T22_Function_Call_As_Instance_Arguments()
         {
@@ -1110,6 +1115,7 @@ b2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T33_Function_With_Mismatching_Return_Type()
         {
@@ -1220,6 +1226,7 @@ b2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T37_Function_With_Mismatching_Return_Type()
         {
@@ -1473,6 +1480,7 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T48_Function_With_Mismatching_Argument_Type()
         {
@@ -1502,6 +1510,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T49_Function_With_Matching_Return_Type()
         {
@@ -2130,6 +2139,7 @@ a;b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T72_Function_Name_Checking()
         {
@@ -2522,6 +2532,7 @@ def foo:int ( a : int )
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T84_Function_With_User_Defined_Class()
         {
@@ -2693,6 +2704,7 @@ t2 = two[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T90_Function_PassingNullToUserDefinedType()
         {
@@ -2794,6 +2806,7 @@ e = foo(1, 2.0, 3); // not found, null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T93_Function_With_Default_Arg_In_Class()
         {
             string str = "";
@@ -3134,6 +3147,7 @@ i;j;k;a;b;c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV10_Function_With_Class_Instances()
         {
@@ -3399,6 +3413,7 @@ e;f;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV22_Function_With_Class_Object_As_Argument()
         {
@@ -3480,6 +3495,7 @@ b;c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV25_Defect_1454923()
         {
@@ -4175,6 +4191,7 @@ b1;b2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV46_Defect_1455278()
         {
             string code = @"
@@ -4354,6 +4371,7 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV51_Defect_1456108_3()
         {
@@ -4412,6 +4430,7 @@ b2 = a1.add_2( );";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV51_Defect_1456108_4()
         {
@@ -4471,6 +4490,7 @@ t=c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV51_Defect_1456108_5()
         {
@@ -4530,6 +4550,7 @@ c = { -1, -1, -1 };";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV52_Defect_1456397()
         {
@@ -4567,6 +4588,7 @@ b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV53_Defect_1456397_2()
         {
@@ -4668,6 +4690,7 @@ x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV56_Defect_1456571_3()
         {
@@ -4747,6 +4770,7 @@ f1;f2;f3;f4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV58_Defect_1455278()
         {
@@ -4956,6 +4980,7 @@ c;d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV65_Defect_1455090_4()
         {
@@ -4987,6 +5012,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV66_Defect_1455090_5()
         {
@@ -5030,6 +5056,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV67_Defect_1455090_6()
         {
@@ -5073,6 +5100,7 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV68_Defect_1455090_7()
         {
@@ -5121,6 +5149,7 @@ a2 = A1.compare( b1, 1, 1 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799()
         {
@@ -5156,6 +5185,7 @@ bcurvePtX = bcurvePt.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_2()
         {
@@ -5190,6 +5220,7 @@ bcurvePtX = bcurve.P[1].X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV69_Defect_1456799_3()
         {
@@ -5228,6 +5259,7 @@ bcurvePtX;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV70_Defect_1456798()
         {
@@ -5581,6 +5613,7 @@ sum1;sum2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         public void TV77_Defect_1455259()
         {
@@ -5658,6 +5691,7 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV77_Defect_1455259_2()
         {
@@ -5748,6 +5782,7 @@ z2 = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV78_Defect_1460866_2()
         {
@@ -5789,6 +5824,7 @@ z2 = x2.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV79_Defect_1462300()
         {
@@ -5819,6 +5855,7 @@ bb = b[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV79_Defect_1462300_2()
         {
@@ -5844,6 +5881,7 @@ b=testcall(a);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV79_Defect_1462300_3()
         {
@@ -6230,6 +6268,7 @@ a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV85_Function_Return_Type_Var_User_Defined_Type_Conversion()
         {
@@ -6277,6 +6316,7 @@ b = f2( { null, null } );
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027()
         {
@@ -6334,6 +6374,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_2()
         {
@@ -6390,6 +6431,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_3()
         {
@@ -6447,6 +6489,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_4()
         {
@@ -6504,6 +6547,7 @@ t11;t12;t13;t14;t15;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV87_Defect_1464027_5()
         {
@@ -6638,6 +6682,7 @@ d1 = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV89_Implicit_Type_Conversion_1()
         {
@@ -6750,6 +6795,7 @@ b1 = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV90_Defect_1463474_4()
         {
@@ -6773,6 +6819,7 @@ d1 = c1.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV91_Defect_1463703()
         {
@@ -6811,7 +6858,7 @@ b;c;d;
         }
 
         [Test]
-
+        [Category("DSDefinedClass")]
         public void TV91_Defect_1463703_2()
         {
             //This failure is no longer related to this defect. Back to TD.
@@ -6881,6 +6928,7 @@ y1;y2;y3;y4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         [Category("Failure")]
         public void TV91_Defect_1463703_3()
@@ -6959,6 +7007,7 @@ x2 =
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV92_Accessing_Variables_Declared_Inside_Function_Body()
         {
@@ -6988,6 +7037,7 @@ c = b.a; // expected 10, received 10";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV93_Modifying_Global_Var_In_Func_Call()
         {
             string code = @"
@@ -7028,6 +7078,7 @@ dummy = func1(p);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV93_Modifying_Global_Var_In_Func_Call_2()
         {
             string code = @"
@@ -7070,6 +7121,7 @@ dummy = func1(p);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV93_Modifying_Global_Var_In_Func_Call_3()
         {
             string code = @"
@@ -7109,6 +7161,7 @@ zz = p1.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV93_Modifying_Global_Var_In_Func_Call_4()
         {
             string code = @"
@@ -7158,6 +7211,7 @@ s1 = UnionBox(s, points, top_index);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV95_Method_Resolution_Derived_Class_Arguments()
         {
@@ -7272,6 +7326,7 @@ x = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication()
         {
@@ -7302,6 +7357,7 @@ b3 = foo ( a3 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication_2()
         {
@@ -7354,6 +7410,7 @@ b3 = foo ( a3 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV97_Heterogenous_Objects_As_Function_Arguments_With_Replication_2()
         {
@@ -7566,6 +7623,7 @@ b1 = foo ( a1 );";
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV99_Defect_1463456_Array_By_Reference_Issue()
         {
             string errmsg = " 1467318 -  Cannot return an array from a function whose return type is var with undefined rank (-2)  ";
@@ -7599,6 +7657,7 @@ t = val[0]; //expected 100, received 1";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Class_inheritance_replication()
         {
             string code = @"
@@ -7624,6 +7683,7 @@ b = c.Test(c);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Class_inheritance_replication_2()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7650,6 +7710,7 @@ result = c.Test(c);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         public void T100_Defect_Class_inheritance_dispatch()
         {
@@ -7680,6 +7741,7 @@ r2 = b.Test(b);//1
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         public void T100_Defect_Class_inheritance_dispatch_a()
         {
@@ -7706,6 +7768,7 @@ r2 = b.Test(b);//1
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Defect_Class_inheritance_replication_1()
         {
             String code =
@@ -7851,6 +7914,7 @@ t = foo()[0];";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV101_Indexing_Into_classCall_1463234_6()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7872,6 +7936,7 @@ t = a.foo()[0];";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV101_Indexing_Into_classCall_1463234_7()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7896,6 +7961,7 @@ t = a.foo()[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV102_GlobalVariable_Function_1466768()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7936,6 +8002,7 @@ zz = p1.Z; // expected 0, received 0
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV102_GlobalVariable_Function_1466768_1()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -7976,6 +8043,7 @@ zz = p1.Z; // expected 0, received 0
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TV102_GlobalVariable_Function_1466768_2()
         {
             // Assert.Fail("1467131- Sprint 24 - Rev 2910 method overload with replication , throws error WARNING: Multiple type+pattern match parameters found, non-deterministic dispatch" );
@@ -8015,6 +8083,7 @@ zz = p[1].Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV103_Defect_1467149()
         {
@@ -8063,6 +8132,7 @@ b = foo ( a );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_2()
         {
@@ -8088,6 +8158,7 @@ c = b.foo();";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_3()
         {
@@ -8115,6 +8186,7 @@ c = b.foo();";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_4()
         {
@@ -8177,6 +8249,7 @@ c = foo();";
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV103_Defect_1455090_Rank_Of_Arg_5()
         {
@@ -8223,6 +8296,7 @@ b = foo ( a );";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV104_Defect_1467112()
         {
@@ -8388,6 +8462,7 @@ d = foo({1.5,2.5});";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4()
         {
@@ -8413,6 +8488,7 @@ d = a.foo({1,2});";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV107_Defect_1467273_Function_Resolution_Over_Argument_Rank_4a()
         {
@@ -8457,6 +8533,7 @@ b = 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TV105_Defect_1467409()
         {
@@ -8704,6 +8781,7 @@ p = foo(x);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMultiOverLoadWithDefaultArg()
         {
             string code = @"

@@ -1,16 +1,16 @@
 ﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
-                      xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf" 
+                      xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                       xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                     xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore">
+                      xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
         <controls:NodeView></controls:NodeView>
     </DataTemplate>
@@ -23,13 +23,8 @@
         <controls:InfoBubbleView></controls:InfoBubbleView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:EndlessGridViewModel}">
-        <controls:EndlessGrid></controls:EndlessGrid>
-    </DataTemplate>
-
     <DataTemplate DataType="{x:Type viewModels:AnnotationViewModel}">
         <nodes:AnnotationView></nodes:AnnotationView>
     </DataTemplate>
-
 
 </ResourceDictionary>

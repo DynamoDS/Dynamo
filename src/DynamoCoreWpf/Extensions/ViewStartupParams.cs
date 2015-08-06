@@ -28,7 +28,8 @@ namespace Dynamo.Wpf.Extensions
             base(dynamoVM.Model.AuthenticationManager.AuthProvider,
                 dynamoVM.Model.PathManager,
                 new ExtensionLibraryLoader(dynamoVM.Model), 
-				dynamoVM.Model.CustomNodeManager)
+				dynamoVM.Model.CustomNodeManager,
+                dynamoVM.Model.GetType().Assembly.GetName().Version)
         {
             dynamoViewModel = dynamoVM;
         }

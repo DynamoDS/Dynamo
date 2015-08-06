@@ -175,6 +175,7 @@ result =
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T03_Defect_UndefinedType()
         {
@@ -274,6 +275,7 @@ r =
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T06_String_Class()
         {
@@ -604,6 +606,7 @@ m = m+n;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_1()
         {
@@ -614,6 +617,7 @@ m = m+n;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_2()
         {
@@ -624,6 +628,7 @@ m = m+n;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringArr()
         {

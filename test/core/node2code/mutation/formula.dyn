@@ -1,0 +1,19 @@
+<Workspace Version="0.8.2.1957" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCoreNodesUI.Formula guid="681455d7-1952-428a-afcf-32d276f4fc5b" type="DSCoreNodesUI.Formula" nickname="Formula" x="39.453192014586" y="198.137265730443" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False">
+      <FormulaText>x+y*2</FormulaText>
+    </DSCoreNodesUI.Formula>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="e4e009a1-799f-4bb3-bed2-8a7bb1c5336f" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-147" y="185" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e4e009a1-799f-4bb3-bed2-8a7bb1c5336f" start_index="0" end="681455d7-1952-428a-afcf-32d276f4fc5b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4e009a1-799f-4bb3-bed2-8a7bb1c5336f" start_index="0" end="681455d7-1952-428a-afcf-32d276f4fc5b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>
