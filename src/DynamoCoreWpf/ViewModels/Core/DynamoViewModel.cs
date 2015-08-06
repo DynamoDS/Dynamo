@@ -842,6 +842,10 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
                     break;
+
+                case "EnablePresetOptions":
+                    RaisePropertyChanged("EnablePresetOptions");
+                    break;
             }
         }
 
