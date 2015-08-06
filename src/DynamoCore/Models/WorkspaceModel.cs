@@ -60,6 +60,7 @@ namespace Dynamo.Models
         private double zoom = 1.0;
         private DateTime lastSaved;
         private string author = "None provided";
+        private string description;
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
@@ -263,7 +264,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     An autor of the workspace
+        ///     An author of the workspace
         /// </summary>
         public string Author
         {
@@ -275,10 +276,17 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///     A description of the workspace
+        /// </summary>
         public string Description
         {
-            get;
-            set;
+            get { return description; }
+            set
+            {
+                description = value;
+                RaisePropertyChanged("Description");
+            }
         }
 
         /// <summary>
@@ -524,6 +532,7 @@ namespace Dynamo.Models
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
+            Description = info.Description;
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;
@@ -1008,6 +1017,7 @@ namespace Dynamo.Models
                 root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
                 root.SetAttribute("Name", Name);
+                root.SetAttribute("Description", Description);
 
                 SerializeElementResolver(xmlDoc);
 

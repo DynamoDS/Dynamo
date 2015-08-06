@@ -43,7 +43,6 @@ namespace Dynamo.Publish.Models
         private readonly ICustomNodeManager customNodeManager;
 
         private readonly string serverUrl;
-        private readonly string port;
         private readonly string page;
         private readonly Regex serverResponceRegex;
 
@@ -161,10 +160,6 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(serverUrl))
                 throw new Exception(Resources.ServerNotFoundMessage);
 
-            port = appSettings.Settings["Port"].Value;
-            if (String.IsNullOrWhiteSpace(port))
-                throw new Exception(Resources.PortErrorMessage);
-
             page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
                 throw new Exception(Resources.PageErrorMessage);
@@ -215,7 +210,7 @@ namespace Dynamo.Publish.Models
                     {
                         State = UploadState.Succeeded;
                         Error = UploadErrorType.None;
-                        CustomizerURL = String.Concat(serverUrl, ":", port, serverResponce.Value);
+                        CustomizerURL = String.Concat(serverUrl, serverResponce.Value);
                     }
                     else
                     {
@@ -251,10 +246,8 @@ namespace Dynamo.Publish.Models
                 return Resources.FailedMessage;
             }
 
-            string fullServerAdress = serverUrl + ":" + port;
-
             if (reachClient == null)
-                reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
+                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
 
             HomeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
             var functionNodes = HomeWorkspace.Nodes.OfType<Function>();
