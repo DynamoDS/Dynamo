@@ -1,0 +1,31 @@
+<Workspace Version="0.8.2.2022" X="-161.220004629125" Y="-140.031111930579" zoom="1.23432823230355" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DoubleInput guid="0fb399c0-81ab-4131-8745-39753cba7ec4" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="312.238903818107" y="297.655734653999" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput guid="96d53c62-51e1-442f-8dac-2733269376e4" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="311.238903818107" y="467.655734653999" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction guid="f4fd7513-b566-485b-bb33-783bd64a0064" type="Dynamo.Nodes.DSFunction" nickname="*" x="718.238903818107" y="369.655734653999" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Operators" function="*@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="274ecda2-206c-4352-bcb4-18b5c9172666" type="Dynamo.Nodes.DSFunction" nickname="+" x="490" y="459" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Operators" function="+@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="b30cb2ae-e305-4c09-8730-6899a09f54e0" type="Dynamo.Nodes.DSFunction" nickname="+" x="486.238903818107" y="294.655734653999" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Operators" function="+@var[]..[],var[]..[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0fb399c0-81ab-4131-8745-39753cba7ec4" start_index="0" end="b30cb2ae-e305-4c09-8730-6899a09f54e0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0fb399c0-81ab-4131-8745-39753cba7ec4" start_index="0" end="b30cb2ae-e305-4c09-8730-6899a09f54e0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="96d53c62-51e1-442f-8dac-2733269376e4" start_index="0" end="274ecda2-206c-4352-bcb4-18b5c9172666" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="96d53c62-51e1-442f-8dac-2733269376e4" start_index="0" end="274ecda2-206c-4352-bcb4-18b5c9172666" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="274ecda2-206c-4352-bcb4-18b5c9172666" start_index="0" end="f4fd7513-b566-485b-bb33-783bd64a0064" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b30cb2ae-e305-4c09-8730-6899a09f54e0" start_index="0" end="f4fd7513-b566-485b-bb33-783bd64a0064" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel guid="1ceb9d52-c797-4da8-947b-2255b63a42f2" text="1. Select multiply node-&gt;N2C&#xD;&#xA;2. Undo" x="718.894445683949" y="284.811394088842" />
+    <Dynamo.Models.NoteModel guid="0b9e858b-66fc-4275-8c34-ccd478a79150" text="3. Select &quot;+&quot; nodes and convert N2C" x="471.967886422689" y="225.527041323604" />
+  </Notes>
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

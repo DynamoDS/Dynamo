@@ -38,6 +38,36 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 0.8.2 ###
+
+Local Network Package and Definition location 
+- use a common shared network folder within an office environment.
+
+Preset Graph States
+- Keep track of different states of your graph and develop design options with Presets, found in the Edit menu
+
+Color shading on surfaces
+-	Expansion on the Color work from 0.8.1 to include smoothly shaded surfaces
+-	BPA for Dynamo Pt1 (Solar Analysis independent of Revit) as first demonstration
+
+Node2Code
+-	Select groups of nodes and automatically create Code Block Nodes from the selection
+-	Known issues that we will continue to work on
+
+Search/Browse
+-	Tooltips and search algorithm improvements for in canvas search (via right click)
+
+Localization 
+-	fit and finish
+
+Documentation
+- 4 New Chapters for the [Dynamo Primer](http://dynamobim.com/learn/)
+- New and updated [Nuget packages for developers](https://www.nuget.org/packages?q=DynamoVisualProgramming)
+
+Known Issues
+- Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
+
+
 ### 0.8.1 ###
 
 New Graphics pipeline

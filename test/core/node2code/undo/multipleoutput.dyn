@@ -1,0 +1,21 @@
+<Workspace Version="0.8.2.2073" X="-49.8718909981869" Y="4.61697877321438" zoom="1.12465551558664" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="10b9ff35-4259-4854-b4a3-b6b55f65dbfb" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-8.0434721204623" y="291.291208090797" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="5;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="2615f57b-70db-4452-b6b4-1edf012c0ee0" type="Dynamo.Nodes.DSFunction" nickname="&gt;" x="159.006346706405" y="159.878162525895" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="Operators" function="&gt;@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a7ceeafe-c0b7-4dd5-965a-e5e3163f9119" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-17" y="40" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="1..20;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="649c8a9d-2ae9-40dd-9900-3c0a2db86046" type="Dynamo.Nodes.DSFunction" nickname="List.FilterByBoolMask" x="357.557412668873" y="54.7406397480534" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.List.FilterByBoolMask@var[]..[],var[]..[]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="10b9ff35-4259-4854-b4a3-b6b55f65dbfb" start_index="0" end="2615f57b-70db-4452-b6b4-1edf012c0ee0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2615f57b-70db-4452-b6b4-1edf012c0ee0" start_index="0" end="649c8a9d-2ae9-40dd-9900-3c0a2db86046" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a7ceeafe-c0b7-4dd5-965a-e5e3163f9119" start_index="0" end="2615f57b-70db-4452-b6b4-1edf012c0ee0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a7ceeafe-c0b7-4dd5-965a-e5e3163f9119" start_index="0" end="649c8a9d-2ae9-40dd-9900-3c0a2db86046" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>
