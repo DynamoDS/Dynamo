@@ -208,6 +208,6 @@
     <value>Request sent successfully.</value>
   </data>
   <data name="InviteRequestFailed" xml:space="preserve">
-    <value>Failed to send a request. Try again later</value>
+    <value>Failed to send the request. Try again later</value>
   </data>
 </root>

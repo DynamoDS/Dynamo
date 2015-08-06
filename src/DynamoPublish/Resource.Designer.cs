@@ -142,7 +142,7 @@ namespace Dynamo.Publish {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to send a request. Try again later.
+        ///   Looks up a localized string similar to Failed to send the request. Try again later.
         /// </summary>
         public static string InviteRequestFailed {
             get {
