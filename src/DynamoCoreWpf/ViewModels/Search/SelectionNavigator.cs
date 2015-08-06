@@ -33,13 +33,17 @@ namespace Dynamo.ViewModels
         private IEnumerable<SearchCategory> root = null;
 
         private NodeSearchElementViewModel selection = null;
+        private NodeSearchElementViewModel topResult = null;
 
         /// <summary>
         /// Currently selected member.
         /// </summary>
         public NodeSearchElementViewModel CurrentlySelection
         {
-            get { return selection; }
+            get
+            {
+                return selection ?? topResult;
+            }
         }
 
         internal SelectionNavigator(IEnumerable<SearchCategory> rootTree)
@@ -47,7 +51,7 @@ namespace Dynamo.ViewModels
             UpdateRootCategories(rootTree);
         }
 
-        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree)
+        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree, NodeSearchElementViewModel topRes = null)
         {
             root = rootTree;
 
@@ -61,14 +65,29 @@ namespace Dynamo.ViewModels
             selectedMemberGroupIndex = 0;
             selectedMemberIndex = 0;
 
-            selection = GetSelectionFromIndices();
-            selection.IsSelected = true;
+            selection = null;
+            topResult = topRes;
         }
 
         internal void MoveSelection(NavigationDirection direction)
         {
             if (root == null || !root.Any())
                 return;
+
+            // Selection can be null, if user just searched and currently selected element is top result.
+            if (selection == null)
+            {
+                if (direction == NavigationDirection.Forward)
+                {
+                    selection = GetSelectionFromIndices();
+                    selection.IsSelected = true;
+                    return;
+                }
+                else
+                    // Selected element is top result.
+                    // There is no way to move backward.
+                    return;
+            }
 
             var selectedCategory = root.ElementAt(selectedCategoryIndex);
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
@@ -106,6 +125,13 @@ namespace Dynamo.ViewModels
 
                             var group = category.MemberGroups.ElementAt(selectedMemberGroupIndex);
                             selectedMemberIndex = group.Members.Count() - 1;
+                        }
+                        else // No place to move back. Clear selection.
+                        {
+                            selection = GetSelectionFromIndices();
+                            selection.IsSelected = false;
+                            selection = null;
+                            return;
                         }
                     }
                 }

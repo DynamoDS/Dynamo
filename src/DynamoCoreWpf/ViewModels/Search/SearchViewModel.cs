@@ -697,7 +697,7 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
 
-            selectionNavigator.UpdateRootCategories(SearchRootCategories);
+            selectionNavigator.UpdateRootCategories(SearchRootCategories, foundNodes.FirstOrDefault());
         }
 
 
