@@ -198,12 +198,6 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="TopLibraryTreeViewItem"
-                   TargetType="{x:Type TreeViewItem}"
-                   BasedOn="{StaticResource LibraryTreeViewItem}">
-                <Setter Property="IsSelected"
-                        Value="True" />
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -225,7 +219,7 @@
             <TreeView x:Name="topResultTreeView"
                       Background="Transparent"
                       BorderBrush="Transparent"
-                      ItemContainerStyle="{StaticResource TopLibraryTreeViewItem}"
+                      ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
                       ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                       ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}">
                 <TreeView.ItemTemplate>

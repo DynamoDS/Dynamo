@@ -51,7 +51,7 @@ namespace Dynamo.ViewModels
             UpdateRootCategories(rootTree);
         }
 
-        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree, NodeSearchElementViewModel topRes = null)
+        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree)
         {
             root = rootTree;
 
@@ -66,6 +66,10 @@ namespace Dynamo.ViewModels
             selectedMemberIndex = 0;
 
             selection = null;
+        }
+
+        internal void UpdateTopResult(NodeSearchElementViewModel topRes)
+        {
             topResult = topRes;
         }
 
@@ -81,6 +85,7 @@ namespace Dynamo.ViewModels
                 {
                     selection = GetSelectionFromIndices();
                     selection.IsSelected = true;
+                    topResult.IsSelected = false;
                     return;
                 }
                 else
@@ -126,11 +131,12 @@ namespace Dynamo.ViewModels
                             var group = category.MemberGroups.ElementAt(selectedMemberGroupIndex);
                             selectedMemberIndex = group.Members.Count() - 1;
                         }
-                        else // No place to move back. Clear selection.
+                        else // No place to move back. Clear selection. Select top result.
                         {
                             selection = GetSelectionFromIndices();
                             selection.IsSelected = false;
                             selection = null;
+                            topResult.IsSelected = true;
                             return;
                         }
                     }
