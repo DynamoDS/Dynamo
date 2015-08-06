@@ -22,8 +22,7 @@ namespace Dynamo.Publish.Models
     {
         private readonly IAuthProvider authenticationProvider;       
 
-        private readonly string serverUrl;
-        private readonly string port;
+        private readonly string serverUrl;       
         private readonly string invite;
         
         private RestClient restClient;
@@ -63,11 +62,7 @@ namespace Dynamo.Publish.Models
             serverUrl = appSettings.Settings["ServerUrl"].Value;
             if (String.IsNullOrWhiteSpace(serverUrl))
                 throw new Exception(Resources.ServerNotFoundMessage);
-
-            port = appSettings.Settings["Port"].Value;
-            if (String.IsNullOrWhiteSpace(port))
-                throw new Exception(Resources.PortErrorMessage);
-
+            
             invite = appSettings.Settings["Invite"].Value;
             if (String.IsNullOrWhiteSpace(invite))
                 throw new Exception(Resources.PageErrorMessage);
@@ -113,12 +108,10 @@ namespace Dynamo.Publish.Models
                 OnUpdateStatusMessage(Resources.AuthenticationFailedMessage, true);
                 return false;
             }
-
-            string fullServerAdress = serverUrl + ":" + port;
-            
+                         
             if (restClient == null)
             {
-                restClient = new RestClient(fullServerAdress);
+                restClient = new RestClient(serverUrl);
             }
             
             var  request = new RestRequest(invite, Method.POST);
