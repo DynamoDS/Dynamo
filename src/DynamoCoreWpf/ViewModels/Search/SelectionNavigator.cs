@@ -84,7 +84,7 @@ namespace Dynamo.ViewModels
                     selectedMemberGroupIndex = 0;
                     selectedMemberIndex = 0;
 
-                    topResult.IsSelected = false;
+                    selection.IsSelected = false;
                     selection = GetSelectionFromIndices();
                     selection.IsSelected = true;
                     return;
@@ -141,8 +141,8 @@ namespace Dynamo.ViewModels
                             selectedMemberGroupIndex = -1;
                             selectedMemberIndex = -1;
 
-                            selection = topResult;
-                            topResult.IsSelected = true;
+                            selection = GetSelectionFromIndices();
+                            selection.IsSelected = true;
                             return;
                         }
                     }
