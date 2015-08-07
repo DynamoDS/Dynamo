@@ -78,6 +78,11 @@ namespace Dynamo.Core
 
         #region IPathManager Interface Implementation
 
+        public string DynamoCoreDirectory
+        {
+            get { return dynamoCoreDir; }
+        }
+
         public string UserDataDirectory
         {
             get { return userDataDir; }

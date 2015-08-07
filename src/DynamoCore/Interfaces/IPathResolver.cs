@@ -60,6 +60,11 @@ namespace Dynamo.Interfaces
     public interface IPathManager
     {
         /// <summary>
+        /// The main dynamo directory.
+        /// </summary>
+        string DynamoCoreDirectory { get; }
+
+        /// <summary>
         /// The local directory that contains user specific data files.
         /// </summary>
         string UserDataDirectory { get; }

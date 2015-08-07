@@ -58,10 +58,8 @@ namespace Dynamo.DSEngine
                 assemblyLocation = cashedAssemblyLocation;
             }
 
-            var assemblyPath = Path.GetFullPath(assemblyLocation);
-
-            var baseDir = Path.GetDirectoryName(assemblyPath);
-            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyPath) + ".xml";
+            var baseDir = pathManager.DynamoCoreDirectory;
+            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyLocation) + ".xml";
 
             var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
             var localizedResPath = Path.Combine(baseDir, language);
