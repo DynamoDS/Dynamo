@@ -7,8 +7,9 @@ using System.Collections.Generic;
 
 using Dynamo.Models;
 using Dynamo.ViewModels;
+using Dynamo.TestInfrastructure;
 
-namespace Dynamo.TestInfrastructure
+namespace Dynamo.MutationInfastructure
 {
     /// <summary>
     /// Class to handle driving test mutations into the graph

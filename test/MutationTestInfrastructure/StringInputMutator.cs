@@ -1,25 +1,26 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Threading;
 using Dynamo.DSEngine;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("Number Input Mutator")]
-    class NumberInputMutator : AbstractMutator
+    [MutationTest("StringInputMutator")]
+    class StringInputMutator : AbstractMutator
     {
-        public NumberInputMutator(DynamoViewModel viewModel)
+        public StringInputMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }
 
         public override Type GetNodeType()
         {
-            return null; //typeof(DoubleInput);
+            return null;//typeof(StringInput);
         }
 
         public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
@@ -51,8 +52,11 @@ namespace Dynamo.TestInfrastructure
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
+            writer.WriteLine("### - undo complete");
+            writer.Flush();
+
             writer.WriteLine("### - undo complete");
             writer.Flush();
             writer.WriteLine("### - Beginning re-exec");
@@ -65,16 +69,16 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
             Thread.Sleep(10);
+
             while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
             {
                 Thread.Sleep(10);
             }
             writer.WriteLine("### - re-exec complete");
             writer.Flush();
-
             writer.WriteLine("### - Beginning readback");
 
-            writer.WriteLine("### - Beginning test of Number");
+            writer.WriteLine("### - Beginning test of String");
             if (node.OutPorts.Count > 0)
             {
                 try
@@ -85,7 +89,7 @@ namespace Dynamo.TestInfrastructure
 
                     if (valmap != nodeVal)
                     {
-                        writer.WriteLine("!!!!!!!!!!! - test of Number is failed");
+                        writer.WriteLine("!!!!!!!!!!! - test of String is failed");
                         writer.WriteLine(node.GUID);
 
                         writer.WriteLine("Was: " + nodeVal);
@@ -96,7 +100,7 @@ namespace Dynamo.TestInfrastructure
                 }
                 catch (Exception)
                 {
-                    writer.WriteLine("!!!!!!!!!!! - test of Number is failed");
+                    writer.WriteLine("!!!!!!!!!!! - test of String is failed");
                     writer.Flush();
                     return pass;
                 }
@@ -109,8 +113,9 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            Random rand = new Random(1);
-            string value = rand.Next(100).ToString();
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*(),./[];=-:<\\>?";
+            Random random = new Random();
+            string value = new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {

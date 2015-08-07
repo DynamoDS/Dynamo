@@ -82,19 +82,14 @@ namespace Dynamo.ViewModels
 
         #region The Actual Command Handlers (Private)
 
-        void OnModelCommandCompleted(DynamoModel.RecordableCommand command)
+        virtual protected void OnModelCommandCompleted(DynamoModel.RecordableCommand command)
         {
             var name = command.GetType().Name;
             switch (name)
             {
                 case "OpenFileCommand":
                     this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
-                    break;
-
-                case "MutateTestCommand":
-                    var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
-                    mutatorDriver.RunMutationTests();
-                    break;
+                    break;                
 
                 case "SelectInRegionCommand":
                     var selectC = command as DynamoModel.SelectInRegionCommand;

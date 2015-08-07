@@ -1,6 +1,5 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +11,14 @@ using DynamoUtilities;
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Utilities;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
     [MutationTest("CustomNodeCompatibilityMutator")]
     class CustomNodeCompatibilityMutator : AbstractMutator
     {
-        public CustomNodeCompatibilityMutator(DynamoViewModel viewModel)
+        public CustomNodeCompatibilityMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }

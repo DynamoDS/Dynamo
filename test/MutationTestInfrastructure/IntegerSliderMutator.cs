@@ -1,20 +1,21 @@
-﻿using Dynamo.Models;
-using Dynamo.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
+
+using Dynamo.Models;
 using System.Reflection;
+using System.IO;
 using System.Threading;
 using Dynamo.DSEngine;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("DirectoryPathMutator")]
-    class DirectoryPathMutator : AbstractMutator
+    [MutationTest("IntegerSliderMutator")]
+    class IntegerSliderMutator : AbstractMutator
     {
-        public DirectoryPathMutator(DynamoViewModel viewModel)
+        public IntegerSliderMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
-        {
+        {            
         }
 
         public override Type GetNodeType()
@@ -23,7 +24,7 @@ namespace Dynamo.TestInfrastructure
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
             string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-            Type type = assembly.GetType("DSCore.File.Directory");
+            Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
 
             return type;
         }
@@ -57,11 +58,11 @@ namespace Dynamo.TestInfrastructure
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
+                Thread.Sleep(10);
             }
-            Thread.Sleep(100);
-
             writer.WriteLine("### - undo complete");
             writer.Flush();
+
             writer.WriteLine("### - Beginning re-exec");
 
             ExecuteAndWait();
@@ -70,19 +71,19 @@ namespace Dynamo.TestInfrastructure
 
             writer.WriteLine("### - Beginning readback");
 
-            writer.WriteLine("### - Beginning test of DirectoryPath");
+            writer.WriteLine("### - Beginning test of IntegerSlider");
 
             if (node.OutPorts.Count > 0)
             {
                 try
                 {
-                    string valmap = valueMap[node.GUID].ToString();
-                    object data = node.GetValue(0, engine).Data;
-                    string nodeVal = data != null ? data.ToString() : "null";
+                    String valmap = valueMap[node.GUID].ToString();
+                    Object data = node.GetValue(0, engine).Data;
+                    String nodeVal = data != null ? data.ToString() : "null";
 
                     if (valmap != nodeVal)
                     {
-                        writer.WriteLine("!!!!!!!!!!! - test of DirectoryPath is failed");
+                        writer.WriteLine("!!!!!!!!!!! - test of IntegerSlider is failed");
                         writer.WriteLine(node.GUID);
 
                         writer.WriteLine("Was: " + nodeVal);
@@ -93,12 +94,13 @@ namespace Dynamo.TestInfrastructure
                 }
                 catch (Exception)
                 {
-                    writer.WriteLine("!!!!!!!!!!! - test of DirectoryPath is failed");
+                    writer.WriteLine("!!!!!!!!!!! - test of IntegerSlider is failed");
                     writer.Flush();
                     return pass;
                 }
+
             }
-            writer.WriteLine("### - test of DirectoryPath complete");
+            writer.WriteLine("### - test of IntegerSlider complete");
             writer.Flush();
 
             return pass = true;
@@ -107,16 +109,38 @@ namespace Dynamo.TestInfrastructure
         public override int Mutate(NodeModel node)
         {
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
 
-            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+            Type type = assembly.GetType("Dynamo.Nodes.IntegerSlider");
+
+            PropertyInfo propInfo = type.GetProperty("Min");
+            dynamic propertyMin = propInfo.GetValue(node, null);
+            propInfo = type.GetProperty("Max");
+            dynamic propertyMax = propInfo.GetValue(node, null);
+
+            int min = 0;
+            int max = 0;
+            int returnCode = 0;
+            Random rand = new Random();
+
+            if (Int32.TryParse(propertyMin.ToString(), out min) &&
+                Int32.TryParse(propertyMax.ToString(), out max))
             {
-                DynamoModel.UpdateModelValueCommand updateValue =
-                    new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", assemblyPath);
+                string value = (rand.Next(min, max)).ToString();
 
-                DynamoViewModel.ExecuteCommand(updateValue);
-            }));
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                {
+                    DynamoModel.UpdateModelValueCommand updateValue =
+                        new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", value);
+                    DynamoViewModel.ExecuteCommand(updateValue);
+                }));
 
-            return 1;
+                returnCode = 1;
+            }
+
+            return returnCode;
         }        
     }
 }

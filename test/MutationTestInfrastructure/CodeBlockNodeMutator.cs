@@ -6,14 +6,14 @@ using System.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
     [MutationTest("CodeBlockNodeMutator")]
     class CodeBlockNodeMutator : AbstractMutator
     {
-        public CodeBlockNodeMutator(DynamoViewModel viewModel)
+        public CodeBlockNodeMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }

@@ -1,18 +1,18 @@
-﻿using System;
+﻿using Dynamo.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Models;
-using Dynamo.ViewModels;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("DoubleSliderMutator")]
-    class DoubleSliderMutator : AbstractMutator
+    [MutationTest("FilePathMutator")]
+    class FilePathMutator : AbstractMutator
     {
-        public DoubleSliderMutator(DynamoViewModel viewModel)
+        public FilePathMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }
@@ -23,7 +23,7 @@ namespace Dynamo.TestInfrastructure
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
             string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
             Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-            Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
+            Type type = assembly.GetType("DSCore.File.Filename");
 
             return type;
         }
@@ -57,22 +57,20 @@ namespace Dynamo.TestInfrastructure
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
-                Thread.Sleep(10);
+                Thread.Sleep(100);
             }
-            writer.WriteLine("### - undo complete");
-            writer.Flush();
-
             writer.WriteLine("### - undo complete");
             writer.Flush();
             writer.WriteLine("### - Beginning re-exec");
 
             ExecuteAndWait();
+
             writer.WriteLine("### - re-exec complete");
             writer.Flush();
+
             writer.WriteLine("### - Beginning readback");
 
-            writer.WriteLine("### - Beginning test of DoubleSlider");
-
+            writer.WriteLine("### - Beginning test of FilePath");
             if (node.OutPorts.Count > 0)
             {
                 try
@@ -83,7 +81,7 @@ namespace Dynamo.TestInfrastructure
 
                     if (valmap != nodeVal)
                     {
-                        writer.WriteLine("!!!!!!!!!!! - test of DoubleSlider is failed");
+                        writer.WriteLine("!!!!!!!!!!! - test of FilePath is failed");
                         writer.WriteLine(node.GUID);
 
                         writer.WriteLine("Was: " + nodeVal);
@@ -94,12 +92,12 @@ namespace Dynamo.TestInfrastructure
                 }
                 catch (Exception)
                 {
-                    writer.WriteLine("!!!!!!!!!!! - test of DoubleSlider is failed");
+                    writer.WriteLine("!!!!!!!!!!! - test of FilePath is failed");
                     writer.Flush();
                     return pass;
                 }
             }
-            writer.WriteLine("### - test of DoubleSlider complete");
+            writer.WriteLine("### - test of FilePath complete");
             writer.Flush();
 
             return pass = true;
@@ -107,36 +105,17 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
-            Assembly assembly = Assembly.LoadFile(assemblyPass);
-            Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
-            
-            PropertyInfo propInfo = type.GetProperty("Min");
-            dynamic propertyMin = propInfo.GetValue(node, null);
-            propInfo = type.GetProperty("Max");
-            dynamic propertyMax = propInfo.GetValue(node, null);
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
 
-            double min = 0;
-            double max = 0;
-            int returnCode = 0;
-            Random rand = new Random(1);
-
-            if (double.TryParse(propertyMin.ToString(), out min) &&
-                double.TryParse(propertyMax.ToString(), out max))
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
-                string value = (min + (max - min) * rand.NextDouble()).ToString();
+                DynamoModel.UpdateModelValueCommand updateValue =
+                    new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", assemblyPath);
 
-                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-                {
-                    DynamoModel.UpdateModelValueCommand updateValue =
-                        new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", value);
-                    DynamoViewModel.ExecuteCommand(updateValue);
-                }));
+                DynamoViewModel.ExecuteCommand(updateValue);
+            }));
 
-                returnCode = 1;
-            }
-
-            return returnCode;
+            return 1;
         }
     }
 }

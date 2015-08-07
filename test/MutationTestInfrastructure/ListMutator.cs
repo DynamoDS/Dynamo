@@ -4,17 +4,17 @@ using System.Linq;
 using System.Reflection;
 
 using Dynamo.Models;
-using Dynamo.ViewModels;
 using System.IO;
 using System.Threading;
 using Dynamo.DSEngine;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
     [MutationTest("ListMutator")]
     class ListMutator : AbstractMutator
     {
-        public ListMutator(DynamoViewModel viewModel)
+        public ListMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }

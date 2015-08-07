@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Dynamo.DSEngine;
 using System.Threading;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -11,10 +12,10 @@ namespace Dynamo.TestInfrastructure
     {
         //Convienence state, the presence of this state cache means that
         //usage of this mutator should be short lived
-        protected DynamoViewModel DynamoViewModel;
+        protected DynamoViewModelMutation DynamoViewModel;
         protected DynamoModel DynamoModel;
 
-        protected AbstractMutator(DynamoViewModel dynamoViewModel)
+        protected AbstractMutator(DynamoViewModelMutation dynamoViewModel)
         {
             this.DynamoViewModel = dynamoViewModel;
             this.DynamoModel = dynamoViewModel.Model;

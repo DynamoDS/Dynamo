@@ -6,15 +6,15 @@ using System.Windows.Input;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
     [MutationTest("CopyNodeMutator")]
     class CopyNodeMutator : AbstractMutator
     {
-        public CopyNodeMutator(DynamoViewModel viewModel)
+        public CopyNodeMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }
