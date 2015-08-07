@@ -50,7 +50,7 @@ namespace Dynamo.Wpf.ViewModels
         public NodeSearchElementViewModel(NodeSearchElementViewModel copyElement)
         {
             if (copyElement == null)
-                return;
+                throw new ArgumentNullException();
 
             Model = copyElement.Model;
             Clicked = copyElement.Clicked;
