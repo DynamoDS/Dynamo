@@ -37,7 +37,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Currently selected member.
         /// </summary>
-        public NodeSearchElementViewModel CurrentlySelection
+        public NodeSearchElementViewModel CurrentSelection
         {
             get
             {
@@ -72,25 +72,19 @@ namespace Dynamo.ViewModels
             if (root == null || !root.Any())
                 return;
 
-            if (CurrentlySelection == topResult)
+            if (CurrentSelection == topResult)
             {
                 // We can only move forward...
                 if (direction == NavigationDirection.Forward)
-                {
                     SelectItem(0, 0, 0);
-                    return;
-                }
-                else
-                    // Selected element is top result.
-                    // There is no way to move backward.
-                    return;
+                return;
             }
 
             var selectedCategory = root.ElementAt(selectedCategoryIndex);
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
             // Clear the current selection, no matter what.
-            CurrentlySelection.IsSelected = false;
+            CurrentSelection.IsSelected = false;
 
             if (direction == NavigationDirection.Backward)
             {
@@ -157,7 +151,7 @@ namespace Dynamo.ViewModels
             }
 
             // Get the new selection and mark it as selected.
-            CurrentlySelection.IsSelected = true;
+            CurrentSelection.IsSelected = true;
         }
 
         private NodeSearchElementViewModel GetSelectionFromIndices()

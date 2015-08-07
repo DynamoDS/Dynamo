@@ -858,7 +858,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return selectionNavigator.CurrentlySelection;
+                return selectionNavigator.CurrentSelection;
             }
         }
 
