@@ -67,7 +67,7 @@ namespace Dynamo.ViewModels
             selectedMemberIndex = -1;
 
             this.topResult = topResult;
-            this.selection = null;
+            this.selection = topResult;
         }
 
         internal void MoveSelection(NavigationDirection direction)
@@ -76,7 +76,7 @@ namespace Dynamo.ViewModels
                 return;
 
             // Selection can be null, if user just searched and currently selected element is top result.
-            if (selection == null)
+            if (selection == topResult)
             {
                 // We can only move forward...
                 if (direction == NavigationDirection.Forward)
@@ -137,7 +137,12 @@ namespace Dynamo.ViewModels
                         {
                             selection = GetSelectionFromIndices();
                             selection.IsSelected = false;
-                            selection = null;
+
+                            selectedCategoryIndex = -1;
+                            selectedMemberGroupIndex = -1;
+                            selectedMemberIndex = -1;
+
+                            selection = topResult;
                             topResult.IsSelected = true;
                             return;
                         }
