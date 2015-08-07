@@ -75,7 +75,6 @@ namespace Dynamo.ViewModels
             if (root == null || !root.Any())
                 return;
 
-            // Selection can be null, if user just searched and currently selected element is top result.
             if (selection == topResult)
             {
                 // We can only move forward...
