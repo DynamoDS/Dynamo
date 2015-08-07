@@ -697,7 +697,6 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
 
-            selectionNavigator.UpdateRootCategories(SearchRootCategories);
         }
 
 
@@ -859,7 +858,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return selectionNavigator.CurrentlySelection;
+                return selectionNavigator.CurrentSelection;
             }
         }
 
@@ -880,9 +879,15 @@ namespace Dynamo.ViewModels
             }
 
             var topMemberGroup = new SearchMemberGroup(memberGroup.FullyQualifiedName);
-            topMemberGroup.AddMember(memberGroup.Members.First());
 
+            // Clone top node.
+            var topNode = new NodeSearchElementViewModel(memberGroup.Members.FirstOrDefault());
+            topNode.IsSelected = true;            
+
+            topMemberGroup.AddMember(topNode);
             TopResult = topMemberGroup;
+
+            selectionNavigator.UpdateRootCategories(SearchRootCategories, topNode);            
         }
 
         internal void ExecuteSelectedMember()
