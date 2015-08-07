@@ -157,8 +157,7 @@ namespace Dynamo.ViewModels
             }
 
             // Get the new selection and mark it as selected.
-            var selection = GetSelectionFromIndices();
-            selection.IsSelected = true;
+            CurrentlySelection.IsSelected = true;
         }
 
         private NodeSearchElementViewModel GetSelectionFromIndices()
