@@ -146,6 +146,7 @@ namespace ProtoCore
         public bool IsDeltaExecution { get; set; }
         public InterpreterMode RunMode { get; set; }
 
+
         /// <summary>
         /// TODO: Aparajit: This flag is true for Delta AST compilation
         /// This will be removed once we make this the default and deprecate "deltaCompileStartPC" 
@@ -341,6 +342,7 @@ namespace ProtoCore
         //The dynamic string table and function table
         public DynamicVariableTable DynamicVariableTable { get; set; }
         public DynamicFunctionTable DynamicFunctionTable { get; set; }
+        public List<ProtoCore.Runtime.MacroBlock> RuntimeMacroBlockList { get; set; }
 
 
         //Manages injected context data.
@@ -589,11 +591,11 @@ namespace ProtoCore
 
             Validity.AssertExpiry();
             Options = options;
-            
+
             Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
 
-            FunctionTable = new FunctionTable(); 
+            FunctionTable = new FunctionTable();
             Langverify = new LangVerify();
 
 
@@ -666,7 +668,7 @@ namespace ProtoCore
 
 
             ParsingMode = ParseMode.Normal;
-            
+
             IsParsingPreloadedAssembly = false;
             IsParsingCodeBlockNode = false;
             ImportHandler = null;
@@ -681,6 +683,7 @@ namespace ProtoCore
             InlineConditionalBodyGraphNodes = new Stack<List<GraphNode>>();
 
             newEntryPoint = Constants.kInvalidIndex;
+            RuntimeMacroBlockList = new List<Runtime.MacroBlock>();
         }
 
         // The unique subscript for SSA temporaries
@@ -944,19 +947,20 @@ namespace ProtoCore
             
             // Copy all instruction streams
             // TODO Jun: What method to copy all? Use that
-            ExprInterpreterExe.instrStreamList = new InstructionStream[DSExecutable.instrStreamList.Length];
-            for (int i = 0; i < DSExecutable.instrStreamList.Length; ++i)
+            InstructionStream[] exeInstrStream = DSExecutable.GetInstructionStreamList();
+            InstructionStream[] instrStream = new InstructionStream[exeInstrStream.Length];
+            for (int i = 0; i < exeInstrStream.Length; ++i)
             {
-                if (null != DSExecutable.instrStreamList[i])
+                if (null != exeInstrStream[i])
                 {
-                    ExprInterpreterExe.instrStreamList[i] = new InstructionStream(DSExecutable.instrStreamList[i].language, this);
-                    //ExprInterpreterExe.instrStreamList[i] = new InstructionStream(DSExecutable.instrStreamList[i].language, DSExecutable.instrStreamList[i].dependencyGraph, this);
-                    for (int j = 0; j < DSExecutable.instrStreamList[i].instrList.Count; ++j)
+                    instrStream[i] = new InstructionStream(exeInstrStream[i].language, this);
+                    for (int j = 0; j < exeInstrStream[i].instrList.Count; ++j)
                     {
-                        ExprInterpreterExe.instrStreamList[i].instrList.Add(DSExecutable.instrStreamList[i].instrList[j]);
+                        instrStream[i].instrList.Add(exeInstrStream[i].instrList[j]);
                     }
                 }
             }
+            ExprInterpreterExe.SetInstructionStreamList(instrStream);
         }
 
 
@@ -965,7 +969,7 @@ namespace ProtoCore
             // Append the expression instruction at the end of the current block
             for (int n = 0; n < ExprInterpreterExe.iStreamCanvas.instrList.Count; ++n)
             {
-                ExprInterpreterExe.instrStreamList[blockScope].instrList.Add(ExprInterpreterExe.iStreamCanvas.instrList[n]);
+                ExprInterpreterExe.GetInstructionStream(blockScope).instrList.Add(ExprInterpreterExe.iStreamCanvas.instrList[n]);
             }
         }
 
@@ -974,6 +978,7 @@ namespace ProtoCore
         {
             Validity.Assert(CodeBlockList.Count >= 0);
             DSExecutable = new Executable();
+
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
             DSExecutable.CodeBlocks.AddRange(CodeBlockList);
@@ -1005,13 +1010,15 @@ namespace ProtoCore
             }
 
             // Build the executable instruction streams
-            DSExecutable.instrStreamList = new InstructionStream[RuntimeTableIndex];
+            InstructionStream[] istream = new InstructionStream[RuntimeTableIndex];
             for (int n = 0; n < CodeBlockList.Count; ++n)
             {
-                BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
+                BfsBuildInstructionStreams(CodeBlockList[n], istream);
             }
+            DSExecutable.SetInstructionStreamList(istream);
 
             GenerateExprExe();
+            DSExecutable.MacroBlockList = RuntimeMacroBlockList;
             DSExecutable.FunctionTable = FunctionTable;
             DSExecutable.DynamicVarTable = DynamicVariableTable;
             DSExecutable.DynamicFuncTable = DynamicFunctionTable;
@@ -1019,7 +1026,8 @@ namespace ProtoCore
             DSExecutable.ContextDataMngr = ContextDataManager;
             DSExecutable.Configurations = Configurations;
             DSExecutable.CodeToLocation = codeToLocation;
-            DSExecutable.CurrentDSFileName = CurrentDSFileName;           
+            DSExecutable.CurrentDSFileName = CurrentDSFileName;     
+      
         }
 
 

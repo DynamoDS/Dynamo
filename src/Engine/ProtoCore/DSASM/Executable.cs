@@ -4,6 +4,8 @@ using ProtoCore.Lang;
 using ProtoCore.AST.AssociativeAST;
 using ProtoFFI;
 using ProtoCore.AssociativeGraph;
+using ProtoCore.Utils;
+
 namespace ProtoCore.DSASM
 {
     /// <summary>
@@ -55,7 +57,9 @@ namespace ProtoCore.DSASM
         public List<CodeBlock> CodeBlocks { get; set; }
         public List<CodeBlock> CompleteCodeBlocks { get; set; }
 
-        public InstructionStream[] instrStreamList { get; set; } 
+        public int ExecutingMacroBlock { get; private set; }
+        private InstructionStream[] instrStreamList;
+        public List<ProtoCore.Runtime.MacroBlock> MacroBlockList { get; set; }
         public InstructionStream iStreamCanvas { get; set; }
 
         public DebugServices.EventSink EventSink = new DebugServices.ConsoleEventSink();
@@ -105,6 +109,11 @@ namespace ProtoCore.DSASM
             Reset();
         }
 
+        public void SetupMacroBlock(int macroBlock)
+        {
+            ExecutingMacroBlock = macroBlock;
+        }
+
         public void Reset()
         {
             runtimeSymbols = null;
@@ -121,6 +130,26 @@ namespace ProtoCore.DSASM
             funcCounterTable = new List<FunctionCounter>();
             calledInFunction = false;
             UpdatedSymbols = new HashSet<SymbolNode>();
+            ExecutingMacroBlock = 0;
+            MacroBlockList = new List<Runtime.MacroBlock>();
+        }
+
+        public InstructionStream GetInstructionStream(int scopeID)
+        {
+            Validity.Assert(instrStreamList != null);
+            return instrStreamList[scopeID];
+        }
+
+        public InstructionStream[] GetInstructionStreamList()
+        {
+            Validity.Assert(instrStreamList != null);
+            return instrStreamList;
+        }
+
+        public void SetInstructionStreamList(InstructionStream[] instrStream)
+        {
+            Validity.Assert(instrStream != null);
+            instrStreamList = instrStream;
         }
     }
 

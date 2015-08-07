@@ -863,6 +863,40 @@ namespace ProtoTest.LiveRunner
         }
 
         [Test]
+        public void TestSimpleExecution01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 10;",
+            };
+            Guid guid = System.Guid.NewGuid();
+
+            // Create CBN
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 10);
+        }
+
+        [Test]
+        public void TestSimpleExecution02()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "a = 10; b = a;",
+            };
+            Guid guid = System.Guid.NewGuid();
+
+            // Create CBN
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+            AssertValue("a", 10);
+        }
+
+        [Test]
         public void RegressMAGN747()
         {
             List<string> codes = new List<string>() 

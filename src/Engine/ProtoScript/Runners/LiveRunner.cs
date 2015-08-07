@@ -1,3 +1,4 @@
+
 using System;
 using System.IO;
 using System.Text;
@@ -250,7 +251,8 @@ namespace ProtoScript.Runners
                 BinaryExpressionNode bNode = node as BinaryExpressionNode;
                 if (bNode != null)
                 {
-                    foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                    InstructionStream iStream = core.DSExecutable.GetInstructionStream(0);
+                    foreach (var gnode in iStream.dependencyGraph.GraphList)
                     {
                         if (gnode.OriginalAstID == bNode.OriginalAstID)
                         {

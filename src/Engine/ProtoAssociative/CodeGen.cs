@@ -3791,7 +3791,6 @@ namespace ProtoAssociative
                 {
                     AssociativeNode lastNode = DFSEmitSplitAssign_AST(bnode.RightNode, ref astList);
                     var newBNode = nodeBuilder.BuildBinaryExpression(bnode.LeftNode, lastNode);
-                    
                     astList.Add(newBNode);
                     return bnode.LeftNode;
                 }
@@ -4233,10 +4232,15 @@ namespace ProtoAssociative
 
             ResolveFinalNodeRefs();
             ResolveSSADependencies();
-            
-            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
-                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope));
-        
+
+            List<GraphNode> nodesInScope = codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(nodesInScope);
+
+            // Generate the macroblock fragments at the global scope
+            if (codeBlock.codeBlockId == 0)
+            {
+                GenerateAndCacheMacroblocks(nodesInScope);
+            }
             
             if (codeBlock.parent == null)  // top-most langauge block
             {
@@ -4256,6 +4260,15 @@ namespace ProtoAssociative
             core.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
+        }
+
+        private void GenerateAndCacheMacroblocks(List<GraphNode> nodesInScope)
+        {
+            Validity.Assert(macroblockGen != null);
+            List<ProtoCore.Runtime.MacroBlock> macroblocks = macroblockGen.GenerateMacroblocks(nodesInScope);
+
+            // Cache the generated blocks in core
+            core.RuntimeMacroBlockList = macroblocks;
         }
 
         private void EmitFunctionCallToInitStaticProperty(List<AssociativeNode> codeblock)
@@ -8693,8 +8706,10 @@ namespace ProtoAssociative
                     }
                     else
                     {
+                        // Global scope
                         if (!isAllocated)
                         {
+                            // Allocate a global variable on the stack memory
                             symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
                                     false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
@@ -8822,6 +8837,7 @@ namespace ProtoAssociative
                     }
 
                     PushGraphNode(graphNode);
+
                     if (core.InlineConditionalBodyGraphNodes.Count > 0)
                     {
                         core.InlineConditionalBodyGraphNodes.Last().Add(graphNode);

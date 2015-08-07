@@ -312,6 +312,13 @@ namespace ProtoCore
             cancellationPending = true;
         }
 
+
+        public void ResetCancellation()
+        {
+
+            cancellationPending = false;
+        }
+
         public int GetCurrentBlockId()
         {
             int constructBlockId = RuntimeMemory.CurrentConstructBlockId;
