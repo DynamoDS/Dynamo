@@ -32,7 +32,6 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<SearchCategory> root = null;
 
-        private NodeSearchElementViewModel selection = null;
         private NodeSearchElementViewModel topResult = null;
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return selection ?? topResult;
+                return GetSelectionFromIndices();
             }
         }
 
@@ -57,7 +56,6 @@ namespace Dynamo.ViewModels
 
             if (root == null || !root.Any())
             {
-                selection = null;
                 topResult = null;
                 return;
             }
@@ -67,7 +65,6 @@ namespace Dynamo.ViewModels
             selectedMemberIndex = -1;
 
             this.topResult = topResult;
-            this.selection = topResult;
         }
 
         internal void MoveSelection(NavigationDirection direction)
@@ -75,18 +72,12 @@ namespace Dynamo.ViewModels
             if (root == null || !root.Any())
                 return;
 
-            if (selection == topResult)
+            if (CurrentlySelection == topResult)
             {
                 // We can only move forward...
                 if (direction == NavigationDirection.Forward)
                 {
-                    selectedCategoryIndex = 0;
-                    selectedMemberGroupIndex = 0;
-                    selectedMemberIndex = 0;
-
-                    selection.IsSelected = false;
-                    selection = GetSelectionFromIndices();
-                    selection.IsSelected = true;
+                    SelectItem(0, 0, 0);
                     return;
                 }
                 else
@@ -99,8 +90,7 @@ namespace Dynamo.ViewModels
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
             // Clear the current selection, no matter what.
-            selection.IsSelected = false;
-            selection = null;
+            CurrentlySelection.IsSelected = false;
 
             if (direction == NavigationDirection.Backward)
             {
@@ -134,15 +124,7 @@ namespace Dynamo.ViewModels
                         }
                         else // No place to move back. Clear selection. Select top result.
                         {
-                            selection = GetSelectionFromIndices();
-                            selection.IsSelected = false;
-
-                            selectedCategoryIndex = -1;
-                            selectedMemberGroupIndex = -1;
-                            selectedMemberIndex = -1;
-
-                            selection = GetSelectionFromIndices();
-                            selection.IsSelected = true;
+                            SelectItem(-1, -1, -1);
                             return;
                         }
                     }
@@ -175,7 +157,7 @@ namespace Dynamo.ViewModels
             }
 
             // Get the new selection and mark it as selected.
-            selection = GetSelectionFromIndices();
+            var selection = GetSelectionFromIndices();
             selection.IsSelected = true;
         }
 
@@ -199,6 +181,24 @@ namespace Dynamo.ViewModels
 
             var selectedMember = selectedMemberGroup.Members.ElementAt(selectedMemberIndex);
             return selectedMember;
+        }
+
+        private void SelectItem(int categoryIndex, int memberGroupIndex, int memberIndex)
+        {
+            if (categoryIndex == selectedCategoryIndex &&
+                memberGroupIndex == selectedMemberGroupIndex &&
+                memberIndex == selectedMemberIndex)
+                return; // No selection change.
+
+            var selection = GetSelectionFromIndices();
+            selection.IsSelected = false;
+
+            selectedCategoryIndex = categoryIndex;
+            selectedMemberGroupIndex = memberGroupIndex;
+            selectedMemberIndex = memberIndex;
+
+            selection = GetSelectionFromIndices();
+            selection.IsSelected = true;
         }
     }
 }
