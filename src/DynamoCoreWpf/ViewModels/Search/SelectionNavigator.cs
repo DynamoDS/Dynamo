@@ -51,26 +51,23 @@ namespace Dynamo.ViewModels
             UpdateRootCategories(rootTree);
         }
 
-        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree)
+        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree, NodeSearchElementViewModel topResult = null)
         {
             root = rootTree;
 
             if (root == null || !root.Any())
             {
                 selection = null;
+                topResult = null;
                 return;
             }
 
-            selectedCategoryIndex = 0;
-            selectedMemberGroupIndex = 0;
-            selectedMemberIndex = 0;
+            selectedCategoryIndex = -1;
+            selectedMemberGroupIndex = -1;
+            selectedMemberIndex = -1;
 
-            selection = null;
-        }
-
-        internal void UpdateTopResult(NodeSearchElementViewModel topRes)
-        {
-            topResult = topRes;
+            this.topResult = topResult;
+            this.selection = null;
         }
 
         internal void MoveSelection(NavigationDirection direction)
@@ -81,11 +78,16 @@ namespace Dynamo.ViewModels
             // Selection can be null, if user just searched and currently selected element is top result.
             if (selection == null)
             {
+                // We can only move forward...
                 if (direction == NavigationDirection.Forward)
                 {
+                    selectedCategoryIndex = 0;
+                    selectedMemberGroupIndex = 0;
+                    selectedMemberIndex = 0;
+
+                    topResult.IsSelected = false;
                     selection = GetSelectionFromIndices();
                     selection.IsSelected = true;
-                    topResult.IsSelected = false;
                     return;
                 }
                 else
@@ -175,6 +177,14 @@ namespace Dynamo.ViewModels
 
         private NodeSearchElementViewModel GetSelectionFromIndices()
         {
+            if ((selectedCategoryIndex == -1) &&
+                (selectedMemberGroupIndex == -1) &&
+                (selectedMemberIndex == -1))
+            {
+                // No selection, return topResult instead.
+                return topResult;
+            }
+
             var selectedCategory = root.ElementAt(selectedCategoryIndex);
             if (selectedCategory == null)
                 return null;

@@ -697,7 +697,6 @@ namespace Dynamo.ViewModels
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
             RaisePropertyChanged("SearchResults");
 
-            selectionNavigator.UpdateRootCategories(SearchRootCategories);
         }
 
 
@@ -888,7 +887,7 @@ namespace Dynamo.ViewModels
             topMemberGroup.AddMember(topNode);
             TopResult = topMemberGroup;
 
-            selectionNavigator.UpdateTopResult(topNode);
+            selectionNavigator.UpdateRootCategories(SearchRootCategories, topNode);            
         }
 
         internal void ExecuteSelectedMember()
