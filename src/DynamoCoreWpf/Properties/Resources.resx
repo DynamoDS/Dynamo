@@ -1875,6 +1875,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
     <value>Available Previews</value>
   </data>
+  <data name="PresetWarningMessage" xml:space="preserve">
+    <value>No input nodes selected. Select at least one input node to create a preset.</value> 
+  </data>
   <data name="UnitArea" xml:space="preserve">
     <value>Area</value>
   </data>

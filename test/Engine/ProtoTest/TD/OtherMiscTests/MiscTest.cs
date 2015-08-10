@@ -413,6 +413,7 @@ inputBool = true;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void DynamicReferenceResolving_Complex_Case()
@@ -492,6 +493,7 @@ testInFunction2 = foo2(b2); //testInFunction2 = 7;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void DynamicReference_Variable()
         {
@@ -520,6 +522,7 @@ kk = t.k;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void DynamicReference_FunctionCall()
         {
@@ -547,6 +550,7 @@ testFoo1 = t.foo1(6); // foo1 does not exist in A, function not found warning; t
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void DynamicReference_FunctionCall_With_Default_Arg()
@@ -742,6 +746,7 @@ a=1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void GarbageCollection_1467148()
         {
             string code = @"

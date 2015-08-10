@@ -3,6 +3,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Publish;
 using Dynamo.Publish.Models;
+using Dynamo.Publish.Properties;
 using Greg;
 using Moq;
 using NUnit.Framework;
@@ -33,7 +34,7 @@ namespace DynamoPublishTests
             client.Setup(c =>
                 // If it's sent any workspace or any custom nodes, result always will be successful.
                 c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>())).
-                Returns(Resource.WorkspacesSendSucceededServerResponse);
+                Returns(Resources.WorkspacesSendSucceededServerResponse);
 
             // Create publish model.
             publishModel = new PublishModel(authenticationProvider.Object, 

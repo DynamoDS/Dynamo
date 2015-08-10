@@ -3678,6 +3678,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No input nodes selected. Select at least one input node to create a preset..
+        /// </summary>
+        public static string PresetWarningMessage {
+            get {
+                return ResourceManager.GetString("PresetWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {

@@ -11,6 +11,7 @@ namespace ProtoTest.UtilsTests
     class TextFxTests : ProtoTestBase
     {
         [Test]
+        [Category("DSDefinedClass")]
         [Category("TextFx Tests")]
         public void BasicRunAndVerify()
         {

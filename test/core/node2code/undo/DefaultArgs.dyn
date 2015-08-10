@@ -1,0 +1,27 @@
+<Workspace Version="0.8.2.1915" X="133.140038372056" Y="57.8477473837573" zoom="0.756889548913338" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="e8daa13f-5df2-47ac-afd4-ccf36f9d29c1" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-112" y="316" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="4;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="20a9eb23-c2a2-4054-a4c0-edb4dc2d27dc" type="Dynamo.Nodes.DSFunction" nickname="Line.ByStartPointEndPoint" x="327.958113943596" y="158.605668885875" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point" />
+    <Dynamo.Nodes.DSFunction guid="0b775825-20fe-4bc9-890a-f15ff9ca29b5" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="78.4928857138912" y="271.957653877485" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="1f5b4d78-819e-48bc-a0aa-20dc53c02dc5" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="74.4928857138913" y="88.7576538774854" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e8daa13f-5df2-47ac-afd4-ccf36f9d29c1" start_index="0" end="0b775825-20fe-4bc9-890a-f15ff9ca29b5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b775825-20fe-4bc9-890a-f15ff9ca29b5" start_index="0" end="20a9eb23-c2a2-4054-a4c0-edb4dc2d27dc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f5b4d78-819e-48bc-a0aa-20dc53c02dc5" start_index="0" end="20a9eb23-c2a2-4054-a4c0-edb4dc2d27dc" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

@@ -30,6 +30,7 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
+        LostFocus="DynamoView_LostFocus"
         Background="#FF353535"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
@@ -157,6 +158,7 @@
         <KeyBinding Key="P"
                     Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.BackgroundPreviewViewModel.TogglePanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+
         <KeyBinding Key="F5"
                     Modifiers="Shift"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -168,7 +170,7 @@
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
         <KeyBinding Key="T"
                     Modifiers="Control"
-                    Command="{Binding ShowNewPresetsDialogCommand}"/>
+                    Command="{Binding Path=DataContext.ShowNewPresetsDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -584,7 +586,7 @@
                                       IsChecked="{Binding Path=BackgroundPreviewViewModel.CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
-                                      Command="{Binding ToggleCanNavigateBackgroundCommand}" />
+                                      Command="{Binding Path=BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
 

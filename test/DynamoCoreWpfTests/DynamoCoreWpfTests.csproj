@@ -84,7 +84,9 @@
     <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="CustomNodeTests.cs" />
     <Compile Include="DateTimeTests.cs" />
+    <Compile Include="NodeToCodeTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
     <Compile Include="AnnotationViewTests.cs" />
