@@ -114,7 +114,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName, true);
+                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName);
             }
         }
 

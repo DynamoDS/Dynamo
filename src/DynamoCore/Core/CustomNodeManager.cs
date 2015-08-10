@@ -140,7 +140,7 @@ namespace Dynamo.Core
                 Log(
                     Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
-                info = new CustomNodeInfo(id, nickname ?? "", "", "", "", true);
+                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
             }
 
             if (def == null)
