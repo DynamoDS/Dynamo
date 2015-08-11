@@ -461,7 +461,7 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
-
+            dynamoViewModel.PropertyChanged += WorkspaceChanged;
         }
 
         /// <summary>
@@ -998,6 +998,7 @@ namespace Dynamo.Controls
             }
 
             viewExtensionManager.MessageLogged -= Log;
+            dynamoViewModel.PropertyChanged -= WorkspaceChanged;
         }
 
         // the key press event is being intercepted before it can get to
@@ -1534,6 +1535,26 @@ namespace Dynamo.Controls
             }
 
             e.Handled = true;
+        }
+
+
+        private void WorkspaceChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "CurrentSpace")
+                return;
+
+            var updatedParams = new ViewLoadedParams(this, dynamoViewModel);
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Updated(updatedParams);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
         }
 
         private void Log(ILogMessage obj)

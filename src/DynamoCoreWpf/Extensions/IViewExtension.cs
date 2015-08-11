@@ -48,6 +48,14 @@ namespace Dynamo.Wpf.Extensions
         void Loaded(ViewLoadedParams p);
 
         /// <summary>
+        /// Action to be invoked, when some important properties changed, like current workspace.        
+        /// 
+        /// Exceptions thrown from this method will be caught by Dynamo and 
+        /// displayed.
+        /// </summary>        
+        void Updated(ViewLoadedParams p);
+
+        /// <summary>
         /// Action to be invoked when shutdown has begun.  This gives the UI a last minute chance to interact
         /// with the user.
         /// 
