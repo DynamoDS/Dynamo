@@ -585,6 +585,7 @@ namespace Dynamo.Models
 
             foreach (NodeModel el in Nodes)
             {
+                el.RaisesModificationEvents = false;
                 el.Dispose();
 
                 foreach (PortModel p in el.InPorts)
