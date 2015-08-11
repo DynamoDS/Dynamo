@@ -1457,8 +1457,11 @@ namespace Dynamo.Models
         {
             if (_workspaces.Remove(workspace))
             {
-                if (workspace is HomeWorkspaceModel)
+                if (workspace is HomeWorkspaceModel) {
+                    DisposeLogic.IsClosingHomeworkspace = true;
                     workspace.Dispose();
+                    DisposeLogic.IsClosingHomeworkspace = false;
+                }
                 OnWorkspaceRemoved(workspace);
             }
         }
