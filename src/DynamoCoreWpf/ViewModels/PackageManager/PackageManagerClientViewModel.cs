@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism.Commands;
 using Dynamo.PackageManager.UI;
 using System.Reflection;
 using System.IO;
+using System.Threading;
 
 namespace Dynamo.ViewModels
 {
@@ -36,6 +37,7 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class TermsOfUseHelper
     {
+        private static int currentRequestCount = 0;
         private readonly IBrandingResourceProvider resourceProvider;
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
@@ -62,6 +64,14 @@ namespace Dynamo.ViewModels
 
         public void Execute()
         {
+            if (Interlocked.Increment(ref currentRequestCount) > 1)
+            {
+                // Determine if there is already a previous request to display
+                // terms of use dialog, if so, do nothing for the second time.
+                Interlocked.Decrement(ref currentRequestCount);
+                return;
+            }
+
             Task<bool>.Factory.StartNew(() => packageManagerClient.GetTermsOfUseAcceptanceStatus()).
                 ContinueWith(t =>
                 {
@@ -84,6 +94,12 @@ namespace Dynamo.ViewModels
                         // Prompt user to accept the terms of use.
                         ShowTermsOfUseForPublishing();
                     }
+
+                }, TaskScheduler.FromCurrentSynchronizationContext()).
+                ContinueWith(t =>
+                {
+                    // Done with terms of use dialog, decrement counter.
+                    Interlocked.Decrement(ref currentRequestCount);
 
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
