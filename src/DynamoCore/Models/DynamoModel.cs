@@ -579,8 +579,15 @@ namespace Dynamo.Models
                     if (logSource != null)
                         logSource.MessageLogged += LogMessage;
 
-                    ext.Startup(startupParams);
-                    ext.Load(preferences, pathManager);
+                    try
+                    {
+                        ext.Startup(startupParams);
+                        ext.Load(preferences, pathManager);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);                       
+                    }                   
                     ExtensionManager.Add(ext);
                 }
             }
@@ -1950,6 +1957,9 @@ namespace Dynamo.Models
         {
             if (args.PropertyName == "RunEnabled")
                 OnPropertyChanged("RunEnabled");
+
+            if (args.PropertyName == "EnablePresetOptions")
+                OnPropertyChanged("EnablePresetOptions");
         }
 
         #endregion

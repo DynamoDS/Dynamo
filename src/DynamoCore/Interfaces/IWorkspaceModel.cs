@@ -7,6 +7,7 @@ namespace Dynamo.Interfaces
     public interface IWorkspaceModel
     {
         string Name { get; }
+        string Description { get; }
         string FileName { get; }
 
         IEnumerable<ConnectorModel> Connectors { get; }

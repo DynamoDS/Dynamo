@@ -1096,7 +1096,7 @@ namespace Dynamo.Controls
         {
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
-            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.Guid));
+            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.GUID));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)
@@ -1104,7 +1104,7 @@ namespace Dynamo.Controls
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
-            dynamoViewModel.Model.CurrentWorkspace.RemovePreset(state); 
+            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(state.GUID));
             //This is to remove the PATH (>) indicator from the preset submenu header
             //if there are no presets.
             dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();                       
