@@ -1482,8 +1482,11 @@ namespace Dynamo.Models
             {
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
                     AddWorkspace(customNodeWorkspace);
+
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
             }
+
             return false;
         }
 
