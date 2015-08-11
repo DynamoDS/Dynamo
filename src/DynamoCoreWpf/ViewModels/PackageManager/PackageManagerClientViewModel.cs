@@ -167,6 +167,22 @@ namespace Dynamo.ViewModels
         public AuthenticationManager AuthenticationManager { get; set; }
         internal PackageManagerClient Model { get; private set; }
 
+        public LoginState LoginState
+        {
+            get
+            {
+                return AuthenticationManager.LoginState;
+            }
+        }
+
+        public string Username
+        {
+            get
+            {
+                return AuthenticationManager.Username;
+            }
+        }
+
         #endregion
 
         public ICommand ToggleLoginStateCommand { get; private set; }
