@@ -52,7 +52,7 @@ namespace Dynamo.TestInfrastructure
 
                     DynamoViewModel.ExecuteCommand(undoCommand);
                 }));
-                Thread.Sleep(100);
+                Thread.Sleep(10);
             }
             writer.WriteLine("### - undo complete");
             writer.Flush();

@@ -78,7 +78,7 @@ namespace Dynamo.Models
             if (WorkspaceSaved != null)
                 WorkspaceSaved(model);
         }
-
+     
         /// <summary>
         /// Event that is fired during the opening of the workspace.
         /// 
@@ -579,8 +579,15 @@ namespace Dynamo.Models
                     if (logSource != null)
                         logSource.MessageLogged += LogMessage;
 
-                    ext.Startup(startupParams);
-                    ext.Load(preferences, pathManager);
+                    try
+                    {
+                        ext.Startup(startupParams);
+                        ext.Load(preferences, pathManager);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);                       
+                    }                   
                     ExtensionManager.Add(ext);
                 }
             }
@@ -781,11 +788,14 @@ namespace Dynamo.Models
                 if (customNodeSearchRegistry.Contains(info.FunctionId))
                     return;
 
-                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
-                                x =>
-                                {
-                                    return string.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0;
-                                }).ToList();
+                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
+                                Where(x =>
+                                        {
+                                            // Search for common paths and get rid of empty paths.
+                                            // It can be empty just in case it's just created node.
+                                            return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                                !String.IsNullOrEmpty(x.Path);
+                                        }).ToList();
 
                 if (elements.Any())
                 {
@@ -1947,6 +1957,9 @@ namespace Dynamo.Models
         {
             if (args.PropertyName == "RunEnabled")
                 OnPropertyChanged("RunEnabled");
+
+            if (args.PropertyName == "EnablePresetOptions")
+                OnPropertyChanged("EnablePresetOptions");
         }
 
         #endregion

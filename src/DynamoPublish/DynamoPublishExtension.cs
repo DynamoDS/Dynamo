@@ -7,6 +7,7 @@ using System;
 using System.Windows.Controls;
 using System.Linq;
 using Dynamo.Models;
+using Dynamo.Publish.Properties;
 
 namespace Dynamo.Publish
 {
@@ -80,7 +81,7 @@ namespace Dynamo.Publish
         private MenuItem GenerateMenuItem()
         {
             MenuItem item = new MenuItem();
-            item.Header = Resource.DynamoViewMenuItemPublishTitle;
+            item.Header = Resources.DynamoViewMenuItemPublishTitle;
 
             var isEnabled = publishViewModel.CurrentWorkspaceModel is HomeWorkspaceModel && publishModel.HasAuthProvider;
 

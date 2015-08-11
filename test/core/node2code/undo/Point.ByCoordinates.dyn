@@ -1,0 +1,21 @@
+<Workspace Version="0.8.2.1915" X="108.287364403225" Y="108.87245076902" zoom="0.541452935161283" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="7dc02029-de6b-4096-a0b0-765186d01936" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-108.112480097282" y="81.6635538788844" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{2,5};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="e61bcd5f-42fa-4774-892c-817a65766e75" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="188.09738372711" y="-29.8886664861977" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="b5221f63-e310-4823-9c04-022efbf6dba4" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-111.767617059781" y="-46.3364461211156" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..10;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7dc02029-de6b-4096-a0b0-765186d01936" start_index="0" end="e61bcd5f-42fa-4774-892c-817a65766e75" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b5221f63-e310-4823-9c04-022efbf6dba4" start_index="0" end="e61bcd5f-42fa-4774-892c-817a65766e75" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

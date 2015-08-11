@@ -194,6 +194,7 @@ e;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T11_TestInClassScope()
         {
@@ -1039,6 +1040,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T48_MultipleAssignments()
         {
@@ -1328,6 +1330,7 @@ y1 = a..b..2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")] 
         public void T58_Modifier_Block_On_User_Defined_Classes()
         {
@@ -1508,6 +1511,7 @@ if(c < 1)
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T60_Defect_1467525_5()
         {
             String code =
@@ -1533,6 +1537,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T60_Defect_1467525_6()
         {
             String code =
@@ -1613,6 +1618,7 @@ test = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T61_Defect_1467546_4()
         {
             String code =
@@ -1636,6 +1642,7 @@ test = A.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T61_Defect_1467546_5()
         {
             String code =
@@ -1699,6 +1706,7 @@ b = a + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T61_Defect_1467546_8()
         {
             String code =
@@ -1724,6 +1732,7 @@ b = a + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T64_Defect_1467588()
         {
             String code =
@@ -1763,6 +1772,7 @@ d = foo2(""Hello \""DesignScript\""!"");
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T65_Defect_1467597()
         {
             String code =
@@ -1797,6 +1807,7 @@ y = A.A(1).a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T66_Defect_1467597()
         {
             String code =

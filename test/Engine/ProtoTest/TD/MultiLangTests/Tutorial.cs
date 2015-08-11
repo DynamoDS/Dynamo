@@ -93,6 +93,7 @@ t6 = cartesian_sum[2][0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T00004_Geometry_002_line_by_points_replication_simple()
         {
@@ -125,6 +126,7 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T00005_Geometry_002_line_by_points_replication_simple_correction()
         {
@@ -161,6 +163,7 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T00006_Geometry_003_line_by_points_replication_array()
         {
@@ -194,6 +197,7 @@ startPt = Point.ByCartesianCoordinates( 2, 1, 0 );
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T00007_Geometry_004_circle_all_combinations()
         {
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators ");
@@ -221,6 +225,7 @@ t4 = lines[3][0].StartPoint.X;";
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T00008_Geometry_005_circle_adjacent_pairs_externalised()
         {
             //Assert.Fail("1456568 - Sprint 16 : Rev 982 : Replication does not work on operators "); 
@@ -250,6 +255,7 @@ t3 = lines[2].StartPoint.X;";
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T00009_Geometry_006_circle_all_unique_combinations()
         {
@@ -271,6 +277,7 @@ t2 = lines[1][2].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T00010_Geometry_007_specialPoint_2()
         {
@@ -347,6 +354,7 @@ a 		= a.incrementRadius(0.2); 				// [POINT does not updates]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T00011_Geometry_008_trim_then_tube_4()
@@ -385,6 +393,7 @@ t5 = tubes[4].EndPoint.X;";
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T00012_Geometry_008a_alternative_method_invocations_1()
         {
@@ -452,6 +461,7 @@ x8 = tube_3.StartPoint.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T00013_Geometry_009_nested_user_defined_feature_2b()
         {
@@ -533,6 +543,7 @@ x3 = triangle0002.Side_b_c.MidPoint.X;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T00014_Geometry_010_nested_user_defined_feature_rand_2()
         {
@@ -613,6 +624,7 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Feature")]
         public void T00015_Geometry_011_nested_user_defined_feature_with_partial_class_1()
         {
@@ -657,6 +669,7 @@ x3 = side_c_a.MidPoint.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Feature")]
         public void T00016_Geometry_012_centroid_1()
         {

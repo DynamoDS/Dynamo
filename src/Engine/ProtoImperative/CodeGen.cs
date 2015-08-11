@@ -2485,6 +2485,26 @@ namespace ProtoImperative
                 ForLoopNode forNode = node as ForLoopNode;
                 ++core.ForLoopBlockIndex;   //new forloop beginning. increment loop counter 
 
+                // Insert a dummy block for for-loop so that loopvar is in scope.
+                ProtoCore.DSASM.CodeBlock localCodeBlock = new ProtoCore.DSASM.CodeBlock(
+                        context.guid,
+                        ProtoCore.DSASM.CodeBlockType.kConstruct,
+                        Language.kInvalid,
+                        core.CodeBlockIndex++,
+                        new ProtoCore.DSASM.SymbolTable(GetConstructBlockName("dummy"), core.RuntimeTableIndex++),
+                        null,
+                        true,
+                        core);
+
+                core.CodeBlockIndex++;
+                localCodeBlock.instrStream = codeBlock.instrStream;
+                localCodeBlock.parent = codeBlock;
+
+                codeBlock.children.Add(localCodeBlock);
+                codeBlock = localCodeBlock;
+                EmitPushBlockID(localCodeBlock.codeBlockId);
+
+
                 ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0);
 
                 // val = null; 
@@ -2496,7 +2516,7 @@ namespace ProtoImperative
                     loopvarInit.Optr = ProtoCore.DSASM.Operator.assign;
                     loopvarInit.LeftNode = loopvar;
                     loopvarInit.RightNode = new NullNode();
-
+ 
                     ProtoCore.Utils.NodeUtils.CopyNodeLocation(loopvarInit, forNode);
                     loopvarInit.endLine = loopvarInit.line;
                     loopvarInit.endCol = loopvarInit.col + 3;
@@ -2634,6 +2654,21 @@ namespace ProtoImperative
 
                 type.UID = (int)ProtoCore.PrimitiveType.kTypeVoid;
                 EmitWhileStmtNode(whileStatement, ref type, isBooleanOp, graphNode);
+
+                // As we add a dummy code block around forloop node, RETCN 
+                // instruction will get debugging information from 
+                // localCodeBlockNode, which is forloop node. We temporarily set
+                // lcoalCodeBlockNode to a dummy node so that RETCN won't have 
+                // debugging information.
+                var dummyCodeBlockNode = new CodeBlockNode();
+                var backUpLocalCodeBlockNode = localCodeBlockNode;
+                localCodeBlockNode = dummyCodeBlockNode;
+
+                EmitInstrConsole(ProtoCore.DSASM.kw.retcn);
+                EmitRetcn(localCodeBlock.codeBlockId);
+
+                codeBlock = localCodeBlock.parent;
+                localCodeBlockNode = backUpLocalCodeBlockNode;
                 //}
 
                 // Comment Jun: The for loop counter must be unique and does not need to reset

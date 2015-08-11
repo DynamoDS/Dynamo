@@ -232,6 +232,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a DateTime object from a formatted date and time string. Date and time must be of the format &quot;April 12, 1977 12:00 PM&quot;.
+        /// </summary>
+        internal static string DateTimeDescription {
+            get {
+                return ResourceManager.GetString("DateTimeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a directory object from a path..
         /// </summary>
         internal static string DirectoryFromPathDescription {
