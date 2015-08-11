@@ -24,17 +24,25 @@ namespace Dynamo.Publish.Views
     /// </summary>
     public partial class PublishView : Window
     {
+        private PublishViewModel viewModel;
+
         public PublishView(PublishViewModel viewModel)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
             InitializeComponent();
             DataContext = viewModel;
+            this.viewModel = viewModel;
             viewModel.UIDispatcher = Dispatcher;
         }
 
         private void OnButtonCopyLinkClick(object sender, RoutedEventArgs e)
         {
             System.Windows.Clipboard.SetText(textBoxShareLink.Text);
+        }
+
+        private void OnButtonManageClick(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(viewModel.ManagerURL);
         }
     }
 }

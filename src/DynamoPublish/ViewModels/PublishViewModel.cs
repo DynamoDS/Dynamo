@@ -110,6 +110,14 @@ namespace Dynamo.Publish.ViewModels
         public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
         public IWorkspaceModel CurrentWorkspaceModel { get; set; }
 
+        public string ManagerURL
+        {
+            get
+            {
+                return model.ManagerURL;
+            }
+        }
+
         #endregion
 
         #region Click commands

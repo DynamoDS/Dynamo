@@ -5,7 +5,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         Title="{x:Static resx:Resources.PublishViewTitle}"
-        Height="480"
+        Height="485"
         Width="605">
     <Window.Resources>
         <ResourceDictionary>
@@ -189,6 +189,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Text="{x:Static resx:Resources.PublishViewShareLinkTitle}"
@@ -207,6 +208,13 @@
                     Height="30"
                     Style="{StaticResource SBadgeButton}"
                     Click="OnButtonCopyLinkClick" />
+            <Button Name="buttonManage"
+                    Content="{x:Static resx:Resources.ManageButtonTitle}"
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Height="30"
+                    Style="{StaticResource SBadgeButton}"
+                    Click="OnButtonManageClick" />
 
         </Grid>
 
