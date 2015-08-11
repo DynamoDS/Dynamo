@@ -34,6 +34,7 @@ namespace Dynamo.Publish.Models
             AuthenticationFailed,
             ServerNotFound,
             AuthProviderNotFound,
+            InvalidNodes,
             UnknownServerError
         }
 
@@ -114,6 +115,8 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        public IEnumerable<string> InvalidNodeNames { get; private set; }
+
         internal event Action<UploadState> UploadStateChanged;
         private void OnUploadStateChanged(UploadState state)
         {
@@ -187,6 +190,10 @@ namespace Dynamo.Publish.Models
                         State = UploadState.Succeeded;
                         Error = UploadErrorType.None;
                     }
+                    else if (InvalidNodeNames != null)
+                    {
+                        Error = UploadErrorType.InvalidNodes;
+                    }
                     else
                     {
                         // If there wasn't any error during uploading, 
@@ -247,12 +254,21 @@ namespace Dynamo.Publish.Models
             string result;
             try
             {
-                result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+                result = reachClient.Send(
+                    HomeWorkspace,
+                    CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+                InvalidNodeNames = null;
+            }
+            catch (InvalidNodesException ex)
+            {
+                InvalidNodeNames = ex.InvalidNodeNames;
+                result = Resource.FailedMessage;
             }
             catch
             {
                 result = Resource.FailedMessage;
             }
+
             return result;
         }
     }
