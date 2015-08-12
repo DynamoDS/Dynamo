@@ -46,7 +46,7 @@ namespace Dynamo.Tests
 
 
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices);
+                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices, CurrentDynamoModel.CurrentWorkspace.ElementResolver);
 
             var cbn1 = createCbn("n1;");
 
@@ -111,7 +111,7 @@ namespace Dynamo.Tests
             // For s1, none is in its scope 
 
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices);
+                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices, CurrentDynamoModel.CurrentWorkspace.ElementResolver);
 
             var cbn1 = createCbn("n1;");
 
@@ -147,7 +147,7 @@ namespace Dynamo.Tests
             // 
             // For s1, n3, n4 are in its scope
             Func<string, CodeBlockNodeModel> createCbn =
-                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices);
+                s => new CodeBlockNodeModel(s, 0, 0, CurrentDynamoModel.LibraryServices, CurrentDynamoModel.CurrentWorkspace.ElementResolver);
 
             var cbn1 = createCbn("n1;");
 

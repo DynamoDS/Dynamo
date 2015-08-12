@@ -86,6 +86,7 @@
     </Compile>
     <Compile Include="CustomNodeTests.cs" />
     <Compile Include="DateTimeTests.cs" />
+    <Compile Include="ElementResolverTests.cs" />
     <Compile Include="NodeToCodeTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
