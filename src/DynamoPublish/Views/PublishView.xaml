@@ -218,8 +218,8 @@
                     Grid.Row="1"
                     Grid.Column="2"
                     Width="100"
-                    Height="30"
                     Style="{StaticResource SBadgeButton}"
+                    VerticalContentAlignment="Center"
                     Click="OnButtonCopyLinkClick" />
 
         </Grid>
