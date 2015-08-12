@@ -291,6 +291,12 @@ namespace Dynamo.Publish.Models
             }
             return result;
         }
+
+        internal void ClearState()
+        {
+            State = UploadState.Uninitialized;
+            Error = UploadErrorType.None;
+        }
     }
 
 }
