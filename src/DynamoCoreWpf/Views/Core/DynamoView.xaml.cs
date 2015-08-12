@@ -419,6 +419,7 @@ namespace Dynamo.Controls
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestPresetNamePrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt += DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
@@ -833,6 +834,11 @@ namespace Dynamo.Controls
             ShowNewPresetDialog(e);
         }
 
+        void DynamoViewModelRequestPresetWarningPrompt()
+        {
+            ShowPresetWarning();
+        }
+
         /// <summary>
         /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
         /// a preset name/timestamp and description.
@@ -877,6 +883,19 @@ namespace Dynamo.Controls
             } while (!error.Equals(""));
 
             e.Success = true;
+        }
+
+        private void ShowPresetWarning()
+        {
+            var newDialog = new  PresetOverwritePrompt()
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Text =  Wpf.Properties.Resources.PresetWarningMessage,
+                IsCancelButtonVisible = Visibility.Collapsed
+            };
+
+            newDialog.ShowDialog();
         }
         
         private bool PerformShutdownSequenceOnViewModel()
@@ -943,6 +962,7 @@ namespace Dynamo.Controls
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestPresetNamePrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt -= DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
@@ -991,7 +1011,16 @@ namespace Dynamo.Controls
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            if (e.Key == Key.Escape && dynamoViewModel.WatchEscapeIsDown)
+            {
+                dynamoViewModel.WatchEscapeIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+            }
+        }
+
+        void DynamoView_LostFocus(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.WatchEscapeIsDown)
             {
                 dynamoViewModel.WatchEscapeIsDown = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
@@ -1067,7 +1096,7 @@ namespace Dynamo.Controls
         {
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
-            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.Guid));
+            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.GUID));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)
@@ -1075,7 +1104,7 @@ namespace Dynamo.Controls
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
-            dynamoViewModel.Model.CurrentWorkspace.RemovePreset(state); 
+            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(state.GUID));
             //This is to remove the PATH (>) indicator from the preset submenu header
             //if there are no presets.
             dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();                       

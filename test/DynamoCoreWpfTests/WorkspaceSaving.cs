@@ -466,6 +466,26 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanSaveAndReadWorkspaceDescription()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+
+            // set description
+            dynamoModel.CurrentWorkspace.Description = "dummy description";
+
+            // save
+            var newPath = GetNewFileNameOnTempPath("dyn");
+            ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+
+            // load
+            ViewModel.Model.OpenFileFromPath(newPath);
+            Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CustomNodeWorkspaceHasUnsavedChangesPropertyIsSetOnSaveAs()
         {
             // open file

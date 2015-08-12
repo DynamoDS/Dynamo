@@ -1,0 +1,13 @@
+<Workspace Version="0.8.2.1957" X="-1683.10994336906" Y="-481.728832457354" zoom="0.594626036985819" Name="Home" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="62ab41ba-f9da-4b39-878c-ec71ffd39e21" type="Dynamo.Nodes.DSFunction" nickname="DayOfWeek.Friday" x="3251.78063067825" y="1310.25270680959" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.DayOfWeek.Friday" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

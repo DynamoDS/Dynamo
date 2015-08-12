@@ -132,21 +132,23 @@ namespace Dynamo.Core
             return Enumerable.Empty<AnnotationModel>();
         }
 
-        public static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph ,ILogger logger)
+        public static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph)
         {
             XmlNodeList PresetsNodes = xmlDoc.GetElementsByTagName("Presets");
             XmlNode presetlist = PresetsNodes[0];
             if (presetlist != null)
             {
                 return from XmlElement stateNode in presetlist.ChildNodes
-                       select PresetFromXml(stateNode, nodesInNodeGraph, logger);
+                       select PresetFromXml(stateNode, nodesInNodeGraph);
             }
             return Enumerable.Empty<PresetModel>();
         }
 
-        private static PresetModel PresetFromXml(XmlElement stateNode, IEnumerable<NodeModel> nodesInNodeGraph, ILogger logger)
+        private static PresetModel PresetFromXml(XmlElement stateNode, IEnumerable<NodeModel> nodesInNodeGraph)
         {
-            return PresetModel.LoadFromXml(stateNode, nodesInNodeGraph, logger);
+            var instance = new PresetModel(nodesInNodeGraph);
+            instance.Deserialize(stateNode, SaveContext.File);
+            return instance;
         }
 
         private static ElementResolver LoadElementResolverFromXml(XmlDocument xmlDoc)
@@ -186,7 +188,7 @@ namespace Dynamo.Core
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
             var annotations = LoadAnnotationsFromXml(xmlDoc, nodes, notes).ToList();
-            var presets = LoadPresetsFromXml(xmlDoc,nodes,nodeFactory.AsLogger()).ToList();
+            var presets = LoadPresetsFromXml(xmlDoc,nodes).ToList();
 
             return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations = annotations, Presets = presets, ElementResolver = elementResolver };
         }

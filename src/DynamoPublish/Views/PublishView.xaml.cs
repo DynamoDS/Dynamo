@@ -3,8 +3,10 @@ using Dynamo.Wpf.Authentication;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -24,9 +26,15 @@ namespace Dynamo.Publish.Views
     {
         public PublishView(PublishViewModel viewModel)
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
             InitializeComponent();
             DataContext = viewModel;
             viewModel.UIDispatcher = Dispatcher;
+        }
+
+        private void OnButtonCopyLinkClick(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(textBoxShareLink.Text);
         }
     }
 }

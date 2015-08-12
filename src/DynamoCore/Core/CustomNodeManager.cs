@@ -377,7 +377,10 @@ namespace Dynamo.Core
 
         public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
         {
-            return TryGetFunctionWorkspace(id, isTestMode, out ws);
+            CustomNodeWorkspaceModel workSpace;
+            var result = TryGetFunctionWorkspace(id, isTestMode, out workSpace);
+            ws = workSpace;
+            return result;
         }
 
         /// <summary>
@@ -897,7 +900,10 @@ namespace Dynamo.Core
                     group.SelectedModels = group.DeletedModelBases;
                     newAnnotations.Add(group);
                 }
-
+                
+                // Now all selected nodes already moved to custom workspace,
+                // clear the selection.
+                DynamoSelection.Instance.ClearSelection();
 
                 foreach (var conn in fullySelectedConns)
                 {
@@ -1143,7 +1149,7 @@ namespace Dynamo.Core
                 {
                     undoRecorder.RecordCreationForUndo(connector);
                 }
-            }
+            } 
             return newWorkspace;
         }
 

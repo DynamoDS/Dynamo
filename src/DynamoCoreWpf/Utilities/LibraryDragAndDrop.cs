@@ -27,6 +27,12 @@ namespace Dynamo.Wpf.Utilities
             nodeViewModel = node;
         }
 
+        internal void Clear()
+        {
+            startPosition = new Point();
+            nodeViewModel = null;
+        } 
+
         internal void HandleMouseMove(FrameworkElement sender, Point currentPosition)
         {
             if (isDragging || nodeViewModel == null)

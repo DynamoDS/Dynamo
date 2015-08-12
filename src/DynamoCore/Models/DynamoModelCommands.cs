@@ -377,7 +377,9 @@ namespace Dynamo.Models
 
         void CreatePresetStateImpl(AddPresetCommand command)
         {
-            this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.ModelGuids);
+            var preset = this.CurrentWorkspace.AddPreset(command.PresetStateName,command.PresetStateDescription,command.ModelGuids);
+
+            CurrentWorkspace.RecordCreatedModel(preset);
         }
         void SetWorkSpaceToStateImpl(ApplyPresetCommand command)
         {
@@ -386,7 +388,7 @@ namespace Dynamo.Models
             {
                 return;
             }
-            var state = workspaceToSet.Presets.Where(x => x.Guid == command.StateID).FirstOrDefault();
+            var state = workspaceToSet.Presets.Where(x => x.GUID == command.StateID).FirstOrDefault();
 
             workspaceToSet.ApplyPreset (state);
         }
