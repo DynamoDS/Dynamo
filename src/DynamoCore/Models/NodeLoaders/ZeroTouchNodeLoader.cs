@@ -51,11 +51,8 @@ namespace Dynamo.Models.NodeLoaders
                     function = hintedSigniture;
 
                     // if the node needs additional parameters, add them here
-                    if (libraryServices.FunctionSignatureNeedsAdditionalAttributes(xmlSignature))
-                        libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
-
-                    if (libraryServices.FunctionSignatureNeedsAdditionalElements(xmlSignature))
-                        libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
+                    libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
+                    libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
                 }
                 else
                 {
