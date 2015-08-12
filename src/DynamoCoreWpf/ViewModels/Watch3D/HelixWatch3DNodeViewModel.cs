@@ -79,10 +79,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             base.OnNodePropertyChanged(sender, e);
         }
 
-        protected override void OnRenderPackagesUpdated(Guid nodeGuid,
+        protected override void OnRenderPackagesUpdated(NodeModel node,
             IEnumerable<IRenderPackage> renderPackages)
         {
-            var updatedNode = model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == nodeGuid);
+            var updatedNode = model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
             if (updatedNode == null) return;
 
             var visibleUpstream = new List<NodeModel>();
@@ -93,7 +93,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
             }
 
-            base.OnRenderPackagesUpdated(nodeGuid, renderPackages);
+            base.OnRenderPackagesUpdated(node, renderPackages);
         }
     }
 }

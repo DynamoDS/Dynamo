@@ -4,11 +4,11 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Interfaces
 {
-    public interface IRenderPackageSource
+    public interface IRenderPackageSource<T>
     {
         /// <summary>
         /// An event raised then the source has updated IRenderPackages.
         /// </summary>
-        event Action<Guid, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+        event Action<T, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
     }
 }
