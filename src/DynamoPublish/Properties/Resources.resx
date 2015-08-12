@@ -192,4 +192,10 @@
   <data name="WorkspacesSendSucceededServerResponse" xml:space="preserve">
     <value>/customize-[0-9,a-z]*</value>
   </data>
+  <data name="ManageButtonTitle" xml:space="preserve">
+    <value>Manage Customizers...</value>
+  </data>
+  <data name="ManagerErrorMessage" xml:space="preserve">
+    <value>"Manager" is not set. Please, set manager in configuration file.</value>
+  </data>
 </root>

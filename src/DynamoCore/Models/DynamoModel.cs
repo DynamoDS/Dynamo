@@ -859,8 +859,11 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(dummyData.Type);
             NodeFactory.AddAlsoKnownAs(dummyData.Type, dummyData.AlsoKnownAs);
 
-            NodeFactory.AddTypeFactoryAndLoader(symbolData.Type);
+            var inputLoader = new InputNodeLoader();
+            NodeFactory.AddLoader(symbolData.Type, inputLoader);
+            NodeFactory.AddFactory(symbolData.Type, inputLoader);
             NodeFactory.AddAlsoKnownAs(symbolData.Type, symbolData.AlsoKnownAs);
+
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
@@ -1217,6 +1220,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
                 nodeGraph.Presets,
+                nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
@@ -1482,8 +1486,11 @@ namespace Dynamo.Models
             {
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
                     AddWorkspace(customNodeWorkspace);
+
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
             }
+
             return false;
         }
 
@@ -1584,12 +1591,12 @@ namespace Dynamo.Models
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
                     var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices);
+                    newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices, CurrentWorkspace.ElementResolver);
                 }
                 else
                 {
                     var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
-                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy);
+                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, CurrentWorkspace.ElementResolver);
                 }
 
                 var lacing = node.ArgumentLacing.ToString();

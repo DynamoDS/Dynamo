@@ -133,6 +133,24 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Customizers....
+        /// </summary>
+        public static string ManageButtonTitle {
+            get {
+                return ResourceManager.GetString("ManageButtonTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Manager&quot; is not set. Please, set manager in configuration file..
+        /// </summary>
+        public static string ManagerErrorMessage {
+            get {
+                return ResourceManager.GetString("ManagerErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;Page&quot; is not set. set. Please, set server page in configuration file..
         /// </summary>
         public static string PageErrorMessage {
