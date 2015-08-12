@@ -257,32 +257,6 @@ namespace Dynamo.Utilities
 
             return locationMap.OrderBy(p => p.Value);
         }
-
-        public static IDictionary<string, KeyValuePair<string, string>> DeserializeElementResolver(
-            XmlElement nodeElement)
-        {
-            var xmlDoc = nodeElement.OwnerDocument;
-            Debug.Assert(xmlDoc != null);
-
-            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
-
-            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
-            if (nodes.Count > 0)
-            {
-                foreach (XmlNode child in nodes[0].ChildNodes)
-                {
-                    if (child.Attributes != null)
-                    {
-                        XmlAttribute pName = child.Attributes["partialName"];
-                        XmlAttribute rName = child.Attributes["resolvedName"];
-                        XmlAttribute aName = child.Attributes["assemblyName"];
-                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
-                        resolutionMap.Add(pName.Value, kvp);
-                    }
-                }
-            }
-            return resolutionMap;
-        }
     }
 
     /// <summary>

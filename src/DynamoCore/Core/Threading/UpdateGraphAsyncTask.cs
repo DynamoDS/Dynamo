@@ -112,6 +112,14 @@ namespace Dynamo.Core.Threading
             // Comparing to another UpdateGraphAsyncTask, verify 
             // that they are updating a similar set of nodes.
 
+            if ((graphSyncData != null && 
+                graphSyncData.DeletedSubtrees != null && 
+                graphSyncData.DeletedSubtrees.Any()) ||
+                (theOtherTask.graphSyncData != null &&
+                 theOtherTask.graphSyncData.DeletedSubtrees != null && 
+                 theOtherTask.graphSyncData.DeletedSubtrees.Any()))
+                return TaskMergeInstruction.KeepBoth;
+
             // Other node is either equal or a superset of this task
             if (ModifiedNodes.All(x => theOtherTask.ModifiedNodes.Contains(x)))
             {

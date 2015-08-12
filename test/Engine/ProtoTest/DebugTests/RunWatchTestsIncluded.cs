@@ -138,6 +138,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch4_class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -208,6 +209,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch5_class10()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -239,6 +241,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch6_class2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -287,6 +290,7 @@ namespace ProtoTest.DebugTests
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch7_class3()
         {
@@ -314,6 +318,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch8_class4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -347,6 +352,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch9_class5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -383,6 +389,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch10_class6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -413,6 +420,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch11_class7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -453,6 +461,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch12_class8()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -474,6 +483,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch13_class9()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -499,6 +509,7 @@ namespace ProtoTest.DebugTests
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch14_classfunctionoverload()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -707,6 +718,7 @@ b = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch23_inheritance()
         {
@@ -742,6 +754,7 @@ b = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch24_inheritance2()
         {
@@ -1007,6 +1020,7 @@ b = ++a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch33_Vector()
         {
@@ -1178,6 +1192,7 @@ b = ++a;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch50_TestAttributeOnClass()
         {
@@ -1222,6 +1237,7 @@ class Point
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch51_TestAttributeOnGlobalFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1249,6 +1265,7 @@ def foo : int()
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch52_TestAttributeOnLanguageBlock()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1276,6 +1293,7 @@ class VisibilityAttribute
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch53_TestAttributeWithLanguageBlockAndArrayExpression()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1399,6 +1417,7 @@ d = mul(a, b);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch67_T025_disposeinimperative_1464937()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1642,6 +1661,7 @@ j = n <= 100 + 1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch83_TestAttributeOnGlobalFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1672,6 +1692,7 @@ class VisibilityAttribute
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch84_TestAttributeOnLanguageBlock()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1701,6 +1722,7 @@ class VisibilityAttribute
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch85_TestAttributeWithLanguageBlockAndArrayExpression()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1917,6 +1939,7 @@ c;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch99_T05_ClassMemerVarAsFunctionPointer()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1941,6 +1964,7 @@ c = a.x(2, 4.0);	//c = 6.0";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch100_T05_ClassMemerVarAsFunctionPointerDefaultArg()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1964,6 +1988,7 @@ b = a.x(3);	//b=5.0;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch101_T06_ClassMemerVarAsFunctionPointerAssocBlk()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -1994,6 +2019,7 @@ c;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch102_T07_ClassMemerVarAsFunctionPointerImperBlk()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -2074,6 +2100,7 @@ a = foo + 2;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch111_T16_NegativeTest_UsingMemFunctionAsFunctionPtr()
         {
@@ -2148,6 +2175,7 @@ c = foo1(a, 3);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch115_T20_FunctionPtrUpdateOnMemVar_1()
         {
@@ -2171,6 +2199,7 @@ b = a.x(3);    //b = 3";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch116_T21_FunctionPtrUpdateOnMemVar_2()
         {
@@ -2196,6 +2225,7 @@ a.x = foo2; //b = 5.0";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch117_DisposeVerify()
         {
@@ -2224,6 +2254,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch118_T01_TestGCArray()
         {
@@ -2257,6 +2288,7 @@ v3 = DisposeVerify.x; // 6
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch119_T02_TestGCEndofIfBlk()
         {
@@ -2279,6 +2311,7 @@ v = DisposeVerify.x; // 3";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch120_T03_TestGCEndofLangBlk()
         {
@@ -2304,6 +2337,7 @@ v2 = DisposeVerify.x; // 3";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch121_T04_TestGCReturnFromLangBlk()
         {
@@ -2329,6 +2363,7 @@ v2 = DisposeVerify.x; // 2";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch122_T05_TestGCReturnFromFunction()
         {
@@ -2356,6 +2391,7 @@ v2 = DisposeVerify.x; // 4
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch123_T06_TestGCEndofWhileBlk()
         {
@@ -2392,6 +2428,7 @@ v3 = DisposeVerify.x; // 7
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch124_T07_TestGCEndofForBlk()
         {
@@ -2427,6 +2464,7 @@ v3 = DisposeVerify.x; // 7
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch125_T08_TestGCArray02()
         {
@@ -2470,6 +2508,7 @@ v7 = DisposeVerify.x; // 7
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch126_T09_TestGCPassingArguments()
         {
@@ -2503,6 +2542,7 @@ v6 = DisposeVerify.x; // 9";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch127_T10_TestGCReturnArguments()
         {
@@ -2528,6 +2568,7 @@ v2 = DisposeVerify.x; // 4
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch128_T11_TestGCLangBlkInFunction()
         {
@@ -2553,6 +2594,7 @@ v1 = DisposeVerify.x; // 2
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch129_T12_TestGCIfElseInFunction()
         {
@@ -2589,6 +2631,7 @@ v2 = DisposeVerify.x; // 4";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch130_T13_GCTestComplexCase()
         {
@@ -2775,6 +2818,7 @@ e;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch144_T11_TestInClassScope()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3330,6 +3374,7 @@ d;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch181_T48_MultipleAssignments()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3435,6 +3480,7 @@ y = x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch189_T001_Associative_Class_Property_Int()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3470,6 +3516,7 @@ y = x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch190_T002_Associative_Class_Property_Double()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3505,6 +3552,7 @@ y = x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch191_T003_Associative_Class_Property_Bool()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3530,6 +3578,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch192_T004_Associative_Class_Property_DefaultInitialization()
         {
@@ -3558,6 +3607,7 @@ y = x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch193_T005_Associative_Class_Property_Get_InternalClassFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3605,6 +3655,7 @@ y = x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch194_T006_Associative_Class_Property_UseInsideInternalClassFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3637,6 +3688,7 @@ y = x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch195_T007_Associative_Class_Property_CallFromFunctionOutsideClass()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3684,6 +3736,7 @@ y = x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch196_T008_Associative_Class_Property_CallFromAnotherExternalClass()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3724,6 +3777,7 @@ zPosition = myPoint.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch197_T009_Associative_Class_Property_AssignInDifferentNamedConstructors()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3777,6 +3831,7 @@ zPosition = myPoint.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch198_T010_Associative_Class_Constructor_Overloads()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3816,6 +3871,7 @@ zPosition = myPoint.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch199_T011_Associative_Class_Property_ExtendedClass()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3861,6 +3917,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch200_T012_Associative_Class_Property_Var()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3891,6 +3948,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch201_T013_Associative_Class_Property_GetFromAnotherConstructorInSameClass()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3932,6 +3990,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch202_T014_Associative_Class_Property_GetUsingMultipleReferencingWithSameName()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -3976,6 +4035,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch203_T015_Associative_Class_Property_SetInExternalFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4015,6 +4075,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch204_T016_Associative_Class_Property_SetInClassMethod()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4052,6 +4113,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch205_T017_Associative_Class_Property_SetInExternalClassMethod()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4110,6 +4172,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch206_T018_Associative_Class_Constructor_WithSameNameAndArgument_Negative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4136,6 +4199,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch207_T019_Associative_Class_Constructor_Overloads_WithSameNameAndDifferentArgumentNumber()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4169,6 +4233,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch208_T020_Associative_Class_Constructor_Overloads_WithSameNameAndDifferentArgumenType()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4202,6 +4267,7 @@ zPt1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch209_T021_Associative_Class_Constructor_UsingUserDefinedClassAsArgument()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4239,6 +4305,7 @@ class TestClass
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch210_T022_Associative_Class_Constructor_AssignUserDefineProperties()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4278,6 +4345,7 @@ class MyLine
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch211_T023_Associative_Class_Constructor_CallingAFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4308,6 +4376,7 @@ class MyPoint
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch212_T024_Associative_Class_Constructor_CallingAnImperativeFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4345,6 +4414,7 @@ p2Y = p2.Y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch213_T025_Associative_Class_Constructor_CallingAnotherConstructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4383,6 +4453,7 @@ class MyLine
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch214_T026_Associative_Class_Constructor_BaseConstructorAssignProperties()
         {
@@ -4426,6 +4497,7 @@ z = test.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch215_T027_Associative_Class_Constructor_BaseConstructorWithSameName()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4466,6 +4538,7 @@ z = test.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch216_T028_Associative_Class_Property_DefaultAssignment()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4494,6 +4567,7 @@ z = test.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch217_T029_Associative_Class_Property_AccessModifier()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4515,6 +4589,7 @@ t = a.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch218_T030_Associative_Class_Property_AccessModifier()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4540,6 +4615,7 @@ class B extends A
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch219_T031_Associative_Class_Property_AccessModifier()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4571,6 +4647,7 @@ x = b.foo();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch220_T051_Inherit_defaultconstructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4595,6 +4672,7 @@ result3 = instance.val1;//2";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch221_T052_Inherit_defaultproperty()
         {
@@ -4638,6 +4716,7 @@ x9 = a1.w4;//null
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch222_T053_Inherit_changevalue()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4688,6 +4767,7 @@ x9 = a1.w4;//{null,null}";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch223_T054_Inherit_nested()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4738,6 +4818,7 @@ x9 = a1.w4;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch224_T055_Inherit_donotchangevalue()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4780,6 +4861,7 @@ a3 = a.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch225_T056_Inherit_private()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4829,6 +4911,7 @@ a5 = a.y;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch226_T057_Inherit_private_modify()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4887,6 +4970,7 @@ b6 = b.y;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch227_T058_Inherit_private_notmodify()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4940,6 +5024,7 @@ a6 = a.y;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch228_T059_Inherit_access_privatemember()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -4998,6 +5083,7 @@ a6 = a.y;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch229_T061_Inherit_Property()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5047,6 +5133,7 @@ xPoint3 = derivedpoint.D;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch230_T062_Inherit_classAsArgument()
         {
@@ -5108,6 +5195,7 @@ class derived extends TestPoint
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch231_T063_Inherit_classAsArgument_callinfunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5163,6 +5251,7 @@ def modify(oldPoint : TestPoint)
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch232_T064_Inherit_classAsArgument_callinfunction_negative()
         {
@@ -5222,6 +5311,7 @@ def modify(oldPoint : TestPoint)
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch233_T065_Inherit_constructor_withoutbase()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5269,6 +5359,7 @@ xPoint3 = derivedpoint.D;//7";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch234_T066_Inherit_constructor_failing_witbase()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5302,6 +5393,7 @@ b2 = b1.y;//10
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch235_T067_Inherit_propertynotassignedinbase()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5335,6 +5427,7 @@ b2 = b1.y;//10
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch236_T068_Inherit_propertyassignedinherited()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5368,6 +5461,7 @@ b3 = b1.x;//10
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch237_T069_Inherit_constructor_failing_both()
         {
@@ -5402,6 +5496,7 @@ b2 = b1.y;//null
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch238_T070_Inherit_constructor_failing_inherited()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5436,6 +5531,7 @@ b3=b1.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch239_T071_Inherit_constructor_failing_inherited_sameproperty()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5470,6 +5566,7 @@ b3=b1.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch240_T072_inherit_Class_Constructor_CallingAFunction()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5508,6 +5605,7 @@ pY = p.Y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch241_T073inherit_Constructor_WithSameNameAndDifferentArgumenType()
         {
@@ -5554,6 +5652,7 @@ test2 = myClass.Create (true, false);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch242_T074_Inherit_property_array()
         {
@@ -5584,6 +5683,7 @@ x1 = a1.y;//null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch243_T075_Inherit_property_array_modify()
         {
@@ -5615,6 +5715,7 @@ x1 = a1.y;//null
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch244_T076_Inherit_property_array_modifyanitem()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5645,6 +5746,7 @@ x1 = a1.y;//null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch245_T077_Inherit_property_thatdoesnotexist()
         {
@@ -5676,6 +5778,7 @@ x1 = a1.z;//null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch246_T078_Inherit_property_singletonconvertedtoarray()
         {
@@ -5706,6 +5809,7 @@ x1 = a1.y;//null
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch247_Z001_Associative_Class_Property_Regress001()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5757,6 +5861,7 @@ sp_x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch248_Z002_Associative_Class_Property_Regress_1454056()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5788,6 +5893,7 @@ val;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch249_Z003_Associative_Class_Property_Regress_1454164()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5809,6 +5915,7 @@ val;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch250_Z004_Associative_Class_Property_Regress_1454138()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5860,6 +5967,7 @@ test4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch251_Z005_Associative_Class_Property_Regress_1454178()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5914,6 +6022,7 @@ sum;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch252_Z006_Associative_Class_Property_Regress_1453886()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5957,6 +6066,7 @@ one;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch253_Z007_Associative_Class_Property_Regress_1454172()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -5998,6 +6108,7 @@ sum;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch254_Z008_Associative_Class_Property_Regress_1454161()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6037,6 +6148,7 @@ h3;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch255_Z009_Associative_Class_Property_Regress_1453891()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6100,6 +6212,7 @@ l_startPoint_X = l.get_StartPoint().get_X();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch256_Z010_Associative_Class_Property_Regress_1454658()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6157,6 +6270,7 @@ class Transform
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch257_Z011_Associative_Class_Property_Regress_1454162()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6210,6 +6324,7 @@ class Transform
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch258_Z012_Access_Class_Property_From_If_Block_In_Class_Method_Regress_1456397()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6249,6 +6364,7 @@ b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch259_Z013_Defect_1457038()
         {
@@ -6294,6 +6410,7 @@ d;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch260_Z014_Defect_1457057()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6373,6 +6490,7 @@ numpts = bcurve.numPts;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch261_Z015_Defect_1457029()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6396,6 +6514,7 @@ x = c1.Pt;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch262_Z015_Defect_1457029_2()
         {
@@ -6421,6 +6540,7 @@ x = c.Pt;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch263_Z016_Defect_1456771()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6465,6 +6585,7 @@ t2 = b1.foo1(1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch264_Z017_Defect_1456898()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6537,6 +6658,7 @@ b1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch266_Z018_Defect_1456798()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6564,6 +6686,7 @@ b2 = a1.add();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch267_Z018_Defect_1456798_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6600,6 +6723,7 @@ a2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch268_Z018_Defect_1456798_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6630,6 +6754,7 @@ a2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch269_Z019_Defect_1457053()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6673,6 +6798,7 @@ b6 = a3.add();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch270_Z020_Defect_1457290()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6699,6 +6825,7 @@ a2 = a1.foo();";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch271_Z020_Defect_1457290_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6729,6 +6856,7 @@ a2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch272_Z021_Defect_1458785()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6778,6 +6906,7 @@ z11 = 2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch273_Z021_Defect_1458785_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6804,6 +6933,7 @@ a6 = 3;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch274_Z021_Defect_1458785_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6843,6 +6973,7 @@ test5= test1.testmethod();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch275_Z021_Defect_1458785_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6886,6 +7017,7 @@ a4 = a.y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch276_Z021_Defect_1458785_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6914,6 +7046,7 @@ a2 = a1.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch277_Z022_Defect_1455292()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6959,6 +7092,7 @@ dummy = intpt.x;    // i was expecting 100 here
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch278_Z022_Defect_1455292_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -6993,6 +7127,7 @@ yy = p.y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch279_Z022_Defect_1455292_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7049,6 +7184,7 @@ t = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch280_Z023_Defect_1455131()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7104,6 +7240,7 @@ t = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch281_Z023_Defect_1455131_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7176,6 +7313,7 @@ t = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch282_Z024_Defect_1461133()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7200,6 +7338,7 @@ a = 2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch283_Z024_Defect_1461133_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7225,6 +7364,7 @@ test = a1.foo( a2 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch284_Z025_Defect_1459626()
         {
@@ -7281,6 +7421,7 @@ t2 = t.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch285_Z026_Defect_1458563()
         {
@@ -7304,6 +7445,7 @@ t1 = a.x1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch286_Z026_Defect_1458563_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7364,6 +7506,7 @@ p7 = t7;//a.x7;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch288_Z028_Same_Name_Constructor_And_Method_Negative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7387,6 +7530,7 @@ b = a.A();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch289_Z029_Calling_Class_Constructor_From_Instance_Negative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7836,6 +7980,7 @@ result;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch312_Z002_Defect_1461399()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7866,6 +8011,7 @@ test=CurveProperties(null);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch313_Z002_Defect_1461399_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7934,6 +8080,7 @@ a = function1({null,null});
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch316_T002_Inline_Using_Math_Lib_Functions()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -7984,6 +8131,7 @@ a = function1({null,null});
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch318_T004_Inline_Inside_Class_Constructor_and_replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8414,6 +8562,7 @@ list13 = false || list2; // { true, true, false, false, false }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch337_T09_Pass_1_single_list_of_class_type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8455,6 +8604,7 @@ list2_2_x = list2[2].x; // 7";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch338_T10_Pass_2_Lists_Different_Length_2_Integers()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8490,6 +8640,7 @@ pointList_9_x = pointList[9].GetValue(); // 184";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch339_T11_Pass_2_lists_of_class_type_same_length_and_1_variable_of_class_type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8531,6 +8682,7 @@ list_2_z = list[2].z; // 4
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch340_T12_Pass_2_Lists_Same_Length_1_Integer()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8562,6 +8714,7 @@ pointList_9_x = pointList[9].GetValue(); // 129";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch341_T13_Pass_3_Lists_Different_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8594,6 +8747,7 @@ pointList_5_x = pointList[5].GetValue(); // 52";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch342_T14_Pass_3_Lists_Same_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8626,6 +8780,7 @@ pointList_9_x = pointList[9].GetValue(); // 60";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch343_T15_Pass_a_3x3_and_2x4_lists()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8661,6 +8816,7 @@ list2_1_2 = list3[1][2].GetValue(); // 9
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch344_T16_Pass_a_3x3_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8690,6 +8846,7 @@ list2_2_2 = list2[2][2].GetValue(); // 9
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch345_T17_Pass_ConstructorCall_Return_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8731,6 +8888,7 @@ list2_4 = list2[4].GetIndexX(); // 25
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch346_T18_Pass_ConstructorCall_Return_List_to_Function()
         {
@@ -8756,6 +8914,7 @@ list2 = GetPointIndex(Point_1D.ValueCtor(list1)); // { 1, 2, 3, 4, 5, 6 }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch347_T19_Pass_FunctionCall_Return_List()
         {
@@ -8789,6 +8948,7 @@ list2_4 = list2[4].GetIndex(); // 390625";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch348_T20_Pass_Single_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8815,6 +8975,7 @@ pointList_9_x = pointList[9].GetValue(); // 100";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch349_T21_Pass_Single_List_2_Integer()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8844,6 +9005,7 @@ pointList_9_x = pointList[9].GetValue(); // 164";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch350_T22_Pass_1_single_list_of_class_type_and_1_variable_of_class_type()
         {
@@ -8874,6 +9036,7 @@ m = i.Mul(list, i); // { 16, 20, 28 }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch351_T23_Pass_2_lists_of_class_type_with_different_length()
         {
@@ -8910,6 +9073,7 @@ m = i.Mul(list1, list2); // { 8, 20 }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch352_T24_Pass_3x3_List_And_2x4_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8938,6 +9102,7 @@ list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch353_T25_Pass_3_List_Different_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8966,6 +9131,7 @@ list4 = m.Div(list1, list2, list3); // { 1.5,3.0,4.5,6.0,7.5} }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch354_T26_Pass_3_List_Different_Length_2_Integers()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -8994,6 +9160,7 @@ listX2 = m.Div(list1, list2, list3, 15, 25); // { 25, 25, 26, 27, 28 }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch355_T27_Pass_3_List_Same_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9022,6 +9189,7 @@ list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336,
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch356_T28_Pass_3_List_Same_Length_2_Integers()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9050,6 +9218,7 @@ list2 = m.Div(list1, list2, list3, 15, 25);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch357_T29_Pass_FunctionCall_Reutrn_List001()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9076,6 +9245,7 @@ list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch358_T30_Pass_FunctionCall_Reutrn_List002()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9106,6 +9276,7 @@ list2 = m.Mul(foo(list1));  // { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch359_T31_Pass_FunctionCall_Reutrn_List003()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9136,6 +9307,7 @@ list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 81
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch360_T32_Pass_Single_3x3_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9162,6 +9334,7 @@ list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch361_T33_Pass_Single_List()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9188,6 +9361,7 @@ list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch362_T34_Pass_Single_List_2_Integers()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9214,6 +9388,7 @@ list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch363_T35_Pass_1_list_of_class_type_and_1_variable_of_class_type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9260,6 +9435,7 @@ list3_2_z = list3[2].GetCoor(3); // 19
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch364_T36_Pass_1_single_list_of_class_type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9290,6 +9466,7 @@ list2 = Square(list); // { 4, 9, 16, 25 }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch365_T37_Pass_2_lists_of_class_type_different_length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9338,6 +9515,7 @@ list3_1_y = list3[1].GetCoor(2); // 25
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch366_T38_Pass_2_lists_of_class_type_different_length_and_1_integer()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9371,6 +9549,7 @@ list3 = Sum(list1, list2, 10); // { 15, 21, 27 }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch367_T39_Pass_2_lists_of_class_type_same_length_and_1_variable_of_class_type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9403,6 +9582,7 @@ list3 = Sum(list1, list2, Integer.ValueCtor(10)); // { 15, 21, 27 }";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch368_T40_Pass_2_List_of_class_type_Same_Length()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -9599,6 +9779,7 @@ list2 = foo(list1, 34, 18); // { 16, 50, 84, 118, 152, 186, 220, 254, 288, 322 }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch378_T50_Defect_1456738_Replication_Race_Condition()
         {
@@ -9899,6 +10080,7 @@ b = b + 0.1; // updates the source member of the collection";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch392_T006_Update_In_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10004,6 +10186,7 @@ line_0 = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch393_T007_Update_In_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10086,6 +10269,7 @@ a 		= a.incrementRadius(0.2); 						// [POINT does not updates]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch394_T008_Update_Of_Variables()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10174,6 +10358,7 @@ r1 = true;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch399_T013_Update_Of_Variables_To_User_Defined_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10198,6 +10383,7 @@ t1 = A.A();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch400_T014_Update_Of_Class_Properties()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10220,6 +10406,7 @@ c1 = b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch401_T015_Update_Of_Class_Properties()
         {
@@ -10244,6 +10431,7 @@ c1 = b1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch402_T016_Update_Of_Variable_Types()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10264,6 +10452,7 @@ x =  { A.A(1).a, A.A(2).a } ;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch403_T017_Update_Of_Class_Instances()
         {
@@ -10328,6 +10517,7 @@ a 	 = MyPoint.ByAngleRadius(5.0);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch404_T018_Update_Inside_Class_Constructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10362,6 +10552,7 @@ z = p1.addandIncr();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch405_T018_Update_Inside_Class_Constructor_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10411,6 +10602,7 @@ test = X + Y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch407_T020_Update_Inside_Class_Constructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10447,6 +10639,7 @@ a = a + 1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch408_T021_Update_Inside_Class_Constructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10487,6 +10680,7 @@ a = a + 1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch409_T022_Defect_1459905()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10506,6 +10700,7 @@ a = a.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch410_T022_Defect_1459905_2()
         {
@@ -10547,6 +10742,7 @@ a1 = a1.foo(); //works fine
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch411_T022_Defect_1459905_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10573,6 +10769,7 @@ b1 = foo(b1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch412_T022_Defect_1459905_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10610,6 +10807,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch413_T023_Defect_1459789()
         {
@@ -10644,6 +10842,7 @@ a 		  = MyPoint.ByXYcoordinates(2.0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch414_T023_Defect_1459789_10()
@@ -10690,6 +10889,7 @@ a = { { 2.0, 2.0 } => a1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch415_T023_Defect_1459789_2()
         {
@@ -10722,6 +10922,7 @@ a		  = a.incrementX(3.0);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch416_T023_Defect_1459789_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10755,6 +10956,7 @@ b1.a2[0] = b1.a2[1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch417_T023_Defect_1459789_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10789,6 +10991,7 @@ a = { { 1.0, 2} , 3 };
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch418_T023_Defect_1459789_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10829,6 +11032,7 @@ b1 = b1.create();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch419_T023_Defect_1459789_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10872,6 +11076,7 @@ b1 = b1.create();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch420_T023_Defect_1459789_7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10918,6 +11123,7 @@ test1 = b1.a2[0];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch421_T023_Defect_1459789_8()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -10968,6 +11174,7 @@ test1 = b1.a2[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch422_T023_Defect_1459789_9()
         {
@@ -11034,6 +11241,7 @@ x = a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch424_T024_Defect_1459470_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11116,6 +11324,7 @@ c = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch428_T025_Defect_1459704_2()
         {
@@ -11146,6 +11355,7 @@ a2 = foo(10);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch429_T026_Defect_1459631()
         {
@@ -11170,6 +11380,7 @@ t2 = a1.y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch430_T026_Defect_1459631_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11197,6 +11408,7 @@ t4 = a1.w;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch431_T026_Defect_1459631_3()
         {
@@ -11231,6 +11443,7 @@ t4 = a1.w;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch432_T027_Defect_1460741()
         {
@@ -11268,6 +11481,7 @@ x3 = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch433_T027_Defect_1460741_2()
         {
@@ -11348,6 +11562,7 @@ test = X + Y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch436_T030_Defect_1467236_Update_In_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11393,6 +11608,7 @@ x2 = derivedpoint.B;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch437_T030_Defect_1467236_Update_In_Class_2()
         {
@@ -11462,6 +11678,7 @@ z = a.x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch439_T031_Defect_1467491_ImportUpdate_Sub()
         {
@@ -11491,6 +11708,7 @@ a = a.New();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch440_T001_SampleTest()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11519,6 +11737,7 @@ a = a.New();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch443_T003_FFI_Tuple4_XYZH_Simple()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11607,6 +11826,7 @@ resultH = tuple1.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch444_T004_FFI_Tuple4_XYZ_Simple_WithGetMethods()
         {
@@ -11697,6 +11917,7 @@ resultH = tuple1.get_H();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch445_T005_FFI_Tuple4_ByCoordinate3_Simple()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11785,6 +12006,7 @@ result4 = tuple1.Coordinates4();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch446_T006_FFI_Tuple4_ByCoordinate4_Simple()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11873,6 +12095,7 @@ result4 = tuple1.Coordinates4();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch447_T007_FFI_Tuple4_Multiply_Simple()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -11964,6 +12187,7 @@ multiply = tuple1.Multiply(tuple2);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch448_T008_FFI_Transform_ByDate_Simple()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -12128,6 +12352,7 @@ c3_H = c3.H;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch449_T009_FFI_Transform_ByTuples_Simple()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -12295,6 +12520,7 @@ c3_H = c3.H;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch450_T010_FFI_Transform_ApplyTransform()
         {
@@ -12473,6 +12699,7 @@ h = result.H;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch451_T011_FFI_Transform_NativeMultiply()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -12661,6 +12888,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch452_T012_FFI_Transform_NativePreMultiply()
         {
@@ -12850,6 +13078,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch453_T013_FFI_Transform_TransformVector()
         {
@@ -13036,6 +13265,7 @@ resultz = resultVector.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch454_T014_FFI_Transform_TransformPoint()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13241,6 +13471,7 @@ resultz = resultPoint.Z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch455_T015_FFI_Transform_Identity()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13425,6 +13656,7 @@ r3H = r3.H;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch456_T016_FFI_Transform_GetTuples()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -13617,6 +13849,7 @@ r3H = r3.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch457_T017_FFI_Transform_GetData()
         {
@@ -14028,6 +14261,7 @@ e;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch474_T11_TestInClassScope()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -14692,6 +14926,7 @@ _c;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch510_T48_MultipleAssignments()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -14793,6 +15028,7 @@ d;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch515_T53_Defect_1454691()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -14839,6 +15075,7 @@ b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch516_T54_Defect_1454691()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -14910,6 +15147,7 @@ c=[Associative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch517_T55_Defect_1454691()
         {
@@ -14976,6 +15214,7 @@ y4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch518_T56_Defect_1454691()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -15013,6 +15252,7 @@ b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch519_T57_Defect_1454691_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -15052,6 +15292,7 @@ x2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch520_T58_Defect_1454691_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -16473,6 +16714,7 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch592_T39_Defect_1452951_2()
         {
@@ -16521,6 +16763,7 @@ a4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch593_T39_Defect_1452951_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -16660,6 +16903,7 @@ p8 = y[1][1][1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch596_T42_Create_3_Dim_Collection_Using_For_Loop_In_Class_Constructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -16717,6 +16961,7 @@ p8 = y[1][1][1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch597_T43_Create_3_Dim_Collection_Using_For_Loop_In_Class_Method()
         {
@@ -16780,6 +17025,7 @@ p8 = y[1][1][1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch598_T43_Create_CollectioninForLoop_1457172()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -16833,6 +17079,7 @@ p8 = y[2][2];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch599_T43_Create_CollectioninForLoop_1457172_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -16909,6 +17156,7 @@ for (i in (0..10)) {
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch601_T45_Defect_1458284()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -17398,6 +17646,7 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch613_T12_TestIfElseUsingClassProperty()
         {
@@ -18436,6 +18685,7 @@ c;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch657_T56_Defect_1460162()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -18676,6 +18926,7 @@ test = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch665_T60_Comparing_Class_Properties()
         {
@@ -18716,6 +18967,7 @@ x2 = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch666_T60_Comparing_Class_Properties_With_Null()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -18742,6 +18994,7 @@ x1 = a1.a == B.B(10).a ? true : false ;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch667_T61_Accessing_non_existent_properties_of_array_elements()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19012,6 +19265,7 @@ h;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch679_T011_Inline_Using_Variables()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19056,6 +19310,7 @@ temp;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch680_T012_Inline_Using_Fun_Calls()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19093,6 +19348,7 @@ x7 = power(f) >= power(i) ? power(1) : power(0);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch681_T013_Inline_Using_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19183,6 +19439,7 @@ c1;c2;c3;c4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch683_T015_Inline_In_Class_Scope()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19344,6 +19601,7 @@ a3 = 1 > 2 ? true : b;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch690_T01_TestVariousTypes()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19861,6 +20119,7 @@ x = test();";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch713_T22_Defect_1463683_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -19908,6 +20167,7 @@ y;y1;y2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch714_T22_Defect_1463683_3()
         {
@@ -20023,6 +20283,7 @@ x2 = test(0);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch720_T80580_BuiltinFunc_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20644,6 +20905,7 @@ setUnion = SetUnion(other1Dcollection, one1Dcollection); ";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch755_T80580_BuiltinFunc_1()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -20764,6 +21026,7 @@ t15 = test.testNormalizeDepth();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch756_T80581_BuiltinFunc_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -21039,6 +21302,7 @@ result = foo(b);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch764_T005_SomeNulls_Class()
         {
@@ -21427,6 +21691,7 @@ result = foo(b);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch778_T016_CountTrue_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -21747,6 +22012,7 @@ result = foo(b);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch791_T027_CountFalse_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -22064,6 +22330,7 @@ result = {foo(AllFalse(a1)),foo(AllFalse(a2)),foo(AllFalse(a3))};//true,true,fal
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch804_T038_AllFalse_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -22388,6 +22655,7 @@ result = foo(c);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch818_T050_Sum_Class()
         {
@@ -22660,6 +22928,7 @@ result = {foo(a),foo(b)};";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch831_T062_Average_Class()
         {
@@ -22763,6 +23032,7 @@ r2 = Print(arr2);";
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch837_T068_Abs_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -22817,7 +23087,8 @@ t7 = foo(2);
         }
 
         [Test]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch838_T068_Cosh_2()
         {
@@ -22873,7 +23144,8 @@ t7 = foo(2);
         }
 
         [Test]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch839_T068_DivRem_2()
         {
@@ -22934,6 +23206,7 @@ t7 = foo();
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch840_T068_Factorial_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -22991,6 +23264,7 @@ t8 = Math.Factorial(arr);
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch841_T068_IEEERemainder_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23047,6 +23321,7 @@ t7 = foo();
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch842_T068_Max_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23103,6 +23378,7 @@ t8 = 0;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch843_T068_Min_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23158,7 +23434,8 @@ t8 = 0;
         }
 
         [Test]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch844_T068_Pow_2()
         {
@@ -23215,7 +23492,8 @@ t8 = 0;
         }
 
         [Test]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch845_T068_Round_2()
         {
@@ -23274,6 +23552,7 @@ t8 = 0;
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch846_T068_Sign_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23330,6 +23609,7 @@ t7 = foo(-2);
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch847_T068_Sinh_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23395,6 +23675,7 @@ b = Average(a);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch849_T01_Class_In_Various_Scopes()
         {
@@ -23427,6 +23708,7 @@ getX2 = obj2.x;	";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch850_T02_Class_In_Various_Nested_Scopes()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23464,6 +23746,7 @@ c2 = [Associative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch851_T03_Class_In_Various_Scopes()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23500,6 +23783,7 @@ c2 = [Associative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch852_T04_Class_Properties()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23540,6 +23824,7 @@ t6 = t5[0].y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch853_T05_Class_Properties()
         {
@@ -23581,6 +23866,7 @@ t6 = t5[0].y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch854_T06_Class_Properties()
         {
@@ -23602,6 +23888,7 @@ t1 = a.x1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch855_T07_Class_Properties()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23622,6 +23909,7 @@ t1 = a.x1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch856_T08_Class_Properties()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23655,6 +23943,7 @@ t2 = a.x2[1].x1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch857_T09_Class_Inheritance()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -23688,6 +23977,7 @@ b3 = a1.x3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch858_T10_Class_Inheritance()
         {
@@ -23722,6 +24012,7 @@ b3 = a1.x3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch859_T11_Class_Inheritance()
         {
@@ -23772,6 +24063,7 @@ b2 = a1.foo2(1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch860_T13_Class_Default_Constructors()
         {
@@ -23802,6 +24094,7 @@ p1 = a1.p;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch861_T14_Class_Named_Constructors()
         {
@@ -23843,6 +24136,7 @@ x3 = xx[2].x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch862_T15_Class_Constructor_Negative()
         {
@@ -23873,6 +24167,7 @@ x2 = 3;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch864_T17_Class_Constructor_Negative()
         {
@@ -23907,6 +24202,7 @@ a1 = A.A(b1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch865_T18_Class_Constructor_Empty()
         {
@@ -23931,6 +24227,7 @@ x3 = a1.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch866_T19_Class_Constructor_Test_Default_Property_Values()
         {
@@ -23968,6 +24265,7 @@ x9 = a1.w4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch867_T20_Class_Constructor_Fails()
         {
@@ -23989,6 +24287,7 @@ b1 = a1.x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch868_T21_Class_Constructor_Calling_Base_Constructor()
         {
@@ -24030,6 +24329,7 @@ c3 = c.z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch869_T22_Class_Constructor_Not_Calling_Base_Constructor()
         {
@@ -24062,6 +24362,7 @@ c2 = c.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch870_T23_Class_Constructor_Base_Constructor_Same_Name()
         {
@@ -24124,6 +24425,7 @@ d2 = d.y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch871_T24_Class_Constructor_Calling_Base_Methods()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24160,6 +24462,7 @@ c2 = c.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch872_T25_Class_Properties_Modifiers()
         {
@@ -24199,6 +24502,7 @@ a4 = a.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch873_T26_Class_Properties_Access()
         {
@@ -24256,6 +24560,7 @@ a11;a12;a2;a3;a4;a5;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch874_T27_Class_Properties_Access()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24319,6 +24624,7 @@ aa;a2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch875_T28_Class_Properties_Access()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24406,6 +24712,7 @@ f2 = foo(a2,b2);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch876_T29_Class_Method_Chaining()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24453,6 +24760,7 @@ t1 = b1[0].x.x[1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch877_T30_Class_Property_Update_Negative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24481,6 +24789,7 @@ x3 = 3;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch878_T31_Class_By_Composition()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24542,6 +24851,7 @@ x1 = testP.X;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch880_T33_Class_Methods()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24586,6 +24896,7 @@ x6 = p1.X;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch881_T34_Class_Static_Methods()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24627,6 +24938,7 @@ x5 = 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch882_T35_Class_Method_Overloading()
         {
@@ -24680,6 +24992,7 @@ a2 = p2.add1();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch883_T36_Class_Method_Calling_Constructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24741,6 +25054,7 @@ b5 = b1.b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch884_T37_Class_Method_Using_This()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24775,6 +25089,7 @@ a3 = p1.Y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch885_T38_Class_Method_Using_This()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24809,6 +25124,7 @@ a3 = p1.Y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch886_T39_Class_Method_Returning_Collection()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24841,6 +25157,7 @@ a3 = a1[1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch887_T40_Class_Property_Initialization_With_Another_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24867,6 +25184,7 @@ t1 = p1.inner.X;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch888_T41_Test_Static_Properties()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24886,6 +25204,7 @@ t2 = A.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch889_T41_Test_Static_Properties_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24910,6 +25229,7 @@ b = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch891_T43_Defect_1461479()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24925,6 +25245,7 @@ x2 = A.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch892_T43_Defect_1461479_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24945,6 +25266,7 @@ t1 = a.x1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch894_T43_Defect_1461479_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -24974,6 +25296,7 @@ d = a.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch895_T44_Defect_1461860()
         {
@@ -25000,6 +25323,7 @@ b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch896_T44_Defect_1461860_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25031,6 +25355,7 @@ c = y.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch897_T45_Defect_1461479()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25053,6 +25378,7 @@ b = A.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch898_T46_Defect_1461716()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25073,6 +25399,7 @@ c1 = b1.a;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch899_T46_Defect_1461716_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25105,6 +25432,7 @@ b1;c1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch900_T47_Calling_Imperative_Code_From_Conctructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25129,6 +25457,7 @@ a1 = A1.a;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch901_T48_Defect_1460027()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25154,6 +25483,7 @@ b1=a1[1][0];";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch902_T48_Defect_1460027_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25179,6 +25509,7 @@ b1=a1[1][0];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch903_T48_Defect_1460027_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25237,6 +25568,7 @@ b1=a1[1][0];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch905_T49_Defect_1460505()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25274,6 +25606,7 @@ derivedPoint2 = modify( derivedpoint );";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch906_T49_Defect_1460505_2()
         {
@@ -25313,6 +25646,7 @@ derivedPoint2 = modify( derivedpoint );";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch909_T51_Defect_1461399()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25342,6 +25676,7 @@ test = CurveProperties(null);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch910_T51_Defect_1461399_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25378,6 +25713,7 @@ test = CurveProperties(null);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch911_T51_Defect_1461399_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25416,6 +25752,7 @@ test;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch912_T52_Defect_1461479()
         {
@@ -25437,6 +25774,7 @@ b = A.x;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch913_T52_Defect_1461479_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25457,6 +25795,7 @@ test2 = Sample.a;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch914_T52_Defect_1461479_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25483,6 +25822,7 @@ test2 = Sample.a;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch915_T52_Defect_1461479_4()
         {
@@ -25518,6 +25858,7 @@ test6 = S2.ret_a();";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch916_T52_Defect_1461479_5()
         {
@@ -25560,6 +25901,7 @@ test1;test2;test7;test8;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch917_T53_Undefined_Class_As_Parameter()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25603,6 +25945,7 @@ x2 = derivedpoint.B;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch918_T53_Undefined_Class_As_Parameter_1463738()
         {
@@ -25647,6 +25990,7 @@ x2=derivedpoint.B; ";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch919_T53_Undefined_Class_As_Parameter_1463738_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25690,6 +26034,7 @@ x2 = derivedpoint.B;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch920_T53_Undefined_Class_As_Parameter_1463738_3()
         {
@@ -25734,6 +26079,7 @@ x2 = derivedpoint.B;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch921_T53_Undefined_Class_As_Parameter_1463738_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25777,6 +26123,7 @@ x2 = derivedpoint.B;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch922_T53_Undefined_Class_As_Parameter_1463738_5()
         {
@@ -25820,6 +26167,7 @@ basePoint = modify( oldPoint );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch923_T53_Undefined_Class_As_Parameter_1463738_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25871,6 +26219,7 @@ x2 = derivedpoint.B;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch924_T53_Undefined_Class_As_Parameter_1463738_7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -25922,6 +26271,7 @@ x2 = derivedpoint.B; // expected 8; received : 9
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch925_T53_Undefined_Class_As_Parameter_1463738_8()
         {
@@ -25973,6 +26323,7 @@ x2 = derivedpoint.B;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch926_T53_Undefined_Class_As_Parameter_imperative_1463738_9()
         {
@@ -26094,6 +26445,7 @@ y = test.foo (1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch931_T54_Defect_1458562()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26113,6 +26465,7 @@ t1 = a.x1;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch932_T55_Defect_1460616()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26158,6 +26511,7 @@ x3 = a3.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch933_T55_Defect_1460616_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26179,6 +26533,7 @@ x3 = a3.x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch934_T56_Local_Class_method_Same_Name_As_Global_Function()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26213,6 +26568,7 @@ x = b.ding();  // expect 100 but got 1000
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch935_T57_Defect_1463742()
         {
@@ -26240,6 +26596,7 @@ test4 = Sample.a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch936_T58_Defect_1462445()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26271,6 +26628,7 @@ test4 = Sample.a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch937_T58_Defect_1462445_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26301,6 +26659,7 @@ y = x.b; // expected { 1, 2, 3.5, 4}
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch938_T59_Defect_1466572()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26327,6 +26686,7 @@ zz = p1.Z;// expected -1, received -1
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch939_T59_Defect_1466572_2()
         {
@@ -26355,6 +26715,7 @@ zz = p1.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch940_T59_Defect_1466572_3()
         {
@@ -26389,6 +26750,7 @@ p2 = foo ( -x1, -(x1+x2), -x1*x2+0.5 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch941_T60_Defect_1467004()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26413,6 +26775,7 @@ s = test.foo(arr); //Expected output should be -123
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch942_T61_Defect_1459171()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26442,6 +26805,7 @@ a3 = a1.Y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch943_T62_class_assignment_inside_imperative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26497,6 +26861,7 @@ return=controlPoly;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch944_T62_Class_Assignment_inside_imperative_1465637()
         {
@@ -26537,6 +26902,7 @@ b2 = {0,0,0,0,0};
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch945_T63_Class_methodresolution_1457172()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26590,6 +26956,7 @@ p8 = y[2][2];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch946_T63_Class_methodresolution_1457172_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26645,6 +27012,7 @@ p4 = y[0][1][1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch947_T63_Class_methodresolution_1457172_3()
         {
@@ -26665,6 +27033,7 @@ y = x.foo ();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch948_T68_Inherit_Base_Constructor_1467153()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26701,6 +27070,7 @@ d=n.Fixity;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch949_T68_Inherit_Base_Constructor_1467153_negative()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26738,6 +27108,7 @@ d=n.Fixity;
        
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch951_T70_Defect_1467112_Method_Overloading_Issue()
         {
@@ -26769,6 +27140,7 @@ b1 = b.foo1(1);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch952_T71_class_inherit_arg_var_1467157()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26802,6 +27174,7 @@ b=a.CreateNew(1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch953_T72_class_inherit_1467097()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26845,6 +27218,7 @@ c=oldPoint.C;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch954_T72_class_inherit_1467097_2()
         {
@@ -26890,6 +27264,7 @@ c=derivedpoint.C;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch955_T74_Defect_1469099_Access_Property()
         {
@@ -26923,6 +27298,7 @@ t2 = b1.ang;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch956_T74_Defect_1469099_Access_Property_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26965,6 +27341,7 @@ t1;t2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch957_T75_Defect_1467188_Class_Instantiation()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -26992,6 +27369,7 @@ RY = ty.foo(t);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch958_T75_Defect_1467188_Class_Instantiation_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27029,6 +27407,7 @@ RY = ty.foo( t );";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch959_T76_Defect_1467186_Class_Update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27063,6 +27442,7 @@ b = a;";
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch961_T77_Defect_1460274_Class_Update_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27104,6 +27484,7 @@ test3 = pointGroup3.X;
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch962_T77_Defect_1460274_Class_Update_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27180,6 +27561,7 @@ test = geometry;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch965_T78_Defect_1467146_Class_Update_With_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27199,6 +27581,7 @@ val = v[0];";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch966_T78_Defect_1467146_Class_Update_With_Replication_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27218,6 +27601,7 @@ val = v[0];";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch967_T78_Defect_1467146_Class_Update_With_Replication_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27237,6 +27621,7 @@ v = A.execute(arr);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch968_T78_Defect_1467146_Class_Update_With_Replication_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27260,6 +27645,7 @@ v = arr.execute();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch969_T78_Defect_1467146_Class_Update_With_Replication_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27295,6 +27681,7 @@ p2 = B.execute2(arr2);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch970_T79_Defect_1458581_Unnamed_Constructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27317,6 +27704,7 @@ b2 = a1.x2;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch971_T80_Defect_1444246_Replication()
         {
@@ -27342,6 +27730,7 @@ xs;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch972_T80_Defect_1444246_Replication_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27362,6 +27751,7 @@ p2 = MyPoint.CreateXY(-20.0,-30.0).X;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch973_T81_Defect_1467246_derived_class_setter()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27390,6 +27780,7 @@ z1 = a1.z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch974_T82_Defect_1467174()
         {
@@ -27655,6 +28046,7 @@ e;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch985_T05_Collection_Assignment_Using_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -27686,6 +28078,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch986_T06_Collection_Assignment_Using_Class_2()
         {
@@ -27760,6 +28153,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch989_T09_2D_Collection_Assignment_In_Class_Scope()
         {
@@ -27950,6 +28344,7 @@ p1 = pts[1][1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch996_T16_Assigning_Class_Collection_Property()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -28034,6 +28429,7 @@ b = a[1];";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1001_T20_Defect_1458567_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -28175,6 +28571,7 @@ b = CreateArray ( b, count );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1006_T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
         {
@@ -28281,6 +28678,7 @@ b1=foo(cy);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1009_T24_Dynamic_Array_Class_Scope()
         {
@@ -28321,6 +28719,7 @@ p = 4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1010_T24_Dynamic_Array_Class_Scope_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -28360,6 +28759,7 @@ b3 = a.Count1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1011_T24_Dynamic_Array_Class_Scope_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -28536,6 +28936,7 @@ a = b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1016_T24_Dynamic_Array_Passed_As_Int_Array_To_Class_Method()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -28567,6 +28968,7 @@ b1;b2;b3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1017_T24_Dynamic_Array_Passed_As_Primitive_Array_To_Function()
         {
@@ -28600,6 +29002,7 @@ b1;b2;b3;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1018_T25_Adding_elements_MemberClass_imperative_1465704_8()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -28632,6 +29035,7 @@ return=y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1019_T25_Adding_elements_MemberClass_imperative_1465704_9()
         {
@@ -28668,6 +29072,7 @@ return=y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1020_T25_Adding_elements_tomemberofclass_1465704()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -28693,6 +29098,7 @@ x = y.add(); //x = {{0,0},{1,1,1},{2,2,2,2}}
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1021_T25_Adding_Elements_ToMemberOfClass_1465704_10()
         {
@@ -28724,6 +29130,7 @@ return=z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1022_T25_Adding_elements_tomemberofclass_1465704_2()
         {
@@ -28750,6 +29157,7 @@ x = add(y); // expected { { 0,0 }, { 1, 1, 1 }, {2, 2, 2, 2} }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1023_T25_Adding_elements_tomemberofclass_1465704_3()
         {
@@ -28779,6 +29187,7 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1024_T25_Adding_elements_tomemberofclass_1465704_4()
         {
@@ -28813,6 +29222,7 @@ z=y.test();//z = {{0,0},{1,1,1},{2,false,{2,2}},1}
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1025_T25_Adding_elements_tomemberofclass_1465704_5()
         {
@@ -28845,6 +29255,7 @@ z=y.add();//z = {{0,0},{4,4}}
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1026_T25_Adding_elements_tomemberofclass_1465704_6()
         {
@@ -28873,6 +29284,7 @@ x = y.add(); // expected { { 0,0 }, { 1, 1, 1 }, {2, false, {2, 2}} }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1027_T25_Adding_elements_tomemberofclass_1465704_7()
         {
@@ -28921,6 +29333,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1029_T25_Adding_Elements_To_Array_Class()
         {
@@ -28965,6 +29378,7 @@ x = add(x);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1031_T25_Class_Assignment_dynamic_imperative_1465637_1()
         {
@@ -29052,6 +29466,7 @@ c = b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1035_T26_Defct_DNL_1459616_4()
         {
@@ -29085,6 +29500,7 @@ c = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1036_T26_Defct_DNL_1459616_5()
         {
@@ -29137,6 +29553,7 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1038_T26_defect_1464429_DynamicArray_class()
         {
@@ -29178,6 +29595,7 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1040_T27_defect_1464429_DynamicArray_class()
         {
@@ -29201,6 +29619,7 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1041_T27_defect_1464429_DynamicArray_class_inherit()
         {
@@ -29231,6 +29650,7 @@ t2 = a.CreateArray(  count );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1042_T27_defect_1464429_DynamicArray_inline()
         {
@@ -29254,6 +29674,7 @@ t1=b;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1043_T27_defect_1464429_DynamicArray_memberof_class()
         {
@@ -29295,6 +29716,7 @@ count = -2..-1;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1045_T27_DynamicArray_Class_1465802_Argument()
         {
@@ -29327,6 +29749,7 @@ b31=aa.foo(a);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1046_T27_DynamicArray_Class_1465802_Argument_2()
         {
@@ -29355,6 +29778,7 @@ b1=aa.foo(cy);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1047_T27_DynamicArray_Class_1465802_member()
         {
@@ -29403,6 +29827,7 @@ b=a[2];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1049_T27_DynamicArray_Invalid_Index_1465614_2()
         {
@@ -29451,6 +29876,7 @@ z=basePoint[0].Z;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1050_T27_DynamicArray_Invalid_Index_1467104()
         {
@@ -29471,6 +29897,7 @@ aa = pts[null].x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1051_T27_DynamicArray_Invalid_Index_1467104_2()
         {
@@ -29495,6 +29922,7 @@ aa = pts[null].x[null];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1052_T27_DynamicArray_Invalid_Index_imperative_1467104_3()
         {
@@ -29612,6 +30040,7 @@ r;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1056_T40_Index_byFunction_argument_1467064_4()
         {
@@ -29636,6 +30065,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1057_T40_Index_byFunction_class_imperative_1467064_3()
         {
@@ -29660,6 +30090,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1058_T40_Index_DynamicArray_1464942_5()
         {
@@ -29683,6 +30114,7 @@ z = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1059_T40_Index_DynamicArray_byarray_1464942_6()
         {
@@ -29721,6 +30153,7 @@ y = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1061_T40_Index_usingFunction_class_1467064_2()
         {
@@ -29741,6 +30174,7 @@ a = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1062_T41_Accessing_Non_Existent_Properties_From_Array_Elements()
         {
@@ -29769,6 +30203,7 @@ d = c[1].x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1063_T41_Accessing_Non_Existent_Property_FromArray_1467083()
         {
@@ -29798,6 +30233,7 @@ d = c[1].x;//null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1064_T41_Accessing_Non_Existent_Property_FromArray_1467083_2()
         {
@@ -29827,6 +30263,7 @@ e1 = c[2].x2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1065_T41_Accessing_Non_Existent_Property_FromArray_1467083_3()
         {
@@ -29859,6 +30296,7 @@ f1 = d[1].x2;//null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1066_T61_Accessing_Non_Existent_Array_Properties_1467082()
         {
@@ -29897,6 +30335,7 @@ t4=p[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1067_T61_Accessing_Non_Existent_Array_Properties_1467082_2()
         {
@@ -29918,6 +30357,7 @@ q=p[0].X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1068_T61_Accessing_Non_Existent_Array_Properties_1467082_3()
         {
@@ -29942,6 +30382,7 @@ s=c[0].X[0];// access non array variable as if its array ";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1069_T61_Assign_Non_Existent_Array_Properties_1467082_4()
         {
@@ -29972,6 +30413,7 @@ s = f[1][0].x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1070_T61_Assign_Non_Existent_Array_Properties_1467094()
         {
@@ -30064,6 +30506,7 @@ b= func(c[0]);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1074_T62_Create_Dynamic_Array_OnTheFly_inaClass()
         {
@@ -30086,6 +30529,7 @@ c= a.b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1075_T62_Create_Dynamic_Array_OnTheFly_inaClass_methodoverload()
         {
@@ -30114,6 +30558,7 @@ c= a.b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1076_T62_Create_Dynamic_Array_OnTheFly_passargument()
         {
@@ -30208,6 +30653,7 @@ b[2]=-5;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1081_T63_Dynamic_array_onthefly_argument_class__1467139()
         {
@@ -30326,6 +30772,7 @@ b[0]=10;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1088_T65_Array_Alias_ByVal_1467165_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -30362,6 +30809,7 @@ b[0]=false;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1090_T65_Array_Alias_ByVal_1467165_4()
         {
@@ -30385,6 +30833,7 @@ d=b[0].id;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1091_T65_Array_Alias_ByVal_1467165_5()
         {
@@ -30665,6 +31114,7 @@ b = 3.5;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1105_T08_Function_From_Inside_Class_Constructor()
         {
@@ -30708,6 +31158,7 @@ a;b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1106_T09_Function_From_Inside_Class_Constructor()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -30750,6 +31201,7 @@ a;b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1107_T100_Class_inheritance_replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -30776,6 +31228,7 @@ b = c.Test(c);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1108_T100_Class_inheritance_replication_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -30801,6 +31254,7 @@ result = c.Test(c);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1109_T10_Function_From_Inside_Class_Method()
         {
@@ -30847,6 +31301,7 @@ a;b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1110_T11_Function_From_Inside_Class_Method()
         {
@@ -31241,6 +31696,7 @@ def add_1 : double( a:double )
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1121_T22_Function_Call_As_Instance_Arguments()
         {
@@ -31617,6 +32073,7 @@ result3 =
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1132_T33_Function_With_Mismatching_Return_Type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -31717,6 +32174,7 @@ b2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1136_T37_Function_With_Mismatching_Return_Type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -31959,6 +32417,7 @@ b2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1147_T48_Function_With_Mismatching_Argument_Type()
         {
@@ -31988,6 +32447,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1148_T49_Function_With_Matching_Return_Type()
         {
@@ -32779,6 +33239,7 @@ def foo:int ( a : int )
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1184_T84_Function_With_User_Defined_Class()
         {
@@ -32935,6 +33396,7 @@ t2 = two[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1190_T90_Function_PassingNullToUserDefinedType()
         {
@@ -33011,6 +33473,7 @@ e = foo(1, 2.0, 3); // not found, null
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1193_T93_Function_With_Default_Arg_In_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -33455,6 +33918,7 @@ t = foo()[0];";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1211_TV101_Indexing_Into_classCall_1463234_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -33475,6 +33939,7 @@ t = a.foo()[0];";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1212_TV101_Indexing_Into_classCall_1463234_7()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -33502,6 +33967,7 @@ t = a.foo()[0];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1213_TV102_GlobalVariable_Function_1466768()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -33538,6 +34004,7 @@ zz = p1.Z; // expected 0, received 0
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1214_TV102_GlobalVariable_Function_1466768_1()
         {
@@ -33575,6 +34042,7 @@ zz = p1.Z; // expected 0, received 0
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1215_TV102_GlobalVariable_Function_1466768_2()
         {
@@ -33612,6 +34080,7 @@ zz = p[1].Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1216_TV103_Defect_1467149()
         {
@@ -33636,6 +34105,7 @@ b=prop(convert);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1217_TV104_Defect_1467112()
         {
@@ -33676,6 +34146,7 @@ b1 = b.foo1(1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1218_TV10_Function_With_Class_Instances()
         {
@@ -33882,6 +34353,7 @@ e;f;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1230_TV22_Function_With_Class_Object_As_Argument()
         {
@@ -33959,6 +34431,7 @@ b;c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1233_TV25_Defect_1454923()
         {
@@ -34600,6 +35073,7 @@ a2;b2;c2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1258_TV46_Defect_1455278()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -34802,6 +35276,7 @@ a = 10;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1265_TV51_Defect_1456108_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -34855,6 +35330,7 @@ b2 = a1.add_2( );";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1266_TV51_Defect_1456108_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -34910,6 +35386,7 @@ t=c;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1267_TV51_Defect_1456108_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -34964,6 +35441,7 @@ c = { -1, -1, -1 };";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1268_TV52_Defect_1456397()
         {
@@ -35001,6 +35479,7 @@ b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1269_TV53_Defect_1456397_2()
         {
@@ -35103,6 +35582,7 @@ x;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1273_TV56_Defect_1456571_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35172,6 +35652,7 @@ f1;f2;f3;f4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1276_TV58_Defect_1455278()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35206,6 +35687,7 @@ f1;f2;f3;f4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1277_TV59_Defect_1455278()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35524,6 +36006,7 @@ f1;f2;f3;f4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1288_TV65_Defect_1455090_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35555,6 +36038,7 @@ f1;f2;f3;f4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1289_TV66_Defect_1455090_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35598,6 +36082,7 @@ f1;f2;f3;f4;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1290_TV67_Defect_1455090_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35641,6 +36126,7 @@ c;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1291_TV68_Defect_1455090_7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35685,6 +36171,7 @@ a2 = A1.compare( b1, 1, 1 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1292_TV69_Defect_1456799()
         {
@@ -35721,6 +36208,7 @@ bcurvePtX = bcurvePt.X;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1293_TV69_Defect_1456799_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35755,6 +36243,7 @@ bcurvePtX = bcurve.P[1].X;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1294_TV69_Defect_1456799_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -35792,6 +36281,7 @@ bcurvePtX;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1295_TV70_Defect_1456798()
         {
@@ -36125,6 +36615,7 @@ sum1;sum2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1306_TV77_Defect_1455259()
         {
@@ -36192,6 +36683,7 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1307_TV77_Defect_1455259_2()
         {
@@ -36271,6 +36763,7 @@ z2 = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1309_TV78_Defect_1460866_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -36307,6 +36800,7 @@ z2 = x2.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1310_TV79_Defect_1462300()
         {
@@ -36333,6 +36827,7 @@ bb = b[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1311_TV79_Defect_1462300_2()
         {
@@ -36357,6 +36852,7 @@ b=testcall(a);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1312_TV79_Defect_1462300_3()
         {
@@ -36708,6 +37204,7 @@ a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1325_TV85_Function_Return_Type_Var_User_Defined_Type_Conversion()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -36751,6 +37248,7 @@ b = f2( { null, null } );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1327_TV87_Defect_1464027()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -36796,6 +37294,7 @@ t11;t12;t13;t14;t15;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1328_TV87_Defect_1464027_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -36842,6 +37341,7 @@ t11;t12;t13;t14;t15;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1329_TV87_Defect_1464027_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -36889,6 +37389,7 @@ t11;t12;t13;t14;t15;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1330_TV87_Defect_1464027_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -36936,6 +37437,7 @@ t11;t12;t13;t14;t15;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1331_TV87_Defect_1464027_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37024,6 +37526,7 @@ d1 = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1334_TV88_Defect_1463489_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37070,6 +37573,7 @@ temp = d1.foo( 0.0 );";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1335_TV89_Implicit_Type_Conversion_1()
         {
@@ -37307,6 +37811,7 @@ b1 = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1348_TV90_Defect_1463474_4()
         {
@@ -37328,6 +37833,7 @@ d1 = c1.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1349_TV91_Defect_1463703()
         {
@@ -37363,6 +37869,7 @@ b;c;d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1350_TV91_Defect_1463703_2()
         {
@@ -37428,6 +37935,7 @@ y1;y2;y3;y4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1351_TV91_Defect_1463703_3()
         {
@@ -37501,6 +38009,7 @@ x2 =
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1352_TV92_Accessing_Variables_Declared_Inside_Function_Body()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37528,6 +38037,7 @@ c = b.a; // expected 10, received 10";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1353_TV93_Modifying_Global_Var_In_Func_Call()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37565,6 +38075,7 @@ dummy = func1(p);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1354_TV93_Modifying_Global_Var_In_Func_Call_2()
         {
@@ -37603,6 +38114,7 @@ dummy = func1(p);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1355_TV93_Modifying_Global_Var_In_Func_Call_3()
         {
@@ -37640,6 +38152,7 @@ zz = p1.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1356_TV93_Modifying_Global_Var_In_Func_Call_4()
         {
@@ -37753,6 +38266,7 @@ y = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1359_TV95_Method_Resolution_Derived_Class_Arguments()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37855,6 +38369,7 @@ t = Test(a);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1363_TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37879,6 +38394,7 @@ b3 = foo ( a3 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1364_TV97_Heterogenous_Objects_As_Function_Arguments_No_Replication_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37924,6 +38440,7 @@ b3 = foo ( a3 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1366_TV97_Heterogenous_Objects_As_Function_Arguments_With_Replication_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -37967,6 +38484,7 @@ x = foo ( { { 0,1}, {2, 3} } );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1368_TV99_Defect_1463456_Array_By_Reference_Issue()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -38168,6 +38686,7 @@ d = Sin(30.0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1382_T007_BasicImport_TestClassConstructorAndProperties()
         {
@@ -38186,6 +38705,7 @@ myPointZ = myPoint.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1383_T008_BasicImport_TestClassConstructorAndProperties_UserDefinedClass()
         {
@@ -38213,6 +38733,7 @@ endPtZ = endPt.Z;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1384_T009_BasicImport_TestClassInstanceMethod()
         {
@@ -38228,6 +38749,7 @@ midValue = myPoint.MidValue();";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1385_T010_BaseImportWithVariableClassInstance_top()
         {
@@ -38258,6 +38780,7 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1388_T014_BasicImport_BeforeImperative()
         {
@@ -38300,6 +38823,7 @@ a = 10;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1392_T018_MultipleImport()
         {
@@ -38315,6 +38839,7 @@ arr = Scale(midValue, 4.0);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1393_T019_MultipleImport_ClashFunctionClassRedifinition()
         {
@@ -38432,6 +38957,7 @@ c = Scale(a,b);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1401_GeometryLibForLanguageTesting()
         {
@@ -38659,6 +39185,7 @@ g = d[f+1]; // c
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1404_Test_4_12_isRectangular()
         {
@@ -38807,6 +39334,7 @@ l = i<1> + j<2>; // unpredictable*/";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1413_Test_4_4_properties_1()
         {
@@ -39161,6 +39689,7 @@ o = {0.800000,0.810000}
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1426_T11_RangeExpressionUsingClasses()
         {
@@ -39261,6 +39790,7 @@ a1;a2;a3;a4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1429_T14_RangeExpressionUsingClassMethods()
         {
@@ -39479,6 +40009,7 @@ b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1437_T22_RangeExpressionsUsingClassMethods_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -39509,6 +40040,7 @@ d;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1438_T23_RangeExpressionsUsingClassMethods_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -39674,6 +40206,7 @@ d=1..-0.5;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1445_T27_RangeExpression_class_return_1463472_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -40117,6 +40650,7 @@ num = length(arr);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1472_TA21_Defect_1454692_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -41271,6 +41805,7 @@ result =
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1520_T03_Defect_UndefinedType()
         {
@@ -41367,6 +41902,7 @@ r =
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1524_T06_String_Class()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -41548,6 +42084,7 @@ r = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1535_GeometryLibForLanguageTesting()
         {
@@ -41763,6 +42300,7 @@ t6 = cartesian_sum[2][0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1539_T00004_Geometry_002_line_by_points_replication_simple()
         {
@@ -41786,6 +42324,7 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1540_T00005_Geometry_002_line_by_points_replication_simple_correction()
         {
@@ -41812,6 +42351,7 @@ t5 = line_0[4].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1541_T00006_Geometry_003_line_by_points_replication_array()
         {
@@ -41840,6 +42380,7 @@ startPt = Point.ByCartesianCoordinates( 2, 1, 0 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1542_T00007_Geometry_004_circle_all_combinations()
         {
@@ -41858,6 +42399,7 @@ t4 = lines[3][0].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1543_T00008_Geometry_005_circle_adjacent_pairs_externalised()
         {
@@ -41878,6 +42420,7 @@ t3 = lines[2].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1544_T00009_Geometry_006_circle_all_unique_combinations()
         {
@@ -41894,6 +42437,7 @@ t2 = lines[1][2].StartPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1545_T00010_Geometry_007_specialPoint_2()
         {
@@ -41990,6 +42534,7 @@ t5 = tubes[4].EndPoint.X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1547_T00012_Geometry_008a_alternative_method_invocations_1()
         {
@@ -42049,6 +42594,7 @@ x8 = tube_3.StartPoint.X;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1548_T00013_Geometry_009_nested_user_defined_feature_2b()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42123,6 +42669,7 @@ x3 = triangle0002.Side_b_c.MidPoint.X;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1549_T00014_Geometry_010_nested_user_defined_feature_rand_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42196,6 +42743,7 @@ x3 = MyTriangle0001[2].side_c_a.midPoint.X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1553_GeometryLibForLanguageTesting()
         {
@@ -42453,6 +43001,7 @@ c = a + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1557_T04_Update_Class_Instance_Argument()
         {
@@ -42483,6 +43032,7 @@ b1 = a1.add(t1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1558_T05_Update_Class_Instance_Argument()
         {
@@ -42516,6 +43066,7 @@ t2 = b1.a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1559_T06_Update_Class_Instance_Argument()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42719,6 +43270,7 @@ f = c + 1;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1567_T14_Defect_1461209()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42739,6 +43291,7 @@ x = 5;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1568_T14_Defect_1461209_2()
         {
@@ -42764,6 +43317,7 @@ x = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1569_T14_Defect_1461209_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42785,6 +43339,7 @@ a2 = y.foo(1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1570_T14_Defect_1461209_4()
         {
@@ -42814,6 +43369,7 @@ x = 2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1571_T15_Defect_1460935()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42842,6 +43398,7 @@ y = x; // expected : null; recieved : 1
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1572_T15_Defect_1460935_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42885,6 +43442,7 @@ x = false;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1574_T15_Defect_1460935_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42933,6 +43491,7 @@ y2 = foo ( b2 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1575_T15_Defect_1460935_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -42959,6 +43518,7 @@ x3 = b3.x3;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1576_T15_Defect_1460935_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43053,6 +43613,7 @@ y = foo (x );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1580_T16_Defect_1460623_4()
         {
@@ -43089,6 +43650,7 @@ z1 = a1.foo();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1581_T17_Defect_1459759()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43153,6 +43715,7 @@ b = c + 3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1584_T19_Update_Class_Properties_Thru_Methods()
         {
@@ -43245,6 +43808,7 @@ b = foo ( a ) ;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1588_T20_Defect_1461391_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43281,6 +43845,7 @@ t2 = y2[1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1589_T20_Defect_1461391_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43400,6 +43965,7 @@ f = a + b;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1593_T22_Update_Class_Instance()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43449,6 +44015,7 @@ dummy=1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1594_T23_Update_Class_Instance_Using_Set_Method()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43467,6 +44034,7 @@ a1.a = 2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1595_T23_Update_Class_Instance_Using_Set_Method_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43485,6 +44053,7 @@ a1.a = {2,3};
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1596_T23_Update_Class_Instance_Using_Set_Method_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43503,6 +44072,7 @@ a1.a = null;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1597_T23_Update_Class_Instance_Using_Set_Method_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43521,6 +44091,7 @@ a1.a = 3.5;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1598_T23_Update_Class_Instance_Using_Set_Method_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43538,6 +44109,7 @@ a1.a = true;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1599_T23_Update_Class_Instance_Using_Set_Method_6()
         {
@@ -43563,6 +44135,7 @@ a1 = foo ( a1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1600_T23_Update_Class_Instance_Using_Set_Method_7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43587,6 +44160,7 @@ dummy = foo ( a1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1601_T24_Update_Variable_Type()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43709,6 +44283,7 @@ e;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1608_T25_Defect_1459759_7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43759,6 +44334,7 @@ b = {
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")] [Category("Failure")]
         public void DebugWatch1611_T27_Modifier_Stack_Inside_Class()
         {
@@ -43810,6 +44386,7 @@ y = a1.a;
         [Test]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1612_T27_Modifier_Stack_Inside_Class_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -43863,7 +44440,8 @@ y = { a1.a1, a1.a2, a1.a3, a1.a4, a1.a5, a1.a6, a1.a8 };
         }
 
         [Test]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1613_T27_Modifier_Stack_Inside_Class_3()
         {
@@ -43959,7 +44537,8 @@ xa9 = ax.a9;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1614_T27_Modifier_Stack_Inside_Class_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44025,6 +44604,7 @@ res = ax.foo(1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")]
         public void DebugWatch1615_T27_Modifier_Stack_Inside_Function()
         {
@@ -44105,6 +44685,7 @@ b1 = 2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")]
         public void DebugWatch1618_T27_Modifier_Stack_Update_3()
         {
@@ -44201,7 +44782,8 @@ y = 2;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1621_T27_Modifier_Stack_Update_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44321,6 +44903,7 @@ b = a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")]
         public void DebugWatch1626_T27_Modifier_Stack_With_Different_Types()
         {
@@ -44352,6 +44935,7 @@ b = a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")]
         public void DebugWatch1627_T27_Modifier_Stack_With_Different_Types_2()
         {
@@ -44439,7 +45023,8 @@ x = [Associative]
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1630_T27_Modifier_Stack_With_Inline_Condition()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44479,6 +45064,7 @@ x = a == 2 ? true : false;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")] 
         public void DebugWatch1631_T27_Modifier_Stack_With_Range_Expr()
         {
@@ -44587,6 +45173,7 @@ a1[0] = 0;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1636_T30_Update_Global_Variables_Class()
         {
@@ -44614,6 +45201,7 @@ x = 3;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1637_T30_Update_Global_Variables_Function()
         {
@@ -44703,6 +45291,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1640_T31_Defect_1459777()
         {
@@ -44729,6 +45318,7 @@ c1 = b1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1641_T31_Defect_1459777_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44746,6 +45336,7 @@ a1.a = 2; // expected b = 2; received : b = 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1642_T31_Defect_1459777_3()
         {
@@ -44769,6 +45360,7 @@ c = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1643_T31_Defect_1459777_4()
         {
@@ -44799,6 +45391,7 @@ z2 = z;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1644_T31_Defect_1459777_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44825,6 +45418,7 @@ x = B.B(y);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1645_T31_Defect_1459777_6()
         {
@@ -44858,6 +45452,7 @@ x1 = B.B( y );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1646_T31_Defect_1459777_7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44880,6 +45475,7 @@ z3 = y3;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1647_T31_Defect_1459777_8()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44901,6 +45497,7 @@ x1.a = 2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1648_T31_Defect_1459777_9()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44940,6 +45537,7 @@ z1 = y1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1650_T33_Defect_1466107()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -44969,6 +45567,7 @@ a1.a = 2;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1651_T33_Defect_1466107_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45008,6 +45607,7 @@ dummy2 = foo2 ( a1 );
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1652_T34_Defect_DNL_1463327()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45035,6 +45635,7 @@ x = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1653_T34_Defect_DNL_1463327_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45061,6 +45662,7 @@ x = [Imperative]
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1654_T34_Defect_DNL_1463327_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45088,6 +45690,7 @@ t = 0.0..2.0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1655_T34_Defect_DNL_1463327_4()
         {
@@ -45113,6 +45716,7 @@ t = 0.0..1.0;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1656_T35_Defect_DNL_1463700()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45134,6 +45738,7 @@ x = a.foo();
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1657_T35_Defect_DNL_1463700_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45383,6 +45988,7 @@ b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1671_T41_Defect_1467072_Class_Update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45413,6 +46019,7 @@ gf = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1672_T41_Defect_1467072_Class_Update_2()
         {
@@ -45441,6 +46048,7 @@ y = x.a;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1673_T42_Defect_1466071_Cross_Update()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45529,6 +46137,7 @@ d = a + b;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1677_T44_Defect_1457029()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45553,6 +46162,7 @@ x = c1.Pt;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1678_T44_Defect_1457029_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45578,6 +46188,7 @@ x = c1.Pt;
         [Test]
         [Category("WatchFx Tests")]
         [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1679_T54_Defect_1467185_Modifier_Stack()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45627,7 +46238,8 @@ a =
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("ModifierBlock")] 
+        [Category("ModifierBlock")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1680_T54_Defect_1467185_Modifier_Stack_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45665,6 +46277,7 @@ a8 = B.B(a1).bfoo(foo ( a1[a3] ) ); // works fine";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")] 
         public void DebugWatch1681_T54_Defect_1467185_Modifier_Stack_3()
         {
@@ -45703,6 +46316,7 @@ a =
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1682_T59_Defect_1467418_Update_Across_Language_Blocks()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45742,6 +46356,7 @@ i = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1683_T88_1461985_Update_In_Nested_Blocks_1()
         {
@@ -45775,6 +46390,7 @@ i = 5;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1684_T88_1461985_Update_In_Nested_Blocks_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -45817,6 +46433,7 @@ test = b1.y;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1685_GeometryLibForLanguageTesting()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46172,6 +46789,7 @@ b  = b2 + 2;    // 5";
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1693_T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46223,6 +46841,7 @@ test = mySurface.x; //expected : 4
         [Test]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1694_T008_long_hand_surface_trim_Robert()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46308,6 +46927,7 @@ y = {
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1697_T011_Cyclic_Dependency_From_Geometry()
         {
@@ -46330,6 +46950,7 @@ projectVector = Vector.ByCoordinates(5.0,0,-1);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1698_T012_property_test_on_collections_2_Robert()
         {
@@ -46346,6 +46967,7 @@ t2= line2.Color;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1699_T013_nested_programming_blocks_1_Robert()
         {
@@ -46403,6 +47025,7 @@ a=5;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1706_DemoSupportFiles()
         {
@@ -46720,6 +47343,7 @@ y = 0.0..ySize..#yCount;  //  actually this evalutes to 30 but to keep life simp
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1708_DynamicReferenceResolving_Complex_Case()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46781,6 +47405,7 @@ testInFunction2 = foo2(b2); //testInFunction2 = 7;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1709_DynamicReference_FunctionCall()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46806,6 +47431,7 @@ testFoo1 = t.foo1(6); // foo1 does not exist in A, function not found warning; t
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1710_DynamicReference_FunctionCall_With_Default_Arg()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46832,6 +47458,7 @@ testFoo2 = t.foo(); // foo1 does not exist in A, function not found warning; tes
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1711_DynamicReference_Variable()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46858,6 +47485,7 @@ kk = t.k;";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1712_error_LineNumber()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -46965,6 +47593,7 @@ testFoo2 = foo();";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1716_GarbageCollection_1467148()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47298,6 +47927,7 @@ num = length(arr);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1729_Regress_1454918_5()
         {
@@ -47360,6 +47990,7 @@ result2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1732_Regress_1454966()
         {
@@ -47384,6 +48015,7 @@ a1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1733_Regress_1454966_10()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47410,6 +48042,7 @@ t1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1734_Regress_1454966_2()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47434,6 +48067,7 @@ x = create(3).a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1735_Regress_1454966_3()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47463,6 +48097,7 @@ x = create(3).a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1736_Regress_1454966_4()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47485,6 +48120,7 @@ x = create(3).a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1737_Regress_1454966_5()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47513,6 +48149,7 @@ x = create(3).a;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1738_Regress_1454966_6()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47539,6 +48176,7 @@ c= call(value);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1739_Regress_1454966_7()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47572,6 +48210,7 @@ a1;
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1740_Regress_1454966_8()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47619,6 +48258,7 @@ t1 = b1.x[0].x[1];
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1741_Regress_1454966_9()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47648,6 +48288,7 @@ b2=b1[0].x.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1743_Regress_1455158()
         {
@@ -47686,6 +48327,7 @@ b2=b1[0].x.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1744_Regress_1455276()
         {
@@ -47726,6 +48368,7 @@ dist = pt1.SquaredDistance(pt2);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1745_Regress_1455283()
         {
@@ -47768,6 +48411,7 @@ z = test.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1746_Regress_1455283_1()
         {
@@ -47802,6 +48446,7 @@ b3 = a1.x3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1747_Regress_1455291()
         {
@@ -47856,6 +48501,7 @@ class Vector
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1748_Regress_1455568()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47900,6 +48546,7 @@ result1 =  Tuple4.XYZH(RX, RY, RZ, RH);";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1749_Regress_1455584()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -47992,6 +48639,7 @@ multiply1 = tuple1.Multiply(tuple2);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1750_Regress_1455618()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -48148,6 +48796,7 @@ h = tempcv.H;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1751_Regress_1455621()
         {
@@ -48322,6 +48971,7 @@ vec111 = Vector.ByCoordinates(1,1,1);
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("DSDefinedClass")]
         public void DebugWatch1752_Regress_1455643()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -48394,6 +49044,7 @@ areEqual2 = xform1.Equals(xform2);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1753_Regress_1455729()
         {
@@ -48633,6 +49284,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1756_Regress_1456611()
         {
@@ -48658,6 +49310,7 @@ y = x.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1757_Regress_1456611_2()
         {
@@ -48703,6 +49356,7 @@ numpts;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1758_Regress_1456611_3()
         {
@@ -48741,6 +49395,7 @@ numpts = length(pts); // getting null
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1759_Regress_1456611_4()
         {
@@ -48778,6 +49433,7 @@ numpts = length(pts,5); // getting null";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1760_Regress_1456611_5()
         {
@@ -48816,6 +49472,7 @@ numpts = length(pts,a[0]);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1761_Regress_1456611_6()
         {
@@ -48854,6 +49511,7 @@ numpts = length(pts,a[0]);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1762_Regress_1456611_7()
         {
@@ -48892,6 +49550,7 @@ numpts = length(pts,a[0]);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1763_Regress_1456611_8()
         {
@@ -48931,6 +49590,7 @@ t3 = numpts[1][0].X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1764_Regress_1456611_9()
         {
@@ -48999,6 +49659,7 @@ j=2*i;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1767_Regress_1456895()
         {
@@ -49030,6 +49691,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1768_Regress_1456895_2()
         {
@@ -49060,6 +49722,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1769_Regress_1456895_3()
         {
@@ -49095,6 +49758,7 @@ num = a1.length(); // expected 4, recieved 1";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1770_Regress_1457023()
         {
@@ -49128,6 +49792,7 @@ num = utils.length(arr);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1771_Regress_1457023_1()
         {
@@ -49164,6 +49829,7 @@ num = utils.length();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1772_Regress_1457023_2()
         {
@@ -49201,6 +49867,7 @@ b2 = a1.add_2( );";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1773_Regress_1457023_3()
         {
@@ -49250,6 +49917,7 @@ vec_len = vec.GetLength();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1774_Regress_1457023_4()
         {
@@ -49299,6 +49967,7 @@ result2 = Sin(90.0);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1776_Regress_1457862()
         {
@@ -49425,6 +50094,7 @@ b1 = a[-1];//b1=2";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1783_Regress_1458475_2()
         {
@@ -49436,6 +50106,7 @@ b1 = a[0][-1];// b1=2";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1784_Regress_1458561()
         {
@@ -49468,6 +50139,7 @@ b = a[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1786_Regress_1458785()
         {
@@ -49511,6 +50183,7 @@ a2 = 3;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1788_Regress_1458785_3()
         {
@@ -49533,6 +50206,7 @@ z1 = 2;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1789_Regress_1458785_4()
         {
@@ -49571,6 +50245,7 @@ test5= test1.testmethod(); ";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1790_Regress_1458915()
         {
@@ -49608,6 +50283,7 @@ c2 = c.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1791_Regress_1458915_2()
         {
@@ -49633,6 +50309,7 @@ t = b.x; // expected 1 here";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1792_Regress_1458915_3()
         {
@@ -49658,6 +50335,7 @@ y2 = b1.y;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1793_Regress_1458916()
         {
@@ -49674,6 +50352,7 @@ x1 = a1.x;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1794_Regress_1458918_1()
         {
@@ -49711,6 +50390,7 @@ a.y = 5;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1795_Regress_1458918_2()
         {
@@ -49766,6 +50446,7 @@ b=a.x;// private member must not be exposed
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1796_Regress_1459171_1()
         {
@@ -49829,6 +50510,7 @@ a3 = a1.Y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1798_Regress_1459175()
         {
@@ -49856,6 +50538,7 @@ a3 = a1.Y; // expected null here!!
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1799_Regress_1459175_2()
         {
@@ -49931,6 +50614,7 @@ z=length({1,2});";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1802_Regress_1459584()
         {
@@ -49969,6 +50653,7 @@ test2= numpts[1].X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1803_Regress_1459584_1()
         {
@@ -50010,6 +50695,7 @@ b=numpts[1].X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1804_Regress_1459584_2()
         {
@@ -50049,6 +50735,7 @@ b=numpts[1].X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1805_Regress_1459584_3()
         {
@@ -50088,6 +50775,7 @@ b=numpts[1].X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1806_Regress_1459584_4()
         {
@@ -50125,6 +50813,7 @@ numpts = length(pts);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1807_Regress_1459584_5()
         {
@@ -50162,6 +50851,7 @@ numpts = length(pts); ";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1808_Regress_1459584_6()
         {
@@ -50202,6 +50892,7 @@ test2=numpts[1].X;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1809_Regress_1459584_7()
         {
@@ -50239,6 +50930,7 @@ numpts = length(pts); ";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1810_Regress_1459584_8()
         {
@@ -50276,6 +50968,7 @@ numpts = length(pts); ";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ModifierBlock")] 
         [Category("WatchFx Tests")]
         public void DebugWatch1811_Regress_1459630()
@@ -50294,6 +50987,7 @@ a1 = A.A();";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1812_Regress_1459762()
         {
@@ -50315,6 +51009,7 @@ r2 = r1+1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1813_Regress_1459900()
         {
@@ -50386,6 +51081,7 @@ z = t[-1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1818_Regress_1467094_2()
         {
@@ -50422,6 +51118,7 @@ t4=p[1];";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("WatchFx Tests")]
         public void DebugWatch1819_Regress_1467104()
         {

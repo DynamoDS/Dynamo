@@ -94,7 +94,7 @@ namespace DSCoreNodesUI.Input
         internal static double ConvertStringToDouble(string value)
         {
             double result = 0.0;
-            System.Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
+            System.Double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result);
             return result;
         }
 

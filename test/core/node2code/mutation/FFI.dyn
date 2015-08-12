@@ -1,0 +1,26 @@
+<Workspace Version="0.8.2.2022" X="-137.151183051753" Y="-45.984633944196" zoom="0.878940113562795" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="bb3d15f5-0c0a-4050-8497-5a239fb49cb3" type="Dynamo.Nodes.DSFunction" nickname="AnotherClassWithNameConflict.AnotherClassWithNameConflict" x="522.515166247173" y="773.725555525116" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.FirstNamespace.AnotherClassWithNameConflict.AnotherClassWithNameConflict" />
+    <Dynamo.Nodes.DSFunction guid="3a7a2ee6-81e4-4ffa-a1b0-18231ae78d54" type="Dynamo.Nodes.DSFunction" nickname="AnotherClassWithNameConflict.PropertyF" x="847.068634735774" y="665.793700615062" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.SecondNamespace.AnotherClassWithNameConflict.PropertyF" />
+    <Dynamo.Nodes.DSFunction guid="eeebf750-92cb-43f4-8fd0-65aa83439b6b" type="Dynamo.Nodes.DSFunction" nickname="TestLogWarning.TestLogWarning" x="522.121063908145" y="663.708600855311" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.TestLogWarning.TestLogWarning" />
+    <Dynamo.Nodes.DSFunction guid="9887466f-2ae9-4422-9939-96bd911345d9" type="Dynamo.Nodes.DSFunction" nickname="AnotherClassWithNameConflict.AnotherClassWithNameConflict" x="845.2163539653" y="554.656854386649" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.SecondNamespace.AnotherClassWithNameConflict.AnotherClassWithNameConflict" />
+    <Dynamo.Nodes.DSFunction guid="9b08845f-b23e-4f2c-9f7b-5d5edb8d73df" type="Dynamo.Nodes.DSFunction" nickname="AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2" x="845.773631858333" y="182.527408438431" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.AbstractDerivedDisposeTracer2.AbstractDerivedDisposeTracer2" />
+    <Dynamo.Nodes.DSFunction guid="dad326dc-e50f-4de9-b06d-9a612bb94e9e" type="Dynamo.Nodes.DSFunction" nickname="BarClassAttribute.BarClassAttribute" x="843.983676584043" y="313.370375370702" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.BarClassAttribute.BarClassAttribute" />
+    <Dynamo.Nodes.DSFunction guid="0a323c74-4246-46d6-881a-7f4feb4bac25" type="Dynamo.Nodes.DSFunction" nickname="DummyClassA.DummyClassA" x="521.443911481768" y="554.040331770996" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.DummyClassA.DummyClassA" />
+    <Dynamo.Nodes.DSFunction guid="59b96d75-f94c-4b11-a110-42553e74d2c8" type="Dynamo.Nodes.DSFunction" nickname="DerivedDummy.DerivedDummy" x="842.970626856185" y="440.355424795599" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.DerivedDummy.DerivedDummy" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="9ba59b94-4f42-4d94-a85f-0708b2798438" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="319.473013162884" y="320.122725323473" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="f7e01e1c-5971-48bf-a33e-a9bd39ea1053" type="Dynamo.Nodes.DSFunction" nickname="GlobalClass.GlobalClass" x="519.514703775238" y="315.751837971905" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="GlobalClass.GlobalClass@int" />
+    <Dynamo.Nodes.DSFunction guid="46817fed-5532-49f4-bbf9-8ea6ee731c77" type="Dynamo.Nodes.DSFunction" nickname="GlobalClass.GlobalClass" x="522.270217690952" y="183.184888727507" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="GlobalClass.GlobalClass" />
+    <Dynamo.Nodes.DSFunction guid="2cae6cdb-747f-49c4-b70a-5db95e119ba2" type="Dynamo.Nodes.DSFunction" nickname="ClassWithRefParams.ClassWithRefParams" x="520.4013574072" y="440.985630260564" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="..\ExampleDLL.dll" function="FFITarget.ClassWithRefParams.ClassWithRefParams" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9ba59b94-4f42-4d94-a85f-0708b2798438" start_index="0" end="f7e01e1c-5971-48bf-a33e-a9bd39ea1053" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

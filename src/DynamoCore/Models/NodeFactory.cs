@@ -6,6 +6,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
@@ -20,8 +21,9 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="elNode">Serialized NodeModel</param>
         /// <param name="context">Serialization context</param>
+        /// <param name="resolver">Element resolver for resolve namespace conflict</param>
         /// <returns></returns>
-        T CreateNodeFromXml(XmlElement elNode, SaveContext context);
+        T CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver = null);
     }
 
     /// <summary>
@@ -204,7 +206,7 @@ namespace Dynamo.Models
                 constructor = t.GetDefaultConstructor<NodeModel>();
             }
 
-            public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
+            public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver)
             {
                 var node = CreateNode();
                 node.Deserialize(elNode, context);
@@ -244,7 +246,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool LoadNodeModelInstanceByType(Type type, XmlElement elNode, SaveContext context, out NodeModel node)
+        private bool LoadNodeModelInstanceByType(Type type, XmlElement elNode, SaveContext context, ElementResolver resolver, out NodeModel node)
         {
             INodeLoader<NodeModel> data;
             if (!GetNodeSourceFromType(type, out data))
@@ -253,7 +255,7 @@ namespace Dynamo.Models
                 return false;
             }
 
-            node = data.CreateNodeFromXml(elNode, context);
+            node = data.CreateNodeFromXml(elNode, context, resolver);
             return true;
         }
 
@@ -321,7 +323,7 @@ namespace Dynamo.Models
         /// <param name="elNode"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context)
+        public NodeModel CreateNodeFromXml(XmlElement elNode, SaveContext context, ElementResolver resolver)
         {
             XmlAttribute typeAttrib = elNode.Attributes["type"];
             string typeName = Nodes.Utilities.PreprocessTypeName(typeAttrib.Value);
@@ -329,7 +331,7 @@ namespace Dynamo.Models
             Type type;
             NodeModel node;
             if (ResolveType(typeName, out type)
-                && LoadNodeModelInstanceByType(type, elNode, context, out node))
+                && LoadNodeModelInstanceByType(type, elNode, context, resolver, out node))
             {
                 return node;
             }

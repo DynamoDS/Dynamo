@@ -16,7 +16,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Wpf;
-using Dynamo.Wpf.Rendering;
+using Dynamo.Wpf.Rendering; 
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoWatch3D.Properties;
 using ProtoCore.AST.AssociativeAST;
@@ -36,14 +36,9 @@ namespace Dynamo.Nodes
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
 
-            var vmParams = new Watch3DViewModelStartupParams()
-            {
-                Model = dynamoViewModel.Model,
-                Factory = dynamoViewModel.RenderPackageFactoryViewModel.Factory,
-                ViewModel = dynamoViewModel,
-                IsActiveAtStart = true,
-                Name = string.Format("{0} Preview", watch3dModel.GUID)
-            };
+            var dynamoModel = dynamoViewModel.Model;
+
+            var vmParams = new Watch3DViewModelStartupParams(dynamoModel, dynamoViewModel, string.Format("{0} Preview", watch3dModel.GUID));
 
             model.viewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
             if (model.initialCameraData != null)
@@ -273,7 +268,7 @@ namespace Dynamo.Nodes
 
         }
 
-        protected override void RequestVisualUpdateAsyncCore(
+        internal override void RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // No visualization update is required for this node type.

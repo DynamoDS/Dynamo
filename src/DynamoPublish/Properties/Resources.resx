@@ -187,6 +187,6 @@
     <value>Uploading...</value>
   </data>
   <data name="WorkspacesSendSucceededServerResponse" xml:space="preserve">
-    <value>{"message":"Workspaces saved."}</value>
+    <value>/customize-[0-9,a-z]*</value>
   </data>
 </root>

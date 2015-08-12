@@ -7,6 +7,7 @@ using DSCoreNodesUI;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models.NodeLoaders
 {
@@ -22,7 +23,7 @@ namespace Dynamo.Models.NodeLoaders
             this.libraryServices = libraryServices;
         }
 
-        public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
+        public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context, ElementResolver resolver)
         {
             string assembly = "";
             string function;

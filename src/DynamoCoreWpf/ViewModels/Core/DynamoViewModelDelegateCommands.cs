@@ -39,7 +39,6 @@ namespace Dynamo.ViewModels
             DeleteCommand = new DelegateCommand(Delete, CanDelete);
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
-            ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
@@ -68,8 +67,6 @@ namespace Dynamo.ViewModels
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
-            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
-            ToggleOrbitCommand = new DelegateCommand(ToggleOrbit, CanToggleOrbit);
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
@@ -116,7 +113,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand AlignSelectedCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
-        public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
@@ -142,8 +138,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
-        public DelegateCommand TogglePanCommand { get; set; }
-        public DelegateCommand ToggleOrbitCommand { get; set; }
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }

@@ -1,0 +1,19 @@
+<Workspace Version="0.8.2.1957" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.StringInput guid="a181b808-f174-4d66-89c6-f80c2522bc86" type="Dynamo.Nodes.StringInput" nickname="String" x="504.497824596156" y="-596.180143538544" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.String>Less is more</System.String>
+      <System.String value="Less is more" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Watch guid="7df698c7-4c0a-4b94-b41e-ce35452603a3" type="Dynamo.Nodes.Watch" nickname="Watch" x="662.097824596156" y="-555.380143538544" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a181b808-f174-4d66-89c6-f80c2522bc86" start_index="0" end="7df698c7-4c0a-4b94-b41e-ce35452603a3" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

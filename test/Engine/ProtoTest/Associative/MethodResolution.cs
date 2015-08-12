@@ -8,6 +8,7 @@ namespace ProtoTest.Associative
     class MethodResolution : ProtoTestBase
     {
         [Test]
+        [Category("DSDefinedClass")]
         public void SimpleCtorResolution01()
         {
             String code =
@@ -19,6 +20,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void SimpleCtorResolution02()
         {
             String code =
@@ -32,6 +34,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void SimpleCtorResolution03()
         {
             String code =
@@ -43,6 +46,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void SimpleCtorResolution04()
         {
             String code =
@@ -53,6 +57,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverload1()
         {
             string code =
@@ -64,6 +69,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverload2()
         {
             string code =
@@ -75,6 +81,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverload3()
         {
             string code =
@@ -86,6 +93,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverload4()
         {
             string code =
@@ -97,6 +105,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodResolutionOverInheritance()
         {
             string code =
@@ -108,6 +117,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverlaodAndArrayInput1()
         {
             string code =
@@ -119,6 +129,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverlaodAndArrayInput2()
         {
             string code =
@@ -130,6 +141,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverlaodAndArrayInput3()
         {
             string code =
@@ -140,6 +152,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverlaodAndArrayInput4()
         {
             string code =
@@ -153,6 +166,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverlaodAndArrayInput4Min()
         {
             string code =
@@ -165,6 +179,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         public void TestStaticDispatchOnArray()
         {
@@ -180,6 +195,7 @@ namespace ProtoTest.Associative
         [Test]
         [Category("Method Resolution")]
         [Category("Escalate")]
+        [Category("DSDefinedClass")]
         public void TestStaticDispatchOnEmptyArray()
         {
             string code =
@@ -191,6 +207,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverlaodAndArrayInput5()
         {
             string code =
@@ -201,6 +218,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodOverlaodAndArrayInput6()
         {
             string code =
@@ -211,6 +229,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodWithArrayInput1()
         {
             string code = @"                            class A                            {                            }                            class B extends A                            {                            }                            def Test(arr : A[])                            {                                    return = 123;                            }                            a = {B.B(), B.B(), B.B()};                            val = Test(a);                            ";
@@ -221,6 +240,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodWithArrayInput2()
         {
             string code = @"                            class A                            {                            }                            class B extends A                            {                            }                            def Test(arr : A[])                            {                                    return = 123;                            }                            a = {B.B(), A.A(), B.B()};                            val = Test(a);                            ";
@@ -232,6 +252,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
+        [Category("DSDefinedClass")]
         public void TestMethodWithArrayInputOverload()
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                                def foo(x : double[]) 	                            { return = 2; }	                            def foo(x : double[][]) 	                            { return = 3; }                            }                            arr = 1..20..2;                            val = A.A().foo(arr);                            ";
@@ -243,6 +264,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
+        [Category("DSDefinedClass")]
         public void TestMethodWithArrayInputOverloadDirectType()
         {
             string code = @"                            class A                            {	                            def foo(x : int)                                { return = 1; }                                def foo(x : int[]) 	                            { return = 2; }	                            def foo(x : int[][]) 	                            { return = 3; }                            }                            arr = 1..20..2;                            val = A.A().foo(arr);                            ";
@@ -253,6 +275,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestMethodWithOverrides()
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                        a = A.A();                            val1 = a.foo(0.0);                                                      //  b = B.B();                                                      //  val2 =b.foo(0.0);                            ";
@@ -263,6 +286,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestOverridenMethod()
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                      //  a = A.A();                          //  val1 = a.foo(0.0);                                                      b = B.B();                                                      val2 =b.foo(0.0);                            ";

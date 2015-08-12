@@ -19,6 +19,7 @@
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
+        xmlns:watch3D="clr-namespace:Dynamo.Wpf.ViewModels.Watch3D"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -29,6 +30,7 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
+        LostFocus="DynamoView_LostFocus"
         Background="#FF353535"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
@@ -93,7 +95,7 @@
 
         <KeyBinding Key="B"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="W"
                     Modifiers="Control"
@@ -155,7 +157,8 @@
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="P"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=TogglePanCommand}" />
+                    Command="{Binding Path=DataContext.BackgroundPreviewViewModel.TogglePanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+
         <KeyBinding Key="F5"
                     Modifiers="Shift"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -167,7 +170,7 @@
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
         <KeyBinding Key="T"
                     Modifiers="Control"
-                    Command="{Binding ShowNewPresetsDialogCommand}"/>
+                    Command="{Binding Path=DataContext.ShowNewPresetsDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -583,7 +586,7 @@
                                       IsChecked="{Binding Path=BackgroundPreviewViewModel.CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
-                                      Command="{Binding ToggleCanNavigateBackgroundCommand}" />
+                                      Command="{Binding Path=BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
 

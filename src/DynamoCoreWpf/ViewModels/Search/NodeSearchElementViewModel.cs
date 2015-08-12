@@ -44,6 +44,20 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(OnClicked);            
         }
 
+        /// <summary>
+        /// Creates a copy of NodeSearchElementViewModel.
+        /// </summary>
+        public NodeSearchElementViewModel(NodeSearchElementViewModel copyElement)
+        {
+            if (copyElement == null)
+                throw new ArgumentNullException();
+
+            Model = copyElement.Model;
+            Clicked = copyElement.Clicked;
+            RequestBitmapSource = copyElement.RequestBitmapSource;
+            ClickedCommand = copyElement.ClickedCommand;
+        }
+
         private void ModelOnVisibilityChanged()
         {           
             RaisePropertyChanged("Visibility");

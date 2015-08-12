@@ -981,6 +981,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestProtoASTExecute_ClassDecl_PropertyAccess_01()
         {
 
@@ -1062,6 +1063,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestProtoASTExecute_ClassDecl_MemFunctionCall_01()
         {
 
@@ -1407,6 +1409,7 @@ namespace ProtoTest.ProtoAST
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestCodeGenDS_ClassDecl_PropertyAccess_01()
         {
 
@@ -1486,6 +1489,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestCodeGenDS_ClassDecl_MemFunctionCall_01()
         {
 

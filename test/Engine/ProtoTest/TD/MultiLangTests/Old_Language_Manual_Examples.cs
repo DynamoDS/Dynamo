@@ -12,6 +12,7 @@ namespace ProtoTest.TD.MultiLangTests
         string importPath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void Test_4_4_properties_1()
         {
@@ -99,6 +100,7 @@ g = d[f+1]; // c
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void Test_4_12_isRectangular()
         {

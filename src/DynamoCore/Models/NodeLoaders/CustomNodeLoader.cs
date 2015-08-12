@@ -4,6 +4,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models.NodeLoaders
 {
@@ -21,7 +22,7 @@ namespace Dynamo.Models.NodeLoaders
             this.isTestMode = isTestMode;
         }
         
-        public Function CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
+        public Function CreateNodeFromXml(XmlElement nodeElement, SaveContext context, ElementResolver resolver)
         {
             XmlNode idNode =
                 nodeElement.ChildNodes.Cast<XmlNode>()

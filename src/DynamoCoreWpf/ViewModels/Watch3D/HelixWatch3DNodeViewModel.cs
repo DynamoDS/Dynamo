@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml;
@@ -41,7 +42,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             node.VisibleUpstreamNodes(gathered);
 
             gathered.ForEach(n => n.IsUpdated = true);
-            gathered.ForEach(n => n.RequestVisualUpdateAsync(model.Scheduler, model.EngineController, factory));
+            gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
         }
 
         protected override void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -79,10 +80,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             base.OnNodePropertyChanged(sender, e);
         }
 
-        protected override void OnRenderPackagesUpdated(NodeModel updatedNode,
+        protected override void OnRenderPackagesUpdated(Guid nodeGuid,
             IEnumerable<IRenderPackage> renderPackages)
         {
-            if (node == null) return;
+            var updatedNode = model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == nodeGuid);
+            if (updatedNode == null) return;
 
             var visibleUpstream = new List<NodeModel>();
             node.VisibleUpstreamNodes(visibleUpstream);
@@ -92,7 +94,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
             }
 
-            base.OnRenderPackagesUpdated(updatedNode, renderPackages);
+            base.OnRenderPackagesUpdated(nodeGuid, renderPackages);
         }
 
         protected override void OnWorkspaceSaving(XmlDocument doc)
