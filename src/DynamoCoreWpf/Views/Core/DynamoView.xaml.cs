@@ -116,9 +116,11 @@ namespace Dynamo.Controls
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
-            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            {
+                loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+            }
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += Log;
@@ -1558,6 +1560,10 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
+            }
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
+            {
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
         }
     }
