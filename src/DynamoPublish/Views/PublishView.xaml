@@ -58,9 +58,9 @@
                 BorderThickness="0,0,0,1"
                 Margin="-10,0,-10,-10" />
 
-        <Grid Name="gridNameAndDescription"
-              Grid.Column="1"
-              Grid.Row="0">
+        <Grid Grid.Column="1"
+              Grid.Row="0"
+              Name="gridNameAndDescription">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
