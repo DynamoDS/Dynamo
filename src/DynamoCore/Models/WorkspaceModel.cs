@@ -521,7 +521,8 @@ namespace Dynamo.Models
             IEnumerable<AnnotationModel> a,
             WorkspaceInfo info, 
             NodeFactory factory,
-            IEnumerable<PresetModel> presets)
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver)
         {
             guid = Guid.NewGuid();
 
@@ -547,18 +548,10 @@ namespace Dynamo.Models
             NodeFactory = factory;
 
             this.presets = new List<PresetModel>(presets);
-            // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
-            ElementResolver = new ElementResolver();
-            foreach (var node in nodes)
-            {
-                RegisterNode(node);
+            ElementResolver = resolver;
 
-                var cbn = node as CodeBlockNodeModel;
-                if (cbn != null && cbn.ElementResolver != null)
-                {
-                    ElementResolver.CopyResolutionMap(cbn.ElementResolver);
-                }
-            }
+            foreach (var node in nodes)
+                RegisterNode(node);
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
@@ -1286,7 +1279,7 @@ namespace Dynamo.Models
                         code,
                         System.Guid.NewGuid(), 
                         totalX / nodeCount,
-                        totalY / nodeCount, engineController.LibraryServices);
+                        totalY / nodeCount, engineController.LibraryServices, ElementResolver);
                     undoHelper.RecordCreation(codeBlockNode);
                    
                     AddAndRegisterNode(codeBlockNode, false);
@@ -1663,7 +1656,7 @@ namespace Dynamo.Models
             }
             else // Other node types.
             {
-                NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
+                NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo, ElementResolver);
                 
                 AddAndRegisterNode(nodeModel);
                 

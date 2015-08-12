@@ -528,6 +528,7 @@ namespace Dynamo.Core
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
                 nodeGraph.Presets,              
+                nodeGraph.ElementResolver,
                 workspaceInfo);
 
             
@@ -1100,6 +1101,7 @@ namespace Dynamo.Core
                     Enumerable.Empty<NoteModel>(),
                     newAnnotations,
                     Enumerable.Empty<PresetModel>(),
+                    currentWorkspace.ElementResolver,
                     new WorkspaceInfo()
                     {
                         X = 0,
@@ -1109,8 +1111,7 @@ namespace Dynamo.Core
                         Description = args.Description,
                         ID = newId.ToString(),
                         FileName = string.Empty
-                    },
-                    currentWorkspace.ElementResolver);
+                    });
                 
                 newWorkspace.HasUnsavedChanges = true;
 

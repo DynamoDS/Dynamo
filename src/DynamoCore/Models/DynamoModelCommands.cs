@@ -73,7 +73,7 @@ namespace Dynamo.Models
             if (command.NodeXml != null)
             {
                 // command was deserialized, we must create the node directly
-                return NodeFactory.CreateNodeFromXml(command.NodeXml, SaveContext.File);
+                return NodeFactory.CreateNodeFromXml(command.NodeXml, SaveContext.File, currentWorkspace.ElementResolver);
             }
 
             // legacy command, hold on to your butts

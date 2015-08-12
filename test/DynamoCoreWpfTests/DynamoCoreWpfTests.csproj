@@ -86,6 +86,7 @@
     </Compile>
     <Compile Include="CustomNodeTests.cs" />
     <Compile Include="DateTimeTests.cs" />
+    <Compile Include="ElementResolverTests.cs" />
     <Compile Include="NodeToCodeTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="HelixWatch3DViewModelTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
+    <Compile Include="WorkspaceGeneralOperations.cs" />
     <Compile Include="WorkspaceOpeningTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
   </ItemGroup>

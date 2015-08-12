@@ -126,6 +126,7 @@ limitations under the License.
     <Compile Include="Interfaces\ICustomNodeWorkspaceModel.cs" />
     <Compile Include="Interfaces\IRenderPackageSource.cs" />
     <Compile Include="Interfaces\IWorkspaceModel.cs" />
+    <Compile Include="Models\NodeLoaders\InputNodeLoader.cs" />
     <Compile Include="Rendering\DefaultRenderPackageFactory.cs" />
     <Compile Include="Extensions\ExtensionDefinition.cs" />
     <Compile Include="Extensions\IExtensionLoader.cs" />
