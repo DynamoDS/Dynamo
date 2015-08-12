@@ -40,7 +40,7 @@ namespace Dynamo.Publish.Views
             System.Windows.Clipboard.SetText(textBoxShareLink.Text);
         }
 
-        private void OnButtonManageClick(object sender, RoutedEventArgs e)
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Diagnostics.Process.Start(viewModel.ManagerURL);
         }
