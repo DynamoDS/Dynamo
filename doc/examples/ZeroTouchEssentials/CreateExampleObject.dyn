@@ -1,0 +1,35 @@
+<Workspace Version="0.7.0.21303" X="-348.421464160364" Y="-55.9888810586649" zoom="0.747692817123325" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b8b8fd4f-a73d-486d-a3bb-dbde4d352320" nickname="ZeroTouchEssentials.ByTwoDoubles" x="627.2435752235" y="320.835322366661" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ZeroTouchEssentials\bin\Release\ZeroTouchEssentials.dll" function="ZeroTouchEssentials.ZeroTouchEssentials.ByTwoDoubles@double,double" />
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="31fd8954-af25-4bdd-9a94-d2f4deaf61da" nickname="Double Slider" x="400.769106758193" y="286.953315273426" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>33.0824287188193</System.Double>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="4795bd09-9ce4-4f3e-8919-6696aa6254c1" nickname="Double Slider" x="402.552370289416" y="438.530715427372" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>63.8007217242715</System.Double>
+      <Range min="0" max="100" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="43114736-adea-4fd6-ac08-db0e5771da05" nickname="Watch" x="962.497119093404" y="171.041185743938" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="beb28694-43ca-416d-8df6-7e28785d3b90" nickname="ZeroTouchEssentials.A" x="983.896281468079" y="442.097242489818" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ZeroTouchEssentials\bin\Release\ZeroTouchEssentials.dll" function="ZeroTouchEssentials.ZeroTouchEssentials.A" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="164b9cef-e231-4b71-be76-1b88f795b576" nickname="ZeroTouchEssentials.B" x="985.679544999302" y="320.835322366661" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ZeroTouchEssentials\bin\Release\ZeroTouchEssentials.dll" function="ZeroTouchEssentials.ZeroTouchEssentials.B" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="e5a78d5c-add2-4dd5-9e88-2574c9c00ebc" nickname="Watch" x="1299.53392649453" y="197.790138712282" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="46ae01f5-5ba9-4f9c-89c4-75f3ee3d5550" nickname="Watch" x="1310.23350768187" y="647.172548580451" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="78933c44-3d8f-4d1a-bd17-06bac3457ab2" nickname="ZeroTouchEssentials.ReturnMultiExample" x="1381.56404893078" y="349.367538866228" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ZeroTouchEssentials\bin\Release\ZeroTouchEssentials.dll" function="ZeroTouchEssentials.ZeroTouchEssentials.ReturnMultiExample@double,double" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="646d8b54-e860-4d2d-80c1-7b025399ebcb" nickname="Watch" x="1759.61591755004" y="434.964188364927" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="525d1df2-5591-42b0-a1d9-ec4c82c18894" nickname="Watch" x="1756.04939048759" y="310.135741179324" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b8b8fd4f-a73d-486d-a3bb-dbde4d352320" start_index="0" end="43114736-adea-4fd6-ac08-db0e5771da05" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8b8fd4f-a73d-486d-a3bb-dbde4d352320" start_index="0" end="164b9cef-e231-4b71-be76-1b88f795b576" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8b8fd4f-a73d-486d-a3bb-dbde4d352320" start_index="0" end="beb28694-43ca-416d-8df6-7e28785d3b90" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31fd8954-af25-4bdd-9a94-d2f4deaf61da" start_index="0" end="b8b8fd4f-a73d-486d-a3bb-dbde4d352320" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4795bd09-9ce4-4f3e-8919-6696aa6254c1" start_index="0" end="b8b8fd4f-a73d-486d-a3bb-dbde4d352320" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="beb28694-43ca-416d-8df6-7e28785d3b90" start_index="0" end="46ae01f5-5ba9-4f9c-89c4-75f3ee3d5550" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="beb28694-43ca-416d-8df6-7e28785d3b90" start_index="0" end="78933c44-3d8f-4d1a-bd17-06bac3457ab2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="164b9cef-e231-4b71-be76-1b88f795b576" start_index="0" end="e5a78d5c-add2-4dd5-9e88-2574c9c00ebc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="164b9cef-e231-4b71-be76-1b88f795b576" start_index="0" end="78933c44-3d8f-4d1a-bd17-06bac3457ab2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="78933c44-3d8f-4d1a-bd17-06bac3457ab2" start_index="0" end="525d1df2-5591-42b0-a1d9-ec4c82c18894" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="78933c44-3d8f-4d1a-bd17-06bac3457ab2" start_index="1" end="646d8b54-e860-4d2d-80c1-7b025399ebcb" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
