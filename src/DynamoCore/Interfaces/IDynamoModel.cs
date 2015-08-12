@@ -15,7 +15,6 @@ namespace Dynamo.Interfaces
 
         event Action<WorkspaceModel> WorkspaceCleared;
         event DynamoModelHandler ShutdownStarted;
-        event Action CleaningUp;
         event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         event Action<WorkspaceModel> WorkspaceAdded;
         event Action<WorkspaceModel> WorkspaceRemoved;
