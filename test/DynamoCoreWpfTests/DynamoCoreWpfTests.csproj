@@ -129,6 +129,7 @@
     <Compile Include="VisualizationManagerUITests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
+    <Compile Include="WorkspaceGeneralOperations.cs" />
     <Compile Include="WorkspaceOpeningTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
   </ItemGroup>
