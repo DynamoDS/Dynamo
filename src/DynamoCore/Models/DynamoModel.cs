@@ -1744,7 +1744,7 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
-            OnWorkspaceCleared(this, EventArgs.Empty);
+            OnWorkspaceCleared(CurrentWorkspace);
         }
 
         #endregion

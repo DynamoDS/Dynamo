@@ -271,7 +271,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected virtual void OnWorkspaceCleared(object sender, EventArgs e)
+        protected virtual void OnWorkspaceCleared(WorkspaceModel workspace)
         {
             OnClear();
         }

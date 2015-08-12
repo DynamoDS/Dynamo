@@ -11,7 +11,7 @@ namespace Dynamo.Interfaces
         IEnumerable<WorkspaceModel> Workspaces { get; }
         WorkspaceModel CurrentWorkspace { get; }
 
-        event EventHandler WorkspaceCleared;
+        event Action<WorkspaceModel> WorkspaceCleared;
         event DynamoModelHandler ShutdownStarted;
         event Action CleaningUp;
         event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;

@@ -650,7 +650,7 @@ namespace Dynamo.ViewModels
             this.AddToRecentFiles(model.FileName);
         }
 
-        private void ModelWorkspaceCleared(object sender, EventArgs e)
+        private void ModelWorkspaceCleared(WorkspaceModel workspace)
         {
             this.UndoCommand.RaiseCanExecuteChanged();
             this.RedoCommand.RaiseCanExecuteChanged();
