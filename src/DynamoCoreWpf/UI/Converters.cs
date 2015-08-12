@@ -1580,7 +1580,9 @@ namespace Dynamo.Controls
 
             // if the number of directories deep exceeds threshold
             if (str.Length - str.Replace(@"\", "").Length >= 5)
+            {
                 return ShortenNestedFilePath(str);
+            }
 
             return str;
         }
