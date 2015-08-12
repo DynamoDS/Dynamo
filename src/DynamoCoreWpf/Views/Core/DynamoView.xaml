@@ -442,7 +442,7 @@
                                   InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
-                                  Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
+                                  Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
                         <MenuItem Focusable="False"
