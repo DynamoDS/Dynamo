@@ -80,6 +80,15 @@ namespace Dynamo.Models
             WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name);
         }
 
+        public event Action<WorkspaceModel> WorkspaceRemoving;
+        protected virtual void OnWorkspaceRemoving(WorkspaceModel obj)
+        {
+            var handler = WorkspaceRemoving;
+            if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceRemoving(obj.Guid, obj.Name);
+        }
+
         public event Action<WorkspaceModel> WorkspaceRemoved;
         protected virtual void OnWorkspaceRemoved(WorkspaceModel obj)
         {
