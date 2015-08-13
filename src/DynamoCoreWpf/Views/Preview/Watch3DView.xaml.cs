@@ -1257,7 +1257,9 @@ namespace Dynamo.Controls
             if (args == null) return;
             if (args.Viewport == null) return;
 
-            var viewModel = DataContext as DynamoViewModel;
+            var contextViewModel = DataContext as IWatchViewModel;
+            var viewModel = contextViewModel.ViewModel;
+            
             foreach (var node in viewModel.Model.CurrentWorkspace.Nodes)
             {
                 var foundNode = node.AstIdentifierBase.Contains(((GeometryModel3D) e.OriginalSource).Name);
