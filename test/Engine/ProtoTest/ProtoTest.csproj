@@ -109,6 +109,7 @@
     <Compile Include="Associative\RedefinitionExpression.cs" />
     <Compile Include="Associative\ReferenceCount.cs" />
     <Compile Include="Associative\ReplicatorTest.cs" />
+    <Compile Include="Associative\SimpleVerification.cs" />
     <Compile Include="Associative\SSATransformTest.cs" />
     <Compile Include="Associative\TypeSystemTests.cs" />
     <Compile Include="ComponentTest\CompileAndExecute.cs" />
