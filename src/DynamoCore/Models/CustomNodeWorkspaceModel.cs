@@ -41,6 +41,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
                 Enumerable.Empty<PresetModel>(),
+                new ElementResolver(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
@@ -49,20 +50,15 @@ namespace Dynamo.Models
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
             IEnumerable<PresetModel> presets,
-            WorkspaceInfo info,
-            ElementResolver elementResolver = null) 
-            : base(e, n,a, info, factory,presets)
+            ElementResolver elementResolver, 
+            WorkspaceInfo info)
+            : base(e, n,a, info, factory,presets, elementResolver)
         {
             HasUnsavedChanges = false;
 
             CustomNodeId = Guid.Parse(info.ID);
             Category = info.Category;
             Description = info.Description;
-
-            if (elementResolver != null)
-            {
-                ElementResolver.CopyResolutionMap(elementResolver);
-            }
             PropertyChanged += OnPropertyChanged;
         }
 

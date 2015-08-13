@@ -18,6 +18,7 @@ namespace Dynamo.Publish
         private PublishModel publishModel;
         private Menu dynamoMenu;
         private MenuItem extensionMenuItem;
+        private MenuItem manageCustomizersMenuItem;
 
         #region IViewExtension implementation
 
@@ -47,7 +48,10 @@ namespace Dynamo.Publish
 
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
+            manageCustomizersMenuItem = GenerateManageCustomizersMenuItem();
+
             p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
+            p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
         }
 
         public void Shutdown()
@@ -58,6 +62,7 @@ namespace Dynamo.Publish
         public void Dispose()
         {
             ClearMenuItem(extensionMenuItem);
+            ClearMenuItem(manageCustomizersMenuItem);
         }
 
         #endregion
@@ -92,6 +97,19 @@ namespace Dynamo.Publish
                     PublishView publishWindow = new PublishView(publishViewModel);
                     publishWindow.ShowDialog();
                 };
+
+            return item;
+        }
+
+        private MenuItem GenerateManageCustomizersMenuItem()
+        {
+            MenuItem item = new MenuItem();
+            item.Header = Resources.ManageButtonTitle;
+
+            item.Click += (sender, args) =>
+            {
+                System.Diagnostics.Process.Start(publishViewModel.ManagerURL);
+            };
 
             return item;
         }

@@ -42,7 +42,7 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
+        public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
         {
@@ -60,17 +60,17 @@ namespace Dynamo.Nodes
             this.ElementResolver = new ElementResolver();
         }
 
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
+        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
+            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices)
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
-            this.ElementResolver = new ElementResolver();
+            this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
@@ -276,10 +276,6 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
-
-            // Lookup namespace resolution map if available and initialize new instance of ElementResolver
-            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
-            ElementResolver = new ElementResolver(resolutionMap);
 
             ProcessCodeDirect();
         }
