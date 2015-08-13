@@ -474,7 +474,8 @@ namespace Dynamo.Core
                     header.Name,
                     header.Category,
                     header.Description, 
-                    path);
+                    path,
+                    header.IsVisibleInDynamoLibrary);
                 return true;
             }
             catch (Exception e)
