@@ -842,6 +842,10 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
                     break;
+
+                case "EnablePresetOptions":
+                    RaisePropertyChanged("EnablePresetOptions");
+                    break;
             }
         }
 
@@ -1432,6 +1436,19 @@ namespace Dynamo.ViewModels
         {
             RaisePropertyChanged("EnablePresetOptions");
             return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        private void CreateNodeFromSelection(object parameter)
+        {
+            CurrentSpaceViewModel.CollapseNodes(
+                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+                    .Select(x => (x as NodeModel)));
+        }
+
+
+        private static bool CanCreateNodeFromSelection(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         /// <summary>

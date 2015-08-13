@@ -42,17 +42,6 @@ namespace Dynamo.PackageManager
 
         #region IExtension members
 
-        public void Load(IPreferences preferences, IPathManager pathManager)
-        {
-            // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadAll(new LoadPackageParams
-            {
-                Preferences = preferences,
-                PathManager = pathManager
-            });
-        }
-
         public void Dispose()
         {
             PackageLoader.MessageLogged -= OnMessageLogged;
@@ -109,6 +98,8 @@ namespace Dynamo.PackageManager
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
                 uploadBuilder, PackageLoader.DefaultPackagesDirectory);
+
+            LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
 
         public void Ready(ReadyParams sp) { }
@@ -121,6 +112,17 @@ namespace Dynamo.PackageManager
         #endregion
 
         #region Private helper methods
+
+        private void LoadPackages(IPreferences preferences, IPathManager pathManager)
+        {
+            // Load Packages
+            PackageLoader.DoCachedPackageUninstalls(preferences);
+            PackageLoader.LoadAll(new LoadPackageParams
+            {
+                Preferences = preferences,
+                PathManager = pathManager
+            });
+        }
 
         private void OnMessageLogged(ILogMessage msg)
         {

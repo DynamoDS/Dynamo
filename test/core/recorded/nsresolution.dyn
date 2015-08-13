@@ -1,0 +1,15 @@
+<Workspace Version="0.8.2.2162" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="NamespaceResolutionTargetTest" resolvedName="FFITarget.A.NamespaceResolutionTargetTest" assemblyName="FFITarget.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="e0968721-46c1-47bd-a3fb-66cc618e5279" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="94" y="209" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="NamespaceResolutionTargetTest.Foo(123);" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

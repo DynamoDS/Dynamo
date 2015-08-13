@@ -18,8 +18,10 @@ namespace Dynamo.Publish
         private InviteViewModel inviteViewModel;
         private InviteModel inviteModel;
         private Menu dynamoMenu;
-        private MenuItem extensionMenuItem;
-        private MenuItem inviteMenuItem;
+        private MenuItem extensionMenuItem; 
+        private MenuItem inviteMenuItem; 
+        private MenuItem manageCustomizersMenuItem;
+ 
 
         #region IViewExtension implementation
 
@@ -54,9 +56,16 @@ namespace Dynamo.Publish
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
             p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
+            
+            manageCustomizersMenuItem = GenerateManageCustomizersMenuItem();
+            p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
 
+            
             inviteMenuItem = GenerateInviteMenuItem();
             p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);            
+ 
+            
+ 
         }
 
         public void Shutdown()
@@ -67,6 +76,8 @@ namespace Dynamo.Publish
         public void Dispose()
         {
             ClearMenuItem(extensionMenuItem,inviteMenuItem);             
+            ClearMenuItem(extensionMenuItem);
+            ClearMenuItem(manageCustomizersMenuItem);
         }
 
         #endregion
@@ -105,7 +116,6 @@ namespace Dynamo.Publish
             return item;
         }
 
-
         /// <summary>
         /// Generates the invite menu item.
         /// </summary>
@@ -123,6 +133,20 @@ namespace Dynamo.Publish
             {
                 InviteView inviteWindow = new InviteView(inviteViewModel);
                 inviteWindow.ShowDialog();
+            };
+
+            return item;
+
+        }
+
+        private MenuItem GenerateManageCustomizersMenuItem()
+        {
+            MenuItem item = new MenuItem();
+            item.Header = Resources.ManageButtonTitle;
+
+            item.Click += (sender, args) =>
+            {
+                System.Diagnostics.Process.Start(publishViewModel.ManagerURL);
             };
 
             return item;

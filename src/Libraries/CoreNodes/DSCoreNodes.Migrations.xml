@@ -24,4 +24,14 @@
     <oldName>DSCore.File.ExportToCSV</oldName>
     <newName>DSCore.IO.File.ExportToCSV</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>DSCore.Display.ByGeometryColor</oldName>
+    <newName>Display.Display.ByGeometryColor</newName>
+    <additionalAttributes>
+      <attribute>
+        <name>assembly</name>
+        <value>Display.dll</value>
+      </attribute>
+    </additionalAttributes>
+  </priorNameHint>
 </migrations>
