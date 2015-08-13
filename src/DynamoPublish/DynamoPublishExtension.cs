@@ -52,6 +52,14 @@ namespace Dynamo.Publish
 
             p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
             p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
+
+            p.WorkspaceChanged += (ws) =>
+            {
+                publishViewModel.CurrentWorkspaceModel = ws;
+
+                var isEnabled = ws is HomeWorkspaceModel && publishModel.HasAuthProvider;
+                extensionMenuItem.IsEnabled = isEnabled;
+            };
         }
 
         public void Shutdown()

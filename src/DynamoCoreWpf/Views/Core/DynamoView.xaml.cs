@@ -55,7 +55,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -460,7 +460,8 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
-            }            
+            }
+
         }
 
         /// <summary>
@@ -996,7 +997,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            viewExtensionManager.MessageLogged -= Log;            
+            viewExtensionManager.MessageLogged -= Log;
         }
 
         // the key press event is being intercepted before it can get to

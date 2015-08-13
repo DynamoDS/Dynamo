@@ -127,6 +127,7 @@
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
+    <Compile Include="ViewExtensionTests.cs" />
     <Compile Include="VisualizationManagerUITests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
