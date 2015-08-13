@@ -1592,8 +1592,14 @@ namespace Dynamo.Controls
             //directories to go down under the root
             const int MAX_FOLDER_DEPTH = 2;
             var name = Path.GetFileName(str);
+            var path = Path.GetDirectoryName(str);
 
-            var currentDirInfo = new DirectoryInfo(Path.GetDirectoryName(str));
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(name))
+            {
+                return str;
+            }
+
+            var currentDirInfo = new DirectoryInfo(path);
             var root = currentDirInfo.Root;
             var rootName = root.FullName;
 
