@@ -535,8 +535,6 @@ namespace Dynamo.Models
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
-            DisposeLogic.IsShuttingDown = false;
-
             // Create a core which is used for parsing code and loading libraries
             var libraryCore =
                 new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
