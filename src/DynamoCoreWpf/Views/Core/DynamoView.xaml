@@ -87,7 +87,7 @@
 
         <KeyBinding Key="D"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="V"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
