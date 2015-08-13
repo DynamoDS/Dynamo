@@ -18,18 +18,16 @@ namespace ProtoTest.Associative
 
             String code =
 @"a = 1;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Obj o = mirror.GetValue("foo");
-            Assert.IsTrue((Int64)o.Payload == 5);
+
+            thisTest.RunAndVerify(code, "a=1");
         }
 
         [Test]
         public void TestAssignment02()
         {
             string code =
-@"a = 2;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 6);
+@"a = 1;b = 2;";
+            thisTest.RunAndVerify(code, "a=1,b=2");
         }
 
         [Test]

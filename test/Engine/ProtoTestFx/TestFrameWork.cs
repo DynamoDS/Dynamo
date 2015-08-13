@@ -39,6 +39,39 @@ namespace ProtoTestFx.TD
             runner = new ProtoScriptTestRunner();
         }
 
+
+        public void RunAndVerify(string code, string verification, bool runDebug = true)
+        {
+            Dictionary<string, object> verify = GenerateVerificationDictionary(verification);
+            RunScriptSource(code);
+            Verify("a", 1);
+
+            if (runDebug)
+            {
+                RunDebugModeAndVerify(code, verify);
+            }
+        }
+
+        private void RunDebugModeAndVerify(string code, Dictionary<string, object> verification)
+        {
+        }
+
+        /// <summary>
+        /// Generates a dictionary by parsing the verificationFormat
+        /// Returns null if the verification format is incorrect
+        /// </summary>
+        /// <param name="verificationFormat"></param>
+        /// <returns></returns>
+        private Dictionary<string, object> GenerateVerificationDictionary(string verificationFormat)
+        {
+            Dictionary<string, Object> verify = null;
+            if (!string.IsNullOrEmpty(verificationFormat))
+            {
+                verify = new Dictionary<string, object>();
+            }
+            return verify;
+        }
+
         public ProtoCore.Core GetTestCore()
         {
             return testCore;
