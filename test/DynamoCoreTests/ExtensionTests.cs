@@ -45,12 +45,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ExtensionIsLoaded()
-        {
-            extMock.Verify(ext => ext.Load(It.IsAny<IPreferences>(), It.IsAny<IPathManager>()));
-        }
-
-        [Test]
         public void ExtensionIsAdded()
         {
             Assert.IsTrue(model.ExtensionManager.Extensions.Contains(extMock.Object));

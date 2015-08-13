@@ -17,6 +17,9 @@ namespace Dynamo.Extensions
         public IAuthProvider AuthProvider { get { return authProvider; } }
         private readonly IAuthProvider authProvider;
 
+        public IPreferences Preferences { get { return preferences; } }
+        private readonly IPreferences preferences;
+        
         public IPathManager PathManager { get { return pathManager; } }
         private readonly IPathManager pathManager;
 
@@ -31,13 +34,14 @@ namespace Dynamo.Extensions
 
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
-            Version dynamoVersion)
+            Version dynamoVersion, IPreferences preferences)
         {
             this.authProvider = provider;
             this.pathManager = pathManager;
             this.libraryLoader = libraryLoader;
             this.customNodeManager = customNodeManager;
             this.dynamoVersion = dynamoVersion;
+            this.preferences = preferences;
         }
     }
 }

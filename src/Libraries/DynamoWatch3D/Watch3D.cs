@@ -61,10 +61,14 @@ namespace Dynamo.Nodes
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
             // model whenever its size is updated. 
-            //Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height 
+            // Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height 
             // and width should correspond to node model and not watch3Dview
             nodeView.SizeChanged += (sender, args) =>
-                model.SetSize(args.NewSize.Width, args.NewSize.Height);
+			    model.SetSize(args.NewSize.Width, args.NewSize.Height);
+
+            // set WatchSize in model
+            View.SizeChanged += (sender, args) => 
+			    model.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
 
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
@@ -251,6 +255,12 @@ namespace Dynamo.Nodes
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
+        public void SetWatchSize(double w, double h)
+        {
+            WatchWidth = w;
+            WatchHeight = h;
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             if (IsPartiallyApplied)
@@ -293,8 +303,6 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
 
-            WatchWidth = Width;
-            WatchHeight = Height;
             viewHelper.SetAttribute("width", WatchWidth);
             viewHelper.SetAttribute("height", WatchHeight);
 
