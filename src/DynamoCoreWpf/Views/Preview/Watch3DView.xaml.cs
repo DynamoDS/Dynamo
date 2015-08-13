@@ -70,7 +70,7 @@ namespace Dynamo.Controls
         private double lightAzimuthDegrees = 45.0;
         private double lightElevationDegrees = 35.0;
         private int renderingTier;
-        private IWatchViewModel viewModel;
+        private IWatchViewModel context;
         private double nearPlaneDistanceFactor = 0.01;
         internal readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
         internal readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
@@ -397,39 +397,39 @@ namespace Dynamo.Controls
         {
             UnregisterButtonHandlers();
 
-            if (viewModel == null) return;
+            if (context == null) return;
 
             UnregisterVisualizationManagerEventHandlers();
 
-            viewModel.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+            context.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
 
-            UnregisterModelEventHandlers(viewModel.ViewModel.Model);
+            UnregisterModelEventHandlers(context.ViewModel.Model);
 
-            UnregisterWorkspaceEventHandlers(viewModel.ViewModel.Model);
+            UnregisterWorkspaceEventHandlers(context.ViewModel.Model);
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-            viewModel = DataContext as IWatchViewModel;
+            context = DataContext as IWatchViewModel;
 
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             RegisterButtonHandlers();
 
             //check this for null so the designer can load the preview
-            if (viewModel == null) return;
+            if (context == null) return;
 
             RegisterVisualizationManagerEventHandlers();
 
             LogVisualizationCapabilities();
 
-            viewModel.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            context.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            RegisterModelEventhandlers(viewModel.ViewModel.Model);
+            RegisterModelEventhandlers(context.ViewModel.Model);
 
-            RegisterWorkspaceEventHandlers(viewModel.ViewModel.Model);  
+            RegisterWorkspaceEventHandlers(context.ViewModel.Model);  
         }
 
         private void RegisterButtonHandlers()
@@ -456,7 +456,7 @@ namespace Dynamo.Controls
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
             var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
 
-            var logger = viewModel.ViewModel.Model.Logger;
+            var logger = context.ViewModel.Model.Logger;
 
             logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
             logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported),
@@ -471,20 +471,20 @@ namespace Dynamo.Controls
 
         private void RegisterVisualizationManagerEventHandlers()
         {
-            viewModel.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-            viewModel.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
-            viewModel.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.DeletionHandled += VisualizationManager_DeletionHandled;
-            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled += VisualizationManager_WorkspaceOpenedClosedHandled;
+            context.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+            context.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+            context.VisualizationManager.SelectionHandled += VisualizationManager_SelectionHandled;
+            context.VisualizationManager.DeletionHandled += VisualizationManager_DeletionHandled;
+            context.VisualizationManager.WorkspaceOpenedClosedHandled += VisualizationManager_WorkspaceOpenedClosedHandled;
         }
 
         private void UnregisterVisualizationManagerEventHandlers()
         {
-            viewModel.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-            viewModel.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            viewModel.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
-            viewModel.VisualizationManager.DeletionHandled -= VisualizationManager_DeletionHandled;
-            viewModel.VisualizationManager.WorkspaceOpenedClosedHandled -= VisualizationManager_WorkspaceOpenedClosedHandled;
+            context.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+            context.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            context.VisualizationManager.SelectionHandled -= VisualizationManager_SelectionHandled;
+            context.VisualizationManager.DeletionHandled -= VisualizationManager_DeletionHandled;
+            context.VisualizationManager.WorkspaceOpenedClosedHandled -= VisualizationManager_WorkspaceOpenedClosedHandled;
         }
 
         private void RegisterModelEventhandlers(DynamoModel model)
@@ -1346,7 +1346,7 @@ namespace Dynamo.Controls
 
         private void LogCameraWarning(string msg, Exception ex)
         {
-            var logger = viewModel.ViewModel.Model.Logger;
+            var logger = context.ViewModel.Model.Logger;
 
             logger.Log(msg, LogLevel.Console);
             logger.Log(msg, LogLevel.File);
