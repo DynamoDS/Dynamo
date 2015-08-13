@@ -52,15 +52,5 @@ namespace Dynamo.Extensions
         /// Action to be invoked when shutdown has begun.
         /// </summary>
         void Shutdown();
-
-        /// <summary>
-        /// Scan the PackagesDirectory for packages and attempt to load all of them.
-        /// </summary>
-        /// <param name="preferences">IPreferences instance, which contains 
-        /// a list of packages used by the Package Manager to determine, 
-        /// which packages are marked for deletion.</param>
-        /// <param name="pathManager">IPathManager instance 
-        /// with set of directories paths needed for Package Manager</param>
-        void Load(IPreferences preferences, IPathManager pathManager);
     }
 }

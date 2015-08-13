@@ -162,5 +162,19 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoCLIexe()
+        {
+            string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
+            var newpath = GetNewFileNameOnTempPath("xml");
+            string commandstring = "/o" + " " + openpath + " " + "/v" + " " + newpath;
+
+            DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
+            var output = new XmlDocument();
+            output.Load(newpath);
+            AssertOutputValuesForGuid("47b78c9b-98b3-4852-935f-0d03f52a65b3", new List<Tuple<int, string>> { Tuple.Create(0, "{1000,2,3,{1,2,3}}") }, output);
+            AssertOutputValuesForGuid("8229dec7-b4ae-463b-a7ac-e36671fefef0", new List<Tuple<int, string>> { Tuple.Create(0, "{Surface,Surface,Surface,Surface,Surface,Surface}") }, output);
+
+        }
     }
 }

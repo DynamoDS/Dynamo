@@ -48,7 +48,6 @@ Preset Graph States
 
 Color shading on surfaces
 -	Expansion on the Color work from 0.8.1 to include smoothly shaded surfaces
--	BPA for Dynamo Pt1 (Solar Analysis independent of Revit) as first demonstration
 
 Node2Code
 -	Select groups of nodes and automatically create Code Block Nodes from the selection
