@@ -13,7 +13,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Convert Nodes to Code</Header>
-		<Body>Select groups of nodes and automatically generate the corresponding Design Script code.</Body>
+		<Body>Select groups of nodes and automatically generate the corresponding DesignScript code.</Body>
 		<ImagePath>Node2Code.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
