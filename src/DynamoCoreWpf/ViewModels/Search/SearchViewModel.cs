@@ -738,14 +738,15 @@ namespace Dynamo.ViewModels
 
             // Clone top node.
             var topNode = new NodeSearchElementViewModel(MakeNodeSearchElementVM(nodes.First()));
-            topNode.IsSelected = true;
-            selectionNavigator.UpdateRootCategories(SearchRootCategories, topNode);          
+            topNode.IsTopResult = true;
 
             SortSearchCategoriesChildren();
 
             var topCategory = new SearchCategory("Top Result", true);
             topCategory.AddMemberToGroup(topNode);
             searchRootCategories.Insert(0, topCategory);
+
+            selectionNavigator.UpdateRootCategories(SearchRootCategories);
         }
 
         private void SortSearchCategoriesChildren()

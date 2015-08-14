@@ -99,22 +99,8 @@
                 </Border>
             </HierarchicalDataTemplate>
 
-            <DataTemplate x:Key="TopCategoryDataTemplate">
-                <Border Background="{StaticResource LibraryItemHostBackground}"
-                        DataContext="{Binding Path=MemberGroups[0]}">
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding FullyQualifiedName}"
-                                   Foreground="{StaticResource NestedMemberTextColor}"
-                                   FontSize="12"
-                                   Margin="16,8,0,8" />
-                        <Border BorderBrush="Yellow"
-                                BorderThickness="2,0,0,0">
-                            <ContentPresenter Content="{Binding Members[0]}"
-                                              ContentTemplate="{StaticResource MemberTemplate}" />
-                        </Border>
-                    </StackPanel>
-                </Border>
-            </DataTemplate>
+            <HierarchicalDataTemplate x:Key="TopCategoryDataTemplate"
+                                      ItemsSource="{Binding Path=MemberGroups}" />
 
             <Style BasedOn="{StaticResource LibraryScrollViewerStyle}"
                    TargetType="{x:Type ScrollViewer}">
