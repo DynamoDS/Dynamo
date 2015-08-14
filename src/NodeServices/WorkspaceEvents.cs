@@ -3,7 +3,7 @@
 namespace DynamoServices
 {
     public delegate void WorkspaceAddedEventHandler(WorkspacesModificationEventArgs args);
-    public delegate void WorkspaceRemovingEventHandler(WorkspacesModificationEventArgs args);
+    public delegate void WorkspaceRemoveStartedEventHandler(WorkspacesModificationEventArgs args);
     public delegate void WorkspaceRemovedEventHandler(WorkspacesModificationEventArgs args);
 
     public static class WorkspaceEvents
@@ -23,7 +23,7 @@ namespace DynamoServices
         /// An event that is triggered when a workspace is being
         /// removed from the DynamoModel's workspaces collection.
         /// </summary>
-        public static event WorkspaceRemovingEventHandler WorkspaceRemoveStarted;
+        public static event WorkspaceRemoveStartedEventHandler WorkspaceRemoveStarted;
         public static void OnWorkspaceRemoveStarted(Guid id, string name)
         {
             if (WorkspaceRemoveStarted != null)
