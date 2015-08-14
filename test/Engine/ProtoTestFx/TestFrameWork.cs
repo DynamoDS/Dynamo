@@ -33,49 +33,115 @@ namespace ProtoTestFx.TD
         bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
+        bool executeInDebugMode = false;
  
         public TestFrameWork()
         {
             runner = new ProtoScriptTestRunner();
         }
 
-
-        public void RunAndVerify(string code, string verification, bool runDebug = true)
+        /// <summary>
+        /// Execute the code and verifies the results given a list of verification pairs
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verifyList"></param>
+        public void RunAndVerify(string code, params KeyValuePair<string, object>[] verifyList)
         {
-            Dictionary<string, object> verify = GenerateVerificationDictionary(verification);
-            RunScriptSource(code);
-            Verify("a", 1);
-
-            if (runDebug)
+            if (!executeInDebugMode)
             {
-                RunDebugModeAndVerify(code, verify);
+                RunScriptSource(code);
+                foreach (KeyValuePair<string, object> v in verifyList)
+                {
+                    Verify(v.Key, v.Value);
+                }
             }
-        }
-
-        private void RunDebugModeAndVerify(string code, Dictionary<string, object> verification)
-        {
+            else
+            {
+                RunDebugStepOverAndVerify(code, verifyList);
+                RunDebugStepInAndVerify(code, verifyList);
+                RunDebugEqualityTest(code);
+            }
         }
 
         /// <summary>
-        /// Generates a dictionary by parsing the verificationFormat
-        /// Returns null if the verification format is incorrect
+        /// Runs the code in debug step over 
+        /// Verifies the results against a list
         /// </summary>
-        /// <param name="verificationFormat"></param>
-        /// <returns></returns>
-        private Dictionary<string, object> GenerateVerificationDictionary(string verificationFormat)
+        /// <param name="code"></param>
+        /// <param name="verification"></param>
+        private void RunDebugStepOverAndVerify(string code, KeyValuePair<string, object>[] verifyList)
         {
-            Dictionary<string, Object> verify = null;
-            if (!string.IsNullOrEmpty(verificationFormat))
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Runs the code in debug step in 
+        /// Verifies the results against a list
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verification"></param>
+        private void RunDebugStepInAndVerify(string code, KeyValuePair<string, object>[] verifyList)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Runs the code in normal execution, debug step over, debug step in 
+        /// Verifies that all 3 runs produce the same output 
+        /// This will not verify against a list of values
+        /// </summary>
+        /// <param name="code"></param>
+        private void RunDebugEqualityTest(string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that there is at least 1 syntax error
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifySyntaxError(string code)
+        {
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
-                verify = new Dictionary<string, object>();
-            }
-            return verify;
+                RunScriptSource(code);
+            });
+            Validity.Assert(testCore.BuildStatus.Errors.Count() > 0);
+            var syntaxErrors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorID.kSyntaxError);
+            Validity.Assert(syntaxErrors.Count() > 0);
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that the specified warning appears at least once
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifyBuildWarning(string code, ProtoCore.BuildData.WarningID warningID)
+        {
+            RunScriptSource(code);
+            Assert.IsTrue(testCore.BuildStatus.Warnings.Any(w => w.ID == warningID));
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that the specified runtime warning appears at least once
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifyRuntimeWarning(string code, ProtoCore.Runtime.WarningID warningID)
+        {
+            RunScriptSource(code);
+            Assert.IsTrue(testRuntimeCore.RuntimeStatus.Warnings.Any(w => w.ID == warningID));
+        }
+    
+        public static KeyValuePair<string, object> BuildVerifyPair(string variable, object verifyValue)
+        {
+            Validity.Assert(variable is string);
+            return new KeyValuePair<string, object>(variable, verifyValue);
         }
 
         public ProtoCore.Core GetTestCore()
         {
             return testCore;
         }
+
 
         public ProtoCore.RuntimeCore GetTestRuntimeCore()
         {

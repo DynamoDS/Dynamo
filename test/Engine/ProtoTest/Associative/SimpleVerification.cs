@@ -18,8 +18,10 @@ namespace ProtoTest.Associative
 
             String code =
 @"a = 1;";
-
-            thisTest.RunAndVerify(code, "a=1");
+            thisTest.RunAndVerify(
+                code, 
+                TestFrameWork.BuildVerifyPair("a", 1)
+                );
         }
 
         [Test]
@@ -27,16 +29,93 @@ namespace ProtoTest.Associative
         {
             string code =
 @"a = 1;b = 2;";
-            thisTest.RunAndVerify(code, "a=1,b=2");
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("a", 1),
+                TestFrameWork.BuildVerifyPair("b", 2)
+                );
+        }
+
+
+        [Test]
+        public void TestFunctionCall01()
+        {
+            string code =
+@"def f(){    return = 1;}x = f();";
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("x", 1)
+                );
+        }
+        
+        [Test]
+        public void TestDouble01()
+        {
+            string code =
+@"a = 1.0;";
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("a", 1.0)
+                );
+        }
+
+        [Test]
+        public void TestDouble02()
+        {
+            string code =
+@"pi = 3.14;e = 2.71828;";
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("pi", 3.14),
+                TestFrameWork.BuildVerifyPair("e", 2.71828)
+                );
+        }
+
+        [Test]
+        public void TestDouble03()
+        {
+            string code =
+@"a = 1.1;b = 2.2;c = 3.3;";
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("a", 1.1),
+                TestFrameWork.BuildVerifyPair("b", 2.2),
+                TestFrameWork.BuildVerifyPair("c", 3.3)
+                );
         }
 
         [Test]
         public void TestArrayAssignment01()
         {
             string code =
-@"a = 2;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", 6);
+@"a = {1,2,3};";
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("a", new object[]{1,2,3})
+                );
+        }
+
+        [Test]
+        public void TestArrayAssignment02()
+        {
+            string code =
+@"i = 2;a = {1, 2, 3 + i};";
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("i", 2),
+                TestFrameWork.BuildVerifyPair("a", new object[] { 1, 2, 5 })
+                );
+        }
+
+        [Test]
+        public void TestNestedArrayAssignment01()
+        {
+            string code =
+@"a = {1,2,{3,4}};";
+            thisTest.RunAndVerify(
+                code,
+                TestFrameWork.BuildVerifyPair("a", new object[] { 1, 2, new object[]{ 3, 4 } } )
+                );
         }
 
 
@@ -48,24 +127,19 @@ namespace ProtoTest.Associative
 // No semicolon
 a = 10 
 ";
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                Object n1 = null;
-                thisTest.RunScriptSource(code);
-                thisTest.Verify("b", n1);
-            });
+            thisTest.RunAndVerifySyntaxError(code);
         }
 
         [Test]
-        [Category("Failure")]
         public void TestCompileWarning01()
         {
             const string code = @"
 a = f();
 ";
-            thisTest.RunScriptSource(code);
-            thisTest.VerifyBuildWarningCount(1);
-            thisTest.Verify("temp", null);
+            thisTest.RunAndVerifyBuildWarning(
+                code, 
+                ProtoCore.BuildData.WarningID.kFunctionNotFound
+                );
         }
 
         [Test]
@@ -78,29 +152,7 @@ a = 2 % 0;
 b = 2.1 % 0;
 ";
 
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
-            thisTest.Verify("b", double.NaN);
-
-            var warnings = thisTest.GetTestRuntimeCore().RuntimeStatus.Warnings;
-            Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.kModuloByZero));
-        }
-
-        [Test]
-        public void TestMultipleCompileWarnings01()
-        {
-            string code =
-@"
-        a : UndefinedType;
-        b : UndefinedType2 = 2;
-        c : UndefinedType3 = null;
-";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("a", null);
-            thisTest.Verify("b", null);
-            thisTest.Verify("c", null);
-
-            thisTest.VerifyRuntimeWarningCount(3);
+            thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.kModuloByZero);
         }
 
         [Test]
@@ -110,31 +162,7 @@ b = 2.1 % 0;
 a = 1;
 b = a;
 a = b;";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
-            Object n1 = null;
-            thisTest.Verify("a", n1);
-            thisTest.Verify("b", n1);
-        }
-
-        [Test]
-        public void TestRuntimeCyclicDependency01()
-        {
-            String errmsg = "1460274 - Sprint 18 : rev 1590 : Update issue : Cyclic dependency cases are going into infinite loop";
-            string src = @"a;
-b;
-[Associative]
-{
-	a = 2;
-        b = a *3;
-        a = 6.5;
-        a = b / 3; 
-}
-";
-            ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            thisTest.VerifyRunScriptSource(src, errmsg);
-            thisTest.Verify("b", null);
-            thisTest.Verify("a", null);
+            thisTest.RunAndVerifyBuildWarning(code, ProtoCore.BuildData.WarningID.kInvalidStaticCyclicDependency);
         }
     }
 }

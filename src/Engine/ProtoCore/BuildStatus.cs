@@ -26,6 +26,12 @@ namespace ProtoCore
 
     namespace BuildData
     {
+        public enum ErrorID
+        {
+            kDefault,
+            kSyntaxError
+        }
+
         public enum WarningID
         {
             kDefault,
@@ -55,6 +61,7 @@ namespace ProtoCore
 
         public struct ErrorEntry
         {
+            public ErrorID ID;
             public string FileName;
             public string Message;
             public int Line;
@@ -460,6 +467,7 @@ namespace ProtoCore
 
             var errorEntry = new BuildData.ErrorEntry
             {
+                ID = BuildData.ErrorID.kSyntaxError,
                 FileName = fileName,
                 Message = localizedMessage,
                 Line = line,
