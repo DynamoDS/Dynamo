@@ -29,12 +29,10 @@ namespace Dynamo.UI.Controls
                 var portVm = generator.ItemFromContainer(child) as PortViewModel;
                 var lineIndex = portVm.PortModel.LineIndex;
                 var multiplier = ((lineIndex == -1) ? itemIndex : lineIndex);
+                var portHeight = portVm.PortModel.Height;
 
-                var childSize = child.DesiredSize;
-                y = multiplier * (childSize.Height == 26 ? childSize.Height :
-                    Configurations.CodeBlockPortHeightInPixels);
-
-                child.Arrange(new Rect(x, y, arrangeSize.Width, childSize.Height));
+                y = multiplier * portHeight;
+                child.Arrange(new Rect(x, y, arrangeSize.Width, portHeight));
                 itemIndex = itemIndex + 1;
             }
 
