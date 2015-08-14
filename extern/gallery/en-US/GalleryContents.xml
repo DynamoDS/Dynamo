@@ -28,7 +28,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Additional Updates and Improvements</Header>
-		<Body>Several improvements have been made to Dynamo, including:&#10;- Localization to twelve languages&#10;- Four new chapters have been added to the Dynamo Primer&#10;- New and updated Nuget packages for developers</Body>
+		<Body>Several improvements have been made to Dynamo, including:&#10;- Localization to twelve languages&#10;- Four new chapters have been added to the Dynamo Primer&#10;- New and updated Nuget packages for developers&#10;- New Command Line Interface for DynamoSandbox.</Body>
 		<ImagePath>Misc.png</ImagePath>
 	</GalleryContent>
 	</GalleryUiContents>
