@@ -59,9 +59,14 @@ namespace Dynamo.DSEngine
             }
 
             string baseDir;
+
             if (File.Exists(assemblyLocation))
+                // There are 2 cases: if assembly exists, then we will use assembly path and try 
+                // to find xml file there.
                 baseDir = Path.GetDirectoryName(Path.GetFullPath(assemblyLocation));
             else
+                // If assembly does not exist, then we will use dynamo directory and try
+                // to find xml file there.
                 baseDir = pathManager.DynamoCoreDirectory;
 
             var xmlFileName = Path.GetFileNameWithoutExtension(assemblyLocation) + ".xml";
