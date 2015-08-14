@@ -1,0 +1,13 @@
+<Workspace Version="0.8.2.2101" X="-199.010596356883" Y="-284.854227456807" zoom="1.13758205229474" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="4036edf8-1246-4213-90df-acf3994c2100" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="307" y="290" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="z1 = [Imperative]&#xA;{&#xA;i=0;&#xA;while(i &lt;10)&#xA;{&#xA;i=i+1;&#xA;}&#xA;return = 1;&#xA;};" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

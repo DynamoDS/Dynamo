@@ -27,6 +27,12 @@ namespace Dynamo.Wpf.Utilities
             nodeViewModel = node;
         }
 
+        internal void Clear()
+        {
+            startPosition = new Point();
+            nodeViewModel = null;
+        } 
+
         internal void HandleMouseMove(FrameworkElement sender, Point currentPosition)
         {
             if (isDragging || nodeViewModel == null)
@@ -36,11 +42,15 @@ namespace Dynamo.Wpf.Utilities
             // Otherwise it means user click on item and there is no need to fire DoDragDrop.
             var deltaX = System.Math.Abs(currentPosition.X - startPosition.X);
             if (deltaX < SystemParameters.MinimumHorizontalDragDistance)
-                return;
+            {
+               return;
+            }
 
             var deltaY = System.Math.Abs(currentPosition.Y - startPosition.Y);
             if (deltaY < SystemParameters.MinimumVerticalDragDistance)
+            {                
                 return;
+            }
 
             StartDrag(sender, nodeViewModel);
 

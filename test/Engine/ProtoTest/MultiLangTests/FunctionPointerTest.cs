@@ -88,6 +88,7 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T05_ClassMemerVarAsFunctionPointer()
         {
             string code = @"
@@ -114,6 +115,7 @@ c = a.x(2, 4.0);	//c = 6.0";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T05_ClassMemerVarAsFunctionPointerDefaultArg()
         {
             string code = @"
@@ -138,6 +140,7 @@ c = a.x(2, 4.0);	//c = 6.0";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T06_ClassMemerVarAsFunctionPointerAssocBlk()
         {
             string code = @"
@@ -170,6 +173,7 @@ c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T07_ClassMemerVarAsFunctionPointerImperBlk()
         {
             string code = @"
@@ -270,6 +274,7 @@ foo = 3;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T12_NegativeTest_UsingGlobalFunctionNameAsMemVarName_Class()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -288,6 +293,7 @@ class A
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T13_NegativeTest_UsingMemFunctionNameAsMemVarName_Class()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -347,6 +353,7 @@ a = foo + 2;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T16_NegativeTest_UsingMemFunctionAsFunctionPtr()
         {
             string code = @"
@@ -443,6 +450,7 @@ a = Point.ByCartesianCoordinates(foo, 1.0, 2.0, 3.0);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T20_FunctionPtrUpdateOnMemVar_1()
         {
             string code = @"
@@ -466,6 +474,7 @@ b = a.x(3);    //b = 3";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Method Resolution")]
         [Category("Failure")]
         public void T21_FunctionPtrUpdateOnMemVar_2()
@@ -494,6 +503,7 @@ a.x = foo2; //b = 4.0";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T22_FunctionPointer_Update()
         {
             string code = @"
@@ -706,6 +716,7 @@ t6:function = foo;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T31_UsedAsMemberVariable()
         {
@@ -744,6 +755,7 @@ r = a.x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T32_UseStaticMemberFunction()
         {
             string code = @"
@@ -763,6 +775,7 @@ r = f(3, 4);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T33_UseStaticMemberFunction()
         {
             string code = @"
@@ -782,6 +795,7 @@ r = f({3, 5}, {7, 9});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T34_UseStaticMemberFunction()
         {
             string code = @"
@@ -802,6 +816,7 @@ r = f(a<1>, b<2>);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T35_UseConstructor()
         {
             string code = @"
@@ -823,6 +838,7 @@ r = f.i;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T36_UseConstructor()
         {
             string code = @"
@@ -843,6 +859,7 @@ r = f.i;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T37_FunctionPointerToProperty()
         {
             string code = @"
@@ -863,6 +880,7 @@ r = fx(c);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T38_FunctionPointerToProperty()
         {
             string code = @"
@@ -883,6 +901,7 @@ r = fx(cs);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T39_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -908,6 +927,7 @@ r = fx(c, 2);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T40_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -934,6 +954,7 @@ r = fx(cs, vs);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T41_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -961,6 +982,7 @@ r = fx(cs<1>, vs<2>);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T42_FunctionPointerToProperty()
         {
             string code = @"
@@ -981,6 +1003,7 @@ r = Evaluate(fx, {c}, true);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T43_FunctionPointerToProperty()
         {
             string code = @"
@@ -1001,6 +1024,7 @@ r = Evaluate(fx, {cs}, true);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T44_FunctionPointerToMemberFunction()
         {
             string code = @"
@@ -1026,6 +1050,7 @@ r = Evaluate(fx, {c, 100}, true);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T45_FunctionPointerToMemberFunction()
         {
             string code = @"

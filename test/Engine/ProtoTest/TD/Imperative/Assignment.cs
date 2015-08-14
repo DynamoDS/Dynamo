@@ -196,6 +196,7 @@ e;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T11_TestInClassScope()
         {
@@ -1014,6 +1015,7 @@ a;b;c;d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T48_MultipleAssignments()
         {
@@ -1144,6 +1146,7 @@ d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T53_Defect_1454691()
         {
@@ -1192,6 +1195,7 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T54_Defect_1454691()
         {
@@ -1270,6 +1274,7 @@ c=[Associative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T55_Defect_1454691()
         {
@@ -1340,6 +1345,7 @@ y4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T56_Defect_1454691()
         {
@@ -1377,6 +1383,7 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T57_Defect_1454691_2()
         {
@@ -1416,6 +1423,7 @@ x2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T58_Defect_1454691_3()
         {
@@ -1648,6 +1656,7 @@ a = null + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T67_DNL_1467458()
         {
             String code =
@@ -1675,6 +1684,7 @@ b;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T67_DNL_1467458_3()
         {
@@ -1710,6 +1720,7 @@ class B{
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T67_DNL_1467458_4()
         {
             String code =
@@ -1739,6 +1750,7 @@ y =z.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T68_DNL_1467523()
         {
             String code =

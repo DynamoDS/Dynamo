@@ -401,6 +401,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         //Test "RemoveDuplicate()"
         public void BIM30_RemoveDuplicate()
         {
@@ -638,6 +639,7 @@ x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void Test_EvaluateFunctionPointer09()
         {
             // Nested call
