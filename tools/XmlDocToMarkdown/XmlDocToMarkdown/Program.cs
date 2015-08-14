@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using System.Reflection;
 
 // modified from : https://gist.github.com/lontivero/593fc51f1208555112e0
 
@@ -14,6 +15,8 @@ namespace Dynamo.Docs
     {
         static void Main(string[] args)
         {
+            var namespaces = GetAllNamespacesInAssemblyWithPublicMembers(args[0]);
+
             var xml = File.ReadAllText(args[0]);
             var doc = XDocument.Parse(xml);
             var md = doc.Root.ToMarkDown();
@@ -21,13 +24,18 @@ namespace Dynamo.Docs
 
             System.IO.File.WriteAllText(@"result.md", md);
         }
+
+        private static IEnumerable<string> GetAllNamespacesInAssemblyWithPublicMembers(string assemblyPath)
+        {
+            var asm = Assembly.LoadFrom(assemblyPath);
+            return asm.GetTypes().Where(t => t.IsPublic).Select(t=>t.Namespace).Distinct();
+        }
     }
 
     static class XmlToMarkdown
     {
-        internal static string ToMarkDown(this XNode e)
-        {
-            var templates = new Dictionary<string, string>
+        private static Dictionary<string,string> templates = 
+            new Dictionary<string, string>
                 {
                     {"doc", "## {0} ##\n\n{1}\n\n"},
                     {"type", "# {0}\n\n{1}\n\n---\n"},
@@ -43,14 +51,20 @@ namespace Dynamo.Docs
                     {"param", "|Name | Description |\n|-----|------|\n|{0}: |{1}|\n" },
                     {"exception", "[[{0}|{0}]]: {1}\n\n" },
                     {"returns", "Returns: {0}\n\n"},
-                    {"none", ""}
+                    {"none", ""},
+                    {"typeparam", ""},
+                    {"c", "_C# code_\n\n```c#\n{0}\n```\n\n"}
                 };
-            var d = new Func<string, XElement, string[]>((att, node) => new[]
+
+        private static Func<string, XElement, string[]> d = 
+            new Func<string, XElement, string[]>((att, node) => new[]
                 {
                     node.Attribute(att).Value, 
                     node.Nodes().ToMarkDown()
                 });
-            var methods = new Dictionary<string, Func<XElement, IEnumerable<string>>>
+
+        private static Dictionary<string, Func<XElement, IEnumerable<string>>> methods = 
+            new Dictionary<string, Func<XElement, IEnumerable<string>>>
                 {
                     {"doc", x=> new[]{
                         x.Element("assembly").Element("name").Value,
@@ -70,11 +84,19 @@ namespace Dynamo.Docs
                     {"exception", x => d("cref", x) },
                     {"returns", x => new[]{x.Nodes().ToMarkDown()}},
                     {"none", x => new string[0]},
+                    {"typeparam", x => d("name", x)},
+                    {"paramref", x => new string[0]},
+                    {"value", x => new string[0]},
+                    {"c", x => new[]{x.Value.ToCodeBlock()}},
+                    {"list", x => new string[0]},
                     // dynamo specific
                     {"notranslation", x => new string[0]},
-                    {"search", x => new string[0]}
+                    {"search", x => new string[0]},
+                    {"filterpriority", x => new string[0]}
                 };
 
+        internal static string ToMarkDown(this XNode e)
+        {    
             string name;
             if (e.NodeType == XmlNodeType.Element)
             {
@@ -97,7 +119,14 @@ namespace Dynamo.Docs
                     var anchor = el.Attribute("cref").Value.StartsWith("!:#");
                     name = anchor ? "seeAnchor" : "seePage";
                 }
+
+                if (!methods.ContainsKey(name))
+                {
+                    return "";
+                }
+
                 var vals = methods[name](el).ToArray();
+
                 string str = "";
                 switch (vals.Length)
                 {
