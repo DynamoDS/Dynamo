@@ -138,6 +138,7 @@
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\InOutPortPanel.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\Prompts\PresetOverwritePrompt.xaml.cs">
@@ -1213,6 +1214,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
-        <MakeDir Directories="$(OutputPath)\viewExtensions\" /> 
+    <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>
 </Project>

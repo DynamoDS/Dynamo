@@ -232,6 +232,7 @@
                       Grid.Column="0"
                       Canvas.ZIndex="20"
                       HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
                       ItemsSource="{Binding Path=InPorts}">
         </ItemsControl>
 
@@ -241,6 +242,7 @@
                       Grid.Column="2"
                       Canvas.ZIndex="20"
                       HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
                       ItemsSource="{Binding Path=OutPorts}">
         </ItemsControl>
 
