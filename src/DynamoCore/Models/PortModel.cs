@@ -75,6 +75,11 @@ namespace Dynamo.Models
             get { return Owner.GetPortModelIndex(this); }
         }
 
+        public int LineIndex
+        {
+            get { return portData.LineIndex; }
+        }
+
         public bool IsConnected
         {
             get; private set;
