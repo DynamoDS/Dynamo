@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,16 +13,29 @@ namespace Dynamo.UI.Controls
     {
         protected override Size ArrangeOverride(Size arrangeSize)
         {
-            int count = 0;
+            if (this.Children.Count <= 0)
+            {
+                // A port list without any port in it.
+                return base.ArrangeOverride(arrangeSize);
+            }
+
+            var itemsControl = WpfUtilities.FindUpVisualTree<ItemsControl>(this);
+            var generator = itemsControl.ItemContainerGenerator;
+
+            int itemIndex = 0;
             double x = 0, y = 0;
             foreach (UIElement child in this.Children)
             {
+                var portVm = generator.ItemFromContainer(child) as PortViewModel;
+                var lineIndex = portVm.PortModel.LineIndex;
+                var multiplier = ((lineIndex == -1) ? itemIndex : lineIndex);
+
                 var childSize = child.DesiredSize;
-                y = count * (childSize.Height == 26 ? childSize.Height :
+                y = multiplier * (childSize.Height == 26 ? childSize.Height :
                     Configurations.CodeBlockPortHeightInPixels);
 
                 child.Arrange(new Rect(x, y, arrangeSize.Width, childSize.Height));
-                count = count + 1;
+                itemIndex = itemIndex + 1;
             }
 
             return base.ArrangeOverride(arrangeSize);
