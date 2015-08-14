@@ -1069,9 +1069,22 @@ namespace Dynamo.ViewModels
             if (Model.Nodes.Count() == 0)
                 return;
 
+            if (Model.Annotations.Count() == 0)
+                DoGraphLayoutNormal();
+            else
+                DoGraphLayoutWithGroups();
+
+            // Fit view to the new graph layout
+            DynamoSelection.Instance.ClearSelection();
+            ResetFitViewToggle(null);
+            FitViewInternal();
+        }
+
+        private void DoGraphLayoutNormal()
+        {
             var graph = new GraphLayout.Graph();
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
-            
+
             foreach (NodeModel x in Model.Nodes)
             {
                 graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
@@ -1084,27 +1097,109 @@ namespace Dynamo.ViewModels
                 models.Add(x, UndoRedoRecorder.UserAction.Modification);
             }
 
+            // Support undo for graph layout command
+            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
+
+            // Sugiyama algorithm steps
+            graph.RemoveCycles();
+            graph.AssignLayers();
+            graph.OrderNodes();
+
+            graph.NormalizeGraphPosition();
+
+            // Assign coordinates to nodes
+            foreach (var x in Model.Nodes)
+            {
+                var n = graph.FindNode(x.GUID);
+                x.X = n.X;
+                x.Y = n.Y;
+                x.ReportPosition();
+            }
+        }
+
+        private void DoGraphLayoutWithGroups()
+        {
+            var graph = new GraphLayout.Graph();
+            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            
+            foreach (AnnotationModel x in Model.Annotations)
+            {
+                // Treat a group as a graph layout node/vertex
+                graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
+                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+            }
+
+            foreach (NodeModel x in Model.Nodes)
+            {
+                AnnotationModel group = Model.Annotations.Where(
+                    s => s.SelectedModels.Contains(x)).ToList().FirstOrDefault();
+
+                // Do not process nodes within groups
+                if (group == null)
+                {
+                    graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
+                    models.Add(x, UndoRedoRecorder.UserAction.Modification);
+                }
+            }
+
+            foreach (ConnectorModel x in Model.Connectors)
+            {
+                AnnotationModel startGroup = null, endGroup = null;
+                startGroup = Model.Annotations.Where(
+                    s => s.SelectedModels.Contains(x.Start.Owner)).ToList().FirstOrDefault();
+                endGroup = Model.Annotations.Where(
+                    s => s.SelectedModels.Contains(x.End.Owner)).ToList().FirstOrDefault();
+
+                // Connector does not belong to any group
+                if ((startGroup == null) && (endGroup == null))
+                    graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
+                
+                // Connector starts from a node within a group
+                else if ((startGroup != null) && (endGroup == null))
+                    graph.AddEdge(startGroup.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
+
+                // Connector ends at a node within a group
+                else if ((startGroup == null) && (endGroup != null))
+                    graph.AddEdge(x.Start.Owner.GUID, endGroup.GUID, x.Start.Center.Y, x.End.Center.Y);
+
+                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+            }
+
+            // Support undo for graph layout command
             WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
             
             // Sugiyama algorithm steps
             graph.RemoveCycles();
             graph.AssignLayers();
             graph.OrderNodes();
-            
-            // Assign coordinates to node models
+
             graph.NormalizeGraphPosition();
-            foreach (var x in Model.Nodes)
+
+            // Assign coordinates to nodes inside groups
+            foreach (var x in Model.Annotations)
             {
                 var id = x.GUID;
-                x.X = graph.FindNode(id).X;
-                x.Y = graph.FindNode(id).Y;
-                x.ReportPosition();
+                double deltaX = graph.FindNode(id).X - x.X;
+                double deltaY = graph.FindNode(id).Y - x.Y;
+                foreach (var n in x.SelectedModels)
+                {
+                    n.X += deltaX;
+                    n.Y += deltaY;
+                    n.ReportPosition();
+                }
             }
 
-            // Fit view to the new graph layout
-            DynamoSelection.Instance.ClearSelection();
-            ResetFitViewToggle(null);
-            FitViewInternal();
+            // Assign coordinates to nodes outside groups
+            foreach (var x in Model.Nodes)
+            {
+                var n = graph.FindNode(x.GUID);
+                if (n != null)
+                {
+                    x.X = n.X;
+                    x.Y = n.Y;
+                    x.ReportPosition();
+                }
+            }
         }
 
         private static bool CanDoGraphAutoLayout(object o)
