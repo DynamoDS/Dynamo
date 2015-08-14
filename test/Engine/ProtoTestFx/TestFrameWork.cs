@@ -86,9 +86,8 @@ namespace ProtoTestFx.TD
         }
 
         /// <summary>
-        /// Runs the code in normal execution, debug step over, debug step in 
+        /// Runs the code in Normal Execution, Debug StepOver, Debug StepIn 
         /// Verifies that all 3 runs produce the same output 
-        /// This will not verify against a list of values
         /// </summary>
         /// <param name="code"></param>
         private void RunDebugEqualityTest(string code)
@@ -112,7 +111,7 @@ namespace ProtoTestFx.TD
         }
 
         /// <summary>
-        /// Executes the code and verifies that the specified warning appears at least once
+        /// Executes the code and verifies that the specified build warning appears at least once
         /// </summary>
         /// <param name="code"></param>
         public void RunAndVerifyBuildWarning(string code, ProtoCore.BuildData.WarningID warningID)
