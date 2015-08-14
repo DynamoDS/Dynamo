@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Reflection;
+using System.Text;
 
 // modified from : https://gist.github.com/lontivero/593fc51f1208555112e0
 
@@ -108,22 +109,69 @@ namespace Dynamo.Docs
 
         private static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
         {
-            var name = string.Format("T:{0}", t.FullName);
-
             var members = xml.Root.Element("members").Elements("member");
-            var names = members.Select(m => m.Attribute("name").Value);
- 
-            var foundType = members.Where(e => e.Attribute("name").Value == name).FirstOrDefault();
-            if (foundType == null)
-            {
-                return;
-            }
 
-            var md = foundType.ToMarkDown();
+            var sb = new StringBuilder();
+
+            sb.AppendLine("#" + t.Name);
+            sb.Append(GetMarkdownForType(members, t.FullName));
+            sb.AppendLine("---");
+
+            sb.AppendLine("##Methods:  ");
+            foreach (var method in t.GetMethods().Where(m => m.IsPublic))
+            {
+                sb.Append(GetMarkdownForMethod(members, t.FullName + "." + method.Name));
+            }
+            sb.AppendLine("---");
+
+            sb.AppendLine("##Properties:  ");
+            foreach (var property in t.GetProperties())
+            {
+                sb.Append(GetMarkdownForProperty(members, t.FullName + "." + property.Name));
+            }
+            sb.AppendLine("---");
+
+            sb.AppendLine("##Events:  ");
+            foreach (var e in t.GetEvents())
+            {
+                sb.Append(GetMarkdownForEvent(members, t.FullName + "." + e.Name));
+            }
+            sb.AppendLine("---");
 
             var fileName = t.Name + ".md";
             var filePath = Path.Combine(folder, t.Name + ".md");
-            System.IO.File.WriteAllText(filePath, md);
+            System.IO.File.WriteAllText(filePath, sb.ToString());
+        }
+
+        private static string GetMarkdownForMethod(IEnumerable<XElement> members, string methodName)
+        {
+            return GetMarkdownForMember(members, string.Format("M:{0}", methodName));
+        }
+
+        private static string GetMarkdownForType(IEnumerable<XElement> members, string typeName)
+        {
+            return GetMarkdownForMember(members, string.Format("T:{0}", typeName));
+        }
+
+        private static string GetMarkdownForProperty(IEnumerable<XElement> members, string propertyName)
+        {
+            return GetMarkdownForMember(members, string.Format("P:{0}", propertyName));
+        }
+
+        private static string GetMarkdownForEvent(IEnumerable<XElement> members, string eventName)
+        {
+            return GetMarkdownForMember(members, string.Format("E:{0}", eventName));
+        }
+
+        private static string GetMarkdownForMember(IEnumerable<XElement> members, string memberName)
+        {
+            var foundType = members.Where(e => e.Attribute("name").Value == memberName).FirstOrDefault();
+            if (foundType == null)
+            {
+                return string.Empty;
+            }
+
+            return foundType.ToMarkDown();
         }
 
         private static IEnumerable<string> GetAllNamespacesInAssemblyWithPublicMembers(Assembly assembly)
@@ -138,11 +186,11 @@ namespace Dynamo.Docs
             new Dictionary<string, string>
                 {
                     {"doc", "## {0} ##\n\n{1}\n\n"},
-                    {"type", "# {0}\n\n{1}\n\n---\n"},
-                    {"field", "##### {0}\n\n{1}\n\n---\n"},
-                    {"property", "##### {0}\n\n{1}\n\n---\n"},
-                    {"method", "##### {0}\n\n{1}\n\n---\n"},
-                    {"event", "##### {0}\n\n{1}\n\n---\n"},
+                    {"type", "# {0}\n\n{1}\n"},
+                    {"field", "##### {0}\n\n{1}\n"},
+                    {"property", "##### {0}\n\n{1}\n"},
+                    {"method", "##### {0}\n\n{1}\n"},
+                    {"event", "##### {0}\n\n{1}\n"},
                     {"summary", "{0}\n\n"},
                     {"remarks", "\n\n>{0}\n\n"},
                     {"example", "_C# code_\n\n```c#\n{0}\n```\n\n"},
@@ -179,9 +227,9 @@ namespace Dynamo.Docs
                     }},
                     {"type", x=>dType("name", x)},
                     {"field", x=> d("name", x)},
-                    {"property", x=> d("name", x)},
-                    {"method",x=>d("name", x)},
-                    {"event", x=>d("name", x)},
+                    {"property", x=> dType("name", x)},
+                    {"method",x=>dType("name", x)},
+                    {"event", x=>dType("name", x)},
                     {"summary", x=> new[]{ x.Nodes().ToMarkDown() }},
                     {"remarks", x => new[]{x.Nodes().ToMarkDown()}},
                     {"example", x => new[]{x.Value.ToCodeBlock()}},
