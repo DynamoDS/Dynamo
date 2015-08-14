@@ -15,20 +15,120 @@ namespace Dynamo.Docs
     {
         static void Main(string[] args)
         {
-            var namespaces = GetAllNamespacesInAssemblyWithPublicMembers(args[0]);
+            var asm = Assembly.LoadFrom(args[0]);
+            var namespaces = GetAllNamespacesInAssemblyWithPublicMembers(asm);
 
-            var xml = File.ReadAllText(args[0]);
-            var doc = XDocument.Parse(xml);
-            var md = doc.Root.ToMarkDown();
-            Console.WriteLine(md);
+            var docsFolder = CreateDocsFolder();
 
-            System.IO.File.WriteAllText(@"result.md", md);
+            var xml = XDocument.Load(args[1]);
+
+            foreach (var ns in namespaces)
+            {
+                var cleanNamespace = ns.Replace('.', '_');
+                var outputDir = Path.Combine(Path.GetFullPath(docsFolder.FullName), cleanNamespace);
+                if (!Directory.Exists(outputDir))
+                {
+                    Directory.CreateDirectory(outputDir);
+                }
+                var publicTypes = asm.GetTypes().Where(t => t.Namespace == ns).Where(t => t.IsPublic);
+
+                foreach (var t in publicTypes)
+                {
+                    GenerateMarkdownDocumentForType(t, outputDir, xml);
+                }
+            }
+
+            GenerateDocYaml();
+
+            //var xml = File.ReadAllText(args[0]);
+            //var doc = XDocument.Parse(xml);
+            //var md = doc.Root.ToMarkDown();
+            //Console.WriteLine(md);
+
+            //System.IO.File.WriteAllText(@"result.md", md);
         }
 
-        private static IEnumerable<string> GetAllNamespacesInAssemblyWithPublicMembers(string assemblyPath)
+        private static DirectoryInfo CreateDocsFolder()
         {
-            var asm = Assembly.LoadFrom(assemblyPath);
-            return asm.GetTypes().Where(t => t.IsPublic).Select(t=>t.Namespace).Distinct();
+            var folderPath = DocRootPath();
+
+            if (Directory.Exists(folderPath))
+            {
+                Directory.Delete(folderPath, true);
+            }
+
+            var docsFolder = Directory.CreateDirectory(folderPath);
+
+            return docsFolder;
+        }
+
+        private static string DocRootPath()
+        {
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "docs");
+        }
+
+        /// <summary>
+        /// Generate the mkdocs.ymp file describing the structura of the documentation.
+        /// </summary>
+        /// <param name="filePath"></param>
+        private static void GenerateDocYaml()
+        {
+            var ymlPath = Path.Combine(Directory.GetParent(DocRootPath()).FullName, "mkdocs.yml");
+            using (var tw = File.CreateText(ymlPath))
+            {
+                tw.WriteLine("site_name: Dynamo");
+                tw.WriteLine("pages:");
+                tw.WriteLine("- Home: index.md");
+                tw.WriteLine("- API:");
+
+                foreach(var dirPath in Directory.GetDirectories(DocRootPath()))
+                {
+                    var di = new DirectoryInfo(dirPath);
+                    var files = di.GetFiles();
+                    if (!files.Any())
+                    {
+                        Console.WriteLine("No documentation files available in {0}", dirPath);
+                        continue;
+                    }
+
+                    tw.WriteLine(string.Format("    - {0}:", di.Name.Replace('_','.')));
+
+                    foreach(var fi in files)
+                    {
+                        var shortFileName = fi.Name.Split('.').First();
+                        var shortDirPath = string.Format("{0}/{1}", di.Name, fi.Name);
+                        tw.WriteLine(string.Format("      - '{0}' : '{1}'", shortFileName, shortDirPath));
+                    }
+                }
+
+                tw.WriteLine("theme: readthedocs");
+                tw.Flush();
+            }
+        }
+
+        private static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
+        {
+            var name = string.Format("T:{0}", t.FullName);
+
+            var members = xml.Root.Element("members").Elements("member");
+            var names = members.Select(m => m.Attribute("name").Value);
+ 
+            var foundType = members.Where(e => e.Attribute("name").Value == name).FirstOrDefault();
+            if (foundType == null)
+            {
+                return;
+            }
+
+            var md = foundType.ToMarkDown();
+
+            var fileName = t.Name + ".md";
+            var filePath = Path.Combine(folder, t.Name + ".md");
+            System.IO.File.WriteAllText(filePath, md);
+        }
+
+        private static IEnumerable<string> GetAllNamespacesInAssemblyWithPublicMembers(Assembly assembly)
+        {
+            return assembly.GetTypes().Where(t => t.IsPublic).Select(t => t.Namespace).Distinct();
         }
     }
 
@@ -53,13 +153,20 @@ namespace Dynamo.Docs
                     {"returns", "Returns: {0}\n\n"},
                     {"none", ""},
                     {"typeparam", ""},
-                    {"c", "_C# code_\n\n```c#\n{0}\n```\n\n"}
+                    {"c", "`{0}`"}
                 };
 
         private static Func<string, XElement, string[]> d = 
             new Func<string, XElement, string[]>((att, node) => new[]
                 {
                     node.Attribute(att).Value, 
+                    node.Nodes().ToMarkDown()
+                });
+
+        private static Func<string, XElement, string[]> dType =
+            new Func<string, XElement, string[]>((att, node) => new[]
+                {
+                    node.Attribute(att).Value.Split('.').Last(), 
                     node.Nodes().ToMarkDown()
                 });
 
@@ -70,7 +177,7 @@ namespace Dynamo.Docs
                         x.Element("assembly").Element("name").Value,
                         x.Element("members").Elements("member").ToMarkDown()
                     }},
-                    {"type", x=>d("name", x)},
+                    {"type", x=>dType("name", x)},
                     {"field", x=> d("name", x)},
                     {"property", x=> d("name", x)},
                     {"method",x=>d("name", x)},
@@ -87,7 +194,7 @@ namespace Dynamo.Docs
                     {"typeparam", x => d("name", x)},
                     {"paramref", x => new string[0]},
                     {"value", x => new string[0]},
-                    {"c", x => new[]{x.Value.ToCodeBlock()}},
+                    {"c", x => new[]{x.Value}},
                     {"list", x => new string[0]},
                     // dynamo specific
                     {"notranslation", x => new string[0]},
