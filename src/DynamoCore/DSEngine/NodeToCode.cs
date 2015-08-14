@@ -738,6 +738,9 @@ namespace Dynamo.DSEngine
                         var inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
                         outputMap[inputVar] = string.Empty;
                     }
+
+                    var previewVar = node.AstIdentifierForPreview.Value;
+                    outputMap[previewVar] = string.Empty;
                 }
             }
         }
@@ -1149,21 +1152,6 @@ namespace Dynamo.DSEngine
 
                    mappedVariables.Add(shortName);
                }
-            }
-
-            // any preview identifiers that haven't been mapped yet
-            var previewIdentifiers = nodes.Select(n => n.AstIdentifierForPreview.Value);
-            foreach (var ident in previewIdentifiers)
-            {
-                if (outputMap.ContainsKey(ident))
-                    continue;
-
-                string shortName = nameGenerator.GetNextName();
-                while (mappedVariables.Contains(shortName))
-                    shortName = nameGenerator.GetNextName();
-
-                outputMap[ident] = shortName;
-                mappedVariables.Add(shortName);
             }
 
             foreach (var ts in allAstNodes)
