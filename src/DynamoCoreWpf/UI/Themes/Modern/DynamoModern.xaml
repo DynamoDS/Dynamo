@@ -1571,8 +1571,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <dynui:InOutPortPanel Orientation="Horizontal"
-                                          VerticalAlignment="Center"
+                    <dynui:InOutPortPanel VerticalAlignment="Stretch"
                                           HorizontalAlignment="Center" />
                 </ItemsPanelTemplate>
             </Setter.Value>
