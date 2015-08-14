@@ -21,6 +21,9 @@ namespace Dynamo.Search
         private bool isExpanded;
         public bool IsExpanded { get { return isExpanded; } }
 
+        private bool isTopCategory;
+        public bool IsTopCategory { get { return isTopCategory; } }
+
         // TODO: classes functionality.
         //       All functionality marked as 'classes functionality'
         //       Should be implemented as classes are shown in search results.
@@ -43,12 +46,13 @@ namespace Dynamo.Search
             RaisePropertyChanged("IsExpanded");
         }
 
-        internal SearchCategory(string name)
+        internal SearchCategory(string name, bool isTopResult = false)
         {
             Name = name;
             classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
             isExpanded = true;
+            isTopCategory = isTopResult;
 
             ClickedCommand = new DelegateCommand(OnClicked);
         }

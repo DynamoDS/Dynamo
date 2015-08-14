@@ -30,6 +30,7 @@ namespace Dynamo.Controls
 
     public class LibrarySearchTreeTemplateSelector : DataTemplateSelector
     {
+        public DataTemplate TopCategoryTemplate { get; set; }
         public DataTemplate CategoryTemplate { get; set; }
         public DataTemplate MemberGroupsTemplate { get; set; }
         public DataTemplate MemberTemplate { get; set; }
@@ -43,7 +44,12 @@ namespace Dynamo.Controls
                 return MemberGroupsTemplate;
 
             if (item is SearchCategory)
-                return CategoryTemplate;
+            {
+                if ((item as SearchCategory).IsTopCategory)
+                    return TopCategoryTemplate;
+                else
+                    return CategoryTemplate;
+            }
 
             const string message = "Unknown object bound to collection";
             throw new InvalidOperationException(message);
