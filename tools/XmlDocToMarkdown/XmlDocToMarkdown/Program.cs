@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Text;
+using System.Diagnostics;
 
 // modified from : https://gist.github.com/lontivero/593fc51f1208555112e0
 
@@ -120,7 +121,13 @@ namespace Dynamo.Docs
             sb.AppendLine("##Methods:  ");
             foreach (var method in t.GetMethods().Where(m => m.IsPublic))
             {
-                sb.Append(GetMarkdownForMethod(members, t.FullName + "." + method.Name));
+                var methodParams = method.GetParameters();
+                var fullMethodName = methodParams.Any() ?
+                    method.Name + "(" + string.Join(",", methodParams.Select(pi => pi.GetType().FullName)) + ")" :
+                    method.Name;
+
+                //Debug.WriteLine(t.FullName + "." + fullMethodName);
+                sb.Append(GetMarkdownForMethod(members, t.FullName + "." + fullMethodName));
             }
             sb.AppendLine("---");
 
@@ -188,9 +195,9 @@ namespace Dynamo.Docs
                     {"doc", "## {0} ##\n\n{1}\n\n"},
                     {"type", "# {0}\n\n{1}\n"},
                     {"field", "##### {0}\n\n{1}\n"},
-                    {"property", "##### {0}\n\n{1}\n"},
-                    {"method", "##### {0}\n\n{1}\n"},
-                    {"event", "##### {0}\n\n{1}\n"},
+                    {"property", "##### `{0}`\n\n{1}\n"},
+                    {"method", "##### `{0}`\n\n{1}\n"},
+                    {"event", "##### `{0}`\n\n{1}\n"},
                     {"summary", "{0}\n\n"},
                     {"remarks", "\n\n>{0}\n\n"},
                     {"example", "_C# code_\n\n```c#\n{0}\n```\n\n"},
@@ -218,6 +225,16 @@ namespace Dynamo.Docs
                     node.Nodes().ToMarkDown()
                 });
 
+        private static Func<string, XElement, string[]> mType =
+            new Func<string, XElement, string[]>((att, node) =>{ 
+                var methodName = node.Attribute(att).Value.Split('.').Last();
+                return new[]
+                {
+                    methodName.Contains("(")? methodName : methodName + "()", 
+                    node.Nodes().ToMarkDown()
+                };
+            });
+
         private static Dictionary<string, Func<XElement, IEnumerable<string>>> methods = 
             new Dictionary<string, Func<XElement, IEnumerable<string>>>
                 {
@@ -228,7 +245,7 @@ namespace Dynamo.Docs
                     {"type", x=>dType("name", x)},
                     {"field", x=> d("name", x)},
                     {"property", x=> dType("name", x)},
-                    {"method",x=>dType("name", x)},
+                    {"method",x=>mType("name", x)},
                     {"event", x=>dType("name", x)},
                     {"summary", x=> new[]{ x.Nodes().ToMarkDown() }},
                     {"remarks", x => new[]{x.Nodes().ToMarkDown()}},
