@@ -514,8 +514,8 @@ b = c[w][x][y][z];";
             Assert.AreEqual(2, codeBlockNode.InPortData.Count);
             Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
 
-            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
-            
+            Assert.AreEqual(2, codeBlockNode.OutPortData[0].LineIndex);
+
             code = "c+ \n d; \n /* comment \n */ \n a+b;";
             UpdateCodeBlockNodeContent(codeBlockNode, code);
 
@@ -523,19 +523,18 @@ b = c[w][x][y][z];";
             Assert.AreEqual(2, codeBlockNode.OutPortData.Count);
 
             // The first output port should be at the first line
-            Assert.AreEqual(0 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
+            Assert.AreEqual(0, codeBlockNode.OutPortData[0].LineIndex);
 
             // The second output port should be at the 4th line, which is also 3 lines below the first
-            Assert.AreEqual(3 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[1].VerticalMargin, tolerance);
-            
+            Assert.AreEqual(4, codeBlockNode.OutPortData[1].LineIndex);
+
             code = "/*comment \n */ \n a[0]+b;";
             UpdateCodeBlockNodeContent(codeBlockNode, code);
 
             Assert.AreEqual(2, codeBlockNode.InPortData.Count);
             Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
 
-            Assert.AreEqual(2 * Configurations.CodeBlockPortHeightInPixels, codeBlockNode.OutPortData[0].VerticalMargin, tolerance);
-
+            Assert.AreEqual(2, codeBlockNode.OutPortData[0].LineIndex);
         }
 
         [Test]
