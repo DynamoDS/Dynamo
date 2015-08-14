@@ -599,22 +599,24 @@ namespace Dynamo.Tests
         {
             var converter = new FilePathDisplayConverter();
 
-            Assert.DoesNotThrow(() => converter.Convert("\\\\psf\\Home\\Desktop\\somedyn.dyn",null,null,null));
-            Assert.DoesNotThrow(() => converter.Convert("\\\\\\\\\\\\\\\\psf\\Home\\Desktop\\somedyn.dyn", null, null, null));
-            Assert.DoesNotThrow(() => converter.Convert("\\\\psf\\Home\\somedyn.dyn", null, null, null));
-            Assert.DoesNotThrow(() => converter.Convert("\\\\psf\\somedyn.dyn", null, null, null));
-            Assert.AreEqual("\\\\psf\\Home\\Desktop\\somedyn.dyn",converter.Convert("\\\\psf\\Home\\Desktop\\somedyn.dyn", null, null, null));
-            Assert.AreEqual("\\\\psf\\Home...\\anotherlevel\\andanother\\somedyn.dyn", converter.Convert("\\\\psf\\Home\\Desktop\\anotherlevel\\andanother\\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\psf\Home\Desktop\somedyn.dyn",null,null,null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\\\\\\\psf\Home\Desktop\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\psf\Home\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\\\psf\Home\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\\\psf\\Home\\somedyn.dyn", null, null, null));
+            Assert.DoesNotThrow(() => converter.Convert(@"\\psf\somedyn.dyn", null, null, null));
+            Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn",converter.Convert(@"\\psf\Home\Desktop\somedyn.dyn", null, null, null));
+            Assert.AreEqual(@"\\psf\Home...\anotherlevel\andanother\somedyn.dyn", converter.Convert(@"\\psf\Home\Desktop\anotherlevel\andanother\somedyn.dyn", null, null, null));
         }
 
         [Test]
         public void FilePathDisplayConverterInternalDoesNotThrow()
         {
-            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath("\\\\psf\\Home\\Desktop\\somedyn.dyn"));
-            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath("\\\\\\\\\\\\\\\\psf\\Home\\Desktop\\somedyn.dyn"));
-            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath("\\\\psf\\Home\\somedyn.dyn"));
-            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath("\\\\psf\\somedyn.dyn"));
-            Assert.AreEqual("\\\\psf\\Home\\Desktop\\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath("\\\\psf\\Home\\Desktop\\somedyn.dyn"));
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn")); 
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\\\\\\\psf\Home\Desktop\somedyn.dyn"));
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\\Home\somedyn.dyn"));
+            Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\somedyn.dyn"));
+            Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn"));
         }
     }
 }
