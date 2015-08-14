@@ -196,7 +196,10 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="20" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="36.907" />
+                <ColumnDefinition Width="13.242"/>
+                <ColumnDefinition Width="27.104"/>
+                <ColumnDefinition Width="22.496"/>
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -208,11 +211,12 @@
             <TextBlock Text="{x:Static resx:Resources.PublishViewShareLinkTitle}"
                        Grid.Row="0"
                        Foreground="{StaticResource PublishViewTextColor}"
-                       Height="28" />
+                       Height="28" Grid.ColumnSpan="2" Margin="0,0,19.4,2.4" />
             <TextBox Name="textBoxShareLink"
                      Grid.Row="1"
-                     Text="{Binding ShareLink, Mode=OneWay}"
-                     Style="{StaticResource SDarkTextBox}" />
+                     Text="{Binding ShareLink, Mode=TwoWay}"
+                     Style="{StaticResource SDarkTextBox}" Grid.ColumnSpan="2" Margin="0,0.6,19.4,-1" Grid.RowSpan="2" />                    
+
             <Button Name="buttonCopyLink"
                     Content="{x:Static resx:Resources.CopyLinkButtonTitle}"
                     Grid.Row="1"
