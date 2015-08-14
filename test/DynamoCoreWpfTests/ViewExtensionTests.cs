@@ -11,7 +11,7 @@ namespace DynamoCoreWpfTests
         private DummyViewExtension viewExtension = new DummyViewExtension();
 
         [Test]
-        public void OnWorspaceChangedExtensionIsNotified()
+        public void OnWorkspaceChangedExtensionIsNotified()
         {
             var extensionManager = View.viewExtensionManager;
             extensionManager.Add(viewExtension);
@@ -59,7 +59,7 @@ namespace DynamoCoreWpfTests
 
         public void Loaded(ViewLoadedParams p)
         {
-            p.WorkspaceChanged += (ws) =>
+            p.CurrentWorkspaceChanged += (ws) =>
             {
                 Counter++;
             };

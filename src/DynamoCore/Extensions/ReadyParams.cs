@@ -38,17 +38,17 @@ namespace Dynamo.Extensions
             }
         }
 
-        public event Action<IWorkspaceModel> WorkspaceChanged;
-        private void OnWorkspaceChanged(IWorkspaceModel ws)
+        public event Action<IWorkspaceModel> CurrentWorkspaceChanged;
+        private void OnCurrentWorkspaceModelChanged(IWorkspaceModel ws)
         {
-            if (WorkspaceChanged != null)
-                WorkspaceChanged(ws);
+            if (CurrentWorkspaceChanged != null)
+                CurrentWorkspaceChanged(ws);
         }
 
         private void OnDynamoModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "CurrentWorkspace")
-                OnWorkspaceChanged((sender as DynamoModel).CurrentWorkspace);
+                OnCurrentWorkspaceModelChanged((sender as DynamoModel).CurrentWorkspace);
         }
     }
 }

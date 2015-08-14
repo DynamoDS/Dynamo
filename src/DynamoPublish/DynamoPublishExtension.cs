@@ -53,7 +53,7 @@ namespace Dynamo.Publish
             p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
             p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
 
-            p.WorkspaceChanged += (ws) =>
+            p.CurrentWorkspaceChanged += (ws) =>
             {
                 publishViewModel.CurrentWorkspaceModel = ws;
 
