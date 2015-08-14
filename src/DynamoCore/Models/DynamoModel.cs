@@ -1469,7 +1469,7 @@ namespace Dynamo.Models
         {
             if (_workspaces.Remove(workspace))
             {
-                OnWorkspaceRemoving(workspace);
+                OnWorkspaceRemoveStarted(workspace);
                 if (workspace is HomeWorkspaceModel) {
                     workspace.Dispose();
                 }
