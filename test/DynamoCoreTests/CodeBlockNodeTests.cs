@@ -539,6 +539,66 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("RegressionTests")]
+        public void PortIndicesShouldProduceCorrectConnectorOffsets()
+        {
+            var code =
+@"var00 = a;
+
+var01 = b;
+var02 = c;
+
+
+var03 = d;
+var04 = e;
+var05 = f;
+
+
+
+var06 = g;
+";
+
+            var codeBlockNode = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+
+            Assert.AreEqual(7, codeBlockNode.InPortData.Count);
+            Assert.AreEqual(7, codeBlockNode.OutPortData.Count);
+
+            // Input ports are regular ports that do not depend on LineIndex.
+            Assert.AreEqual(-1, codeBlockNode.InPortData[0].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[1].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[2].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[3].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[4].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[5].LineIndex);
+            Assert.AreEqual(-1, codeBlockNode.InPortData[6].LineIndex);
+
+            // Output ports are smaller ports that depend on LineIndex.
+            Assert.AreEqual(0, codeBlockNode.OutPortData[0].LineIndex);
+            Assert.AreEqual(2, codeBlockNode.OutPortData[1].LineIndex);
+            Assert.AreEqual(3, codeBlockNode.OutPortData[2].LineIndex);
+            Assert.AreEqual(6, codeBlockNode.OutPortData[3].LineIndex);
+            Assert.AreEqual(7, codeBlockNode.OutPortData[4].LineIndex);
+            Assert.AreEqual(8, codeBlockNode.OutPortData[5].LineIndex);
+            Assert.AreEqual(12, codeBlockNode.OutPortData[6].LineIndex);
+
+            // Ensure that "NodeModel.GetPortVerticalOffset" does not regress.
+            // This is the way connector position is calculated.
+            var verticalOffset = 2.9;
+            var lastOutPort = codeBlockNode.OutPorts[6];
+            var expectedOffset = verticalOffset + lastOutPort.LineIndex * lastOutPort.Height;
+            var actualOffset = codeBlockNode.GetPortVerticalOffset(lastOutPort);
+            Assert.AreEqual(expectedOffset, actualOffset);
+
+            // Input ports are regular portst that should depend on "Index" instead.
+            var lastInPort = codeBlockNode.InPorts[6];
+            expectedOffset = verticalOffset + lastInPort.Index * lastInPort.Height;
+            actualOffset = codeBlockNode.GetPortVerticalOffset(lastInPort);
+            Assert.AreEqual(6, lastInPort.Index);
+            Assert.AreEqual(expectedOffset, actualOffset);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
         public void InPort_WithInlineConditionNonAssignment_Creation()
         {
             // Create the initial code block node.
