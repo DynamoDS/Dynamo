@@ -569,8 +569,8 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, new ExtensionLibraryLoader(this), 
-                    CustomNodeManager, GetType().Assembly.GetName().Version);
+                    pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
+                    GetType().Assembly.GetName().Version, preferences);
 
                 foreach (var ext in extensions)
                 {
@@ -581,12 +581,12 @@ namespace Dynamo.Models
                     try
                     {
                         ext.Startup(startupParams);
-                        ext.Load(preferences, pathManager);
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);                       
-                    }                   
+                    }
+
                     ExtensionManager.Add(ext);
                 }
             }
@@ -784,7 +784,8 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
-                if (customNodeSearchRegistry.Contains(info.FunctionId))
+                if (customNodeSearchRegistry.Contains(info.FunctionId)
+                        || !info.IsVisibleInDynamoLibrary)
                     return;
 
                 var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().

@@ -133,6 +133,15 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        private readonly string managerURL;
+        public string ManagerURL
+        {
+            get
+            {
+                return managerURL;
+            }
+        }
+
         internal event Action<UploadState> UploadStateChanged;
         private void OnUploadStateChanged(UploadState state)
         {
@@ -163,6 +172,10 @@ namespace Dynamo.Publish.Models
             page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
                 throw new Exception(Resources.PageErrorMessage);
+
+            managerURL = appSettings.Settings["ManagerPage"].Value;
+            if (String.IsNullOrWhiteSpace(managerURL))
+                throw new Exception(Resources.ManagerErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
@@ -277,6 +290,12 @@ namespace Dynamo.Publish.Models
                 result = Resources.FailedMessage;
             }
             return result;
+        }
+
+        internal void ClearState()
+        {
+            State = UploadState.Uninitialized;
+            Error = UploadErrorType.None;
         }
     }
 

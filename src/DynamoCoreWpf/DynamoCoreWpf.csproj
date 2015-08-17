@@ -1212,6 +1212,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
-        <MakeDir Directories="$(OutputPath)\viewExtensions\" /> 
+    <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>
 </Project>

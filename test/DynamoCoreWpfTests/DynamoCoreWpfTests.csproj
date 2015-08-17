@@ -127,6 +127,7 @@
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="HelixWatch3DViewModelTests.cs" />
+    <Compile Include="ViewExtensionTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
     <Compile Include="WorkspaceGeneralOperations.cs" />
