@@ -1438,6 +1438,19 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
+        private void CreateNodeFromSelection(object parameter)
+        {
+            CurrentSpaceViewModel.CollapseNodes(
+                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+                    .Select(x => (x as NodeModel)));
+        }
+
+
+        private static bool CanCreateNodeFromSelection(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+        }
+
         /// <summary>
         /// Gets the selected "input" nodes
         /// </summary>
