@@ -1,6 +1,7 @@
 ﻿using Dynamo.TestInfrastructure;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using MutationTestInfrastructure.Properties;
 using System;
 using System.Linq;
 using System.Windows;
@@ -62,7 +63,7 @@ namespace MutationTestInfrastructure
         private MenuItem GenerateMutationMenuItem()
         {
             MenuItem item = new MenuItem();
-            item.Header = "Run mutation test";            
+            item.Header = Resources.MutationMenuItemTitle;
 
             item.Click += (sender, args) =>
             {
@@ -74,7 +75,7 @@ namespace MutationTestInfrastructure
             binding.Path = new PropertyPath("HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled");
             binding.Mode = BindingMode.OneWay;
 
-            BindingOperations.SetBinding(item, MenuItem.IsEnabledProperty,binding);
+            BindingOperations.SetBinding(item, MenuItem.IsEnabledProperty, binding);
 
             return item;
         }
