@@ -20,8 +20,8 @@ namespace DynamoServices
         }
 
         /// <summary>
-        /// An event that is triggered when a workspace is being
-        /// removed from the DynamoModel's workspaces collection.
+        /// An event that is triggered prior to the removal of the workspace
+        /// from the Workspaces collection.
         /// </summary>
         public static event WorkspaceRemoveStartedEventHandler WorkspaceRemoveStarted;
         public static void OnWorkspaceRemoveStarted(Guid id, string name)

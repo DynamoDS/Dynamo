@@ -1467,9 +1467,9 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
+            OnWorkspaceRemoveStarted(workspace);
             if (_workspaces.Remove(workspace))
             {
-                OnWorkspaceRemoveStarted(workspace);
                 if (workspace is HomeWorkspaceModel) {
                     workspace.Dispose();
                 }
