@@ -47,6 +47,7 @@ namespace ProtoTestFx.TD
         /// <param name="verifyList"></param>
         public void RunAndVerify(string code, params KeyValuePair<string, object>[] verifyList)
         {
+            Dictionary<string, object> verifyDictionary = verifyList.ToDictionary(x => x.Key, x => x.Value);
             if (!executeInDebugMode)
             {
                 RunScriptSource(code);
@@ -57,8 +58,27 @@ namespace ProtoTestFx.TD
             }
             else
             {
-                RunDebugStepOverAndVerify(code, verifyList);
-                RunDebugStepInAndVerify(code, verifyList);
+                RunDebugStepOverAndVerify(code, verifyDictionary);
+                RunDebugStepInAndVerify(code, verifyDictionary);
+                RunDebugEqualityTest(code);
+            }
+        }
+
+        public void RunAndVerify(string code, string verificationFormat)
+        {
+            Dictionary<string, object> verifyDictionary = BuildVerificationDictionary(verificationFormat);
+            if (!executeInDebugMode)
+            {
+                RunScriptSource(code);
+                foreach (KeyValuePair<string, object> kvp in verifyDictionary)
+                {
+                    Verify(kvp.Key, kvp.Value);
+                }
+            }
+            else
+            {
+                RunDebugStepOverAndVerify(code, verifyDictionary);
+                RunDebugStepInAndVerify(code, verifyDictionary);
                 RunDebugEqualityTest(code);
             }
         }
@@ -69,7 +89,7 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <param name="code"></param>
         /// <param name="verification"></param>
-        private void RunDebugStepOverAndVerify(string code, KeyValuePair<string, object>[] verifyList)
+        private void RunDebugStepOverAndVerify(string code, Dictionary<string, object> verification)
         {
             throw new NotImplementedException();
         }
@@ -80,7 +100,7 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <param name="code"></param>
         /// <param name="verification"></param>
-        private void RunDebugStepInAndVerify(string code, KeyValuePair<string, object>[] verifyList)
+        private void RunDebugStepInAndVerify(string code, Dictionary<string, object> verification)
         {
             throw new NotImplementedException();
         }
@@ -130,17 +150,34 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(testRuntimeCore.RuntimeStatus.Warnings.Any(w => w.ID == warningID));
         }
     
+        /// <summary>
+        /// Builds a KeyValuePair to be used by the Verify method when verifying the value of a variable
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <param name="verifyValue"></param>
+        /// <returns></returns>
         public static KeyValuePair<string, object> BuildVerifyPair(string variable, object verifyValue)
         {
             Validity.Assert(variable is string);
             return new KeyValuePair<string, object>(variable, verifyValue);
         }
 
+        /// <summary>
+        /// Parses the verificationFormat string and builds a dictionary of verification pairs 
+        /// </summary>
+        /// <param name="verificationFormat"></param>
+        /// <returns></returns>
+        public static Dictionary<string, object> BuildVerificationDictionary(string verificationFormat)
+        {
+            Dictionary<string, object> verification = new Dictionary<string, object>();
+            
+            return verification;
+        }
+
         public ProtoCore.Core GetTestCore()
         {
             return testCore;
         }
-
 
         public ProtoCore.RuntimeCore GetTestRuntimeCore()
         {
