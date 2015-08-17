@@ -42,7 +42,7 @@ namespace Dynamo.Services
             LoginUrl = obj["url"];
         }
 
-        public string UploadModel(string rawData) 
+        public string UploadModel(string rawData, string filename) 
         {
             var bodyRequest = new
             {
@@ -50,7 +50,7 @@ namespace Dynamo.Services
                 secret = Secret,
                 verifier = Verifier,
                 file = rawData,
-                fileName = "TestDynamo.stl"
+                fileName = filename
             };
             var req = new RestRequest("/postShapewaysDynamo")
             {
