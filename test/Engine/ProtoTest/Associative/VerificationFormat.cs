@@ -10,7 +10,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class VerificationFormat : ProtoTestBase
+    private class VerificationFormat : ProtoTestBase
     {
         [Test]
         public void TestAssignment01()
@@ -64,7 +64,7 @@ namespace ProtoTest.Associative
 @"pi = 3.14;e = 2.71828;";
             thisTest.RunAndVerify(
                 code,
-                "pi:1.0|e:2.71828"
+                "pi:3.14|e:2.71828"
                 );
 
         }

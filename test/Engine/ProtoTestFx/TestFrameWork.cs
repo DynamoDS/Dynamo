@@ -183,13 +183,38 @@ namespace ProtoTestFx.TD
 
         /// <summary>
         /// Converts the value into an object that the Verify function can check
+        /// The implementation can replaced with a proper parser
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         private static object ConvertStringToVerificationObject(string value)
         {
-            int iVal = Int32.Parse(value);
-            return iVal;
+            int iVal = 0;
+            double dVal = 0.0;
+            bool bVal = false;
+            string sVal = string.Empty;
+            object[] arrayVal = null;
+
+            bool hasParsed = false;
+            hasParsed = Int32.TryParse(value, out iVal);
+            if (hasParsed)
+            {
+                return iVal;
+            }
+            hasParsed = Double.TryParse(value, out dVal);
+            if (hasParsed)
+            {
+                return dVal;
+            }
+            hasParsed = Boolean.TryParse(value, out bVal);
+            if (hasParsed)
+            {
+                return bVal;
+            }
+
+            // Extend this to support other data types
+
+            return null;
         }
 
         public ProtoCore.Core GetTestCore()
