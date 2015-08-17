@@ -205,10 +205,6 @@
     <value>Force Update</value>
     <comment>Debug menu | Force to update Dynamo</comment>
   </data>
-  <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
-    <value>Run mutation test</value>
-    <comment>Debug menu | Run mutation test</comment>
-  </data>
   <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
     <value>Show Debug ASTs</value>
     <comment>Debug menu | Show debug abstract syntax tree</comment>
@@ -1885,9 +1881,9 @@ Do you want to install the latest Dynamo update?</value>
     <value>Volume</value>
   </data>
   <data name="Units" xml:space="preserve">
-    <value>Units:</value> 
+    <value>Units:</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
-    <value>Publish Locally</value> 
+    <value>Publish Locally</value>
   </data>
 </root>

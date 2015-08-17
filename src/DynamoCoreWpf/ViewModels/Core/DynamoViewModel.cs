@@ -732,12 +732,6 @@ namespace Dynamo.ViewModels
             this.ExecuteCommand(command);
         }
 
-        internal void MutateTestCmd(object parameters)
-        {
-            var command = new DynamoModel.MutateTestCommand();
-            this.ExecuteCommand(command);
-        }
-
         public void DisplayFunction(object parameters)
         {
             Model.OpenCustomNodeWorkspace((Guid)parameters);

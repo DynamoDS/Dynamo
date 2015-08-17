@@ -91,11 +91,6 @@ namespace Dynamo.ViewModels
                     this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
                     break;
 
-                case "MutateTestCommand":
-                    var mutatorDriver = new Dynamo.TestInfrastructure.MutatorDriver(this);
-                    mutatorDriver.RunMutationTests();
-                    break;
-
                 case "SelectInRegionCommand":
                     var selectC = command as DynamoModel.SelectInRegionCommand;
                     CurrentSpaceViewModel.SelectInRegion(selectC.Region, selectC.IsCrossSelection);

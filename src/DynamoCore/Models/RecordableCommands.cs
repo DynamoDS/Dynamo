@@ -546,18 +546,6 @@ namespace Dynamo.Models
             }
         }
 
-        public class MutateTestCommand : RecordableCommand
-        {
-
-            protected override void ExecuteCore(DynamoModel dynamoModel) { }
-
-            protected override void SerializeCore(XmlElement element)
-            {
-                var helper = new XmlElementHelper(element);
-            }
-
-        }
-
         [DataContract]
         public class CreateNodeCommand : ModelBasedRecordableCommand
         {

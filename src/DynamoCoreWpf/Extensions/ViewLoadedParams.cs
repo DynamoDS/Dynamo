@@ -49,11 +49,13 @@ namespace Dynamo.Wpf.Extensions
         /// Searchs for dynamo parent menu item. Parent item can be:
         /// file menu, edit menu, view menu and help mebu bars.
         /// </summary>
-        /// <param name="menuBarType">File, Edit, View or Help.</param>
+        /// <param name="menuBarType">File, Edit, View, Help or Debug.</param>
         private MenuItem SearchForMenuItem(MenuBarType type)
         {
             var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
-            return dynamoMenuItems.First(item => item.Header.ToString() == "_" + type);
+            return dynamoMenuItems.First(item => (item.Header.ToString() == "_" + type) ||
+                                                 (item.Header.ToString() == type.ToString()
+                                                 ));
         }
     }
 
@@ -62,6 +64,7 @@ namespace Dynamo.Wpf.Extensions
         File,
         Edit,
         View,
-        Help
+        Help,
+        Debug
     }
 }
