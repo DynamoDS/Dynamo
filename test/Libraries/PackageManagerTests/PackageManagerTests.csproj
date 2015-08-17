@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtensionTests.cs" />
+    <Compile Include="PackageManagerExtensionTests.cs" />
     <Compile Include="PackageDirectoryBuilderTests.cs" />
     <Compile Include="PackageLoaderCustomTest.cs" />
     <Compile Include="PackageLoaderTests.cs" />
