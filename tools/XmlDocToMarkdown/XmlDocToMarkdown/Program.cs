@@ -123,10 +123,10 @@ namespace Dynamo.Docs
             {
                 var methodParams = method.GetParameters();
                 var fullMethodName = methodParams.Any() ?
-                    method.Name + "(" + string.Join(",", methodParams.Select(pi => pi.GetType().FullName)) + ")" :
+                    method.Name + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
                     method.Name;
 
-                //Debug.WriteLine(t.FullName + "." + fullMethodName);
+                Debug.WriteLine(t.FullName + "." + fullMethodName);
                 sb.Append(GetMarkdownForMethod(members, t.FullName + "." + fullMethodName));
             }
             sb.AppendLine("---");
@@ -195,9 +195,9 @@ namespace Dynamo.Docs
                     {"doc", "## {0} ##\n\n{1}\n\n"},
                     {"type", "# {0}\n\n{1}\n"},
                     {"field", "##### {0}\n\n{1}\n"},
-                    {"property", "##### `{0}`\n\n{1}\n"},
-                    {"method", "##### `{0}`\n\n{1}\n"},
-                    {"event", "##### `{0}`\n\n{1}\n"},
+                    {"property", "##### {0}\n\n{1}\n"},
+                    {"method", "##### {0}\n\n{1}\n"},
+                    {"event", "##### {0}\n\n{1}\n"},
                     {"summary", "{0}\n\n"},
                     {"remarks", "\n\n>{0}\n\n"},
                     {"example", "_C# code_\n\n```c#\n{0}\n```\n\n"},
@@ -227,7 +227,7 @@ namespace Dynamo.Docs
 
         private static Func<string, XElement, string[]> mType =
             new Func<string, XElement, string[]>((att, node) =>{ 
-                var methodName = node.Attribute(att).Value.Split('.').Last();
+                var methodName = node.Attribute(att).Value.Split(':').Last();
                 return new[]
                 {
                     methodName.Contains("(")? methodName : methodName + "()", 
