@@ -60,6 +60,9 @@ namespace Dynamo.Publish
             manageCustomizersMenuItem = GenerateManageCustomizersMenuItem();
             p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
 
+            inviteMenuItem = GenerateInviteMenuItem();
+            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
+
             p.CurrentWorkspaceChanged += (ws) =>
             {
                 publishViewModel.CurrentWorkspaceModel = ws;
@@ -67,9 +70,6 @@ namespace Dynamo.Publish
                 var isEnabled = ws is HomeWorkspaceModel && publishModel.HasAuthProvider;
                 extensionMenuItem.IsEnabled = isEnabled;
             };
-
-            inviteMenuItem = GenerateInviteMenuItem();
-            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
 
         }
 
