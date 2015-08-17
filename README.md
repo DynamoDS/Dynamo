@@ -48,7 +48,6 @@ Preset Graph States
 
 Color shading on surfaces
 -	Expansion on the Color work from 0.8.1 to include smoothly shaded surfaces
--	BPA for Dynamo Pt1 (Solar Analysis independent of Revit) as first demonstration
 
 Node2Code
 -	Select groups of nodes and automatically create Code Block Nodes from the selection
@@ -63,6 +62,9 @@ Localization
 Documentation
 - 4 New Chapters for the [Dynamo Primer](http://dynamobim.com/learn/)
 - New and updated [Nuget packages for developers](https://www.nuget.org/packages?q=DynamoVisualProgramming)
+
+Command Line Interface
+-	DynamoCLI now available for executing non-Revit Dynamo graphs
 
 Known Issues
 - Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
