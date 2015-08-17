@@ -240,6 +240,10 @@ namespace Dynamo.Publish.ViewModels
                 case PublishModel.UploadErrorType.ServerNotFound:
                     UploadStateMessage = Resources.ServerNotFoundMessage;
                     break;
+                case PublishModel.UploadErrorType.InvalidNodes:
+                    var nodeList = String.Join(", ", model.InvalidNodeNames);
+                    UploadStateMessage = Resources.InvalidNodeMessage + nodeList;
+                    break;
                 case PublishModel.UploadErrorType.UnknownServerError:
                     UploadStateMessage = Resources.UnknownServerErrorMessage;
                     break;
