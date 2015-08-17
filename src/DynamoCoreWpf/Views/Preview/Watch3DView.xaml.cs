@@ -17,11 +17,14 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using SharpDX;
+using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
@@ -153,19 +156,6 @@ namespace Dynamo.Controls
         public PhongMaterial SelectedMaterial { get; set; }
 
         public Transform3D Model1Transform { get; private set; }
-        
-        public RenderTechnique RenderTechnique
-        {
-            get
-            {
-                return this.renderTechnique;
-            }
-            set
-            {
-                renderTechnique = value;
-                NotifyPropertyChanged("RenderTechnique");
-            }
-        }
 
         public PerspectiveCamera Camera
         {
@@ -269,8 +259,6 @@ namespace Dynamo.Controls
 
             var matColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
             materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
-            
-            RenderTechnique = Techniques.RenderDynamo;
 
             WhiteMaterial = new PhongMaterial
             {
@@ -302,6 +290,9 @@ namespace Dynamo.Controls
             SetCameraToDefaultOrientation();
 
             DrawGrid();
+
+            renderTechnique = new RenderTechnique("RenderDynamo");
+            EffectsManager.Instance.InitializingEffects += RegisterRenderDynamoEffect;
         }
 
         private void SetCameraToDefaultOrientation()
@@ -314,7 +305,7 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Initialize the Helix with these values. These values should be attached before the 
+        /// Initialize Helix with these values. These values should be attached before the 
         /// visualization starts. Deleting them and attaching them does not make any effect on helix.         
         /// So they are initialized before the process starts.
         /// </summary>
@@ -358,6 +349,37 @@ namespace Dynamo.Controls
             {
                 model3DDictionary.Add("Axes", axesModel3D);
             }
+        }
+
+        void RegisterRenderDynamoEffect(EffectInitializationEventArgs args)
+        {
+            EffectsManager.Instance.RegisterEffect(args.ShaderEffectBytecode, new[] { renderTechnique });
+
+            var dynamoInputLayout = new InputLayout(args.Device, EffectsManager.Instance.GetEffect(renderTechnique).GetTechniqueByName(renderTechnique.Name).GetPassByIndex(0).Description.Signature, new[]
+            {
+                new InputElement("POSITION", 0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                new InputElement("COLOR",    0, Format.R32G32B32A32_Float, InputElement.AppendAligned, 0),
+                new InputElement("TEXCOORD", 0, Format.R32G32_Float,       InputElement.AppendAligned, 0),
+                new InputElement("NORMAL",   0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
+                new InputElement("TANGENT",  0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),             
+                new InputElement("BINORMAL", 0, Format.R32G32B32_Float,    InputElement.AppendAligned, 0),  
+                new InputElement("COLOR", 1, Format.R32G32B32A32_Float,    InputElement.AppendAligned, 0),  
+
+                new InputElement("TEXCOORD", 2, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),                 
+                new InputElement("TEXCOORD", 3, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+                new InputElement("TEXCOORD", 4, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+                new InputElement("TEXCOORD", 5, Format.R32G32B32A32_Float, InputElement.AppendAligned, 1, InputClassification.PerInstanceData, 1),
+            });
+            dynamoInputLayout.DebugName = "Dynamo";
+
+            EffectsManager.Instance.RegisterLayout(new[] { renderTechnique }, dynamoInputLayout);
+        }
+
+        private void ResetCamera()
+        {
+            Camera.Position = new Point3D(10, 15, 10);
+            Camera.LookDirection = new Vector3D(-10, -10, -10);
+            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
         }
 
         private static MeshGeometry3D DrawTestMesh()
@@ -1085,7 +1107,7 @@ namespace Dynamo.Controls
                     id = baseId + ":points";
 
                     PointGeometryModel3D pointGeometry3D;
-
+                    
                     if (model3DDictionary.ContainsKey(id))
                     {
                         pointGeometry3D = model3DDictionary[id] as PointGeometryModel3D;
@@ -1182,7 +1204,7 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    meshGeometry3D = new DynamoGeometryModel3D()
+                    meshGeometry3D = new DynamoGeometryModel3D(renderTechnique)
                     {
                         Transform = Model1Transform,
                         Material = WhiteMaterial,

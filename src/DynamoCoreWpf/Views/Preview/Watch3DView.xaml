@@ -102,7 +102,6 @@
             CameraRotationMode="Turntable"
             IsHitTestVisible="True"
             ShowCoordinateSystem="False"
-            RenderTechnique="{Binding RenderTechnique}"
             Camera="{Binding Camera}" 
             RotationSensitivity="1"
             UseDefaultGestures="False" 
