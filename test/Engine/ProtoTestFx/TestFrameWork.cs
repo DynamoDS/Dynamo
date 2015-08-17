@@ -173,11 +173,23 @@ namespace ProtoTestFx.TD
             string[] stringVerifyList = verificationFormat.Split('|');
             foreach (string verifyItem in stringVerifyList)
             {
-                string varname = string.Empty;
-                object value = null;
+                string[] pair = verifyItem.Split(':');
+                string varname = pair[0];
+                object value = ConvertStringToVerificationObject(pair[1]);
                 verification.Add(varname, value);
             }
             return verification;
+        }
+
+        /// <summary>
+        /// Converts the value into an object that the Verify function can check
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object ConvertStringToVerificationObject(string value)
+        {
+            int iVal = Int32.Parse(value);
+            return iVal;
         }
 
         public ProtoCore.Core GetTestCore()
