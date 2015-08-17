@@ -60,7 +60,7 @@ namespace Dynamo.Interfaces
     public interface IPathManager
     {
         /// <summary>
-        /// The main dynamo directory.
+        /// The directory in which DynamoCore.dll is guaranteed to be found.
         /// </summary>
         string DynamoCoreDirectory { get; }
 
