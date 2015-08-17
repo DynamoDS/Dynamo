@@ -57,6 +57,18 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        public void SliderMaxValueWithBigNum()
+        {
+            var sliderNode = new DoubleSlider() { Value = 500 };
+            var updateValueParams = new UpdateValueParams("Max", "2.14748364712346E+15");
+            sliderNode.UpdateValue(updateValueParams);
+
+            Assert.AreEqual(
+                 2.14748364712346E+15,
+                 sliderNode.Max);           
+        }
+
+        [Test]
         public void IntegerSliderMaxValue()
         {
             var integerSliderNode = new IntegerSlider() { Value = 500 };
