@@ -149,6 +149,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Core\AuthenticationManager.cs" />
+    <Compile Include="Services\ShapewaysClient.cs" />
     <Compile Include="Utilities\AssemblyConfiguration.cs" />
     <Compile Include="Utilities\FailFunc.cs" />
     <Compile Include="Utilities\OrderedSet.cs" />

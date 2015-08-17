@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using DynamoCore;
+using Dynamo.Services;
+using RestSharp.Contrib;
 
 namespace Dynamo.Wpf.Authentication
 {
@@ -49,6 +52,34 @@ namespace Dynamo.Wpf.Authentication
             }, null);
 
             return navigateSuccess;
+        }
+
+        public void ShowShapewaysLogin(ShapewaysClient client) 
+        {
+            context.Send((_) =>
+            {
+
+                var window = new BrowserWindow(new Uri(client.LoginUrl))
+                {
+                    Title = "Shapeways",
+                    Owner = parent,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Height = 500,
+                    Width = 1000
+                };
+
+                window.Browser.LoadCompleted += (sender, args) => 
+                {
+                    if (args.Uri.AbsolutePath == "/callbackDynamoShapeways") 
+                    {
+                        client.SetToken(args.Uri.PathAndQuery);
+                        window.Close();
+                    }
+                };
+
+                window.ShowDialog();
+
+            }, null);
         }
     }
 }
