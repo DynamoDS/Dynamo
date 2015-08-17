@@ -130,7 +130,7 @@ namespace Dynamo.Search
 
         public bool IsSelected
         {
-            get { return true; }
+            get { return false; }
         }
 
         public string Description
