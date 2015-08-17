@@ -46,6 +46,7 @@ namespace Dynamo.DSEngine
         private static bool ResolveForAssembly(string assemblyLocation,
             IPathManager pathManager, ref string documentationPath)
         {
+            var assemblyName = Path.GetFileNameWithoutExtension(assemblyLocation);
             if (pathManager != null)
             {
                 pathManager.ResolveLibraryPath(ref assemblyLocation);
@@ -65,7 +66,7 @@ namespace Dynamo.DSEngine
                 baseDir = Path.GetDirectoryName(Path.GetFullPath(assemblyLocation));
             }
 
-            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyLocation) + ".xml";
+            var xmlFileName = assemblyName + ".xml";
 
             var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
             var localizedResPath = Path.Combine(baseDir, language);
