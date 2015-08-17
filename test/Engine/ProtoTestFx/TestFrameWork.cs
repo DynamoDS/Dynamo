@@ -170,7 +170,13 @@ namespace ProtoTestFx.TD
         public static Dictionary<string, object> BuildVerificationDictionary(string verificationFormat)
         {
             Dictionary<string, object> verification = new Dictionary<string, object>();
-            
+            string[] stringVerifyList = verificationFormat.Split('|');
+            foreach (string verifyItem in stringVerifyList)
+            {
+                string varname = string.Empty;
+                object value = null;
+                verification.Add(varname, value);
+            }
             return verification;
         }
 

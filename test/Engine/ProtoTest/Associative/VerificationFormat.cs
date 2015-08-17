@@ -30,7 +30,7 @@ namespace ProtoTest.Associative
             string code =
 @"a = 1;b = 2;"; thisTest.RunAndVerify(
      code,
-     "a:1,b:2"
+     "a:1|b:2"
      );
         }
 
@@ -64,7 +64,7 @@ namespace ProtoTest.Associative
 @"pi = 3.14;e = 2.71828;";
             thisTest.RunAndVerify(
                 code,
-                "pi:1.0,e:2.71828"
+                "pi:1.0|e:2.71828"
                 );
 
         }
@@ -76,7 +76,7 @@ namespace ProtoTest.Associative
 @"a = 1.1;b = 2.2;c = 3.3;";
             thisTest.RunAndVerify(
                 code,
-                "a:1.1,b:2.2,c:3.3"
+                "a:1.1|b:2.2|c:3.3"
                 );
         }
 
@@ -98,7 +98,7 @@ namespace ProtoTest.Associative
 @"i = 2;a = {1, 2, 3 + i};";
             thisTest.RunAndVerify(
                 code,
-                "i:2,a:{1,2,5}"
+                "i:2|a:{1,2,5}"
                 );
         }
 
@@ -109,12 +109,7 @@ namespace ProtoTest.Associative
 @"a = {1,2,{3,4}};";
             thisTest.RunAndVerify(
                 code,
-                TestFrameWork.BuildVerifyPair("a", new object[] { 1, 2, new object[] { 3, 4 } })
-                );
-
-            thisTest.RunAndVerify(
-                code,
-                ":{1,2,{3,4}}"
+                "a:{1,2,{3,4}}"
                 );
         }
 
