@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using SystemTestServices;
@@ -43,6 +44,16 @@ namespace DynamoCoreWpfTests
         private Watch3DView BackgroundPreview
         {
             get { return (Watch3DView)View.background_grid.FindName("BackgroundPreview"); }
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            var renderingTier = (RenderCapability.Tier >> 16);
+            if (renderingTier < 2)
+            {
+                Assert.Inconclusive("A watch 3d view cannot be created for this test. Ensure that the testing system is DirectX 11 capable.");
+            }
         }
 
         #region node tests
