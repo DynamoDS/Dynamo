@@ -43,9 +43,9 @@ namespace Dynamo.DSEngine
         }
 
         /// <param name="xml">Don't set it, it's just for tests.</param>
-        public static IEnumerable<double> GetTagsWeights(this FunctionDescriptor member, XmlReader xml = null)
+        public static IEnumerable<double> GetSearchTagWeights(this FunctionDescriptor member, XmlReader xml = null)
         {
-            return GetMemberElement(member, xml, DocumentElementType.TagsWeights)
+            return GetMemberElement(member, xml, DocumentElementType.SearchTagWeights)
                 .Split(',')
                 .Select(x => x.Trim())
                 .Where(x => x != String.Empty)
@@ -150,8 +150,8 @@ namespace Dynamo.DSEngine
                 case DocumentElementType.SearchTags:
                     return documentNode.SearchTags;
 
-                case DocumentElementType.TagsWeights:
-                    return documentNode.TagsWeights;
+                case DocumentElementType.SearchTagWeights:
+                    return documentNode.SearchTagWeights;
 
                 default:
                     throw new ArgumentException("property");
@@ -247,7 +247,7 @@ namespace Dynamo.DSEngine
             Summary,
             Parameter,
             SearchTags,
-            TagsWeights,
+            SearchTagWeights,
             Returns
         }
 
@@ -256,7 +256,7 @@ namespace Dynamo.DSEngine
             Summary,
             Description,
             SearchTags,
-            TagsWeights
+            SearchTagWeights
         }
 
         private static void LoadDataFromXml(XmlReader reader, string assemblyName)
@@ -314,7 +314,7 @@ namespace Dynamo.DSEngine
                                 break;
 
                             case "weights":
-                                currentTag = XmlTagType.TagsWeights;
+                                currentTag = XmlTagType.SearchTagWeights;
                                 break;
 
                             default:
@@ -340,8 +340,8 @@ namespace Dynamo.DSEngine
                             case XmlTagType.SearchTags:
                                 currentDocNode.SearchTags = reader.Value.CleanUpDocString();
                                 break;
-                            case XmlTagType.TagsWeights:
-                                currentDocNode.TagsWeights = reader.Value.CleanUpDocString();
+                            case XmlTagType.SearchTagWeights:
+                                currentDocNode.SearchTagWeights = reader.Value.CleanUpDocString();
                                 break;
                         }
 

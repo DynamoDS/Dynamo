@@ -103,6 +103,9 @@ namespace Dynamo.Search
             }
 
             int tagsCount = tags.Count();
+            if (tagsCount != weights.Count())
+                throw new ArgumentException("Number of weights should equal number of search tags.");
+
             for (int i = 0; i < tagsCount; i++)
             {
                 var tag = tags.ElementAt(i).ToLower();

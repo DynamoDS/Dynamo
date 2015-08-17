@@ -159,7 +159,7 @@ namespace Dynamo.Tests
             var method = GetMyMethod();
 
             var tags = method.GetSearchTags(SampleDocument);
-            var weights = method.GetTagsWeights(SampleDocument);
+            var weights = method.GetSearchTagWeights(SampleDocument);
 
             Assert.AreEqual(2, tags.Count());
             Assert.AreEqual("move", tags.First());

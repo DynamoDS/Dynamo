@@ -8,7 +8,7 @@ namespace Dynamo.DSEngine
         private readonly string fullyQualifiedName;
         private string summary = String.Empty;
         private string searchTags = String.Empty;
-        private string tagsWeights = String.Empty;
+        private string searchTagWeights = String.Empty;
         private readonly Dictionary<string, string> parameters;
         private readonly List<Tuple<string, string>> returns;
 
@@ -42,17 +42,17 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public string TagsWeights
+        public string SearchTagWeights
         {
             get
             {
-                return tagsWeights;
+                return searchTagWeights;
             }
             set
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                tagsWeights = value;
+                searchTagWeights = value;
             }
         }
 

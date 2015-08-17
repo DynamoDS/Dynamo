@@ -49,7 +49,7 @@ namespace Dynamo.Search.SearchElements
             foreach (var tag in functionDescriptor.GetSearchTags())
                 SearchKeywords.Add(tag);
 
-            var weights = functionDescriptor.GetTagsWeights();
+            var weights = functionDescriptor.GetSearchTagWeights();
             foreach (var weight in weights)
             {
                 // Search tag weight can't be more then 1.
