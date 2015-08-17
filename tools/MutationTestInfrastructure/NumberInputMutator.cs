@@ -1,31 +1,25 @@
 ﻿using Dynamo.Models;
-using Dynamo.ViewModels;
+using Dynamo.Nodes;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Threading;
 using Dynamo.DSEngine;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("FilePathMutator")]
-    class FilePathMutator : AbstractMutator
+    [MutationTest("Number Input Mutator")]
+    class NumberInputMutator : AbstractMutator
     {
-        public FilePathMutator(DynamoViewModel viewModel)
+        public NumberInputMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }
 
         public override Type GetNodeType()
         {
-            string assemblyPath = Assembly.GetExecutingAssembly().Location;
-            string assemblyDir = Path.GetDirectoryName(assemblyPath);
-            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
-            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
-            Type type = assembly.GetType("DSCore.File.Filename");
-
-            return type;
+            return null; //typeof(DoubleInput);
         }
 
         public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
@@ -44,7 +38,7 @@ namespace Dynamo.TestInfrastructure
             }
 
             int numberOfUndosNeeded = Mutate(node);
-            Thread.Sleep(10);
+            Thread.Sleep(100);
 
             writer.WriteLine("### - Beginning undo");
             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
@@ -63,14 +57,24 @@ namespace Dynamo.TestInfrastructure
             writer.Flush();
             writer.WriteLine("### - Beginning re-exec");
 
-            ExecuteAndWait();
+            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+            {
+                DynamoModel.RunCancelCommand runCancel =
+                    new DynamoModel.RunCancelCommand(false, false);
 
+                DynamoViewModel.ExecuteCommand(runCancel);
+            }));
+            Thread.Sleep(10);
+            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
+            {
+                Thread.Sleep(10);
+            }
             writer.WriteLine("### - re-exec complete");
             writer.Flush();
 
             writer.WriteLine("### - Beginning readback");
 
-            writer.WriteLine("### - Beginning test of FilePath");
+            writer.WriteLine("### - Beginning test of Number");
             if (node.OutPorts.Count > 0)
             {
                 try
@@ -81,7 +85,7 @@ namespace Dynamo.TestInfrastructure
 
                     if (valmap != nodeVal)
                     {
-                        writer.WriteLine("!!!!!!!!!!! - test of FilePath is failed");
+                        writer.WriteLine("!!!!!!!!!!! - test of Number is failed");
                         writer.WriteLine(node.GUID);
 
                         writer.WriteLine("Was: " + nodeVal);
@@ -92,12 +96,12 @@ namespace Dynamo.TestInfrastructure
                 }
                 catch (Exception)
                 {
-                    writer.WriteLine("!!!!!!!!!!! - test of FilePath is failed");
+                    writer.WriteLine("!!!!!!!!!!! - test of Number is failed");
                     writer.Flush();
                     return pass;
                 }
             }
-            writer.WriteLine("### - test of FilePath complete");
+            writer.WriteLine("### - test of Number complete");
             writer.Flush();
 
             return pass = true;
@@ -105,17 +109,18 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            Random rand = new Random(1);
+            string value = rand.Next(100).ToString();
 
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoModel.UpdateModelValueCommand updateValue =
-                    new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", assemblyPath);
+                    new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", value);
 
                 DynamoViewModel.ExecuteCommand(updateValue);
             }));
 
             return 1;
-        }
+        }        
     }
 }

@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using Dynamo.Models;
 using Dynamo.ViewModels;
 using System.IO;
 using System.Threading;
 using Dynamo.DSEngine;
+using MutationTestInfrastructure;
+using Dynamo.Models;
 
 namespace Dynamo.TestInfrastructure
 {
     [MutationTest("NumberSequenceMutator")]
     class NumberSequenceMutator : AbstractMutator
     {
-        public NumberSequenceMutator(DynamoViewModel viewModel)
+        public NumberSequenceMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }

@@ -1,19 +1,19 @@
 ﻿using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Threading;
 using Dynamo.DSEngine;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
     [MutationTest("CustomNodeMutator")]
     class CustomNodeMutator : AbstractMutator
     {
-        public CustomNodeMutator(DynamoViewModel viewModel)
+        public CustomNodeMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }

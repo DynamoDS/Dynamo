@@ -1,10 +1,10 @@
 ﻿using Dynamo.Models;
-using Dynamo.ViewModels;
 using System;
 using System.Linq;
 using System.IO;
 using System.Threading;
 using Dynamo.DSEngine;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -15,7 +15,7 @@ namespace Dynamo.TestInfrastructure
     [MutationTest("DeleteNodeMutator")]
     class DeleteNodeMutator : AbstractMutator
     {
-        public DeleteNodeMutator(DynamoViewModel viewModel)
+        public DeleteNodeMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }

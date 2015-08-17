@@ -1,26 +1,31 @@
-﻿using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using Dynamo.DSEngine;
+using Dynamo.Models;
+using MutationTestInfrastructure;
 
 namespace Dynamo.TestInfrastructure
 {
-    [MutationTest("StringInputMutator")]
-    class StringInputMutator : AbstractMutator
+    [MutationTest("DoubleSliderMutator")]
+    class DoubleSliderMutator : AbstractMutator
     {
-        public StringInputMutator(DynamoViewModel viewModel)
+        public DoubleSliderMutator(DynamoViewModelMutation viewModel)
             : base(viewModel)
         {
         }
 
         public override Type GetNodeType()
         {
-            return null;//typeof(StringInput);
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+            string pathToNodesDll = assemblyDir + "\\nodes\\DSCoreNodesUI.dll";
+            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+            Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
+
+            return type;
         }
 
         public override bool RunTest(NodeModel node, EngineController engine, StreamWriter writer)
@@ -39,7 +44,7 @@ namespace Dynamo.TestInfrastructure
             }
 
             int numberOfUndosNeeded = Mutate(node);
-            Thread.Sleep(100);
+            Thread.Sleep(10);
 
             writer.WriteLine("### - Beginning undo");
             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
@@ -61,24 +66,13 @@ namespace Dynamo.TestInfrastructure
             writer.Flush();
             writer.WriteLine("### - Beginning re-exec");
 
-            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-            {
-                DynamoModel.RunCancelCommand runCancel =
-                    new DynamoModel.RunCancelCommand(false, false);
-
-                DynamoViewModel.ExecuteCommand(runCancel);
-            }));
-            Thread.Sleep(10);
-
-            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-            {
-                Thread.Sleep(10);
-            }
+            ExecuteAndWait();
             writer.WriteLine("### - re-exec complete");
             writer.Flush();
             writer.WriteLine("### - Beginning readback");
 
-            writer.WriteLine("### - Beginning test of String");
+            writer.WriteLine("### - Beginning test of DoubleSlider");
+
             if (node.OutPorts.Count > 0)
             {
                 try
@@ -89,7 +83,7 @@ namespace Dynamo.TestInfrastructure
 
                     if (valmap != nodeVal)
                     {
-                        writer.WriteLine("!!!!!!!!!!! - test of String is failed");
+                        writer.WriteLine("!!!!!!!!!!! - test of DoubleSlider is failed");
                         writer.WriteLine(node.GUID);
 
                         writer.WriteLine("Was: " + nodeVal);
@@ -100,12 +94,12 @@ namespace Dynamo.TestInfrastructure
                 }
                 catch (Exception)
                 {
-                    writer.WriteLine("!!!!!!!!!!! - test of String is failed");
+                    writer.WriteLine("!!!!!!!!!!! - test of DoubleSlider is failed");
                     writer.Flush();
                     return pass;
                 }
             }
-            writer.WriteLine("### - test of Number complete");
+            writer.WriteLine("### - test of DoubleSlider complete");
             writer.Flush();
 
             return pass = true;
@@ -113,19 +107,36 @@ namespace Dynamo.TestInfrastructure
 
         public override int Mutate(NodeModel node)
         {
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*(),./[];=-:<\\>?";
-            Random random = new Random();
-            string value = new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
+            string assemblyPass = Environment.CurrentDirectory + "\\nodes\\DSCoreNodesUI.dll";
+            Assembly assembly = Assembly.LoadFile(assemblyPass);
+            Type type = assembly.GetType("Dynamo.Nodes.DoubleSlider");
+            
+            PropertyInfo propInfo = type.GetProperty("Min");
+            dynamic propertyMin = propInfo.GetValue(node, null);
+            propInfo = type.GetProperty("Max");
+            dynamic propertyMax = propInfo.GetValue(node, null);
 
-            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+            double min = 0;
+            double max = 0;
+            int returnCode = 0;
+            Random rand = new Random(1);
+
+            if (double.TryParse(propertyMin.ToString(), out min) &&
+                double.TryParse(propertyMax.ToString(), out max))
             {
-                DynamoModel.UpdateModelValueCommand updateValue =
-                    new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", value);
+                string value = (min + (max - min) * rand.NextDouble()).ToString();
 
-                DynamoViewModel.ExecuteCommand(updateValue);
-            }));
+                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
+                {
+                    DynamoModel.UpdateModelValueCommand updateValue =
+                        new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", value);
+                    DynamoViewModel.ExecuteCommand(updateValue);
+                }));
 
-            return 1;
-        }        
+                returnCode = 1;
+            }
+
+            return returnCode;
+        }
     }
 }
