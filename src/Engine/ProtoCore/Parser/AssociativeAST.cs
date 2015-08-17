@@ -2138,7 +2138,8 @@ namespace ProtoCore.AST.AssociativeAST
                    ToNode.Equals(otherNode.ToNode) &&
                    stepoperator.Equals(otherNode.stepoperator) &&
                    ((StepNode == otherNode.StepNode) || (StepNode != null && StepNode.Equals(otherNode.StepNode))) &&
-                   HasRangeAmountOperator == otherNode.HasRangeAmountOperator;
+                   HasRangeAmountOperator == otherNode.HasRangeAmountOperator
+                   && base.Equals(other);
         }
 
         public override int GetHashCode()

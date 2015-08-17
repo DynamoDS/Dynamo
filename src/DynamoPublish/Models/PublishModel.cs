@@ -43,7 +43,6 @@ namespace Dynamo.Publish.Models
         private readonly ICustomNodeManager customNodeManager;
 
         private readonly string serverUrl;
-        private readonly string port;
         private readonly string page;
         private readonly Regex serverResponceRegex;
 
@@ -134,6 +133,15 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        private readonly string managerURL;
+        public string ManagerURL
+        {
+            get
+            {
+                return managerURL;
+            }
+        }
+
         internal event Action<UploadState> UploadStateChanged;
         private void OnUploadStateChanged(UploadState state)
         {
@@ -161,13 +169,13 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(serverUrl))
                 throw new Exception(Resources.ServerNotFoundMessage);
 
-            port = appSettings.Settings["Port"].Value;
-            if (String.IsNullOrWhiteSpace(port))
-                throw new Exception(Resources.PortErrorMessage);
-
             page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
                 throw new Exception(Resources.PageErrorMessage);
+
+            managerURL = appSettings.Settings["ManagerPage"].Value;
+            if (String.IsNullOrWhiteSpace(managerURL))
+                throw new Exception(Resources.ManagerErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
@@ -251,10 +259,8 @@ namespace Dynamo.Publish.Models
                 return Resources.FailedMessage;
             }
 
-            string fullServerAdress = serverUrl + ":" + port;
-
             if (reachClient == null)
-                reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
+                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
 
             HomeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
             var functionNodes = HomeWorkspace.Nodes.OfType<Function>();
@@ -284,6 +290,12 @@ namespace Dynamo.Publish.Models
                 result = Resources.FailedMessage;
             }
             return result;
+        }
+
+        internal void ClearState()
+        {
+            State = UploadState.Uninitialized;
+            Error = UploadErrorType.None;
         }
     }
 

@@ -32,14 +32,17 @@ namespace Dynamo.ViewModels
 
         private IEnumerable<SearchCategory> root = null;
 
-        private NodeSearchElementViewModel selection = null;
+        private NodeSearchElementViewModel topResult = null;
 
         /// <summary>
         /// Currently selected member.
         /// </summary>
-        public NodeSearchElementViewModel CurrentlySelection
+        public NodeSearchElementViewModel CurrentSelection
         {
-            get { return selection; }
+            get
+            {
+                return GetSelectionFromIndices();
+            }
         }
 
         internal SelectionNavigator(IEnumerable<SearchCategory> rootTree)
@@ -47,22 +50,21 @@ namespace Dynamo.ViewModels
             UpdateRootCategories(rootTree);
         }
 
-        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree)
+        internal void UpdateRootCategories(IEnumerable<SearchCategory> rootTree, NodeSearchElementViewModel topResult = null)
         {
             root = rootTree;
 
             if (root == null || !root.Any())
             {
-                selection = null;
+                topResult = null;
                 return;
             }
 
-            selectedCategoryIndex = 0;
-            selectedMemberGroupIndex = 0;
-            selectedMemberIndex = 0;
+            selectedCategoryIndex = -1;
+            selectedMemberGroupIndex = -1;
+            selectedMemberIndex = -1;
 
-            selection = GetSelectionFromIndices();
-            selection.IsSelected = true;
+            this.topResult = topResult;
         }
 
         internal void MoveSelection(NavigationDirection direction)
@@ -70,12 +72,19 @@ namespace Dynamo.ViewModels
             if (root == null || !root.Any())
                 return;
 
+            if (CurrentSelection == topResult)
+            {
+                // We can only move forward...
+                if (direction == NavigationDirection.Forward)
+                    SelectItem(0, 0, 0);
+                return;
+            }
+
             var selectedCategory = root.ElementAt(selectedCategoryIndex);
             var selectedMemberGroup = selectedCategory.MemberGroups.ElementAt(selectedMemberGroupIndex);
 
             // Clear the current selection, no matter what.
-            selection.IsSelected = false;
-            selection = null;
+            CurrentSelection.IsSelected = false;
 
             if (direction == NavigationDirection.Backward)
             {
@@ -107,6 +116,11 @@ namespace Dynamo.ViewModels
                             var group = category.MemberGroups.ElementAt(selectedMemberGroupIndex);
                             selectedMemberIndex = group.Members.Count() - 1;
                         }
+                        else // No place to move back. Clear selection. Select top result.
+                        {
+                            SelectItem(-1, -1, -1);
+                            return;
+                        }
                     }
                 }
             }
@@ -137,12 +151,19 @@ namespace Dynamo.ViewModels
             }
 
             // Get the new selection and mark it as selected.
-            selection = GetSelectionFromIndices();
-            selection.IsSelected = true;
+            CurrentSelection.IsSelected = true;
         }
 
         private NodeSearchElementViewModel GetSelectionFromIndices()
         {
+            if ((selectedCategoryIndex == -1) &&
+                (selectedMemberGroupIndex == -1) &&
+                (selectedMemberIndex == -1))
+            {
+                // No selection, return topResult instead.
+                return topResult;
+            }
+
             var selectedCategory = root.ElementAt(selectedCategoryIndex);
             if (selectedCategory == null)
                 return null;
@@ -153,6 +174,24 @@ namespace Dynamo.ViewModels
 
             var selectedMember = selectedMemberGroup.Members.ElementAt(selectedMemberIndex);
             return selectedMember;
+        }
+
+        private void SelectItem(int categoryIndex, int memberGroupIndex, int memberIndex)
+        {
+            if (categoryIndex == selectedCategoryIndex &&
+                memberGroupIndex == selectedMemberGroupIndex &&
+                memberIndex == selectedMemberIndex)
+                return; // No selection change.
+
+            var selection = GetSelectionFromIndices();
+            selection.IsSelected = false;
+
+            selectedCategoryIndex = categoryIndex;
+            selectedMemberGroupIndex = memberGroupIndex;
+            selectedMemberIndex = memberIndex;
+
+            selection = GetSelectionFromIndices();
+            selection.IsSelected = true;
         }
     }
 }

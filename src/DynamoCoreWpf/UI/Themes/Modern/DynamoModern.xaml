@@ -460,6 +460,7 @@
                                 Margin="3">
                             <TextBlock x:Name="text"
                                        HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
                                        Margin="3"
                                        FontSize="11"
                                        Foreground="#BBB"

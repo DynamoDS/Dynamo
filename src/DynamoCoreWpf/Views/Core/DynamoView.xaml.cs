@@ -55,7 +55,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -116,9 +116,11 @@ namespace Dynamo.Controls
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
-            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            {
+                loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+            }
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += Log;
@@ -129,6 +131,10 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += Log;
+
                     ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
                 }
@@ -662,6 +668,7 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
@@ -1096,7 +1103,7 @@ namespace Dynamo.Controls
         {
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
-            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.Guid));
+            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.GUID));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)
@@ -1104,7 +1111,7 @@ namespace Dynamo.Controls
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
-            dynamoViewModel.Model.CurrentWorkspace.RemovePreset(state); 
+            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(state.GUID));
             //This is to remove the PATH (>) indicator from the preset submenu header
             //if there are no presets.
             dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();                       
@@ -1558,6 +1565,10 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
+            }
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
+            {
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
         }
     }

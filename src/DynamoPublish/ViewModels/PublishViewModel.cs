@@ -1,5 +1,6 @@
 ﻿using Dynamo.Core;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Publish.Models;
 using Dynamo.Publish.Properties;
 using Dynamo.UI.Commands;
@@ -11,12 +12,18 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Linq;
 
 namespace Dynamo.Publish.ViewModels
 {
     public class PublishViewModel : NotificationObject
     {
         #region Properties
+
+        /// <summary>
+        ///     Helps to show error message just 1 time.
+        /// </summary>
+        private bool firstTimeErrorMessage = true;
 
         private string name;
         public string Name
@@ -108,6 +115,14 @@ namespace Dynamo.Publish.ViewModels
         public IEnumerable<IWorkspaceModel> Workspaces { get; set; }
         public IWorkspaceModel CurrentWorkspaceModel { get; set; }
 
+        public string ManagerURL
+        {
+            get
+            {
+                return model.ManagerURL;
+            }
+        }
+
         #endregion
 
         #region Click commands
@@ -139,15 +154,19 @@ namespace Dynamo.Publish.ViewModels
             if (!model.IsLoggedIn)
                 return;
 
+            var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().First();
+            homeWorkspace.Name = Name;
+            homeWorkspace.Description = Description;
+
             model.SendAsynchronously(Workspaces);
         }
 
         private void OnModelStateChanged(PublishModel.UploadState state)
         {
             IsUploading = state == PublishModel.UploadState.Uploading;
+            firstTimeErrorMessage = state == PublishModel.UploadState.Failed;
             BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
         }
-
 
         private void OnCustomizerURLChanged(string url)
         {
@@ -185,11 +204,22 @@ namespace Dynamo.Publish.ViewModels
 
             if (model.State == PublishModel.UploadState.Failed)
             {
-                GenerateErrorMessage();
-                IsReadyToUpload = false;
-                // Even if there is error, user can try submit one more time.
-                // E.g. user typed wrong login or password.
-                return true;
+                if (firstTimeErrorMessage)
+                {
+                    GenerateErrorMessage();
+                    IsReadyToUpload = false;
+
+                    // We should show error message just one time.
+                    firstTimeErrorMessage = false;
+
+                    // Even if there is error, user can try submit one more time.
+                    // E.g. user typed wrong login or password.
+                    return true;
+                }
+                else
+                {
+                    model.ClearState();
+                }
             }
 
             UploadStateMessage = Resources.ReadyForPublishMessage;
