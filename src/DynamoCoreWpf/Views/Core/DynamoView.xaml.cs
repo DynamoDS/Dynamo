@@ -55,7 +55,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
