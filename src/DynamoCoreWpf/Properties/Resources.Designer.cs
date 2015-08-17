@@ -1471,6 +1471,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Node and Package Paths....
+        /// </summary>
+        public static string DynamoViewSettingMenuManagePackagePath {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuManagePackagePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meter.
         /// </summary>
         public static string DynamoViewSettingMenuMeter {
@@ -3147,6 +3156,87 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept Changes.
+        /// </summary>
+        public static string PackagePathViewAccept {
+            get {
+                return ResourceManager.GetString("PackagePathViewAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paths:.
+        /// </summary>
+        public static string PackagePathViewHeading {
+            get {
+                return ResourceManager.GetString("PackagePathViewHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add paths to make nodes and packages show up in the library..
+        /// </summary>
+        public static string PackagePathViewSummary1 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top path is the default save location..
+        /// </summary>
+        public static string PackagePathViewSummary2 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Node and Package Paths.
+        /// </summary>
+        public static string PackagePathViewTitle {
+            get {
+                return ResourceManager.GetString("PackagePathViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selected path downward.
+        /// </summary>
+        public static string PackagePathViewToolTipDown {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the selected path from list.
+        /// </summary>
+        public static string PackagePathViewToolTipMinus {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipMinus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new path to the list.
+        /// </summary>
+        public static string PackagePathViewToolTipPlus {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipPlus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the selected path upward.
+        /// </summary>
+        public static string PackagePathViewToolTipUp {
+            get {
+                return ResourceManager.GetString("PackagePathViewToolTipUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search returned no results!.
         /// </summary>
         public static string PackageSearchStateNoResult {
@@ -3570,11 +3660,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish Package !.
+        ///   Looks up a localized string similar to No input nodes selected. Select at least one input node to create a preset..
+        /// </summary>
+        public static string PresetWarningMessage {
+            get {
+                return ResourceManager.GetString("PresetWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
             get {
                 return ResourceManager.GetString("PublishPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Locally.
+        /// </summary>
+        public static string PublishPackageLocally {
+            get {
+                return ResourceManager.GetString("PublishPackageLocally", resourceCulture);
             }
         }
         
@@ -3723,7 +3831,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish a Package Online.
+        ///   Looks up a localized string similar to Publish a Package.
         /// </summary>
         public static string PublishPackageViewPublish {
             get {
@@ -4209,6 +4317,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Area.
+        /// </summary>
+        public static string UnitArea {
+            get {
+                return ResourceManager.GetString("UnitArea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Centimeters.
         /// </summary>
         public static string UnitCentimeters {
@@ -4308,6 +4425,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Length.
+        /// </summary>
+        public static string UnitLength {
+            get {
+                return ResourceManager.GetString("UnitLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Litres.
         /// </summary>
         public static string UnitLitres {
@@ -4331,6 +4457,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnitMillimeters {
             get {
                 return ResourceManager.GetString("UnitMillimeters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Units:.
+        /// </summary>
+        public static string Units {
+            get {
+                return ResourceManager.GetString("Units", resourceCulture);
             }
         }
         
@@ -4385,6 +4520,15 @@ namespace Dynamo.Wpf.Properties {
         public static string UnitUSGallons {
             get {
                 return ResourceManager.GetString("UnitUSGallons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume.
+        /// </summary>
+        public static string UnitVolume {
+            get {
+                return ResourceManager.GetString("UnitVolume", resourceCulture);
             }
         }
         

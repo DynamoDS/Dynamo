@@ -57,6 +57,7 @@ namespace Dynamo.ViewModels
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
+            ManagePackagePathsCommand = new DelegateCommand(ManagePackagePaths, o => true);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PackageManagerClientViewModel.PublishCurrentWorkspace, PackageManagerClientViewModel.CanPublishCurrentWorkspace);
             PublishSelectedNodesCommand = new DelegateCommand(PackageManagerClientViewModel.PublishSelectedNodes, PackageManagerClientViewModel.CanPublishSelectedNodes);
             PublishCustomNodeCommand = new DelegateCommand<Function>(PackageManagerClientViewModel.PublishCustomNode, PackageManagerClientViewModel.CanPublishCustomNode);
@@ -79,6 +80,7 @@ namespace Dynamo.ViewModels
             ShowGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(true), o => true);
             CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
+            NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
        }
 
         public DelegateCommand OpenCommand { get; set; }
@@ -102,6 +104,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
         public DelegateCommand ShowInstalledPackagesCommand { get; set; }
+        public DelegateCommand ManagePackagePathsCommand { get; set; }
         public DelegateCommand HomeCommand { get; set; }
         public DelegateCommand ExitCommand { get; set; }
         public DelegateCommand ShowSaveDialogIfNeededAndSaveResultCommand { get; set; }
@@ -155,5 +158,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowGalleryCommand { get; set; }
         public DelegateCommand CloseGalleryCommand { get; set; }
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
+        public DelegateCommand NodeFromSelectionCommand { get; set; }
     }
 }

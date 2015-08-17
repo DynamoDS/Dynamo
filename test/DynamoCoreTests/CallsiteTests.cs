@@ -59,13 +59,13 @@ namespace Dynamo.Tests
          * A + node with the list and the double connected and CARTESIAN PRODUCT lacing.
          */
 
-        [Test]
+        [Test, Category("Failure")]
         public void Callsite_MultiDimensionDecreaseDimensionOnOpenAndRun_OrphanCountCorrect()
         {
             OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);
         }
 
-        [Test]
+        [Test,Category("Failure")]
         public void CallSite_MultiDimensionIncreaseDimensionOnOpenAndRun()
         {
             OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..3", 0);
@@ -79,13 +79,13 @@ namespace Dynamo.Tests
          * A + node with the list and the double connected and SINGLE lacing.
          */
 
-        [Test]
+        [Test, Category("Failure")]
         public void Callsite_SingleDimensionDecreaseDimensionOnOpenAndRun()
         {
             OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..1", 1);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Callsite_SingleDimensionIncreaseDimensionOnOpenAndRun()
         {
             OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..3", 0);
@@ -105,7 +105,7 @@ namespace Dynamo.Tests
             BeginRun();
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Callsite_DeleteNodeBeforeRun()
         {
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
@@ -120,7 +120,7 @@ namespace Dynamo.Tests
             BeginRun();
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Callsite_RunWithTraceDataFromUnresolvedNodes_DoesNotCrash()
         {
             var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Geometry", "Geometry_Surfaces.dyn");

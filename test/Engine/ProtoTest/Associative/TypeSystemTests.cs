@@ -29,6 +29,7 @@ namespace ProtoTest.Associative
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RedefConvTest()
         {
             String code =

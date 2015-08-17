@@ -1,17 +1,14 @@
-﻿using Dynamo.Core;
-using Dynamo.DSEngine;
-using Dynamo.Extensions;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Utilities;
-using Greg;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+
+using Dynamo.Extensions;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+
+using Greg;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dynamo.PackageManager
 {
@@ -19,11 +16,10 @@ namespace Dynamo.PackageManager
     {
         #region Fields & Properties
 
-        private PackageLoader packageLoader;
-        private PackageManagerClient packageManagerClient;
+        private Action<Assembly> RequestLoadNodeLibraryHandler;
+        private Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler; 
 
         public event Action<ILogMessage> MessageLogged;
-        public event Action<Assembly> RequestLoadNodeLibrary;
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -35,38 +31,31 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)
         /// </summary>
-        internal PackageLoader PackageLoader
-        {
-            get { return packageLoader; }
-        }
+        internal PackageLoader PackageLoader { get; private set; }
 
         /// <summary>
         ///     Dynamo Package Manager Instance.
         /// </summary>
-        public PackageManagerClient PackageManagerClient
-        {
-            get { return packageManagerClient; }
-        }
+        public PackageManagerClient PackageManagerClient { get; private set; }
 
         #endregion
 
         #region IExtension members
 
-        public void Load(IPreferences preferences, IPathManager pathManager)
-        {
-            // Load Packages
-            packageLoader.DoCachedPackageUninstalls(preferences);
-            packageLoader.LoadAll(new LoadPackageParams
-            {
-                Preferences = preferences,
-                PathManager = pathManager
-            });
-        }
-
         public void Dispose()
         {
-            packageLoader.MessageLogged -= OnMessageLogged;
-            packageLoader.RequestLoadNodeLibrary -= OnRequestLoadNodeLibrary;
+            PackageLoader.MessageLogged -= OnMessageLogged;
+
+            if (RequestLoadNodeLibraryHandler != null)
+            {
+                PackageLoader.RequestLoadNodeLibrary -= RequestLoadNodeLibraryHandler;
+            }
+
+            if (RequestLoadCustomNodeDirectoryHandler != null)
+            {
+                PackageLoader.RequestLoadCustomNodeDirectory -=
+                    RequestLoadCustomNodeDirectoryHandler;
+            }
         }
 
         /// <summary>
@@ -90,22 +79,27 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            packageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
-            packageLoader.MessageLogged += OnMessageLogged;
-            packageLoader.RequestLoadNodeLibrary += OnRequestLoadNodeLibrary;
-            packageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => startupParams.CustomNodeManager
+            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
+            PackageLoader.MessageLogged += OnMessageLogged;
+            RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
+            RequestLoadCustomNodeDirectoryHandler = (dir) => startupParams.CustomNodeManager
                     .AddUninitializedCustomNodesInPath(dir, DynamoModel.IsTestMode, true);
 
+            PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
+            PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
+                
             var dirBuilder = new PackageDirectoryBuilder(
                 new MutatingFileSystem(),
                 new CustomNodePathRemapper(startupParams.CustomNodeManager, DynamoModel.IsTestMode));
 
+            PackageUploadBuilder.SetEngineVersion(startupParams.DynamoVersion);
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
-            packageManagerClient = new PackageManagerClient(
+            PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageLoader.DefaultPackagesDirectory);
+                uploadBuilder, PackageLoader.DefaultPackagesDirectory);
+
+            LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
 
         public void Ready(ReadyParams sp) { }
@@ -119,19 +113,22 @@ namespace Dynamo.PackageManager
 
         #region Private helper methods
 
+        private void LoadPackages(IPreferences preferences, IPathManager pathManager)
+        {
+            // Load Packages
+            PackageLoader.DoCachedPackageUninstalls(preferences);
+            PackageLoader.LoadAll(new LoadPackageParams
+            {
+                Preferences = preferences,
+                PathManager = pathManager
+            });
+        }
+
         private void OnMessageLogged(ILogMessage msg)
         {
             if (this.MessageLogged != null)
             {
                 this.MessageLogged(msg);
-            }
-        }
-
-        private void OnRequestLoadNodeLibrary(Assembly assembly)
-        {
-            if (RequestLoadNodeLibrary != null)
-            {
-                RequestLoadNodeLibrary(assembly);
             }
         }
 

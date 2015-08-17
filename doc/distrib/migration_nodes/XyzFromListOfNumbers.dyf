@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.20158" X="0" Y="0" zoom="1" Description="This node represents an upgrade of the 0.6.3 XyzFromListOfNumbers node to 0.7.x" Category="Migration" Name="XyzFromListOfNumbers" ID="d58a9edc-7623-424b-ac45-a71bfa40046d">
+<Workspace Version="0.7.0.20158" X="0" Y="0" zoom="1" Description="This node represents an upgrade of the 0.6.3 XyzFromListOfNumbers node to 0.7.x" Category="Migration" Name="XyzFromListOfNumbers" IsVisibleInDynamoLibrary="false" ID="d58a9edc-7623-424b-ac45-a71bfa40046d">
   <Elements>
     <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b9dad0e2-f9de-40f4-8324-679314bef636" nickname="Input" x="30" y="50" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Symbol value="list" />

@@ -906,5 +906,18 @@ namespace Dynamo.Tests
 
             Assert.AreEqual("Curve", curveParam.Parameter.DisplayTypeName);
         }
+
+        [Test]
+        public void CanAddNodesWithTheSameNameAndEmptyPath2Times()
+        {
+            const string nodeName = "NodeName";
+            const string catName1 = "CatName1";
+            const string catName2 = "CatName2";
+
+            CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "");
+            CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName2, "");
+
+            Assert.AreEqual(2, CurrentDynamoModel.SearchModel.SearchEntries.Where(entry => entry.Name == nodeName).Count());
+        }
     }
 }

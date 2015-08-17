@@ -115,12 +115,16 @@ limitations under the License.
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
+    <Compile Include="Extensions\ExtensionLibraryLoader.cs" />
     <Compile Include="Interfaces\ICustomNodeManager.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="Extensions\ExtensionLoader.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="Interfaces\ILibraryLoader.cs" />
+    <Compile Include="Interfaces\ICustomNodeWorkspaceModel.cs" />
     <Compile Include="Interfaces\IWorkspaceModel.cs" />
+    <Compile Include="Models\NodeLoaders\InputNodeLoader.cs" />
     <Compile Include="Rendering\DefaultRenderPackageFactory.cs" />
     <Compile Include="Extensions\ExtensionDefinition.cs" />
     <Compile Include="Extensions\IExtensionLoader.cs" />

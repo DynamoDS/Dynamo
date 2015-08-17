@@ -1,0 +1,22 @@
+<Workspace Version="0.8.2.2073" X="-5.2647813902924" Y="32.8787976169409" zoom="0.889203022025035" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="9f09c7c9-23dc-4077-b2e4-aa5b67d5e0bd" type="Dynamo.Nodes.DSFunction" nickname="Cuboid.ByCorners" x="260.337510879432" y="96.3048945321632" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Cuboid.ByCorners@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="8229dec7-b4ae-463b-a7ac-e36671fefef0" type="Dynamo.Nodes.DSFunction" nickname="Geometry.Explode" x="445.937835834282" y="156.289014595081" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.Explode" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="47b78c9b-98b3-4852-935f-0d03f52a65b3" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="255.982925357315" y="233.909418820449" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" CodeText="{x,2,3,&#xA;{1,2,3}};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="0f6c00a0-fd58-4b7d-ad4f-7bafd398d0cc" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="39.4888718396772" y="256.396064017754" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="1000;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9f09c7c9-23dc-4077-b2e4-aa5b67d5e0bd" start_index="0" end="8229dec7-b4ae-463b-a7ac-e36671fefef0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0f6c00a0-fd58-4b7d-ad4f-7bafd398d0cc" start_index="0" end="47b78c9b-98b3-4852-935f-0d03f52a65b3" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

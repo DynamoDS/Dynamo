@@ -10,7 +10,7 @@ IF /I "%2"=="x64" set OPT_Platform=x64
 IF /I "%2"=="x86" set OPT_Platform=x86
 
 set binroot=%cwd%..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%
-set wwlroot=%binroot%\wwl
+set wwlroot=%cwd%..\..\bin\wwl
 
 echo .
 echo -------------------------------------------------------------------------------

@@ -291,9 +291,6 @@ namespace Dynamo.ViewModels
 
             var annotationsColl = new CollectionContainer {Collection = Annotations};
             _workspaceElements.Add(annotationsColl);
-            // Add EndlessGrid
-            var endlessGrid = new EndlessGridViewModel(this);
-            _workspaceElements.Add(endlessGrid);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -563,7 +560,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanNodeToCode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.Count > 0;
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         internal void SelectInRegion(Rect2D region, bool isCrossSelect)
@@ -1148,6 +1145,7 @@ namespace Dynamo.ViewModels
             ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
             SetArgumentLacingCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged("HasSelection");
+            RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");

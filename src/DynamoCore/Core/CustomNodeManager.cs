@@ -375,6 +375,14 @@ namespace Dynamo.Core
             return false;
         }
 
+        public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out ICustomNodeWorkspaceModel ws)
+        {
+            CustomNodeWorkspaceModel workSpace;
+            var result = TryGetFunctionWorkspace(id, isTestMode, out workSpace);
+            ws = workSpace;
+            return result;
+        }
+
         /// <summary>
         ///     Get the function definition from a guid.
         /// </summary>
@@ -466,7 +474,8 @@ namespace Dynamo.Core
                     header.Name,
                     header.Category,
                     header.Description, 
-                    path);
+                    path,
+                    header.IsVisibleInDynamoLibrary);
                 return true;
             }
             catch (Exception e)
@@ -520,6 +529,7 @@ namespace Dynamo.Core
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
                 nodeGraph.Presets,              
+                nodeGraph.ElementResolver,
                 workspaceInfo);
 
             
@@ -891,7 +901,10 @@ namespace Dynamo.Core
                     group.SelectedModels = group.DeletedModelBases;
                     newAnnotations.Add(group);
                 }
-
+                
+                // Now all selected nodes already moved to custom workspace,
+                // clear the selection.
+                DynamoSelection.Instance.ClearSelection();
 
                 foreach (var conn in fullySelectedConns)
                 {
@@ -1090,6 +1103,7 @@ namespace Dynamo.Core
                     Enumerable.Empty<NoteModel>(),
                     newAnnotations,
                     Enumerable.Empty<PresetModel>(),
+                    currentWorkspace.ElementResolver,
                     new WorkspaceInfo()
                     {
                         X = 0,
@@ -1099,8 +1113,7 @@ namespace Dynamo.Core
                         Description = args.Description,
                         ID = newId.ToString(),
                         FileName = string.Empty
-                    },
-                    currentWorkspace.ElementResolver);
+                    });
                 
                 newWorkspace.HasUnsavedChanges = true;
 
@@ -1137,7 +1150,7 @@ namespace Dynamo.Core
                 {
                     undoRecorder.RecordCreationForUndo(connector);
                 }
-            }
+            } 
             return newWorkspace;
         }
 

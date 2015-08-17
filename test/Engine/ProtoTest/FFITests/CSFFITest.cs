@@ -399,6 +399,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void TestInheritanceAcrossLangauges_CS_DS()
         {
@@ -608,6 +609,7 @@ namespace ProtoFFITests
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ProtoGeometry")] [Ignore] [Category("PortToCodeBlocks")]
         public void geometryinClass()
         {
@@ -919,6 +921,7 @@ p11;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void DisposeOnFFITest005()
         {
             string code = @"
@@ -1012,6 +1015,7 @@ p11;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void DisposeOnFFITest007()
         {
             string code = @"
@@ -1056,6 +1060,7 @@ p11;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void DisposeOnFFITest008()
         {
             string code = @"

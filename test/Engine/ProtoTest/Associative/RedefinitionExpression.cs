@@ -19,6 +19,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("ToFixYuKe")]
+        [Category("DSDefinedClass")]
         public void RedefineWithFunctions02()
         {
             String code =
@@ -29,6 +30,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RedefineWithFunctions03()
         {
             String code =
@@ -95,6 +97,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RedefineWithExpressionLists04()
         {
             String code =

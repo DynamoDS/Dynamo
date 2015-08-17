@@ -1581,24 +1581,49 @@ namespace Dynamo.Controls
             // if the number of directories deep exceeds threshold
             if (str.Length - str.Replace(@"\", "").Length >= 5)
             {
-                var root = Path.GetPathRoot(str);
-                var name = Path.GetFileName(str);
-
-                var dirInfo = new DirectoryInfo(Path.GetDirectoryName(str));
-
-                var collapsed = new[]
-                {
-                    root + "...",
-                    dirInfo.Parent.Parent.Name,
-                    dirInfo.Parent.Name,
-                    dirInfo.Name,
-                    name
-                };
-
-                return string.Join(@"\", collapsed);
+                return ShortenNestedFilePath(str);
             }
 
             return str;
+        }
+
+        internal static string ShortenNestedFilePath(string str)
+        {
+            //directories to go down under the root
+            const int MAX_FOLDER_DEPTH = 2;
+            var name = Path.GetFileName(str);
+            var path = Path.GetDirectoryName(str);
+
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(name))
+            {
+                return str;
+            }
+
+            var currentDirInfo = new DirectoryInfo(path);
+            var root = currentDirInfo.Root;
+            var rootName = root.FullName;
+
+            var collapsed = new List<string>();
+            collapsed.Add(name);
+
+            for (int count = 0; count < MAX_FOLDER_DEPTH; count++)
+            {
+                if (currentDirInfo.Parent == null)
+                {
+                    break;
+                }
+
+                collapsed.Insert(0, currentDirInfo.Name);
+                currentDirInfo = currentDirInfo.Parent;
+            }
+            //if the next parent is the root then we don't want to add ... to the string
+            if ((currentDirInfo.Parent != null) && (currentDirInfo.Parent != root))
+            {
+                rootName = rootName + "...";
+            }
+            collapsed.Insert(0, rootName);
+
+            return string.Join(@"\", collapsed);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2055,12 +2080,13 @@ namespace Dynamo.Controls
             var textBlock = values[0] as TextBlock;
             var viewModel = values[1] as SearchViewModel;
 
-            // In some cases viewModel can be null. Mostly it's because workspace has not loaded yet.
-            // But converter has been already called.
+            // This converter is used in Library view and in ClassInformation view.
+            // In Library view ViewModel is SearchViewModel, that's why it can't be null.
+            // But in ClassInformation view ViewModel is ClassInformationViewModel.
+            // So, if viewModel is null, that means we are in ClassInformationView
+            // and there is no need to create additional margin.
             if (viewModel == null)
-            {
                 return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
-            }
 
             var searchText = viewModel.SearchText;
             var typeface = viewModel.RegularTypeface;

@@ -175,6 +175,7 @@ result =
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T03_Defect_UndefinedType()
         {
@@ -274,6 +275,7 @@ r =
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T06_String_Class()
         {
@@ -410,6 +412,7 @@ def foo(x:var)
         }
 
         [Test]
+        [Category("ModifierBlock")]
         [Category("SmokeTest")]
         public void T10_String_ModifierStack()
         {
@@ -431,6 +434,7 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_1()
         {
             String code =
@@ -443,6 +447,7 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_2()
         {
             String code =
@@ -455,6 +460,7 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_3()
         {
             String code =
@@ -469,6 +475,7 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_4()
         {
             String code =
@@ -485,6 +492,7 @@ r = a;";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void TV1467201_Replicate_ModifierStack_5()
         {
             String code =
@@ -598,6 +606,7 @@ m = m+n;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_1()
         {
@@ -608,6 +617,7 @@ m = m+n;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringPointer_2()
         {
@@ -618,6 +628,7 @@ m = m+n;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("ConcatenationString")]
         public void TV_ADD_StringArr()
         {

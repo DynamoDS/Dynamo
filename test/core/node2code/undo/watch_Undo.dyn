@@ -1,0 +1,24 @@
+<Workspace Version="0.8.2.1900" X="-104.777064418784" Y="88.2065924354665" zoom="0.803321593462598" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Watch guid="55ef00d5-b88f-4dc1-a834-8514564b06c9" type="Dynamo.Nodes.Watch" nickname="Watch" x="701.935257948338" y="246.158182989873" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput guid="5d0e98c8-e8ae-465d-8374-22bc9565cbae" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="281.2" y="318.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction guid="6a4b3d53-b5fe-42d2-aa6b-bf4c428335c8" type="Dynamo.Nodes.DSFunction" nickname="+" x="459.196723213004" y="241.670066170326" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="Operators" function="+@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.DoubleInput guid="25894491-6855-4758-b35a-0f4340e2dd04" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="281.596723213004" y="196.870066170326" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5d0e98c8-e8ae-465d-8374-22bc9565cbae" start_index="0" end="6a4b3d53-b5fe-42d2-aa6b-bf4c428335c8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6a4b3d53-b5fe-42d2-aa6b-bf4c428335c8" start_index="0" end="55ef00d5-b88f-4dc1-a834-8514564b06c9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25894491-6855-4758-b35a-0f4340e2dd04" start_index="0" end="6a4b3d53-b5fe-42d2-aa6b-bf4c428335c8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

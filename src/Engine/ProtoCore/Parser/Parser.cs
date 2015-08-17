@@ -2245,7 +2245,6 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			
 		}
-		//if (!core.Options.GenerateSSA)
 		{
 		   if (!isModifier && withinModifierCheckScope)
 		   {
@@ -2703,8 +2702,8 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		node = new ProtoCore.AST.AssociativeAST.StringNode() 
 		{ 
 		   value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
-		};
-        NodeUtils.SetNodeLocation(node, t);
+		}; 
+		NodeUtils.SetNodeLocation(node, t);
 		
 	}
 
@@ -3282,12 +3281,12 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		Imperative_stmtlist(out body);
 		whileStmtNode.Body = body; 
 		Expect(47);
-		NodeUtils.SetNodeEndLocation(whileStmtNode, t);  
-		node = whileStmtNode;                            
+		NodeUtils.SetNodeEndLocation(whileStmtNode, t);
+		node = whileStmtNode;
+		
 	}
 
 	void Imperative_forloop(out ProtoCore.AST.ImperativeAST.ImperativeNode forloop) {
-		ProtoCore.AST.ImperativeAST.IfStmtNode dummyIfNode = new ProtoCore.AST.ImperativeAST.IfStmtNode();
 		ProtoCore.AST.ImperativeAST.ImperativeNode node;
 		ProtoCore.AST.ImperativeAST.ForLoopNode loopNode = new ProtoCore.AST.ImperativeAST.ForLoopNode();
 		List<ProtoCore.AST.ImperativeAST.ImperativeNode> body = null;   
@@ -3314,14 +3313,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			Imperative_stmt(out singleStmt);
 			loopNode.body.Add(singleStmt); 
 		} else SynErr(116);
-		dummyIfNode.IfExprNode
-		= new ProtoCore.AST.ImperativeAST.BooleanNode(true);
-		dummyIfNode.IfBody.Add(loopNode);
-		dummyIfNode.line = loopNode.line;
-		dummyIfNode.col = loopNode.col;
-		dummyIfNode.endLine = loopNode.endLine;
-		dummyIfNode.endCol = loopNode.endCol;
-		forloop = dummyIfNode;
+		forloop = loopNode;
 		
 	}
 

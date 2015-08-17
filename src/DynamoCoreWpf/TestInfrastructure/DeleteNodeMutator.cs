@@ -26,7 +26,7 @@ namespace Dynamo.TestInfrastructure
 
             var nodes = DynamoViewModel.Model.CurrentWorkspace.Nodes;
             if (nodes.Count() == 0)
-                return pass;
+                return true;
 
             int nodesCountBeforeDelete = nodes.Count();
 
@@ -37,7 +37,7 @@ namespace Dynamo.TestInfrastructure
 
             int numberOfUndosNeeded = Mutate(node);
 
-            Thread.Sleep(100);
+            Thread.Sleep(0);
 
             writer.WriteLine("### - delete complete");
             writer.Flush();
@@ -51,7 +51,7 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
-            Thread.Sleep(100);
+            Thread.Sleep(0);
 
             writer.WriteLine("### - re-exec complete");
             writer.Flush();
@@ -72,25 +72,14 @@ namespace Dynamo.TestInfrastructure
 
                         DynamoViewModel.ExecuteCommand(undoCommand);
                     }));
-                    Thread.Sleep(100);
+                    Thread.Sleep(0);
                 }
                 writer.WriteLine("### - undo complete");
                 writer.Flush();
 
                 writer.WriteLine("### - Beginning re-exec");
 
-                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-                {
-                    DynamoModel.RunCancelCommand runCancel =
-                        new DynamoModel.RunCancelCommand(false, false);
-
-                    DynamoViewModel.ExecuteCommand(runCancel);
-                }));
-                Thread.Sleep(10);
-                while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-                {
-                    Thread.Sleep(10);
-                }
+                ExecuteAndWait();
                 writer.WriteLine("### - re-exec complete");
                 writer.Flush();
 

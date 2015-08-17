@@ -58,6 +58,23 @@ namespace DynamoShapeManager
                         return (LibraryVersion)install.Value.Item1;
                     }
                 }
+
+                //Fallback mechanism, look inside libg folders if any of them
+                //contain ASM dlls.
+                foreach (var v in versions)
+                {
+                    var folderName = string.Format("libg_{0}", (int)v);
+                    var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
+                    if (!dir.Exists)
+                        continue;
+
+                    var files = dir.GetFiles("ASMAHL*.dll");
+                    if (!files.Any())
+                        continue;
+
+                    location = dir.FullName;
+                    return v; // Found version.
+                }                
             }
             catch (Exception)
             {
@@ -87,8 +104,8 @@ namespace DynamoShapeManager
 
             var preloaderPath = Path.Combine(preloaderLocation, PreloaderAssembly);
 
-            Debug.WriteLine("ASM Preloader: {0}", preloaderPath);
-            Debug.WriteLine("ASM Location: {0}", asmLocation);
+            Debug.WriteLine(string.Format("ASM Preloader: {0}", preloaderPath));
+            Debug.WriteLine(string.Format("ASM Location: {0}", asmLocation));
 
             var libG = Assembly.LoadFrom(preloaderPath);
             var preloadType = libG.GetType(PreloaderClassName);

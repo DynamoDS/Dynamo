@@ -1,0 +1,16 @@
+<Workspace Version="0.8.2.1957" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="ElementResolverTarget.StaticProperty" resolvedName="FFITarget.ElementResolverTarget" assemblyName="FFITarget.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="2a5a771b-b1b8-4d0e-b1d8-973e0768de1e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="141" y="238" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="ElementResolverTarget.StaticProperty;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="5cdb4097-b8d2-4739-84b3-462a42dd5398" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="146" y="122" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="ElementResolverTarget.StaticProperty;" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+</Workspace>

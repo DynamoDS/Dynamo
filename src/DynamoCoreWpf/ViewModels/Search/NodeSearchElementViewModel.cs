@@ -44,6 +44,20 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(OnClicked);            
         }
 
+        /// <summary>
+        /// Creates a copy of NodeSearchElementViewModel.
+        /// </summary>
+        public NodeSearchElementViewModel(NodeSearchElementViewModel copyElement)
+        {
+            if (copyElement == null)
+                throw new ArgumentNullException();
+
+            Model = copyElement.Model;
+            Clicked = copyElement.Clicked;
+            RequestBitmapSource = copyElement.RequestBitmapSource;
+            ClickedCommand = copyElement.ClickedCommand;
+        }
+
         private void ModelOnVisibilityChanged()
         {           
             RaisePropertyChanged("Visibility");
@@ -172,6 +186,8 @@ namespace Dynamo.Wpf.ViewModels
             {
                 var nodeModel = Model.CreateNode();
                 Clicked(nodeModel, Position);
+
+                Dynamo.Services.InstrumentationLogger.LogPiiInfo("Search-NodeAdded", FullName);
             }
         }
 
@@ -248,11 +264,22 @@ namespace Dynamo.Wpf.ViewModels
 
         protected override ImageSource GetIcon(string fullNameOfIcon)
         {
+            IconRequestEventArgs iconRequest;
+
+            // If there is no path, that means it's just created node.
+            // Use DefaultAssembly to load icon.
+            if (String.IsNullOrEmpty(Path))
+            {
+                iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly, fullNameOfIcon);
+                OnRequestBitmapSource(iconRequest);
+                return iconRequest.Icon;
+            }
+
             string customizationPath = System.IO.Path.GetDirectoryName(Path);
             customizationPath = System.IO.Directory.GetParent(customizationPath).FullName;
             customizationPath = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");
 
-            var iconRequest = new IconRequestEventArgs(customizationPath, fullNameOfIcon, false);
+            iconRequest = new IconRequestEventArgs(customizationPath, fullNameOfIcon, false);
             OnRequestBitmapSource(iconRequest);
 
             if (iconRequest.Icon != null)
