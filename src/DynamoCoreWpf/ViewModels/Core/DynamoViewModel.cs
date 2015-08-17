@@ -1065,7 +1065,7 @@ namespace Dynamo.ViewModels
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
                 workspaces.Insert(0, newVm);
-
+                
                 // The RunSettings control is a child of the DynamoView, 
                 // but has its DataContext set to the RunSettingsViewModel 
                 // on the HomeWorkspaceViewModel. When the home workspace is changed,

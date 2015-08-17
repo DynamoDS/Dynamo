@@ -18,6 +18,7 @@ using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Rendering;
+using Dynamo.Wpf.ViewModels.Core;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -91,9 +92,7 @@ namespace Dynamo.Controls
             }
         }
 
-#if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
-#endif
 
         #endregion
 
@@ -705,13 +704,13 @@ namespace Dynamo.Controls
         {
             if (renderTimer.IsRunning)
             {
-                renderTimer.Stop();
-                //Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
+                renderTimer.Stop();              
                 renderTimer.Reset();
-                if (viewModel.ShowBusyIndicator)
+                if (context.ViewModel.ShowBusyIndicator)
                 {
-                    viewModel.ShowRunMessage = "Run Completed";
-                    viewModel.ShowBusyIndicator = false;
+                    var vm = context.ViewModel.HomeSpaceViewModel as HomeWorkspaceViewModel;
+                    vm.SetCurrentWarning(NotificationLevel.Mild,Wpf.Properties.Resources.RunCompleted);
+                    context.ViewModel.ShowBusyIndicator = false;
                 }
             }
 
@@ -989,10 +988,15 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         public void RenderDrawables(VisualizationEventArgs e)
         {
+           
             //check the id, if the id is meant for another watch,
             //then ignore it
             if (e.Id != _id)
-            {               
+            {
+                if (!context.ViewModel.ShowBusyIndicator)
+                {
+                    context.ViewModel.ShowBusyIndicator = true;
+                }
                 Attach();
                 NotifyPropertyChanged("");
                 return;
@@ -1021,8 +1025,7 @@ namespace Dynamo.Controls
 
             AggregateRenderPackages(aggParams);
 
-            renderTimer.Stop();
-           // Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
+            renderTimer.Stop();           
             renderTimer.Reset();
             renderTimer.Start();       
             

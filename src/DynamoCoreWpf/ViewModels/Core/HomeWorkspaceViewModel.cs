@@ -138,16 +138,16 @@ namespace Dynamo.Wpf.ViewModels.Core
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
-        {
+        {           
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning);
 
             if (!hasWarnings)
             {
-                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
+                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.EvalCompletedMessage);
             }
             else
             {
-                SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage); 
+                SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.EvalCompletedWithWarningsMessage); 
             }
         }
 
@@ -155,15 +155,25 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             DynamoViewModel.ShowBusyIndicator = true;
             DynamoViewModel.ShowRunMessage = String.Empty;
-            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedMessage);
+
+            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.EvalStartedMessage);
         }
 
-        private void SetCurrentWarning(NotificationLevel level, string message)
+        internal void SetCurrentWarning(NotificationLevel level, string message)
         {
-            //CurrentNotificationLevel = level;
-            //CurrentNotificationMessage = message;
-            DynamoViewModel.ShowRunMessage = message;
+            CurrentNotificationLevel = level;
+            CurrentNotificationMessage = message;
 
+            if (level == NotificationLevel.Error || level == NotificationLevel.Moderate)
+            {
+                DynamoViewModel.ShowBusyIndicator = false;
+                DynamoViewModel.ShowRunMessage = message;
+            }
+            else
+            {
+                DynamoViewModel.ShowRunMessage = message;
+            }
+           
         }
 
         public void ClearWarning()

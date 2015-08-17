@@ -1912,6 +1912,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tessalating.....
+        /// </summary>
+        public static string EvalCompletedMessage {
+            get {
+                return ResourceManager.GetString("EvalCompletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Evaluation completed with warnings..
+        /// </summary>
+        public static string EvalCompletedWithWarningsMessage {
+            get {
+                return ResourceManager.GetString("EvalCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Evaluation started....
+        /// </summary>
+        public static string EvalStartedMessage {
+            get {
+                return ResourceManager.GetString("EvalStartedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All Files ({0})|{0}.
         /// </summary>
         public static string FileDialogAllFiles {
@@ -3867,29 +3894,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tessalating.....
+        ///   Looks up a localized string similar to Run completed.
         /// </summary>
-        public static string RunCompletedMessage {
+        public static string RunCompleted {
             get {
-                return ResourceManager.GetString("RunCompletedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Evaluation completed with warnings..
-        /// </summary>
-        public static string RunCompletedWithWarningsMessage {
-            get {
-                return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Evaluation started....
-        /// </summary>
-        public static string RunStartedMessage {
-            get {
-                return ResourceManager.GetString("RunStartedMessage", resourceCulture);
+                return ResourceManager.GetString("RunCompleted", resourceCulture);
             }
         }
         
