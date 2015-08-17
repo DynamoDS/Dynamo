@@ -20,6 +20,11 @@ namespace Dynamo.Publish.ViewModels
     {
         #region Properties
 
+        /// <summary>
+        ///     Helps to show error message just 1 time.
+        /// </summary>
+        private bool firstTimeErrorMessage = true;
+
         private string name;
         public string Name
         {
@@ -159,6 +164,7 @@ namespace Dynamo.Publish.ViewModels
         private void OnModelStateChanged(PublishModel.UploadState state)
         {
             IsUploading = state == PublishModel.UploadState.Uploading;
+            firstTimeErrorMessage = state == PublishModel.UploadState.Failed;
             BeginInvoke(() => PublishCommand.RaiseCanExecuteChanged());
         }
 
@@ -198,11 +204,22 @@ namespace Dynamo.Publish.ViewModels
 
             if (model.State == PublishModel.UploadState.Failed)
             {
-                GenerateErrorMessage();
-                IsReadyToUpload = false;
-                // Even if there is error, user can try submit one more time.
-                // E.g. user typed wrong login or password.
-                return true;
+                if (firstTimeErrorMessage)
+                {
+                    GenerateErrorMessage();
+                    IsReadyToUpload = false;
+
+                    // We should show error message just one time.
+                    firstTimeErrorMessage = false;
+
+                    // Even if there is error, user can try submit one more time.
+                    // E.g. user typed wrong login or password.
+                    return true;
+                }
+                else
+                {
+                    model.ClearState();
+                }
             }
 
             UploadStateMessage = Resources.ReadyForPublishMessage;

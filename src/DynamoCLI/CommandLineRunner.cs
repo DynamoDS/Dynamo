@@ -112,7 +112,15 @@ namespace DynamoCLI
                         foreach (var port in node.OutPorts)
                         {
                             var value = node.GetValue(port.Index, model.EngineController);
-                            portvalues.Add(value.StringData);
+                            if (value.IsCollection)
+                            {
+                                portvalues.Add(GetStringRepOfCollection(value));
+                            }
+                            else
+                            {
+                                portvalues.Add(value.StringData);
+                            }
+                            
                         }
                         resultsdict.Add(node.GUID, portvalues);
                     }
@@ -125,6 +133,14 @@ namespace DynamoCLI
 
 
             return doc;
+        }
+
+        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
+        {
+
+           var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
+            return "{"+items +"}";
+
         }
 
         private static void populateXmlDocWithResults(XmlDocument doc, List<Dictionary<Guid, List<object>>> resultsDict)

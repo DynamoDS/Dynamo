@@ -59,6 +59,7 @@ namespace Dynamo.Models
             CustomNodeId = Guid.Parse(info.ID);
             Category = info.Category;
             Description = info.Description;
+            IsVisibleInDynamoLibrary = info.IsVisibleInDynamoLibrary;
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -110,7 +111,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName);
+                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName, IsVisibleInDynamoLibrary);
             }
         }
 
@@ -156,6 +157,19 @@ namespace Dynamo.Models
             }
         }
         private string description;
+
+        /// <summary>
+        ///     Custom node visibility in the Dynamo library
+        /// </summary>
+        public bool IsVisibleInDynamoLibrary
+        {
+            get { return isVisibleInDynamoLibrary; }
+            set
+            {
+                isVisibleInDynamoLibrary = value;
+            }
+        }
+        private bool isVisibleInDynamoLibrary;
 
         protected override void RequestRun()
         {

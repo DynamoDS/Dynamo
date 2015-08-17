@@ -116,9 +116,11 @@ namespace Dynamo.Controls
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
-            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            {
+                loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+            }
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += Log;
@@ -129,6 +131,10 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += Log;
+
                     ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
                 }
@@ -662,6 +668,7 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
@@ -1558,6 +1565,10 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
+            }
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
+            {
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
         }
     }
