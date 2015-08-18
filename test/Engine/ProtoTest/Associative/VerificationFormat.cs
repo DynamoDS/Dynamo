@@ -10,7 +10,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    private class VerificationFormat : ProtoTestBase
+    class VerificationFormat : ProtoTestBase
     {
         [Test]
         public void TestAssignment01()

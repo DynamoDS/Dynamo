@@ -10,7 +10,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    private class VerificationErrorFormat : ProtoTestBase
+    class VerificationErrorFormat : ProtoTestBase
     {
         [Test]
         public void TestSyntaxError01()
