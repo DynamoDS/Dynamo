@@ -133,6 +133,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
@@ -141,6 +145,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
