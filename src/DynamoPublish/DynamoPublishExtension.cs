@@ -56,16 +56,21 @@ namespace Dynamo.Publish
             dynamoMenu = p.dynamoMenu;
             extensionMenuItem = GenerateMenuItem();
             p.AddMenuItem(MenuBarType.File, extensionMenuItem, 11);
-            
+
             manageCustomizersMenuItem = GenerateManageCustomizersMenuItem();
             p.AddMenuItem(MenuBarType.File, manageCustomizersMenuItem, 12);
 
-            
             inviteMenuItem = GenerateInviteMenuItem();
-            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);            
- 
-            
- 
+            p.AddMenuItem(MenuBarType.File, inviteMenuItem, 11);
+
+            p.CurrentWorkspaceChanged += (ws) =>
+            {
+                publishViewModel.CurrentWorkspaceModel = ws;
+
+                var isEnabled = ws is HomeWorkspaceModel && publishModel.HasAuthProvider;
+                extensionMenuItem.IsEnabled = isEnabled;
+            };
+
         }
 
         public void Shutdown()
@@ -75,9 +80,7 @@ namespace Dynamo.Publish
 
         public void Dispose()
         {
-            ClearMenuItem(extensionMenuItem,inviteMenuItem);             
-            ClearMenuItem(extensionMenuItem);
-            ClearMenuItem(manageCustomizersMenuItem);
+            ClearMenuItem(extensionMenuItem, inviteMenuItem, manageCustomizersMenuItem);
         }
 
         #endregion

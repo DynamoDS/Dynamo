@@ -124,6 +124,15 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your workspace contains nodes that are currently not allowed in a customizer: .
+        /// </summary>
+        public static string InvalidNodeMessage {
+            get {
+                return ResourceManager.GetString("InvalidNodeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request Invite.
         /// </summary>
         public static string InviteMenuButtonText {

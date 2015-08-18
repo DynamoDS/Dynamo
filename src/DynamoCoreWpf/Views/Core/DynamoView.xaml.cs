@@ -55,7 +55,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -116,9 +116,11 @@ namespace Dynamo.Controls
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
-            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            {
+                loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+            }
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += Log;
@@ -1563,6 +1565,10 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
+            }
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
+            {
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
         }
     }

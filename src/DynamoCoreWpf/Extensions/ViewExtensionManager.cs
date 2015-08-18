@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Dynamo.Wpf.Extensions
 {
-    class ViewExtensionManager : IViewExtensionManager, ILogSource
+    internal class ViewExtensionManager : IViewExtensionManager, ILogSource
     {
         private readonly List<IViewExtension> viewExtensions = new List<IViewExtension>();
         private readonly ViewExtensionLoader viewExtensionLoader = new ViewExtensionLoader();

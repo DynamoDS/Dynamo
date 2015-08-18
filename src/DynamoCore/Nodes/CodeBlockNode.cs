@@ -573,30 +573,17 @@ namespace Dynamo.Nodes
             if (allDefs.Any() == false)
                 return;
 
-            double prevPortBottom = 0.0;
             foreach (var def in allDefs)
             {
-                var logicalIndex = def.Value - 1;
-
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
 
-                double portCoordsY = Formatting.INITIAL_MARGIN;
-                portCoordsY += logicalIndex * Configurations.CodeBlockPortHeightInPixels;
-
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
-                    VerticalMargin = portCoordsY - prevPortBottom,
+                    LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockPortHeightInPixels
                 });
-
-                // Since we compute the "delta" between the top of the current 
-                // port to the bottom of the previous port, we need to record 
-                // down the bottom coordinate value before proceeding to the next 
-                // port.
-                // 
-                prevPortBottom = portCoordsY + Configurations.CodeBlockPortHeightInPixels;
             }
         }
 
