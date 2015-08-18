@@ -22,6 +22,12 @@ namespace ProtoTestFx.TD
 {
     public class TestFrameWork
     {
+        public enum VerificationFormat
+        {
+            Custom,
+            JSON
+        }
+
         private static ProtoCore.Core testCore;
         private static ProtoCore.RuntimeCore testRuntimeCore;
 
@@ -38,6 +44,36 @@ namespace ProtoTestFx.TD
         public TestFrameWork()
         {
             runner = new ProtoScriptTestRunner();
+        }
+
+        /// <summary>
+        /// Execute the DS code and verifies the results given a list of verification pairs
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verifyList"></param>
+        public void RunAndVerify(string code, params KeyValuePair<string, object>[] verifyList)
+        {
+            Dictionary<string, object> verifyDictionary = verifyList.ToDictionary(x => x.Key, x => x.Value);
+            RunAndVerify(code, verifyDictionary);
+        }
+
+        /// <summary>
+        /// Execute the DS code and verify using the custom verificationFormat
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verificationFormat"></param>
+        public void RunAndVerify(string code, string verificationFormat, VerificationFormat format = VerificationFormat.JSON)
+        {
+            Dictionary<string, object> verifyDictionary = null;
+            if (format == VerificationFormat.Custom)
+            {
+                verifyDictionary = BuildVerifyDictionaryFromCustomFormat(verificationFormat);
+            }
+            else if (format == VerificationFormat.JSON)
+            {
+                verifyDictionary = BuildVerifyDictionaryFromJSONFormat(verificationFormat);
+            }
+            RunAndVerify(code, verifyDictionary);
         }
 
         /// <summary>
@@ -64,22 +100,6 @@ namespace ProtoTestFx.TD
             }
         }
 
-        /// <summary>
-        /// Execute the code and verifies the results given a list of verification pairs
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="verifyList"></param>
-        public void RunAndVerify(string code, params KeyValuePair<string, object>[] verifyList)
-        {
-            Dictionary<string, object> verifyDictionary = verifyList.ToDictionary(x => x.Key, x => x.Value);
-            RunAndVerify(code, verifyDictionary);
-        }
-
-        public void RunAndVerify(string code, string verificationFormat)
-        {
-            Dictionary<string, object> verifyDictionary = BuildVerificationDictionary(verificationFormat);
-            RunAndVerify(code, verifyDictionary);
-        }
 
         /// <summary>
         /// Runs the code in debug step over 
@@ -165,7 +185,7 @@ namespace ProtoTestFx.TD
         /// </summary>
         /// <param name="verificationFormat"></param>
         /// <returns></returns>
-        public static Dictionary<string, object> BuildVerificationDictionary(string verificationFormat)
+        public static Dictionary<string, object> BuildVerifyDictionaryFromCustomFormat(string verificationFormat)
         {
             Dictionary<string, object> verification = new Dictionary<string, object>();
             string[] stringVerifyList = verificationFormat.Split('|');
@@ -176,6 +196,17 @@ namespace ProtoTestFx.TD
                 object value = ConvertStringToVerificationObject(pair[1]);
                 verification.Add(varname, value);
             }
+            return verification;
+        }
+
+        /// <summary>
+        /// Parses the verificationFormatJSON string and builds a dictionary of verification pairs 
+        /// </summary>
+        /// <param name="verificationFormatJSON"></param>
+        /// <returns></returns>
+        public static Dictionary<string, object> BuildVerifyDictionaryFromJSONFormat(string verificationFormatJSON)
+        {
+            Dictionary<string, object> verification = new Dictionary<string, object>();
             return verification;
         }
 

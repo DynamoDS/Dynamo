@@ -20,7 +20,8 @@ namespace ProtoTest.Associative
 @"a = 1;";
             thisTest.RunAndVerify(
                 code,
-                "a:1"
+                "a:1", 
+                TestFrameWork.VerificationFormat.Custom
                 );
         }
 
@@ -28,9 +29,11 @@ namespace ProtoTest.Associative
         public void TestAssignment02()
         {
             string code =
-@"a = 1;b = 2;"; thisTest.RunAndVerify(
-     code,
-     "a:1|b:2"
+@"a = 1;b = 2;"; 
+            thisTest.RunAndVerify(
+                code,
+                "a:1|b:2",
+                TestFrameWork.VerificationFormat.Custom
      );
         }
 
@@ -42,7 +45,8 @@ namespace ProtoTest.Associative
 @"def f(){    return = 1;}x = f();";
             thisTest.RunAndVerify(
                 code,
-                "x:1"
+                "x:1",
+                TestFrameWork.VerificationFormat.Custom
                 );
         }
 
@@ -53,7 +57,8 @@ namespace ProtoTest.Associative
 @"a = 1.0;";
             thisTest.RunAndVerify(
                 code,
-                "a:1.0"
+                "a:1.0",
+                TestFrameWork.VerificationFormat.Custom
                 );
         }
 
@@ -64,7 +69,8 @@ namespace ProtoTest.Associative
 @"pi = 3.14;e = 2.71828;";
             thisTest.RunAndVerify(
                 code,
-                "pi:3.14|e:2.71828"
+                "pi:3.14|e:2.71828",
+                TestFrameWork.VerificationFormat.Custom
                 );
 
         }
@@ -76,7 +82,8 @@ namespace ProtoTest.Associative
 @"a = 1.1;b = 2.2;c = 3.3;";
             thisTest.RunAndVerify(
                 code,
-                "a:1.1|b:2.2|c:3.3"
+                "a:1.1|b:2.2|c:3.3",
+                TestFrameWork.VerificationFormat.Custom
                 );
         }
 
@@ -87,7 +94,8 @@ namespace ProtoTest.Associative
 @"a = {1,2,3};";
             thisTest.RunAndVerify(
                 code,
-                "a:{1,2,3}"
+                "a:{1,2,3}",
+                TestFrameWork.VerificationFormat.Custom
                 );
         }
 
@@ -98,7 +106,8 @@ namespace ProtoTest.Associative
 @"i = 2;a = {1, 2, 3 + i};";
             thisTest.RunAndVerify(
                 code,
-                "i:2|a:{1,2,5}"
+                "i:2|a:{1,2,5}",
+                TestFrameWork.VerificationFormat.Custom
                 );
         }
 
@@ -109,7 +118,8 @@ namespace ProtoTest.Associative
 @"a = {1,2,{3,4}};";
             thisTest.RunAndVerify(
                 code,
-                "a:{1,2,{3,4}}"
+                "a:{1,2,{3,4}}",
+                TestFrameWork.VerificationFormat.Custom
                 );
         }
 
