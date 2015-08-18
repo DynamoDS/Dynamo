@@ -230,7 +230,7 @@ namespace Dynamo
     /// </summary>
     public class CustomNodeInfo
     {
-        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path)
+        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path, bool isVisibleInDynamoLibrary = true)
         {
             if (functionId == Guid.Empty)
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");
@@ -239,6 +239,7 @@ namespace Dynamo
             Name = name;
             Description = description;
             Path = path;
+            IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
 
             Category = category;
             if (String.IsNullOrWhiteSpace(Category))
@@ -251,5 +252,6 @@ namespace Dynamo
         public string Description { get; set; }
         public string Path { get; set; }
         public bool IsPackageMember { get; set; }
+        public bool IsVisibleInDynamoLibrary { get; private set; }
     }
 }

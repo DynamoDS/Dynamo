@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class HelixWatch3DNodeViewModel : HelixWatch3DViewModel
     {
-        private readonly NodeModel node;
+        private readonly NodeModel watchNode;
 
         public static HelixWatch3DNodeViewModel Start(NodeModel node, Watch3DViewModelStartupParams parameters)
         {
@@ -23,7 +23,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private HelixWatch3DNodeViewModel(NodeModel node, Watch3DViewModelStartupParams parameters):
             base(parameters)
         {
-            this.node = node;
+            watchNode = node;
             IsResizable = true;
 
             RegisterPortEventHandlers(node);
@@ -39,7 +39,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnClear();
 
             var gathered = new List<NodeModel>();
-            node.VisibleUpstreamNodes(gathered);
+            watchNode.VisibleUpstreamNodes(gathered);
 
             gathered.ForEach(n => n.IsUpdated = true);
             gathered.ForEach(n => n.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory));
@@ -67,7 +67,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Don't bother with node property changes 
             // that are not in this branch.
 
-            if (!updatedNode.IsUpstreamOf(node))
+            if (!updatedNode.IsUpstreamOf(watchNode))
                 return;
 
             switch (e.PropertyName)
@@ -80,21 +80,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             base.OnNodePropertyChanged(sender, e);
         }
 
-        protected override void OnRenderPackagesUpdated(Guid nodeGuid,
+        protected override void OnRenderPackagesUpdated(NodeModel node,
             IEnumerable<IRenderPackage> renderPackages)
         {
-            var updatedNode = model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == nodeGuid);
+            var updatedNode = model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID == node.GUID);
             if (updatedNode == null) return;
 
             var visibleUpstream = new List<NodeModel>();
-            node.VisibleUpstreamNodes(visibleUpstream);
+            watchNode.VisibleUpstreamNodes(visibleUpstream);
 
             if (!visibleUpstream.Contains(updatedNode))
             {
                 return;
             }
 
-            base.OnRenderPackagesUpdated(nodeGuid, renderPackages);
+            base.OnRenderPackagesUpdated(node, renderPackages);
         }
 
         protected override void OnWorkspaceSaving(XmlDocument doc)

@@ -448,10 +448,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected override void OnWorkspaceCleared(object sender, EventArgs e)
+        protected override void OnWorkspaceCleared(WorkspaceModel workspace)
         {
             SetCameraData(new CameraData());
-            base.OnWorkspaceCleared(sender, e);
+            base.OnWorkspaceCleared(workspace);
         }
 
         protected override void OnWorkspaceOpening(XmlDocument doc)

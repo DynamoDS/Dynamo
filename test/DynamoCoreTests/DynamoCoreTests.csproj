@@ -68,6 +68,7 @@
     <Compile Include="DefaultArgumentTests.cs" />
     <Compile Include="DSEvaluationUnitTestBase.cs" />
     <Compile Include="DynamoModelTestBase.cs" />
+    <Compile Include="ExtensionTests.cs" />
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="MockMaker.cs" />
     <Compile Include="NodeConstructionTests.cs" />

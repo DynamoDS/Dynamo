@@ -75,6 +75,11 @@ namespace Dynamo.Models
             get { return Owner.GetPortModelIndex(this); }
         }
 
+        public int LineIndex
+        {
+            get { return portData.LineIndex; }
+        }
+
         public bool IsConnected
         {
             get; private set;
@@ -150,11 +155,7 @@ namespace Dynamo.Models
 
             SetPortData(data);
 
-            if (PortType == Models.PortType.Input)
-                MarginThickness = new Thickness(0);
-            else
-                MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
-
+            MarginThickness = new Thickness(0);
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }
 
@@ -258,7 +259,7 @@ namespace Dynamo.Models
         public string NickName { get; set; }
         public string ToolTipString { get; set; }
         public AssociativeNode DefaultValue { get; set; }
-        public double VerticalMargin { get; set; }
+        public int LineIndex { get; set; }
 
         public double Height { get; set; }
 
@@ -269,7 +270,7 @@ namespace Dynamo.Models
             NickName = nickName;
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
-            VerticalMargin = 0;
+            LineIndex = -1;
             Height = 0;
         }
     }

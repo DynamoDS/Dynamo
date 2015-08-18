@@ -6,14 +6,15 @@ using Dynamo.Models;
 
 namespace Dynamo.Interfaces
 {
+    // TODO:http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-8116
+
     public interface IDynamoModel : INotifyPropertyChanged
     {
         IEnumerable<WorkspaceModel> Workspaces { get; }
         WorkspaceModel CurrentWorkspace { get; }
 
-        event EventHandler WorkspaceCleared;
+        event Action<WorkspaceModel> WorkspaceCleared;
         event DynamoModelHandler ShutdownStarted;
-        event Action CleaningUp;
         event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         event Action<WorkspaceModel> WorkspaceAdded;
         event Action<WorkspaceModel> WorkspaceRemoved;

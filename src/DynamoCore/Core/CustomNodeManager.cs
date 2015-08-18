@@ -474,7 +474,8 @@ namespace Dynamo.Core
                     header.Name,
                     header.Category,
                     header.Description, 
-                    path);
+                    path,
+                    header.IsVisibleInDynamoLibrary);
                 return true;
             }
             catch (Exception e)
@@ -652,7 +653,8 @@ namespace Dynamo.Core
                 X = 0,
                 Y = 0,
                 ID = newId.ToString(), 
-                FileName = string.Empty
+                FileName = string.Empty,
+                IsVisibleInDynamoLibrary = true
             };
             var workspace = new CustomNodeWorkspaceModel(info, nodeFactory);
 

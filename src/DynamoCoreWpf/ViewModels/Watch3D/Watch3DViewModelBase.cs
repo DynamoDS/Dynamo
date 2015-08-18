@@ -199,7 +199,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             dynamoModel.WorkspaceCleared += OnWorkspaceCleared;
             dynamoModel.ShutdownStarted += OnModelShutdownStarted;
-            dynamoModel.CleaningUp += OnClear;
             dynamoModel.EvaluationCompleted += OnEvaluationCompleted;
             dynamoModel.PropertyChanged += OnModelPropertyChanged;
         }
@@ -218,7 +217,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             model.WorkspaceCleared -= OnWorkspaceCleared;
             model.ShutdownStarted -= OnModelShutdownStarted;
-            model.CleaningUp -= OnClear;
         }
 
         private void UnregisterWorkspaceEventHandlers(IDynamoModel model)
@@ -272,7 +270,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected virtual void OnWorkspaceCleared(object sender, EventArgs e)
+        protected virtual void OnWorkspaceCleared(WorkspaceModel workspace)
         {
             OnClear();
         }
@@ -378,7 +376,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes
         }
 
-        protected virtual void OnRenderPackagesUpdated(Guid nodeGuid, IEnumerable<IRenderPackage> packages)
+        protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
         {
             OnBeginUpdate(packages);
         }

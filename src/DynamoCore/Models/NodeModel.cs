@@ -26,7 +26,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IRenderPackageSource, IDisposable
+    public abstract class NodeModel : ModelBase, IRenderPackageSource<NodeModel>, IDisposable
     {
         #region private members
 
@@ -1051,39 +1051,30 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Since the ports can have a margin (offset) so that they can moved vertically from its
-        ///     initial position, the center of the port needs to be calculted differently and not only
-        ///     based on the index. The function adds the height of other nodes as well as their margins
+        /// If a "PortModel.LineIndex" property isn't "-1", then it is a PortModel
+        /// meant to match up with a line in code block node. A code block node may 
+        /// contain empty lines in it, resulting in one PortModel being spaced out 
+        /// from another one. In such cases, the vertical position of PortModel is 
+        /// dependent of its "LineIndex".
+        /// 
+        /// If a "PortModel.LineIndex" property is "-1", then it is a regular 
+        /// PortModel. Regular PortModel stacks up on one another with equal spacing,
+        /// so their positions are based solely on "PortModel.Index".
         /// </summary>
-        /// <param name="portModel"> The portModel whose height is to be found</param>
-        /// <returns> Returns the offset of the given port from the top of the ports </returns>
+        /// <param name="portModel">The portModel whose vertical offset is to be computed.</param>
+        /// <returns>Returns the offset of the given port from the top of the ports</returns>
         //TODO(Steve): This kind of UI calculation should probably live on the VM. -- MAGN-5711
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
-            int index = portModel.Index;
+            int index = portModel.LineIndex == -1 ? portModel.Index : portModel.LineIndex;
 
             //If the port was not found, then it should have just been deleted. Return from function
             if (index == -1)
                 return verticalOffset;
 
             double portHeight = portModel.Height;
-
-            switch (portModel.PortType)
-            {
-                case PortType.Input:
-                    for (int i = 0; i < index; i++)
-                        verticalOffset += inPorts[i].MarginThickness.Top + portHeight;
-                    verticalOffset += inPorts[index].MarginThickness.Top;
-                    break;
-                case PortType.Output:
-                    for (int i = 0; i < index; i++)
-                        verticalOffset += outPorts[i].MarginThickness.Top + portHeight;
-                    verticalOffset += outPorts[index].MarginThickness.Top;
-                    break;
-            }
-
-            return verticalOffset;
+            return verticalOffset + index * portModel.Height;
         }
 
         /// <summary>
@@ -1752,13 +1743,13 @@ namespace Dynamo.Models
 
         protected bool ShouldDisplayPreviewCore { get; set; }
         
-        public event Action<Guid, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
 
         private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
         {
             if(RenderPackagesUpdated != null)
             {
-                RenderPackagesUpdated(GUID, packages);
+                RenderPackagesUpdated(this, packages);
             }
         }
     }

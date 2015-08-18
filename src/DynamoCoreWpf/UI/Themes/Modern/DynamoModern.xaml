@@ -460,6 +460,7 @@
                                 Margin="3">
                             <TextBlock x:Name="text"
                                        HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
                                        Margin="3"
                                        FontSize="11"
                                        Foreground="#BBB"
@@ -1561,6 +1562,18 @@
                         </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InOutPortControlStyle"
+           TargetType="ItemsControl">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <dynui:InOutPortPanel VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
     </Style>

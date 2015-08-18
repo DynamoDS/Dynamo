@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Dynamo.Extensions;
 using System.IO;
-using Dynamo.PackageManager;
-using System.Reflection;
 using Dynamo.Models;
 using Moq;
 using Dynamo.Interfaces;
 
-namespace PackageManagerTests
+namespace Dynamo.Tests
 {
     class ExtensionTests
     {
@@ -41,25 +39,9 @@ namespace PackageManagerTests
         }
 
         [Test]
-        public void ExtensionsAreExtracted()
-        {
-            var extensionManager = new ExtensionManager();
-            var extensions = extensionManager.ExtensionLoader.LoadDirectory(extensionsPath);
-            Assert.Greater(extensions.Count(), 0);
-
-            Assert.AreEqual(extensions.OfType<PackageManagerExtension>().Count(), 1);
-        }
-
-        [Test]
         public void ExtensionIsStarted()
         {
             extMock.Verify(ext => ext.Startup(It.IsAny<StartupParams>()));
-        }
-
-        [Test]
-        public void ExtensionIsLoaded()
-        {
-            extMock.Verify(ext => ext.Load(It.IsAny<IPreferences>(), It.IsAny<IPathManager>()));
         }
 
         [Test]

@@ -36,6 +36,7 @@ namespace Dynamo.Publish.Models
             AuthenticationFailed,
             ServerNotFound,
             AuthProviderNotFound,
+            InvalidNodes,
             UnknownServerError
         }
 
@@ -116,6 +117,8 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        public IEnumerable<string> InvalidNodeNames { get; private set; }
+
         private string customizerURL;
         /// <summary>
         /// URL sent by server.
@@ -130,6 +133,15 @@ namespace Dynamo.Publish.Models
             {
                 customizerURL = value;
                 OnCustomizerURLChanged(customizerURL);
+            }
+        }
+
+        private readonly string managerURL;
+        public string ManagerURL
+        {
+            get
+            {
+                return managerURL;
             }
         }
 
@@ -163,6 +175,10 @@ namespace Dynamo.Publish.Models
             page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
                 throw new Exception(Resources.PageErrorMessage);
+
+            managerURL = appSettings.Settings["ManagerPage"].Value;
+            if (String.IsNullOrWhiteSpace(managerURL))
+                throw new Exception(Resources.ManagerErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
@@ -211,6 +227,10 @@ namespace Dynamo.Publish.Models
                         State = UploadState.Succeeded;
                         Error = UploadErrorType.None;
                         CustomizerURL = String.Concat(serverUrl, serverResponce.Value);
+                    }
+                    else if (InvalidNodeNames != null)
+                    {
+                        Error = UploadErrorType.InvalidNodes;
                     }
                     else
                     {
@@ -270,13 +290,28 @@ namespace Dynamo.Publish.Models
             string result;
             try
             {
-                result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+                result = reachClient.Send(
+                    HomeWorkspace,
+                    CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+                InvalidNodeNames = null;
+            }
+            catch (InvalidNodesException ex)
+            {
+                InvalidNodeNames = ex.InvalidNodeNames;
+                result = Resources.FailedMessage;
             }
             catch
             {
                 result = Resources.FailedMessage;
             }
+
             return result;
+        }
+
+        internal void ClearState()
+        {
+            State = UploadState.Uninitialized;
+            Error = UploadErrorType.None;
         }
     }
 
