@@ -41,6 +41,30 @@ namespace ProtoTestFx.TD
         }
 
         /// <summary>
+        /// Run DS code and verify the verification list
+        /// This method is only called internally from the test framework
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verifyList"></param>
+        private void RunAndVerify(string code, Dictionary<string, object> verification)
+        {
+            if (!executeInDebugMode)
+            {
+                RunScriptSource(code);
+                foreach (KeyValuePair<string, object> v in verification)
+                {
+                    Verify(v.Key, v.Value);
+                }
+            }
+            else
+            {
+                RunDebugStepOverAndVerify(code, verification);
+                RunDebugStepInAndVerify(code, verification);
+                RunDebugEqualityTest(code);
+            }
+        }
+
+        /// <summary>
         /// Execute the code and verifies the results given a list of verification pairs
         /// </summary>
         /// <param name="code"></param>
@@ -48,39 +72,13 @@ namespace ProtoTestFx.TD
         public void RunAndVerify(string code, params KeyValuePair<string, object>[] verifyList)
         {
             Dictionary<string, object> verifyDictionary = verifyList.ToDictionary(x => x.Key, x => x.Value);
-            if (!executeInDebugMode)
-            {
-                RunScriptSource(code);
-                foreach (KeyValuePair<string, object> v in verifyList)
-                {
-                    Verify(v.Key, v.Value);
-                }
-            }
-            else
-            {
-                RunDebugStepOverAndVerify(code, verifyDictionary);
-                RunDebugStepInAndVerify(code, verifyDictionary);
-                RunDebugEqualityTest(code);
-            }
+            RunAndVerify(code, verifyDictionary);
         }
 
         public void RunAndVerify(string code, string verificationFormat)
         {
             Dictionary<string, object> verifyDictionary = BuildVerificationDictionary(verificationFormat);
-            if (!executeInDebugMode)
-            {
-                RunScriptSource(code);
-                foreach (KeyValuePair<string, object> kvp in verifyDictionary)
-                {
-                    Verify(kvp.Key, kvp.Value);
-                }
-            }
-            else
-            {
-                RunDebugStepOverAndVerify(code, verifyDictionary);
-                RunDebugStepInAndVerify(code, verifyDictionary);
-                RunDebugEqualityTest(code);
-            }
+            RunAndVerify(code, verifyDictionary);
         }
 
         /// <summary>
