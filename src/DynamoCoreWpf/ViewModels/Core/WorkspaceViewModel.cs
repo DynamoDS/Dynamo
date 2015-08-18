@@ -335,9 +335,6 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "ShouldBeHitTestVisible":
-                    RaisePropertyChanged("ShouldBeHitTestVisible");
-                    break;
                 case "CurrentSpace":
                     // When workspace is changed(e.g. from home to custom), close InCanvasSearch.
                     OnRequestShowInCanvasSearch(ShowHideFlags.Hide);

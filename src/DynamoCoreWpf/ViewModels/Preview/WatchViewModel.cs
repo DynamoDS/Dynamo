@@ -24,7 +24,6 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
-        private readonly IVisualizationManager visualizationManager;
         private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
         private string _label;
         private string _link;
@@ -125,17 +124,15 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public WatchViewModel(IVisualizationManager visualizationManager)
+        public WatchViewModel()
         {
-            this.visualizationManager = visualizationManager;
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
             IsNodeExpanded = true;
             _showRawData = false;
         }
 
-        public WatchViewModel(IVisualizationManager visualizationManager, string label, string path, bool expanded = false)
+        public WatchViewModel(string label, string path, bool expanded = false)
         {
-            this.visualizationManager = visualizationManager;
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
             _path = path;
             _label = label;
@@ -149,7 +146,7 @@ namespace Dynamo.ViewModels
 
         private void FindNodeForPath(object obj)
         {
-            visualizationManager.TagRenderPackageForPath(obj.ToString());
+            //visualizationManager.TagRenderPackageForPath(obj.ToString());
         }
     }
 }
