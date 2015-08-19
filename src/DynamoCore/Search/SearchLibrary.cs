@@ -22,7 +22,7 @@ namespace Dynamo.Search
         public virtual void Add(TEntry entry)
         {
             Add(entry, entry.Name);
-            Add(entry, entry.SearchTags, .5);
+            Add(entry, entry.SearchTags, entry.SearchTagWeights);
             Add(entry, entry.Description, .1);
         }
 
