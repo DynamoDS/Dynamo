@@ -37,5 +37,12 @@ namespace Dynamo.PackageManager.UI
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.IsOpen = true;
         }
+
+        private void InstallButtonDropDown_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.IsOpen = true;
+        }
     }
 }

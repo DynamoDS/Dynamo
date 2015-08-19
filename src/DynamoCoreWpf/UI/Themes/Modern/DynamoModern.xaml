@@ -492,6 +492,57 @@
         </Setter>
     </Style>
 
+    <Style x:Key="PackageManagerDownloadVersionButton"
+           TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#55000000" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Margin" Value="3" />
+
+        <Style.Resources>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+
+                            <Border x:Name="container"
+                            Background="Transparent">
+                                <TextBlock x:Name="text"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Margin="3"
+                                    FontSize="11"
+                                    Foreground="#BBB"
+                                    FontWeight="Bold"
+                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="Button.IsMouseOver"
+                                 Value="true">
+                                    <Setter TargetName="container"
+                                    Property="Background"
+                                    Value="#88000000" />
+                                </Trigger>
+
+                                <Trigger Property="IsEnabled"
+                                 Value="false">
+                                    <Setter TargetName="text"
+                                    Property="Foreground"
+                                    Value="#666" />
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </Style.Resources>
+
+    </Style>
+
     <Style x:Key="SDarkTextBox"
            BasedOn="{StaticResource {x:Type TextBox}}"
            TargetType="{x:Type TextBox}">

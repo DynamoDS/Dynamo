@@ -285,12 +285,26 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                        <Button Name="DownloadVersionButton"  
-                                                                ToolTip="{x:Static p:Resources.PackageSearchViewInstallButtonTooltip}" 
-                                                                Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
-                                                                Command="{Binding Path=Item2}" 
-                                                                Style="{StaticResource SBadgeButton}" />
-                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="100" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                        
+                                                        <Border Style="{StaticResource PackageManagerDownloadVersionButton}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Name="DownloadVersionButtonText"  
+                                                                        ToolTip="{x:Static p:Resources.PackageSearchViewInstallButtonTooltip}" 
+                                                                        Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
+                                                                        Command="{Binding Path=Item2}" />
+                                                                <Button Name="DownloadVersionButtonDropDown"  
+                                                                        Content="▾" 
+                                                                        Click="InstallButtonDropDown_OnClick">
+                                                                    <Button.ContextMenu>
+                                                                        <ContextMenu>
+                                                                            <MenuItem Header="Install this version" Command="{Binding Path=Item2}" />
+                                                                            <MenuItem Header="Install this version to directory..." />
+                                                                        </ContextMenu>
+                                                                    </Button.ContextMenu>
+                                                                </Button>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
