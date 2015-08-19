@@ -1069,59 +1069,9 @@ namespace Dynamo.ViewModels
             if (Model.Nodes.Count() == 0)
                 return;
 
-            if (Model.Annotations.Count() == 0)
-                DoGraphLayoutNormal();
-            else
-                DoGraphLayoutWithGroups();
-
-            // Fit view to the new graph layout
-            DynamoSelection.Instance.ClearSelection();
-            ResetFitViewToggle(null);
-            FitViewInternal();
-        }
-
-        private void DoGraphLayoutNormal()
-        {
             var graph = new GraphLayout.Graph();
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
 
-            foreach (NodeModel x in Model.Nodes)
-            {
-                graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
-                models.Add(x, UndoRedoRecorder.UserAction.Modification);
-            }
-
-            foreach (ConnectorModel x in Model.Connectors)
-            {
-                graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
-                models.Add(x, UndoRedoRecorder.UserAction.Modification);
-            }
-
-            // Support undo for graph layout command
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
-
-            // Sugiyama algorithm steps
-            graph.RemoveCycles();
-            graph.AssignLayers();
-            graph.OrderNodes();
-
-            graph.NormalizeGraphPosition();
-
-            // Assign coordinates to nodes
-            foreach (var x in Model.Nodes)
-            {
-                var n = graph.FindNode(x.GUID);
-                x.X = n.X;
-                x.Y = n.Y;
-                x.ReportPosition();
-            }
-        }
-
-        private void DoGraphLayoutWithGroups()
-        {
-            var graph = new GraphLayout.Graph();
-            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
-            
             foreach (AnnotationModel x in Model.Annotations)
             {
                 // Treat a group as a graph layout node/vertex
@@ -1153,7 +1103,7 @@ namespace Dynamo.ViewModels
                 // Connector does not belong to any group
                 if ((startGroup == null) && (endGroup == null))
                     graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
-                
+
                 // Connector starts from a node within a group
                 else if ((startGroup != null) && (endGroup == null))
                     graph.AddEdge(startGroup.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
@@ -1167,7 +1117,7 @@ namespace Dynamo.ViewModels
 
             // Support undo for graph layout command
             WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
-            
+
             // Sugiyama algorithm steps
             graph.RemoveCycles();
             graph.AssignLayers();
@@ -1200,6 +1150,11 @@ namespace Dynamo.ViewModels
                     x.ReportPosition();
                 }
             }
+
+            // Fit view to the new graph layout
+            DynamoSelection.Instance.ClearSelection();
+            ResetFitViewToggle(null);
+            FitViewInternal();
         }
 
         private static bool CanDoGraphAutoLayout(object o)
