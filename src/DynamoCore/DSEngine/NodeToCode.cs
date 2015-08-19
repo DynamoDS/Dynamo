@@ -738,6 +738,9 @@ namespace Dynamo.DSEngine
                         var inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
                         outputMap[inputVar] = string.Empty;
                     }
+
+                    var previewVar = node.AstIdentifierForPreview.Value;
+                    outputMap[previewVar] = string.Empty;
                 }
             }
         }
@@ -1150,7 +1153,7 @@ namespace Dynamo.DSEngine
                    mappedVariables.Add(shortName);
                }
             }
- 
+
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)

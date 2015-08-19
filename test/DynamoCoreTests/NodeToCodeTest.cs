@@ -1090,6 +1090,27 @@ namespace Dynamo.Tests
             AssertPreviewValue(guid, new[] { "foo", "bar", "qux" });
         }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void TestMultioutputNode()
+        {
+            // Regression MAGN-8009 
+            OpenModel(@"core\node2code\multipleoutput.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().FirstOrDefault();
+            var guid = functionNode.GUID.ToString().Replace("-", "").ToLower();
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+            Assert.IsFalse(cbn.Code.Contains(guid));
+        }
+        
         private void SelectAll(IEnumerable<NodeModel> nodes)
         {
             DynamoSelection.Instance.ClearSelection();
