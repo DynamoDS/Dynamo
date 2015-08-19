@@ -10,7 +10,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    class VerificationFormatJSON : ProtoTestBase
+    public class VerificationFormatJSON : ProtoTestBase
     {
         [Test]
         public void TestAssignment01()
@@ -20,7 +20,7 @@ namespace ProtoTest.Associative
             string verification =
 @" 
     {
-        ""a"": 1,
+        ""a"": 1
     }
 ";
             thisTest.RunAndVerify(code, verification);
@@ -50,7 +50,7 @@ namespace ProtoTest.Associative
             string verification =
 @" 
     {
-        ""x"": 1,
+        ""x"": 1
     }
 ";
             thisTest.RunAndVerify(code, verification);
@@ -64,7 +64,7 @@ namespace ProtoTest.Associative
             string verification =
 @" 
     {
-        ""a"": 1.0,
+        ""a"": 1.0
     }
 ";
             thisTest.RunAndVerify(code, verification);
@@ -77,7 +77,7 @@ namespace ProtoTest.Associative
 @"pi = 3.14;e = 2.71828;";
             string verification =
 @" 
-    {        ""pi"" = 3.14;        ""e"" = 2.71828;
+    {        ""pi"" : 3.14,        ""e"" : 2.71828,
     }
 ";
             thisTest.RunAndVerify(code, verification);
@@ -91,7 +91,7 @@ namespace ProtoTest.Associative
 @"a = 1.1;b = 2.2;c = 3.3;";
             string verification =
 @" 
-    {        ""a"" : 1.1;        ""b"" : 2.2;        ""c"" : 3.3;
+    {        ""a"" : 1.1,        ""b"" : 2.2,        ""c"" : 3.3,
     }
 ";
             thisTest.RunAndVerify(code, verification);
@@ -129,6 +129,7 @@ namespace ProtoTest.Associative
             string verification =
 @" 
 {
+    ""i"": 2,
     ""a"": [
         {
             ""0"": 1
