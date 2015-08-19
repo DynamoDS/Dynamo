@@ -94,34 +94,26 @@ namespace ProtoTestFx.TD
             }
             else
             {
-                RunDebugStepOverAndVerify(code, verification);
-                RunDebugStepInAndVerify(code, verification);
+                RunDebugWatch(code);
                 RunDebugEqualityTest(code);
             }
         }
 
 
         /// <summary>
-        /// Runs the code in debug step over 
+        /// Generates a list of variables to watch. Runs the code and verifies the results against the generated watch list
         /// Verifies the results against a list
         /// </summary>
         /// <param name="code"></param>
         /// <param name="verification"></param>
-        private void RunDebugStepOverAndVerify(string code, Dictionary<string, object> verification)
+        private void RunDebugWatch(string code)
         {
-            throw new NotImplementedException();
+            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
+            WatchTestFx.GeneratePrintStatements(code, ref map);
+            WatchTestFx fx = new WatchTestFx();
+            fx.CompareRunAndWatchResults(null, code, map);
         }
 
-        /// <summary>
-        /// Runs the code in debug step in 
-        /// Verifies the results against a list
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="verification"></param>
-        private void RunDebugStepInAndVerify(string code, Dictionary<string, object> verification)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Runs the code in Normal Execution, Debug StepOver, Debug StepIn 
@@ -130,7 +122,7 @@ namespace ProtoTestFx.TD
         /// <param name="code"></param>
         private void RunDebugEqualityTest(string code)
         {
-            throw new NotImplementedException();
+            DebugTestFx.CompareDebugAndRunResults(code);
         }
 
         /// <summary>
