@@ -8,6 +8,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
+    [RequiresSTA]
     public class PythonEditTests : DynamoViewModelUnitTest
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
