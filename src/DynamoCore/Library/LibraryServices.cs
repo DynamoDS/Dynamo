@@ -259,10 +259,10 @@ namespace Dynamo.DSEngine
 
         private string GetQualifiedFunction(string functionSignature)
         {
-            // if the hint is not explicit, we try the function name without parameters
+            // get a short name representation of the function without parameters
             string[] splitted = functionSignature.Split('@');
-
-            if (splitted.Length < 2 || String.IsNullOrEmpty(splitted[0]) || String.IsNullOrEmpty(splitted[1]))
+           
+            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
                 return null;
 
             string qualifiedFunction = splitted[0];
