@@ -64,11 +64,11 @@ namespace Dynamo.Models
                 WorkspaceClearing();
         }
 
-        public event EventHandler WorkspaceCleared;
-        public virtual void OnWorkspaceCleared(object sender, EventArgs e)
+        public event Action<WorkspaceModel> WorkspaceCleared;
+        public virtual void OnWorkspaceCleared(WorkspaceModel workspace)
         {
             if (WorkspaceCleared != null)
-                WorkspaceCleared(this, e);
+                WorkspaceCleared(workspace);
         }
 
         public event Action<WorkspaceModel> WorkspaceAdded;

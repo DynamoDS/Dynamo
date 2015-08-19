@@ -439,14 +439,14 @@ namespace DynamoCoreWpfTests
         {
             // Test Case to ensure that the link for these persistent variable
             // between DynamoViewModel, Model is not broken or replaced.
-            #region FullscreenWatchShowing
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
+            #region BackgroundPreviewActive
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.FullscreenWatchShowing);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
 
-            expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
+            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.FullscreenWatchShowing);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
             #endregion
 
             #region ConsoleHeight
@@ -506,12 +506,12 @@ namespace DynamoCoreWpfTests
 
             initalSetting.ConnectorType = ConnectorType.BEZIER;
             initalSetting.ConsoleHeight = 100;
-            initalSetting.FullscreenWatchShowing = true;
+            initalSetting.IsBackgroundPreviewActive = true;
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
@@ -519,12 +519,12 @@ namespace DynamoCoreWpfTests
             #region Second Test
             initalSetting.ConnectorType = ConnectorType.POLYLINE;
             initalSetting.ConsoleHeight = 0;
-            initalSetting.FullscreenWatchShowing = false;
+            initalSetting.IsBackgroundPreviewActive = false;
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion

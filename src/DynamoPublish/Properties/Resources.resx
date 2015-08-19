@@ -180,6 +180,9 @@
   <data name="ServerNotFoundMessage" xml:space="preserve">
     <value>Server not found.</value>
   </data>
+  <data name="InvalidNodeMessage" xml:space="preserve">
+    <value>Your workspace contains nodes that are currently not allowed in a customizer: </value>
+  </data>
   <data name="UnknownServerErrorMessage" xml:space="preserve">
     <value>There was an error when trying to publish your customizer. Please report this message to the Dynamo team.</value>
   </data>

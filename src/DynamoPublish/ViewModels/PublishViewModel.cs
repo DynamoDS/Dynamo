@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Linq;
+using Reach;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -155,10 +156,12 @@ namespace Dynamo.Publish.ViewModels
                 return;
 
             var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().First();
-            homeWorkspace.Name = Name;
-            homeWorkspace.Description = Description;
 
-            model.SendAsynchronously(Workspaces);
+            var workspaceProperties = new WorkspaceProperties();
+            workspaceProperties.Name = Name;
+            workspaceProperties.Description = Description;
+
+            model.SendAsynchronously(Workspaces, workspaceProperties);
         }
 
         private void OnModelStateChanged(PublishModel.UploadState state)
@@ -239,6 +242,10 @@ namespace Dynamo.Publish.ViewModels
                     break;
                 case PublishModel.UploadErrorType.ServerNotFound:
                     UploadStateMessage = Resources.ServerNotFoundMessage;
+                    break;
+                case PublishModel.UploadErrorType.InvalidNodes:
+                    var nodeList = String.Join(", ", model.InvalidNodeNames);
+                    UploadStateMessage = Resources.InvalidNodeMessage + nodeList;
                     break;
                 case PublishModel.UploadErrorType.UnknownServerError:
                     UploadStateMessage = Resources.UnknownServerErrorMessage;

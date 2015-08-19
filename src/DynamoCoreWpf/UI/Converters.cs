@@ -22,6 +22,7 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Controls
@@ -2341,6 +2342,7 @@ namespace Dynamo.Controls
             }
         }
 
+ 
         public class RunTypeEnabledConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2355,4 +2357,22 @@ namespace Dynamo.Controls
             }
         }
         
+ 
+        public class Watch3DViewModelTypeToVisibilityConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if(value is HelixWatch3DNodeViewModel)
+                {
+                    return Visibility.Collapsed;
+                }
+
+                return Visibility.Visible;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        } 
     }
