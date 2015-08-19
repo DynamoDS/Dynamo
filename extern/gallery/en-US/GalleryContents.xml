@@ -23,7 +23,7 @@
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Color on Surfaces</Header>
-		<Body>Square arrays of color can now be applied to surfaces with the Display.BySurfaceColors node. Convert images to pixels and use Display.BySurfaceColors to map them onto your surfaces.</Body>
+		<Body>Square arrays of color can now be applied to surfaces with the Display.BySurfaceColors node.</Body>
 		<ImagePath>ColorSurface.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
