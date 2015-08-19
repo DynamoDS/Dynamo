@@ -71,7 +71,7 @@ namespace ProtoTestFx.TD
             }
             else if (format == VerificationFormat.JSON)
             {
-                verifyDictionary = BuildVerifyDictionaryFromJSONFormat(verificationFormat);
+                verifyDictionary = ProtoTestFx.JsonDecoder.BuildVerifyDictionary(verificationFormat);
             }
             RunAndVerify(code, verifyDictionary);
         }
@@ -188,17 +188,6 @@ namespace ProtoTestFx.TD
                 object value = ConvertStringToVerificationObject(pair[1]);
                 verification.Add(varname, value);
             }
-            return verification;
-        }
-
-        /// <summary>
-        /// Parses the verificationFormatJSON string and builds a dictionary of verification pairs 
-        /// </summary>
-        /// <param name="verificationFormatJSON"></param>
-        /// <returns></returns>
-        public static Dictionary<string, object> BuildVerifyDictionaryFromJSONFormat(string verificationFormatJSON)
-        {
-            Dictionary<string, object> verification = new Dictionary<string, object>();
             return verification;
         }
 
