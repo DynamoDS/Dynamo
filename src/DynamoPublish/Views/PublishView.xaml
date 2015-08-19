@@ -214,7 +214,7 @@
                        Height="28" Grid.ColumnSpan="2" Margin="0,0,19.4,2.4" />
             <TextBox Name="textBoxShareLink"
                      Grid.Row="1"
-                     Text="{Binding ShareLink, Mode=TwoWay}"
+                     Text="{Binding ShareLink, Mode=OneWay}"
                      Style="{StaticResource SDarkTextBox}" Grid.ColumnSpan="2" Margin="0,0.6,19.4,-1" Grid.RowSpan="2" />                    
 
             <Button Name="buttonCopyLink"
