@@ -1,3 +1,5 @@
+using System;
+
 using Dynamo.Nodes;
 using Dynamo.Controls;
 
@@ -19,15 +21,20 @@ namespace Dynamo.Wpf.Nodes
             Model = model;
             SelectCommand = new DelegateCommand(() => Model.Select(null), Model.CanBeginSelect);
             Model.PropertyChanged += (s, e) => {
-                                                    if (e.PropertyName == "CanSelect")
-                                                    {
-                                                        SelectCommand.RaiseCanExecuteChanged();
-                                                    }
-                                               };
+                nodeView.Dispatcher.Invoke(new Action(() =>
+                {
+                    if (e.PropertyName == "CanSelect")
+                    {
+                        SelectCommand.RaiseCanExecuteChanged();
+                    }
+                }));                      
+            };
 
             var selectionControl = new ElementSelectionControl { DataContext = this };
             nodeView.inputGrid.Children.Add(selectionControl);
         }
+
+
 
         public void Dispose()
         {
