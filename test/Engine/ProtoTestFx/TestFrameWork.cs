@@ -39,7 +39,7 @@ namespace ProtoTestFx.TD
         bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
-        bool executeInDebugMode = false;
+        bool executeInDebugMode = true;
  
         public TestFrameWork()
         {
@@ -84,15 +84,13 @@ namespace ProtoTestFx.TD
         /// <param name="verifyList"></param>
         private void RunAndVerify(string code, Dictionary<string, object> verification)
         {
-            if (!executeInDebugMode)
+            RunScriptSource(code);
+            foreach (KeyValuePair<string, object> pair in verification)
             {
-                RunScriptSource(code);
-                foreach (KeyValuePair<string, object> v in verification)
-                {
-                    Verify(v.Key, v.Value);
-                }
+                Verify(pair.Key, pair.Value);
             }
-            else
+            
+            if (executeInDebugMode)
             {
                 RunDebugWatch(code);
                 RunDebugEqualityTest(code);
