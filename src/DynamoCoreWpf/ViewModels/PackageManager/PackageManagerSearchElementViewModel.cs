@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 
 using Dynamo.Wpf.ViewModels;
+using Dynamo.ViewModels;
 
 using Greg.Responses;
 
@@ -19,11 +20,15 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand DownvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
+        public DelegateCommand DownloadLatestToCustomPathCommand { get; set; }
 
+        public PackageManagerSearchViewModel PackageManagerSearchViewModel { get; private set; }
         public new PackageManagerSearchElement Model { get; internal set; }
 
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
+        public PackageManagerSearchElementViewModel(
+            PackageManagerSearchViewModel searchViewModel, PackageManagerSearchElement element, bool canLogin) : base(element)
         {
+            this.PackageManagerSearchViewModel = searchViewModel;
             this.Model = element;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
@@ -34,6 +39,7 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => DownloadLatestToCustomPath(Model.Header.versions.Last()));
         }
 
         private static string FormatUrl(string url)
@@ -76,6 +82,33 @@ namespace Dynamo.PackageManager.ViewModels
             {
                 RequestDownload(this.Model, version);
             }
+        }
+
+        private List<String> CustomPackageFolders;
+
+        public void DownloadLatestToCustomPath(PackageVersion version)
+        {
+            CustomPackageFolders = this.PackageManagerSearchViewModel.PackageManagerClientViewModel
+                .DynamoViewModel.Model.PreferenceSettings.CustomPackageFolders;
+
+            var args = new PackagePathEventArgs();
+
+            ShowFileDialog(args);
+
+            if (args.Cancel)
+                return;
+
+            if (!CustomPackageFolders.Contains(args.Path))
+                CustomPackageFolders.Insert(CustomPackageFolders.Count, args.Path);
+
+            OnRequestDownload(version);
+
+            DownloadLatestToCustomPathCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ShowFileDialog(PackagePathEventArgs e)
+        {
+            PackageManagerSearchViewModel.OnRequestShowFileDialog(this, e);
         }
     }
 }

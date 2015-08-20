@@ -202,8 +202,11 @@
                                             </Grid>
                                             <Button.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersion}" Command="{Binding DownloadLatestCommand}" />
-                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}" />
+                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersion}"
+                                                              Command="{Binding DownloadLatestCommand}" />
+                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
+                                                              Command="{Binding DownloadLatestToCustomPathCommand}"
+                                                              CommandParameter="{Binding Path=Model.LatestVersion}"/>
                                                 </ContextMenu>
                                             </Button.ContextMenu>
                                         </Button>

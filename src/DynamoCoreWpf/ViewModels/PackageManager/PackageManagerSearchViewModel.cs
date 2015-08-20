@@ -350,6 +350,15 @@ namespace Dynamo.PackageManager
             return true;
         }
 
+        public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
+        public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
+        {
+            if (RequestShowFileDialog != null)
+            {
+                RequestShowFileDialog(sender, e);
+            }
+        }
+
         /// <summary>
         /// Attempts to obtain the list of search results.  If it fails, it does nothing
         /// </summary>
@@ -688,14 +697,14 @@ namespace Dynamo.PackageManager
             {
                 return
                     SearchDictionary.Search(query)
-                        .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                        .Select(x => new PackageManagerSearchElementViewModel(this, x, canLogin))
                         .Take(MaxNumSearchResults);
             }
 
             // with null query, don't show deprecated packages
             var list =
                 LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)).ToList();
+                    .Select(x => new PackageManagerSearchElementViewModel(this, x, canLogin)).ToList();
             Sort(list, this.SortingKey);
             return list;
 
