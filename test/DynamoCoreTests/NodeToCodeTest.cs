@@ -11,6 +11,8 @@ using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using ProtoCore.AST.AssociativeAST;
 using System.Reflection;
+using System.Threading;
+using System.Globalization;
 
 
 namespace Dynamo.Tests
@@ -1094,6 +1096,34 @@ namespace Dynamo.Tests
         {
             DynamoSelection.Instance.ClearSelection();
             nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele));
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void TestDoubleValueInDifferentCulture()
+        {
+            var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
+            
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            Thread.CurrentThread.CurrentCulture = frCulture;
+            Thread.CurrentThread.CurrentUICulture = frCulture;
+
+            // manually verified s="1,234";
+            double d = 1.234;
+            string s = d.ToString();
+
+            DoubleNode d1 = new DoubleNode(1.234);
+            string s1 = d1.ToString();
+            Assert.AreEqual(s1, "1.234");
+
+            ProtoCore.AST.ImperativeAST.DoubleNode d2 = new ProtoCore.AST.ImperativeAST.DoubleNode(1.234);
+            string s2 = d2.ToString();
+            Assert.AreEqual(s2, "1.234");
+
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
         }
     }
 
