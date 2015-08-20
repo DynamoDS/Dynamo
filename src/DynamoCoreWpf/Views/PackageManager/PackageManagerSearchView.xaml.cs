@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Dynamo.PackageManager.ViewModels;
 
 namespace Dynamo.PackageManager.UI
@@ -35,6 +36,8 @@ namespace Dynamo.PackageManager.UI
         {
             var button = (Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = PlacementMode.Bottom;
             button.ContextMenu.IsOpen = true;
         }
 
