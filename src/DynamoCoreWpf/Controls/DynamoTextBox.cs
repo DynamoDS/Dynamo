@@ -382,6 +382,7 @@ namespace Dynamo.UI.Controls
             {
                 this.DataContext = null;
                 IsOpen = false;
+                toolTipTimer.Stop();
             };
         }
 
