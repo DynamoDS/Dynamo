@@ -75,5 +75,34 @@ namespace Dynamo.Tests
             Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(0).IsSelectedInput);
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.ElementAt(1).IsSelectedInput);
         }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanReadFileWithZeroTouchMigrationOfFunctionSignatureWithoutParameters()
+        {
+            string libraryPath = "ProtoGeometry.dll";
+            string XmlPath = "ProtoGeometry.Migrations.xml";
+            string migrations = "<?xml version=\"1.0\"?>" + System.Environment.NewLine +
+                "<migrations>" + System.Environment.NewLine +
+                "<priorNameHint>" + System.Environment.NewLine +
+                "<oldName>Autodesk.DesignScript.Geometry.Sphere.CenterPoint</oldName>" + System.Environment.NewLine +
+                "<newName>Autodesk.DesignScript.Geometry.Sphere.NewCenterPoint</newName>" + System.Environment.NewLine +
+                "</priorNameHint>" + System.Environment.NewLine +
+                "</migrations>" + System.Environment.NewLine;
+
+            string tempXMLPath = Path.Combine(TempFolder, XmlPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+
+            File.Copy(libraryPath, tempLibraryPath);
+            System.IO.File.WriteAllText(tempXMLPath, migrations);
+            System.IO.File.WriteAllText(tempXMLPath, migrations);
+            CurrentDynamoModel.LibraryServices.ImportLibrary(tempLibraryPath);
+
+            string path = Path.Combine(TestDirectory, "core", "migration", "NoParameterFunctions.dyn");
+            OpenModel(path);
+
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes);
+        }
     }
 }
