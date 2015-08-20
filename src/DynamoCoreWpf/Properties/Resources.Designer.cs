@@ -3390,11 +3390,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install This Version.
+        ///   Looks up a localized string similar to Install latest version.
         /// </summary>
-        public static string PackageSearchViewInstallButtonTooltip {
+        public static string PackageSearchViewInstallLatestVersion {
             get {
-                return ResourceManager.GetString("PackageSearchViewInstallButtonTooltip", resourceCulture);
+                return ResourceManager.GetString("PackageSearchViewInstallLatestVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install latest version to directory....
+        /// </summary>
+        public static string PackageSearchViewInstallLatestVersionTo {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallLatestVersionTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install this version.
+        /// </summary>
+        public static string PackageSearchViewInstallThisVersion {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallThisVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install this version to directory....
+        /// </summary>
+        public static string PackageSearchViewInstallThisVersionTo {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallThisVersionTo", resourceCulture);
             }
         }
         

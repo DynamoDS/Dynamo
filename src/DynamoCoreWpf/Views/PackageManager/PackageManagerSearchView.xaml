@@ -184,7 +184,8 @@
                                 <StackPanel Orientation="Horizontal" Margin="1" Width="450">
 
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#888" Margin="0">
+                                        <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#888"
+                                                ToolTip="{x:Static p:Resources.PackageSearchViewInstallLatestVersion}">
                                             <Grid Width="40" Height="64">
                                                 <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
                                                 <Ellipse Fill="Transparent"
@@ -195,14 +196,14 @@
                                             </Grid>
                                         </Button>
 
-                                        <Button Name="DownloadButtonDropDown" Style="{StaticResource FlatButton}" Click="InstallLatestButtonDropDown_OnClick" Foreground="#888" Margin="0" Padding="0">
+                                        <Button Name="DownloadButtonDropDown" Style="{StaticResource FlatButton}" Click="InstallLatestButtonDropDown_OnClick" Foreground="#888">
                                             <Grid Width="10" Height="64" Background="Transparent" >
                                                 <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">▾</TextBlock>
                                             </Grid>
                                             <Button.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="Install latest version" Command="{Binding DownloadLatestCommand}" />
-                                                    <MenuItem Header="Install latest version to directory..." />
+                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersion}" Command="{Binding DownloadLatestCommand}" />
+                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}" />
                                                 </ContextMenu>
                                             </Button.ContextMenu>
                                         </Button>
@@ -303,7 +304,7 @@
                                                         <Border Style="{StaticResource PackageManagerDownloadVersionButton}">
                                                             <StackPanel Orientation="Horizontal">
                                                                 <Button Name="DownloadVersionButtonText"  
-                                                                        ToolTip="{x:Static p:Resources.PackageSearchViewInstallButtonTooltip}" 
+                                                                        ToolTip="{x:Static p:Resources.PackageSearchViewInstallThisVersion}" 
                                                                         Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
                                                                         Command="{Binding Path=Item2}" />
                                                                 <Button Name="DownloadVersionButtonDropDown"  
@@ -311,8 +312,8 @@
                                                                         Click="InstallVersionButtonDropDown_OnClick">
                                                                     <Button.ContextMenu>
                                                                         <ContextMenu>
-                                                                            <MenuItem Header="Install this version" Command="{Binding Path=Item2}" />
-                                                                            <MenuItem Header="Install this version to directory..." />
+                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersion}" Command="{Binding Path=Item2}" />
+                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersionTo}" />
                                                                         </ContextMenu>
                                                                     </Button.ContextMenu>
                                                                 </Button>

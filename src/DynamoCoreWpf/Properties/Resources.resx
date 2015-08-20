@@ -1257,8 +1257,17 @@ You will get a chance to save your work.</value>
     <value>⇓ Install</value>
     <comment>To install package</comment>
   </data>
-  <data name="PackageSearchViewInstallButtonTooltip" xml:space="preserve">
-    <value>Install This Version</value>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>Install latest version</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>Install latest version to directory...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>Install this version</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>Install this version to directory...</value>
   </data>
   <data name="PackageSearchViewKeywords" xml:space="preserve">
     <value>Keywords</value>
