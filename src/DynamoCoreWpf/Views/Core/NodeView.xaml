@@ -14,7 +14,7 @@
              KeyUp="OnKeyUp"
              PreviewKeyUp="OnPreviewKeyUp"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-             MouseRightButtonDown="topControl_MouseRightButtonDown"              
+             MouseRightButtonDown="topControl_MouseRightButtonDown"
              Canvas.Left="{Binding Left, Mode=TwoWay}"
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     <Grid Name="grid"
@@ -40,7 +40,7 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public">               
+                         x:FieldModifier="public">
                 <MenuItem Name="deleteElem_cm"
                           Header="{x:Static p:Resources.ContextMenuDelete}"
                           Command="{Binding Path=DeleteCommand}" />
@@ -95,9 +95,9 @@
                 <MenuItem Name="enablePeriodicUpdate"
                           Header="{x:Static p:Resources.NodeContextMenuEnablePeriodicUpdate}"
                           IsCheckable="True"
-                          IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}" 
+                          IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}"
                           Visibility="{Binding PeriodicUpdateVisibility}"
-                          IsEnabled="False"/>
+                          IsEnabled="False" />
                 <MenuItem Name="rename_cm"
                           Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
                           Command="{Binding Path=RenameCommand}" />
@@ -226,32 +226,25 @@
             </TextBlock.Foreground>
         </TextBlock>
 
-        <!-- INPUT PORTS -->        
-        <DockPanel Name="inPortGrid"
-                   Grid.Row="2"
-                   Grid.Column="0"
-                   VerticalAlignment="Stretch"
-                   IsHitTestVisible="True"
-                   Margin="0"
-                   Background="Transparent"
-                   Canvas.ZIndex="20">
-            <ItemsControl ItemsSource="{Binding Path=InPorts}"
-                          HorizontalContentAlignment="Stretch">
-            </ItemsControl>
-        </DockPanel>
+        <!-- INPUT PORTS -->
+        <ItemsControl Name="inputPortControl"
+                      Grid.Row="2"
+                      Grid.Column="0"
+                      Canvas.ZIndex="20"
+                      HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
+                      ItemsSource="{Binding Path=InPorts}">
+        </ItemsControl>
 
         <!-- OUTPUT PORTS -->
-
-        <DockPanel Name="outPortGrid"
-                   Grid.Row="2"
-                   Grid.Column="2"
-                   VerticalAlignment="Top"
-                   IsHitTestVisible="True"
-                   Background="Transparent"
-                   Canvas.ZIndex="20">
-            <ItemsControl ItemsSource="{Binding Path=OutPorts}">
-            </ItemsControl>
-        </DockPanel>
+        <ItemsControl Name="outputPortControl"
+                      Grid.Row="2"
+                      Grid.Column="2"
+                      Canvas.ZIndex="20"
+                      HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
+                      ItemsSource="{Binding Path=OutPorts}">
+        </ItemsControl>
 
         <Grid Name="centralGrid"
               Grid.Column="1"
@@ -271,15 +264,22 @@
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   Canvas.ZIndex="21"
-                  IsEnabled="{Binding Path=IsInteractionEnabled}" MinHeight="{Binding Source={x:Static dynamo1:Configurations.PortHeightInPixels}}">
+                  IsEnabled="{Binding Path=IsInteractionEnabled}"
+                  MinHeight="{Binding Source={x:Static dynamo1:Configurations.PortHeightInPixels}}">
             </Grid>
 
         </Grid>
-        
-        <StackPanel Name="GlyphStackPanel" HorizontalAlignment="Right" Orientation="Horizontal" 
-                    Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="30" Height="25"
+
+        <StackPanel Name="GlyphStackPanel"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    Grid.ColumnSpan="3"
+                    Canvas.ZIndex="30"
+                    Height="25"
                     Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            
+
             <Canvas x:Name="previewIcon"
                     Width="25"
                     Height="25"
@@ -409,8 +409,13 @@
                 Background="Blue">
         </Canvas>
 
-        <Canvas ClipToBounds="False" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            <Label Content="{Binding ASTText}" HorizontalContentAlignment="Center"></Label>
+        <Canvas ClipToBounds="False"
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Label Content="{Binding ASTText}"
+                   HorizontalContentAlignment="Center"></Label>
         </Canvas>
     </Grid>
 </UserControl>

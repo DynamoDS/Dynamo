@@ -1,15 +1,16 @@
-<Workspace Version="0.7.2.2921" X="-97.8144430967362" Y="-1.73878213148438" zoom="0.954042924882813" Description="" Category="" Name="Home">
+<Workspace Version="0.8.2.1957" X="-97.8144430967362" Y="-1.73878213148438" zoom="0.954042924882813" Name="Home" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="92545790-dda1-4361-ad4c-608da00d868f" nickname="Watch 3D" x="550" y="161.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <view width="220" height="320">
+    <Dynamo.Nodes.Watch3D guid="92545790-dda1-4361-ad4c-608da00d868f" type="Dynamo.Nodes.Watch3D" nickname="Watch 3D" x="550" y="161.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False">
+      <view width="230" height="383">
         <camera pos_x="10.6991613340824" pos_y="10.6991613340824" pos_z="10.6981613340824" look_x="-10.6991613340824" look_y="-10.6991613340824" look_z="-10.6991613340824" />
       </view>
     </Dynamo.Nodes.Watch3D>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0b472626-e18f-404a-bec4-d84ad7f33011" nickname="Point.ByCoordinates" x="348.5" y="212" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="25f91426-8394-4006-8338-9df263856ed0" nickname="Number" x="221.5" y="287" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSFunction guid="0b472626-e18f-404a-bec4-d84ad7f33011" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="348.5" y="212" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" />
+    <Dynamo.Nodes.DoubleInput guid="25f91426-8394-4006-8338-9df263856ed0" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="221.5" y="287" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
       <System.Double value="0" />
     </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="29245b09-8767-4f3a-9e1d-9a24c261f60b" nickname="Number" x="212" y="199.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DoubleInput guid="29245b09-8767-4f3a-9e1d-9a24c261f60b" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="212" y="199.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
       <System.Double value="0..5" />
     </Dynamo.Nodes.DoubleInput>
   </Elements>
@@ -20,4 +21,15 @@
     <Dynamo.Models.ConnectorModel start="29245b09-8767-4f3a-9e1d-9a24c261f60b" start_index="0" end="0b472626-e18f-404a-bec4-d84ad7f33011" end_index="0" portType="0" />
   </Connectors>
   <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="fb3ea512-63f6-4e50-9cb2-344d1fc33b30_preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" />
+  </Cameras>
+  <Cameras>
+    <Camera Name="92545790-dda1-4361-ad4c-608da00d868f_preview" eyeX="10.6991613340824" eyeY="10.6981613340824" eyeZ="-10.6991613340824" lookX="-10.6991613340824" lookY="-10.6991613340824" lookZ="10.6991613340824" />
+  </Cameras>
 </Workspace>

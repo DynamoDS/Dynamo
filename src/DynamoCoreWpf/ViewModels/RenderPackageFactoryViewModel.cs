@@ -1,11 +1,17 @@
 ﻿using Dynamo.Interfaces;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Rendering;
 
 namespace Dynamo.Wpf.ViewModels
 {
     public class RenderPackageFactoryViewModel : ViewModelBase
     {
         private readonly IRenderPackageFactory factory;
+
+        public IRenderPackageFactory Factory
+        {
+            get { return factory; }
+        }
 
         public bool ShowEdges
         {
@@ -29,9 +35,12 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public RenderPackageFactoryViewModel(IRenderPackageFactory factory)
+        public RenderPackageFactoryViewModel(IPreferences preferenceSettings)
         {
-            this.factory = factory;
+            this.factory = new HelixRenderPackageFactory()
+            {
+                TessellationParameters = { ShowEdges = preferenceSettings.ShowEdges }
+            };
         }
     }
 }

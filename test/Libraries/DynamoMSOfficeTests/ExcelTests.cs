@@ -14,7 +14,7 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
+    [TestFixture, RequiresSTA]
     public class ExcelTests : DynamoViewModelUnitTest
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
