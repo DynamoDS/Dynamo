@@ -34,8 +34,6 @@ namespace Dynamo.Wpf.Nodes
             nodeView.inputGrid.Children.Add(selectionControl);
         }
 
-
-
         public void Dispose()
         {
         }
