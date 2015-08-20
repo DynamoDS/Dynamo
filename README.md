@@ -46,8 +46,8 @@ Local Network Package and Definition location
 Preset Graph States
 - Keep track of different states of your graph and develop design options with Presets, found in the Edit menu
 
-Color shading on surfaces
--	Expansion on the Color work from 0.8.1 to include smoothly shaded surfaces
+Color on surfaces
+-	Square arrays of color can now be applied to surfaces with the Display.BySurfaceColors node
 
 Node2Code
 -	Select groups of nodes and automatically create Code Block Nodes from the selection
@@ -65,6 +65,9 @@ Documentation
 
 Command Line Interface
 -	DynamoCLI now available for executing non-Revit Dynamo graphs
+
+Package Manager
+- Publish a package locally from Dynamo for Revit
 
 Known Issues
 - Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
