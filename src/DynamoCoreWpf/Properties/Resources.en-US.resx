@@ -1665,7 +1665,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Package Manager Terms of Use</value>
   </data>
   <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}</value>
+    <value>Version {0}.{1}.{2}</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
