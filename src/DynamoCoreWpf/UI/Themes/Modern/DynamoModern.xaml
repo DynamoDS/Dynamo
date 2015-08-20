@@ -494,8 +494,7 @@
 
     <Style x:Key="PackageManagerDownloadVersionButton"
            TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="#55000000" />
-        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Background" Value="#000000" />
         <Setter Property="Margin" Value="3" />
 
         <Style.Resources>
@@ -509,7 +508,7 @@
                                 <TextBlock x:Name="text"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Margin="3"
+                                    Margin="4,0"
                                     FontSize="11"
                                     Foreground="#BBB"
                                     FontWeight="Bold"
@@ -522,7 +521,7 @@
                                  Value="true">
                                     <Setter TargetName="container"
                                     Property="Background"
-                                    Value="#88000000" />
+                                    Value="#333333" />
                                 </Trigger>
 
                                 <Trigger Property="IsEnabled"
