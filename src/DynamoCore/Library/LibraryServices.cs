@@ -471,7 +471,7 @@ namespace Dynamo.DSEngine
         }
 
 
-        private void LoadLibraryMigrations(string library)
+        internal void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
 
