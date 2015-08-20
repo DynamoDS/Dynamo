@@ -182,24 +182,37 @@
                                 </TextBlock>
 
                                 <StackPanel Orientation="Horizontal" Margin="1" Width="450">
-   
-                                    <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#666">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#888" Margin="0">
                                             <Grid Width="40" Height="64">
                                                 <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
-                                                <Ellipse
-                                                            Fill="Transparent"
-                                                            Height="36"
-                                                            Width="36"
-                                                            StrokeThickness="3"
-                                                            Stroke="#666" />
+                                                <Ellipse Fill="Transparent"
+                                                         Height="36"
+                                                         Width="36"
+                                                         StrokeThickness="3"
+                                                         Stroke="#666" />
                                             </Grid>
                                         </Button>
+
+                                        <Button Name="DownloadButtonDropDown" Style="{StaticResource FlatButton}" Click="InstallLatestButtonDropDown_OnClick" Foreground="#888" Margin="0" Padding="0">
+                                            <Grid Width="10" Height="64" Background="Transparent" >
+                                                <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">▾</TextBlock>
+                                            </Grid>
+                                            <Button.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Install latest version" Command="{Binding DownloadLatestCommand}" />
+                                                    <MenuItem Header="Install latest version to directory..." />
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                        </Button>
+                                    </StackPanel>
 
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal">
                                             <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
 
-                                                <StackPanel Width="350" IsHitTestVisible="True" >
+                                                <StackPanel Width="340" IsHitTestVisible="True" >
                                                     <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
@@ -295,7 +308,7 @@
                                                                         Command="{Binding Path=Item2}" />
                                                                 <Button Name="DownloadVersionButtonDropDown"  
                                                                         Content="▾" 
-                                                                        Click="InstallButtonDropDown_OnClick">
+                                                                        Click="InstallVersionButtonDropDown_OnClick">
                                                                     <Button.ContextMenu>
                                                                         <ContextMenu>
                                                                             <MenuItem Header="Install this version" Command="{Binding Path=Item2}" />
