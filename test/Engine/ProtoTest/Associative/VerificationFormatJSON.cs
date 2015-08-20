@@ -105,6 +105,36 @@ namespace ProtoTest.Associative
             string verification =
 @" 
 {
+    ""a"": [1,2,3]
+}
+";
+            thisTest.RunAndVerify(code, verification);
+        }
+
+        [Test]
+        public void TestArrayAssignment02()
+        {
+            string code =
+@"i = 2;a = {1, 2, 3 + i};";
+            string verification =
+@" 
+{
+    ""i"": 2,
+    ""a"": [1,2,5]
+}
+";
+            thisTest.RunAndVerify(code, verification);
+        }
+
+        [Test]
+        [Ignore] // Do we need to support complex array verification???
+        public void TestArrayAssignment03()
+        {
+            string code =
+@"a = {1,2,3};";
+            string verification =
+@" 
+{
     ""a"": [
         {
             ""0"": 1
@@ -121,31 +151,7 @@ namespace ProtoTest.Associative
             thisTest.RunAndVerify(code, verification);
         }
 
-        [Test]
-        public void TestArrayAssignment02()
-        {
-            string code =
-@"i = 2;a = {1, 2, 3 + i};";
-            string verification =
-@" 
-{
-    ""i"": 2,
-    ""a"": [
-        {
-            ""0"": 1
-        },
-        {
-            ""1"": 2
-        },
-        {
-            ""2"": 5
-        }
-    ]
-}
-";
-            thisTest.RunAndVerify(code, verification);
-        }
-
+      
         [Test]
         public void TestNestedArrayAssignment01()
         {
@@ -154,24 +160,7 @@ namespace ProtoTest.Associative
             string verification =
 @" 
 {
-    ""a"": [
-        {
-            ""0"": 1
-        },
-        {
-            ""1"": 2
-        },
-        {
-            ""2"": [
-                {
-                    ""0"": 3
-                },
-                {
-                    ""1"": 4
-                }
-            ]
-        }
-    ]
+    ""a"": [1,2,[3,4]]
 }
 ";
             thisTest.RunAndVerify(code, verification);

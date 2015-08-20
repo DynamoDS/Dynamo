@@ -107,16 +107,37 @@ namespace ProtoTestFx
 
         private static object GetPrimitiveValue(JsonTextReader reader)
         {
+            Validity.Assert(IsPrimitiveType(reader.TokenType));
             object value = reader.Value;
             return value;
         }
 
+        /// <summary>
+        /// Generates an object array from the json array
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private static object GetArrayValue(JsonTextReader reader)
         {
-            object value = reader.Value;
-            return value;
-        }
+            Validity.Assert(reader.TokenType == JsonToken.StartArray);
 
-       
+            List<object> array = new List<object>();
+
+            // Move to the first element
+            reader.Read(); 
+            JsonToken token = reader.TokenType;
+
+            while (token != JsonToken.EndArray)
+            {
+                // Get the current element
+                object arrayElement = GetValue(reader);
+                array.Add(arrayElement);
+
+                // Next element
+                reader.Read();
+                token = reader.TokenType;
+            }
+            return array.ToArray();
+        }
     }
 }
