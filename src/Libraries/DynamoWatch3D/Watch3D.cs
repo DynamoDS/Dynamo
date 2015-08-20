@@ -27,6 +27,8 @@ namespace Dynamo.Nodes
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
         private Watch3D watch3dModel;
+        private Watch3DView watch3DView;
+        private HelixWatch3DNodeViewModel watch3DViewModel;
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
@@ -40,17 +42,30 @@ namespace Dynamo.Nodes
 
             var vmParams = new Watch3DViewModelStartupParams(dynamoModel, dynamoViewModel, string.Format("{0} Preview", watch3dModel.GUID));
 
-            model.viewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
+            watch3DViewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
             if (model.initialCameraData != null)
             {
-                model.viewModel.SetCameraData(model.initialCameraData);
+                try
+                {
+                    // The deserialization logic is unified between the view model and this node model.
+                    // For the node model, we need to supply the deserialization method with the camera node.
+                    var cameraNode = model.initialCameraData.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera",StringComparison.OrdinalIgnoreCase));
+                    var cameraData = watch3DViewModel.DeserializeCamera(cameraNode);
+                    watch3DViewModel.SetCameraData(cameraData);
+                }
+                catch
+                {
+                    watch3DViewModel.SetCameraData(new CameraData());
+                }
             }
 
-            model.View = new Watch3DView()
+            model.Serialized += model_Serialized;
+
+            watch3DView = new Watch3DView()
             {
                 Width = model.WatchWidth,
                 Height = model.WatchHeight,
-                DataContext = model.viewModel
+                DataContext = watch3DViewModel
             };
 
             // When user sizes a watch node, only view gets resized. The actual 
@@ -62,7 +77,7 @@ namespace Dynamo.Nodes
 			    model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             // set WatchSize in model
-            model.View.View.SizeChanged += (sender, args) => 
+            watch3DView.View.SizeChanged += (sender, args) => 
 			    model.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
 
             var mi = new MenuItem { Header = Resources.ZoomToFit };
@@ -84,7 +99,7 @@ namespace Dynamo.Nodes
             backgroundRect.Fill = backgroundBrush;
 
             nodeView.PresentationGrid.Children.Add(backgroundRect);
-            nodeView.PresentationGrid.Children.Add(model.View);
+            nodeView.PresentationGrid.Children.Add(watch3DView);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
             DataBridge.Instance.RegisterCallback(
@@ -94,6 +109,11 @@ namespace Dynamo.Nodes
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
                         obj));       
+        }
+
+        void model_Serialized(XmlElement nodeElement)
+        {
+            watch3DViewModel.SerializeCamera(nodeElement);
         }
 
         private IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
@@ -106,16 +126,12 @@ namespace Dynamo.Nodes
 
         private void RenderData(object data)
         {
-            if (watch3dModel.View == null) return;
-
-            watch3dModel.viewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            watch3DViewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
-            if (watch3dModel.View == null) return;
-
-            watch3dModel.View.View.ZoomExtents();
+            watch3DView.View.ZoomExtents();
         }
 
         private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
@@ -149,15 +165,20 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
     {
-
         // Because the view model, which maintains the camera, 
         // is not created until the view customization is applied,
         // we cache the camera position data returned from the file
         // to be applied when the view model is constructed.
-        internal CameraData initialCameraData;
+        internal XmlNode initialCameraData;
 
-        internal HelixWatch3DNodeViewModel viewModel;
-        internal Watch3DView View { get; set; }
+        internal event Action<XmlElement> Serialized;
+        internal void OnSerialized(XmlElement element)
+        {
+            if(Serialized != null)
+            {
+                Serialized(element);
+            }
+        }
 
         public double WatchWidth { get; private set; }
         public double WatchHeight { get; private set; }
@@ -245,8 +266,7 @@ namespace Dynamo.Nodes
             viewHelper.SetAttribute("width", WatchWidth);
             viewHelper.SetAttribute("height", WatchHeight);
 
-            if (viewModel == null) return;
-            viewModel.SerializeCamera(nodeElement);
+            OnSerialized(viewElement);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -261,19 +281,14 @@ namespace Dynamo.Nodes
                     WatchWidth = Convert.ToDouble(node.Attributes["width"].Value);
                     WatchHeight = Convert.ToDouble(node.Attributes["height"].Value);
 
-                    // The deserialization logic is unified between the view model and this node model.
-                    // For the node model, we need to supply the deserialization method with the camera node.
-                    var cameraElement = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name == "Camera");
-                    initialCameraData = HelixWatch3DViewModel.DeserializeCamera(cameraElement);
+                    initialCameraData = node;
                 }
             }
             catch (Exception ex)
             {
                 Log(LogMessage.Error(ex));
                 Log("View attributes could not be read from the file.");
-                initialCameraData = new CameraData();
             }
-
         }
 
         public override void RequestVisualUpdateAsync(

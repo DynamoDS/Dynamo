@@ -205,6 +205,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera position information could not be loaded from the file..
+        /// </summary>
+        public static string CameraDataLoadError {
+            get {
+                return ResourceManager.GetString("CameraDataLoadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera position information could not be saved..
+        /// </summary>
+        public static string CameraDataSaveError {
+            get {
+                return ResourceManager.GetString("CameraDataSaveError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string CancelButton {
@@ -2056,7 +2074,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version {0}.{1}.
+        ///   Looks up a localized string similar to Version {0}.{1}.{2}.
         /// </summary>
         public static string GalleryDynamoVersion {
             get {

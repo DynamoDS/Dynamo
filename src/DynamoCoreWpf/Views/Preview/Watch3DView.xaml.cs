@@ -50,7 +50,7 @@ namespace Dynamo.Controls
         #region private members
 
         private Point rightMousePoint;
-        private HelixWatch3DViewModel viewModel;
+        internal HelixWatch3DViewModel viewModel;
 
         #endregion
 
@@ -199,7 +199,7 @@ namespace Dynamo.Controls
 
         private void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            rightMousePoint = e.GetPosition(topControl);
+            rightMousePoint = e.GetPosition(watch3D);
         }
 
         private void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -208,7 +208,7 @@ namespace Dynamo.Controls
             // rotation. handle the event so we don't show the context menu
             // if the user wants the contextual menu they can click on the
             // node sidebar or top bar
-            if (e.GetPosition(topControl) != rightMousePoint)
+            if (e.GetPosition(watch3D) != rightMousePoint)
             {
                 e.Handled = true;
             }

@@ -14,6 +14,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
@@ -108,7 +109,8 @@ namespace DynamoCoreWpfTests
             var watch3D = Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();
             Assert.NotNull(watch3D);
 
-            var vm = watch3D.viewModel as HelixWatch3DNodeViewModel;
+            var view = FindFirstWatch3DNodeView();
+            var vm = view.viewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(vm);
 
             //flip off the line node's preview upstream
@@ -465,8 +467,8 @@ namespace DynamoCoreWpfTests
 
             var vmParams = new Watch3DViewModelStartupParams(ViewModel.Model, ViewModel, "Test");
 
-            original.viewModel = HelixWatch3DNodeViewModel.Start(original, vmParams);
-            var cam = original.viewModel.Camera;
+            var vm1 = HelixWatch3DNodeViewModel.Start(original, vmParams);
+            var cam = vm1.Camera;
 
             cam.Position = new Point3D(10, 20, 30);
             cam.LookDirection = new Vector3D(15, 25, 35);
@@ -489,10 +491,13 @@ namespace DynamoCoreWpfTests
             // file. Set the camera data on this view model from the 
             // initialCameraData on the model. This would normally occur
             // in the node view customization, but none is being applied here.
-            nodeFromFile.viewModel = HelixWatch3DNodeViewModel.Start(original, vmParams);
-            nodeFromFile.viewModel.SetCameraData(nodeFromFile.initialCameraData);
+            var vm2 = HelixWatch3DNodeViewModel.Start(original, vmParams);
 
-            var newCam = nodeFromFile.viewModel.Camera;
+            var cameraNode = nodeFromFile.initialCameraData.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera",StringComparison.OrdinalIgnoreCase));
+            var cameraData = vm2.DeserializeCamera(cameraNode);
+            vm2.SetCameraData(cameraData);
+
+            var newCam = vm2.Camera;
 
             // Making sure we have properties preserved through file operation.
             Assert.AreEqual(original.WatchWidth, nodeFromFile.WatchWidth);
@@ -575,7 +580,8 @@ namespace DynamoCoreWpfTests
             watch3DNode.InPorts[0].Disconnect(connector);
 
             // Three items, the grid, the axes, and the light will remain.
-            Assert.AreEqual(watch3DNode.View.View.Items.Count, 3);
+            var view = FindFirstWatch3DNodeView();
+            Assert.AreEqual(view.View.Items.Count, 3);
 
             var linesNode = ws.Nodes.First(n => n.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
 
@@ -587,7 +593,7 @@ namespace DynamoCoreWpfTests
             ViewModel.Model.ExecuteCommand(cmd1);
             ViewModel.Model.ExecuteCommand(cmd2);
 
-            Assert.AreEqual(6, watch3DNode.View.View.Items.Count);
+            Assert.AreEqual(6, view.View.Items.Count);
         }
 
         #endregion
@@ -759,6 +765,12 @@ namespace DynamoCoreWpfTests
             ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
             ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Shortest.ToString());
             Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
+        }
+
+        private Watch3DView FindFirstWatch3DNodeView()
+        {
+            var views = View.ChildrenOfType<Watch3DView>();
+            return views.Last();
         }
     }
 
