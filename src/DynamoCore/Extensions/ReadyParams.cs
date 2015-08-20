@@ -2,6 +2,7 @@
 using Dynamo.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -18,6 +19,7 @@ namespace Dynamo.Extensions
         internal ReadyParams(DynamoModel dynamoM)
         {
             dynamoModel = dynamoM;
+            dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
         }
 
         public IEnumerable<IWorkspaceModel> WorkspaceModels
@@ -34,6 +36,19 @@ namespace Dynamo.Extensions
             {
                 return dynamoModel.CurrentWorkspace;
             }
+        }
+
+        public event Action<IWorkspaceModel> CurrentWorkspaceChanged;
+        private void OnCurrentWorkspaceModelChanged(IWorkspaceModel ws)
+        {
+            if (CurrentWorkspaceChanged != null)
+                CurrentWorkspaceChanged(ws);
+        }
+
+        private void OnDynamoModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "CurrentWorkspace")
+                OnCurrentWorkspaceModelChanged((sender as DynamoModel).CurrentWorkspace);
         }
     }
 }

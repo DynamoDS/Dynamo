@@ -653,7 +653,8 @@ namespace Dynamo.Core
                 X = 0,
                 Y = 0,
                 ID = newId.ToString(), 
-                FileName = string.Empty
+                FileName = string.Empty,
+                IsVisibleInDynamoLibrary = true
             };
             var workspace = new CustomNodeWorkspaceModel(info, nodeFactory);
 
@@ -882,7 +883,6 @@ namespace Dynamo.Core
                     // compiled to AST, literally it is still in global scope
                     // instead of in function scope.
                     node.GUID = Guid.NewGuid();
-                    node.RenderPackages.Clear();
 
                     // shift nodes
                     node.X = node.X - leftShift;

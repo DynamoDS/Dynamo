@@ -22,7 +22,6 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using DynamoServices;
@@ -44,7 +43,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         #region private members
 
@@ -535,8 +534,6 @@ namespace Dynamo.Models
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
-            DisposeLogic.IsShuttingDown = false;
-
             // Create a core which is used for parsing code and loading libraries
             var libraryCore =
                 new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
@@ -570,8 +567,8 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, new ExtensionLibraryLoader(this), 
-                    CustomNodeManager, GetType().Assembly.GetName().Version);
+                    pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
+                    GetType().Assembly.GetName().Version, preferences);
 
                 foreach (var ext in extensions)
                 {
@@ -582,12 +579,12 @@ namespace Dynamo.Models
                     try
                     {
                         ext.Startup(startupParams);
-                        ext.Load(preferences, pathManager);
                     }
                     catch (Exception ex)
                     {
                         Logger.Log(ex.Message);                       
-                    }                   
+                    }
+
                     ExtensionManager.Add(ext);
                 }
             }
@@ -1467,10 +1464,12 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
+            OnWorkspaceRemoveStarted(workspace);
             if (_workspaces.Remove(workspace))
             {
-                if (workspace is HomeWorkspaceModel)
+                if (workspace is HomeWorkspaceModel) {
                     workspace.Dispose();
+                }
                 OnWorkspaceRemoved(workspace);
             }
         }
@@ -1746,7 +1745,7 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
-            OnWorkspaceCleared(this, EventArgs.Empty);
+            OnWorkspaceCleared(CurrentWorkspace);
         }
 
         #endregion

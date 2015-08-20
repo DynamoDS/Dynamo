@@ -46,22 +46,27 @@ namespace Dynamo.DSEngine
         private static bool ResolveForAssembly(string assemblyLocation,
             IPathManager pathManager, ref string documentationPath)
         {
-            string cashedAssemblyLocation = assemblyLocation;
+            var assemblyName = Path.GetFileNameWithoutExtension(assemblyLocation);
             if (pathManager != null)
             {
                 pathManager.ResolveLibraryPath(ref assemblyLocation);
             }
 
-            // Some nodes don't have assembly, e.g. operators, but they do have xml file.
-            if (String.IsNullOrEmpty(assemblyLocation))
+            string baseDir = String.Empty;
+            if (String.IsNullOrEmpty(assemblyLocation) || !File.Exists(assemblyLocation))
             {
-                assemblyLocation = cashedAssemblyLocation;
+                // Some nodes do not have a corresponding assembly, but their documentation 
+                // xml file resides alongside DynamoCore.dll. If the assembly could not be 
+                // located, fall back onto using DynamoCoreDirectory.
+                baseDir = pathManager.DynamoCoreDirectory;
+            }
+            else
+            {
+                // Found the assembly location, search for documentation alongside it.
+                baseDir = Path.GetDirectoryName(Path.GetFullPath(assemblyLocation));
             }
 
-            var assemblyPath = Path.GetFullPath(assemblyLocation);
-
-            var baseDir = Path.GetDirectoryName(assemblyPath);
-            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyPath) + ".xml";
+            var xmlFileName = assemblyName + ".xml";
 
             var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
             var localizedResPath = Path.Combine(baseDir, language);
