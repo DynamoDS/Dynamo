@@ -321,12 +321,26 @@ namespace Dynamo.Core
                 yield break;
             }
 
-            foreach (var file in Directory.EnumerateFiles(dir, "*.dyf"))
+            // Will throw exception if we don't have write access
+            IEnumerable<string> dyfs;
+            try
+            {
+                dyfs = Directory.EnumerateFiles(dir, "*.dyf");
+            }
+            catch (Exception e)
+            {
+                Log(string.Format(Resources.CustomNodeFolderLoadFailure, dir));
+                Log(e);
+                yield break;
+            }
+
+            foreach (var file in dyfs)
             {
                 CustomNodeInfo info;
                 if (TryGetInfoFromPath(file, isTestMode, out info))
                     yield return info;
             }
+
         }
 
         /// <summary>
