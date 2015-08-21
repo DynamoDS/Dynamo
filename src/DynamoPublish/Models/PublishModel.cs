@@ -213,13 +213,13 @@ namespace Dynamo.Publish.Models
             }
         }
 
-        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
+        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces, WorkspaceProperties workspaceProperties = null)
         {
             State = UploadState.Uploading;
 
             Task.Factory.StartNew(() =>
                 {
-                    var result = this.Send(workspaces);
+                    var result = this.Send(workspaces, workspaceProperties);
                     var serverResponce = serverResponceRegex.Match(result);
 
                     if (serverResponce.Success)
@@ -246,7 +246,7 @@ namespace Dynamo.Publish.Models
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <returns>String which is response from server.</returns>
-        internal string Send(IEnumerable<IWorkspaceModel> workspaces)
+        internal string Send(IEnumerable<IWorkspaceModel> workspaces, WorkspaceProperties workspaceProperties = null)
         {
             if (String.IsNullOrWhiteSpace(serverUrl))
             {
@@ -292,7 +292,8 @@ namespace Dynamo.Publish.Models
             {
                 result = reachClient.Send(
                     HomeWorkspace,
-                    CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+                    CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>(), 
+                    workspaceProperties);
                 InvalidNodeNames = null;
             }
             catch (InvalidNodesException ex)

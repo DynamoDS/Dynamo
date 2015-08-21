@@ -53,6 +53,7 @@ limitations under the License.
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
+    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoCore.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -121,8 +122,10 @@ limitations under the License.
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="Extensions\ExtensionLoader.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="Interfaces\IDynamoModel.cs" />
     <Compile Include="Interfaces\ILibraryLoader.cs" />
     <Compile Include="Interfaces\ICustomNodeWorkspaceModel.cs" />
+    <Compile Include="Interfaces\IRenderPackageSource.cs" />
     <Compile Include="Interfaces\IWorkspaceModel.cs" />
     <Compile Include="Models\NodeLoaders\InputNodeLoader.cs" />
     <Compile Include="Rendering\DefaultRenderPackageFactory.cs" />
@@ -152,6 +155,7 @@ limitations under the License.
     <Compile Include="Core\AuthenticationManager.cs" />
     <Compile Include="Utilities\AssemblyConfiguration.cs" />
     <Compile Include="Utilities\FailFunc.cs" />
+    <Compile Include="Utilities\NodeModelExtensions.cs" />
     <Compile Include="Utilities\OrderedSet.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
@@ -169,8 +173,6 @@ limitations under the License.
     <Compile Include="Utilities\Disposable.cs" />
     <Compile Include="Utilities\ModifierKeys.cs" />
     <Compile Include="Utilities\NotificationObject.cs" />
-    <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
-    <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
     <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Core\Threading\PreviewGraphAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
@@ -187,7 +189,6 @@ limitations under the License.
     <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\SyncDataManager.cs" />
-    <Compile Include="Interfaces\ICleanup.cs" />
     <Compile Include="Interfaces\ISchedulerThread.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
     <Compile Include="Library\FunctionDescriptor.cs" />

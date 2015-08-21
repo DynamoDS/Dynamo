@@ -11,6 +11,8 @@ using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using ProtoCore.AST.AssociativeAST;
 using System.Reflection;
+using System.Threading;
+using System.Globalization;
 
 
 namespace Dynamo.Tests
@@ -1090,10 +1092,59 @@ namespace Dynamo.Tests
             AssertPreviewValue(guid, new[] { "foo", "bar", "qux" });
         }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void TestMultioutputNode()
+        {
+            // Regression MAGN-8009 
+            OpenModel(@"core\node2code\multipleoutput.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var functionNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().FirstOrDefault();
+            var guid = functionNode.GUID.ToString().Replace("-", "").ToLower();
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+            Assert.IsFalse(cbn.Code.Contains(guid));
+        }
+        
         private void SelectAll(IEnumerable<NodeModel> nodes)
         {
             DynamoSelection.Instance.ClearSelection();
             nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele));
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void TestDoubleValueInDifferentCulture()
+        {
+            var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
+            
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            Thread.CurrentThread.CurrentCulture = frCulture;
+            Thread.CurrentThread.CurrentUICulture = frCulture;
+
+            // manually verified s="1,234";
+            double d = 1.234;
+            string s = d.ToString();
+
+            DoubleNode d1 = new DoubleNode(1.234);
+            string s1 = d1.ToString();
+            Assert.AreEqual(s1, "1.234");
+
+            ProtoCore.AST.ImperativeAST.DoubleNode d2 = new ProtoCore.AST.ImperativeAST.DoubleNode(1.234);
+            string s2 = d2.ToString();
+            Assert.AreEqual(s2, "1.234");
+
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
         }
     }
 

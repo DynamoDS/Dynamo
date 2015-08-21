@@ -109,7 +109,7 @@ namespace Dynamo.Nodes
                 //Set the panning mode to false if a group is in editing mode.
                 if (ViewModel.WorkspaceViewModel.IsPanning)
                 {
-                    ViewModel.WorkspaceViewModel.DynamoViewModel.TogglePan(null);
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.BackgroundPreviewViewModel.TogglePan(null);
                 }
                 e.Handled = true;
             }
