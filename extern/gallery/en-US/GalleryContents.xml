@@ -3,7 +3,7 @@
 	<GalleryUiContents>
 	<GalleryContent>
 		<Header>Manage Node and Package Paths</Header>
-		<Body>Use a common shared network folder within an office environment for easy collaboration.</Body>
+		<Body>Under settings, paths can now be defined so that nodes and packages automatically show up in the Library. You can even set paths to map to shared network folders for easy collaboration.</Body>
 		<ImagePath>ManagePaths.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
