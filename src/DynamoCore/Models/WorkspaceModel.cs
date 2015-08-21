@@ -864,7 +864,7 @@ namespace Dynamo.Models
                 annotations.Add(annotation);
             }
 
-            //OnAnnotationAdded(annotation);
+            OnAnnotationAdded(annotation);
         }
 
         public void ClearAnnotations()
@@ -874,7 +874,7 @@ namespace Dynamo.Models
                 annotations.Clear();
             }
 
-            //OnAnnotationsCleared();
+            OnAnnotationsCleared();
         }
 
         private void RemoveAnnotation(AnnotationModel annotation)
@@ -883,7 +883,7 @@ namespace Dynamo.Models
             {
                 if (!annotations.Remove(annotation)) return;
             }
-            //OnAnnotationRemoved(annotation);
+            OnAnnotationRemoved(annotation);
         }
 
         public void AddAnnotation(AnnotationModel annotationModel)
