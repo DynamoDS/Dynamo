@@ -183,6 +183,9 @@ namespace Dynamo.Models
             if (handler != null) handler(node);
         }
 
+        /// <summary>
+        ///     Event that is fired when nodes are cleared from the workspace.
+        /// </summary>
         public event Action NodesCleared;
         protected virtual void OnNodesCleared()
         {
@@ -210,6 +213,9 @@ namespace Dynamo.Models
             if (handler != null) handler(note);
         }
 
+        /// <summary>
+        ///     Event that is fired when notes are cleared from the workspace.
+        /// </summary>
         public event Action NotesCleared;
         protected virtual void OnNotesCleared()
         {
@@ -237,6 +243,9 @@ namespace Dynamo.Models
             if (handler != null) handler(annotation);
         }
 
+        /// <summary>
+        ///     Event that is fired when annotations are cleared from the workspace.
+        /// </summary>
         public event Action AnnotationsCleared;
         protected virtual void OnAnnotationsCleared()
         {
