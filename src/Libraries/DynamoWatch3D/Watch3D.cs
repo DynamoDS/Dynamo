@@ -165,11 +165,21 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
     {
-        // Because the view model, which maintains the camera, 
+        // If the view model, which maintains the camera, 
         // is not created until the view customization is applied,
+        // as in the case of a Watch3D node,
         // we cache the camera position data returned from the file
         // to be applied when the view model is constructed.
         internal XmlNode initialCameraData;
+
+        internal event Action<XmlNode> Deserialized;
+        internal void OnDeserialized(XmlNode node)
+        {
+            if (Deserialized != null)
+            {
+                Deserialized(node);
+            }
+        }
 
         internal event Action<XmlElement> Serialized;
         internal void OnSerialized(XmlElement element)
@@ -281,7 +291,12 @@ namespace Dynamo.Nodes
                     WatchWidth = Convert.ToDouble(node.Attributes["width"].Value);
                     WatchHeight = Convert.ToDouble(node.Attributes["height"].Value);
 
+                    // Cache the data if we're using a node view customization 
+                    // to create the view model.
                     initialCameraData = node;
+
+                    // Trigger the event, in case the view model already exists
+                    OnDeserialized(node);
                 }
             }
             catch (Exception ex)

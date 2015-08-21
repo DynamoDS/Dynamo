@@ -481,23 +481,19 @@ namespace DynamoCoreWpfTests
 
             // Duplicate the node in various save context.
             var nodeFromFile = new Watch3D();
+            var vmFile = HelixWatch3DNodeViewModel.Start(nodeFromFile, vmParams);
+
             var nodeFromUndo = new Watch3D();
+            var vmUndo = HelixWatch3DNodeViewModel.Start(nodeFromUndo, vmParams);
+
             var nodeFromCopy = new Watch3D();
+            var vmCopy = HelixWatch3DNodeViewModel.Start(nodeFromCopy, vmParams);
+
             nodeFromFile.Deserialize(fileElement, SaveContext.File);
             nodeFromUndo.Deserialize(undoElement, SaveContext.Undo);
             nodeFromCopy.Deserialize(copyElement, SaveContext.Copy);
 
-            // Create a view model for the watch3D node loaded from the 
-            // file. Set the camera data on this view model from the 
-            // initialCameraData on the model. This would normally occur
-            // in the node view customization, but none is being applied here.
-            var vm2 = HelixWatch3DNodeViewModel.Start(original, vmParams);
-
-            var cameraNode = nodeFromFile.initialCameraData.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera",StringComparison.OrdinalIgnoreCase));
-            var cameraData = vm2.DeserializeCamera(cameraNode);
-            vm2.SetCameraData(cameraData);
-
-            var newCam = vm2.Camera;
+            var newCam = vmFile.Camera;
 
             // Making sure we have properties preserved through file operation.
             Assert.AreEqual(original.WatchWidth, nodeFromFile.WatchWidth);
@@ -509,6 +505,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
             Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
 
+            newCam = vmUndo.Camera;
+
             // Making sure we have properties preserved through undo operation.
             Assert.AreEqual(original.WatchWidth, nodeFromUndo.WatchWidth);
             Assert.AreEqual(original.WatchHeight, nodeFromUndo.WatchHeight);
@@ -518,6 +516,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(cam.LookDirection.X, newCam.LookDirection.X);
             Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
             Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
+
+            newCam = vmCopy.Camera;
 
             // Making sure we have properties preserved through copy operation.
             Assert.AreEqual(original.WatchWidth, nodeFromCopy.WatchWidth);

@@ -6,27 +6,43 @@ using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.Nodes;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class HelixWatch3DNodeViewModel : HelixWatch3DViewModel
     {
-        private readonly NodeModel watchNode;
+        private readonly Dynamo.Nodes.Watch3D watchNode;
 
-        public static HelixWatch3DNodeViewModel Start(NodeModel node, Watch3DViewModelStartupParams parameters)
+        public override bool IsBackgroundPreview
+        {
+            get { return false; }
+        }
+
+        public static HelixWatch3DNodeViewModel Start(Dynamo.Nodes.Watch3D node, Watch3DViewModelStartupParams parameters)
         {
             var vm = new HelixWatch3DNodeViewModel(node, parameters);
             vm.OnStartup();
             return vm;
         }
 
-        private HelixWatch3DNodeViewModel(NodeModel node, Watch3DViewModelStartupParams parameters):
+        private HelixWatch3DNodeViewModel(Dynamo.Nodes.Watch3D node, Watch3DViewModelStartupParams parameters):
             base(parameters)
         {
             watchNode = node;
             IsResizable = true;
 
             RegisterPortEventHandlers(node);
+
+            watchNode.Serialized += SerializeCamera;
+            watchNode.Deserialized += watchNode_Deserialized;
+        }
+
+        void watchNode_Deserialized(XmlNode obj)
+        {
+            var cameraNode = obj.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera", StringComparison.OrdinalIgnoreCase));
+            var cameraData = DeserializeCamera(cameraNode);
+            SetCameraData(cameraData);
         }
 
         protected override void PortConnectedHandler(PortModel arg1, ConnectorModel arg2)

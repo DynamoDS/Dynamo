@@ -97,6 +97,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// A flag which indicates whether this view model is used for a background preview.
+        /// </summary>
+        public virtual bool IsBackgroundPreview 
+        {
+            get { return true; }
+        }
+
         internal WorkspaceViewModel CurrentSpaceViewModel
         {
             get
