@@ -1888,13 +1888,16 @@ Do you want to install the latest Dynamo update?</value>
     <value>Volume</value>
   </data>
   <data name="Units" xml:space="preserve">
-    <value>Units:</value> 
+    <value>Units:</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
-    <value>Publish Locally</value> 
+    <value>Publish Locally</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
     <value>Background Preview</value>
     <comment>The name of the 3D background preview.</comment>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>You do not have write permission to {0}.</value>
   </data>
 </root>
