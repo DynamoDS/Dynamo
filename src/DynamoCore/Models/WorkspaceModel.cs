@@ -595,8 +595,8 @@ namespace Dynamo.Models
             // lot of graph executions. As connectors are deleted, nodes will 
             // have invalid inputs, so these executions are meaningless and may
             // cause invalid GC. See comments in MAGN-7229.
-            foreach (NodeModel el in Nodes)
-                e1.RaiseModificationEvents = false;
+            foreach (NodeModel node in Nodes)
+                node.RaisesModificationEvents = false;
 
             foreach (NodeModel el in Nodes)
             {
