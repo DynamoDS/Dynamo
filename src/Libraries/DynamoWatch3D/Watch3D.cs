@@ -288,8 +288,8 @@ namespace Dynamo.Nodes
                 {
                     if (node.Attributes == null || node.Attributes.Count == 0) continue;
 
-                    WatchWidth = Convert.ToDouble(node.Attributes["width"].Value);
-                    WatchHeight = Convert.ToDouble(node.Attributes["height"].Value);
+                    WatchWidth = Convert.ToDouble(node.Attributes["width"].Value, CultureInfo.InvariantCulture);
+                    WatchHeight = Convert.ToDouble(node.Attributes["height"].Value, CultureInfo.InvariantCulture);
 
                     // Cache the data if we're using a node view customization 
                     // to create the view model.

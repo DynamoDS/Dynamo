@@ -377,15 +377,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             try
             {
                 var name = cameraNode.Attributes["Name"].Value;
-                var ex = float.Parse(cameraNode.Attributes["eyeX"].Value);
-                var ey = float.Parse(cameraNode.Attributes["eyeY"].Value);
-                var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value);
-                var lx = float.Parse(cameraNode.Attributes["lookX"].Value);
-                var ly = float.Parse(cameraNode.Attributes["lookY"].Value);
-                var lz = float.Parse(cameraNode.Attributes["lookZ"].Value);
-                var ux = float.Parse(cameraNode.Attributes["upX"].Value);
-                var uy = float.Parse(cameraNode.Attributes["upY"].Value);
-                var uz = float.Parse(cameraNode.Attributes["upZ"].Value);
+                var ex = float.Parse(cameraNode.Attributes["eyeX"].Value, CultureInfo.InvariantCulture);
+                var ey = float.Parse(cameraNode.Attributes["eyeY"].Value, CultureInfo.InvariantCulture);
+                var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value, CultureInfo.InvariantCulture);
+                var lx = float.Parse(cameraNode.Attributes["lookX"].Value, CultureInfo.InvariantCulture);
+                var ly = float.Parse(cameraNode.Attributes["lookY"].Value, CultureInfo.InvariantCulture);
+                var lz = float.Parse(cameraNode.Attributes["lookZ"].Value, CultureInfo.InvariantCulture);
+                var ux = float.Parse(cameraNode.Attributes["upX"].Value, CultureInfo.InvariantCulture);
+                var uy = float.Parse(cameraNode.Attributes["upY"].Value, CultureInfo.InvariantCulture);
+                var uz = float.Parse(cameraNode.Attributes["upZ"].Value, CultureInfo.InvariantCulture);
 
                 var camData = new CameraData
                 {
