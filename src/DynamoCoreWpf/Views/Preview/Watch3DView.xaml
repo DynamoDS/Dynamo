@@ -11,7 +11,7 @@
              xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
              xmlns:wpf="clr-namespace:Dynamo.Wpf"
              xmlns:rendering="clr-namespace:Dynamo.Wpf.Rendering"
-             Name="topControl" 
+             Name="watch3D" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -25,7 +25,6 @@
             </ResourceDictionary.MergedDictionaries>
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-            <controls:Watch3DViewModelTypeToVisibilityConverter x:Key="Watch3DViewModelTypeToVisibilityConverter"/>
             <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
             <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
             <controls:Watch3DBackgroundColorConverter x:Key="Watch3DBackgroundColorConverter"/>
@@ -44,9 +43,9 @@
                 <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuSwitchView}" 
                           Command="{Binding Path=ToggleCanNavigateBackgroundCommand}">
                     <MenuItem.Visibility>
-                        <Binding Path=""
+                        <Binding Path="IsBackgroundPreview"
                                  Mode="OneWay"
-                                 Converter="{StaticResource Watch3DViewModelTypeToVisibilityConverter}"/>
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 
@@ -57,9 +56,9 @@
                                  Mode="OneWay"/>
                     </MenuItem.IsChecked>
                     <MenuItem.Visibility>
-                        <Binding Path=""
+                        <Binding Path="IsBackgroundPreview"
                                  Mode="OneWay"
-                                 Converter="{StaticResource Watch3DViewModelTypeToVisibilityConverter}"/>
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 
@@ -70,9 +69,9 @@
                                  Mode="OneWay"/>
                     </MenuItem.IsChecked>
                     <MenuItem.Visibility>
-                        <Binding Path=""
+                        <Binding Path="IsBackgroundPreview"
                                  Mode="OneWay"
-                                 Converter="{StaticResource Watch3DViewModelTypeToVisibilityConverter}"/>
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 

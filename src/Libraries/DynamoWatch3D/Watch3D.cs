@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
@@ -29,6 +28,8 @@ namespace Dynamo.Nodes
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
         private Watch3D watch3dModel;
+        private Watch3DView watch3DView;
+        private HelixWatch3DNodeViewModel watch3DViewModel;
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
@@ -42,20 +43,31 @@ namespace Dynamo.Nodes
 
             var vmParams = new Watch3DViewModelStartupParams(dynamoModel, dynamoViewModel, string.Format("{0} Preview", watch3dModel.GUID));
 
-            model.viewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
+            watch3DViewModel = HelixWatch3DNodeViewModel.Start(watch3dModel, vmParams);
+            if (model.initialCameraData != null)
+            {
+                try
+                {
+                    // The deserialization logic is unified between the view model and this node model.
+                    // For the node model, we need to supply the deserialization method with the camera node.
+                    var cameraNode = model.initialCameraData.ChildNodes.Cast<XmlNode>().FirstOrDefault(innerNode => innerNode.Name.Equals("camera",StringComparison.OrdinalIgnoreCase));
+                    var cameraData = watch3DViewModel.DeserializeCamera(cameraNode);
+                    watch3DViewModel.SetCameraData(cameraData);
+                }
+                catch
+                {
+                    watch3DViewModel.SetCameraData(new CameraData());
+                }
+            }
 
-            model.View = new Watch3DView()
+            model.Serialized += model_Serialized;
+
+            watch3DView = new Watch3DView()
             {
                 Width = model.WatchWidth,
                 Height = model.WatchHeight,
-                DataContext = model.viewModel
+                DataContext = watch3DViewModel
             };
-
-            var pos = model.CameraPosition;
-            var viewDir = model.LookDirection;
-
-            model.viewModel.Camera.Position = new Point3D(pos.X, pos.Z, -pos.Y);
-            model.viewModel.Camera.LookDirection = new Vector3D(viewDir.X, viewDir.Z, -viewDir.Y);
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
@@ -66,10 +78,8 @@ namespace Dynamo.Nodes
 			    model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             // set WatchSize in model
-            model.View.View.SizeChanged += (sender, args) => 
+            watch3DView.View.SizeChanged += (sender, args) => 
 			    model.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
-
-            model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
 
             var mi = new MenuItem { Header = Resources.ZoomToFit };
             mi.Click += mi_Click;
@@ -90,7 +100,7 @@ namespace Dynamo.Nodes
             backgroundRect.Fill = backgroundBrush;
 
             nodeView.PresentationGrid.Children.Add(backgroundRect);
-            nodeView.PresentationGrid.Children.Add(model.View);
+            nodeView.PresentationGrid.Children.Add(watch3DView);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
             DataBridge.Instance.RegisterCallback(
@@ -102,16 +112,9 @@ namespace Dynamo.Nodes
                         obj));       
         }
 
-        private void UpdateLatestCameraPosition()
+        void model_Serialized(XmlElement nodeElement)
         {
-            if (watch3dModel.View == null) return;
-
-            var pos = watch3dModel.View.View.Camera.Position;
-            var viewDir = watch3dModel.View.View.Camera.LookDirection;
-
-            // Convert Helix3D coordinates from +Y up to +Z up.
-            watch3dModel.CameraPosition = new Point3D(pos.X, -pos.Z, pos.Y);
-            watch3dModel.LookDirection = new Vector3D(viewDir.X, -viewDir.Z, viewDir.Y);
+            watch3DViewModel.SerializeCamera(nodeElement);
         }
 
         private IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
@@ -124,25 +127,26 @@ namespace Dynamo.Nodes
 
         private void RenderData(object data)
         {
-            if (watch3dModel.View == null) return;
-
-            watch3dModel.viewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
+            watch3DViewModel.OnRequestCreateModels(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
-            if (watch3dModel.View == null) return;
-
-            watch3dModel.View.View.ZoomExtents();
+            watch3DView.View.ZoomExtents();
         }
 
         private static IEnumerable<IGraphicItem> UnpackRenderData(object data)
         {
-            if (data is IGraphicItem)
-                yield return data as IGraphicItem;
-            else if (data is IEnumerable)
+            var item = data as IGraphicItem;
+            if (item != null)
             {
-                var graphics = (data as IEnumerable).Cast<object>().SelectMany(UnpackRenderData);
+                yield return item;
+            }
+            else
+            {
+                var enumerable = data as IEnumerable;
+                if (enumerable == null) yield break;
+                var graphics = enumerable.Cast<object>().SelectMany(UnpackRenderData);
                 foreach (var g in graphics)
                     yield return g;
             }
@@ -150,7 +154,7 @@ namespace Dynamo.Nodes
 
         public void Dispose()
         {
-            watch3dModel.RequestUpdateLatestCameraPosition -= this.UpdateLatestCameraPosition;
+
         }
     }
 
@@ -162,23 +166,35 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel
     {
-        internal HelixWatch3DViewModel viewModel;
+        // If the view model, which maintains the camera, 
+        // is not created until the view customization is applied,
+        // as in the case of a Watch3D node,
+        // we cache the camera position data returned from the file
+        // to be applied when the view model is constructed.
+        internal XmlNode initialCameraData;
 
-        internal Watch3DView View { get; set; }
-        public double WatchWidth { get; private set; }
-        public double WatchHeight { get; private set; }
-        public Point3D CameraPosition { get; set; }
-        public Vector3D LookDirection { get; set; }
-
-        public delegate void VoidHandler();
-        public event VoidHandler RequestUpdateLatestCameraPosition;
-        private void OnRequestUpdateLatestCameraPosition()
+        internal event Action<XmlNode> Deserialized;
+        internal void OnDeserialized(XmlNode node)
         {
-            if (RequestUpdateLatestCameraPosition != null)
+            if (Deserialized != null)
             {
-                RequestUpdateLatestCameraPosition();
+                Deserialized(node);
             }
         }
+
+        internal event Action<XmlElement> Serialized;
+        internal void OnSerialized(XmlElement element)
+        {
+            if(Serialized != null)
+            {
+                Serialized(element);
+            }
+        }
+
+        public double WatchWidth { get; private set; }
+        public double WatchHeight { get; private set; }
+
+        public delegate void VoidHandler();
 
         #region constructors
 
@@ -194,11 +210,8 @@ namespace Dynamo.Nodes
             WatchWidth = 200;
             WatchHeight = 200;
 
-            // Camera coordinates stored on the model assume +Z up.
-            CameraPosition = new Point3D(10, -10, 10);
-            LookDirection = new Vector3D(-1, 1, -1);
-
             ShouldDisplayPreviewCore = false;
+
         }
 
         #endregion
@@ -255,6 +268,8 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(nodeElement, context);
 
+            if (nodeElement.OwnerDocument == null) return;
+
             var viewElement = nodeElement.OwnerDocument.CreateElement("view");
             nodeElement.AppendChild(viewElement);
             var viewHelper = new XmlElementHelper(viewElement);
@@ -262,20 +277,7 @@ namespace Dynamo.Nodes
             viewHelper.SetAttribute("width", WatchWidth);
             viewHelper.SetAttribute("height", WatchHeight);
 
-            // the view stores the latest position
-            OnRequestUpdateLatestCameraPosition();
-
-            var camElement = nodeElement.OwnerDocument.CreateElement("camera");
-            viewElement.AppendChild(camElement);
-            var camHelper = new XmlElementHelper(camElement);
-
-            // Camera coordinates are saved to the xml assuming +Z up.
-            camHelper.SetAttribute("pos_x", CameraPosition.X);
-            camHelper.SetAttribute("pos_y", CameraPosition.Y);
-            camHelper.SetAttribute("pos_z", CameraPosition.Z);
-            camHelper.SetAttribute("look_x", LookDirection.X);
-            camHelper.SetAttribute("look_y", LookDirection.Y);
-            camHelper.SetAttribute("look_z", LookDirection.Z);
+            OnSerialized(viewElement);
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -283,37 +285,26 @@ namespace Dynamo.Nodes
             base.DeserializeCore(nodeElement, context);
             try
             {
-                foreach (XmlNode node in nodeElement.ChildNodes)
+                foreach (var node in nodeElement.ChildNodes.Cast<XmlNode>().Where(node => node.Name == "view"))
                 {
-                    if (node.Name == "view")
-                    {
-                        WatchWidth = Convert.ToDouble(node.Attributes["width"].Value);
-                        WatchHeight = Convert.ToDouble(node.Attributes["height"].Value);
+                    if (node.Attributes == null || node.Attributes.Count == 0) continue;
 
-                        foreach (XmlNode inNode in node.ChildNodes)
-                        {
-                            if (inNode.Name == "camera")
-                            {
-                                var x = Convert.ToDouble(inNode.Attributes["pos_x"].Value, CultureInfo.InvariantCulture);
-                                var y = Convert.ToDouble(inNode.Attributes["pos_y"].Value, CultureInfo.InvariantCulture);
-                                var z = Convert.ToDouble(inNode.Attributes["pos_z"].Value, CultureInfo.InvariantCulture);
-                                var lx = Convert.ToDouble(inNode.Attributes["look_x"].Value, CultureInfo.InvariantCulture);
-                                var ly = Convert.ToDouble(inNode.Attributes["look_y"].Value, CultureInfo.InvariantCulture);
-                                var lz = Convert.ToDouble(inNode.Attributes["look_z"].Value, CultureInfo.InvariantCulture);
-                                CameraPosition = new Point3D(x, y, z);
-                                LookDirection = new Vector3D(lx, ly, lz);
-                            }
-                        }
-                    }
+                    WatchWidth = Convert.ToDouble(node.Attributes["width"].Value, CultureInfo.InvariantCulture);
+                    WatchHeight = Convert.ToDouble(node.Attributes["height"].Value, CultureInfo.InvariantCulture);
+
+                    // Cache the data if we're using a node view customization 
+                    // to create the view model.
+                    initialCameraData = node;
+
+                    // Trigger the event, in case the view model already exists
+                    OnDeserialized(node);
                 }
-
             }
             catch (Exception ex)
             {
                 Log(LogMessage.Error(ex));
                 Log("View attributes could not be read from the file.");
             }
-
         }
 
         public override void RequestVisualUpdateAsync(
