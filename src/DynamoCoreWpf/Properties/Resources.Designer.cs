@@ -774,15 +774,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run mutation test.
-        /// </summary>
-        public static string DynamoViewDebugMenuRunMutationTest {
-            get {
-                return ResourceManager.GetString("DynamoViewDebugMenuRunMutationTest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Debug ASTs.
         /// </summary>
         public static string DynamoViewDebugMenuShowDebugAST {
