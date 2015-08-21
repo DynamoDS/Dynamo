@@ -22,7 +22,6 @@ namespace Dynamo.Publish
         private MenuItem inviteMenuItem; 
         private MenuItem manageCustomizersMenuItem;
  
-
         #region IViewExtension implementation
 
         public string UniqueId

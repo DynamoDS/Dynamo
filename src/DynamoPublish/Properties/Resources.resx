@@ -193,16 +193,16 @@
     <value>/customize-[0-9,a-z]*</value>
   </data>
   <data name="InviteViewMenuTitle" xml:space="preserve">
-     <value>Sign up for Customizer…</value>
+    <value>Sign up for Customizer…</value>
   </data>
   <data name="InviteViewMenuDialogTitle" xml:space="preserve">
-     <value>Customizer Service Early Access Invite</value>
+    <value>Customizer Service Early Access Invite</value>
   </data>
   <data name="InviteMenuText" xml:space="preserve">
-     <value>Sign up for an early access invite to the Dynamo Reach Customizer Service</value>
+    <value>Sign up for an early access invite to the Dynamo Reach Customizer Service</value>
   </data>
   <data name="InviteMenuButtonText" xml:space="preserve">
-     <value>Request Invite</value>
+    <value>Request Invite</value>
   </data>
   <data name="InviteRequestStart" xml:space="preserve">
     <value>Sending Request...</value>
@@ -218,5 +218,10 @@
   </data>
   <data name="ManagerErrorMessage" xml:space="preserve">
     <value>"Manager" is not set. Please, set manager in configuration file.</value>
+  </data>
+  <data name="PrivacyMessage" xml:space="preserve">
+    <value>We are working on a new way to interact and share Dynamo.  Over the last few months, we have separated out lots of pieces of Dynamo into modular components.  Among other things, this allows us to run Dynamo from a remote server and to attach different user interfaces to talk to remote Dynamo instances.  There are lots of possible applications of this, but generally it will let us provide Dynamo enabled computation in many different environments, way beyond standard desktop applications.  
+
+However, this is pretty new and unexplored territory for us and we need your help.  We are constructing a simplified environment to interact with this Dynamo service, and we need to test out lots of interaction, security and scaling issues before releasing it to the general public.  Would you like to try kicking the tires?</value>
   </data>
 </root>
