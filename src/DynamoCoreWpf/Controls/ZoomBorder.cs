@@ -157,6 +157,7 @@ namespace Dynamo.Controls
         private void child_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (child != null &&
+                e != null && 
                 (e.ChangedButton == MouseButton.Middle
                 || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
@@ -169,6 +170,9 @@ namespace Dynamo.Controls
             if ((child == null) || !child.IsMouseCaptured)
                 return;
 
+            var vm = DataContext as WorkspaceViewModel;
+            if (vm == null) return;
+
             // Change ZoomBorder's child translation
             Vector v = start - e.GetPosition(this);
             SetTranslateTransformOrigin(new Point2D
@@ -176,8 +180,6 @@ namespace Dynamo.Controls
                 X = origin.X - v.X,
                 Y = origin.Y - v.Y
             });
-
-            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
 
             // Update WorkspaceModel without triggering property changed
             vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
@@ -189,7 +191,9 @@ namespace Dynamo.Controls
 
         private bool IsInPanMode()
         {
-            return ((DataContext as WorkspaceViewModel).IsPanning);
+            var ws = DataContext as WorkspaceViewModel;
+            if (ws == null) return false;
+            return ws.IsPanning;
         }
 
         private void NotifyViewSettingsChanged(double x, double y, double zoom)
