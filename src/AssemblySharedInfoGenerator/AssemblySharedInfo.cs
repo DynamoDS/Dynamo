@@ -46,9 +46,13 @@ using System.Runtime.InteropServices;
 // in AssemblyVersionInfo.cs so that it can be easily incremented by the
 // automated build process.
 <<<<<<< HEAD
+<<<<<<< HEAD
 [assembly: AssemblyVersion("0.8.3.2325")]
 =======
 [assembly: AssemblyVersion("0.8.2.2326")]
+>>>>>>> master
+=======
+[assembly: AssemblyVersion("0.8.3.2327")]
 >>>>>>> master
 
 
@@ -69,7 +73,11 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 <<<<<<< HEAD
+<<<<<<< HEAD
 [assembly: AssemblyFileVersion("0.8.3.2325")]
 =======
 [assembly: AssemblyFileVersion("0.8.2.2326")]
+>>>>>>> master
+=======
+[assembly: AssemblyFileVersion("0.8.3.2327")]
 >>>>>>> master

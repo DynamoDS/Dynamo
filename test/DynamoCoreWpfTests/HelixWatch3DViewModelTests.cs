@@ -14,6 +14,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
@@ -108,7 +109,8 @@ namespace DynamoCoreWpfTests
             var watch3D = Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch3D>();
             Assert.NotNull(watch3D);
 
-            var vm = watch3D.viewModel as HelixWatch3DNodeViewModel;
+            var view = FindFirstWatch3DNodeView();
+            var vm = view.viewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(vm);
 
             //flip off the line node's preview upstream
@@ -463,8 +465,13 @@ namespace DynamoCoreWpfTests
             var height = original.Height * (1.0 + random.NextDouble());
             original.SetSize(Math.Floor(width), Math.Floor(height));
 
-            original.CameraPosition = new Point3D(10, 20, 30);
-            original.LookDirection = new Vector3D(15, 25, 35);
+            var vmParams = new Watch3DViewModelStartupParams(ViewModel.Model, ViewModel, "Test");
+
+            var vm1 = HelixWatch3DNodeViewModel.Start(original, vmParams);
+            var cam = vm1.Camera;
+
+            cam.Position = new Point3D(10, 20, 30);
+            cam.LookDirection = new Vector3D(15, 25, 35);
 
             // Ensure the serialization survives through file, undo, and copy.
             var document = new XmlDocument();
@@ -474,41 +481,53 @@ namespace DynamoCoreWpfTests
 
             // Duplicate the node in various save context.
             var nodeFromFile = new Watch3D();
+            var vmFile = HelixWatch3DNodeViewModel.Start(nodeFromFile, vmParams);
+
             var nodeFromUndo = new Watch3D();
+            var vmUndo = HelixWatch3DNodeViewModel.Start(nodeFromUndo, vmParams);
+
             var nodeFromCopy = new Watch3D();
+            var vmCopy = HelixWatch3DNodeViewModel.Start(nodeFromCopy, vmParams);
+
             nodeFromFile.Deserialize(fileElement, SaveContext.File);
             nodeFromUndo.Deserialize(undoElement, SaveContext.Undo);
             nodeFromCopy.Deserialize(copyElement, SaveContext.Copy);
 
+            var newCam = vmFile.Camera;
+
             // Making sure we have properties preserved through file operation.
             Assert.AreEqual(original.WatchWidth, nodeFromFile.WatchWidth);
             Assert.AreEqual(original.WatchHeight, nodeFromFile.WatchHeight);
-            Assert.AreEqual(original.CameraPosition.X, nodeFromFile.CameraPosition.X);
-            Assert.AreEqual(original.CameraPosition.Y, nodeFromFile.CameraPosition.Y);
-            Assert.AreEqual(original.CameraPosition.Z, nodeFromFile.CameraPosition.Z);
-            Assert.AreEqual(original.LookDirection.X, nodeFromFile.LookDirection.X);
-            Assert.AreEqual(original.LookDirection.Y, nodeFromFile.LookDirection.Y);
-            Assert.AreEqual(original.LookDirection.Z, nodeFromFile.LookDirection.Z);
+            Assert.AreEqual(cam.Position.X, newCam.Position.X);
+            Assert.AreEqual(cam.Position.Y, newCam.Position.Y);
+            Assert.AreEqual(cam.Position.Z, newCam.Position.Z);
+            Assert.AreEqual(cam.LookDirection.X, newCam.LookDirection.X);
+            Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
+            Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
+
+            newCam = vmUndo.Camera;
 
             // Making sure we have properties preserved through undo operation.
             Assert.AreEqual(original.WatchWidth, nodeFromUndo.WatchWidth);
             Assert.AreEqual(original.WatchHeight, nodeFromUndo.WatchHeight);
-            Assert.AreEqual(original.CameraPosition.X, nodeFromUndo.CameraPosition.X);
-            Assert.AreEqual(original.CameraPosition.Y, nodeFromUndo.CameraPosition.Y);
-            Assert.AreEqual(original.CameraPosition.Z, nodeFromUndo.CameraPosition.Z);
-            Assert.AreEqual(original.LookDirection.X, nodeFromUndo.LookDirection.X);
-            Assert.AreEqual(original.LookDirection.Y, nodeFromUndo.LookDirection.Y);
-            Assert.AreEqual(original.LookDirection.Z, nodeFromUndo.LookDirection.Z);
+            Assert.AreEqual(cam.Position.X, newCam.Position.X);
+            Assert.AreEqual(cam.Position.Y, newCam.Position.Y);
+            Assert.AreEqual(cam.Position.Z, newCam.Position.Z);
+            Assert.AreEqual(cam.LookDirection.X, newCam.LookDirection.X);
+            Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
+            Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
+
+            newCam = vmCopy.Camera;
 
             // Making sure we have properties preserved through copy operation.
             Assert.AreEqual(original.WatchWidth, nodeFromCopy.WatchWidth);
             Assert.AreEqual(original.WatchHeight, nodeFromCopy.WatchHeight);
-            Assert.AreEqual(original.CameraPosition.X, nodeFromCopy.CameraPosition.X);
-            Assert.AreEqual(original.CameraPosition.Y, nodeFromCopy.CameraPosition.Y);
-            Assert.AreEqual(original.CameraPosition.Z, nodeFromCopy.CameraPosition.Z);
-            Assert.AreEqual(original.LookDirection.X, nodeFromCopy.LookDirection.X);
-            Assert.AreEqual(original.LookDirection.Y, nodeFromCopy.LookDirection.Y);
-            Assert.AreEqual(original.LookDirection.Z, nodeFromCopy.LookDirection.Z);
+            Assert.AreEqual(cam.Position.X, newCam.Position.X);
+            Assert.AreEqual(cam.Position.Y, newCam.Position.Y);
+            Assert.AreEqual(cam.Position.Z, newCam.Position.Z);
+            Assert.AreEqual(cam.LookDirection.X, newCam.LookDirection.X);
+            Assert.AreEqual(cam.LookDirection.Y, newCam.LookDirection.Y);
+            Assert.AreEqual(cam.LookDirection.Z, newCam.LookDirection.Z);
         }
 
         [Test]
@@ -561,7 +580,8 @@ namespace DynamoCoreWpfTests
             watch3DNode.InPorts[0].Disconnect(connector);
 
             // Three items, the grid, the axes, and the light will remain.
-            Assert.AreEqual(watch3DNode.View.View.Items.Count, 3);
+            var view = FindFirstWatch3DNodeView();
+            Assert.AreEqual(view.View.Items.Count, 3);
 
             var linesNode = ws.Nodes.First(n => n.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
 
@@ -573,7 +593,7 @@ namespace DynamoCoreWpfTests
             ViewModel.Model.ExecuteCommand(cmd1);
             ViewModel.Model.ExecuteCommand(cmd2);
 
-            Assert.AreEqual(6, watch3DNode.View.View.Items.Count);
+            Assert.AreEqual(6, view.View.Items.Count);
         }
 
         #endregion
@@ -745,6 +765,12 @@ namespace DynamoCoreWpfTests
             ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
             ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Shortest.ToString());
             Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
+        }
+
+        private Watch3DView FindFirstWatch3DNodeView()
+        {
+            var views = View.ChildrenOfType<Watch3DView>();
+            return views.Last();
         }
     }
 
