@@ -591,9 +591,15 @@ namespace Dynamo.Models
 
             DynamoSelection.Instance.ClearSelection();
 
+            // The deletion of connectors in the following step will trigger a
+            // lot of graph executions. As connectors are deleted, nodes will 
+            // have invalid inputs, so these executions are meaningless and may
+            // cause invalid GC. See comments in MAGN-7229.
+            foreach (NodeModel node in Nodes)
+                node.RaisesModificationEvents = false;
+
             foreach (NodeModel el in Nodes)
             {
-                el.RaisesModificationEvents = false;
                 el.Dispose();
 
                 foreach (PortModel p in el.InPorts)
@@ -920,8 +926,8 @@ namespace Dynamo.Models
                         var originalpos = node.Position;
                         var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
                         //overwrite the xy coords of the serialized node with the current position, so the node is not moved
-                        serializedNode.SetAttribute("x", originalpos.X.ToString());
-                        serializedNode.SetAttribute("y", originalpos.Y.ToString());
+                        serializedNode.SetAttribute("x", originalpos.X.ToString(CultureInfo.InvariantCulture));
+                        serializedNode.SetAttribute("y", originalpos.Y.ToString(CultureInfo.InvariantCulture));
 
                         this.undoRecorder.RecordModificationForUndo(node);
                         this.ReloadModel(serializedNode);

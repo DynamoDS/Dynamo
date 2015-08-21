@@ -1903,4 +1903,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="CameraDataSaveError" xml:space="preserve">
     <value>Camera position information could not be saved.</value>
   </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>You do not have write permission to {0}.</value>
+  </data>
 </root>

@@ -2074,6 +2074,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You do not have write permission to {0}..
+        /// </summary>
+        public static string FolderNotWritableError {
+            get {
+                return ResourceManager.GetString("FolderNotWritableError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version {0}.{1}.{2}.
         /// </summary>
         public static string GalleryDynamoVersion {
