@@ -123,13 +123,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysisTests", "..\test\Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServices", "..\test\Libraries\TestServices\TestServices.csproj", "{6CD0F0CF-8199-49F9-B0EA-0B9598B44419}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1BA70EC3-123C-4785-AD4C-237CAB78FA61}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryZeroTouch", "Libraries\Samples\SampleLibraryZeroTouch\SampleLibraryZeroTouch.csproj", "{BD13C4DC-9045-4E49-B637-B6182B0E3A7F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4466E6F6-F644-43AB-96B3-5ECE1622E711}"
 	ProjectSection(SolutionItems) = preProject
 		Config.xml = Config.xml

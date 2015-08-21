@@ -79,9 +79,12 @@ namespace Dynamo.Wpf.ViewModels.Core
             var galleryFilePath = pathManager.GalleryFilePath;
             var galleryDirectory = Path.GetDirectoryName(galleryFilePath);
 
+            var version = dynamoViewModel.Model.UpdateManager.ProductVersion;
+
             DynamoVersion = string.Format(Properties.Resources.GalleryDynamoVersion,
-                            pathManager.MajorFileVersion,
-                            pathManager.MinorFileVersion);
+                            version.FileMajor, 
+                            version.FileMinor, 
+                            version.FileBuild);
 
             contents = GalleryContents.Load(galleryFilePath).GalleryUiContents;
 

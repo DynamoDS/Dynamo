@@ -26,7 +26,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IDisposable
+    public abstract class NodeModel : ModelBase, IRenderPackageSource<NodeModel>, IDisposable
     {
         #region private members
 
@@ -57,36 +57,12 @@ namespace Dynamo.Models
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
-        private List<IRenderPackage> renderPackages = new List<IRenderPackage>();
-
         #endregion
 
         #region public members
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
-        public Object RenderPackagesMutex = new object();
-        public List<IRenderPackage> RenderPackages
-        {
-            get
-            {
-                lock (RenderPackagesMutex)
-                {
-                    return renderPackages; 
-                }
-            }
-            set
-            {
-                lock (RenderPackagesMutex)
-                {
-                    renderPackages = value;
-                }
-                RaisePropertyChanged("RenderPackages");
-            }
-        }
-
-        public bool HasRenderPackages { get; set; }
 
         /// <summary>
         /// The unique name that was created the node by
@@ -487,6 +463,8 @@ namespace Dynamo.Models
                         cachedMirrorData = null;
                     }
                 }
+
+                RaisePropertyChanged("IsUpdated");
             }
         }
 
@@ -645,17 +623,6 @@ namespace Dynamo.Models
                 {
                     case ("OverrideName"):
                         RaisePropertyChanged("NickName");
-                        break;
-                    case ("IsSelected"):
-                        // Synchronize the selected state of any render packages for this node
-                        // with the selection state of the node.
-                        if (HasRenderPackages)
-                        {
-                            lock (RenderPackagesMutex)
-                            {
-                                RenderPackages.ForEach(rp => rp.IsSelected = IsSelected);
-                            }
-                        }
                         break;
                 }
             };
@@ -1656,43 +1623,11 @@ namespace Dynamo.Models
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
         /// </summary>
-        /// <param name="engine"></param>
-        /// <param name="scheduler"></param>
-        /// <param name="maxTessellationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        public void RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
-        {
-            //if (Workspace.DynamoModel == null)
-            //    return;
-
-            // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
-            // called in quick succession from the UI thread -- the first task may 
-            // be updating '_renderPackages' when the second call gets here. In 
-            // this case '_renderPackages' should be protected against concurrent 
-            // accesses.
-            // 
-            lock (RenderPackagesMutex)
-            {
-                renderPackages.Clear();
-                HasRenderPackages = false;
-            }
-
-            RequestVisualUpdateAsyncCore(scheduler, engine, factory);
-        }
-
-        /// <summary>
-        /// When called, the base implementation of this method schedules an 
-        /// UpdateRenderPackageAsyncTask to regenerate its render packages 
-        /// asynchronously. Derived classes can optionally override this method 
-        /// to prevent render packages to be generated if they do not require 
-        /// geometric preview.
-        /// </summary>
-        /// <param name="engine"></param>
-        /// <param name="scheduler"></param>
-        /// <param name="maxTesselationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        protected virtual void 
-            RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
+        /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
+        /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
+        /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        public virtual void
+            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             var initParams = new UpdateRenderPackageParams()
             {
@@ -1704,11 +1639,10 @@ namespace Dynamo.Models
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (task.Initialize(initParams))
-            {
-                task.Completed += OnRenderPackageUpdateCompleted;
-                scheduler.ScheduleForExecution(task);
-            }
+            if (!task.Initialize(initParams)) return;
+
+            task.Completed += OnRenderPackageUpdateCompleted;
+            scheduler.ScheduleForExecution(task);
         }
 
         /// <summary>
@@ -1722,12 +1656,10 @@ namespace Dynamo.Models
         /// 
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
-            lock (RenderPackagesMutex)
+            var task = asyncTask as UpdateRenderPackageAsyncTask;
+            if (task.RenderPackages.Any())
             {
-                var task = asyncTask as UpdateRenderPackageAsyncTask;
-                renderPackages.Clear();
-                renderPackages.AddRange(task.RenderPackages);
-                HasRenderPackages = renderPackages.Any();
+                OnRenderPackagesUpdated(task.RenderPackages);
             }
         }
 
@@ -1810,6 +1742,16 @@ namespace Dynamo.Models
         }
 
         protected bool ShouldDisplayPreviewCore { get; set; }
+        
+        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+
+        private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
+        {
+            if(RenderPackagesUpdated != null)
+            {
+                RenderPackagesUpdated(this, packages);
+            }
+        }
     }
 
     public enum ElementState

@@ -99,6 +99,7 @@
             <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}">
                 <MenuItem Name="WorkspaceLacingMenu"
                           Header="{x:Static p:Resources.ContextMenuLacing}">
+                    
                     <MenuItem IsCheckable="True"
                               Command="{Binding Path=SetArgumentLacingCommand}"
                               CommandParameter="Shortest"
@@ -110,6 +111,7 @@
                                      ConverterParameter="Shortest" />
                         </MenuItem.IsChecked>
                     </MenuItem>
+                    
                     <MenuItem IsCheckable="True"
                               Command="{Binding Path=SetArgumentLacingCommand}"
                               CommandParameter="Longest"
@@ -121,6 +123,7 @@
                                      ConverterParameter="Longest" />
                         </MenuItem.IsChecked>
                     </MenuItem>
+
                     <MenuItem IsCheckable="True"
                               Command="{Binding Path=SetArgumentLacingCommand}"
                               CommandParameter="CrossProduct"
@@ -132,6 +135,7 @@
                                      ConverterParameter="CrossProduct" />
                         </MenuItem.IsChecked>
                     </MenuItem>
+                    
                 </MenuItem>
 
                 <MenuItem IsEnabled="{Binding Path=IsGeometryOperationEnabled}"
@@ -216,11 +220,11 @@
                 <Separator />
 
                 <MenuItem Header="{x:Static p:Resources.ContextMenuGeometryView}"
-                          Command="{Binding DynamoViewModel.ToggleCanNavigateBackgroundCommand}" />
+                          Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuPan}"
-                          Command="{Binding DynamoViewModel.TogglePanCommand}">
+                          Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.TogglePanCommand}">
                     <MenuItem.IsChecked>
-                        <Binding Path="DynamoViewModel.IsPanning"
+                        <Binding Path="DynamoViewModel.BackgroundPreviewViewModel.IsPanning"
                                  Mode="OneWay" />
                     </MenuItem.IsChecked>
                 </MenuItem>
@@ -235,7 +239,7 @@
         <controls:InfiniteGridView x:Name="infiniteGridView"
                                    IsHitTestVisible="False">
             <controls:InfiniteGridView.Visibility>
-                <Binding Path="DataContext.FullscreenWatchShowing"
+                <Binding Path="DataContext.BackgroundPreviewActive"
                          Converter="{StaticResource InverseBoolToVisibilityConverter}"
                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
             </controls:InfiniteGridView.Visibility>
@@ -251,7 +255,8 @@
                              ForceCursor="{Binding IsCursorForced}">
 
             <controls:ZoomBorder.IsHitTestVisible>
-                <Binding Path="DataContext.ShouldBeHitTestVisible"
+                <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
+                         Converter="{StaticResource InverseBooleanConverter}"
                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabControl}}" />
             </controls:ZoomBorder.IsHitTestVisible>
 
@@ -276,7 +281,7 @@
                                 <SolidColorBrush Color="Transparent" />
                             </Canvas.Background>
                             <Canvas.Opacity>
-                                <Binding Path="DataContext.CanNavigateBackground"
+                                <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                                          RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                                          Converter="{StaticResource NavigationToOpacityConverter}">
                                 </Binding>
@@ -348,11 +353,11 @@
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-pan-check.png">
                 <ui:ImageCheckBox.Command>
-                    <Binding Path="DataContext.TogglePanCommand"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.TogglePanCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.IsPanning"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsPanning"
                              Mode="OneWay"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
@@ -363,16 +368,16 @@
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-states.png"
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-orbit-check.png">
                 <ui:ImageCheckBox.Command>
-                    <Binding Path="DataContext.ToggleOrbitCommand"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.ToggleOrbitCommand"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.IsOrbiting"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsOrbiting"
                              Mode="OneWay"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
                 <ui:ImageCheckBox.Visibility>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsOrbiting"
                              Converter="{StaticResource BooleanToVisibilityConverter}"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Visibility>
@@ -392,7 +397,7 @@
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
                               ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}">
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
             </ui:ImageCheckBox>
@@ -403,7 +408,7 @@
                               CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
                               ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.CanNavigateBackground"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
                              Converter="{StaticResource InverseBooleanConverter}" />
                 </ui:ImageCheckBox.IsChecked>

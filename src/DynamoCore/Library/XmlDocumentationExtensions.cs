@@ -42,6 +42,16 @@ namespace Dynamo.DSEngine
                 .Where(x => x != String.Empty);
         }
 
+        /// <param name="xml">Don't set it, it's just for tests.</param>
+        public static IEnumerable<double> GetSearchTagWeights(this FunctionDescriptor member, XmlReader xml = null)
+        {
+            return GetMemberElement(member, xml, DocumentElementType.SearchTagWeights)
+                .Split(',')
+                .Select(x => x.Trim())
+                .Where(x => x != String.Empty)
+                .Select(x => Convert.ToDouble(x));
+        }
+
         public static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
         {
             var node = GetMemberDocumentNode(member, xml);
@@ -140,6 +150,9 @@ namespace Dynamo.DSEngine
                 case DocumentElementType.SearchTags:
                     return documentNode.SearchTags;
 
+                case DocumentElementType.SearchTagWeights:
+                    return documentNode.SearchTagWeights;
+
                 default:
                     throw new ArgumentException("property");
             }
@@ -234,6 +247,7 @@ namespace Dynamo.DSEngine
             Summary,
             Parameter,
             SearchTags,
+            SearchTagWeights,
             Returns
         }
 
@@ -241,7 +255,8 @@ namespace Dynamo.DSEngine
         {
             Summary,
             Description,
-            SearchTags
+            SearchTags,
+            SearchTagWeights
         }
 
         private static void LoadDataFromXml(XmlReader reader, string assemblyName)
@@ -298,6 +313,10 @@ namespace Dynamo.DSEngine
                                 currentTag = XmlTagType.SearchTags;
                                 break;
 
+                            case "weights":
+                                currentTag = XmlTagType.SearchTagWeights;
+                                break;
+
                             default:
                                 currentTag = XmlTagType.None;
                                 break;
@@ -320,6 +339,9 @@ namespace Dynamo.DSEngine
                                 break;
                             case XmlTagType.SearchTags:
                                 currentDocNode.SearchTags = reader.Value.CleanUpDocString();
+                                break;
+                            case XmlTagType.SearchTagWeights:
+                                currentDocNode.SearchTagWeights = reader.Value.CleanUpDocString();
                                 break;
                         }
 
