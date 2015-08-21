@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -45,11 +46,17 @@ namespace Dynamo.DSEngine
         /// <param name="xml">Don't set it, it's just for tests.</param>
         public static IEnumerable<double> GetSearchTagWeights(this FunctionDescriptor member, XmlReader xml = null)
         {
-            return GetMemberElement(member, xml, DocumentElementType.SearchTagWeights)
+            var weights = GetMemberElement(member, xml, DocumentElementType.SearchTagWeights);
+            if (string.IsNullOrEmpty(weights))
+            {
+                return new List<double>();
+            }
+
+            return weights
                 .Split(',')
                 .Select(x => x.Trim())
                 .Where(x => x != String.Empty)
-                .Select(x => Convert.ToDouble(x));
+                .Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture));
         }
 
         public static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
