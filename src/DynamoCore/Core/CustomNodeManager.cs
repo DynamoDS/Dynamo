@@ -322,7 +322,6 @@ namespace Dynamo.Core
             }
 
             // Will throw exception if we don't have write access
-            // TODO: need uniform way of checking for this
             IEnumerable<string> dyfs;
             try
             {
@@ -330,7 +329,8 @@ namespace Dynamo.Core
             }
             catch (Exception e)
             {
-                Log(string.Format(Resources.InvalidCustomNodeFolderWarning, dir));
+                Log(string.Format(Resources.CustomNodeFolderLoadFailure, dir));
+                Log(e);
                 yield break;
             }
 
