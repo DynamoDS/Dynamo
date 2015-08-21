@@ -62,9 +62,9 @@ namespace Dynamo.Models
         private string author = "None provided";
         private string description;
         private bool hasUnsavedChanges;
-        private readonly ObservableCollection<NodeModel> nodes;
-        private readonly ObservableCollection<NoteModel> notes;
-        private readonly ObservableCollection<AnnotationModel> annotations;
+        private readonly List<NodeModel> nodes;
+        private readonly List<NoteModel> notes;
+        private readonly List<AnnotationModel> annotations;
         private readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
@@ -214,6 +214,33 @@ namespace Dynamo.Models
         protected virtual void OnNotesCleared()
         {
             var handler = NotesCleared;
+            if (handler != null) handler();
+        }
+
+        /// <summary>
+        ///     Event that is fired when an annotation is added to the workspace.
+        /// </summary>
+        public event Action<AnnotationModel> AnnotationAdded;
+        protected virtual void OnAnnotationAdded(AnnotationModel annotation)
+        {
+            var handler = AnnotationAdded;
+            if (handler != null) handler(annotation);
+        }
+
+        /// <summary>
+        ///     Event that is fired when an annotation is removed from the workspace.
+        /// </summary>
+        public event Action<AnnotationModel> AnnotationRemoved;
+        protected virtual void OnAnnotationRemoved(AnnotationModel annotation)
+        {
+            var handler = AnnotationRemoved;
+            if (handler != null) handler(annotation);
+        }
+
+        public event Action AnnotationsCleared;
+        protected virtual void OnAnnotationsCleared()
+        {
+            var handler = AnnotationsCleared;
             if (handler != null) handler();
         }
 
@@ -397,7 +424,19 @@ namespace Dynamo.Models
             }
         }
 
-        public ObservableCollection<AnnotationModel> Annotations { get { return annotations; } }
+        public IEnumerable<AnnotationModel> Annotations
+        {
+            get
+            {
+                IEnumerable<AnnotationModel> annotationsClone;
+                lock (annotations)
+                {
+                    annotationsClone = annotations.ToList();
+                }
+
+                return annotationsClone;
+            }
+        }
 
         /// <summary>
         ///     Path to the file this workspace is associated with. If null or empty, this workspace has never been saved.
@@ -563,10 +602,10 @@ namespace Dynamo.Models
         {
             guid = Guid.NewGuid();
 
-            nodes = new ObservableCollection<NodeModel>(e);
-            notes = new ObservableCollection<NoteModel>(n);
+            nodes = new List<NodeModel>(e);
+            notes = new List<NoteModel>(n);
 
-            annotations = new ObservableCollection<AnnotationModel>(a);         
+            annotations = new List<AnnotationModel>(a);         
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -653,7 +692,7 @@ namespace Dynamo.Models
 
             ClearNodes();
             ClearNotes();
-            Annotations.Clear();
+            ClearAnnotations();
             presets.Clear();
 
             ClearUndoRecorder();
@@ -779,6 +818,17 @@ namespace Dynamo.Models
             AddNote(note);
         }
 
+        public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
+        {
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Resources.NewNoteString : text, id);
+
+            //if we have null parameters, the note is being added
+            //from the menu, center the view on the note
+
+            AddNote(noteModel, centerNote);
+            return noteModel;
+        }
+
         public void ClearNotes()
         {
             lock (notes)
@@ -798,22 +848,40 @@ namespace Dynamo.Models
             OnNoteRemoved(note);
         }
 
-        public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
+        private void AddNewAnnotation(AnnotationModel annotation)
         {
-            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Resources.NewNoteString : text, id);
+            lock (annotations)
+            {
+                annotations.Add(annotation);
+            }
 
-            //if we have null parameters, the note is being added
-            //from the menu, center the view on the note
+            //OnAnnotationAdded(annotation);
+        }
 
-            AddNote(noteModel, centerNote);
-            return noteModel;
+        public void ClearAnnotations()
+        {
+            lock (annotations)
+            {
+                annotations.Clear();
+            }
+
+            //OnAnnotationsCleared();
+        }
+
+        private void RemoveAnnotation(AnnotationModel annotation)
+        {
+            lock (annotations)
+            {
+                if (!annotations.Remove(annotation)) return;
+            }
+            //OnAnnotationRemoved(annotation);
         }
 
         public void AddAnnotation(AnnotationModel annotationModel)
         {
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-            Annotations.Add(annotationModel);
+            AddNewAnnotation(annotationModel);
         }
 
         public AnnotationModel AddAnnotation(string text, Guid id)
@@ -830,7 +898,7 @@ namespace Dynamo.Models
                 };
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
                 annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-                Annotations.Add(annotationModel);
+                AddNewAnnotation(annotationModel);
                 HasUnsavedChanges = true;
                 return annotationModel;
             }
@@ -1524,7 +1592,7 @@ namespace Dynamo.Models
                     else if (model is AnnotationModel)
                     {
                         undoRecorder.RecordDeletionForUndo(model);
-                        Annotations.Remove(model as AnnotationModel);
+                        RemoveAnnotation(model as AnnotationModel);
                     }
 
                     else if (model is PresetModel)
@@ -1642,7 +1710,7 @@ namespace Dynamo.Models
         public void RemoveGroup(ModelBase model)
         {
             var annotation = model as AnnotationModel;
-            Annotations.Remove(annotation);
+            RemoveAnnotation(annotation);
             annotation.Dispose();
         }
 
@@ -1712,8 +1780,8 @@ namespace Dynamo.Models
                 var annotationModel = new AnnotationModel(selectedNodes, selectedNotes);
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
                 annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
-                annotationModel.Deserialize(modelData, SaveContext.Undo);                
-                Annotations.Add(annotationModel);
+                annotationModel.Deserialize(modelData, SaveContext.Undo);
+                AddNewAnnotation(annotationModel);
             }
 
             else if (typeName.Contains("PresetModel"))

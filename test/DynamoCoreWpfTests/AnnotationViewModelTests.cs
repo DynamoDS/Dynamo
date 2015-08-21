@@ -289,7 +289,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(annotation);
 
             //verify that group was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //select the group for deletion
             DynamoSelection.Instance.Selection.Add(annotation);
@@ -297,7 +297,7 @@ namespace DynamoCoreWpfTests
 
             //delete the note
             ViewModel.DeleteCommand.Execute(null);
-            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //verify only annotation was deleted and not the note
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
@@ -324,7 +324,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(annotation);
 
             //verify that group was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //verify whether group is not empty
             Assert.AreNotEqual(0, annotation.Y);
@@ -351,7 +351,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(annotation);
 
             //verify that group was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //select the group for deletion
             DynamoSelection.Instance.Selection.Add(annotation);
@@ -359,7 +359,7 @@ namespace DynamoCoreWpfTests
 
             //delete the note
             ViewModel.DeleteCommand.Execute(null);
-            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //verify only annotation was deleted and not the note
             Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());

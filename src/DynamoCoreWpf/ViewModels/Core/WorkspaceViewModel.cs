@@ -304,12 +304,15 @@ namespace Dynamo.ViewModels
             Model.NoteRemoved += Model_NoteRemoved;
             Model.NotesCleared += Model_NotesCleared;
 
-            Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
+            Model.AnnotationAdded += Model_AnnotationAdded;
+            Model.AnnotationRemoved += Model_AnnotationRemoved;
+            Model.AnnotationsCleared += Model_AnnotationsCleared;
+
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += 
+            DynamoSelection.Instance.Selection.CollectionChanged +=
                 (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
@@ -317,15 +320,12 @@ namespace Dynamo.ViewModels
 
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
-
-            Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
-            foreach (var c in Model.Connectors)
-                Connectors_ConnectorAdded(c);
+            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
+            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
         }
-
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -376,27 +376,20 @@ namespace Dynamo.ViewModels
             _notes.Clear();
         }
 
-        void Annotations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Model_AnnotationAdded(AnnotationModel annotation)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {                     
-                        var viewModel = new AnnotationViewModel(this, item as AnnotationModel);
-                        _annotations.Add(viewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _annotations.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        _annotations.Remove(_annotations.First(x => x.AnnotationModel == item));
-                    }
-                    break;
-            }
+            var viewModel = new AnnotationViewModel(this, annotation);
+            _annotations.Add(viewModel);
+        }
+
+        private void Model_AnnotationRemoved(AnnotationModel annotation)
+        {
+            _annotations.Remove(_annotations.First(x => x.AnnotationModel == annotation));
+        }
+
+        private void Model_AnnotationsCleared()
+        {
+            _annotations.Clear();
         }
 
 
