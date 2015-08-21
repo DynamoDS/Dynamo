@@ -1067,7 +1067,7 @@ namespace Dynamo.PackageManager
             return new string[] {};
         }
 
-        public bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
+        private bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
         {
             try
             {
