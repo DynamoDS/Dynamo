@@ -591,9 +591,15 @@ namespace Dynamo.Models
 
             DynamoSelection.Instance.ClearSelection();
 
+            // The deletion of connectors in the following step will trigger a
+            // lot of graph executions. As connectors are deleted, nodes will 
+            // have invalid inputs, so these executions are meaningless and may
+            // cause invalid GC. See comments in MAGN-7229.
+            foreach (NodeModel el in Nodes)
+                e1.RaiseModificationEvents = false;
+
             foreach (NodeModel el in Nodes)
             {
-                el.RaisesModificationEvents = false;
                 el.Dispose();
 
                 foreach (PortModel p in el.InPorts)
