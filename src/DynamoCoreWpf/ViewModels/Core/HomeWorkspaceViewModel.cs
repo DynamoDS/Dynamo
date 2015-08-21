@@ -66,13 +66,13 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.RefreshCompleted +=hwm_RefreshCompleted;
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
 
-            dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+            dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;            
         }
 
-       
         void Model_ShutdownStarted(DynamoModel model)
         {
             StopPeriodicTimer(null);
+            StopSpin();
         }
 
         /// <summary>
@@ -133,8 +133,10 @@ namespace Dynamo.Wpf.ViewModels.Core
         }
 
         private void hwm_RefreshCompleted(object sender, EvaluationCompletedEventArgs e)
-        {        
-            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.TesselationCompletedMessage);
+        {
+            //Stop the Spinner here. If the nodes have something to render
+            //then spinner starts again during Rendering
+            StopSpin();       
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
@@ -143,37 +145,74 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             if (!hasWarnings)
             {
-                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.EvalCompletedMessage);
+                StartSpin(Properties.Resources.EvalCompletedMessage);
             }
             else
             {
+                StopSpin();
                 SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.EvalCompletedWithWarningsMessage); 
             }
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
         {
-            DynamoViewModel.ShowBusyIndicator = true;
-            DynamoViewModel.ShowRunMessage = String.Empty;
-
-            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.EvalStartedMessage);
+            StartSpin(Properties.Resources.EvalStartedMessage);            
         }
 
-        internal void SetCurrentWarning(NotificationLevel level, string message)
+        private void SetCurrentWarning(NotificationLevel level, string message)
         {
             CurrentNotificationLevel = level;
-            CurrentNotificationMessage = message;
+            CurrentNotificationMessage = message;           
+        }
 
-            if (level == NotificationLevel.Error || level == NotificationLevel.Moderate)
+        /// <summary>
+        /// Show the background spinner
+        /// </summary>
+        /// <param name="message">Message to be displayed with the spinner</param>
+        internal override void StartSpin(String message = null)
+        {
+            RunSettingsViewModel.ShowBusyIndicator = true;
+            RunSettingsViewModel.ShowRunMessage = message ?? String.Empty;
+            SetCurrentWarning(NotificationLevel.Mild, message);        
+        }
+
+        /// <summary>
+        /// Collapse the background spinner.
+        /// </summary>
+        /// <param name="message">Message to be displayed with the spinner</param>
+        internal override  void StopSpin(String message = null)
+        {
+            RunSettingsViewModel.ShowBusyIndicator = false;
+            if (message != null)
             {
-                DynamoViewModel.ShowBusyIndicator = false;
-                DynamoViewModel.ShowRunMessage = message;
+                RunSettingsViewModel.ShowRunMessage = message;
+                SetCurrentWarning(NotificationLevel.Mild, message);
             }
             else
             {
-                DynamoViewModel.ShowRunMessage = message;
+                ClearWarning();
             }
-           
+        }
+
+        /// <summary>
+        /// Toggles the background spinner.
+        /// </summary>
+        /// <param name="message">Message to be displayed with the spinner.</param>
+        internal override void ToggleSpin(String message = null)
+        {
+            //If the spinner is not running (e.g during a Watch3D Rendering)
+            //then start the spin 
+            if (!RunSettingsViewModel.ShowBusyIndicator)
+            {
+                StartSpin(message);                
+            }
+            else
+            {
+                //If the spinner is running, then stop and start the spinner again and
+                //update the message.
+                StopSpin();
+                StartSpin(message);               
+            }
         }
 
         public void ClearWarning()
@@ -226,6 +265,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
 
             DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
+            StopSpin();
         }
     }
 

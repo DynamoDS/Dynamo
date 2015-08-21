@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using Dynamo.Annotations;
 using Dynamo.Core;
 
@@ -198,7 +199,7 @@ namespace Dynamo.Models
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
            }
-
+            var count = this.CurrentWorkspace.Nodes.Count(x => x.IsUpdated);
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
         }

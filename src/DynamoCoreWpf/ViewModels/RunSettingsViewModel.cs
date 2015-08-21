@@ -215,23 +215,35 @@ namespace Dynamo.Wpf.ViewModels
                     : Visibility.Collapsed;
             }
         }
-       
+
+        private bool showBusyIndicator;
         public Boolean ShowBusyIndicator
         {
-            get { return dynamoViewModel.ShowBusyIndicator; }
+            get
+            {
+                return showBusyIndicator;
+                //dynamoViewModel.ShowBusyIndicator;
+            }
             set
             {
-                dynamoViewModel.ShowBusyIndicator = value;
+                //dynamoViewModel.ShowBusyIndicator = value;
+                showBusyIndicator = value;
                 RaisePropertyChanged("ShowBusyIndicator");            
             }
         }
 
+        private string showRunMessage;
         public string ShowRunMessage
         {
-            get { return dynamoViewModel.ShowRunMessage; }
+            get
+            {
+                return showRunMessage;
+                //dynamoViewModel.ShowRunMessage;
+            }
             set
             {
-                dynamoViewModel.ShowRunMessage = value;
+                //dynamoViewModel.ShowRunMessage = value;
+                showRunMessage = value;
                 RaisePropertyChanged("ShowRunMessage");
             }
         }
@@ -248,7 +260,7 @@ namespace Dynamo.Wpf.ViewModels
             this.workspaceViewModel = workspaceViewModel;
             this.dynamoViewModel = dynamoViewModel;
 
-            this.dynamoViewModel.PropertyChanged +=dynamoViewModel_PropertyChanged;
+            //this.dynamoViewModel.PropertyChanged +=dynamoViewModel_PropertyChanged;
 
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             RunExpressionCommand = new DelegateCommand(RunExpression, CanRunExpression);

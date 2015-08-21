@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Eventing.Reader;
+using System.Net.Configuration;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 
@@ -467,6 +469,13 @@ namespace Dynamo.Models
                 RaisePropertyChanged("IsUpdated");
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the node is rendered.
+        /// During rendering, when all the nodes are rendered successfully
+        /// the background spinner will be collapsed.        
+        /// </summary>        
+        public bool IsRendered { get; set; }
 
         /// <summary>
         ///     Search tags for this Node.
@@ -1637,7 +1646,7 @@ namespace Dynamo.Models
                 DrawableIds = GetDrawableIds(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name
             };
-
+            this.IsRendered = false;
             var task = new UpdateRenderPackageAsyncTask(scheduler);
             if (!task.Initialize(initParams)) return;
 
@@ -1656,9 +1665,10 @@ namespace Dynamo.Models
         /// 
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
+            IsRendered = true;
             var task = asyncTask as UpdateRenderPackageAsyncTask;
             if (task.RenderPackages.Any())
-            {
+            {              
                 OnRenderPackagesUpdated(task.RenderPackages);
             }
         }

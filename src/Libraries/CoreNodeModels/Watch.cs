@@ -104,6 +104,7 @@ namespace Dynamo.Nodes
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // Do nothing
+            this.IsRendered = true;
         }
     }
 }

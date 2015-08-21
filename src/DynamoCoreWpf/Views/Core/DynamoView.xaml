@@ -1594,8 +1594,8 @@
                 
                 <!--NotificationControl for showing run-time notifications-->
                 <controls1:NotificationsControl 
-                    Visibility="{Binding Path=ShowBusyIndicator,                     
-                    Converter={StaticResource InverseBoolToVisibilityConverter}, ConverterParameter=test}"
+                    Visibility="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.ShowBusyIndicator,                     
+                    Converter={StaticResource InverseBoolToVisibilityConverter}}"
                     Grid.Column="1"/>
                 
             </Grid>

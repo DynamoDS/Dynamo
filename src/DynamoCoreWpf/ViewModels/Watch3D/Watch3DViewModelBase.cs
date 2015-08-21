@@ -64,6 +64,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected readonly IRenderPackageFactory renderPackageFactory;
         protected readonly IDynamoViewModel viewModel;
         protected readonly INotifyPropertyChanged renderPackageFactoryViewModel;
+        //NodeModel reference is used along with Background spinner to know
+        //which node is currently rendered
+        protected NodeModel nodeModel;
 
         protected int renderingTier;
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
@@ -376,7 +379,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         protected virtual void OnRenderPackagesUpdated(NodeModel node, IEnumerable<IRenderPackage> packages)
-        {
+        {          
+            nodeModel = node;
             OnBeginUpdate(packages);
         }
 

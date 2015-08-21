@@ -199,6 +199,7 @@ namespace Dynamo.Nodes
             LookDirection = new Vector3D(-1, 1, -1);
 
             ShouldDisplayPreviewCore = false;
+            IsRendered = true;
         }
 
         #endregion
@@ -319,7 +320,7 @@ namespace Dynamo.Nodes
         internal override void RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
-            // No visualization update is required for this node type.
+            // No visualization update is required for this node type.            
         }
     }
 }

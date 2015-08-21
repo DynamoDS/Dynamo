@@ -396,28 +396,28 @@ namespace Dynamo.ViewModels
         }
 
 
-        private Boolean showBusyIndicator;
-        public Boolean ShowBusyIndicator
-        {
-            get { return showBusyIndicator; }
-            set
-            {
-                showBusyIndicator = value;
-                RaisePropertyChanged("ShowBusyIndicator");               
-            }
-        }
+        //private Boolean showBusyIndicator;
+        //public Boolean ShowBusyIndicator
+        //{
+        //    get { return showBusyIndicator; }
+        //    set
+        //    {
+        //        showBusyIndicator = value;
+        //        RaisePropertyChanged("ShowBusyIndicator");               
+        //    }
+        //}
 
-        private string showRunMessage;
+        //private string showRunMessage;
 
-        public string ShowRunMessage
-        {
-            get { return showRunMessage; }
-            set
-            {
-                showRunMessage = value;
-                RaisePropertyChanged("ShowRunMessage");
-            }
-        }
+        //public string ShowRunMessage
+        //{
+        //    get { return showRunMessage; }
+        //    set
+        //    {
+        //        showRunMessage = value;
+        //        RaisePropertyChanged("ShowRunMessage");
+        //    }
+        //}
       
         public bool BackgroundPreviewActive
         {
@@ -684,6 +684,10 @@ namespace Dynamo.ViewModels
 
             // Reset workspace state
             this.CurrentSpaceViewModel.CancelActiveState();
+            
+            //Dispose the WS when the Work space is cleared
+            var homeWSViewModel = CurrentSpaceViewModel as HomeWorkspaceViewModel;
+            if (homeWSViewModel != null) homeWSViewModel.Dispose();
         }
 
         public void ReturnFocusToSearch()
@@ -1026,7 +1030,7 @@ namespace Dynamo.ViewModels
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
                 currentWorkspaceViewModel = null;
-            workspaces.Remove(viewModel);
+            workspaces.Remove(viewModel);           
         }
 
         internal void AddToRecentFiles(string path)
