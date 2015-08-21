@@ -26,7 +26,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -52,7 +52,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -91,7 +91,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -132,7 +132,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -177,7 +177,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -218,7 +218,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -252,7 +252,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -298,7 +298,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -336,7 +336,7 @@ namespace Dynamo.Tests
             //Add a new note
             id = Guid.NewGuid();
             var secondNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 2);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 2);
 
             //Select the group and newly created note
             DynamoSelection.Instance.Selection.Add(annotation);
@@ -365,7 +365,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -394,7 +394,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -429,7 +429,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -459,7 +459,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -488,7 +488,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -521,7 +521,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -567,7 +567,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -605,7 +605,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -655,7 +655,7 @@ namespace Dynamo.Tests
             //Add a Note 
             Guid id = Guid.NewGuid();
             var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 1);
 
             //Select the node and notes
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -693,7 +693,7 @@ namespace Dynamo.Tests
             //Add a new note
             id = Guid.NewGuid();
             var secondNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 2);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count(), 2);
 
             //Select the group and newly created note
             DynamoSelection.Instance.Selection.Add(annotation);

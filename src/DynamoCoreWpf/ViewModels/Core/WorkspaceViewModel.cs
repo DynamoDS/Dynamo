@@ -300,7 +300,10 @@ namespace Dynamo.ViewModels
             Model.NodeRemoved += Model_NodeRemoved;
             Model.NodesCleared += Model_NodesCleared;
 
-            Model.Notes.CollectionChanged += Notes_CollectionChanged;
+            Model.NoteAdded += Model_NoteAdded;
+            Model.NoteRemoved += Model_NoteRemoved;
+            Model.NotesCleared += Model_NotesCleared;
+
             Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
@@ -311,9 +314,10 @@ namespace Dynamo.ViewModels
 
             // sync collections
 
-            
+
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
+            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
+
             Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
@@ -356,28 +360,20 @@ namespace Dynamo.ViewModels
                 _connectors.Remove(connector);
         }
 
-        void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Model_NoteAdded(NoteModel note)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        //add a corresponding note
-                        var viewModel = new NoteViewModel(this, item as NoteModel);
-                        _notes.Add(viewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _notes.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        _notes.Remove(_notes.First(x => x.Model == item));
-                    }
-                    break;
-            }
+            var viewModel = new NoteViewModel(this, note);
+            _notes.Add(viewModel);
+        }
+
+        private void Model_NoteRemoved(NoteModel note)
+        {
+            _notes.Remove(_notes.First(x => x.Model == note));
+        }
+
+        private void Model_NotesCleared()
+        {
+            _notes.Clear();
         }
 
         void Annotations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

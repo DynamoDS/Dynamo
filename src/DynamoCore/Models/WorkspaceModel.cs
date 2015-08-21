@@ -191,6 +191,33 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     Event that is fired when a note is added to the workspace.
+        /// </summary>
+        public event Action<NoteModel> NoteAdded;
+        protected virtual void OnNoteAdded(NoteModel note)
+        {
+            var handler = NoteAdded;
+            if (handler != null) handler(note);
+        }
+
+        /// <summary>
+        ///     Event that is fired when a note is removed from the workspace.
+        /// </summary>
+        public event Action<NoteModel> NoteRemoved;
+        protected virtual void OnNoteRemoved(NoteModel note)
+        {
+            var handler = NoteRemoved;
+            if (handler != null) handler(note);
+        }
+
+        public event Action NotesCleared;
+        protected virtual void OnNotesCleared()
+        {
+            var handler = NotesCleared;
+            if (handler != null) handler();
+        }
+
+        /// <summary>
         ///     Event that is fired when a connector is added to the workspace.
         /// </summary>
         public event Action<ConnectorModel> ConnectorAdded;
@@ -355,10 +382,20 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     All of the notes currently in the workspace.
-        /// 
-        ///     TODO(Peter): This should be an IEnumerable of notes to prevent modification from the outside - MAGN-6580
         /// </summary>
-        public ObservableCollection<NoteModel> Notes { get { return notes; } }
+        public IEnumerable<NoteModel> Notes
+        {            
+            get
+            {
+                IEnumerable<NoteModel> notesClone;
+                lock (notes)
+                {
+                    notesClone = notes.ToList();
+                }
+
+                return notesClone;
+            }
+        }
 
         public ObservableCollection<AnnotationModel> Annotations { get { return annotations; } }
 
@@ -615,7 +652,7 @@ namespace Dynamo.Models
             }
 
             ClearNodes();
-            Notes.Clear();
+            ClearNotes();
             Annotations.Clear();
             presets.Clear();
 
@@ -722,6 +759,16 @@ namespace Dynamo.Models
             model.Dispose();
         }
 
+        private void AddNote(NoteModel note)
+        {
+            lock (notes)
+            {
+                notes.Add(note);
+            }
+
+            OnNoteAdded(note);
+        }
+
         public void AddNote(NoteModel note, bool centered)
         {
             if (centered)
@@ -729,7 +776,26 @@ namespace Dynamo.Models
                 var args = new ModelEventArgs(note, true);
                 OnRequestNodeCentered(this, args);
             }
-            Notes.Add(note);
+            AddNote(note);
+        }
+
+        public void ClearNotes()
+        {
+            lock (notes)
+            {
+                notes.Clear();
+            }
+
+            OnNotesCleared();
+        }
+
+        private void RemoveNote(NoteModel note)
+        {
+            lock (notes)
+            {
+                if (!notes.Remove(note)) return;
+            }
+            OnNoteRemoved(note);
         }
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
@@ -1453,7 +1519,7 @@ namespace Dynamo.Models
                     {
                         // Take a snapshot of the note before it goes away.
                         undoRecorder.RecordDeletionForUndo(model);
-                        Notes.Remove(model as NoteModel);
+                        RemoveNote(model as NoteModel);
                     }
                     else if (model is AnnotationModel)
                     {
@@ -1545,7 +1611,7 @@ namespace Dynamo.Models
             if (model is NoteModel)
             {
                 var note = model as NoteModel;
-                Notes.Remove(note);                
+                RemoveNote(note);
                 note.Dispose();
             }
             else if (model is AnnotationModel)
@@ -1626,7 +1692,7 @@ namespace Dynamo.Models
             else if (typeName.StartsWith("Dynamo.Models.NoteModel"))
             {
                 var noteModel = NodeGraph.LoadNoteFromXml(modelData);
-                Notes.Add(noteModel);
+                AddNote(noteModel);
 
                 //check whether this note belongs to a group
                 foreach (var annotation in Annotations)
