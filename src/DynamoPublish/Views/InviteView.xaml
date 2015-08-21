@@ -4,7 +4,7 @@
         xmlns:resx="clr-namespace:Dynamo.Publish.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        Height="350" Width="551.2" WindowStartupLocation="CenterOwner"
+        Height="360" Width="551.2" WindowStartupLocation="CenterOwner"
         Title="{x:Static resx:Resources.InviteViewMenuDialogTitle}">
 
     <Window.Resources>
@@ -61,7 +61,7 @@
                     Grid.Row="1"
                     Grid.ColumnSpan="2" Margin="0,0,-0.2,62">
 
-            <TextBlock Name ="Indicator" Foreground="{StaticResource PublishViewTextColor}" Padding="0,15,0,15" FontSize="15"
+            <TextBlock Name ="Indicator" Foreground="{StaticResource PublishViewTextColor}" Padding="15,15,0,15" FontSize="15"
                        Text ="{x:Static resx:Resources.InviteMenuText}"/>
             <Button x:Name="okButton"
                     Content="{x:Static resx:Resources.InviteMenuButtonText}"   
