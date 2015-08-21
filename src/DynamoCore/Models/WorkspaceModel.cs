@@ -384,7 +384,7 @@ namespace Dynamo.Models
         ///     All of the notes currently in the workspace.
         /// </summary>
         public IEnumerable<NoteModel> Notes
-        {            
+        {
             get
             {
                 IEnumerable<NoteModel> notesClone;
