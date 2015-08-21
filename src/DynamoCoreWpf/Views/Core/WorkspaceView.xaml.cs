@@ -487,8 +487,12 @@ namespace Dynamo.Views
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
+            if (e == null) return; // in certain bizarre cases, e can be null
+
             this.snappedPort = null;
-            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+
+            var wvm = (DataContext as WorkspaceViewModel);
+            if (wvm == null) return;
             wvm.HandleMouseRelease(this.WorkBench, e);
         }
 
