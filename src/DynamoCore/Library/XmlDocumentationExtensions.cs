@@ -20,21 +20,38 @@ namespace Dynamo.DSEngine
 
         #region Public methods
 
-        /// <param name="xml">Don't set it, it's just for tests.</param>
+        /// <summary>
+        /// Get a description of a parameter from the its documentation xml,
+        /// using the corresponding FunctionDescriptor.
+        /// </summary>
+        /// <param name="parameter">The TypedParameter object corresponding to the parameter.</param>
+        /// <param name="xml"></param>
+        /// <returns>The contents of the documentation description for the parameter.</returns>
         public static string GetDescription(this TypedParameter parameter, XmlReader xml = null)
         {
             return GetMemberElement(parameter.Function, xml,
                 DocumentElementType.Description, parameter.Name);
         }
 
-        /// <param name="xml">Don't set it, it's just for tests.</param>
+        /// <summary>
+        /// Get a summary of a method from its documentation xml, 
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>The contents of the documentation summary tag.</returns>
         public static string GetSummary(this FunctionDescriptor member, XmlReader xml = null)
         {
-
             return GetMemberElement(member, xml, DocumentElementType.Summary);
         }
 
-        /// <param name="xml">Don't set it, it's just for tests.</param>
+        /// <summary>
+        /// Get a collection of search tags for a method from its documentation xml,
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>A collection of search tags.</returns>
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XmlReader xml = null)
         {
             return GetMemberElement(member, xml, DocumentElementType.SearchTags)
@@ -43,7 +60,13 @@ namespace Dynamo.DSEngine
                 .Where(x => x != String.Empty);
         }
 
-        /// <param name="xml">Don't set it, it's just for tests.</param>
+        /// <summary>
+        /// Get a collection of search tag weights for a method from its documentation xml,
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>A collection of search weights, or an empty collection if the search weights tag is emtpy.</returns>
         public static IEnumerable<double> GetSearchTagWeights(this FunctionDescriptor member, XmlReader xml = null)
         {
             var weights = GetMemberElement(member, xml, DocumentElementType.SearchTagWeights);
@@ -59,6 +82,13 @@ namespace Dynamo.DSEngine
                 .Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        /// Get a collection of return descriptions for a method from its documentation xml,
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>A collection of return descriptions from the documentation returns tag.</returns>
         public static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
         {
             var node = GetMemberDocumentNode(member, xml);
