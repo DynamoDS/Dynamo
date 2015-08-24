@@ -862,7 +862,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestCreateNoteCommandWithMultiGuids.xml");
 
             // Should be only 1 note
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
 
             // Check if guid correct
             var node = GetNode("682adbae-629f-4c15-b1b4-8af22c2f850c");
@@ -1581,7 +1581,7 @@ namespace DynamoCoreWpfTests
             // Same XML can be used for this test case as well.
             RunCommandsFromFile("Defect_MAGN_478.xml");
 
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
         }
 
         [Test, RequiresSTA]
@@ -3669,7 +3669,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
             RunCommandsFromFile("Defect_MAGN_478.xml");
 
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
         }
 
         [Test]
@@ -3821,7 +3821,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("UpdateNodeCaptions.xml");
             Assert.AreEqual(0, workspace.Connectors.Count());
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
             Assert.AreEqual(2, workspace.Nodes.Count());
 
             var number = GetNode("a9762506-2ab6-4b50-8166-138de5b0c704") as DoubleInput;

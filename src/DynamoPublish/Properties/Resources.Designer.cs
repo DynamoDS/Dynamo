@@ -133,6 +133,33 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1. Make a graph          2. Publish to the web          3. Share.
+        /// </summary>
+        public static string InviteDescription {
+            get {
+                return ResourceManager.GetString("InviteDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We&apos;re working on a new way to share you work in Dynamo: Customizers - simple websites that allow anyone to interact with your graph. This is new territory for us and we need your help. Would like to try it out?.
+        /// </summary>
+        public static string InviteDescription2 {
+            get {
+                return ResourceManager.GetString("InviteDescription2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not all nodes are allowed in customizers, including Revit nodes. Your data could be lost or corrupted at any time during the beta period. Your data could be exposed to other users during the beta period..
+        /// </summary>
+        public static string InviteIntegrity {
+            get {
+                return ResourceManager.GetString("InviteIntegrity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request Invite.
         /// </summary>
         public static string InviteMenuButtonText {
@@ -228,21 +255,6 @@ namespace Dynamo.Publish.Properties {
         public static string PortErrorMessage {
             get {
                 return ResourceManager.GetString("PortErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to We are working on a new way to interact with and share work done in Dynamo. You can now publish Customizers - simple websites that allow anyone to try out and interact with your graph. 
-        ///
-        ///1. Make a graph
-        ///2. Publish it to the web
-        ///3. Share the URL
-        ///
-        ///This is new territory for us and we need your help. Would you like to try kicking the tires?.
-        /// </summary>
-        public static string PrivacyMessage {
-            get {
-                return ResourceManager.GetString("PrivacyMessage", resourceCulture);
             }
         }
         

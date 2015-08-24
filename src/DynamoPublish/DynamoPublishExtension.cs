@@ -130,7 +130,7 @@ namespace Dynamo.Publish
             MenuItem item = new MenuItem();
             item.Header = Resources.InviteViewMenuTitle;
 
-            var isEnabled = true; //inviteModel.HasAuthProvider;
+            var isEnabled = inviteModel.HasAuthProvider;
 
             item.IsEnabled = isEnabled;
 

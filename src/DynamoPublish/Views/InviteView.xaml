@@ -4,7 +4,7 @@
         xmlns:resx="clr-namespace:Dynamo.Publish.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        Height="405" Width="551.2" WindowStartupLocation="CenterOwner"
+        SizeToContent="Height"  Width="551.2" WindowStartupLocation="CenterOwner"
         Title="{x:Static resx:Resources.InviteViewMenuDialogTitle}" >
 
     <Window.Resources>
@@ -43,15 +43,23 @@
                            Foreground="{StaticResource PublishViewTextColor}" FontFamily="{StaticResource OpenSansRegular}">
                     Customizer
                 </TextBlock>
+                <TextBlock Padding="15, 0, 0, 5" FontSize="28" 
+                           Foreground="White" FontFamily="{StaticResource OpenSansRegular}">
+                     Beta
+                </TextBlock>
             </StackPanel>
         </StackPanel>
 
         <StackPanel Name="Panel"
                     Grid.Row="1"
                     Grid.ColumnSpan="2">
-            
-            <TextBlock Name ="Indicator" Foreground="{StaticResource PublishViewTextColor}" TextWrapping="Wrap" Padding="15" FontSize="14" FontFamily="{StaticResource OpenSansRegular}"
-                       Text ="{x:Static resx:Resources.PrivacyMessage}"/>
+
+            <TextBlock Name ="Overall" Foreground="White" TextWrapping="Wrap" Padding="15" FontSize="18" FontFamily="{StaticResource OpenSansRegular}"
+                       Text ="{x:Static resx:Resources.InviteDescription}" FontWeight="Bold"/>
+            <TextBlock Name ="Description" Foreground="White" TextWrapping="Wrap" Padding="15" FontSize="16" FontFamily="{StaticResource OpenSansRegular}"
+                       Text ="{x:Static resx:Resources.InviteDescription2}"/>
+            <TextBlock Name ="Privacy" Foreground="{StaticResource PublishViewTextColor}" TextWrapping="Wrap" Padding="15,0,15,15" FontSize="12" FontFamily="{StaticResource OpenSansRegular}"
+                       Text ="{x:Static resx:Resources.InviteIntegrity}"/>
             <Button x:Name="okButton"
                     Content="{x:Static resx:Resources.InviteMenuButtonText}"   
                     Margin="0,5,5,5" 

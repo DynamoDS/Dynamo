@@ -649,7 +649,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
             
             //verify the note was created
-            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count());
 
             ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
@@ -663,7 +663,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count());
 
             //select the note for deletion
             DynamoSelection.Instance.Selection.Add(note);
@@ -671,7 +671,7 @@ namespace DynamoCoreWpfTests
 
             //delete the note
             ViewModel.DeleteCommand.Execute(null);
-            Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count());
 
             ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
            

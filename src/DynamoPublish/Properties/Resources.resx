@@ -219,13 +219,13 @@
   <data name="ManagerErrorMessage" xml:space="preserve">
     <value>"Manager" is not set. Please, set manager in configuration file.</value>
   </data>
-  <data name="PrivacyMessage" xml:space="preserve">
-    <value>We are working on a new way to interact with and share work done in Dynamo. You can now publish Customizers - simple websites that allow anyone to try out and interact with your graph. 
-
-1. Make a graph
-2. Publish it to the web
-3. Share the URL
-
-This is new territory for us and we need your help. Would you like to try kicking the tires?</value>
+  <data name="InviteDescription" xml:space="preserve">
+    <value>1. Make a graph          2. Publish to the web          3. Share</value>
+  </data>
+  <data name="InviteIntegrity" xml:space="preserve">
+    <value>Not all nodes are allowed in customizers, including Revit nodes. Your data could be lost or corrupted at any time during the beta period. Your data could be exposed to other users during the beta period.</value>
+  </data>
+  <data name="InviteDescription2" xml:space="preserve">
+    <value>We're working on a new way to share you work in Dynamo: Customizers - simple websites that allow anyone to interact with your graph. This is new territory for us and we need your help. Would like to try it out?</value>
   </data>
 </root>
