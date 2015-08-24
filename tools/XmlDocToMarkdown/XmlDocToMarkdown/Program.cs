@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -121,11 +123,11 @@ namespace Dynamo.Docs
             sb.AppendLine("##Methods:  ");
             foreach (var method in t.GetMethods().Where(m => m.IsPublic))
             {
-                var methodParams = method.GetParameters();
+                var methodParams = method.GetParameters();              
                 var fullMethodName = methodParams.Any() ?
                     method.Name + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
                     method.Name;
-
+                
                 Debug.WriteLine(t.FullName + "." + fullMethodName);
                 sb.Append(GetMarkdownForMethod(members, t.FullName + "." + fullMethodName));
             }
@@ -225,16 +227,57 @@ namespace Dynamo.Docs
                     node.Nodes().ToMarkDown()
                 });
 
-        private static Func<string, XElement, string[]> mType =
-            new Func<string, XElement, string[]>((att, node) =>{ 
-                var methodName = node.Attribute(att).Value.Split(':').Last();
+        private static Func<string, string, XElement, string[]> mType =
+            new Func<string, string, XElement, string[]>((att1, att2, node) =>{ 
+                var methodName = node.Attribute(att1).Value.Split(':').Last();
+                //Seperate the method name and paramaeters (ex: Func(a,b) = [Func] + [a,b])
+                var methodParams = methodName.Split('(', ')');   
+                var stringList = new CommaDelimitedStringCollection();                
+                if (methodParams.Count() > 1)
+                {
+                    methodName = methodParams[0]; //Store the method name
+                    //Split the Parameters (ex: (a,b) = [a], [b]) 
+                    methodParams = methodParams[1].Split(',');                                       
+                    int i = 0;
+                    foreach (var param in node.Elements(att2))
+                    {                        
+                        //when you add a parameter to a function, there is a possibility that comment is 
+                        //not updated immediately. In that case add the param name to only those parameters 
+                        //in the method name
+                        if (methodParams.Count() > i)
+                        {
+                            //Extract only the classname , not the entire namespace
+                            var className = string.Empty;
+                            if (methodParams[i].Contains("Dynamo"))
+                            {                                
+                                className = methodParams[i].Split('.').Last();
+                                var url = ConstructUrl(methodParams[i]) + "/" + className;
+                                var style = "color:#CC0000";
+                                className = "<a href = " + url + " style= " + style + ">" + className + "</a>" ;
+                            }
+                            else
+                            {
+                                className = methodParams[i].Split('.').Last();  
+                            }
+                                                     
+                            stringList.Add(className + " " + param.Attribute("name").Value);
+                        }
+                        i++;
+                    }
+                    if (stringList.Count > 0)
+                    {                        
+                        methodName = methodName + "(" + stringList.ToString() + ")";
+                    }
+                }                                                                                                      
+               
                 return new[]
                 {
                     methodName.Contains("(")? methodName : methodName + "()", 
                     node.Nodes().ToMarkDown()
                 };
             });
-
+       
+        
         private static Dictionary<string, Func<XElement, IEnumerable<string>>> methods = 
             new Dictionary<string, Func<XElement, IEnumerable<string>>>
                 {
@@ -245,7 +288,7 @@ namespace Dynamo.Docs
                     {"type", x=>dType("name", x)},
                     {"field", x=> d("name", x)},
                     {"property", x=> dType("name", x)},
-                    {"method",x=>mType("name", x)},
+                    {"method",x=>mType("name", "param", x)},
                     {"event", x=>dType("name", x)},
                     {"summary", x=> new[]{ x.Nodes().ToMarkDown() }},
                     {"remarks", x => new[]{x.Nodes().ToMarkDown()}},
@@ -327,6 +370,19 @@ namespace Dynamo.Docs
             var lines = s.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var blank = lines[0].TakeWhile(x => x == ' ').Count() - 4;
             return string.Join("\n", lines.Select(x => new string(x.SkipWhile((y, i) => i < blank).ToArray())));
+        }
+
+        static string ConstructUrl(String methodName)
+        {            
+            var appSettings = ConfigurationManager.AppSettings["ServerUrl"];
+            var url = appSettings ?? String.Empty;
+            if (url != String.Empty)
+            {
+                var nameSpace = methodName.Split('.');
+                url = url + "/" + string.Join("_",nameSpace.Take(nameSpace.Length - 1));                
+            }
+
+            return url;
         }
     }
 }
