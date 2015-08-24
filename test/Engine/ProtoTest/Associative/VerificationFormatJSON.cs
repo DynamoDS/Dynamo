@@ -41,6 +41,34 @@ namespace ProtoTest.Associative
             thisTest.RunAndVerify(code, verification);
         }
 
+        [Test]
+        public void TestNullAssignment01()
+        {
+            string code =
+@"a = null;";
+            string verification =
+@" 
+    {
+        ""a"": null,
+    }
+";
+            thisTest.RunAndVerify(code, verification);
+        }
+
+        [Test]
+        public void TestNullAssignment02()
+        {
+            string code =
+@"a = null;b = a;";
+            string verification =
+@" 
+    {
+        ""a"": null,
+        ""b"": null,
+    }
+";
+            thisTest.RunAndVerify(code, verification);
+        }
 
         [Test]
         public void TestFunctionCall01()
