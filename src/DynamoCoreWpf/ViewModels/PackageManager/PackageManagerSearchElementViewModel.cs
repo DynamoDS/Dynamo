@@ -105,9 +105,6 @@ namespace Dynamo.PackageManager.ViewModels
 
         private string GetDownloadPath()
         {
-            List<String> CustomPackageFolders = this.PackageManagerSearchViewModel.PackageManagerClientViewModel
-                .DynamoViewModel.Model.PreferenceSettings.CustomPackageFolders;
-
             var args = new PackagePathEventArgs();
 
             ShowFileDialog(args);
