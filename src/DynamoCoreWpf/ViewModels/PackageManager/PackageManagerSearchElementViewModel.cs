@@ -32,14 +32,17 @@ namespace Dynamo.PackageManager.ViewModels
             this.Model = element;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
-            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last()));
+
+            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), false));
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
+
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
             this.DownvoteCommand = new DelegateCommand(Model.Downvote, () => canLogin);
+
             this.VisitSiteCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
-            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => DownloadLatestToCustomPath(Model.Header.versions.Last()));
         }
 
         private static string FormatUrl(string url)
@@ -64,46 +67,58 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
-        public List<Tuple<PackageVersion, DelegateCommand>> Versions
+        public List<Tuple<PackageVersion, DelegateCommand<object>>> Versions
         {
             get
             {
                 return
                     Model.Header.versions.Select(
-                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() => OnRequestDownload(x)))).Reverse().ToList();
-            }
-        }
-
-        public delegate void PackageSearchElementDownloadHandler(PackageManagerSearchElement element, PackageVersion version);
-        public event PackageSearchElementDownloadHandler RequestDownload;
-        public void OnRequestDownload(PackageVersion version)
-        {
-            if (RequestDownload != null)
-            {
-                RequestDownload(this.Model, version);
+                        x => new Tuple<PackageVersion, DelegateCommand<object>>(
+                            x, new DelegateCommand<object>((p) => OnRequestDownload(x, p.Equals("true")))
+                        )).Reverse().ToList();
             }
         }
 
         private List<String> CustomPackageFolders;
 
-        public void DownloadLatestToCustomPath(PackageVersion version)
+        public delegate void PackageSearchElementDownloadHandler(
+            PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
+        public event PackageSearchElementDownloadHandler RequestDownload;
+
+        public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
-            CustomPackageFolders = this.PackageManagerSearchViewModel.PackageManagerClientViewModel
+            string downloadPath = null;
+
+            if (downloadToCustomPath)
+            {
+                downloadPath = GetDownloadPath();
+
+                if (downloadPath == null)
+                    return;
+            }
+
+            if (RequestDownload != null)
+                RequestDownload(this.Model, version, downloadPath);
+
+            DownloadLatestToCustomPathCommand.RaiseCanExecuteChanged();
+        }
+
+        private string GetDownloadPath()
+        {
+            List<String> CustomPackageFolders = this.PackageManagerSearchViewModel.PackageManagerClientViewModel
                 .DynamoViewModel.Model.PreferenceSettings.CustomPackageFolders;
 
             var args = new PackagePathEventArgs();
 
             ShowFileDialog(args);
 
-            if (args.Cancel)
-                return;
-
             if (!CustomPackageFolders.Contains(args.Path))
                 CustomPackageFolders.Insert(CustomPackageFolders.Count, args.Path);
 
-            OnRequestDownload(version);
+            if (args.Cancel)
+                return null;
 
-            DownloadLatestToCustomPathCommand.RaiseCanExecuteChanged();
+            return args.Path;
         }
 
         private void ShowFileDialog(PackagePathEventArgs e)

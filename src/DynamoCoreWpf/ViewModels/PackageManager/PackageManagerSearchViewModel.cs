@@ -432,7 +432,7 @@ namespace Dynamo.PackageManager
             return String.Join(", ", pkgs.Select(x => x.Name));
         } 
 
-        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version)
+        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
             var result = MessageBox.Show(String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version), 
                 Resources.PackageDownloadConfirmMessageBoxTitle,

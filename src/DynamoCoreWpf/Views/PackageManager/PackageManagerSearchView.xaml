@@ -315,8 +315,12 @@
                                                                         Click="InstallVersionButtonDropDown_OnClick">
                                                                     <Button.ContextMenu>
                                                                         <ContextMenu>
-                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersion}" Command="{Binding Path=Item2}" />
-                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersionTo}" />
+                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersion}"
+                                                                                      Command="{Binding Path=Item2}"
+                                                                                      CommandParameter="false"/>
+                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersionTo}"
+                                                                                      Command="{Binding Path=Item2}"
+                                                                                      CommandParameter="true"/>
                                                                         </ContextMenu>
                                                                     </Button.ContextMenu>
                                                                 </Button>
