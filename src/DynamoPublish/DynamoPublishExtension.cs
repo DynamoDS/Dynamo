@@ -69,7 +69,7 @@ namespace Dynamo.Publish
             {
                 publishViewModel.CurrentWorkspaceModel = ws;
 
-                var isEnabled = ws is HomeWorkspaceModel && publishModel.HasAuthProvider;
+                var isEnabled = ws is HomeWorkspaceModel; // && publishModel.HasAuthProvider;
                 extensionMenuItem.IsEnabled = isEnabled;
             };
 
@@ -130,7 +130,7 @@ namespace Dynamo.Publish
             MenuItem item = new MenuItem();
             item.Header = Resources.InviteViewMenuTitle;
 
-            var isEnabled = inviteModel.HasAuthProvider;
+            var isEnabled = true; //inviteModel.HasAuthProvider;
 
             item.IsEnabled = isEnabled;
 

@@ -4,8 +4,8 @@
         xmlns:resx="clr-namespace:Dynamo.Publish.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        Height="360" Width="551.2" WindowStartupLocation="CenterOwner"
-        Title="{x:Static resx:Resources.InviteViewMenuDialogTitle}">
+        Height="405" Width="551.2" WindowStartupLocation="CenterOwner"
+        Title="{x:Static resx:Resources.InviteViewMenuDialogTitle}" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -13,23 +13,6 @@
             <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"                                              
                                               TrueBrush="{StaticResource PublishStatePanelErrorBackground}"
                                               FalseBrush="{StaticResource PublishStatePanelNormalBackground}" />
-
-            <Style TargetType="{x:Type TextBox}"
-                   x:Key="PublishTextBoxStyle"
-                   BasedOn="{StaticResource SDarkTextBox}">
-                <Setter Property="IsEnabled"
-                        Value="True" />
-
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsUploading}"
-                                 Value="True">
-                        <Setter Property="IsEnabled"
-                                Value="False" />
-                    </DataTrigger>
-                </Style.Triggers>
-
-            </Style>
-
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DynamoPublish;component/Resources/PublishResourceDictionary.xaml" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -49,20 +32,26 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Name="Text"
-                    Grid.Row="0"
-                    Grid.ColumnSpan="2" Margin="10">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="10">
 
-            <TextBlock Text="{x:Static resx:Resources.PrivacyMessage}" TextWrapping="Wrap" Foreground="{StaticResource PublishViewTextColor}" ></TextBlock>
-            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Image Name="StartPageLogo"
+                   Source="/DynamoCoreWpf;component/UI/Images/dynamowithtext.png"
+                   Width="131" />
+
+                <TextBlock Padding="15, 0, 0, 5" FontSize="28" 
+                           Foreground="{StaticResource PublishViewTextColor}" FontFamily="{StaticResource OpenSansRegular}">
+                    Customizer
+                </TextBlock>
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Name="Panel"
                     Grid.Row="1"
-                    Grid.ColumnSpan="2" Margin="0,0,-0.2,62">
-
-            <TextBlock Name ="Indicator" Foreground="{StaticResource PublishViewTextColor}" Padding="15,15,0,15" FontSize="15"
-                       Text ="{x:Static resx:Resources.InviteMenuText}"/>
+                    Grid.ColumnSpan="2">
+            
+            <TextBlock Name ="Indicator" Foreground="{StaticResource PublishViewTextColor}" TextWrapping="Wrap" Padding="15" FontSize="14" FontFamily="{StaticResource OpenSansRegular}"
+                       Text ="{x:Static resx:Resources.PrivacyMessage}"/>
             <Button x:Name="okButton"
                     Content="{x:Static resx:Resources.InviteMenuButtonText}"   
                     Margin="0,5,5,5" 
@@ -71,17 +60,20 @@
             	    Command="{Binding InviteCommand}"
             	    IsDefault="True" 
                     TabIndex="2" 
-            	    Style="{StaticResource STextButton}" Height="40" 
+            	    Style="{StaticResource STextButton}" 
+                    Height="40" 
                     />
         </StackPanel>
+        
+         
         <StackPanel Name="InviteStatusMessagePanel"                    
                     Background="{Binding HasError, Converter={StaticResource BooleanToBrushConverter}}"
-                    Visibility="{Binding IsTextblockVisible}" Grid.ColumnSpan="2" Margin="0,127,-0.2,-0.8" Grid.RowSpan="2">
+                    Grid.ColumnSpan="2" Grid.Row ="2">
             <TextBlock Name="InviteStatusBlock"
                        Text="{Binding StatusText}"
                        Foreground="White"
                        VerticalAlignment="Center"
-                       Margin="10,7,0,0" />
+                       Margin="10" />
         </StackPanel>
     </Grid>
 </Window>

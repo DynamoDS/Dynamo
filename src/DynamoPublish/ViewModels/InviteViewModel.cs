@@ -25,7 +25,7 @@ namespace Dynamo.Publish.ViewModels
             get { return model; }
         }
 
-        private string statusText;
+        private string statusText = "Ready";
         public string StatusText
         {
             get

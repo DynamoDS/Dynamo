@@ -232,9 +232,13 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We are working on a new way to interact and share Dynamo.  Over the last few months, we have separated out lots of pieces of Dynamo into modular components.  Among other things, this allows us to run Dynamo from a remote server and to attach different user interfaces to talk to remote Dynamo instances.  There are lots of possible applications of this, but generally it will let us provide Dynamo enabled computation in many different environments, way beyond standard desktop applications.  
+        ///   Looks up a localized string similar to We are working on a new way to interact with and share work done in Dynamo. You can now publish Customizers - simple websites that allow anyone to try out and interact with your graph. 
         ///
-        ///However, this i [rest of string was truncated]&quot;;.
+        ///1. Make a graph
+        ///2. Publish it to the web
+        ///3. Share the URL
+        ///
+        ///This is new territory for us and we need your help. Would you like to try kicking the tires?.
         /// </summary>
         public static string PrivacyMessage {
             get {
