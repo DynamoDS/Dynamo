@@ -112,9 +112,6 @@ namespace Dynamo.PackageManager.ViewModels
 
             ShowFileDialog(args);
 
-            if (!CustomPackageFolders.Contains(args.Path))
-                CustomPackageFolders.Insert(CustomPackageFolders.Count, args.Path);
-
             if (args.Cancel)
                 return null;
 

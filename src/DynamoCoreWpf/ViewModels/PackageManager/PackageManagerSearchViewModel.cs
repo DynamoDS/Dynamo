@@ -543,13 +543,13 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
+                var settings = PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings;
+
                 if (uninstallsRequiringRestart.Any())
                 {
                     // mark for uninstallation
                     uninstallsRequiringRestart.ForEach(
-                        x =>
-                            x.MarkForUninstall(
-                                this.PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings));
+                        x => x.MarkForUninstall(settings));
 
                     MessageBox.Show(String.Format(Resources.MessageUninstallToContinue2,
                         PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
@@ -570,11 +570,18 @@ namespace Dynamo.PackageManager
                         return;
                 }
 
+                // add custom path to custom package folder list
+                if (downloadPath != null)
+                {
+                    if (!settings.CustomPackageFolders.Contains(downloadPath))
+                        settings.CustomPackageFolders.Add(downloadPath);
+                }
+
                 // form header version pairs and download and install all packages
                 allPackageVersions
                         .Select(x => new PackageDownloadHandle(x.Item1, x.Item2))
                         .ToList()
-                        .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x));
+                        .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x, downloadPath));
 
             }
         }
