@@ -22,7 +22,6 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
-using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using DynamoServices;
@@ -44,7 +43,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         #region private members
 
@@ -535,8 +534,6 @@ namespace Dynamo.Models
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
-            DisposeLogic.IsShuttingDown = false;
-
             // Create a core which is used for parsing code and loading libraries
             var libraryCore =
                 new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
@@ -570,8 +567,8 @@ namespace Dynamo.Models
             if (extensions.Any())
             {
                 var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, new ExtensionLibraryLoader(this), 
-                    CustomNodeManager, GetType().Assembly.GetName().Version);
+                    pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
+                    GetType().Assembly.GetName().Version, preferences);
 
                 foreach (var ext in extensions)
                 {
@@ -579,8 +576,15 @@ namespace Dynamo.Models
                     if (logSource != null)
                         logSource.MessageLogged += LogMessage;
 
-                    ext.Startup(startupParams);
-                    ext.Load(preferences, pathManager);
+                    try
+                    {
+                        ext.Startup(startupParams);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex.Message);                       
+                    }
+
                     ExtensionManager.Add(ext);
                 }
             }
@@ -778,7 +782,8 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
-                if (customNodeSearchRegistry.Contains(info.FunctionId))
+                if (customNodeSearchRegistry.Contains(info.FunctionId)
+                        || !info.IsVisibleInDynamoLibrary)
                     return;
 
                 var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
@@ -852,8 +857,11 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(dummyData.Type);
             NodeFactory.AddAlsoKnownAs(dummyData.Type, dummyData.AlsoKnownAs);
 
-            NodeFactory.AddTypeFactoryAndLoader(symbolData.Type);
+            var inputLoader = new InputNodeLoader();
+            NodeFactory.AddLoader(symbolData.Type, inputLoader);
+            NodeFactory.AddFactory(symbolData.Type, inputLoader);
             NodeFactory.AddAlsoKnownAs(symbolData.Type, symbolData.AlsoKnownAs);
+
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
@@ -1210,6 +1218,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 nodeGraph.Annotations,
                 nodeGraph.Presets,
+                nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
@@ -1256,7 +1265,7 @@ namespace Dynamo.Models
                     if (!workspace.HasUnsavedChanges)
                     {
                         if (workspace.Nodes.Any() &&
-                            workspace.Notes.Count == 0)
+                            !workspace.Notes.Any())
                             continue;
 
                         if (tempDict.ContainsKey(workspace.Guid))
@@ -1455,10 +1464,12 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void RemoveWorkspace(WorkspaceModel workspace)
         {
+            OnWorkspaceRemoveStarted(workspace);
             if (_workspaces.Remove(workspace))
             {
-                if (workspace is HomeWorkspaceModel)
+                if (workspace is HomeWorkspaceModel) {
                     workspace.Dispose();
+                }
                 OnWorkspaceRemoved(workspace);
             }
         }
@@ -1475,8 +1486,11 @@ namespace Dynamo.Models
             {
                 if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
                     AddWorkspace(customNodeWorkspace);
+
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
             }
+
             return false;
         }
 
@@ -1577,12 +1591,12 @@ namespace Dynamo.Models
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
                     var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices);
+                    newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices, CurrentWorkspace.ElementResolver);
                 }
                 else
                 {
                     var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
-                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy);
+                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, CurrentWorkspace.ElementResolver);
                 }
 
                 var lacing = node.ArgumentLacing.ToString();
@@ -1731,7 +1745,7 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
-            OnWorkspaceCleared(this, EventArgs.Empty);
+            OnWorkspaceCleared(CurrentWorkspace);
         }
 
         #endregion
@@ -1950,6 +1964,9 @@ namespace Dynamo.Models
         {
             if (args.PropertyName == "RunEnabled")
                 OnPropertyChanged("RunEnabled");
+
+            if (args.PropertyName == "EnablePresetOptions")
+                OnPropertyChanged("EnablePresetOptions");
         }
 
         #endregion

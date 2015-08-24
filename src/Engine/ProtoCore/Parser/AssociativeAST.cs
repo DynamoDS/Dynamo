@@ -10,6 +10,7 @@ using ProtoCore.DSDefinitions;
 using ProtoCore.Lang;
 using ProtoCore.Utils;
 using ProtoCore.SyntaxAnalysis;
+using System.Globalization;
 
 namespace ProtoCore.AST.AssociativeAST
 {
@@ -553,7 +554,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return Value.ToString();
+            return Value.ToString(CultureInfo.InvariantCulture);
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -601,7 +602,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return Value.ToString();
+            return Value.ToString(CultureInfo.InvariantCulture);
         }
 
         public override void Accept(AssociativeAstVisitor visitor)
@@ -2138,7 +2139,8 @@ namespace ProtoCore.AST.AssociativeAST
                    ToNode.Equals(otherNode.ToNode) &&
                    stepoperator.Equals(otherNode.stepoperator) &&
                    ((StepNode == otherNode.StepNode) || (StepNode != null && StepNode.Equals(otherNode.StepNode))) &&
-                   HasRangeAmountOperator == otherNode.HasRangeAmountOperator;
+                   HasRangeAmountOperator == otherNode.HasRangeAmountOperator
+                   && base.Equals(other);
         }
 
         public override int GetHashCode()

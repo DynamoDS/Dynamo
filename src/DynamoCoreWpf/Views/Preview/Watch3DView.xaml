@@ -11,7 +11,7 @@
              xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
              xmlns:wpf="clr-namespace:Dynamo.Wpf"
              xmlns:rendering="clr-namespace:Dynamo.Wpf.Rendering"
-             Name="topControl" 
+             Name="watch3D" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -24,6 +24,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
             <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
             <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
             <controls:Watch3DBackgroundColorConverter x:Key="Watch3DBackgroundColorConverter"/>
@@ -32,66 +33,58 @@
     
     <Grid Name="inputGrid"
             x:FieldModifier="public"
-            MinHeight="100" MinWidth="100">
+            MinHeight="100" MinWidth="100" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:Watch3DView}}}">
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public">
+                         x:FieldModifier="public"
+                         DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
 
-                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuSwitchView}">
-                    <MenuItem.Command>
-                        <Binding Path="PlacementTarget.DataContext.ToggleCanNavigateBackgroundCommand"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
-                    </MenuItem.Command>
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuSwitchView}" 
+                          Command="{Binding Path=ToggleCanNavigateBackgroundCommand}">
                     <MenuItem.Visibility>
-                        <Binding Path="PlacementTarget.DataContext.IsBackgroundPreview"
+                        <Binding Path="IsBackgroundPreview"
                                  Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
-                                 Converter="{StaticResource BoolToVisibilityConverter}"
-                                 ConverterParameter="Collapse" />
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 
-                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuRotate}">
-                    <MenuItem.Command>
-                        <Binding Path="PlacementTarget.DataContext.ToggleOrbitCommand"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
-                    </MenuItem.Command>
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuRotate}" 
+                          Command="{Binding Path=ToggleOrbitCommand}">
                     <MenuItem.IsChecked>
-                        <Binding Path="PlacementTarget.DataContext.IsOrbiting"
-                                 Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                        <Binding Path="IsOrbiting"
+                                 Mode="OneWay"/>
                     </MenuItem.IsChecked>
                     <MenuItem.Visibility>
-                        <Binding Path="PlacementTarget.DataContext.IsBackgroundPreview"
+                        <Binding Path="IsBackgroundPreview"
                                  Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
-                                 Converter="{StaticResource BoolToVisibilityConverter}"
-                                 ConverterParameter="Collapse" />
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 
-                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuPan}">
-                    <MenuItem.Command>
-                        <Binding Path="PlacementTarget.DataContext.TogglePanCommand"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
-                    </MenuItem.Command>
+                <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuPan}" 
+                          Command="{Binding Path=TogglePanCommand}">
                     <MenuItem.IsChecked>
-                        <Binding Path="PlacementTarget.DataContext.IsPanning"
-                                 Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}" />
+                        <Binding Path="IsPanning"
+                                 Mode="OneWay"/>
                     </MenuItem.IsChecked>
                     <MenuItem.Visibility>
-                        <Binding Path="PlacementTarget.DataContext.IsBackgroundPreview"
+                        <Binding Path="IsBackgroundPreview"
                                  Mode="OneWay"
-                                 RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}"
-                                 Converter="{StaticResource BoolToVisibilityConverter}"
-                                 ConverterParameter="Collapse" />
+                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}"/>
                     </MenuItem.Visibility>
                 </MenuItem>
 
                 <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuZoomToFit}"
-                          Click="OnZoomToFitClicked" />
+                          Click="OnZoomToFitClickedHandler" />
+
+                <MenuItem Header="Show Preview Settings Control" Focusable="False" IsCheckable="True">
+                    <MenuItem.IsChecked>
+                        <Binding Path="ShowWatchSettingsControl"
+                                 Mode="TwoWay"/>
+                    </MenuItem.IsChecked>
+                </MenuItem>
+                
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -109,8 +102,9 @@
             IsInertiaEnabled="False" 
             IsChangeFieldOfViewEnabled="False" 
             SpinReleaseTime="0" 
-            ItemsSource="{Binding Model3DValues}"
-            ShowFieldOfView="False" BackgroundColor="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}">
+            ItemsSource="{Binding SceneItems}"
+            ShowFieldOfView="False" 
+            BackgroundColor="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}">
             <hx:Viewport3DX.InputBindings>
                 <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+E"/>
                 <MouseBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+LeftDoubleClick"/>
@@ -125,8 +119,18 @@
             </hx:Viewport3DX.InputBindings>            
         </hx:Viewport3DX>
 
-        <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"
-               DragDelta="ResizeThumb_OnDragDelta" DragStarted="ResizeThumb_OnDragStarted" DragCompleted="ResizeThumb_OnDragCompleted"
-               Visibility="{Binding WatchIsResizable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <Grid Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BoolToVisibilityConverter}}">
+            <preview:Watch3DSettingsControl x:Name="WatchSettingsControl"  
+                                            HorizontalAlignment="Left" 
+                                            VerticalAlignment="Top" Margin="10,30" />
+        </Grid>
+        
+        <Thumb Name ="resizeThumb" 
+               Width="10" Height="10" 
+               HorizontalAlignment="Right" 
+               VerticalAlignment="Bottom" 
+               Margin="5"
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               Visibility="{Binding IsResizable, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"/>
     </Grid>
 </UserControl>

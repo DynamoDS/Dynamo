@@ -49,6 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Reach\Reach.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -71,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\InviteModel.cs" />
     <Compile Include="Models\PublishModel.cs" />
     <Compile Include="DynamoPublishExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,7 +83,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\InviteViewModel.cs" />
     <Compile Include="ViewModels\PublishViewModel.cs" />
+    <Compile Include="Views\InviteView.xaml.cs">
+      <DependentUpon>InviteView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PublishView.xaml.cs">
       <DependentUpon>PublishView.xaml</DependentUpon>
     </Compile>
@@ -102,10 +110,13 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\InviteView.xaml" />
     <Page Include="Resources\PublishResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

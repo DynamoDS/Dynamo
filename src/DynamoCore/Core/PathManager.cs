@@ -7,6 +7,7 @@ using System.Reflection;
 using Dynamo.Interfaces;
 using System.Globalization;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.UI;
 using DynamoUtilities;
 
@@ -77,6 +78,11 @@ namespace Dynamo.Core
         #endregion
 
         #region IPathManager Interface Implementation
+
+        public string DynamoCoreDirectory
+        {
+            get { return dynamoCoreDir; }
+        }
 
         public string UserDataDirectory
         {
@@ -176,7 +182,10 @@ namespace Dynamo.Core
             if (!additionalResolutionPaths.Contains(path))
             {
                 if (!Directory.Exists(path))
-                    throw new DirectoryNotFoundException(path);
+                {
+                    throw new Exception(String.Format(Resources.NoBinFolder, path));
+                }
+                  
 
                 additionalResolutionPaths.Add(path);
             }

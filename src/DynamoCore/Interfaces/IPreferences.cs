@@ -9,7 +9,7 @@ namespace Dynamo.Interfaces
         int ConsoleHeight { get; set; }
         bool ShowConnector { get; set; }
         ConnectorType ConnectorType { get; set; }
-        bool FullscreenWatchShowing { get; set; }
+        bool IsBackgroundPreviewActive { get; set; }
         string NumberFormat { get; set; }
         bool IsUsageReportingApproved { get; set; }
         bool IsAnalyticsReportingApproved { get; set; }
@@ -22,7 +22,8 @@ namespace Dynamo.Interfaces
         List<string> RecentFiles { get; set; }
         List<string> BackupFiles { get; set; }
         List<string> PackageDirectoriesToUninstall { get; set; }
-        List<string> CustomPackageFolders { get; set; } 
+        List<string> CustomPackageFolders { get; set; }
+        bool ShowEdges { get; set; }
 
         /// <summary>
         /// Call this method to serialize PreferenceSettings given the output 

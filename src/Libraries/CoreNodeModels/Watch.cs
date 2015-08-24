@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
             return resultAst;
         }
 
-        protected override void RequestVisualUpdateAsyncCore(
+        public override void RequestVisualUpdateAsync(
             IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // Do nothing

@@ -1665,7 +1665,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Package Manager Terms of Use</value>
   </data>
   <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}</value>
+    <value>Version {0}.{1}.{2}</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
@@ -1872,6 +1872,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>Available Previews</value>
+  </data>
   <data name="PresetWarningMessage" xml:space="preserve">
     <value>No input nodes selected. Select at least one input node to create a preset.</value>
   </data>
@@ -1885,9 +1888,22 @@ Do you want to install the latest Dynamo update?</value>
     <value>Volume</value>
   </data>
   <data name="Units" xml:space="preserve">
-    <value>Units:</value> 
+    <value>Units:</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
-    <value>Publish Locally</value> 
+    <value>Publish Locally</value>
+  </data>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>Background Preview</value>
+    <comment>The name of the 3D background preview.</comment>
+  </data>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>Camera position information could not be loaded from the file.</value>
+  </data>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>Camera position information could not be saved.</value>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>You do not have write permission to {0}.</value>
   </data>
 </root>

@@ -36,6 +36,7 @@ namespace Dynamo.Publish.Models
             AuthenticationFailed,
             ServerNotFound,
             AuthProviderNotFound,
+            InvalidNodes,
             UnknownServerError
         }
 
@@ -43,7 +44,6 @@ namespace Dynamo.Publish.Models
         private readonly ICustomNodeManager customNodeManager;
 
         private readonly string serverUrl;
-        private readonly string port;
         private readonly string page;
         private readonly Regex serverResponceRegex;
 
@@ -117,6 +117,8 @@ namespace Dynamo.Publish.Models
             }
         }
 
+        public IEnumerable<string> InvalidNodeNames { get; private set; }
+
         private string customizerURL;
         /// <summary>
         /// URL sent by server.
@@ -131,6 +133,15 @@ namespace Dynamo.Publish.Models
             {
                 customizerURL = value;
                 OnCustomizerURLChanged(customizerURL);
+            }
+        }
+
+        private readonly string managerURL;
+        public string ManagerURL
+        {
+            get
+            {
+                return managerURL;
             }
         }
 
@@ -161,13 +172,13 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(serverUrl))
                 throw new Exception(Resources.ServerNotFoundMessage);
 
-            port = appSettings.Settings["Port"].Value;
-            if (String.IsNullOrWhiteSpace(port))
-                throw new Exception(Resources.PortErrorMessage);
-
             page = appSettings.Settings["Page"].Value;
             if (String.IsNullOrWhiteSpace(page))
                 throw new Exception(Resources.PageErrorMessage);
+
+            managerURL = appSettings.Settings["ManagerPage"].Value;
+            if (String.IsNullOrWhiteSpace(managerURL))
+                throw new Exception(Resources.ManagerErrorMessage);
 
             authenticationProvider = dynamoAuthenticationProvider;
             customNodeManager = dynamoCustomNodeManager;
@@ -202,13 +213,13 @@ namespace Dynamo.Publish.Models
             }
         }
 
-        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces)
+        internal void SendAsynchronously(IEnumerable<IWorkspaceModel> workspaces, WorkspaceProperties workspaceProperties = null)
         {
             State = UploadState.Uploading;
 
             Task.Factory.StartNew(() =>
                 {
-                    var result = this.Send(workspaces);
+                    var result = this.Send(workspaces, workspaceProperties);
                     var serverResponce = serverResponceRegex.Match(result);
 
                     if (serverResponce.Success)
@@ -216,6 +227,10 @@ namespace Dynamo.Publish.Models
                         State = UploadState.Succeeded;
                         Error = UploadErrorType.None;
                         CustomizerURL = String.Concat(serverUrl, serverResponce.Value);
+                    }
+                    else if (InvalidNodeNames != null)
+                    {
+                        Error = UploadErrorType.InvalidNodes;
                     }
                     else
                     {
@@ -231,7 +246,7 @@ namespace Dynamo.Publish.Models
         /// Sends workspace and its' dependencies to Flood.
         /// </summary>
         /// <returns>String which is response from server.</returns>
-        internal string Send(IEnumerable<IWorkspaceModel> workspaces)
+        internal string Send(IEnumerable<IWorkspaceModel> workspaces, WorkspaceProperties workspaceProperties = null)
         {
             if (String.IsNullOrWhiteSpace(serverUrl))
             {
@@ -251,10 +266,8 @@ namespace Dynamo.Publish.Models
                 return Resources.FailedMessage;
             }
 
-            string fullServerAdress = serverUrl + ":" + port;
-
             if (reachClient == null)
-                reachClient = new WorkspaceStorageClient(authenticationProvider, fullServerAdress);
+                reachClient = new WorkspaceStorageClient(authenticationProvider, serverUrl);
 
             HomeWorkspace = workspaces.OfType<HomeWorkspaceModel>().First();
             var functionNodes = HomeWorkspace.Nodes.OfType<Function>();
@@ -277,13 +290,29 @@ namespace Dynamo.Publish.Models
             string result;
             try
             {
-                result = reachClient.Send(HomeWorkspace, CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>());
+                result = reachClient.Send(
+                    HomeWorkspace,
+                    CustomNodeWorkspaces.OfType<CustomNodeWorkspaceModel>(), 
+                    workspaceProperties);
+                InvalidNodeNames = null;
+            }
+            catch (InvalidNodesException ex)
+            {
+                InvalidNodeNames = ex.InvalidNodeNames;
+                result = Resources.FailedMessage;
             }
             catch
             {
                 result = Resources.FailedMessage;
             }
+
             return result;
+        }
+
+        internal void ClearState()
+        {
+            State = UploadState.Uninitialized;
+            Error = UploadErrorType.None;
         }
     }
 

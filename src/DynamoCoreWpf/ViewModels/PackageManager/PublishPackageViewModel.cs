@@ -5,6 +5,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security;
+using System.Security.AccessControl;
+using System.Security.Permissions;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Dynamo.Core;
@@ -1002,15 +1006,21 @@ namespace Dynamo.PackageManager
                 UploadState = PackageUploadHandle.State.Copying;
                 Uploading = true;
                 // begin publishing to local directory
-                var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager, DynamoModel.IsTestMode);
+                var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
+                    DynamoModel.IsTestMode);
                 var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
                 builder.BuildDirectory(Package, publishPath, files);
                 UploadState = PackageUploadHandle.State.Uploaded;
             }
             catch (Exception e)
             {
+                UploadState = PackageUploadHandle.State.Error;
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
+            }
+            finally
+            {
+                Uploading = false;
             }
         }
 
@@ -1057,6 +1067,30 @@ namespace Dynamo.PackageManager
             return new string[] {};
         }
 
+        private bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
+        {
+            try
+            {
+                using (var fs = File.Create(
+                    Path.Combine(
+                        dirPath,
+                        Path.GetRandomFileName()
+                    ),
+                    1,
+                    FileOptions.DeleteOnClose)
+                )
+                { }
+                return true;
+            }
+            catch
+            {
+                if (throwIfFails)
+                    throw;
+                else
+                    return false;
+            }
+        }
+
         private string GetPublishFolder()
         {
             var pathManager = DynamoViewModel.Model.PathManager as PathManager;
@@ -1073,6 +1107,13 @@ namespace Dynamo.PackageManager
                 return string.Empty;
 
             var folder = args.Path;
+
+            if (!IsDirectoryWritable(folder))
+            {
+                ErrorString = String.Format(Resources.FolderNotWritableError, folder);
+                return string.Empty;
+            }
+
             var pkgSubFolder = Path.Combine(folder, PathManager.PackagesDirectoryName);
 
             var index = pathManager.PackagesDirectories.IndexOf(folder);

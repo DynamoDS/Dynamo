@@ -49,6 +49,32 @@ namespace Dynamo.Search.SearchElements
             foreach (var tag in functionDescriptor.GetSearchTags())
                 SearchKeywords.Add(tag);
 
+            var weights = functionDescriptor.GetSearchTagWeights();
+            foreach (var weight in weights)
+            {
+                // Search tag weight can't be more then 1.
+                if (weight <= 1)
+                    keywordWeights.Add(weight);
+            }
+
+            int weightsCount = weights.Count();
+            // If there weren't added weights for search tags, then add default value - 0.5
+            if (weightsCount != SearchKeywords.Count)
+            {
+                int numberOfLackingWeights = SearchKeywords.Count - weightsCount;
+
+                // Number of lacking weights should be more than 0.
+                // It can be less then 0 only if there was some mistake in xml file.
+                if (numberOfLackingWeights > 0)
+                {
+                    for (int i = 0; i < numberOfLackingWeights; i++)
+                    {
+                        keywordWeights.Add(0.5);
+                    }
+                }
+
+            }
+
             iconName = GetIconName();
         }
 

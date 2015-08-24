@@ -54,7 +54,7 @@ namespace DynamoCLI
                 var presetsDoc = XmlHelper.CreateDocument("presetstempworkspace");
                 presetsDoc.Load(cmdLineArgs.PresetFilePath);
                 //when we load the presets we need to pass in the nodeModels from the original graph
-                var presets = NodeGraph.LoadPresetsFromXml(presetsDoc, graph.Nodes, model.NodeFactory.AsLogger());
+                var presets = NodeGraph.LoadPresetsFromXml(presetsDoc, graph.Nodes);
 
                 //load the presets contained in the presetsfile into the workspace,
                 model.CurrentWorkspace.ImportPresets(presets);
@@ -90,7 +90,7 @@ namespace DynamoCLI
                 var state = model.CurrentWorkspace.Presets.Where(x => x.Name == stateName).FirstOrDefault();
                 if (state != null)
                 {
-                    stateGuid = state.Guid;
+                    stateGuid = state.GUID;
                 }
                 
                 model.ExecuteCommand(new DynamoModel.ApplyPresetCommand(model.CurrentWorkspace.Guid, stateGuid));
@@ -112,7 +112,15 @@ namespace DynamoCLI
                         foreach (var port in node.OutPorts)
                         {
                             var value = node.GetValue(port.Index, model.EngineController);
-                            portvalues.Add(value.StringData);
+                            if (value.IsCollection)
+                            {
+                                portvalues.Add(GetStringRepOfCollection(value));
+                            }
+                            else
+                            {
+                                portvalues.Add(value.StringData);
+                            }
+                            
                         }
                         resultsdict.Add(node.GUID, portvalues);
                     }
@@ -125,6 +133,14 @@ namespace DynamoCLI
 
 
             return doc;
+        }
+
+        private static string GetStringRepOfCollection(ProtoCore.Mirror.MirrorData collection)
+        {
+
+           var items = string.Join(",", collection.GetElements().Select(x => x.IsCollection ? GetStringRepOfCollection(x) : x.StringData));
+            return "{"+items +"}";
+
         }
 
         private static void populateXmlDocWithResults(XmlDocument doc, List<Dictionary<Guid, List<object>>> resultsDict)

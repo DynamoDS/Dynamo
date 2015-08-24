@@ -439,14 +439,14 @@ namespace DynamoCoreWpfTests
         {
             // Test Case to ensure that the link for these persistent variable
             // between DynamoViewModel, Model is not broken or replaced.
-            #region FullscreenWatchShowing
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
+            #region BackgroundPreviewActive
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.FullscreenWatchShowing);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
 
-            expectedValue = !ViewModel.Model.PreferenceSettings.FullscreenWatchShowing;
+            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.FullscreenWatchShowing);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
             #endregion
 
             #region ConsoleHeight
@@ -506,12 +506,12 @@ namespace DynamoCoreWpfTests
 
             initalSetting.ConnectorType = ConnectorType.BEZIER;
             initalSetting.ConsoleHeight = 100;
-            initalSetting.FullscreenWatchShowing = true;
+            initalSetting.IsBackgroundPreviewActive = true;
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
@@ -519,12 +519,12 @@ namespace DynamoCoreWpfTests
             #region Second Test
             initalSetting.ConnectorType = ConnectorType.POLYLINE;
             initalSetting.ConsoleHeight = 0;
-            initalSetting.FullscreenWatchShowing = false;
+            initalSetting.IsBackgroundPreviewActive = false;
 
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
             Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
             Assert.AreEqual(resultSetting.ConsoleHeight, initalSetting.ConsoleHeight);
             #endregion
@@ -649,7 +649,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
             
             //verify the note was created
-            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count());
 
             ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
@@ -663,7 +663,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count());
 
             //select the note for deletion
             DynamoSelection.Instance.Selection.Add(note);
@@ -671,7 +671,7 @@ namespace DynamoCoreWpfTests
 
             //delete the note
             ViewModel.DeleteCommand.Execute(null);
-            Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count());
 
             ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
            

@@ -12,6 +12,7 @@ using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 
 using ProtoCore;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
@@ -136,6 +137,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
                 Enumerable.Empty<PresetModel>(),
+                new ElementResolver(),
                 new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
                 isTestMode) { }
@@ -149,10 +151,11 @@ namespace Dynamo.Models
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
             IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n,a, info, factory,presets)
+            : base(e, n,a, info, factory,presets, resolver)
         {
             EvaluationCount = 0;
 
@@ -489,6 +492,12 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+
+                // Reset node states
+                foreach (var node in Nodes)
+                {
+                    node.IsUpdated = false;
+                }
 
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;

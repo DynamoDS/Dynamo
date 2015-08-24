@@ -862,7 +862,7 @@ namespace DynamoCoreWpfTests
             RunCommandsFromFile("TestCreateNoteCommandWithMultiGuids.xml");
 
             // Should be only 1 note
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
 
             // Check if guid correct
             var node = GetNode("682adbae-629f-4c15-b1b4-8af22c2f850c");
@@ -1182,9 +1182,11 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
+
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
-            //Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 6*codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(9, cbn.OutPorts[1].LineIndex);
         }
 
         /// <summary>
@@ -1579,7 +1581,7 @@ namespace DynamoCoreWpfTests
             // Same XML can be used for this test case as well.
             RunCommandsFromFile("Defect_MAGN_478.xml");
 
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
         }
 
         [Test, RequiresSTA]
@@ -1750,8 +1752,7 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
-
+            Assert.AreEqual(1, cbn.OutPorts[0].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -1781,13 +1782,13 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             Assert.AreEqual("a[0]", cbn.OutPorts[0].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(1, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
 
             Assert.AreEqual("a", cbn.OutPorts[2].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(5, cbn.OutPorts[2].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -1814,14 +1815,13 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(2, cbn.OutPorts[1].LineIndex);
 
             var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
             Assert.AreEqual(2, connector.End.Index);
-
         }
 
         [Test, RequiresSTA]
@@ -1847,14 +1847,11 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            //Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
-
-            //Assert.AreEqual("Statement Output", cbn.OutPorts[2].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
-
+            //Out ports with temporary tooltips.
+            Assert.AreEqual(2, cbn.OutPorts[1].LineIndex);
+            Assert.AreEqual(4, cbn.OutPorts[2].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -1880,11 +1877,10 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2*codeBlockPortHeight) <= tolerance);
-
+            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -1910,20 +1906,17 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            //Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(2, cbn.OutPorts[1].LineIndex); // Random tool-tip.
 
             Assert.AreEqual("d", cbn.OutPorts[2].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(4, cbn.OutPorts[2].LineIndex);
 
-            //Assert.AreEqual("Statement Output", cbn.OutPorts[3].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(6, cbn.OutPorts[3].LineIndex); // Random tool-tip.
 
             Assert.AreEqual("h", cbn.OutPorts[4].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[4].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
-
+            Assert.AreEqual(8, cbn.OutPorts[4].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -1949,7 +1942,7 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             //Assert.AreEqual("Statement Output", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -1970,8 +1963,16 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
+            Assert.AreEqual("a[0]", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(1, cbn.OutPorts[1].LineIndex);
+
+            Assert.AreEqual("a[1]", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual(2, cbn.OutPorts[2].LineIndex);
+
+            Assert.AreEqual("a[2]", cbn.OutPorts[3].ToolTipContent);
+            Assert.AreEqual(3, cbn.OutPorts[3].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -2044,7 +2045,6 @@ namespace DynamoCoreWpfTests
             //Check the position of ports
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
-
         }
 
         /// <summary>
@@ -2121,11 +2121,10 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports and their names
             Assert.AreEqual("x", cbn.OutPorts[0].ToolTipContent);
-            Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
+            Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual("y", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
-
+            Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
         [Test, RequiresSTA]
@@ -2146,11 +2145,10 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports and their names
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[0].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
+            Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
-            Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - 2 * codeBlockPortHeight) <= tolerance);
-
+            Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
         }
 
         [Test]
@@ -3472,8 +3470,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests")]
-        [Category("Failure")]
+        [Category("RegressionTests")]        
         public void EqualEqualTest_Defect6694()
         {
             // Details are available in defect 
@@ -3672,7 +3669,7 @@ namespace DynamoCoreWpfTests
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
             RunCommandsFromFile("Defect_MAGN_478.xml");
 
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
         }
 
         [Test]
@@ -3824,7 +3821,7 @@ namespace DynamoCoreWpfTests
         {
             RunCommandsFromFile("UpdateNodeCaptions.xml");
             Assert.AreEqual(0, workspace.Connectors.Count());
-            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(1, workspace.Notes.Count());
             Assert.AreEqual(2, workspace.Nodes.Count());
 
             var number = GetNode("a9762506-2ab6-4b50-8166-138de5b0c704") as DoubleInput;
