@@ -239,7 +239,7 @@
                    VerticalAlignment="Center"
                    Width="24"
                    Source="{Binding SmallIcon}" />
-            <Grid Margin="5,10,0,10">
+            <Grid Margin="-10,10,0,5">
                 <Rectangle Fill="#3E464C"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch">
@@ -361,7 +361,7 @@
                 Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
         <Setter Property="Focusable"
                 Value="False" />
-        <Setter Property ="Margin" Value="0,0,0,-10"/>
+        <Setter Property ="Margin" Value="-10,0,0,-10"/>
                    
         <Setter Property="Template">
             <Setter.Value>
