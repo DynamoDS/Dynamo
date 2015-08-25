@@ -3399,7 +3399,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install latest version to directory....
+        ///   Looks up a localized string similar to Install latest version to folder....
         /// </summary>
         public static string PackageSearchViewInstallLatestVersionTo {
             get {
@@ -3417,7 +3417,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install this version to directory....
+        ///   Looks up a localized string similar to Install this version to folder....
         /// </summary>
         public static string PackageSearchViewInstallThisVersionTo {
             get {
