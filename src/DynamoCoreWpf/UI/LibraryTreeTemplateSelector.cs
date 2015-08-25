@@ -52,9 +52,13 @@ namespace Dynamo.Controls
             if (item is SearchCategory)
             {
                 if ((item as SearchCategory).IsTopCategory)
+                {
                     return TopCategoryTemplate;
+                }
                 else
+                {
                     return CategoryTemplate;
+                }
             }
 
             const string message = "Unknown object bound to collection";
