@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
             selection = GetSelectionFromIndices();
             if (selection != null)
             {
-                selection.IsSelected = false;
+                selection.IsSelected = true;
             }
         }
     }

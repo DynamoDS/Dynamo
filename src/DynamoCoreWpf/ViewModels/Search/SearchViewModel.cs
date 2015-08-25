@@ -742,7 +742,7 @@ namespace Dynamo.ViewModels
 
             SortSearchCategoriesChildren();
 
-            var topCategory = new SearchCategory("Top Result", true);
+            var topCategory = new SearchCategory(Dynamo.Wpf.Properties.Resources.SearchViewTopResult, true);
             topCategory.AddMemberToGroup(topNode);
             searchRootCategories.Insert(0, topCategory);
 
