@@ -310,7 +310,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private bool canNavigateBackground = false;
         public bool CanNavigateBackground
         {
-            get { return canNavigateBackground; }
+            get { return canNavigateBackground || navigationKeyIsDown; }
             set
             {
                 canNavigateBackground = value;
@@ -318,6 +318,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private bool navigationKeyIsDown = false;
+        public bool NavigationKeyIsDown
+        {
+            get { return navigationKeyIsDown; }
+            set { 
+                navigationKeyIsDown = value;
+                RaisePropertyChanged("NavigationKeyIsDown");
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+        
         #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)

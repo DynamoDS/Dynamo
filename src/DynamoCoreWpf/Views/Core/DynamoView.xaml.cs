@@ -1011,25 +1011,27 @@ namespace Dynamo.Controls
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = true;
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
+            }
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape && dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
             {
-                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = false;
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
             }
         }
 
         void DynamoView_LostFocus(object sender, EventArgs e)
         {
-            //if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
-            //{
-            //    dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = false;
-            //    dynamoViewModel.EscapeCommand.Execute(null);
-            //}
+            if (dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+            }
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
