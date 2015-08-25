@@ -46,7 +46,7 @@ namespace Dynamo.PackageManager.UI
             viewModel.Model.IsExpanded = !viewModel.Model.IsExpanded;
         }
 
-        private void ShowContextMenuFromLeftClick(object sender, RoutedEventArgs e)
+        private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
@@ -55,19 +55,19 @@ namespace Dynamo.PackageManager.UI
             button.ContextMenu.IsOpen = true;
         }
 
-        private void SortButton_OnClick(object sender, RoutedEventArgs e)
+        private void OnSortButtonClicked(object sender, RoutedEventArgs e)
         {
-            ShowContextMenuFromLeftClick(sender, e);
+            OnShowContextMenuFromLeftClicked(sender, e);
         }
 
-        private void InstallLatestButtonDropDown_OnClick(object sender, RoutedEventArgs e)
+        private void OnInstallLatestButtonDropDownClicked(object sender, RoutedEventArgs e)
         {
-            ShowContextMenuFromLeftClick(sender, e);
+            OnShowContextMenuFromLeftClicked(sender, e);
         }
 
-        private void InstallVersionButtonDropDown_OnClick(object sender, RoutedEventArgs e)
+        private void OnInstallVersionButtonDropDownClicked(object sender, RoutedEventArgs e)
         {
-            ShowContextMenuFromLeftClick(sender, e);
+            OnShowContextMenuFromLeftClicked(sender, e);
         }
 
         private void OnRequestShowFileDialog_SearchList(object sender, EventArgs e)
