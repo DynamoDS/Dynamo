@@ -1025,11 +1025,11 @@ namespace Dynamo.Controls
 
         void DynamoView_LostFocus(object sender, EventArgs e)
         {
-            if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
-            {
-                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = false;
-                dynamoViewModel.EscapeCommand.Execute(null);
-            }
+            //if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
+            //{
+            //    dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = false;
+            //    dynamoViewModel.EscapeCommand.Execute(null);
+            //}
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
