@@ -163,14 +163,19 @@ namespace Dynamo.ViewModels
         {
             var selection = GetSelectionFromIndices();
             if (selection != null)
+            {
                 selection.IsSelected = false;
+            }
 
             selectedCategoryIndex = categoryIndex;
             selectedMemberGroupIndex = memberGroupIndex;
             selectedMemberIndex = memberIndex;
 
             selection = GetSelectionFromIndices();
-            selection.IsSelected = true;
+            if (selection != null)
+            {
+                selection.IsSelected = false;
+            }
         }
     }
 }

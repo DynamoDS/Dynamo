@@ -43,6 +43,12 @@ namespace Dynamo.Controls
             if (item is SearchMemberGroup)
                 return MemberGroupsTemplate;
 
+            // "Top Result" is no longer a standalone panel on the library view. A SearchCategory 
+            // is created based off the first item in search results, and inserted into the results 
+            // just like any other SearchCategory objects. The only difference is, "IsTopCategory"
+            // property will be set to "true". This is where the right template is selected so that 
+            // top result item appears to look different from other categories in results.
+
             if (item is SearchCategory)
             {
                 if ((item as SearchCategory).IsTopCategory)
