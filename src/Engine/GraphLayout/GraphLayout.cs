@@ -20,9 +20,10 @@ namespace GraphLayout
 
         #region Helper methods
 
-        public void AddNode(Guid guid, double width, double height, double y)
+        public void AddNode(Guid guid, double width, double height, double y, int inPortCount = 0)
         {
             var node = new Node(guid, width, height, y, this);
+            node.InPortCount = inPortCount;
             Nodes.Add(node);
         }
 
@@ -266,8 +267,15 @@ namespace GraphLayout
                     layerWidth = n.Width;
             }
 
-            // Put the input nodes on the leftmost layer
-            AddToLayer(Nodes.Where(x => x.LeftEdges.Count == 0).ToList(), Layers.Count);
+            // Put all input nodes and isolated nodes on the leftmost layer
+            AddToLayer(Nodes.Where(x =>
+                (x.LeftEdges.Count == 0 && !x.HasUnconnectedInPort) ||
+                (x.LeftEdges.Count == 0 && x.RightEdges.Count == 0)).ToList(), Layers.Count);
+
+            // Assign nodes with unconnected input ports right behind its next layer
+            foreach (Node n in Nodes.Where(x => x.LeftEdges.Count == 0 && x.RightEdges.Count > 0 && x.HasUnconnectedInPort))
+                AddToLayer(n, n.RightEdges.Max(x => x.EndNode.Layer) + 1);
+
         }
 
         /// <summary>
@@ -455,6 +463,12 @@ namespace GraphLayout
         public double Y;
 
         public int Layer = -1;
+        public int InPortCount;
+
+        public bool HasUnconnectedInPort
+        {
+            get { return LeftEdges.Count < InPortCount; }
+        }
 
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
         public HashSet<Edge> RightEdges = new HashSet<Edge>();

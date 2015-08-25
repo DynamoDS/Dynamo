@@ -1073,7 +1073,7 @@ namespace Dynamo.ViewModels
                 // Do not process nodes within groups
                 if (group == null)
                 {
-                    graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
+                    graph.AddNode(x.GUID, x.Width, x.Height, x.Y, x.InPorts.Count);
                     models.Add(x, UndoRedoRecorder.UserAction.Modification);
                 }
             }
