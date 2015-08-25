@@ -1279,7 +1279,7 @@ namespace ProtoScript.Runners
         /// </summary>
         private void CreateRuntimeCore()
         {
-            runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap);
+            runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap, runnerCore.Options);
             runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
         }
 
