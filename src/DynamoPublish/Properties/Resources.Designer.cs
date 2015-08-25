@@ -142,7 +142,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We&apos;re working on a new way to share you work in Dynamo: Customizers - simple websites that allow anyone to interact with your graph. This is new territory for us and we need your help. Would like to try it out?.
+        ///   Looks up a localized string similar to We&apos;re working on a new way to share your work done in Dynamo: Customizers - simple websites that allow anyone to interact with your graph. This is new territory for us and we need your help. Would like to try it out?.
         /// </summary>
         public static string InviteDescription2 {
             get {
