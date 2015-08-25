@@ -1,5 +1,4 @@
-﻿using Dynamo.Publish.Models;
-using Dynamo.Publish.ViewModels;
+﻿using Dynamo.Publish.ViewModels;
 using Dynamo.Wpf.Authentication;
 using System;
 using System.Collections.Generic;
