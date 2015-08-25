@@ -540,7 +540,7 @@
     <value>A converted numeric value.</value>
   </data>
   <data name="DateTimeDescription" xml:space="preserve">
-      <value>Create a DateTime object from a formatted date and time string. Date and time must be of the format "April 12, 1977 12:00 PM"</value>
+    <value>Create a DateTime object from a formatted date and time string. Date and time must be of the format "April 12, 1977 12:00 PM"</value>
   </data>
   <data name="ColorRangeSearchTags" xml:space="preserve">
     <value>colorrange;</value>
@@ -559,5 +559,29 @@
   </data>
   <data name="NumberSequenceSearchTags" xml:space="preserve">
     <value>numbersequence;</value>
+  </data>
+  <data name="SelectionEdgeOutputPortName" xml:space="preserve">
+    <value>Curve</value>
+  </data>
+  <data name="SelectionEdgesOutputPortName" xml:space="preserve">
+    <value>Curves</value>
+  </data>
+  <data name="SelectionElementOutputPortName" xml:space="preserve">
+    <value>Element</value>
+  </data>
+  <data name="SelectionElementsOutputPortName" xml:space="preserve">
+    <value>Elements</value>
+  </data>
+  <data name="SelectionFaceOutputPortName" xml:space="preserve">
+    <value>Surface</value>
+  </data>
+  <data name="SelectionFacesOutputPortName" xml:space="preserve">
+    <value>Surfaces</value>
+  </data>
+  <data name="SelectionPointOutputPortName" xml:space="preserve">
+    <value>Point</value>
+  </data>
+  <data name="SelectionPointsOutputPortName" xml:space="preserve">
+    <value>Points</value>
   </data>
 </root>
