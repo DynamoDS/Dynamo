@@ -1,4 +1,5 @@
-﻿using Dynamo.Publish.ViewModels;
+﻿using Dynamo.Publish.Models;
+using Dynamo.Publish.ViewModels;
 using Dynamo.Wpf.Authentication;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace Dynamo.Publish.Views
             DataContext = viewModel;
             this.viewModel = viewModel;
             viewModel.UIDispatcher = Dispatcher;
+
+            Closed += OnPublishViewClosed;
         }
 
         private void OnButtonCopyLinkClick(object sender, RoutedEventArgs e)
@@ -43,6 +46,14 @@ namespace Dynamo.Publish.Views
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Diagnostics.Process.Start(viewModel.ManagerURL);
+        }
+
+
+        private void OnPublishViewClosed(object sender, EventArgs e)
+        {
+            textBoxName.Clear();
+            textBoxDescription.Clear();
+            textBoxShareLink.Clear();
         }
     }
 }
