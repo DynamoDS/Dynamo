@@ -22,6 +22,7 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Controls
@@ -1581,24 +1582,49 @@ namespace Dynamo.Controls
             // if the number of directories deep exceeds threshold
             if (str.Length - str.Replace(@"\", "").Length >= 5)
             {
-                var root = Path.GetPathRoot(str);
-                var name = Path.GetFileName(str);
-
-                var dirInfo = new DirectoryInfo(Path.GetDirectoryName(str));
-
-                var collapsed = new[]
-                {
-                    root + "...",
-                    dirInfo.Parent.Parent.Name,
-                    dirInfo.Parent.Name,
-                    dirInfo.Name,
-                    name
-                };
-
-                return string.Join(@"\", collapsed);
+                return ShortenNestedFilePath(str);
             }
 
             return str;
+        }
+
+        internal static string ShortenNestedFilePath(string str)
+        {
+            //directories to go down under the root
+            const int MAX_FOLDER_DEPTH = 2;
+            var name = Path.GetFileName(str);
+            var path = Path.GetDirectoryName(str);
+
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(name))
+            {
+                return str;
+            }
+
+            var currentDirInfo = new DirectoryInfo(path);
+            var root = currentDirInfo.Root;
+            var rootName = root.FullName;
+
+            var collapsed = new List<string>();
+            collapsed.Add(name);
+
+            for (int count = 0; count < MAX_FOLDER_DEPTH; count++)
+            {
+                if (currentDirInfo.Parent == null)
+                {
+                    break;
+                }
+
+                collapsed.Insert(0, currentDirInfo.Name);
+                currentDirInfo = currentDirInfo.Parent;
+            }
+            //if the next parent is the root then we don't want to add ... to the string
+            if ((currentDirInfo.Parent != null) && (currentDirInfo.Parent != root))
+            {
+                rootName = rootName + "...";
+            }
+            collapsed.Insert(0, rootName);
+
+            return string.Join(@"\", collapsed);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

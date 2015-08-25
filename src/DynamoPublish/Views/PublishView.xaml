@@ -213,6 +213,7 @@
                      Grid.Row="1"
                      Text="{Binding ShareLink, Mode=OneWay}"
                      Style="{StaticResource SDarkTextBox}" />
+
             <Button Name="buttonCopyLink"
                     Content="{x:Static resx:Resources.CopyLinkButtonTitle}"
                     Grid.Row="1"

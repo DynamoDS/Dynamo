@@ -479,7 +479,8 @@
             <summary>
             Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
             </summary>
-            <search>resize,size,from,to,scale1d,1d</search>
+            <search>resize,size,from,to,scale1d,1d,lines</search>
+            <weights>0.5,0.5,0.5,0.5,0.5,0.5,0.3</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
@@ -631,8 +632,9 @@
              Create a curve by line of surface in uv space
              </summary>
             <search>
-            isocurve,curvebyuv
+            isocurve,curvebyuv,lines,uvs
             </search>
+			<weights>0.5,0.5,0.4,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean)">
              <summary>
@@ -647,8 +649,9 @@
              Create a curve by isoline of surface
              </summary>
             <search>
-            isocurve,curvebydir
+            isocurve,curvebydir,lines
             </search>
+			<weights>0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
              <summary>
@@ -791,8 +794,9 @@
              Offset a Curve by a specified amount. Curve must be planar, and, if a BSplineCurve/NurbsCurve, must have degree > 1.
              </summary>
             <search>
-            thicken
+            thicken,lines
             </search>
+            <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
              <summary>
@@ -999,16 +1003,18 @@
              Approximate a Curve with a collection of Arcs and Lines
              </summary>
             <search>
-            rationalizecurve,fitarcs,fitlines,arcs
+            rationalizecurve,fitarcs,fitlines,arcs,lines
             </search>
+            <weights>0.5,0.5,0.5,0.4,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
              <summary>
              Converts the Curve to a NurbsCurve approximation
              </summary>
             <search>
-            curve2spline,convertcurve,tospline
+            curve2spline,convertcurve,tospline,lines
             </search>
+            <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
              <summary>
@@ -1300,6 +1306,7 @@
             <search>
             converttosolid,bb2cube,bb2cub,bounding tosolid,cubes
             </search>
+			<weights>0.5,0.4,0.3,0.5,0.3</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToPolySurface">
              <summary>
@@ -1854,11 +1861,15 @@
             <summary>
             All of the Edges around this Face in counterclockwise order
             </summary>
+            <search>faces</search>
+            <weights>1</weights>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Face.Vertices">
             <summary>
             All of the Vertices around this Face in counterclockwise order
             </summary>
+            <search>faces</search>
+            <weights>1</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Helix.ToString">
             <summary>
@@ -2001,6 +2012,7 @@
             <summary>
             The direction of the Curve
             </summary>
+            <search>lines</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ToString">
             <summary>
@@ -2049,64 +2061,72 @@
              Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
              </summary>
             <search>
-            nurbscurve,spline
+            nurbscurve,spline,lines
             </search>
+            <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
              <summary>
              Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
              </summary>
             <search>
-            nurbscurve,spline,degree
+            nurbscurve,spline,degree,lines
             </search>
+            <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32,System.Boolean)">
              <summary>
              Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
              </summary>
             <search>
-            nurbscurve,spline,degree,smoothness
+            nurbscurve,spline,degree,smoothness,lines
             </search>
+            <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Double[],System.Double[],System.Int32)">
              <summary>
              Create a BSplineCurve by from control vertices, weights, and knots. FROM ASM DOCS: Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum  B-spline basis degree supported by ASM). Weights: All weight values (if supplied) should be strictly positive.  Weights smaller than 1e-11 will be rejected and the function will fail.  Knots: The knot vector should be a non-decreasing sequence. Interior knot multiplicity should be no larger than degree + 1 at the start/end knot and  degree at an internal knot (this allows curves with G1 discontinuities to be  represented). Note that non-clamped knot vectors are supported, but will be  converted to clamped ones, with the corresponding changes applied to the  control point/weight data.  knot array: the array size must be num_control_points + degree + 1
              </summary>
             <search>
-            explicit,nurbscurve,spline,degree,spline byarray
+            explicit,nurbscurve,spline,degree,spline byarray,lines
             </search>
+            <weights>0.5,0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
              <summary>
              Create a BSplineCurve by interpolating between points.
              </summary>
             <search>
-            fit,approximate,spline
+            fit,approximate,spline,lines
             </search>
+            <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
              <summary>
              Create a BSplineCurve by interpolating between points. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
              </summary>
             <search>
-            fit,approximate,spline
+            fit,approximate,spline,lines
             </search>
+            <weights>0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
              <summary>
              Create a BSplineCurve by interpolating between points with specified degree.
              </summary>
             <search>
-            fit,approximate,spline,smoothness
+            fit,approximate,spline,smoothness,lines
             </search>
+            <weights>0.5,0.5,0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPointsTangents(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
              <summary>
              Returns a BSplineCurve through the points, with tangent directions.
              </summary>
             <search>
-            spline by tangent,tangents
+            spline by tangent,tangents,lines
             </search>
+            <weights>0.5,0.5,0.45</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
             <summary>
@@ -2165,8 +2185,9 @@
              Create a Surface by lofting between input cross section Lines.  This is slightly faster and produces a less smooth result than Surface.ByLoft.
              </summary>
             <search>
-            ruledsurface
+            ruledsurface,lines
             </search>
+            <weights>0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
              <summary>
@@ -2239,6 +2260,7 @@
             <search>
             evaluateatpoint,surfaceatpoint,uvatpoint,uvs
             </search>
+            <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
              <summary>
@@ -2361,6 +2383,8 @@
             <summary>
             Create a parameter line curve on the given surface. Create a Curve that represents a u or v parameter line on the Surface. A  parameter line runs in the direction of increasing u or v parameter at a  constant opposite u or v parameter. The resulting Curve will match the  Surface parameterisation and its range will be bounded by the Surface  parameter range. The type of Curve returned will depend on the Surface  type.
             </summary>
+            <search>lines</search>
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
             <summary>
@@ -2457,6 +2481,8 @@
             <summary>
             Creates a NurbsSurface with specified control vertices, knots, weights,  and U V degrees.  There are several restrictions on the data which, if broken, will cause the function to fail and will throw an exception. Degree: Both u- and v- degree should be >= 1 (piecewise-linear spline)  and  less than 26 (the maximum B-spline basis degree supported by ASM). Weights: All weight values (if supplied) should be strictly positive.  Weights smaller than 1e-11 will be rejected and the function will fail.  Knots: Both knot vectors should be non-decreasing sequences. Interior knot multiplicity should be no larger than degree + 1 at the start/end knot and  degree at an internal knot (this allows surfaces with G1 discontinuities to  be represented). Note that non-clamped knot vectors are supported, but will  be converted to clamped ones, with the corresponding changes applied to the  control point/weight data.
             </summary>
+            <search>lines</search>
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ControlPoints">
             <summary>
@@ -2563,6 +2589,8 @@
             <summary>
             Create the Plane containing the input Line and external Point. Point cannot lie on the Line or in the Line axis.
             </summary>
+            <search>lines</search>
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByThreePoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
@@ -2762,8 +2790,9 @@
              Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
              </summary>
             <search>
-            segments,joincurves
+            segments,joincurves,lines
             </search>
+            <weights>0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
              <summary>
@@ -2808,11 +2837,15 @@
             <summary>
             Close polycurve by line connecting start and end points
             </summary>
+            <search>lines</search>
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
             <summary>
             Close polycurve by tangent chain of arc, line, and arc
             </summary>
+            <search>lines</search>
+            <weights>0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
             <summary>
@@ -2962,8 +2995,9 @@
              Locate Surfaces by Line. Takes all surfaces hit by line.
              </summary>
             <search>
-            surfacesonline,findsurfaces,extractsurfaces
+            surfacesonline,findsurfaces,extractsurfaces,lines
             </search>
+            <weights>0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.UnconnectedBoundaries">
             <summary>
@@ -3550,7 +3584,8 @@
             <summary>
             Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
             </summary>
-            <search>resize,size,from,to,scale1d,1d</search>
+            <search>resize,size,from,to,scale1d,1d,lines</search>
+            <weights>0.5,0.5,0.5,0.5,0.5,0.5,0.4</weights>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>

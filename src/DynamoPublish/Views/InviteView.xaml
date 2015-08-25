@@ -1,0 +1,78 @@
+﻿<Window x:Class="Dynamo.Publish.Views.InviteView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resx="clr-namespace:Dynamo.Publish.Properties"
+        xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+        xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        Height="192.226" Width="551.2" WindowStartupLocation="CenterOwner"
+        Title="{x:Static resx:Resources.InviteViewMenuDialogTitle}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+            <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"                                              
+                                              TrueBrush="{StaticResource PublishStatePanelErrorBackground}"
+                                              FalseBrush="{StaticResource PublishStatePanelNormalBackground}" />
+
+            <Style TargetType="{x:Type TextBox}"
+                   x:Key="PublishTextBoxStyle"
+                   BasedOn="{StaticResource SDarkTextBox}">
+                <Setter Property="IsEnabled"
+                        Value="True" />
+
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsUploading}"
+                                 Value="True">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                </Style.Triggers>
+
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoPublish;component/Resources/PublishResourceDictionary.xaml" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="#333">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel Name="Panel"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2" Margin="0,0,-0.2,62">
+
+            <TextBlock Name ="Indicator" Foreground="{StaticResource PublishViewTextColor}" Padding="15,15,0,15" FontSize="15"
+                       Text ="{x:Static resx:Resources.InviteMenuText}"/>
+            <Button x:Name="okButton"
+                    Content="{x:Static resx:Resources.InviteMenuButtonText}"   
+                    Margin="0,5,5,5" 
+                    HorizontalAlignment="Right"  
+            	    VerticalAlignment="Top" Width="126" 
+            	    Command="{Binding InviteCommand}"
+            	    IsDefault="True" 
+                    TabIndex="2" 
+            	    Style="{StaticResource STextButton}" Height="40" 
+                    />
+        </StackPanel>
+        <StackPanel Name="InviteStatusMessagePanel"                    
+                    Background="{Binding HasError, Converter={StaticResource BooleanToBrushConverter}}"
+                    Visibility="{Binding IsTextblockVisible}" Grid.ColumnSpan="2" Margin="0,127,-0.2,-0.8" Grid.RowSpan="2">
+            <TextBlock Name="InviteStatusBlock"
+                       Text="{Binding StatusText}"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Margin="10,7,0,0" />
+        </StackPanel>
+    </Grid>
+</Window>

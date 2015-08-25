@@ -64,11 +64,11 @@ namespace Dynamo.Models
                 WorkspaceClearing();
         }
 
-        public event EventHandler WorkspaceCleared;
-        public virtual void OnWorkspaceCleared(object sender, EventArgs e)
+        public event Action<WorkspaceModel> WorkspaceCleared;
+        public virtual void OnWorkspaceCleared(WorkspaceModel workspace)
         {
             if (WorkspaceCleared != null)
-                WorkspaceCleared(this, e);
+                WorkspaceCleared(workspace);
         }
 
         public event Action<WorkspaceModel> WorkspaceAdded;
@@ -78,6 +78,15 @@ namespace Dynamo.Models
             if (handler != null) handler(obj);
 
             WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name);
+        }
+
+        public event Action<WorkspaceModel> WorkspaceRemoveStarted;
+        protected virtual void OnWorkspaceRemoveStarted(WorkspaceModel obj)
+        {
+            var handler = WorkspaceRemoveStarted;
+            if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceRemoveStarted(obj.Guid, obj.Name);
         }
 
         public event Action<WorkspaceModel> WorkspaceRemoved;

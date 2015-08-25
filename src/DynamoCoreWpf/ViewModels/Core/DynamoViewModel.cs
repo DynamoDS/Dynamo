@@ -4,43 +4,47 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-
 using Dynamo.DSEngine;
-using Dynamo.UI;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
-using Dynamo.Wpf.UI;
-using Dynamo.Wpf.ViewModels.Core;
-using Dynamo.PackageManager;
-using DynamoUnits;
-
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using System.Reflection;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
-using DynamoUtilities;
+using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.Watch3D;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using ISelectable = Dynamo.Selection.ISelectable;
 
 namespace Dynamo.ViewModels
 {
-    public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
+    public interface IDynamoViewModel : INotifyPropertyChanged
+    {
+        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
+    }
+
+    public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
         #region properties
 
         private readonly DynamoModel model;
-        private System.Windows.Point transformOrigin;
-        private bool canNavigateBackground = false;
+        private Point transformOrigin;
         private bool showStartPage = false;
-        private bool watchEscapeIsDown = false;
+        
+        private List<Watch3DViewModelBase> watch3DViewModels = new List<Watch3DViewModelBase>();
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -66,7 +70,7 @@ namespace Dynamo.ViewModels
             get { return Model.PreferenceSettings; }
         }
 
-        public System.Windows.Point TransformOrigin
+        public Point TransformOrigin
         {
             get { return transformOrigin; }
             set
@@ -209,63 +213,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool WatchEscapeIsDown
-        {
-            get { return watchEscapeIsDown; }
-            set
-            {
-                watchEscapeIsDown = value;
-                RaisePropertyChanged("WatchEscapeIsDown");
-                RaisePropertyChanged("ShouldBeHitTestVisible");
-                RaisePropertyChanged("WatchPreviewHitTest");
-            }
-        }
-
-        public bool WatchPreviewHitTest
-        {
-            // This is directly opposite of "ShouldBeHitTestVisible".
-            get { return (WatchEscapeIsDown || CanNavigateBackground); }
-        }
-
-        public bool ShouldBeHitTestVisible
-        {
-            // This is directly opposite of "WatchPreviewHitTest".
-            get { return (!WatchEscapeIsDown && (!CanNavigateBackground)); }
-        }
-
-        public bool FullscreenWatchShowing
-        {
-            get { return model.PreferenceSettings.FullscreenWatchShowing; }
-            set
-            {
-                model.PreferenceSettings.FullscreenWatchShowing = value;
-                RaisePropertyChanged("FullscreenWatchShowing");
-
-                if (!FullscreenWatchShowing && canNavigateBackground)
-                    CanNavigateBackground = false;
-
-                if (value)
-                    this.model.OnRequestsRedraw(this, EventArgs.Empty);
-            }
-        }
-
-        public bool CanNavigateBackground
-        {
-            get { return canNavigateBackground; }
-            set
-            {
-                canNavigateBackground = value;
-                RaisePropertyChanged("CanNavigateBackground");
-                RaisePropertyChanged("WatchBackgroundHitTest");
-
-                int workspace_index = CurrentWorkspaceIndex;
-
-                WorkspaceViewModel view_model = Workspaces[workspace_index];
-
-                WatchEscapeIsDown = value;
-            }
-        }
-
         public string LogText
         {
             get { return model.Logger.LogText; }
@@ -314,22 +261,6 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
-        public bool IsPanning
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
-            }
-        }
-
-        public bool IsOrbiting
-        {
-            get
-            {
-                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
-            }
-        }
-
         public ConnectorType ConnectorType
         {
             get
@@ -364,17 +295,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string AlternateContextGeometryDisplayText
-        {
-            get
-            {
-                return string.Format(Resources.DynamoViewViewMenuAlternateContextGeometry,
-                                     this.VisualizationManager.AlternateContextName);
-            }
-        }
-
         public bool WatchIsResizable { get; set; }
-        public bool IsBackgroundPreview { get { return true; } }
 
         public string Version
         {
@@ -394,9 +315,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
-                return System.IO.Path.Combine(rootModuleDirectory, "License.rtf");
+                string executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
+                string rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
+                return Path.Combine(rootModuleDirectory, "License.rtf");
             }
         }
 
@@ -423,8 +344,9 @@ namespace Dynamo.ViewModels
         internal Dispatcher UIDispatcher { get; set; }
 
         public IWatchHandler WatchHandler { get; private set; }
-        public IVisualizationManager VisualizationManager { get; private set; }
+
         public SearchViewModel SearchViewModel { get; private set; }
+
         public PackageManagerClientViewModel PackageManagerClientViewModel { get; private set; }
 
         /// <summary>
@@ -446,18 +368,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool showWatchSettingsControl = false;
-
-        public bool ShowWatchSettingsControl
-        {
-            get { return showWatchSettingsControl && !ShowStartPage; }
-            set
-            {
-                showWatchSettingsControl = value;
-                RaisePropertyChanged("ShowWatchSettingsControl");   
-            }
-        }
-
         public RenderPackageFactoryViewModel RenderPackageFactoryViewModel { get; set; }
 
         public bool EnablePresetOptions
@@ -465,12 +375,36 @@ namespace Dynamo.ViewModels
             get { return this.Model.CurrentWorkspace.Presets.Any(); }            
         }
 
+        public List<Watch3DViewModelBase> Watch3DViewModels
+        {
+            get { return watch3DViewModels; }
+            protected set
+            {
+                watch3DViewModels = value;
+                RaisePropertyChanged("Watch3DViewModels");
+            }
+        }
+
+        public HelixWatch3DViewModel BackgroundPreviewViewModel
+        {
+            get
+            {
+                var result = Watch3DViewModels.FirstOrDefault(vm => vm is HelixWatch3DViewModel);
+
+                return (HelixWatch3DViewModel) result;
+            }
+        }
+
+        public bool BackgroundPreviewActive
+        {
+            get { return BackgroundPreviewViewModel.Active; }
+        }
+
         #endregion
 
         public struct StartConfiguration
         {
             public string CommandFilePath { get; set; }
-            public IVisualizationManager VisualizationManager { get; set; }
             public IWatchHandler WatchHandler { get; set; }
             public DynamoModel DynamoModel { get; set; }
             public bool ShowLogin { get; set; }
@@ -487,12 +421,8 @@ namespace Dynamo.ViewModels
             if(startConfiguration.DynamoModel == null) 
                 startConfiguration.DynamoModel = DynamoModel.Start();
 
-            if(startConfiguration.VisualizationManager == null)
-                startConfiguration.VisualizationManager = new VisualizationManager(startConfiguration.DynamoModel);
-
             if(startConfiguration.WatchHandler == null)
-                startConfiguration.WatchHandler = new DefaultWatchHandler(startConfiguration.VisualizationManager, 
-                    startConfiguration.DynamoModel.PreferenceSettings);
+                startConfiguration.WatchHandler = new DefaultWatchHandler(startConfiguration.DynamoModel.PreferenceSettings);
 
             return new DynamoViewModel(startConfiguration);
         }
@@ -508,7 +438,6 @@ namespace Dynamo.ViewModels
 
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
-            this.VisualizationManager = startConfiguration.VisualizationManager;
             var pmExtension = model.GetPackageManagerExtension();
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this);
@@ -548,20 +477,31 @@ namespace Dynamo.ViewModels
 
             SubscribeDispatcherHandlers();
 
-            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(this.VisualizationManager.RenderPackageFactory);
-            RenderPackageFactoryViewModel.PropertyChanged += RenderPackageFactoryViewModel_PropertyChanged;
+            RenderPackageFactoryViewModel = new RenderPackageFactoryViewModel(Model.PreferenceSettings);
+
+            var backgroundPreviewParams = new Watch3DViewModelStartupParams(Model, this, Resources.BackgroundPreviewName);
+
+            var watch3DViewModel = HelixWatch3DViewModel.Start(backgroundPreviewParams);
+            Watch3DViewModels.Add(watch3DViewModel);
+            watch3DViewModel.PropertyChanged += HelixWatch3DViewModelPropertyChanged;
         }
 
-        void RenderPackageFactoryViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void HelixWatch3DViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "ShowEdges":
-                    Model.PreferenceSettings.ShowEdges =
-                        VisualizationManager.RenderPackageFactory.TessellationParameters.ShowEdges;
+                case "Active":
+                    RaisePropertyChanged("BackgroundPreviewActive");
+                    
+                    break;
+                case "CanNavigateBackground":
+                    if (!((HelixWatch3DViewModel)BackgroundPreviewViewModel).CanNavigateBackground)
+                    {
+                        // Return focus back to Search View (Search Field)
+                        SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
+                    }
                     break;
             }
-            VisualizationManager.UpdateAllNodeVisualsAndNotify();
         }
 
         internal event EventHandler NodeViewReady;
@@ -588,7 +528,6 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
-            RenderPackageFactoryViewModel.PropertyChanged -= RenderPackageFactoryViewModel_PropertyChanged;
         }
 
         private void InitializeRecentFiles()
@@ -711,7 +650,7 @@ namespace Dynamo.ViewModels
             this.AddToRecentFiles(model.FileName);
         }
 
-        private void ModelWorkspaceCleared(object sender, EventArgs e)
+        private void ModelWorkspaceCleared(WorkspaceModel workspace)
         {
             this.UndoCommand.RaiseCanExecuteChanged();
             this.RedoCommand.RaiseCanExecuteChanged();
@@ -781,7 +720,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        void Instance_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");
             RaisePropertyChanged("IsUpdateAvailable");
@@ -1182,7 +1121,7 @@ namespace Dynamo.ViewModels
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
-                string UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
+                string UICulture = CultureInfo.CurrentUICulture.ToString();
                 string path = Path.Combine(location, "samples", UICulture);
 
                 if (Directory.Exists(path))
@@ -1438,6 +1377,19 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
+        private void CreateNodeFromSelection(object parameter)
+        {
+            CurrentSpaceViewModel.CollapseNodes(
+                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+                    .Select(x => (x as NodeModel)));
+        }
+
+
+        private static bool CanCreateNodeFromSelection(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+        }
+
         /// <summary>
         /// Gets the selected "input" nodes
         /// </summary>
@@ -1499,34 +1451,9 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ToggleCanNavigateBackground(object parameter)
-        {
-            if (!FullscreenWatchShowing)
-                return;
-
-            CanNavigateBackground = !CanNavigateBackground;
-
-            if (CanNavigateBackground)
-                InstrumentationLogger.LogAnonymousScreen("Geometry");
-            else
-                InstrumentationLogger.LogAnonymousScreen("Nodes");
-
-
-            if (!CanNavigateBackground)
-            {
-                // Return focus back to Search View (Search Field)
-                this.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
-            }
-        }
-
-        internal bool CanToggleCanNavigateBackground(object parameter)
-        {
-            return true;
-        }
-
         public void ToggleFullscreenWatchShowing(object parameter)
         {
-            FullscreenWatchShowing = !FullscreenWatchShowing;
+            BackgroundPreviewViewModel.Active = !BackgroundPreviewViewModel.Active;
         }
 
         internal bool CanToggleFullscreenWatchShowing(object parameter)
@@ -1858,7 +1785,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start(Dynamo.UI.Configurations.DynamoWikiLink);
+            Process.Start(Configurations.DynamoWikiLink);
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -1868,7 +1795,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start(Dynamo.UI.Configurations.GitHubDynamoLink);
+            Process.Start(Configurations.GitHubDynamoLink);
         }
 
         internal bool CanGoToSourceCode(object parameter)
@@ -1922,7 +1849,7 @@ namespace Dynamo.ViewModels
 
         internal void ZoomIn(object parameter)
         {
-            if (CanNavigateBackground)
+            if (BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomIn;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));
@@ -1940,7 +1867,7 @@ namespace Dynamo.ViewModels
 
         private void ZoomOut(object parameter)
         {
-            if (CanNavigateBackground)
+            if (BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomOut;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));
@@ -1958,7 +1885,7 @@ namespace Dynamo.ViewModels
 
         private void FitView(object parameter)
         {
-            if (CanNavigateBackground)
+            if (BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.FitView;
                 OnRequestViewOperation(new ViewOperationEventArgs(op));
@@ -1999,38 +1926,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        internal void TogglePan(object parameter)
-        {
-            CurrentSpaceViewModel.RequestTogglePanMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-        }
-
-        internal bool CanTogglePan(object parameter)
-        {
-            return true;
-        }
-
-        internal void ToggleOrbit(object parameter)
-        {
-            CurrentSpaceViewModel.RequestToggleOrbitMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-        }
-
-        internal bool CanToggleOrbit(object parameter)
-        {
-            return true;
-        }
-
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
@@ -2054,19 +1949,14 @@ namespace Dynamo.ViewModels
 
         private void ExportToSTL(object parameter)
         {
-            FileDialog _fileDialog = null;
-
-            if (_fileDialog == null)
+            FileDialog _fileDialog = null ?? new SaveFileDialog()
             {
-                _fileDialog = new SaveFileDialog()
-                {
-                    AddExtension = true,
-                    DefaultExt = ".stl",
-                    FileName = Resources.FileDialogDefaultSTLModelName,
-                    Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
-                    Title = Resources.SaveModelToSTLDialogTitle,
-                };
-            }
+                AddExtension = true,
+                DefaultExt = ".stl",
+                FileName = Resources.FileDialogDefaultSTLModelName,
+                Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
+                Title = Resources.SaveModelToSTLDialogTitle,
+            };
 
             // if you've got the current space path, use it as the inital dir
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
@@ -2077,7 +1967,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                STLExport.ExportToSTL(this.Model, _fileDialog.FileName, HomeSpace.Name);
+                BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
             }
         }
 
@@ -2193,8 +2083,6 @@ namespace Dynamo.ViewModels
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
 
-            VisualizationManager.Dispose();
-
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
             {
@@ -2238,22 +2126,6 @@ namespace Dynamo.ViewModels
             }
             return true;
         }
-
-        #endregion
-
-        #region IWatchViewModel interface
-
-        public void GetBranchVisualization(object parameters)
-        {
-            VisualizationManager.RequestBranchUpdate(null);
-        }
-
-        public bool CanGetBranchVisualization(object parameter)
-        {
-            return FullscreenWatchShowing;
-        }
-
-        public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion
     }

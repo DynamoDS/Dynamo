@@ -55,7 +55,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -116,9 +116,11 @@ namespace Dynamo.Controls
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
-            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            {
+                loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+            }
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += Log;
@@ -129,6 +131,10 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += Log;
+
                     ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
                 }
@@ -340,23 +346,23 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestViewOperation(ViewOperationEventArgs e)
         {
-            if (dynamoViewModel.CanNavigateBackground == false)
+            if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground == false)
                 return;
 
             switch (e.ViewOperation)
             {
                 case ViewOperationEventArgs.Operation.FitView:
-                    background_preview.View.ZoomExtents();
+                    BackgroundPreview.View.ZoomExtents();
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
-                    var camera1 = background_preview.View.CameraController;
-                    camera1.Zoom(-0.5 * background_preview.View.ZoomSensitivity);
+                    var camera1 = BackgroundPreview.View.CameraController;
+                    camera1.Zoom(-0.5 * BackgroundPreview.View.ZoomSensitivity);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
-                    var camera2 = background_preview.View.CameraController;
-                    camera2.Zoom(0.5 * background_preview.View.ZoomSensitivity);
+                    var camera2 = BackgroundPreview.View.CameraController;
+                    camera2.Zoom(0.5 * BackgroundPreview.View.ZoomSensitivity);
                     break;
             }
         }
@@ -445,8 +451,6 @@ namespace Dynamo.Controls
 
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
-
-            watchSettingsControl.DataContext = background_preview;
 
             var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
 
@@ -662,6 +666,7 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
@@ -1006,23 +1011,23 @@ namespace Dynamo.Controls
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                dynamoViewModel.WatchEscapeIsDown = true;
+                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape && dynamoViewModel.WatchEscapeIsDown)
+            if (e.Key == Key.Escape && dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
             {
-                dynamoViewModel.WatchEscapeIsDown = false;
+                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
             }
         }
 
         void DynamoView_LostFocus(object sender, EventArgs e)
         {
-            if (dynamoViewModel.WatchEscapeIsDown)
+            if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
             {
-                dynamoViewModel.WatchEscapeIsDown = false;
+                dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
             }
         }
@@ -1558,6 +1563,10 @@ namespace Dynamo.Controls
                 {
                     Log(ext.Name + ": " + exc.Message);
                 }
+            }
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
+            {
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
             }
         }
     }

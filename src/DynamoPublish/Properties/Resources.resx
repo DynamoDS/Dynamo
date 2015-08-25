@@ -180,6 +180,9 @@
   <data name="ServerNotFoundMessage" xml:space="preserve">
     <value>Server not found.</value>
   </data>
+  <data name="InvalidNodeMessage" xml:space="preserve">
+    <value>Your workspace contains nodes that are currently not allowed in a customizer: </value>
+  </data>
   <data name="UnknownServerErrorMessage" xml:space="preserve">
     <value>There was an error when trying to publish your customizer. Please report this message to the Dynamo team.</value>
   </data>
@@ -188,6 +191,27 @@
   </data>
   <data name="WorkspacesSendSucceededServerResponse" xml:space="preserve">
     <value>/customize-[0-9,a-z]*</value>
+  </data>
+  <data name="InviteViewMenuTitle" xml:space="preserve">
+     <value>Sign up for Customizer…</value>
+  </data>
+  <data name="InviteViewMenuDialogTitle" xml:space="preserve">
+     <value>Customizer Service Early Access Invite</value>
+  </data>
+  <data name="InviteMenuText" xml:space="preserve">
+     <value>Sign up for an early access invite to the Dynamo Reach Customizer Service</value>
+  </data>
+  <data name="InviteMenuButtonText" xml:space="preserve">
+     <value>Request Invite</value>
+  </data>
+  <data name="InviteRequestStart" xml:space="preserve">
+    <value>Sending Request...</value>
+  </data>
+  <data name="InviteRequestSuccess" xml:space="preserve">
+    <value>Request sent successfully.</value>
+  </data>
+  <data name="InviteRequestFailed" xml:space="preserve">
+    <value>Failed to send the request. Try again later</value>
   </data>
   <data name="ManageButtonTitle" xml:space="preserve">
     <value>Manage Customizers...</value>

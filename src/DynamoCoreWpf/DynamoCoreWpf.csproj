@@ -138,6 +138,7 @@
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\InOutPortPanel.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\Prompts\PresetOverwritePrompt.xaml.cs">
@@ -153,7 +154,6 @@
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="Utilities\DelegateCommand.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
-    <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomization.cs" />
@@ -244,6 +244,8 @@
     <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
     <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
     <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
+    <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
+    <Compile Include="ViewModels\Watch3D\Watch3DViewModelBase.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -332,7 +334,6 @@
     <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
     <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
-    <Compile Include="ViewModels\Preview\IWatchViewModel.cs" />
     <Compile Include="ViewModels\Core\NodeViewModel.cs" />
     <Compile Include="ViewModels\Core\NoteViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageItemInternalViewModel.cs" />
@@ -350,8 +351,6 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
-    <Compile Include="VisualizationManager\STLExport.cs" />
-    <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
@@ -1213,6 +1212,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
-        <MakeDir Directories="$(OutputPath)\viewExtensions\" /> 
+    <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>
 </Project>
