@@ -1010,9 +1010,10 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            if (e.Key == Key.Escape && this.IsMouseOver)
             {
                 dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
+                e.Handled = true;
             }
         }
 
@@ -1022,6 +1023,7 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
+                e.Handled = true;
             }
         }
 
