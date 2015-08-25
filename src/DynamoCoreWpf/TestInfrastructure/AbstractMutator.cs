@@ -63,7 +63,8 @@ namespace Dynamo.TestInfrastructure
         {
             if (!executionWaitHandle.WaitOne(MAX_TIME_WAIT))
             {
-                throw new TimeoutException("Execution has been taking too long");
+                throw new TimeoutException("Execution has been taking too long. " +
+                        "Mutation Test timed out: " + MAX_TIME_WAIT + " ms");
             }
         }
     }
