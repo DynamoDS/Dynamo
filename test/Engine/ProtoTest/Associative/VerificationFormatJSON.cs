@@ -19,9 +19,7 @@ namespace ProtoTest.Associative
             String code = @"a = 1;";
             string verification =
 @" 
-    {
-        ""a"": 1
-    }
+    {""a"": 1}
 ";
             thisTest.RunAndVerify(code, verification);
         }
@@ -77,9 +75,7 @@ namespace ProtoTest.Associative
 @"def f(){    return = 1;}x = f();";
             string verification =
 @" 
-    {
-        ""x"": 1
-    }
+    {""x"": 1}
 ";
             thisTest.RunAndVerify(code, verification);
         }
@@ -91,9 +87,7 @@ namespace ProtoTest.Associative
 @"a = 1.0;";
             string verification =
 @" 
-    {
-        ""a"": 1.0
-    }
+    {""a"": 1.0}
 ";
             thisTest.RunAndVerify(code, verification);
         }
@@ -132,9 +126,7 @@ namespace ProtoTest.Associative
 @"a = {1,2,3};";
             string verification =
 @" 
-{
-    ""a"": [1,2,3]
-}
+    {""a"": [1,2,3]}
 ";
             thisTest.RunAndVerify(code, verification);
         }
@@ -163,16 +155,11 @@ namespace ProtoTest.Associative
             string verification =
 @" 
 {
-    ""a"": [
-        {
-            ""0"": 1
-        },
-        {
-            ""1"": 2
-        },
-        {
-            ""2"": 3
-        }
+    ""a"": 
+    [
+        {""0"": 1},
+        {""1"": 2},
+        {""2"": 3}
     ]
 }
 ";
