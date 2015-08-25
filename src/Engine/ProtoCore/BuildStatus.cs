@@ -28,8 +28,8 @@ namespace ProtoCore
     {
         public enum ErrorID
         {
-            kDefault,
-            kSyntaxError
+            SyntaxError,
+            MaxErrorID
         }
 
         public enum WarningID
@@ -467,7 +467,7 @@ namespace ProtoCore
 
             var errorEntry = new BuildData.ErrorEntry
             {
-                ID = BuildData.ErrorID.kSyntaxError,
+                ID = BuildData.ErrorID.SyntaxError,
                 FileName = fileName,
                 Message = localizedMessage,
                 Line = line,
