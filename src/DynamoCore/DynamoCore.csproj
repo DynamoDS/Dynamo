@@ -246,7 +246,6 @@ limitations under the License.
     <Compile Include="Utilities\Point2D.cs" />
     <Compile Include="Utilities\Rect2D.cs" />
     <Compile Include="Utilities\Thickness.cs" />
-    <Compile Include="Utilities\ThreadSafeList.cs" />
     <Compile Include="Utilities\TypeExtensions.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
