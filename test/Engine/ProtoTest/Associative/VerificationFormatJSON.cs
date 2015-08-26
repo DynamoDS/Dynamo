@@ -145,27 +145,6 @@ namespace ProtoTest.Associative
 ";
             thisTest.RunAndVerify(code, verification);
         }
-
-        [Test]
-        [Ignore] // Do we need to support complex array verification???
-        public void TestArrayAssignment03()
-        {
-            string code =
-@"a = {1,2,3};";
-            string verification =
-@" 
-{
-    ""a"": 
-    [
-        {""0"": 1},
-        {""1"": 2},
-        {""2"": 3}
-    ]
-}
-";
-            thisTest.RunAndVerify(code, verification);
-        }
-
       
         [Test]
         public void TestNestedArrayAssignment01()
