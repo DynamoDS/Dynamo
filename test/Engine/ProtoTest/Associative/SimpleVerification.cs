@@ -10,7 +10,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class SimpleVerification : ProtoTestBase
+    class SimpleVerification : ProtoTestBase
     {
         [Test]
         public void TestAssignment01()
