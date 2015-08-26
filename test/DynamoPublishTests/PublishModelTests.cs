@@ -33,7 +33,7 @@ namespace DynamoPublishTests
             var client = new Mock<IWorkspaceStorageClient>();
             client.Setup(c =>
                 // If it's sent any workspace or any custom nodes, result always will be successful.
-                c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>())).
+                c.Send(It.IsAny<HomeWorkspaceModel>(), It.IsAny<IEnumerable<CustomNodeWorkspaceModel>>(), null)).
                 Returns(Resources.WorkspacesSendSucceededServerResponse);
 
             // Create publish model.

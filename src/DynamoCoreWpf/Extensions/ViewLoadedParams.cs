@@ -32,6 +32,16 @@ namespace Dynamo.Wpf.Extensions
 
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
         {
+            AddItemToMenu(type, menuItem, index);
+        }
+
+        public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
+        {
+            AddItemToMenu(type, separatorObj, index);
+        }
+
+        private void AddItemToMenu(MenuBarType type, Control itemToAdd, int index)
+        {
             if (dynamoMenu == null)
                 return;
 
@@ -40,9 +50,13 @@ namespace Dynamo.Wpf.Extensions
                 return;
 
             if (index >= 0 && index < dynamoItem.Items.Count)
-                dynamoItem.Items.Insert(index, menuItem);
+            {
+                dynamoItem.Items.Insert(index, itemToAdd);
+            }
             else
-                dynamoItem.Items.Add(menuItem);
+            {
+                dynamoItem.Items.Add(itemToAdd);
+            }
         }
 
         /// <summary>

@@ -22,6 +22,7 @@ using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
 using System.Text;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Controls
