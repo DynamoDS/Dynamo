@@ -26,7 +26,7 @@ namespace ProtoCore
 
     namespace BuildData
     {
-        public enum ErrorID
+        public enum ErrorType
         {
             SyntaxError,
             MaxErrorID
@@ -61,7 +61,7 @@ namespace ProtoCore
 
         public struct ErrorEntry
         {
-            public ErrorID ID;
+            public ErrorType ID;
             public string FileName;
             public string Message;
             public int Line;
@@ -467,7 +467,7 @@ namespace ProtoCore
 
             var errorEntry = new BuildData.ErrorEntry
             {
-                ID = BuildData.ErrorID.SyntaxError,
+                ID = BuildData.ErrorType.SyntaxError,
                 FileName = fileName,
                 Message = localizedMessage,
                 Line = line,

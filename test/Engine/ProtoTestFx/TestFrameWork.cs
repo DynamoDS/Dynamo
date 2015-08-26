@@ -134,7 +134,7 @@ namespace ProtoTestFx.TD
                 RunScriptSource(code);
             });
             Validity.Assert(testCore.BuildStatus.Errors.Count() > 0);
-            var syntaxErrors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorID.SyntaxError);
+            var syntaxErrors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorType.SyntaxError);
             Validity.Assert(syntaxErrors.Count() > 0);
         }
 
