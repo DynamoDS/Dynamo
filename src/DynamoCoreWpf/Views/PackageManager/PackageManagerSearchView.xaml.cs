@@ -21,12 +21,12 @@ namespace Dynamo.PackageManager.UI
             this.PackageManagerSearchViewModel = pm;
             InitializeComponent();
 
-            pm.RequestShowFileDialog += OnRequestShowFileDialog_SearchList;
+            pm.RequestShowFileDialog += OnRequestShowFileDialog;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            PackageManagerSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog_SearchList;
+            PackageManagerSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
             base.OnClosing(e);
         }
 
@@ -70,7 +70,7 @@ namespace Dynamo.PackageManager.UI
             OnShowContextMenuFromLeftClicked(sender, e);
         }
 
-        private void OnRequestShowFileDialog_SearchList(object sender, EventArgs e)
+        private void OnRequestShowFileDialog(object sender, EventArgs e)
         {
             string initialPath = (this.DataContext as PackageManagerSearchViewModel)
                 .PackageManagerClientViewModel.DynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
