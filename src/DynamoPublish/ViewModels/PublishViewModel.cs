@@ -258,6 +258,11 @@ namespace Dynamo.Publish.ViewModels
             UIDispatcher.BeginInvoke(action);
         }
 
+        internal void ClearShareLink()
+        {
+            ShareLink = String.Empty;
+        }
+
         #endregion
     }
 }

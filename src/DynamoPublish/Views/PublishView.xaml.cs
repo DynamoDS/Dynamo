@@ -52,7 +52,7 @@ namespace Dynamo.Publish.Views
         {
             textBoxName.Clear();
             textBoxDescription.Clear();
-            textBoxShareLink.Clear();
+            viewModel.ClearShareLink();
         }
     }
 }
