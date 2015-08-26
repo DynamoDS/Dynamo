@@ -72,13 +72,16 @@ namespace Dynamo.PackageManager.UI
 
         private void OnRequestShowFileDialog_SearchList(object sender, EventArgs e)
         {
+            string initialPath = (this.DataContext as PackageManagerSearchViewModel)
+                .PackageManagerClientViewModel.DynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
+            
             var args = e as PackagePathEventArgs;
             args.Cancel = true;
 
             var dialog = new DynamoFolderBrowserDialog
             {
                 // Navigate to initial folder.
-                SelectedPath = args.Path,
+                SelectedPath = initialPath,
                 Owner = this
             };
 
