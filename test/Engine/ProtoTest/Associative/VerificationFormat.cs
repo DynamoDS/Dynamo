@@ -88,6 +88,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Ignore] // Custom verification format for arrays not implemented
         public void TestArrayAssignment01()
         {
             string code =
@@ -100,6 +101,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Ignore] // Custom verification format for arrays not implemented
         public void TestArrayAssignment02()
         {
             string code =
@@ -112,6 +114,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        [Ignore] // Custom verification format for arrays not implemented
         public void TestNestedArrayAssignment01()
         {
             string code =
