@@ -51,6 +51,20 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
+        private bool isSent = false;
+        public bool IsSent 
+        {
+            get { return isSent; }
+            set
+            {
+                if (isSent != value) 
+                {
+                    isSent = value;
+                    RaisePropertyChanged("IsSent");
+                }                
+            }
+        }
+
         private Visibility isTextblockVisible;
         public Visibility IsTextblockVisible
         {
@@ -81,6 +95,21 @@ namespace Dynamo.Publish.ViewModels
             model.UpdateStatusMessage +=model_UpdateStatusMessage;           
             IsTextblockVisible = Visibility.Hidden;
             InviteCommand = new DelegateCommand(OnInvite);
+        }
+
+        internal void InviteLoad(object sender, EventArgs e)
+        {
+            var status = model.GetInvitationStatus();
+
+            IsSent = !String.IsNullOrEmpty(status);
+            if (status == "pending") 
+            {
+                model_UpdateStatusMessage(Resources.RequestOnPendingState);
+            }
+            else if (status == "approved")
+            {
+                model_UpdateStatusMessage(Resources.RequestApproved);
+            }
         }
 
         private void model_UpdateStatusMessage(string status, bool hasError = false)

@@ -331,6 +331,24 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request was successfully approved!.
+        /// </summary>
+        public static string RequestApproved {
+            get {
+                return ResourceManager.GetString("RequestApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending....
+        /// </summary>
+        public static string RequestOnPendingState {
+            get {
+                return ResourceManager.GetString("RequestOnPendingState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server not found..
         /// </summary>
         public static string ServerNotFoundMessage {
