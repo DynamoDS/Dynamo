@@ -23,7 +23,7 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
 
-            secondaryHeaderStrip.HeaderActivated += OnHeaderButtonClick;
+            secondaryHeaderStrip.HeaderActivated += OnHeaderButtonClick;            
         }
 
         private void OnHeaderButtonClick(object sender, RoutedEventArgs e)

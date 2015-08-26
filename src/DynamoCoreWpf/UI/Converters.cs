@@ -2530,38 +2530,44 @@ namespace Dynamo.Controls
 
         }
 
-   
+        public class TreeViewListBoxTitleConverter : IMultiValueConverter
+        {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            {
+                var headerStrip = values[0] as HeaderStrip;
+                var secondaryListBox = values[1] as ListBox;
+                var primaryListBox = values[2] as ListBox;
+                var queryListBox = values[3] as ListBox;
 
-        //public class TreeViewVLineMarginConverter : IMultiValueConverter
-        //{
-        //    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        //    {
-        //        var parentMargin = (Thickness)(values[0]);
-        //        var childMargin = (Thickness)(values[1]);
+                if (headerStrip != null && secondaryListBox != null)
+                {
+                    var headerStripItem = headerStrip.HeaderStripItems.FirstOrDefault();
+                    if (headerStripItem != null)
+                    {
+                        if (secondaryListBox.Items.Count <= 2)
+                        {
+                            headerStripItem.Text = headerStripItem.Text.Substring(0, 1);
+                            //secondaryListBox.Margin = new Thickness(0,-30,0,0);                                    
+                        }
+                    }
+                }
 
-        //        var diff = childMargin.Left - childMargin.Right;
+                if (!(primaryListBox.Items.Count <= 0 && 
+                    secondaryListBox.Items.Count <=0 &&
+                    queryListBox.Items.Count <= 0))
+                {
+                    return new Thickness(0, 0, 0, 0);
+                }
+                return new Thickness(10, 0, 0, 0);
 
-        //        //TODO: change the visibility of the vertical line
-        //        if (childMargin.Left == parentMargin.Left)
-        //        {
-        //            return new Thickness(-10, 0, 0, 0);
-        //        }
+            }
 
-        //        if (diff < childMargin.Right)
-        //        {
-        //            return new Thickness(0, 0, childMargin.Left * 2, 0);
-        //        }
-        //        else
-        //        {
-        //            return new Thickness(childMargin.Right, 0, diff * 2, 0);
-        //        }
-        //    }
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
 
-        //    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //}
-
-
+        }
+    
+           
    }

@@ -157,4 +157,5 @@
     <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />
     <controls:TreeViewVLineMarginConverter x:Key="TreeViewVLineMarginConverter" />
     <controls:TreeViewMarginCheck x:Key="TreeViewMarginCheck"/>
+    <controls:TreeViewListBoxTitleConverter x:Key="TreeViewListBoxTitleConverter"/>
 </ResourceDictionary>

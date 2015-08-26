@@ -13,7 +13,6 @@
              MinWidth="100">
     <UserControl.Resources>
         <ResourceDictionary>
-
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
@@ -104,9 +103,16 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <uicontrols:HeaderStrip x:Name="primaryHeaderStrip"
-                                    Margin="0,0,0,5"
-                                    HorizontalAlignment="Left" />
+            <uicontrols:HeaderStrip x:Name="primaryHeaderStrip">
+                <uicontrols:HeaderStrip.Padding>
+                    <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
+                        <Binding  ElementName="secondaryHeaderStrip"/>
+                        <Binding  ElementName="secondaryMembers"/>
+                        <Binding  ElementName="primaryMembers"/>
+                        <Binding  ElementName="queryMembers"/>
+                    </MultiBinding>
+                </uicontrols:HeaderStrip.Padding>
+            </uicontrols:HeaderStrip>
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
                      Grid.ColumnSpan="2"
@@ -115,7 +121,8 @@
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ItemTemplate="{StaticResource MemberTemplate}"
                      BorderThickness="1,0,0,0"
-                     Margin="0,-10,0,0"
+                     Margin="0,-50,0,0"
+                     Padding="0,-10,0,0"
                      />
 
             <Border Padding="0,5,0,5"
@@ -125,7 +132,16 @@
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
-                <uicontrols:HeaderStrip x:Name="secondaryHeaderStrip" />
+                <uicontrols:HeaderStrip x:Name="secondaryHeaderStrip">
+                    <uicontrols:HeaderStrip.Padding>                       
+                        <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
+                            <Binding  ElementName="secondaryHeaderStrip"/>
+                            <Binding  ElementName="secondaryMembers"/>
+                            <Binding  ElementName="primaryMembers"/>
+                            <Binding  ElementName="queryMembers"/>
+                        </MultiBinding>
+                    </uicontrols:HeaderStrip.Padding>
+                </uicontrols:HeaderStrip>
             </Border>
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
@@ -136,7 +152,8 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
                      BorderThickness="1,0,0,0"
-                     Margin="0,-10,0,0">
+                     Margin="0,-50,0,0"
+                     Padding="0,-10,0,0">
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
@@ -150,7 +167,16 @@
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
-                <uicontrols:HeaderStrip x:Name="queryHeaderStrip" />
+                <uicontrols:HeaderStrip x:Name="queryHeaderStrip">
+                    <uicontrols:HeaderStrip.Padding>
+                        <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
+                            <Binding  ElementName="secondaryHeaderStrip"/>
+                            <Binding  ElementName="secondaryMembers"/>
+                            <Binding  ElementName="primaryMembers"/>
+                            <Binding  ElementName="queryMembers"/>
+                        </MultiBinding>
+                    </uicontrols:HeaderStrip.Padding>
+                </uicontrols:HeaderStrip>
             </Border>
             <ListBox x:Name="queryMembers"
                      Grid.Row="5"
@@ -161,7 +187,8 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
                      BorderThickness="1,0,0,0"
-                     Margin="0,-10,0,0">
+                     Margin="0,-50,0,0"
+                     Padding="0,-10,0,0">
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />

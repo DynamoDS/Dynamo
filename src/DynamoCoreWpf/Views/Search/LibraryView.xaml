@@ -45,8 +45,9 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
-                                        <Border BorderBrush="{StaticResource LibraryItemHostBackground}">
-                                            <Grid Name="OuterGrid" Background="Transparent">
+                                        <Border x:Name="outerBorder" BorderBrush="{StaticResource LibraryItemHostBackground}">
+                                            <Grid Name="OuterGrid" Background="Transparent"
+                                                  >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="*" />
@@ -202,7 +203,7 @@
                                             </Border.Style>
                                         </Border>
 
-                                        <Border Grid.Row="1"
+                                        <Border  Grid.Row="1"
                                                 Background="{StaticResource LibraryItemHostBackground}">
                                             <ItemsPresenter x:Name="ItemsHost">
                                                 <ItemsPresenter.Visibility>
@@ -613,7 +614,7 @@
             </DataTemplate>
 
             <DataTemplate x:Key="ClassDetailsDataTemplate">
-                <uicontrols:ClassInformationView Margin="15,0,0,0">
+                <uicontrols:ClassInformationView Margin="15,-10,0,0">
                     <uicontrols:ClassInformationView.Width>
                         <Binding Path="ActualWidth"
                                  RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeView}" />
@@ -732,7 +733,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeView}">
-                            <Border Background="{TemplateBinding Background}"
+                            <Border x:Name="TreeBorder"  Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}">
                                 <ItemsPresenter />
