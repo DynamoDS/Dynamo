@@ -252,7 +252,6 @@ limitations under the License.
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Utilities\Extensions.cs" />
-    <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />
     <Compile Include="Utilities\Guid.cs" />
