@@ -406,37 +406,37 @@ namespace Dynamo.Annotations
   // ASP.NET MVC attributes
 
   [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-  public sealed class AspMvcAreaMasterLocationFormatAttribute : Attribute
+  internal sealed class AspMvcAreaMasterLocationFormatAttribute : Attribute
   {
     public AspMvcAreaMasterLocationFormatAttribute(string format) { }
   }
 
   [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-  public sealed class AspMvcAreaPartialViewLocationFormatAttribute : Attribute
+  internal sealed class AspMvcAreaPartialViewLocationFormatAttribute : Attribute
   {
     public AspMvcAreaPartialViewLocationFormatAttribute(string format) { }
   }
 
   [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-  public sealed class AspMvcAreaViewLocationFormatAttribute : Attribute
+  internal sealed class AspMvcAreaViewLocationFormatAttribute : Attribute
   {
     public AspMvcAreaViewLocationFormatAttribute(string format) { }
   }
 
   [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-  public sealed class AspMvcMasterLocationFormatAttribute : Attribute
+  internal sealed class AspMvcMasterLocationFormatAttribute : Attribute
   {
     public AspMvcMasterLocationFormatAttribute(string format) { }
   }
 
   [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-  public sealed class AspMvcPartialViewLocationFormatAttribute : Attribute
+  internal sealed class AspMvcPartialViewLocationFormatAttribute : Attribute
   {
     public AspMvcPartialViewLocationFormatAttribute(string format) { }
   }
 
   [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-  public sealed class AspMvcViewLocationFormatAttribute : Attribute
+  internal sealed class AspMvcViewLocationFormatAttribute : Attribute
   {
     public AspMvcViewLocationFormatAttribute(string format) { }
   }
@@ -448,7 +448,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Html.ChildActionExtensions.RenderAction(HtmlHelper, String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
-  public sealed class AspMvcActionAttribute : Attribute
+  internal sealed class AspMvcActionAttribute : Attribute
   {
     public AspMvcActionAttribute() { }
     public AspMvcActionAttribute([NotNull] string anonymousProperty)
@@ -465,7 +465,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Html.ChildActionExtensions.RenderAction(HtmlHelper, String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public sealed class AspMvcAreaAttribute : PathReferenceAttribute
+  internal sealed class AspMvcAreaAttribute : PathReferenceAttribute
   {
     public AspMvcAreaAttribute() { }
     public AspMvcAreaAttribute([NotNull] string anonymousProperty)
@@ -484,7 +484,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Html.ChildActionExtensions.RenderAction(HtmlHelper, String, String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
-  public sealed class AspMvcControllerAttribute : Attribute
+  internal sealed class AspMvcControllerAttribute : Attribute
   {
     public AspMvcControllerAttribute() { }
     public AspMvcControllerAttribute([NotNull] string anonymousProperty)
@@ -501,7 +501,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Controller.View(String, String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public sealed class AspMvcMasterAttribute : Attribute { }
+  internal sealed class AspMvcMasterAttribute : Attribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. Indicates that a parameter is an MVC model type.
@@ -509,7 +509,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Controller.View(String, Object)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public sealed class AspMvcModelTypeAttribute : Attribute { }
+  internal sealed class AspMvcModelTypeAttribute : Attribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. If applied to a parameter, indicates that
@@ -519,14 +519,14 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Html.RenderPartialExtensions.RenderPartial(HtmlHelper, String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
-  public sealed class AspMvcPartialViewAttribute : PathReferenceAttribute { }
+  internal sealed class AspMvcPartialViewAttribute : PathReferenceAttribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. Allows disabling all inspections
   /// for MVC views within a class or a method.
   /// </summary>
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-  public sealed class AspMvcSupressViewErrorAttribute : Attribute { }
+  internal sealed class AspMvcSupressViewErrorAttribute : Attribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. Indicates that a parameter is an MVC display template.
@@ -534,7 +534,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Html.DisplayExtensions.DisplayForModel(HtmlHelper, String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public sealed class AspMvcDisplayTemplateAttribute : Attribute { }
+  internal sealed class AspMvcDisplayTemplateAttribute : Attribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. Indicates that a parameter is an MVC editor template.
@@ -542,7 +542,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Html.EditorExtensions.EditorForModel(HtmlHelper, String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public sealed class AspMvcEditorTemplateAttribute : Attribute { }
+  internal sealed class AspMvcEditorTemplateAttribute : Attribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. Indicates that a parameter is an MVC template.
@@ -550,7 +550,7 @@ namespace Dynamo.Annotations
   /// <c>System.ComponentModel.DataAnnotations.UIHintAttribute(System.String)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public sealed class AspMvcTemplateAttribute : Attribute { }
+  internal sealed class AspMvcTemplateAttribute : Attribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter
@@ -559,7 +559,7 @@ namespace Dynamo.Annotations
   /// <c>System.Web.Mvc.Controller.View(Object)</c>
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
-  public sealed class AspMvcViewAttribute : PathReferenceAttribute { }
+  internal sealed class AspMvcViewAttribute : PathReferenceAttribute { }
 
   /// <summary>
   /// ASP.NET MVC attribute. When applied to a parameter of an attribute,
@@ -573,7 +573,7 @@ namespace Dynamo.Annotations
   /// }
   /// </code></example>
   [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
-  public sealed class AspMvcActionSelectorAttribute : Attribute { }
+  internal sealed class AspMvcActionSelectorAttribute : Attribute { }
 
   [AttributeUsage(
     AttributeTargets.Parameter | AttributeTargets.Property |
