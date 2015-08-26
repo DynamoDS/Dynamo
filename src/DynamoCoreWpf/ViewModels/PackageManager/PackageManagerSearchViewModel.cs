@@ -434,7 +434,11 @@ namespace Dynamo.PackageManager
 
         private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
-            var result = MessageBox.Show(String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version), 
+            string msg = downloadPath == null ?
+                String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version) :
+                String.Format(Resources.MessageConfirmToInstallPackageToFolder, element.Name, version.version, downloadPath);
+
+            var result = MessageBox.Show(msg, 
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
