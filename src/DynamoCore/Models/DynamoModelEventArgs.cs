@@ -221,7 +221,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class WorkspaceEventArgs
+    internal class WorkspaceEventArgs
     {
         public WorkspaceModel Workspace { get; set; }
 
