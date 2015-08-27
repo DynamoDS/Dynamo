@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Dynamo.Publish.Properties;
+using System.Threading.Tasks;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -51,16 +52,16 @@ namespace Dynamo.Publish.ViewModels
             }
         }
 
-        private bool isSent = false;
-        public bool IsSent 
+        private bool isApproved = false;
+        public bool IsApproved 
         {
-            get { return isSent; }
+            get { return isApproved; }
             set
             {
-                if (isSent != value) 
+                if (isApproved != value) 
                 {
-                    isSent = value;
-                    RaisePropertyChanged("IsSent");
+                    isApproved = value;
+                    RaisePropertyChanged("IsApproved");
                 }                
             }
         }
@@ -99,17 +100,20 @@ namespace Dynamo.Publish.ViewModels
 
         internal void InviteLoad(object sender, EventArgs e)
         {
-            var status = model.GetInvitationStatus();
+            Task.Factory.StartNew(() => 
+            {
+                var status = model.GetInvitationStatus();
 
-            IsSent = !String.IsNullOrEmpty(status);
-            if (status == "pending") 
-            {
-                model_UpdateStatusMessage(Resources.RequestOnPendingState);
-            }
-            else if (status == "approved")
-            {
-                model_UpdateStatusMessage(Resources.RequestApproved);
-            }
+                IsApproved = status == "approved";
+                if (status == "pending")
+                {
+                    model_UpdateStatusMessage(Resources.RequestOnPendingState);
+                }
+                else if (status == "approved")
+                {
+                    model_UpdateStatusMessage(Resources.RequestApproved);
+                }
+            });           
         }
 
         private void model_UpdateStatusMessage(string status, bool hasError = false)

@@ -331,7 +331,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request was successfully approved!.
+        ///   Looks up a localized string similar to Your request is already approved..
         /// </summary>
         public static string RequestApproved {
             get {
@@ -340,7 +340,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pending....
+        ///   Looks up a localized string similar to Request pending....
         /// </summary>
         public static string RequestOnPendingState {
             get {

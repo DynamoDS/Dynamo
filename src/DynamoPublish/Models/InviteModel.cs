@@ -78,6 +78,10 @@ namespace Dynamo.Publish.Models
 
             restClient = new RestClient(serverUrl);
 
+            if (authenticationProvider.LoginState != LoginState.LoggedIn) 
+            {
+                return String.Empty;
+            }
             authenticationProvider.SignRequest(ref req, restClient);
 
             var res = restClient.Execute(req).Content;

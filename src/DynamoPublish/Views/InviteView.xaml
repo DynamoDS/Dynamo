@@ -68,7 +68,7 @@
                            BasedOn="{StaticResource STextButton}">
                         <Setter Property="IsEnabled" Value="True" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsSent}"
+                            <DataTrigger Binding="{Binding IsApproved}"
                                  Value="True">
                                 <Setter Property="IsEnabled"
                                 Value="False" />
