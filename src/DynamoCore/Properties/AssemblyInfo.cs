@@ -18,3 +18,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoApplications")]
 [assembly: InternalsVisibleTo("GeometryUIWpf")]
 [assembly: InternalsVisibleTo("RevitSystemTests")]
+[assembly: InternalsVisibleTo("DynamoCLI")]
