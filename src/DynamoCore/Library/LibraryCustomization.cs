@@ -10,7 +10,7 @@ using DynamoUtilities;
 
 namespace Dynamo.DSEngine
 {
-    public class LibraryCustomizationServices
+    internal class LibraryCustomizationServices
     {
         private static Dictionary<string, bool> triedPaths = new Dictionary<string, bool>();
         private static Dictionary<string, LibraryCustomization> cache = new Dictionary<string, LibraryCustomization>();
@@ -115,7 +115,7 @@ namespace Dynamo.DSEngine
         }
     }
 
-    public class LibraryCustomization
+    internal class LibraryCustomization
     {
         private readonly Assembly resourceAssembly;
         private readonly XDocument xmlDocument;
