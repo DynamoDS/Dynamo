@@ -91,7 +91,7 @@ namespace Dynamo.Models
                 DispatchedToUI(sender, e);
         }
 
-        public event DispatchedToUIThreadHandler DispatchedToUI;
+        internal event DispatchedToUIThreadHandler DispatchedToUI;
 
         #endregion
 
@@ -1799,7 +1799,7 @@ namespace Dynamo.Models
 
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
-    public delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
+    internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
 
     #region class attributes
 
