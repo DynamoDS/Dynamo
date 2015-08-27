@@ -13,12 +13,9 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerSearchView : Window
     {
-        private PackageManagerSearchViewModel PackageManagerSearchViewModel;
-
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
             this.DataContext = pm;
-            this.PackageManagerSearchViewModel = pm;
             InitializeComponent();
 
             pm.RequestShowFileDialog += OnRequestShowFileDialog;
@@ -26,7 +23,7 @@ namespace Dynamo.PackageManager.UI
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            PackageManagerSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+            (this.DataContext as PackageManagerSearchViewModel).RequestShowFileDialog -= OnRequestShowFileDialog;
             base.OnClosing(e);
         }
 
@@ -70,13 +67,12 @@ namespace Dynamo.PackageManager.UI
             OnShowContextMenuFromLeftClicked(sender, e);
         }
 
-        private void OnRequestShowFileDialog(object sender, EventArgs e)
+        private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
             string initialPath = (this.DataContext as PackageManagerSearchViewModel)
                 .PackageManagerClientViewModel.DynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
             
-            var args = e as PackagePathEventArgs;
-            args.Cancel = true;
+            e.Cancel = true;
 
             var dialog = new DynamoFolderBrowserDialog
             {
@@ -87,8 +83,8 @@ namespace Dynamo.PackageManager.UI
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                args.Cancel = false;
-                args.Path = dialog.SelectedPath;
+                e.Cancel = false;
+                e.Path = dialog.SelectedPath;
             }
         }
 

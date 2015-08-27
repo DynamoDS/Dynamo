@@ -20,7 +20,7 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand DownvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
-        public DelegateCommand DownloadLatestToCustomPathCommand { get; set; }
+        public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
         public PackageManagerSearchViewModel PackageManagerSearchViewModel { get; private set; }
         public new PackageManagerSearchElement Model { get; internal set; }
@@ -99,8 +99,6 @@ namespace Dynamo.PackageManager.ViewModels
 
             if (RequestDownload != null)
                 RequestDownload(this.Model, version, downloadPath);
-
-            DownloadLatestToCustomPathCommand.RaiseCanExecuteChanged();
         }
 
         private string GetDownloadPath()

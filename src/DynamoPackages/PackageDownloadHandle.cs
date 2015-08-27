@@ -75,7 +75,7 @@ namespace Dynamo.PackageManager
                 throw new Exception(Properties.Resources.PackageEmpty);
             }
 
-            if (installDirectory == null)
+            if (String.IsNullOrEmpty(installDirectory))
                 installDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
 
             var installedPath = BuildInstallDirectoryString(installDirectory);

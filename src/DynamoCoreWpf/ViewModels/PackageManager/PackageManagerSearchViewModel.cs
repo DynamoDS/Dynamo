@@ -434,7 +434,7 @@ namespace Dynamo.PackageManager
 
         private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
-            string msg = downloadPath == null ?
+            string msg = String.IsNullOrEmpty(downloadPath) ?
                 String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, element.Name, version.version, downloadPath);
 
@@ -575,7 +575,7 @@ namespace Dynamo.PackageManager
                 }
 
                 // add custom path to custom package folder list
-                if (downloadPath != null)
+                if (!String.IsNullOrEmpty(downloadPath))
                 {
                     if (!settings.CustomPackageFolders.Contains(downloadPath))
                         settings.CustomPackageFolders.Add(downloadPath);
