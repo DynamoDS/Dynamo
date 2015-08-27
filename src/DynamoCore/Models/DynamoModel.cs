@@ -65,8 +65,8 @@ namespace Dynamo.Models
         }
 
 
-        public event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
-        public void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
+        internal event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
+        internal void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
         {
             if (RequestPresetsNamePrompt != null)
                 RequestPresetsNamePrompt(e);

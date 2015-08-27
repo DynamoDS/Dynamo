@@ -848,7 +848,7 @@ namespace Dynamo.Controls
         /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
         /// a preset name/timestamp and description.
         /// </summary>
-        public void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
+        internal void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
         {
             string error = "";
 

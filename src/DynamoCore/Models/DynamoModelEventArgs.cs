@@ -183,7 +183,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class PresetsNamePromptEventArgs : EventArgs
+    internal class PresetsNamePromptEventArgs : EventArgs
     {
         public string Name { get; set; }
         public string Description { get; set; }
