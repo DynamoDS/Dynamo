@@ -223,7 +223,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// Defines Update Manager Configuration settings.
     /// </summary>
-    public class UpdateManagerConfiguration : IUpdateManagerConfiguration
+    internal class UpdateManagerConfiguration : IUpdateManagerConfiguration
     {
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
@@ -389,7 +389,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    public sealed class UpdateManager : NotificationObject, IUpdateManager
+    internal sealed class UpdateManager : NotificationObject, IUpdateManager
     {
         #region Private Class Data Members
 
@@ -1103,7 +1103,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// Lookup for installed products
     /// </summary>
-    public abstract class DynamoLookUp : IDynamoLookUp
+    internal abstract class DynamoLookUp : IDynamoLookUp
     {
         /// <summary>
         /// Gets the version of latest product

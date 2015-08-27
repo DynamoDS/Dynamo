@@ -15,3 +15,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DSCoreNodesUI")]
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 [assembly: InternalsVisibleTo("DynamoWatch3D")]
+[assembly: InternalsVisibleTo("DynamoApplications")]
