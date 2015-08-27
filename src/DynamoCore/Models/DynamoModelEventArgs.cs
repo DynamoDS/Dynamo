@@ -6,7 +6,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
-    public class ZoomEventArgs : EventArgs
+    internal class ZoomEventArgs : EventArgs
     {
         internal enum ZoomModes
         {

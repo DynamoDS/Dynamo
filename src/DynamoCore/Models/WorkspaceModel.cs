@@ -115,7 +115,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
+        internal virtual void OnZoomChanged(object sender, ZoomEventArgs e)
         {
             if (ZoomChanged != null)
             {
