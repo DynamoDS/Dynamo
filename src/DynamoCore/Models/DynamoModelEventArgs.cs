@@ -231,7 +231,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class ModelEventArgs : EventArgs
+    internal class ModelEventArgs : EventArgs
     {
         public ModelBase Model { get; private set; }
         public double X { get; private set; }

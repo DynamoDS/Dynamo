@@ -91,7 +91,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
+        internal virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);

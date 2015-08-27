@@ -93,7 +93,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
+        internal virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);
