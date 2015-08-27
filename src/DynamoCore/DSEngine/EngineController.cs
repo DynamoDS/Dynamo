@@ -84,7 +84,7 @@ namespace Dynamo.DSEngine
             get { return libraryServices; }
         }
 
-        public CodeCompletionServices CodeCompletionServices
+        internal CodeCompletionServices CodeCompletionServices
         {
             get { return codeCompletionServices; }
         }

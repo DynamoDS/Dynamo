@@ -12,7 +12,7 @@ namespace Dynamo.DSEngine.CodeCompletion
     /// <summary>
     /// Interacts with the VM core to provide code completion data to the UI
     /// </summary>
-    public class CodeCompletionServices
+    internal class CodeCompletionServices
     {
         private readonly ProtoCore.Core core = null;
 
