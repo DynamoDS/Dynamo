@@ -14,7 +14,7 @@ namespace Dynamo.Models.NodeLoaders
     /// <summary>
     ///     Xml Loader for ZeroTouch nodes.
     /// </summary>
-    public class ZeroTouchNodeLoader : INodeLoader<NodeModel>
+    internal class ZeroTouchNodeLoader : INodeLoader<NodeModel>
     {
         private readonly LibraryServices libraryServices;
 
