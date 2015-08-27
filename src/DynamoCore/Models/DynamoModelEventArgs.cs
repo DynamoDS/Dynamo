@@ -156,7 +156,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class DynamoModelUpdateArgs : EventArgs
+    internal class DynamoModelUpdateArgs : EventArgs
     {
         public object Item { get; set; }
 
