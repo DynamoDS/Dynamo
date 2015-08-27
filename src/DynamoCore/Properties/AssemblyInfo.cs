@@ -16,3 +16,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 [assembly: InternalsVisibleTo("DynamoWatch3D")]
 [assembly: InternalsVisibleTo("DynamoApplications")]
+[assembly: InternalsVisibleTo("GeometryUIWpf")]

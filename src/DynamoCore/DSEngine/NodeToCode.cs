@@ -99,7 +99,7 @@ namespace Dynamo.DSEngine
         /// Record all actions in recorder.
         /// </summary>
         /// <param name="recorder"></param>
-        public void ApplyActions(UndoRedoRecorder recorder)
+        internal void ApplyActions(UndoRedoRecorder recorder)
         {
             using (recorder.BeginActionGroup())
             {

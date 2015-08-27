@@ -582,7 +582,7 @@ namespace Dynamo.Models
         /// WorkspaceModel.RecordModelsForUndo method which allows for multiple 
         /// modifications in a single action group.
         /// </summary>
-        public UndoRedoRecorder UndoRecorder
+        internal UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
         }
@@ -1495,7 +1495,7 @@ namespace Dynamo.Models
         }
 
         // See RecordModelsForModification below for more details.
-        public static void RecordModelForModification(ModelBase model, UndoRedoRecorder recorder)
+        internal static void RecordModelForModification(ModelBase model, UndoRedoRecorder recorder)
         {
             if (null != model)
             {
@@ -1529,7 +1529,7 @@ namespace Dynamo.Models
             }
         }
 
-        public static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
+        internal static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
         {
             if (null == recorder)
                 return;
