@@ -261,7 +261,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class DeltaComputeStateEventArgs : EventArgs
+    internal class DeltaComputeStateEventArgs : EventArgs
     {
         public List<Guid> NodeGuidList;
         public bool GraphExecuted;

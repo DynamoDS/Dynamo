@@ -115,8 +115,8 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
-        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
+        internal event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
+        internal virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
         {
             var handler = SetNodeDeltaState;
             if (handler != null) handler(this, e);
