@@ -157,7 +157,7 @@ namespace Dynamo.Interfaces
     /// <summary>
     ///     Utility methods for ILogSource.
     /// </summary>
-    public static class LogSource
+    internal static class LogSource
     {
         public static ILogger AsLogger(Action<ILogMessage> eventInvoker)
         {
