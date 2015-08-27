@@ -175,7 +175,7 @@
 
             </Grid>
 
-            <!-- To achieve virtualization and smooth scrolling we use treeview, from more information look:
+            <!-- To achieve virtualization and smooth scrolling we use treeview, for more information look:
                  http://stackoverflow.com/questions/1977929/wpf-listbox-with-a-listbox-ui-virtualization-and-scrolling-->
             <TreeView  Name="SearchResultsListBox"
                        ItemsSource="{Binding Path=SearchResults}"
