@@ -234,7 +234,7 @@ namespace Dynamo.DSEngine.CodeCompletion
     /// the auto-completion feature. This class represents a common currency that
     /// is view-independent. 
     /// </summary>
-    public class CompletionData
+    internal class CompletionData
     {
         private readonly string text;
         private readonly CompletionType type;
