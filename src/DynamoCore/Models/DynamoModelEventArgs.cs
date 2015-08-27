@@ -196,7 +196,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class ViewOperationEventArgs : EventArgs
+    internal class ViewOperationEventArgs : EventArgs
     {
         public enum Operation
         {
