@@ -55,7 +55,6 @@
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="DataMarshaler.cs" />
     <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="ModifierKeys.cs" />
     <Compile Include="Option.cs" />
