@@ -17,3 +17,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoWatch3D")]
 [assembly: InternalsVisibleTo("DynamoApplications")]
 [assembly: InternalsVisibleTo("GeometryUIWpf")]
+[assembly: InternalsVisibleTo("RevitSystemTests")]
