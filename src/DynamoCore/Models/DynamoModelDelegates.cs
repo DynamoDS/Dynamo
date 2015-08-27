@@ -12,5 +12,5 @@ namespace Dynamo.Models
     public delegate void ActionHandler(Action action);
     public delegate void NodeEventHandler(object sender, EventArgs e);
 
-    public delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
+    internal delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
 }

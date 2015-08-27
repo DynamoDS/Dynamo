@@ -273,7 +273,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class SettingsMigrationEventArgs : EventArgs
+    internal class SettingsMigrationEventArgs : EventArgs
     {
         public enum EventStatusType
         { 
