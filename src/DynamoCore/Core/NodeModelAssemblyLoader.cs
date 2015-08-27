@@ -7,9 +7,10 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 using DynamoUtilities;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Models
 {
     /// <summary>
     ///     This class is responsible for loading types that derive
