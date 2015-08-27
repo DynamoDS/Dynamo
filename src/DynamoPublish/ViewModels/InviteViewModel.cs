@@ -18,8 +18,15 @@ namespace Dynamo.Publish.ViewModels
 {
     public class InviteViewModel : NotificationObject
     {
+        #region Constants
+
+        private const string ApprovedStatus = "approved";
+        private const string PendingStatus = "pending";
+
+        #endregion
+
         #region Properties
-              
+
         private readonly InviteModel model;
         internal InviteModel Model
         {
@@ -104,12 +111,12 @@ namespace Dynamo.Publish.ViewModels
             {
                 var status = model.GetInvitationStatus();
 
-                IsApproved = status == Resources.ApprovedStatus;
-                if (status == Resources.PendingStatus)
+                IsApproved = status == ApprovedStatus;
+                if (status == PendingStatus)
                 {
                     model_UpdateStatusMessage(Resources.RequestOnPendingState);
                 }
-                else if (status == Resources.ApprovedStatus)
+                else if (status == ApprovedStatus)
                 {
                     model_UpdateStatusMessage(Resources.RequestApproved);
                 }

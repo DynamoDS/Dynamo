@@ -61,15 +61,6 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to approved.
-        /// </summary>
-        public static string ApprovedStatus {
-            get {
-                return ResourceManager.GetString("ApprovedStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Authentication failed..
         /// </summary>
         public static string AuthenticationFailedMessage {
@@ -228,15 +219,6 @@ namespace Dynamo.Publish.Properties {
         public static string PageErrorMessage {
             get {
                 return ResourceManager.GetString("PageErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to pending.
-        /// </summary>
-        public static string PendingStatus {
-            get {
-                return ResourceManager.GetString("PendingStatus", resourceCulture);
             }
         }
         
