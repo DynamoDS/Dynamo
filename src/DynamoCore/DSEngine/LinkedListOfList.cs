@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Dynamo.Utilities
+namespace Dynamo.DSEngine
 {
     /// <summary>
     ///     A linked list of list (each node in linked list is a list), and node
@@ -9,7 +9,7 @@ namespace Dynamo.Utilities
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    internal class LinkedListOfList<TKey, T> : IEnumerable<List<T>>
+    public class LinkedListOfList<TKey, T> : IEnumerable<List<T>>
     {
         private readonly LinkedList<List<T>> list;
         private readonly Dictionary<TKey, LinkedListNode<List<T>>> map;

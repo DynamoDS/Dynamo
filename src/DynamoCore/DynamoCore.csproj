@@ -77,7 +77,8 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit">
+    <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -115,6 +116,8 @@ limitations under the License.
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
+    <Compile Include="Core\Threading\Disposable.cs" />
+    <Compile Include="DSEngine\LinkedListOfList.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ExtensionLibraryLoader.cs" />
     <Compile Include="Interfaces\ICustomNodeManager.cs" />
@@ -155,10 +158,7 @@ limitations under the License.
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
     <Compile Include="Core\AuthenticationManager.cs" />
-    <Compile Include="Utilities\AssemblyConfiguration.cs" />
-    <Compile Include="Utilities\FailFunc.cs" />
-    <Compile Include="Utilities\NodeModelExtensions.cs" />
-    <Compile Include="Utilities\OrderedSet.cs" />
+    <Compile Include="Models\NodeModelExtensions.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\RecordableCommands.cs" />
     <Compile Include="Properties\Resources.en-US.Designer.cs">
@@ -171,10 +171,8 @@ limitations under the License.
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
     <Compile Include="Search\SearchElementGroup.cs" />
-    <Compile Include="Utilities\CodeBlockUtils.cs" />
-    <Compile Include="Utilities\Disposable.cs" />
-    <Compile Include="Utilities\ModifierKeys.cs" />
-    <Compile Include="Utilities\NotificationObject.cs" />
+    <Compile Include="Nodes\CodeBlockUtils.cs" />
+    <Compile Include="Core\NotificationObject.cs" />
     <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Core\Threading\PreviewGraphAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
@@ -242,20 +240,10 @@ limitations under the License.
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\Configurations.cs" />
-    <Compile Include="Utilities\LinkedListOfList.cs" />
-    <Compile Include="Utilities\MigrationReport.cs" />
-    <Compile Include="Utilities\Option.cs" />
-    <Compile Include="Utilities\Point2D.cs" />
-    <Compile Include="Utilities\Rect2D.cs" />
-    <Compile Include="Utilities\Thickness.cs" />
-    <Compile Include="Utilities\TypeExtensions.cs" />
-    <Compile Include="Utilities\VersionUtilities.cs" />
-    <Compile Include="Utilities\XmlHelper.cs" />
+    <Compile Include="Models\MigrationReport.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
-    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />
-    <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Search\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />

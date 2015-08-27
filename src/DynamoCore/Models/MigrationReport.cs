@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Models
 {
 
     /// <summary>

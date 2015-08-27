@@ -6,7 +6,7 @@ using Dynamo.DSEngine;
 using Dynamo.Models;
 using ProtoCore.Mirror;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Models
 {
     public static class NodeModelExtensions
     {

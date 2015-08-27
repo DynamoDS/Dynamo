@@ -64,7 +64,7 @@ namespace Dynamo.Utilities
     }
 
     /// <summary>Utility methods for working with Either instances.</summary>
-    internal static class Either
+    public static class Either
     {
         /// <summary>
         ///     Creates a new IEither(TLeft, TRight) instance containing a Left value.
@@ -269,7 +269,7 @@ namespace Dynamo.Utilities
     }
 
     /// <summary>Utility method for working with Option instances.</summary>
-    internal static class Option
+    public static class Option
     {
         /// <summary>
         ///     Creates a new IOption(T) instance containing a value.
