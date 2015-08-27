@@ -166,7 +166,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class FunctionNamePromptEventArgs : EventArgs
+    internal class FunctionNamePromptEventArgs : EventArgs
     {
         public string Name { get; set; }
         public string Category { get; set; }

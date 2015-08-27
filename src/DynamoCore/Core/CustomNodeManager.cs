@@ -712,7 +712,7 @@ namespace Dynamo.Core
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
-        public CustomNodeWorkspaceModel Collapse(
+        internal CustomNodeWorkspaceModel Collapse(
             IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
             bool isTestMode, FunctionNamePromptEventArgs args)
         {

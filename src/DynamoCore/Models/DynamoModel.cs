@@ -56,9 +56,9 @@ namespace Dynamo.Models
 
         #region events
 
-        public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
-        public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
-        public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
+        internal delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
+        internal event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
+        internal void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
         {
             if (RequestsFunctionNamePrompt != null)
                 RequestsFunctionNamePrompt(this, e);

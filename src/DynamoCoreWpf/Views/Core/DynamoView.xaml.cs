@@ -784,7 +784,7 @@ namespace Dynamo.Controls
         /// <param name="name"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        public void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
+        internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
             var categorized =
                 SearchCategoryUtil.CategorizeSearchEntries(
