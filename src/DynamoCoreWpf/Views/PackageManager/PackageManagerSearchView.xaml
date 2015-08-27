@@ -175,6 +175,8 @@
 
             </Grid>
 
+            <!-- To achieve virtualization and smooth scrolling we use treeview, from more information look:
+                 http://stackoverflow.com/questions/1977929/wpf-listbox-with-a-listbox-ui-virtualization-and-scrolling-->
             <TreeView  Name="SearchResultsListBox"
                        ItemsSource="{Binding Path=SearchResults}"
                        ScrollViewer.VerticalScrollBarVisibility="Visible"
@@ -182,7 +184,8 @@
                        Padding="0"
                        Background="Black"
                        Grid.Column="0"
-                       Grid.Row="1">
+                       Grid.Row="1"
+                       VirtualizingStackPanel.IsVirtualizing="True">
 
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
