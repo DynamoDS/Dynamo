@@ -377,7 +377,7 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.IsChecked>
                 <ui:ImageCheckBox.Visibility>
-                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsOrbiting"
+                    <Binding Path="DataContext.BackgroundPreviewViewModel.CanNavigateBackground"
                              Converter="{StaticResource BooleanToVisibilityConverter}"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Visibility>
