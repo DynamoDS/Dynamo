@@ -104,12 +104,12 @@ namespace Dynamo.Publish.ViewModels
             {
                 var status = model.GetInvitationStatus();
 
-                IsApproved = status == "approved";
-                if (status == "pending")
+                IsApproved = status == Resources.ApprovedStatus;
+                if (status == Resources.PendingStatus)
                 {
                     model_UpdateStatusMessage(Resources.RequestOnPendingState);
                 }
-                else if (status == "approved")
+                else if (status == Resources.ApprovedStatus)
                 {
                     model_UpdateStatusMessage(Resources.RequestApproved);
                 }

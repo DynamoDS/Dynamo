@@ -225,4 +225,10 @@
   <data name="RequestOnPendingState" xml:space="preserve">
     <value>Request pending...</value>
   </data>
+  <data name="ApprovedStatus" xml:space="preserve">
+    <value>approved</value>
+  </data>
+  <data name="PendingStatus" xml:space="preserve">
+    <value>pending</value>
+  </data>
 </root>
