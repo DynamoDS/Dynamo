@@ -141,7 +141,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
+        internal virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
         {
             if (CurrentOffsetChanged != null)
             {

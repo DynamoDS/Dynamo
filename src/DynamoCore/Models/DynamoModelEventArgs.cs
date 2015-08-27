@@ -211,7 +211,7 @@ namespace Dynamo.Models
         public Operation ViewOperation { get; private set; }
     }
 
-    public class PointEventArgs : EventArgs
+    internal class PointEventArgs : EventArgs
     {
         public Point2D Point { get; set; }
 
