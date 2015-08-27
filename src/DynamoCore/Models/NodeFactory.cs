@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using DSCoreNodesUI;
 using Dynamo.Interfaces;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;

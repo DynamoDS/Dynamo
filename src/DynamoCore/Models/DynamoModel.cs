@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
-using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;

@@ -4,7 +4,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Nodes
 {
     [NodeName("Legacy Node")]
     [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
