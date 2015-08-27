@@ -223,7 +223,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// Defines Update Manager Configuration settings.
     /// </summary>
-    internal class UpdateManagerConfiguration : IUpdateManagerConfiguration
+    public class UpdateManagerConfiguration : IUpdateManagerConfiguration
     {
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
