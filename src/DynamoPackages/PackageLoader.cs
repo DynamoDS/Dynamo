@@ -10,6 +10,7 @@ using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 using DynamoUtilities;
 using DynamoPackages.Properties;
 

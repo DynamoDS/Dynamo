@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dynamo.Interfaces;
-
+using Dynamo.Logging;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 

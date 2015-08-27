@@ -7,6 +7,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;

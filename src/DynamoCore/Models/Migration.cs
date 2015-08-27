@@ -7,6 +7,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 using System.Collections.Generic;
 using System.IO;
 
