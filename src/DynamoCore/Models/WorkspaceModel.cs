@@ -17,6 +17,8 @@ using Dynamo.Nodes;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Logging;
+
 using ProtoCore.AST;
 using ProtoCore.Namespace;
 

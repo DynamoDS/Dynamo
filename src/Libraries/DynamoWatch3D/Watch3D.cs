@@ -16,6 +16,7 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering; 
 using Dynamo.Wpf.ViewModels.Watch3D;

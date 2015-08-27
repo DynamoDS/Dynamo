@@ -5,6 +5,8 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Logging;
+
 using ProtoCore.Namespace;
 
 namespace Dynamo.Models

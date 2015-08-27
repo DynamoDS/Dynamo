@@ -13,6 +13,7 @@ using Dynamo.Nodes;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
+using Dynamo.Logging;
 
 using Newtonsoft.Json;
 using String = System.String;
