@@ -2,7 +2,7 @@
 using System.Xml;
 using Dynamo.Models;
 
-namespace Migrations
+namespace Dynamo.Migration
 {
     public class MigrationNode
     {

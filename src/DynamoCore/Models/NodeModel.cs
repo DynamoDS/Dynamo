@@ -9,6 +9,7 @@ using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Core;
 using Dynamo.Core.Threading;
+using Dynamo.Migration;
 using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using Dynamo.Selection;

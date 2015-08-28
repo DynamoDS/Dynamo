@@ -14,6 +14,7 @@ using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
+using Dynamo.Migration;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
 using Dynamo.Properties;

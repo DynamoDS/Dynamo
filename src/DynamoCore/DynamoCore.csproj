@@ -224,9 +224,9 @@ limitations under the License.
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
-    <Compile Include="Models\WorkspaceMigrations.cs" />
+    <Compile Include="Migration\WorkspaceMigrations.cs" />
     <Compile Include="Nodes\ZeroTouch\DSFunction.cs" />
-    <Compile Include="Models\Migration.cs" />
+    <Compile Include="Migration\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
@@ -241,7 +241,7 @@ limitations under the License.
     <Compile Include="UpdateManager\BinaryVersion.cs" />
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\Configurations.cs" />
-    <Compile Include="Models\MigrationReport.cs" />
+    <Compile Include="Migration\MigrationReport.cs" />
     <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />

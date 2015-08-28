@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using Dynamo.Models;
 
-namespace Dynamo
+namespace Dynamo.Migration
 {
     public class WorkspaceMigrations
     {

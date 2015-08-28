@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Interfaces;
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
 using Dynamo.Interfaces;
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Logging;
