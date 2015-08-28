@@ -141,6 +141,10 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
+
+            if (senderButton == null)
+                return;
+
             var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
             if (searchElementVM != null)
                 dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
