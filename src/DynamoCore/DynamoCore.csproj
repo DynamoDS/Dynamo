@@ -117,7 +117,7 @@ limitations under the License.
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Core\Threading\Disposable.cs" />
-    <Compile Include="DSEngine\LinkedListOfList.cs" />
+    <Compile Include="Engine\LinkedListOfList.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ExtensionLibraryLoader.cs" />
     <Compile Include="Interfaces\ICustomNodeManager.cs" />
@@ -177,7 +177,7 @@ limitations under the License.
     <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Core\Threading\PreviewGraphAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
-    <Compile Include="DSEngine\CodeCompletionServices.cs" />
+    <Compile Include="Engine\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />
     <Compile Include="Core\Threading\AsyncTask.cs" />
     <Compile Include="Core\Threading\CompileCustomNodeAsyncTask.cs" />
@@ -189,7 +189,7 @@ limitations under the License.
     <Compile Include="Core\Threading\TimeStampGenerator.cs" />
     <Compile Include="Core\Threading\UpdateGraphAsyncTask.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="DSEngine\SyncDataManager.cs" />
+    <Compile Include="Engine\SyncDataManager.cs" />
     <Compile Include="Interfaces\ISchedulerThread.cs" />
     <Compile Include="Library\DocumentationServices.cs" />
     <Compile Include="Library\FunctionDescriptor.cs" />
@@ -216,11 +216,11 @@ limitations under the License.
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
-    <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="Engine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
-    <Compile Include="DSEngine\EngineController.cs" />
-    <Compile Include="DSEngine\LiveRunnerServices.cs" />
-    <Compile Include="DSEngine\NodeToCode.cs" />
+    <Compile Include="Engine\EngineController.cs" />
+    <Compile Include="Engine\LiveRunnerServices.cs" />
+    <Compile Include="Engine\NodeToCode.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />

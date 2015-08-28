@@ -9,7 +9,7 @@ using System.Linq;
 using ProtoCore.Namespace;
 using Symbol = ProtoCore.Namespace.Symbol;
 
-namespace Dynamo.DSEngine.CodeCompletion
+namespace Dynamo.Engine.CodeCompletion
 {
     /// <summary>
     /// Interacts with the VM core to provide code completion data to the UI

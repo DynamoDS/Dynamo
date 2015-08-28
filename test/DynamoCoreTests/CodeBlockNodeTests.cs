@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.Engine.CodeCompletion;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;

@@ -1,5 +1,5 @@
 ﻿using Autodesk.DesignScript.Interfaces;
-using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.Engine.CodeCompletion;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -20,7 +20,7 @@ using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     public delegate void AstBuiltEventHandler(object sender, AstBuilder.ASTBuiltEventArgs e);
 

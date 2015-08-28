@@ -5,7 +5,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using DynamoUtilities;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     internal static class DocumentationServices
     {

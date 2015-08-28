@@ -8,7 +8,7 @@ using Dynamo.Interfaces;
 using Dynamo.UI;
 using DynamoUtilities;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     internal class LibraryCustomizationServices
     {

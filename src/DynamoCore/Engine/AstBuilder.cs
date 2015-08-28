@@ -15,7 +15,7 @@ using Type = ProtoCore.Type;
 
 #endregion
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     Get notification when AstBuilder starts building node and

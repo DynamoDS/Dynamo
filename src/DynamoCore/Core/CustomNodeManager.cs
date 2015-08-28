@@ -979,8 +979,8 @@ namespace Dynamo.Core
                             var funcDesc = dsFunc.Controller.Definition;
                             parameters = funcDesc.Parameters.ToList();
 
-                            if (funcDesc.Type == DSEngine.FunctionType.InstanceMethod ||
-                                funcDesc.Type == DSEngine.FunctionType.InstanceProperty)
+                            if (funcDesc.Type == Engine.FunctionType.InstanceMethod ||
+                                funcDesc.Type == Engine.FunctionType.InstanceProperty)
                             {
                                 var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
                                 var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);

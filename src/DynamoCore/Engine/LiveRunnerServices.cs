@@ -5,7 +5,7 @@ using Dynamo.Logging;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     internal class LiveRunnerFactory
     {

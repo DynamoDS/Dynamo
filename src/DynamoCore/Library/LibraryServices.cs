@@ -20,7 +20,7 @@ using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 using ProtoCore.Namespace;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     LibraryServices is a singleton class which manages builtin libraries

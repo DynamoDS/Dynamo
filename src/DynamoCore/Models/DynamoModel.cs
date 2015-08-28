@@ -11,7 +11,7 @@ using System.Threading;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Migration;
@@ -36,7 +36,7 @@ using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using Utils = Dynamo.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
-using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
+using FunctionGroup = Dynamo.Engine.FunctionGroup;
 
 namespace Dynamo.Models
 {
@@ -1760,7 +1760,7 @@ namespace Dynamo.Models
         }
 
 #if DEBUG_LIBRARY
-        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
+        private void DumpLibrarySnapshot(IEnumerable<Engine.FunctionGroup> functionGroups)
         {
             if (null == functionGroups)
                 return;

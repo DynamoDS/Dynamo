@@ -13,7 +13,7 @@ using ProtoCore.Utils;
 using Dynamo.Core;
 using ProtoCore.Namespace;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     /// The result of converting nodes to code. As when a node is converted to 
