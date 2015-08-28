@@ -171,20 +171,17 @@ namespace DSCore
             }
 
             // Calculate the weighted average
-            var num = new double[4];
+            var num = new int[4];
 
-            var d1 = 1 - Math.Sqrt(Math.Pow(t - 0.0, 2));
-            var d2 = 1 - Math.Sqrt(Math.Pow(t - 1.0, 2));
+            var d1 = 1 - t;
+            var d2 = t;
 
-            num[0] += (start.Alpha * d1)    + (end.Alpha * d2);
-            num[1] += (start.Red * d1)      + (end.Red * d2);
-            num[2] += (start.Green * d1)    + (end.Green * d2);
-            num[3] += (start.Blue * d1)     + (end.Blue * d2);
+            num[0] = (int)Math.Round((start.Alpha * d1)    + (end.Alpha * d2));
+            num[1] = (int)Math.Round((start.Red * d1)      + (end.Red * d2));
+            num[2] = (int)Math.Round((start.Green * d1)    + (end.Green * d2));
+            num[3] = (int)Math.Round((start.Blue * d1)     + (end.Blue * d2));
 
-            return ByARGB((int)(num[0] / (d1 + d2)),
-                (int)(num[1] / (d1 + d2)),
-                (int)(num[2] / (d1 + d2)),
-                (int)(num[3] / (d1 + d2)));
+            return ByARGB(num[0], num[1], num[2], num[3]);
         }
 
         /// <summary>
@@ -337,7 +334,8 @@ namespace DSCore
     [IsVisibleInDynamoLibrary(false)]
     public class ColorRange1D
     {
-        internal IList<Color.IndexedColor1D> indexedColors; 
+        private readonly IList<Color.IndexedColor1D> indexedColors;
+        public IEnumerable<Color.IndexedColor1D> IndexedColors { get { return indexedColors; } }
  
         private ColorRange1D(IEnumerable<Color> colors, IEnumerable<double> parameters)
         {
@@ -360,8 +358,6 @@ namespace DSCore
                 colors = new List<Color>();
 
             colors.RemoveAll(c => c == null);
-
-            colors = colors.Where(c => c != null).ToList();
 
             if(parameters == null)
                 parameters = new List<double>();

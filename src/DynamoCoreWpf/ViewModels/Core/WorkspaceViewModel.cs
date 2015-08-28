@@ -1058,23 +1058,23 @@ namespace Dynamo.ViewModels
             var graph = new GraphLayout.Graph();
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
 
-            foreach (AnnotationModel x in Model.Annotations)
+            foreach (AnnotationModel n in Model.Annotations)
             {
                 // Treat a group as a graph layout node/vertex
-                graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
-                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+                graph.AddNode(n.GUID, n.Width, n.Height, n.Y);
+                models.Add(n, UndoRedoRecorder.UserAction.Modification);
             }
 
-            foreach (NodeModel x in Model.Nodes)
+            foreach (NodeModel n in Model.Nodes)
             {
                 AnnotationModel group = Model.Annotations.Where(
-                    s => s.SelectedModels.Contains(x)).ToList().FirstOrDefault();
+                    s => s.SelectedModels.Contains(n)).ToList().FirstOrDefault();
 
                 // Do not process nodes within groups
                 if (group == null)
                 {
-                    graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
-                    models.Add(x, UndoRedoRecorder.UserAction.Modification);
+                    graph.AddNode(n.GUID, n.Width, n.Height, n.Y, n.InPorts.Count);
+                    models.Add(n, UndoRedoRecorder.UserAction.Modification);
                 }
             }
 

@@ -24,6 +24,11 @@ namespace Dynamo.Wpf.Controls
         void NotificationsControl_Loaded(object sender, RoutedEventArgs e)
         {
             var window = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            if (window == null)
+            {
+                return;
+            }
+
             window.PreviewMouseDown += window_PreviewMouseDown;
         }
 
