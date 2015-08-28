@@ -133,6 +133,7 @@ limitations under the License.
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Logging\LogSource.cs" />
     <Compile Include="Models\NodeLoaders\InputNodeLoader.cs" />
+    <Compile Include="Nodes\Attributes.cs" />
     <Compile Include="Rendering\DefaultRenderPackageFactory.cs" />
     <Compile Include="Extensions\ExtensionDefinition.cs" />
     <Compile Include="Extensions\IExtensionLoader.cs" />

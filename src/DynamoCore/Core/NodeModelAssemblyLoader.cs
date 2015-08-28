@@ -6,6 +6,7 @@ using System.Reflection;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoUtilities;
