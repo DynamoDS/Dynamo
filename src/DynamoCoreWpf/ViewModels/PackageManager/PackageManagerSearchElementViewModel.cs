@@ -22,13 +22,10 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
-        public PackageManagerSearchViewModel PackageManagerSearchViewModel { get; private set; }
         public new PackageManagerSearchElement Model { get; internal set; }
 
-        public PackageManagerSearchElementViewModel(
-            PackageManagerSearchViewModel searchViewModel, PackageManagerSearchElement element, bool canLogin) : base(element)
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
         {
-            this.PackageManagerSearchViewModel = searchViewModel;
             this.Model = element;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
@@ -43,6 +40,15 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+        }
+
+        public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
+        public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
+        {
+            if (RequestShowFileDialog != null)
+            {
+                RequestShowFileDialog(sender, e);
+            }
         }
 
         private static string FormatUrl(string url)
@@ -115,7 +121,7 @@ namespace Dynamo.PackageManager.ViewModels
 
         private void ShowFileDialog(PackagePathEventArgs e)
         {
-            PackageManagerSearchViewModel.OnRequestShowFileDialog(this, e);
+            OnRequestShowFileDialog(this, e);
         }
     }
 }

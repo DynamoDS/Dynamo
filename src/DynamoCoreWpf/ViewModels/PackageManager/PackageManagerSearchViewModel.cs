@@ -703,22 +703,26 @@ namespace Dynamo.PackageManager
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
             var canLogin = PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider;
+            List<PackageManagerSearchElementViewModel> list = null;
 
             if (!String.IsNullOrEmpty(query))
             {
-                return
-                    SearchDictionary.Search(query)
-                        .Select(x => new PackageManagerSearchElementViewModel(this, x, canLogin))
-                        .Take(MaxNumSearchResults);
+                list = SearchDictionary.Search(query)
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
+                    .Take(MaxNumSearchResults).ToList();
+            }
+            else
+            {
+                // with null query, don't show deprecated packages
+                list = LastSync.Where(x => !x.IsDeprecated)
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)).ToList();
+                Sort(list, this.SortingKey);
             }
 
-            // with null query, don't show deprecated packages
-            var list =
-                LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(this, x, canLogin)).ToList();
-            Sort(list, this.SortingKey);
-            return list;
+            foreach (var x in list)
+                x.RequestShowFileDialog += OnRequestShowFileDialog;
 
+            return list;
         }
 
 
