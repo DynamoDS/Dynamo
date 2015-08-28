@@ -103,94 +103,97 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <uicontrols:HeaderStrip x:Name="primaryHeaderStrip">
+            <uicontrols:HeaderStrip x:Name="createHeaderStrip" Grid.Row="1" Grid.Column="0">
                 <uicontrols:HeaderStrip.Padding>
                     <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
-                        <Binding  ElementName="secondaryHeaderStrip"/>
-                        <Binding  ElementName="secondaryMembers"/>
+                         <Binding  ElementName="createHeaderStrip"/>
                         <Binding  ElementName="primaryMembers"/>
-                        <Binding  ElementName="queryMembers"/>
-                    </MultiBinding>
+                </MultiBinding>
                 </uicontrols:HeaderStrip.Padding>
             </uicontrols:HeaderStrip>
             <ListBox x:Name="primaryMembers"
                      Grid.Row="1"
-                     Grid.ColumnSpan="2"
+                     Grid.Column="1"
                      Background="Transparent"
                      BorderBrush="#686868"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ItemTemplate="{StaticResource MemberTemplate}"
                      BorderThickness="1,0,0,0"
-                     Margin="0,-50,0,0"
-                     Padding="0,-10,0,0"
+                    
                      />
-
+            <Border x:Name="secondaryBorder" Grid.Row="2" 
+                    Padding="0,5,0,5" HorizontalAlignment="Left" Background="Transparent">
+                <Border.Visibility>
+                    <Binding Path="AreSecondaryHeadersVisible"
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
+            </Border>
             <Border Padding="0,5,0,5"
-                    Grid.Row="2"
+                    Grid.Row="3" Grid.Column="0"
                     HorizontalAlignment="Left" Background="Transparent">
                 <Border.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
-                <uicontrols:HeaderStrip x:Name="secondaryHeaderStrip">
-                    <uicontrols:HeaderStrip.Padding>                       
+                <uicontrols:HeaderStrip x:Name="actionHeaderStrip">
+                    <uicontrols:HeaderStrip.Padding>
                         <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
-                            <Binding  ElementName="secondaryHeaderStrip"/>
-                            <Binding  ElementName="secondaryMembers"/>
-                            <Binding  ElementName="primaryMembers"/>
-                            <Binding  ElementName="queryMembers"/>
+                            <Binding  ElementName="actionHeaderStrip"/>
+                            <Binding  ElementName="secondaryMembers"/>                            
                         </MultiBinding>
                     </uicontrols:HeaderStrip.Padding>
                 </uicontrols:HeaderStrip>
-            </Border>
+            </Border>           
             <ListBox x:Name="secondaryMembers"
                      Grid.Row="3"
-                     Grid.ColumnSpan="2"
+                     Grid.Column ="1"
                      Background="Transparent"
                      BorderBrush="#686868"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
                      BorderThickness="1,0,0,0"
-                     Margin="0,-50,0,0"
-                     Padding="0,-10,0,0">
+                     >
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </ListBox.Visibility>
             </ListBox>
-
-            <Border Padding="0,5,0,5"
-                    Grid.Row="4"
+            <Border x:Name="queryBorder" Grid.Row="4" Padding="0,5,0,5" 
                     HorizontalAlignment="Left" Background="Transparent">
                 <Border.Visibility>
-                    <Binding Path="AreSecondaryHeadersVisible"
+                    <Binding Path="AreQueryHeadersVisible"
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
+                </Border.Visibility>
+            </Border>
+            <Border Padding="0,5,0,5"
+                    Grid.Row="5" Grid.Column="0"
+                    HorizontalAlignment="Left" Background="Transparent">
+                <Border.Visibility>
+                    <Binding Path="AreQueryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
                 <uicontrols:HeaderStrip x:Name="queryHeaderStrip">
                     <uicontrols:HeaderStrip.Padding>
                         <MultiBinding Converter="{StaticResource TreeViewListBoxTitleConverter}">
-                            <Binding  ElementName="secondaryHeaderStrip"/>
-                            <Binding  ElementName="secondaryMembers"/>
-                            <Binding  ElementName="primaryMembers"/>
+                            <Binding  ElementName="queryHeaderStrip"/>
                             <Binding  ElementName="queryMembers"/>
                         </MultiBinding>
                     </uicontrols:HeaderStrip.Padding>
-                </uicontrols:HeaderStrip>
-            </Border>
-            <ListBox x:Name="queryMembers"
+                </uicontrols:HeaderStrip>  
+              </Border>
+                <ListBox x:Name="queryMembers"
                      Grid.Row="5"
-                     Grid.ColumnSpan="2"
+                     Grid.Column ="1"
                      Background="Transparent"
                      BorderBrush="#686868"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ItemTemplate="{StaticResource MemberTemplate}"
                      BorderThickness="1,0,0,0"
-                     Margin="0,-50,0,0"
-                     Padding="0,-10,0,0">
+                     >
                 <ListBox.Visibility>
-                    <Binding Path="AreSecondaryHeadersVisible"
+                    <Binding Path="AreQueryHeadersVisible"
                              Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </ListBox.Visibility>
             </ListBox>

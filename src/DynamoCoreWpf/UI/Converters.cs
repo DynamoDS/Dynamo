@@ -2534,31 +2534,23 @@ namespace Dynamo.Controls
         {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
             {
-                var headerStrip = values[0] as HeaderStrip;
-                var secondaryListBox = values[1] as ListBox;
-                var primaryListBox = values[2] as ListBox;
-                var queryListBox = values[3] as ListBox;
-
-                if (headerStrip != null && secondaryListBox != null)
+                var headerStrip = values[0] as HeaderStrip;                
+                var listMembers = values[1] as ListBox;
+                                              
+                if (headerStrip != null && listMembers != null
+                    && headerStrip.HeaderStripItems != null)
                 {
                     var headerStripItem = headerStrip.HeaderStripItems.FirstOrDefault();
                     if (headerStripItem != null)
                     {
-                        if (secondaryListBox.Items.Count <= 2)
+                        if (listMembers.Items.Count < 2)
                         {
-                            headerStripItem.Text = headerStripItem.Text.Substring(0, 1);
-                            //secondaryListBox.Margin = new Thickness(0,-30,0,0);                                    
+                            headerStripItem.Text = headerStripItem.Text.Substring(0, 1);                           
                         }
                     }
                 }
-
-                if (!(primaryListBox.Items.Count <= 0 && 
-                    secondaryListBox.Items.Count <=0 &&
-                    queryListBox.Items.Count <= 0))
-                {
-                    return new Thickness(0, 0, 0, 0);
-                }
-                return new Thickness(10, 0, 0, 0);
+               
+                return new Thickness(0, 0, 0, 0);
 
             }
 
