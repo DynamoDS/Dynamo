@@ -243,6 +243,12 @@ namespace Dynamo.Wpf.ViewModels
             Path = Model.Path;
         }
 
+        public CustomNodeSearchElementViewModel(CustomNodeSearchElementViewModel copyElement)
+            : base(copyElement)
+        {
+            Path = copyElement.Path;
+        }
+
         public string Path
         {
             get { return path; }
