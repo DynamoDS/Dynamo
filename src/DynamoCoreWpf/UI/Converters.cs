@@ -2347,6 +2347,10 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// Checks if the item is last. In that case, this converter controls 
+        /// the last tree view item's  horizontal and vertical line height
+        /// </summary>
         public class TreeViewLineConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2362,6 +2366,9 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// This controls the TreeView Margin
+        /// </summary>
         public class TreeViewLineMarginConverter : IMultiValueConverter
         {          
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -2397,16 +2404,13 @@ namespace Dynamo.Controls
                     }
 
                     var diff = childMargin.Left - childMargin.Right;
-
-                    //TODO: change the visibility of the vertical line
+                  
                     if (childMargin.Left == 0)
-                    {
-                        //return new Thickness(-10, 0, 30, 0);
+                    {                    
                         return new Thickness(-10, 0, 0, 0);
                     }
                     if (childMargin.Left == parentMargin.Left)
-                    {
-                        //return new Thickness(-10, 0, 30, 0);
+                    {                      
                         return new Thickness(-10, 0, 0, 0);
                     }
                    
@@ -2416,22 +2420,11 @@ namespace Dynamo.Controls
                     }
                     else
                     {
-                        //if (isLastItem)
-                        //{
-                        //    return new Thickness(childMargin.Left - childMargin.Right, 0, 50, 0);
-                        //}
-
-                            return new Thickness(diff, 0, diff * 2, 0);
-                        //if (level <= 2 || !isLastItem)
-                        //    return new Thickness(diff, 0, diff * 2, 0);
-                        //else
-                        //{
-                        //    return new Thickness(childMargin.Left - childMargin.Right, 0, 50, 0);
-                        //}
+                        return new Thickness(diff, 0, diff * 2, 0);
+                        
                     }                   
                 }
-                else
-                    //return new Thickness(-10, 0, 30, 0);
+                else                    
                     return new Thickness(-10, 0, 0, 0);
             }
 
@@ -2441,8 +2434,11 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// This controls the horizontal line margin
+        /// </summary>
         public class TreeViewHLineMarginConverter : IMultiValueConverter
-        {
+        {           
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
             {
                 var VerLnMargin = (Thickness)(values[0]);
@@ -2451,7 +2447,27 @@ namespace Dynamo.Controls
                 //Find if the item is last
                 var item = (TreeViewItem) values[2];
                 ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
-                var isLastItem =  ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+                var level = -1;
+                var isLastItem = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+                if (values[2] is DependencyObject)
+                {
+                    var parent = VisualTreeHelper.GetParent(values[2] as DependencyObject);
+                    bool gotParentTree = false;
+                    while (!(gotParentTree) && (parent != null))
+                    {
+                        if (parent is TreeViewItem)
+                            level++;
+                        parent = VisualTreeHelper.GetParent(parent);
+                        if (parent is System.Windows.Controls.TreeView)
+                        {
+                            var view = parent as System.Windows.Controls.TreeView;
+                            if (view.Name == "CategoryTreeView")
+                            {
+                                gotParentTree = true;
+                            }
+                        }
+                    }
+                }
 
                 var left = VerLnMargin.Left + 10;
                 var right = (expanderMargin.Right*2) + 5;
@@ -2463,23 +2479,22 @@ namespace Dynamo.Controls
                 //case for 3rd level where vertical margin is negative
                 if (left == 0 && expanderMargin.Right == 0)
                     left = -10;
+
                 //case when left margin is not set
-                else if(left == 0)
+                else if (left == 0)
                 {
                     left = right + 10;
                 }
 
-                //if (isLastItem)
-                //{
-                //    return new Thickness(left, 0, 40, 0); //assuming that last item expander has a margin of 20
-                //}
-
-                return new Thickness(left, 0, right, 0);
-
-                //if (!isLastItem)
-                //    return new Thickness(left, 0, right, 0);
-                //else
-                //    return new Thickness(left, 0, 40, 0); //assuming that last item expander has a margin of 20
+                //If the treeview item is deep inside, then move
+                //the horizontal line by 3 points. Do this only for 
+                //the vertical line that has margin set from origin
+                if (level >= 1 && VerLnMargin.Left > 0)
+                {
+                    left = left - 3;
+                }
+               
+                return new Thickness(left, 0, right, 0);               
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -2488,6 +2503,9 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// This controls the Vertical line, when expanded / collapsed
+        /// </summary>
         public class TreeViewVLineMarginConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2505,10 +2523,13 @@ namespace Dynamo.Controls
 
             public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException();
             }
         }
 
+        /// <summary>
+        /// This controls the extra margin that is drawn even if the margin is not set
+        /// </summary>
         public class TreeViewMarginCheck : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2530,6 +2551,9 @@ namespace Dynamo.Controls
 
         }
 
+        /// <summary>
+        /// If the Create, Action, Query has less items, then display only the first character.
+        /// </summary>
         public class TreeViewListBoxTitleConverter : IMultiValueConverter
         {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -2551,7 +2575,6 @@ namespace Dynamo.Controls
                 }
                
                 return new Thickness(0, 0, 0, 0);
-
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
