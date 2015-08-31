@@ -58,7 +58,7 @@ namespace Dynamo.Wpf.Nodes
             // prevent data race by running on scheduler
             var t = new DelegateBasedAsyncTask(s, () =>
             {
-                colorRange = ComputeColorRange();
+                colorRange = colorRangeNode.ComputeColorRange(dynamoModel.EngineController);
             });
 
             // then update on the ui thread
@@ -69,105 +69,6 @@ namespace Dynamo.Wpf.Nodes
             }, syncContext);
 
             s.ScheduleForExecution(t);
-        }
-
-        private ColorRange1D ComputeColorRange()
-        {
-            List<Color> colors;
-            List<double> parameters;
-
-            // If there are colors supplied
-            if (colorRangeNode.InPorts[0].Connectors.Any())
-            {
-                var colorsNode = colorRangeNode.InPorts[0].Connectors[0].Start.Owner;
-                var colorsIndex = colorRangeNode.InPorts[0].Connectors[0].Start.Index;
-                var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
-                var colorsMirror = dynamoModel.EngineController.GetMirror(startId);
-                colors = GetColorsFromMirrorData(colorsMirror);
-            }
-            else
-            {
-                colors = DefaultColorRanges.Analysis;
-            }
-
-            // If there are indices supplied
-            if (colorRangeNode.InPorts[1].Connectors.Any())
-            {
-                var valuesNode = colorRangeNode.InPorts[1].Connectors[0].Start.Owner;
-                var valuesIndex = colorRangeNode.InPorts[1].Connectors[0].Start.Index;
-                var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
-                var valuesMirror = dynamoModel.EngineController.GetMirror(endId);
-                parameters = GetValuesFromMirrorData(valuesMirror);
-            }
-            else
-            {
-                parameters = CreateParametersForColors(colors);
-            }
-
-            return ColorRange1D.ByColorsAndParameters(colors, parameters);
-        }
-
-        private static List<double> CreateParametersForColors(List<Color> colors)
-        {
-            var parameters = new List<double>();
-
-            var step = 1.0 / (colors.Count() - 1);
-            for (var i = 0; i < colors.Count(); i++)
-            {
-                parameters.Add(i * step);
-            }
-
-            return parameters;
-        }
-
-        private static List<double> GetValuesFromMirrorData(RuntimeMirror valuesMirror)
-        {
-            var values = new List<double>();
-
-            if (valuesMirror == null || valuesMirror.GetData() == null) return values;
-
-            var data = valuesMirror.GetData();
-            if (data.IsCollection)
-            {
-                var elements = data.GetElements().Select(e => e.Data);
-                foreach (var element in elements)
-                {
-                    double parsed;
-                    if (TryConvertToDouble(element, out parsed))
-                        values.Add(parsed);
-                }
-            }
-            else
-            {
-                double parsed;
-                if (TryConvertToDouble(data.Data, out parsed))
-                    values.Add(parsed);
-            }
-            return values;
-        }
-
-        private static List<Color> GetColorsFromMirrorData(RuntimeMirror colorsMirror)
-        {
-            var colors = new List<Color>();
-
-            if (colorsMirror == null || colorsMirror.GetData() == null) return colors;
-
-            var data = colorsMirror.GetData();
-            if (data != null)
-            {
-                if (data.IsCollection)
-                {
-                    colors.AddRange(data.GetElements().Select(e => e.Data).OfType<Color>());
-                }
-                else
-                {
-                    var color = data.Data as Color;
-                    if (color != null)
-                        colors.Add(color);
-                }
-            }
-
-            return colors;
         }
 
         public void Dispose() {}
@@ -191,21 +92,6 @@ namespace Dynamo.Wpf.Nodes
             bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
 
             return bitmap;
-        }
-
-        private static bool TryConvertToDouble(object value, out double parsed)
-        {
-            parsed = default(double);
-
-            try
-            {
-                parsed = Convert.ToDouble(value, CultureInfo.InvariantCulture);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
     }
 }
