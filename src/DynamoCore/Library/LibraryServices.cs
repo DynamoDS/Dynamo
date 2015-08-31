@@ -133,6 +133,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
@@ -141,6 +145,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
@@ -251,10 +259,10 @@ namespace Dynamo.DSEngine
 
         private string GetQualifiedFunction(string functionSignature)
         {
-            // if the hint is not explicit, we try the function name without parameters
+            // get a short name representation of the function without parameters
             string[] splitted = functionSignature.Split('@');
-
-            if (splitted.Length < 2 || String.IsNullOrEmpty(splitted[0]) || String.IsNullOrEmpty(splitted[1]))
+           
+            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
                 return null;
 
             string qualifiedFunction = splitted[0];
@@ -463,7 +471,7 @@ namespace Dynamo.DSEngine
         }
 
 
-        private void LoadLibraryMigrations(string library)
+        internal void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
 

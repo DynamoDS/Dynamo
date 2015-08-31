@@ -99,17 +99,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private SearchMemberGroup topResult;
-        public SearchMemberGroup TopResult
-        {
-            get { return topResult; }
-            set
-            {
-                topResult = value;
-                RaisePropertyChanged("TopResult");
-            }
-        }
-
         /// <summary>
         ///     SearchIconAlignment property
         /// </summary>
@@ -744,13 +733,20 @@ namespace Dynamo.ViewModels
                 category.AddMemberToGroup(elementVM);
             }
 
-            // Update top result before we do not sort categories.
-            if (searchRootCategories.Any())
-                UpdateTopResult(searchRootCategories.FirstOrDefault().MemberGroups.FirstOrDefault());
-            else
-                UpdateTopResult(null);
+            if (nodes.Count() == 0)
+                return;
+
+            // Clone top node.
+            var topNode = new NodeSearchElementViewModel(MakeNodeSearchElementVM(nodes.First()));
+            topNode.IsTopResult = true;
 
             SortSearchCategoriesChildren();
+
+            var topCategory = new SearchCategory(Dynamo.Wpf.Properties.Resources.SearchViewTopResult, true);
+            topCategory.AddMemberToGroup(topNode);
+            searchRootCategories.Insert(0, topCategory);
+
+            selectionNavigator.UpdateRootCategories(SearchRootCategories);
         }
 
         private void SortSearchCategoriesChildren()
@@ -868,26 +864,6 @@ namespace Dynamo.ViewModels
         public void MoveSelection(NavigationDirection direction)
         {
             selectionNavigator.MoveSelection(direction);
-        }
-
-        private void UpdateTopResult(SearchMemberGroup memberGroup)
-        {
-            if (memberGroup == null)
-            {
-                TopResult = null;
-                return;
-            }
-
-            var topMemberGroup = new SearchMemberGroup(memberGroup.FullyQualifiedName);
-
-            // Clone top node.
-            var topNode = new NodeSearchElementViewModel(memberGroup.Members.FirstOrDefault());
-            topNode.IsSelected = true;            
-
-            topMemberGroup.AddMember(topNode);
-            TopResult = topMemberGroup;
-
-            selectionNavigator.UpdateRootCategories(SearchRootCategories, topNode);            
         }
 
         internal void ExecuteSelectedMember()

@@ -16,6 +16,7 @@ namespace Tessellation
         /// </summary>
         /// <param name="uvs">Set of UV parameters.</param>
         /// <param name="face">Surface to triangulate.</param>
+        /// <search>uvs</search>
         public static IEnumerable<Curve> ByParametersOnSurface(IEnumerable<UV> uvs, Surface face)
         {
             var verts = uvs.Select(Vertex2.FromUV).ToList();

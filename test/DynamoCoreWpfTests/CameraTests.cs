@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Media.Media3D;
 using SystemTestServices;
 using Dynamo.Controls;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -39,22 +39,31 @@ namespace DynamoCoreWpfTests
         [Test]
         public void Camera_GoodSaveData_LoadsCorrectly()
         {
+            // This test validates camera loading AND, MAGN-7958. 
+            // The camera in the test file is located below the XY plane.
+
             var openPath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
                 @"core\camera\CameraData.dyn");
             OpenDynamoDefinition(openPath);
 
-            var cam = BackgroundPreview.Camera;
+            var cam = ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).Camera;
 
-            //<Camera Name="background_preview" eyeX="-9.38327815723004" eyeY="0.297033715592044" eyeZ="-0.189174672105126" 
-            //lookX="10.3830314479331" lookY="0.223983767894635" lookZ="0.181236488075402" />
+            //<Cameras>
+            //    <Camera Name="Background 3D Preview" eyeX="-12.3667749293475" eyeY="-10.6603353890713" eyeZ="28.1556199871808" 
+            //        lookX="12.0340153661115" lookY="17.1294198216205" lookZ="-27.0288410500148" 
+            //        upX="-0.369622383590052" upY="0.417338454481821" upZ="0.830185466001387" />
+            //</Cameras>
 
-            Assert.AreEqual(cam.Position.X, -9.38327815723004, 1e-6);
-            Assert.AreEqual(cam.Position.Y, 0.297033715592044, 1e-6);
-            Assert.AreEqual(cam.Position.Z, -0.189174672105126, 1e-6);
-            Assert.AreEqual(cam.LookDirection.X, 10.3830314479331, 1e-6);
-            Assert.AreEqual(cam.LookDirection.Y, 0.223983767894635, 1e-6);
-            Assert.AreEqual(cam.LookDirection.Z, 0.181236488075402, 1e-6);
+            Assert.AreEqual(cam.Position.X, -12.3667749293475, 1e-6);
+            Assert.AreEqual(cam.Position.Y, -10.6603353890713, 1e-6);
+            Assert.AreEqual(cam.Position.Z, 28.1556199871808, 1e-6);
+            Assert.AreEqual(cam.LookDirection.X, 12.0340153661115, 1e-6);
+            Assert.AreEqual(cam.LookDirection.Y, 17.1294198216205, 1e-6);
+            Assert.AreEqual(cam.LookDirection.Z, -27.0288410500148, 1e-6);
+            Assert.AreEqual(cam.UpDirection.X, -0.369622383590052, 1e-6);
+            Assert.AreEqual(cam.UpDirection.Y, 0.417338454481821, 1e-6);
+            Assert.AreEqual(cam.UpDirection.Z, 0.830185466001387, 1e-6);
         }
 
         [Test]
@@ -76,7 +85,7 @@ namespace DynamoCoreWpfTests
         {
             ViewModel.NewHomeWorkspaceCommand.Execute(null);
 
-            var cam = BackgroundPreview.Camera;
+            var cam = ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).Camera;
             var testPos = new Point3D(5, 0, 0);
             var testLook = new Vector3D(-1, 0, 0);
             cam.Position = testPos;
@@ -102,9 +111,11 @@ namespace DynamoCoreWpfTests
 
         private bool CameraHasDefaultOrientation()
         {
-            return BackgroundPreview.Camera.Position == BackgroundPreview.defaultCameraPosition &&
-                BackgroundPreview.Camera.LookDirection == BackgroundPreview.defaultCameraLookDirection &&
-                BackgroundPreview.Camera.UpDirection == BackgroundPreview.defaultCameraUpDirection;
+            var defaultData = new CameraData();
+            var cam = ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).Camera;
+            return cam.Position == defaultData.EyePosition &&
+                cam.LookDirection == defaultData.LookDirection &&
+                cam.UpDirection == defaultData.UpDirection;
         }
     }
 }

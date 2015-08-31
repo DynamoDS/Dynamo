@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Dynamo.PackageManager.ViewModels;
 
 namespace Dynamo.PackageManager.UI
@@ -31,11 +32,29 @@ namespace Dynamo.PackageManager.UI
             viewModel.Model.IsExpanded = !viewModel.Model.IsExpanded;
         }
 
-        private void SortButton_OnClick(object sender, RoutedEventArgs e)
+        private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = PlacementMode.Bottom;
             button.ContextMenu.IsOpen = true;
         }
+
+        private void OnSortButtonClicked(object sender, RoutedEventArgs e)
+        {
+            OnShowContextMenuFromLeftClicked(sender, e);
+        }
+
+        private void OnInstallLatestButtonDropDownClicked(object sender, RoutedEventArgs e)
+        {
+            OnShowContextMenuFromLeftClicked(sender, e);
+        }
+
+        private void OnInstallVersionButtonDropDownClicked(object sender, RoutedEventArgs e)
+        {
+            OnShowContextMenuFromLeftClicked(sender, e);
+        }
+
     }
 }

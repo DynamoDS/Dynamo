@@ -1,0 +1,14 @@
+<Workspace Version="0.8.2.1957" X="110.84542310925" Y="18.0050871802418" zoom="0.691111616820703" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Autodesk.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+    <ClassMap partialName="Autodesk.DesignScript.Geometry.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements />
+  <Connectors />
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="background_preview" eyeX="3.23192987186299" eyeY="4.18907282235862" eyeZ="7.24001681184647" lookX="0.706526640629083" lookY="-2.08097578970757" lookZ="-7.33755971062901" />
+  </Cameras>
+</Workspace>

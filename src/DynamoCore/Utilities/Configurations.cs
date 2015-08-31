@@ -145,7 +145,7 @@ namespace Dynamo.UI
 
         #region CodeBlockNode
 
-        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
+        public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly string HighlightingFile =
             "DesignScript.Resources.SyntaxHighlighting.xshd";

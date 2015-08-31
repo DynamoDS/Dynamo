@@ -232,6 +232,9 @@
         <StackPanel Name="ImageAndNodeName"
                     Orientation="Horizontal"
                     VerticalAlignment="Center">
+            <Border BorderBrush="Yellow"
+                    BorderThickness="2,0,0,0"
+                    Visibility="{Binding IsTopResult, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
             <Image HorizontalAlignment="Left"
                    Height="32"
                    Margin="16,0,16,0"
@@ -258,7 +261,7 @@
                            VerticalAlignment="Top"
                            Foreground="{StaticResource CommonSidebarTextColor}"
                            FontSize="13" />
-            </Grid>            
+            </Grid>
         </StackPanel>
     </DataTemplate>
 

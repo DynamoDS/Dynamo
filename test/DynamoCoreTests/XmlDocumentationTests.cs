@@ -31,6 +31,7 @@ namespace Dynamo.Tests
             <search>
             move,push
             </search>
+            <weights>0.4,0.2</weights>
             <returns name=""foo"">Transformed Geometry.</returns>
         </member>
         <member name=""M:MyNamespace.MyClass.#ctor"">
@@ -149,6 +150,24 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, returns.Count());
             Assert.AreEqual("foo", returns.ElementAt(0).Item1);
             Assert.AreEqual("Transformed Geometry.", returns.ElementAt(0).Item2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetTagsAndWeights_FromMethod()
+        {
+            var method = GetMyMethod();
+
+            var tags = method.GetSearchTags(SampleDocument);
+            var weights = method.GetSearchTagWeights(SampleDocument);
+
+            Assert.AreEqual(2, tags.Count());
+            Assert.AreEqual("move", tags.First());
+            Assert.AreEqual("push", tags.Last());
+
+            Assert.AreEqual(2, weights.Count());
+            Assert.AreEqual(0.4, weights.First());
+            Assert.AreEqual(0.2, weights.Last());
         }
 
     }

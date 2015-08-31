@@ -30,7 +30,7 @@ namespace Dynamo.Services
 
         public void RequestToken()
         {
-            var request = new RestRequest("/loginShapewaysDynamo")
+            var request = new RestRequest("/loginPrintDynamo/shapeways")
             {
                 Method = Method.GET,
                 RequestFormat = RestSharp.DataFormat.Json
@@ -52,7 +52,7 @@ namespace Dynamo.Services
                 file = rawData,
                 fileName = filename
             };
-            var req = new RestRequest("/postShapewaysDynamo")
+            var req = new RestRequest("/printUploadDynamo/shapeways")
             {
                 Method = Method.POST,
                 RequestFormat = RestSharp.DataFormat.Json

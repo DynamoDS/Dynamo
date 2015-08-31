@@ -111,6 +111,8 @@
     <Compile Include="Associative\ReplicatorTest.cs" />
     <Compile Include="Associative\SSATransformTest.cs" />
     <Compile Include="Associative\TypeSystemTests.cs" />
+    <Compile Include="Associative\VerificationErrorFormat.cs" />
+    <Compile Include="Associative\VerificationFormatJSON.cs" />
     <Compile Include="ComponentTest\CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />

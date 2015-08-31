@@ -42,7 +42,6 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes.cs" />
-    <Compile Include="DisposeLogic.cs" />
     <Compile Include="ExecutionEvents.cs" />
     <Compile Include="MessageEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

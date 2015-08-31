@@ -50,7 +50,7 @@ namespace Dynamo.Tests
             // Create some test note data
             Guid id = Guid.NewGuid();
             CurrentDynamoModel.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Notes.Count, 1);
+            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Notes.Count(), 1);
         }
 
 

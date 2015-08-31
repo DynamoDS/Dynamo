@@ -8,6 +8,7 @@ using Dynamo.DSEngine;
 using NUnit.Framework;
 using ProtoCore;
 using TestServices;
+using System.Xml;
 
 namespace Dynamo.Tests
 {
@@ -185,6 +186,45 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(LibraryLoaded);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        //This test builds a migration for a zero touch node from DynamoCore
+        public void CanReadFileWithZeroTouchMigrationOfFunctionSignatureWithoutParameters()
+        {
+            
+            string libraryPath = "DSCoreNodes.dll";
+            string XmlPath = "DSCoreNodes.Migrations.xml";
+            string migrations = "<?xml version=\"1.0\"?>" + System.Environment.NewLine +
+                "<migrations>" + System.Environment.NewLine +
+                "<priorNameHint>" + System.Environment.NewLine +
+                "<oldName>DSCore.DateTime.Now</oldName>" + System.Environment.NewLine +
+                "<newName>DSCore.DateTime.Never</newName>" + System.Environment.NewLine +
+                "</priorNameHint>" + System.Environment.NewLine +
+                "</migrations>" + System.Environment.NewLine;
+
+
+            string xmlstring =@"<Dynamo.Nodes.DSFunction guid=""f05953f3-6ead-44f7-b872-1e0203c784cc""
+            type=""Dynamo.Nodes.DSFunction"" nickname=""DateTime.Now"" x=""259.5"" y=""260.5"" 
+            isVisible=""true"" isUpstreamVisible=""true"" lacing=""Shortest""
+            isSelectedInput=""False"" assembly=""DSCoreNodes.dll"" function=""DSCore.DateTime.Now"" />";
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlstring);
+            var xmlElement = doc.DocumentElement;
+
+            string tempXMLPath = Path.Combine(TempFolder, XmlPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+
+            System.IO.File.WriteAllText(tempXMLPath, migrations);
+            
+            libraryServices.LoadLibraryMigrations(tempLibraryPath);
+            Assert.DoesNotThrow(() => { libraryServices.AddAdditionalAttributesToNode("DSCore.DateTime.Now", xmlElement); });
+            Assert.DoesNotThrow(() => { libraryServices.AddAdditionalElementsToNode("DSCore.DateTime.Now", xmlElement); });
+          
+           
+        }
+
 
         [Test]
         [Category("UnitTests")]
