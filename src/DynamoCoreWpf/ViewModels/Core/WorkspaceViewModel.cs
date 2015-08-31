@@ -1086,17 +1086,15 @@ namespace Dynamo.ViewModels
                 endGroup = Model.Annotations.Where(
                     s => s.SelectedModels.Contains(x.End.Owner)).ToList().FirstOrDefault();
 
-                // Connector does not belong to any group
-                if ((startGroup == null) && (endGroup == null))
-                    graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
-
-                // Connector starts from a node within a group
-                else if ((startGroup != null) && (endGroup == null))
-                    graph.AddEdge(startGroup.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
-
-                // Connector ends at a node within a group
-                else if ((startGroup == null) && (endGroup != null))
-                    graph.AddEdge(x.Start.Owner.GUID, endGroup.GUID, x.Start.Center.Y, x.End.Center.Y);
+                // Treat a group as a node, but do not process edges within a group
+                if (startGroup == null || endGroup == null || startGroup != endGroup)
+                {
+                    graph.AddEdge(
+                        startGroup == null ? x.Start.Owner.GUID : startGroup.GUID,
+                        endGroup == null ? x.End.Owner.GUID : endGroup.GUID,
+                        x.Start.Center.Y,
+                        x.End.Center.Y);
+                }
 
                 models.Add(x, UndoRedoRecorder.UserAction.Modification);
             }
