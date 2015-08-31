@@ -1257,8 +1257,17 @@ You will get a chance to save your work.</value>
     <value>⇓ Install</value>
     <comment>To install package</comment>
   </data>
-  <data name="PackageSearchViewInstallButtonTooltip" xml:space="preserve">
-    <value>Install This Version</value>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>Install latest version</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>Install latest version to folder...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>Install this version</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>Install this version to folder...</value>
   </data>
   <data name="PackageSearchViewKeywords" xml:space="preserve">
     <value>Keywords</value>
@@ -1668,7 +1677,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Package Manager Terms of Use</value>
   </data>
   <data name="GalleryDynamoVersion" xml:space="preserve">
-    <value>Version {0}.{1}</value>
+    <value>Version {0}.{1}.{2}</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
@@ -1883,7 +1892,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Available Previews</value>
   </data>
   <data name="PresetWarningMessage" xml:space="preserve">
-    <value>No input nodes selected. Select at least one input node to create a preset.</value> 
+    <value>No input nodes selected. Select at least one input node to create a preset.</value>
   </data>
   <data name="UnitArea" xml:space="preserve">
     <value>Area</value>
@@ -1903,5 +1912,14 @@ Do you want to install the latest Dynamo update?</value>
   <data name="BackgroundPreviewName" xml:space="preserve">
     <value>Background Preview</value>
     <comment>The name of the 3D background preview.</comment>
+  </data>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>Camera position information could not be loaded from the file.</value>
+  </data>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>Camera position information could not be saved.</value>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>You do not have write permission to {0}.</value>
   </data>
 </root>

@@ -650,7 +650,7 @@ namespace Dynamo.Tests
             viewModel.SearchAndUpdateResults("a");
 
             Assert.Greater(viewModel.SearchResults.Count, 0);
-            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
 
             // Top result is selected.
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);
@@ -685,7 +685,7 @@ namespace Dynamo.Tests
             viewModel.SearchAndUpdateResults("a");
 
             Assert.Greater(viewModel.SearchResults.Count, 0);
-            Assert.AreEqual(2, viewModel.SearchRootCategories.Count);
+            Assert.AreEqual(3, viewModel.SearchRootCategories.Count);
 
             // Top result is selected.
             Assert.AreEqual("A", viewModel.CurrentlySelectedMember.Name);

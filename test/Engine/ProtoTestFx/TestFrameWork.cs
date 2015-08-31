@@ -22,6 +22,12 @@ namespace ProtoTestFx.TD
 {
     public class TestFrameWork
     {
+        public enum VerificationFormat
+        {
+            Custom,
+            JSON
+        }
+
         private static ProtoCore.Core testCore;
         private static ProtoCore.RuntimeCore testRuntimeCore;
 
@@ -33,10 +39,190 @@ namespace ProtoTestFx.TD
         bool dumpDS=false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
+        bool executeInDebugMode = true;
  
         public TestFrameWork()
         {
             runner = new ProtoScriptTestRunner();
+        }
+
+        /// <summary>
+        /// Execute the DS code and verifies the results given a list of verification pairs
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verifyList"></param>
+        public void RunAndVerify(string code, params KeyValuePair<string, object>[] verifyList)
+        {
+            Dictionary<string, object> verifyDictionary = verifyList.ToDictionary(x => x.Key, x => x.Value);
+            RunAndVerify(code, verifyDictionary);
+        }
+
+        /// <summary>
+        /// Execute the DS code and verify using the custom verificationFormat
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verificationFormat"></param>
+        public void RunAndVerify(string code, string verificationFormat, VerificationFormat format = VerificationFormat.JSON)
+        {
+            Dictionary<string, object> verifyDictionary = null;
+            if (format == VerificationFormat.Custom)
+            {
+                verifyDictionary = BuildVerifyDictionaryFromCustomFormat(verificationFormat);
+            }
+            else if (format == VerificationFormat.JSON)
+            {
+                verifyDictionary = ProtoTestFx.JsonDecoder.BuildVerifyDictionary(verificationFormat);
+            }
+            RunAndVerify(code, verifyDictionary);
+        }
+
+        /// <summary>
+        /// Run DS code and verify the verification list
+        /// This method is only called internally from the test framework
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verifyList"></param>
+        private void RunAndVerify(string code, Dictionary<string, object> verification)
+        {
+            RunScriptSource(code);
+            foreach (KeyValuePair<string, object> pair in verification)
+            {
+                Verify(pair.Key, pair.Value);
+            }
+            
+            if (executeInDebugMode)
+            {
+                RunDebugWatch(code);
+                RunDebugEqualityTest(code);
+            }
+        }
+
+
+        /// <summary>
+        /// Generates a list of variables to watch. Runs the code and verifies the results against the generated watch list
+        /// Verifies the results against a list
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="verification"></param>
+        private void RunDebugWatch(string code)
+        {
+            Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
+            WatchTestFx.GeneratePrintStatements(code, ref map);
+            WatchTestFx fx = new WatchTestFx();
+            fx.CompareRunAndWatchResults(null, code, map);
+        }
+
+
+        /// <summary>
+        /// Runs the code in Normal Execution, Debug StepOver, Debug StepIn 
+        /// Verifies that all 3 runs produce the same output 
+        /// </summary>
+        /// <param name="code"></param>
+        private void RunDebugEqualityTest(string code)
+        {
+            DebugTestFx.CompareDebugAndRunResults(code);
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that there is at least 1 syntax error
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifySyntaxError(string code)
+        {
+            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
+            {
+                RunScriptSource(code);
+            });
+            Validity.Assert(testCore.BuildStatus.Errors.Count() > 0);
+            var syntaxErrors = testCore.BuildStatus.Errors.Where(e => e.ID == ProtoCore.BuildData.ErrorType.SyntaxError);
+            Validity.Assert(syntaxErrors.Count() > 0);
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that the specified build warning appears at least once
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifyBuildWarning(string code, ProtoCore.BuildData.WarningID warningID)
+        {
+            RunScriptSource(code);
+            Assert.IsTrue(testCore.BuildStatus.Warnings.Any(w => w.ID == warningID));
+        }
+
+        /// <summary>
+        /// Executes the code and verifies that the specified runtime warning appears at least once
+        /// </summary>
+        /// <param name="code"></param>
+        public void RunAndVerifyRuntimeWarning(string code, ProtoCore.Runtime.WarningID warningID)
+        {
+            RunScriptSource(code);
+            Assert.IsTrue(testRuntimeCore.RuntimeStatus.Warnings.Any(w => w.ID == warningID));
+        }
+    
+        /// <summary>
+        /// Builds a KeyValuePair to be used by the Verify method when verifying the value of a variable
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <param name="verifyValue"></param>
+        /// <returns></returns>
+        public static KeyValuePair<string, object> BuildVerifyPair(string variable, object verifyValue)
+        {
+            Validity.Assert(variable is string);
+            return new KeyValuePair<string, object>(variable, verifyValue);
+        }
+
+        /// <summary>
+        /// Parses the verificationFormat string and builds a dictionary of verification pairs 
+        /// </summary>
+        /// <param name="verificationFormat"></param>
+        /// <returns></returns>
+        public static Dictionary<string, object> BuildVerifyDictionaryFromCustomFormat(string verificationFormat)
+        {
+            Dictionary<string, object> verification = new Dictionary<string, object>();
+            string[] stringVerifyList = verificationFormat.Split('|');
+            foreach (string verifyItem in stringVerifyList)
+            {
+                string[] pair = verifyItem.Split(':');
+                string varname = pair[0];
+                object value = ConvertStringToVerificationObject(pair[1]);
+                verification.Add(varname, value);
+            }
+            return verification;
+        }
+
+        /// <summary>
+        /// Converts the value into an object that the Verify function can check
+        /// The implementation can replaced with a proper parser
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static object ConvertStringToVerificationObject(string value)
+        {
+            int iVal = 0;
+            double dVal = 0.0;
+            bool bVal = false;
+            string sVal = string.Empty;
+            object[] arrayVal = null;
+
+            bool hasParsed = false;
+            hasParsed = Int32.TryParse(value, out iVal);
+            if (hasParsed)
+            {
+                return iVal;
+            }
+            hasParsed = Double.TryParse(value, out dVal);
+            if (hasParsed)
+            {
+                return dVal;
+            }
+            hasParsed = Boolean.TryParse(value, out bVal);
+            if (hasParsed)
+            {
+                return bVal;
+            }
+
+            // Extend this to support other data types
+
+            return null;
         }
 
         public ProtoCore.Core GetTestCore()

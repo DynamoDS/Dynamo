@@ -205,6 +205,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera position information could not be loaded from the file..
+        /// </summary>
+        public static string CameraDataLoadError {
+            get {
+                return ResourceManager.GetString("CameraDataLoadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera position information could not be saved..
+        /// </summary>
+        public static string CameraDataSaveError {
+            get {
+                return ResourceManager.GetString("CameraDataSaveError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string CancelButton {
@@ -2083,7 +2101,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version {0}.{1}.
+        ///   Looks up a localized string similar to You do not have write permission to {0}..
+        /// </summary>
+        public static string FolderNotWritableError {
+            get {
+                return ResourceManager.GetString("FolderNotWritableError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0}.{1}.{2}.
         /// </summary>
         public static string GalleryDynamoVersion {
             get {
@@ -3435,11 +3462,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install This Version.
+        ///   Looks up a localized string similar to Install latest version.
         /// </summary>
-        public static string PackageSearchViewInstallButtonTooltip {
+        public static string PackageSearchViewInstallLatestVersion {
             get {
-                return ResourceManager.GetString("PackageSearchViewInstallButtonTooltip", resourceCulture);
+                return ResourceManager.GetString("PackageSearchViewInstallLatestVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install latest version to folder....
+        /// </summary>
+        public static string PackageSearchViewInstallLatestVersionTo {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallLatestVersionTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install this version.
+        /// </summary>
+        public static string PackageSearchViewInstallThisVersion {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallThisVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install this version to folder....
+        /// </summary>
+        public static string PackageSearchViewInstallThisVersionTo {
+            get {
+                return ResourceManager.GetString("PackageSearchViewInstallThisVersionTo", resourceCulture);
             }
         }
         

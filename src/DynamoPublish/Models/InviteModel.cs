@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using Dynamo.Publish.Properties;
 using RestSharp;
@@ -122,12 +123,18 @@ namespace Dynamo.Publish.Models
 
                 var response = restClient.Execute(request);
 
-                if (response.ErrorException == null)
+                if (response.ErrorException == null && response.StatusCode == HttpStatusCode.OK)
+                {
                     OnUpdateStatusMessage(Resources.InviteRequestSuccess, false);
+                }
                 else
                 {
                     OnUpdateStatusMessage(Resources.InviteRequestFailed, true);
-                    Log(LogMessage.Error(response.ErrorException));
+                    if (response.ErrorException != null)
+                    {
+                        Log(LogMessage.Error(response.ErrorException));
+                    }
+
                     return false;
                 }
             }

@@ -1635,7 +1635,7 @@ namespace Dynamo.Models
         /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
         /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
         /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
-        internal virtual void
+        public virtual void
             RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             var initParams = new UpdateRenderPackageParams()
