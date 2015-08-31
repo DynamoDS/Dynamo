@@ -388,6 +388,30 @@ r3 = foo({1, 2.0}<1>);
             thisTest.Verify("r3", new object[] { true, false });
         }
 
+        [Test]
+        public void MAGN7807_ParameterNameSameAsFunctionName()
+        {
+            string code =
+@"
+def foo(foo : int)
+{
+    return = foo;
+}
 
+def bar(bar: int)
+{
+return = [Imperative]
+{
+    return = bar;
+}
+}
+
+x = foo({1,2,3});
+y = bar({4,5,6});
+";
+            thisTest.VerifyRunScriptSource(code, "");
+            thisTest.Verify("x", new object[] { 1, 2, 3 });
+            thisTest.Verify("y", new object[] { 4, 5, 6 });
+        }
     }
 }
