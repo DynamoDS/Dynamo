@@ -767,6 +767,16 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
         }
 
+        [Test]
+        [Category("RegressionTests")]
+        public void TestTypedIdentifierInCodeBlockNode()
+        {
+            // Regression test for MAGN-7518 that expression "x : Point = Point.ByCoordinate()" in CBN
+            // doesn't generate background preview.
+            OpenVisualizationTest("TypedIdentifierInCBN.dyn");
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalPoints());
+        }
+
         private Watch3DView FindFirstWatch3DNodeView()
         {
             var views = View.ChildrenOfType<Watch3DView>();
