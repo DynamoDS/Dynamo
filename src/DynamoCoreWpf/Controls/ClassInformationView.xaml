@@ -82,14 +82,14 @@
         <Binding Path="ClassDetailsVisibility"
                  Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
     </UserControl.Visibility>
-    <Border Margin="0,-10,0,0"
+    <Border Margin="25,-10,10,0"
         Padding="0,10,0,3">
         <!--<Border.Background>
             <Binding Path="IsRootCategoryDetails"
                      Converter="{StaticResource BooleanToBrushConverter}" />
         </Border.Background>-->
         <Grid Name="GridData"  DataContextChanged="GridDataContextChanged"
-              KeyDown="OnMainGridKeyDown">
+              KeyDown="OnMainGridKeyDown" Margin="-10,10,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -118,8 +118,7 @@
                      BorderBrush="#686868"
                      ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                      ItemTemplate="{StaticResource MemberTemplate}"
-                     BorderThickness="1,0,0,0"
-                    
+                     BorderThickness="1,0,0,0"                     
                      />
             <Border x:Name="secondaryBorder" Grid.Row="2" 
                     Padding="0,5,0,5" HorizontalAlignment="Left" Background="Transparent">

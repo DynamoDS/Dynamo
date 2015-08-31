@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -24,8 +25,10 @@ using RestSharp.Contrib;
 using System.Text;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
+using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Point = System.Windows.Point;
 using TabControl = System.Windows.Controls.TabControl;
 using Thickness = System.Windows.Thickness;
 
@@ -2379,10 +2382,9 @@ namespace Dynamo.Controls
                     var childMargin = (Thickness)(values[1]);
                     TreeViewItem item = (TreeViewItem)values[2];
 
-                    //get the level
+                    //First get the level of the item.
                     ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
-                    var level = -1;
-                    var isLastItem = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+                    var level = -1;                   
                     if (values[2] is DependencyObject)
                     {
                         var parent = VisualTreeHelper.GetParent(values[2] as DependencyObject);
@@ -2392,9 +2394,9 @@ namespace Dynamo.Controls
                             if (parent is TreeViewItem)
                                 level++;
                             parent = VisualTreeHelper.GetParent(parent);
-                            if (parent is System.Windows.Controls.TreeView)
+                            if (parent is TreeView)
                             {
-                                var view = parent as System.Windows.Controls.TreeView;
+                                var view = parent as TreeView;
                                 if (view.Name == "CategoryTreeView")
                                 {
                                     gotParentTree = true;
@@ -2404,28 +2406,32 @@ namespace Dynamo.Controls
                     }
 
                     var diff = childMargin.Left - childMargin.Right;
-                  
+                    
+                    //If it is root category, then move the vertical line outside the grid.
                     if (childMargin.Left == 0)
                     {                    
                         return new Thickness(-10, 0, 0, 0);
                     }
+
+                    //If it is root category, then move the vertical line outside the grid.
                     if (childMargin.Left == parentMargin.Left)
                     {                      
                         return new Thickness(-10, 0, 0, 0);
                     }
                    
+                    //For levels 0,1,2, the difference will be less. 
+                    //For deep levels, the expander left margin will be increased by 20. 
+                    //Hence the difference will be greater.
                     if (diff < childMargin.Right)
                     {
                         return new Thickness(0, 0, childMargin.Left * 2, 0);
                     }
-                    else
-                    {
-                        return new Thickness(diff, 0, diff * 2, 0);
-                        
-                    }                   
+
+                    return new Thickness(diff, 0, diff * 2, 0);
                 }
-                else                    
-                    return new Thickness(-10, 0, 0, 0);
+
+                //Default. Move the line outside the grid.
+                return new Thickness(-10, 0, 0, 0);
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -2443,7 +2449,7 @@ namespace Dynamo.Controls
             {
                 var VerLnMargin = (Thickness)(values[0]);
                 var expanderMargin = (Thickness)(values[1]);
-                
+                              
                 //Find if the item is last
                 var item = (TreeViewItem) values[2];
                 ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
@@ -2472,26 +2478,35 @@ namespace Dynamo.Controls
                 var left = VerLnMargin.Left + 10;
                 var right = (expanderMargin.Right*2) + 5;
 
-                //case for 3rd level 
+                //This is to set the Horizontal line close to the expander
+                // only for the case when expander is too far. (ex: 65,0,20,0)
                 if (left > right)
                     right = left + 10;
 
-                //case for 3rd level where vertical margin is negative
+                // If both vertical and expander margins are not set (for root categories)                 
+                // then move the horizontal margin outside the outergrid. this is 
+                // used here, because we don't want the lines for root categories.                
                 if (left == 0 && expanderMargin.Right == 0)
                     left = -10;
 
-                //case when left margin is not set
+                //if the vertical margin is not set, then move the horizontal line by
+                //10 points. This is mostly used for levels 0 or 1.
                 else if (left == 0)
                 {
                     left = right + 10;
                 }
 
-                //If the treeview item is deep inside, then move
-                //the horizontal line by 3 points. Do this only for 
-                //the vertical line that has margin set from origin
-                if (level >= 1 && VerLnMargin.Left > 0)
+                //If the treeview item is within 1 or 2 level, then move
+                //the horizontal line by 3 points. 
+                if (level >= 1 && level <= 2 && VerLnMargin.Left > 0)
                 {
                     left = left - 3;
+                }
+
+                //for deep levels, use the margin same as vertical line
+                if (level > 2)
+                {
+                    left = VerLnMargin.Left;
                 }
                
                 return new Thickness(left, 0, right, 0);               
@@ -2583,6 +2598,43 @@ namespace Dynamo.Controls
             }
 
         }
-    
-           
+
+        /// <summary>
+        /// This converter sets the margin for inner elements. Inner elements (e.g File under core)
+        /// should have the margin close to the expander. 
+        /// For expander margin  <seealso cref=" FullCategoryNameToMarginConverter"/>
+        /// </summary>
+        public class NestedContentMarginConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var nestedMargin = (Thickness)value;
+
+                //Set the text margin only if expander margin set. the expander margin is 
+                //set as 5 + 20 * numberOfPoints, the text should ideally start at -25.
+                // but for expanders in deep levels have margin increasing by 20. So ideal 
+                // calculation is right - left. ex: if the expander margin is 65,0,20,0 (3rd level) then 
+                // content margin has to be -45,0,0,0. if the expander margin is 25,0,20,0 then content 
+                // margin should be -25,0,0,0.
+                if (nestedMargin != null && nestedMargin.Left > 5 && nestedMargin.Right > 0)
+                {
+                    var left = nestedMargin.Right - nestedMargin.Left;
+                    if(left < -5)
+                        //-45,0,0,0 is very close to expander. so move the content a bit.
+                        return new Thickness(left + 5 , 0, 0, 0);
+                    else
+                    {
+                        return new Thickness(-25, 0, 0, 0);
+                    }
+                }
+                              
+                return new Thickness(0, 0, 0, 0);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                throw new Exception("The method or operation is not implemented.");
+            }
+
+        }               
    }

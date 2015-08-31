@@ -59,16 +59,6 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
                                               
-
-                                                <!--<Rectangle x:Name="HorLn"  Height="1" Stroke="Gray" 
-                                                           SnapsToDevicePixels="True"
-                                                           Margin="{Binding Margin, ElementName=Expander}">
-                                                </Rectangle>
-                                                <Rectangle x:Name="VerLn" Width="1" Stroke="Gray" 
-                                                           Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White"
-                                                           Margin="{Binding Margin, ElementName=Expander}">
-                                                </Rectangle>-->
-
                                                 <ToggleButton x:Name="ExpanderParent"
                                                               Background="Transparent"
                                                               IsHitTestVisible="False"
@@ -83,7 +73,7 @@
 
                                                 <ContentPresenter x:Name="PART_Header"
                                                                   Grid.Column="1"
-                                                                  VerticalAlignment="Center"
+                                                                  VerticalAlignment="Center"                                                                  
                                                                   ContentSource="Header" />
 
                                                 <TextBlock x:Name="ElementTypeText"
@@ -278,7 +268,7 @@
                                 </Button.Template>
                                 <Border Name="Bd"
                                         BorderThickness="0">
-                                    <Grid>
+                                    <Grid Name="OuterButtongrid">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="*" />
@@ -309,14 +299,13 @@
                                                     </Rectangle.Margin>
                                                 </Rectangle>
                                                 <Rectangle x:Name="HorLn"  Height="1" Stroke="#686868" 
-                                                           Fill="#686868"  
-                                                           SnapsToDevicePixels="True">
+                                                           Fill="#686868" Grid.RowSpan="2">
                                                     <Rectangle.Margin>
                                                         <MultiBinding Converter="{StaticResource TreeViewHLineMarginConverter}">
                                                             <Binding Path="Margin" ElementName="VerLn"/>
                                                             <Binding Path="Margin" ElementName="Expander"/>
                                                             <Binding  RelativeSource="{RelativeSource FindAncestor,
-                                                                    AncestorType={x:Type TreeViewItem}}"/>
+                                                                    AncestorType={x:Type TreeViewItem}}"/>                                                           
                                                         </MultiBinding>
                                                     </Rectangle.Margin>
                                                 </Rectangle>
@@ -333,10 +322,11 @@
                                                     </ToggleButton.Margin>
                                                 </ToggleButton>
 
-                                                <ContentPresenter x:Name="PART_Header"
+                                                <ContentPresenter x:Name="NestedPART_Header"
                                                                   Grid.Column="1"
                                                                   VerticalAlignment="Center"
-                                                                  ContentSource="Header" />
+                                                                  ContentSource="Header" 
+                                                                  />
 
                                                 <TextBlock x:Name="ElementTypeText"
                                                            Grid.Column="2"
@@ -519,6 +509,14 @@
                                             Value="Collapsed" />
                                 </Trigger>
 
+                                <Trigger Property="HasItems"
+                                         Value="True">
+                                    <Setter Property="Margin"
+                                            TargetName="NestedPART_Header"
+                                            Value="{Binding Path=Margin,  ElementName=Expander, 
+                                                                  Converter={StaticResource NestedContentMarginConverter}}" />
+                                </Trigger>
+
 
                                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, 
                                     Converter={StaticResource TreeViewLineConverter}}" Value="true">
@@ -644,7 +642,7 @@
                                Source="{Binding SmallIcon}" />-->
                         <TextBlock HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
-                                   Margin="-25,0,0,0"
+                                  
                                    Foreground="{StaticResource CommonSidebarTextColor}"
                                    FontSize="13"
                                    Text="{Binding Name}" />
@@ -694,7 +692,7 @@
                 <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
                            FontSize="13"
                            Text="{Binding Path=Name}"
-                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
                            Name="CategoryName">
                     <TextBlock.Style>
                         <Style>

@@ -148,11 +148,11 @@
         <Border x:Name="ExpanderButtonBorder"
                 Background="{TemplateBinding Property=Background}"
                 Padding="{TemplateBinding Property=Padding}">
-            <Grid MinHeight="24"
+            <Grid Name="controlGrid"  MinHeight="24"
                   MinWidth="66">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Rectangle x:Name="ExpandPath" Width="1" Height="5" Stroke="Black" SnapsToDevicePixels="true"/>
                 <Rectangle Width="5" Height="1" Stroke="Black" SnapsToDevicePixels="true"/>
