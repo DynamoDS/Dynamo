@@ -1040,7 +1040,7 @@ namespace ProtoImperative
             //bool isVisible = isAllocated && core.runtimeTableIndex >= localAllocBlock;
             bool isAccessible = false;
             bool isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-            if (null == t.ArrayDimensions)
+            if (!isAllocated && null == t.ArrayDimensions)
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
