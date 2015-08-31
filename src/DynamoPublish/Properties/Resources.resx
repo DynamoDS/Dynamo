@@ -219,6 +219,42 @@
   <data name="ManagerErrorMessage" xml:space="preserve">
     <value>"Manager" is not set. Please, set manager in configuration file.</value>
   </data>
+  <data name="InviteIntegrity" xml:space="preserve">
+    <value>Not all nodes are allowed in customizers, including Revit nodes. Your data could be lost or corrupted at any time during the beta period. Your data could be exposed to other users during the beta period.</value>
+  </data>
+  <data name="Invite_AGraph" xml:space="preserve">
+    <value>a graph</value>
+  </data>
+  <data name="Invite_ANewWay" xml:space="preserve">
+    <value>We are working on a new way to share your work in Dynamo!</value>
+  </data>
+  <data name="Invite_Create" xml:space="preserve">
+    <value>1. Create</value>
+  </data>
+  <data name="Invite_Customizers" xml:space="preserve">
+    <value>Customizers</value>
+  </data>
+  <data name="Invite_Introducing" xml:space="preserve">
+    <value>Introducing</value>
+  </data>
+  <data name="Invite_Publish" xml:space="preserve">
+    <value>2. Publish</value>
+  </data>
+  <data name="Invite_Share" xml:space="preserve">
+    <value>3. Share</value>
+  </data>
+  <data name="Invite_SimpleWebpages" xml:space="preserve">
+    <value>- simple webpages that allow anyone to interact with your graph. This is new territory for us and we need your help.</value>
+  </data>
+  <data name="Invite_ToWeb" xml:space="preserve">
+    <value>to web</value>
+  </data>
+  <data name="Invite_WantToTry" xml:space="preserve">
+    <value>Want to try it out?</value>
+  </data>
+  <data name="Invite_YourWork" xml:space="preserve">
+    <value>your work</value>
+  </data>
   <data name="RequestApproved" xml:space="preserve">
     <value>Your request is already approved.</value>
   </data>

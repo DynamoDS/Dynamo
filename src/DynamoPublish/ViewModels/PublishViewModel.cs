@@ -155,8 +155,6 @@ namespace Dynamo.Publish.ViewModels
             if (!model.IsLoggedIn)
                 return;
 
-            var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().First();
-
             var workspaceProperties = new WorkspaceProperties();
             workspaceProperties.Name = Name;
             workspaceProperties.Description = Description;
