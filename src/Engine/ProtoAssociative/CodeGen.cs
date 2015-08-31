@@ -4446,8 +4446,8 @@ namespace ProtoAssociative
             ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
             bool isAccessible = false;
-
-            if (null == t.ArrayDimensions)
+            bool isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+            if (!isAllocated && null == t.ArrayDimensions)
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
@@ -4473,11 +4473,9 @@ namespace ProtoAssociative
                         }
                         return;
                     }
-                }
-            }
          
-            bool isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-            
+                }
+            }            
 
             // If its executing in interpreter mode - attempt to find and anubond identifer in a child block
             // Remove this, because if we are watching cases like:

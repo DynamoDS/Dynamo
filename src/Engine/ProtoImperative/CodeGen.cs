@@ -1039,7 +1039,7 @@ namespace ProtoImperative
             //bool allocatedExternally = isAllocated && core.runtimeTableIndex > localAllocBlock;
             //bool isVisible = isAllocated && core.runtimeTableIndex >= localAllocBlock;
             bool isAccessible = false;
-
+            bool isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
             if (null == t.ArrayDimensions)
             {
                 //check if it is a function instance
@@ -1067,7 +1067,6 @@ namespace ProtoImperative
                 }
             }
 
-            bool isAllocated = VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
             if (!isAllocated || !isAccessible)
             {
                 if (isAllocated)
