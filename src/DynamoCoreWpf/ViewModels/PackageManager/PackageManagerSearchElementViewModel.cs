@@ -93,13 +93,13 @@ namespace Dynamo.PackageManager.ViewModels
 
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
-            string downloadPath = null;
+            string downloadPath = String.Empty;
 
             if (downloadToCustomPath)
             {
                 downloadPath = GetDownloadPath();
 
-                if (downloadPath == null)
+                if (String.IsNullOrEmpty(downloadPath))
                     return;
             }
 
@@ -114,7 +114,7 @@ namespace Dynamo.PackageManager.ViewModels
             ShowFileDialog(args);
 
             if (args.Cancel)
-                return null;
+                return string.Empty;
 
             return args.Path;
         }
