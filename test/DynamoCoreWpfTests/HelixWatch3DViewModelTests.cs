@@ -769,7 +769,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("RegressionTests")]
-        public void TestTypedIdentifierInCodeBlockNode()
+        public void TypedIdentifierInCodeBlockNode()
         {
             // Regression test for MAGN-7518 that expression "x : Point = Point.ByCoordinate()" in CBN
             // doesn't generate background preview.
