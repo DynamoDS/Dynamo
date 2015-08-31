@@ -737,7 +737,17 @@ namespace Dynamo.ViewModels
                 return;
 
             // Clone top node.
-            var topNode = new NodeSearchElementViewModel(MakeNodeSearchElementVM(nodes.First()));
+            NodeSearchElementViewModel topNode;
+            var firstNode = MakeNodeSearchElementVM(nodes.First());
+            if (firstNode is CustomNodeSearchElementViewModel)
+            {
+                topNode = new CustomNodeSearchElementViewModel(firstNode as CustomNodeSearchElementViewModel);
+            }
+            else
+            {
+                topNode = new NodeSearchElementViewModel(firstNode);
+            }
+
             topNode.IsTopResult = true;
 
             SortSearchCategoriesChildren();

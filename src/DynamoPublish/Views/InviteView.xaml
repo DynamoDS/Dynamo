@@ -104,19 +104,30 @@
                 <Span FontWeight="Bold"  Foreground="White"><Run Text="*"></Run></Span>
                 <Run Text ="{x:Static resx:Resources.InviteIntegrity}"></Run>
             </TextBlock>
-            <StackPanel Background="#444">
-                <Button x:Name="okButton"
-                        Content="{x:Static resx:Resources.InviteMenuButtonText}"   
-                        Margin="0,5,5,5" 
-                        HorizontalAlignment="Right"  
-            	        VerticalAlignment="Top" Width="126" 
-            	        Command="{Binding InviteCommand}"
-            	        IsDefault="True" 
-                        TabIndex="2" 
-            	        Style="{StaticResource STextButton}" 
-                        Height="40" 
-                    />
-            </StackPanel>
+
+            <Button x:Name="okButton"
+                    Content="{x:Static resx:Resources.InviteMenuButtonText}"   
+                    Margin="0,5,5,5" 
+                    HorizontalAlignment="Right"  
+            	    VerticalAlignment="Top" Width="126" 
+            	    Command="{Binding InviteCommand}"
+            	    IsDefault="True" 
+                    TabIndex="2" 
+            	    Height="40">
+                <Button.Style>
+                    <Style TargetType="Button"
+                           BasedOn="{StaticResource STextButton}">
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsApproved}"
+                                 Value="True">
+                                <Setter Property="IsEnabled"
+                                Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
         
          
