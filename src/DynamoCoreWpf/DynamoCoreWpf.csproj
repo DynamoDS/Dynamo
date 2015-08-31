@@ -1200,6 +1200,7 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\customizerWorkflow.png" />
     <Resource Include="UI\Images\dynamowithtext.png" />
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-minus.png" />
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-down.png" />

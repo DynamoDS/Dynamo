@@ -133,6 +133,105 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to a graph.
+        /// </summary>
+        public static string Invite_AGraph {
+            get {
+                return ResourceManager.GetString("Invite_AGraph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We are working on a new way to share your work in Dynamo!.
+        /// </summary>
+        public static string Invite_ANewWay {
+            get {
+                return ResourceManager.GetString("Invite_ANewWay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Create.
+        /// </summary>
+        public static string Invite_Create {
+            get {
+                return ResourceManager.GetString("Invite_Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customizers.
+        /// </summary>
+        public static string Invite_Customizers {
+            get {
+                return ResourceManager.GetString("Invite_Customizers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introducing.
+        /// </summary>
+        public static string Invite_Introducing {
+            get {
+                return ResourceManager.GetString("Invite_Introducing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Publish.
+        /// </summary>
+        public static string Invite_Publish {
+            get {
+                return ResourceManager.GetString("Invite_Publish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Share.
+        /// </summary>
+        public static string Invite_Share {
+            get {
+                return ResourceManager.GetString("Invite_Share", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - simple webpages that allow anyone to interact with your graph. This is new territory for us and we need your help..
+        /// </summary>
+        public static string Invite_SimpleWebpages {
+            get {
+                return ResourceManager.GetString("Invite_SimpleWebpages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to web.
+        /// </summary>
+        public static string Invite_ToWeb {
+            get {
+                return ResourceManager.GetString("Invite_ToWeb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Want to try it out?.
+        /// </summary>
+        public static string Invite_WantToTry {
+            get {
+                return ResourceManager.GetString("Invite_WantToTry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to your work.
+        /// </summary>
+        public static string Invite_YourWork {
+            get {
+                return ResourceManager.GetString("Invite_YourWork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1. Make a graph          2. Publish to the web          3. Share.
         /// </summary>
         public static string InviteDescription {
@@ -142,7 +241,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We&apos;re working on a new way to share your work done in Dynamo: Customizers - simple websites that allow anyone to interact with your graph. This is new territory for us and we need your help. Would like to try it out?.
+        ///   Looks up a localized string similar to We&apos;re working on a new way to share your work done in Dynamo: &lt;Bold&gt;Customizers&lt;/Bold&gt; - simple websites that allow anyone to interact with your graph. This is new territory for us and we need your help. Would like to try it out?.
         /// </summary>
         public static string InviteDescription2 {
             get {

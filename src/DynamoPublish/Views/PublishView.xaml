@@ -185,8 +185,8 @@
                            Grid.Column="0"
                            VerticalAlignment="Center"
                            MouseDown="OnMouseDown" />
-                
-                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Name ="Privacy" Foreground="{StaticResource PublishViewTextColor}" TextWrapping="Wrap" Padding="10" FontSize="12" FontFamily="{StaticResource OpenSansRegular}"
+
+                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" FontStyle="Italic" Name ="Privacy" Foreground="{StaticResource PublishViewTextColor}" TextWrapping="Wrap" Padding="0,10" FontSize="12" FontFamily="{StaticResource OpenSansRegular}"
                        Text ="{x:Static resx:Resources.InviteIntegrity}"/>
 
             </Grid>
