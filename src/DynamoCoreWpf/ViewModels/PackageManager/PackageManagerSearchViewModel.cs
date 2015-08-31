@@ -103,26 +103,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     SelectedIndex property
-        /// </summary>
-        /// <value>
-        ///     This is the currently selected element in the UI.
-        /// </value>
-        private int _selectedIndex;
-        public int SelectedIndex
-        {
-            get { return _selectedIndex; }
-            set
-            {
-                if (_selectedIndex != value)
-                {
-                    _selectedIndex = value;
-                    RaisePropertyChanged("SelectedIndex");
-                }
-            }
-        }
-
-        /// <summary>
         ///     SearchResults property
         /// </summary>
         /// <value>
@@ -641,29 +621,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Increments the selected element by 1, unless it is the last element already
-        /// </summary>
-        public void SelectNext()
-        {
-            if (SelectedIndex == SearchResults.Count - 1
-                || SelectedIndex == -1)
-                return;
-
-            SelectedIndex = SelectedIndex + 1;
-        }
-
-        /// <summary>
-        ///     Decrements the selected element by 1, unless it is the first element already
-        /// </summary>
-        public void SelectPrevious()
-        {
-            if (SelectedIndex <= 0)
-                return;
-
-            SelectedIndex = SelectedIndex - 1;
-        }
-
-        /// <summary>
         ///     Performs a search using the internal SearcText as the query and
         ///     updates the observable SearchResults property.
         /// </summary>
@@ -727,43 +684,5 @@ namespace Dynamo.PackageManager
                     break;
             }
         }
-
-        /// <summary>
-        ///     A KeyHandler method used by SearchView, increments decrements and executes based on input.
-        /// </summary>
-        /// <param name="sender">Originating object for the KeyHandler </param>
-        /// <param name="e">Parameters describing the key push</param>
-        public void KeyHandler(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                ExecuteSelected();
-            }
-            else if (e.Key == Key.Down)
-            {
-                SelectNext();
-            }
-            else if (e.Key == Key.Up)
-            {
-                SelectPrevious();
-            }
-        }
-
-        /// <summary>
-        ///     Runs the Execute() method of the current selected SearchElementBase object
-        ///     amongst the SearchResults.
-        /// </summary>
-        public void ExecuteSelected()
-        {
-            // none of the elems are selected, return 
-            if (SelectedIndex == -1)
-                return;
-
-            if (SearchResults.Count <= SelectedIndex)
-                return;
-
-            SearchResults[SelectedIndex].Model.Execute();
-        }
-        
     }
 }
