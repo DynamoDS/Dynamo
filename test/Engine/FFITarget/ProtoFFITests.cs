@@ -545,12 +545,6 @@ namespace FFITarget
         {
             return x * 3;
         }
-
-        public static int FunctionWithLongParameterName(
-            [PreferredShortName("shortName")] int longlonglonglongParameterName)
-        {
-            return 0;
-        }
     }
 
     internal class InternalClass
