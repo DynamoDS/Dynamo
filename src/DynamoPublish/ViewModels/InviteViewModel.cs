@@ -12,13 +12,21 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Dynamo.Publish.Properties;
+using System.Threading.Tasks;
 
 namespace Dynamo.Publish.ViewModels
 {
     public class InviteViewModel : NotificationObject
     {
+        #region Constants
+
+        private const string ApprovedStatus = "approved";
+        private const string PendingStatus = "pending";
+
+        #endregion
+
         #region Properties
-              
+
         private readonly InviteModel model;
         internal InviteModel Model
         {
@@ -48,6 +56,20 @@ namespace Dynamo.Publish.ViewModels
             {
                 hasError = value;
                 RaisePropertyChanged("HasError");
+            }
+        }
+
+        private bool isApproved = false;
+        public bool IsApproved 
+        {
+            get { return isApproved; }
+            set
+            {
+                if (isApproved != value) 
+                {
+                    isApproved = value;
+                    RaisePropertyChanged("IsApproved");
+                }                
             }
         }
 
@@ -81,6 +103,24 @@ namespace Dynamo.Publish.ViewModels
             model.UpdateStatusMessage +=model_UpdateStatusMessage;           
             IsTextblockVisible = Visibility.Hidden;
             InviteCommand = new DelegateCommand(OnInvite);
+        }
+
+        internal void InviteLoad(object sender, EventArgs e)
+        {
+            Task.Factory.StartNew(() => 
+            {
+                var status = model.GetInvitationStatus();
+
+                IsApproved = status == ApprovedStatus;
+                if (status == PendingStatus)
+                {
+                    model_UpdateStatusMessage(Resources.RequestOnPendingState);
+                }
+                else if (status == ApprovedStatus)
+                {
+                    model_UpdateStatusMessage(Resources.RequestApproved);
+                }
+            });           
         }
 
         private void model_UpdateStatusMessage(string status, bool hasError = false)

@@ -62,8 +62,21 @@
             	    Command="{Binding InviteCommand}"
             	    IsDefault="True" 
                     TabIndex="2" 
-            	    Style="{StaticResource STextButton}" Height="40" 
-                    />
+            	    Height="40">
+                <Button.Style>
+                    <Style TargetType="Button"
+                           BasedOn="{StaticResource STextButton}">
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsApproved}"
+                                 Value="True">
+                                <Setter Property="IsEnabled"
+                                Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
         <StackPanel Name="InviteStatusMessagePanel"                    
                     Background="{Binding HasError, Converter={StaticResource BooleanToBrushConverter}}"
