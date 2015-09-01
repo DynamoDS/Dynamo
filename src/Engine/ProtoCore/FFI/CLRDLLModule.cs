@@ -1223,6 +1223,11 @@ namespace ProtoFFI
             get { return attributes; }
         }
 
+        public string PreferredShortName
+        {
+            get; private set;
+        }
+
         public FFIClassAttributes(Type type)
         {
             if (type == null)
@@ -1242,6 +1247,10 @@ namespace ProtoFFI
                     ObsoleteMessage = (attr as ObsoleteAttribute).Message;
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
+                }
+                else if (attr is PreferredShortNameAttribute)
+                {
+                    PreferredShortName = (attr as PreferredShortNameAttribute).PreferredShortName;
                 }
             }
         }
