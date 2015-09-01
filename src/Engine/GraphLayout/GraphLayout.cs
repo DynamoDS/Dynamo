@@ -68,16 +68,16 @@ namespace GraphLayout
         }
 
         /// <summary>
-        /// Finds an edge between two nodes.
+        /// Finds an active edge between two nodes.
         /// </summary>
         /// <param name="start">Start node.</param>
         /// <param name="end">End node.</param>
         /// <returns>The edge object.</returns>
         public Edge FindEdge(Node start, Node end)
         {
-            foreach (Edge edge in Edges.Where(x => x.Active))
+            foreach (Edge edge in Edges)
             {
-                if (start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
+                if (edge.Active && start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
                 {
                     return edge;
                 }
