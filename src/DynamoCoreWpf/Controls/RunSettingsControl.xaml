@@ -121,8 +121,7 @@
                       HorizontalContentAlignment="Left"
                       Style="{StaticResource ResourceKey=SComboBox}" 
                       FontSize="14px" 
-                      Margin="2.5,0,2.5,0"
-                      IsEnabled="{Binding ShowBusyIndicator, Converter={StaticResource RunTypeEnabledConverter}}">               
+                      Margin="2.5,0,2.5,0">               
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}">
                         <Setter Property="IsEnabled" Value="{Binding Enabled}"/>                       
@@ -182,8 +181,7 @@
                       Focusable="False"
                       Content="Debug" 
                       VerticalContentAlignment="Center"
-                      Visibility="{Binding DebugCheckBoxVisibility}"
-                      IsEnabled="{Binding ShowBusyIndicator, Converter={StaticResource RunTypeEnabledConverter}}">
+                      Visibility="{Binding DebugCheckBoxVisibility}">
             </CheckBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="142.2,0,-0.4,0" Grid.Column="1" RenderTransformOrigin="0.5,0.5">

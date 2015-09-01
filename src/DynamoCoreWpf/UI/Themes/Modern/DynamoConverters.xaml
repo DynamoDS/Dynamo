@@ -151,6 +151,5 @@
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter"/>
     <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
-    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />
-    <controls:RunTypeEnabledConverter x:Key="RunTypeEnabledConverter"/>
+    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />   
 </ResourceDictionary>
