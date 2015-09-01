@@ -29,5 +29,15 @@ namespace DSCore
         {
             return obj;
         }
+
+        /// <summary>
+        ///     Returns the type of object represented as string.
+        /// </summary>
+        /// <param name="obj">An object.</param>
+        /// <returns>Type of object.</returns>
+        public static string Type(object obj)
+        {
+            return obj.GetType().ToString();
+        }
     }
 }
