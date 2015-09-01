@@ -434,7 +434,7 @@ namespace Dynamo.ViewModels
         /// 
         /// Note that, if the package is already installed, it must be uninstallable
         /// </summary>
-        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
+        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath)
         {
             Downloads.Add(packageDownloadHandle);
 
@@ -481,7 +481,7 @@ namespace Dynamo.ViewModels
                             }
                         }
 
-                        if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
+                        if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
                         {
                             var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
                             pmExtension.PackageLoader.Load(p);
