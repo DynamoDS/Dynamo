@@ -259,7 +259,6 @@
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Watch3D\HelixWatch3DNodeViewModel.cs" />
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -1201,6 +1200,8 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\customizerWorkflow.png" />
+    <Resource Include="UI\Images\dynamowithtext.png" />
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-minus.png" />
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-down.png" />
     <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-up.png" />

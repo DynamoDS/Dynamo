@@ -1265,7 +1265,7 @@ namespace Dynamo.Models
                     if (!workspace.HasUnsavedChanges)
                     {
                         if (workspace.Nodes.Any() &&
-                            workspace.Notes.Count == 0)
+                            !workspace.Notes.Any())
                             continue;
 
                         if (tempDict.ContainsKey(workspace.Guid))

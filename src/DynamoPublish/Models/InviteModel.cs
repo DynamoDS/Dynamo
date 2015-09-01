@@ -12,9 +12,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using Dynamo.Publish.Properties;
 using RestSharp;
+using Newtonsoft.Json;
 
 namespace Dynamo.Publish.Models
 {
@@ -67,7 +69,24 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(invite))
                 throw new Exception(Resources.PageErrorMessage);
 
-            authenticationProvider = dynamoAuthenticationProvider;            
+            authenticationProvider = dynamoAuthenticationProvider;
+        }
+
+        internal string GetInvitationStatus() 
+        {
+            var req = new RestRequest(invite, Method.GET);
+
+            restClient = new RestClient(serverUrl);
+
+            if (authenticationProvider.LoginState != LoginState.LoggedIn) 
+            {
+                return String.Empty;
+            }
+            authenticationProvider.SignRequest(ref req, restClient);
+
+            var res = restClient.Execute(req).Content;
+
+            return JsonConvert.DeserializeObject<dynamic>(res)["status"];
         }
 
         internal InviteModel(IAuthProvider provider,  RestClient client) :
@@ -122,12 +141,18 @@ namespace Dynamo.Publish.Models
 
                 var response = restClient.Execute(request);
 
-                if (response.ErrorException == null)
+                if (response.ErrorException == null && response.StatusCode == HttpStatusCode.OK)
+                {
                     OnUpdateStatusMessage(Resources.InviteRequestSuccess, false);
+                }
                 else
                 {
                     OnUpdateStatusMessage(Resources.InviteRequestFailed, true);
-                    Log(LogMessage.Error(response.ErrorException));
+                    if (response.ErrorException != null)
+                    {
+                        Log(LogMessage.Error(response.ErrorException));
+                    }
+
                     return false;
                 }
             }

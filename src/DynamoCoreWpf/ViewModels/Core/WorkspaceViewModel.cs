@@ -300,28 +300,32 @@ namespace Dynamo.ViewModels
             Model.NodeRemoved += Model_NodeRemoved;
             Model.NodesCleared += Model_NodesCleared;
 
-            Model.Notes.CollectionChanged += Notes_CollectionChanged;
-            Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
+            Model.NoteAdded += Model_NoteAdded;
+            Model.NoteRemoved += Model_NoteRemoved;
+            Model.NotesCleared += Model_NotesCleared;
+
+            Model.AnnotationAdded += Model_AnnotationAdded;
+            Model.AnnotationRemoved += Model_AnnotationRemoved;
+            Model.AnnotationsCleared += Model_AnnotationsCleared;
+
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += 
+            DynamoSelection.Instance.Selection.CollectionChanged +=
                 (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
 
-            
+
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
-            Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
-            Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
-            foreach (var c in Model.Connectors)
-                Connectors_ConnectorAdded(c);
+            foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
+            foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
+            foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
 
             InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
             InCanvasSearchViewModel.Visible = true;
         }
-
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -356,51 +360,36 @@ namespace Dynamo.ViewModels
                 _connectors.Remove(connector);
         }
 
-        void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Model_NoteAdded(NoteModel note)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {
-                        //add a corresponding note
-                        var viewModel = new NoteViewModel(this, item as NoteModel);
-                        _notes.Add(viewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _notes.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        _notes.Remove(_notes.First(x => x.Model == item));
-                    }
-                    break;
-            }
+            var viewModel = new NoteViewModel(this, note);
+            _notes.Add(viewModel);
         }
 
-        void Annotations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void Model_NoteRemoved(NoteModel note)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                    {                     
-                        var viewModel = new AnnotationViewModel(this, item as AnnotationModel);
-                        _annotations.Add(viewModel);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _annotations.Clear();
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                    {
-                        _annotations.Remove(_annotations.First(x => x.AnnotationModel == item));
-                    }
-                    break;
-            }
+            _notes.Remove(_notes.First(x => x.Model == note));
+        }
+
+        private void Model_NotesCleared()
+        {
+            _notes.Clear();
+        }
+
+        private void Model_AnnotationAdded(AnnotationModel annotation)
+        {
+            var viewModel = new AnnotationViewModel(this, annotation);
+            _annotations.Add(viewModel);
+        }
+
+        private void Model_AnnotationRemoved(AnnotationModel annotation)
+        {
+            _annotations.Remove(_annotations.First(x => x.AnnotationModel == annotation));
+        }
+
+        private void Model_AnnotationsCleared()
+        {
+            _annotations.Clear();
         }
 
 
@@ -1069,23 +1058,23 @@ namespace Dynamo.ViewModels
             var graph = new GraphLayout.Graph();
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
 
-            foreach (AnnotationModel x in Model.Annotations)
+            foreach (AnnotationModel n in Model.Annotations)
             {
                 // Treat a group as a graph layout node/vertex
-                graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
-                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+                graph.AddNode(n.GUID, n.Width, n.Height, n.Y);
+                models.Add(n, UndoRedoRecorder.UserAction.Modification);
             }
 
-            foreach (NodeModel x in Model.Nodes)
+            foreach (NodeModel n in Model.Nodes)
             {
                 AnnotationModel group = Model.Annotations.Where(
-                    s => s.SelectedModels.Contains(x)).ToList().FirstOrDefault();
+                    s => s.SelectedModels.Contains(n)).ToList().FirstOrDefault();
 
                 // Do not process nodes within groups
                 if (group == null)
                 {
-                    graph.AddNode(x.GUID, x.Width, x.Height, x.Y);
-                    models.Add(x, UndoRedoRecorder.UserAction.Modification);
+                    graph.AddNode(n.GUID, n.Width, n.Height, n.Y, n.InPorts.Count);
+                    models.Add(n, UndoRedoRecorder.UserAction.Modification);
                 }
             }
 

@@ -13,7 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Xml;
+using System.Xml.Serialization;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -34,6 +37,32 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    public class CameraData
+    {
+        private readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
+        private readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
+        private readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0);
+        private const double defaultNearPlaneDistance = 0.1;
+        private const double defaultFarPlaneDistance = 10000000;
+
+        public Point3D EyePosition { get; set; }
+        public Vector3D UpDirection { get; set; }
+        public Vector3D LookDirection { get; set; }
+        public string Name { get; set; }
+        public double NearPlaneDistance { get; set; }
+        public double FarPlaneDistance { get; set; }
+
+        public CameraData()
+        {
+            Name = "Default Camera";
+            EyePosition = defaultCameraPosition;
+            UpDirection = defaultCameraUpDirection;
+            LookDirection = defaultCameraLookDirection;
+            NearPlaneDistance = defaultNearPlaneDistance;
+            FarPlaneDistance = defaultFarPlaneDistance;
+        }
+    }
+
     public class HelixWatch3DViewModel : Watch3DViewModelBase
     {
         #region private members
@@ -55,10 +84,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Size defaultPointSize = new Size(8, 8);
         private readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
         private readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
-
-        internal static readonly Vector3D DefaultCameraLookDirection = new Vector3D(-10, -10, -10);
-        internal static readonly Point3D DefaultCameraPosition = new Point3D(10, 15, 10);
-        internal static readonly Vector3D DefaultCameraUpDirection = new Vector3D(0, 1, 0);
 
         internal const string DefaultGridName = "Grid";
         internal const string DefaultAxesName = "Axes";
@@ -285,7 +310,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private bool canNavigateBackground = false;
         public bool CanNavigateBackground
         {
-            get { return canNavigateBackground; }
+            get
+            {
+                return canNavigateBackground || navigationKeyIsDown; 
+            }
             set
             {
                 canNavigateBackground = value;
@@ -293,6 +321,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private bool navigationKeyIsDown = false;
+        public bool NavigationKeyIsDown
+        {
+            get { return navigationKeyIsDown; }
+            set 
+            { 
+                navigationKeyIsDown = value;
+                RaisePropertyChanged("NavigationKeyIsDown");
+                RaisePropertyChanged("CanNavigateBackground");
+            }
+        }
+        
         #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
@@ -309,6 +349,76 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var vm = new HelixWatch3DViewModel(parameters);
             vm.OnStartup();
             return vm;
+        }
+
+        public void SerializeCamera(XmlElement camerasElement)
+        {
+            try
+            {
+                var node = XmlHelper.AddNode(camerasElement, "Camera");
+                XmlHelper.AddAttribute(node, "Name", Name);
+                XmlHelper.AddAttribute(node, "eyeX", camera.Position.X.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "eyeY", camera.Position.Y.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "eyeZ", camera.Position.Z.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "lookX", camera.LookDirection.X.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "lookY", camera.LookDirection.Y.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "lookZ", camera.LookDirection.Z.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "upX", camera.UpDirection.X.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "upY", camera.UpDirection.Y.ToString(CultureInfo.InvariantCulture));
+                XmlHelper.AddAttribute(node, "upZ", camera.UpDirection.Z.ToString(CultureInfo.InvariantCulture));
+                camerasElement.AppendChild(node);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(Properties.Resources.CameraDataSaveError);
+                logger.Log(ex);
+            }
+        }
+
+        /// <summary>
+        /// Create a CameraData object from an XmlNode representing the Camera's serialized
+        /// position data.
+        /// </summary>
+        /// <param name="cameraNode">The XmlNode containing the camera position data.</param>
+        /// <returns></returns>
+        public CameraData DeserializeCamera(XmlNode cameraNode)
+        {
+            if (cameraNode.Attributes == null || cameraNode.Attributes.Count == 0)
+            {
+                return new CameraData();
+            }
+
+            try
+            {
+                var name = cameraNode.Attributes["Name"].Value;
+                var ex = float.Parse(cameraNode.Attributes["eyeX"].Value, CultureInfo.InvariantCulture);
+                var ey = float.Parse(cameraNode.Attributes["eyeY"].Value, CultureInfo.InvariantCulture);
+                var ez = float.Parse(cameraNode.Attributes["eyeZ"].Value, CultureInfo.InvariantCulture);
+                var lx = float.Parse(cameraNode.Attributes["lookX"].Value, CultureInfo.InvariantCulture);
+                var ly = float.Parse(cameraNode.Attributes["lookY"].Value, CultureInfo.InvariantCulture);
+                var lz = float.Parse(cameraNode.Attributes["lookZ"].Value, CultureInfo.InvariantCulture);
+                var ux = float.Parse(cameraNode.Attributes["upX"].Value, CultureInfo.InvariantCulture);
+                var uy = float.Parse(cameraNode.Attributes["upY"].Value, CultureInfo.InvariantCulture);
+                var uz = float.Parse(cameraNode.Attributes["upZ"].Value, CultureInfo.InvariantCulture);
+
+                var camData = new CameraData
+                {
+                    Name = name,
+                    EyePosition = new Point3D(ex, ey, ez),
+                    LookDirection = new Vector3D(lx, ly, lz),
+                    UpDirection = new Vector3D(ux, uy, uz)
+                };
+
+                return camData;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(Properties.Resources.CameraDataLoadError);
+                logger.Log(ex);
+            }
+
+            return new CameraData();
         }
 
         protected override void OnStartup()
@@ -359,7 +469,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void OnWorkspaceCleared(WorkspaceModel workspace)
         {
-            SetCameraToDefaultOrientation();
+            SetCameraData(new CameraData());
             base.OnWorkspaceCleared(workspace);
         }
 
@@ -373,7 +483,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             foreach (XmlNode cameraNode in camerasElements[0].ChildNodes)
             {
-                LoadCamera(cameraNode);
+                try
+                {
+                    var camData = DeserializeCamera(cameraNode);
+                    SetCameraData(camData);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex.Message);
+                    logger.Log(ex);
+                }
             }
         }
 
@@ -386,7 +505,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             var camerasElement = doc.CreateElement("Cameras");
-            SaveCamera(camerasElement);
+            SerializeCamera(camerasElement);
             root.AppendChild(camerasElement);
         }
 
@@ -540,7 +659,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #region internal methods
 
-        internal void ComputeFrameUpdate(Rect3D sceneBounds)
+        internal void ComputeFrameUpdate()
         {
 #if DEBUG
             if (renderTimer.IsRunning)
@@ -568,8 +687,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 directionalLight.Direction = v;
             }
-
-            UpdateNearClipPlaneForSceneBounds(sceneBounds);
         }
 
         #endregion
@@ -698,7 +815,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // camera setup
             Camera = new PerspectiveCamera();
 
-            SetCameraToDefaultOrientation();
+            SetCameraData(new CameraData());
 
             DrawGrid();
         }
@@ -872,13 +989,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void SetCameraToDefaultOrientation()
+        public void SetCameraData(CameraData data)
         {
-            Camera.LookDirection = DefaultCameraLookDirection;
-            Camera.Position = DefaultCameraPosition;
-            Camera.UpDirection = DefaultCameraUpDirection;
-            Camera.NearPlaneDistance = CalculateNearClipPlane(1000000);
-            Camera.FarPlaneDistance = 10000000;
+            Camera.LookDirection = data.LookDirection;
+            Camera.Position = data.EyePosition;
+            Camera.UpDirection = data.UpDirection;
+            Camera.NearPlaneDistance = data.NearPlaneDistance;
+            Camera.FarPlaneDistance = data.FarPlaneDistance;
         }
 
         private double CalculateNearClipPlane(double maxDim)
@@ -1167,7 +1284,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// This method attempts to maximize the near clip plane in order to 
         /// achiever higher z-buffer precision.
         /// </summary>
-        private void UpdateNearClipPlaneForSceneBounds(Rect3D sceneBounds)
+        internal void UpdateNearClipPlaneForSceneBounds(Rect3D sceneBounds)
         {
             // http: //www.sjbaker.org/steve/omniv/love_your_z_buffer.html
             var maxDim = Math.Max(Math.Max(sceneBounds.SizeX, sceneBounds.Y), sceneBounds.SizeZ);
@@ -1257,5 +1374,23 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         #endregion
+    }
+
+    internal static class CameraExtensions
+    {
+        public static CameraData ToCameraData(this PerspectiveCamera camera, string name)
+        {
+            var camData = new CameraData
+            {
+                Name = name,
+                LookDirection = camera.LookDirection,
+                EyePosition = camera.Position,
+                UpDirection = camera.UpDirection,
+                NearPlaneDistance = camera.NearPlaneDistance,
+                FarPlaneDistance = camera.FarPlaneDistance
+            };
+
+            return camData;
+        }
     }
 }

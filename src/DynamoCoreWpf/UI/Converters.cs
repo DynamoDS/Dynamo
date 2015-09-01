@@ -2341,22 +2341,4 @@ namespace Dynamo.Controls
                 throw new NotImplementedException();
             }
         }
-
-        public class Watch3DViewModelTypeToVisibilityConverter : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                if(value is HelixWatch3DNodeViewModel)
-                {
-                    return Visibility.Collapsed;
-                }
-
-                return Visibility.Visible;
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
