@@ -123,10 +123,20 @@ namespace Dynamo.Docs
             sb.AppendLine("##Methods:  ");
             foreach (var method in t.GetMethods().Where(m => m.IsPublic))
             {
-                var methodParams = method.GetParameters();              
+                var methodParams = method.GetParameters();
+                var methodName = method.Name;
+                //If the method is List<T,T>
+                if (method.IsGenericMethod)
+                {
+                    var typeParam = method.GetGenericArguments();
+                    //this returns T,T
+                    var genericParamName = string.Join(",", typeParam.Select(ty => ty.Name));          
+                    //this returns List<T,T>
+                    methodName = methodName + "<" + genericParamName + ">";
+                }
                 var fullMethodName = methodParams.Any() ?
-                    method.Name + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
-                    method.Name;
+                    methodName + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
+                    methodName;
                 
                 Debug.WriteLine(t.FullName + "." + fullMethodName);
                 sb.Append(GetMarkdownForMethod(members, t.FullName + "." + fullMethodName));
@@ -173,8 +183,8 @@ namespace Dynamo.Docs
         }
 
         private static string GetMarkdownForMember(IEnumerable<XElement> members, string memberName)
-        {
-            var foundType = members.Where(e => e.Attribute("name").Value == memberName).FirstOrDefault();
+        {          
+            var foundType = members.FirstOrDefault(e => e.Attribute("name").Value == memberName);
             if (foundType == null)
             {
                 return string.Empty;

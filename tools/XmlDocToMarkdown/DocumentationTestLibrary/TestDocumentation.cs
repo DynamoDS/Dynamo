@@ -17,6 +17,7 @@ namespace Dynamo.DocumentationTestLibrary
 {
     public class TestDocumentation
     {
+
         /// <summary>
         /// Mks the array.
         /// </summary>        
@@ -31,4 +32,10 @@ namespace Dynamo.DocumentationTestLibrary
             return new T[n];
         }
     }
+
+    //public class Person
+    //{
+    //    public string name;
+    //    public int age;
+    //}
 }
