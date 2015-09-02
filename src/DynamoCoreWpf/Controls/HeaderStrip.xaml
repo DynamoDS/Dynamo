@@ -32,7 +32,7 @@
             <Setter Property="VerticalAlignment"
                     Value="Center" />
             <Setter Property="Foreground"
-                    Value="{StaticResource CommonSidebarTextColor}" />
+                    Value="#868686" />
             <Setter Property="FontSize"
                     Value="12" />
             <!--<Setter Property="FontStyle"

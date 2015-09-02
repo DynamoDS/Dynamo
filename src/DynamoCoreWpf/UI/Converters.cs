@@ -38,7 +38,7 @@ namespace Dynamo.Controls
     {
         private const int MaxChars = 100;
         private const double MinFontFactor = 7.0;
-
+        
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var tooltip = value as string;
@@ -2373,7 +2373,10 @@ namespace Dynamo.Controls
         /// This controls the TreeView Margin
         /// </summary>
         public class TreeViewLineMarginConverter : IMultiValueConverter
-        {          
+        {
+            private const int TreeViewFactor = 2;            
+            private const int TreeViewLineOffsetNeg = -10;
+
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
             {
                 if (values[0] is Thickness)
@@ -2409,14 +2412,14 @@ namespace Dynamo.Controls
                     
                     //If it is root category, then move the vertical line outside the grid.
                     if (childMargin.Left == 0)
-                    {                    
-                        return new Thickness(-10, 0, 0, 0);
+                    {
+                        return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
                     }
 
                     //If it is root category, then move the vertical line outside the grid.
                     if (childMargin.Left == parentMargin.Left)
-                    {                      
-                        return new Thickness(-10, 0, 0, 0);
+                    {
+                        return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
                     }
                    
                     //For levels 0,1,2, the difference will be less. 
@@ -2424,14 +2427,14 @@ namespace Dynamo.Controls
                     //Hence the difference will be greater.
                     if (diff < childMargin.Right)
                     {
-                        return new Thickness(0, 0, childMargin.Left * 2, 0);
+                        return new Thickness(0, 0, childMargin.Left * TreeViewFactor, 0);
                     }
 
-                    return new Thickness(diff, 0, diff * 2, 0);
+                    return new Thickness(diff, 0, diff * TreeViewFactor, 0);
                 }
 
                 //Default. Move the line outside the grid.
-                return new Thickness(-10, 0, 0, 0);
+                return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -2444,7 +2447,13 @@ namespace Dynamo.Controls
         /// This controls the horizontal line margin
         /// </summary>
         public class TreeViewHLineMarginConverter : IMultiValueConverter
-        {           
+        {
+            private const int TreeViewFactor = 2;
+            private const int TreeViewLevelFactor = 3;
+            private const int TreeViewoffsetPos = 5;           
+            private const int TreeViewLineOffsetPos = 10;
+            private const int TreeViewLineOffsetNeg = -10;
+
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
             {
                 var VerLnMargin = (Thickness)(values[0]);
@@ -2475,32 +2484,36 @@ namespace Dynamo.Controls
                     }
                 }
 
-                var left = VerLnMargin.Left + 10;
-                var right = (expanderMargin.Right*2) + 5;
+                var left = VerLnMargin.Left + TreeViewLineOffsetPos;
+                var right = (expanderMargin.Right * TreeViewFactor) + TreeViewoffsetPos;
 
                 //This is to set the Horizontal line close to the expander
                 // only for the case when expander is too far. (ex: 65,0,20,0)
                 if (left > right)
-                    right = left + 10;
+                {
+                    right = left + TreeViewLineOffsetPos;
+                }
 
                 // If both vertical and expander margins are not set (for root categories)                 
                 // then move the horizontal margin outside the outergrid. this is 
                 // used here, because we don't want the lines for root categories.                
                 if (left == 0 && expanderMargin.Right == 0)
-                    left = -10;
+                {
+                    left = TreeViewLineOffsetNeg;
+                }
 
                 //if the vertical margin is not set, then move the horizontal line by
                 //10 points. This is mostly used for levels 0 or 1.
                 else if (left == 0)
                 {
-                    left = right + 10;
+                    left = right + TreeViewLineOffsetPos;
                 }
 
                 //If the treeview item is within 1 or 2 level, then move
                 //the horizontal line by 3 points. 
                 if (level >= 1 && level <= 2 && VerLnMargin.Left > 0)
                 {
-                    left = left - 3;
+                    left = left - TreeViewLevelFactor;
                 }
 
                 //for deep levels, use the margin same as vertical line
@@ -2523,6 +2536,7 @@ namespace Dynamo.Controls
         /// </summary>
         public class TreeViewVLineMarginConverter : IValueConverter
         {
+            private const int TreeViewLineOffsetNeg = -10;
             public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
                 Thickness margin = (Thickness)value;
@@ -2530,8 +2544,10 @@ namespace Dynamo.Controls
 
                 //If the margin is not set
                 if (margin.Right == 0)
-                    return new Thickness(-10, 0, 0, 0);
-                
+                {
+                    return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
+                }
+
                 return new Thickness(margin.Left, margin.Top, margin.Right, bottom);
                 
             }
@@ -2553,7 +2569,9 @@ namespace Dynamo.Controls
                  
                 //If the margin is not set
                 if (margin.Right == 0)
-                        return false;
+                {
+                    return false;
+                }
 
                 return true;
 
@@ -2605,7 +2623,11 @@ namespace Dynamo.Controls
         /// For expander margin  <seealso cref=" FullCategoryNameToMarginConverter"/>
         /// </summary>
         public class NestedContentMarginConverter : IValueConverter
-        {
+        {            
+            private const double TreeViewoffsetPos = 5;
+            private const double TreeViewoffsetNeg = -5;            
+            private const double TreeViewMarginFactor = -25;
+
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 var nestedMargin = (Thickness)value;
@@ -2616,15 +2638,17 @@ namespace Dynamo.Controls
                 // calculation is right - left. ex: if the expander margin is 65,0,20,0 (3rd level) then 
                 // content margin has to be -45,0,0,0. if the expander margin is 25,0,20,0 then content 
                 // margin should be -25,0,0,0.
-                if (nestedMargin != null && nestedMargin.Left > 5 && nestedMargin.Right > 0)
+                if (nestedMargin != null && nestedMargin.Left > TreeViewoffsetPos && nestedMargin.Right > 0)
                 {
                     var left = nestedMargin.Right - nestedMargin.Left;
-                    if(left < -5)
+                    if (left < TreeViewoffsetNeg)
+                    {
                         //-45,0,0,0 is very close to expander. so move the content a bit.
-                        return new Thickness(left + 5 , 0, 0, 0);
+                        return new Thickness(left + TreeViewoffsetPos, 0, 0, 0);
+                    }
                     else
                     {
-                        return new Thickness(-25, 0, 0, 0);
+                        return new Thickness(TreeViewMarginFactor, 0, 0, 0);
                     }
                 }
                               
