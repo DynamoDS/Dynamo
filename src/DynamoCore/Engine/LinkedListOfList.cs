@@ -9,7 +9,7 @@ namespace Dynamo.Engine
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public class LinkedListOfList<TKey, T> : IEnumerable<List<T>>
+    internal class LinkedListOfList<TKey, T> : IEnumerable<List<T>>
     {
         private readonly LinkedList<List<T>> list;
         private readonly Dictionary<TKey, LinkedListNode<List<T>>> map;
