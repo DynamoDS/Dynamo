@@ -46,18 +46,19 @@ namespace Dynamo.Models
     /// <summary>
     /// The core model of Dynamo.
     /// </summary>
-    public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
+    public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor
     {
-        #region private members
+        #region Private Fields
 
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+
         #endregion
 
-        #region events
+        #region Public Events
 
         public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
@@ -127,13 +128,14 @@ namespace Dynamo.Models
        
         #endregion
 
-        #region static properties
+        #region Public Static Properties
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
         /// idle thread call.
         /// </summary>
+        private static bool isTestMode;
         public static bool IsTestMode
         {
             get { return isTestMode; }
@@ -143,8 +145,6 @@ namespace Dynamo.Models
                 InstrumentationLogger.IsTestMode = value;
             }
         }
-
-        private static bool isTestMode;
 
         /// <summary>
         ///     Specifies whether or not Dynamo is in a crash-state.
@@ -159,13 +159,18 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region public properties
+        #region Public Properties
 
         /// <summary>
-        ///     DesignScript VM EngineController, used for this instance of Dynamo.
+        ///     EngineController used for various operations like Node to Code, Autocomplete, and more
         /// </summary>
-        public EngineController EngineController { // MHWS
-            get { return Workspaces.OfType<HomeWorkspaceModel>().First().EngineController; } }
+        public EngineController EngineController {
+            // TODO: MAGN-8237 This is awkward. What if there is no HomeWorkspaceModel. What if this WorkspaceModel is in use?
+            get
+            {
+                return Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
+            } 
+        }
 
         /// <summary>
         ///     Manages all loaded ZeroTouch libraries.
