@@ -347,7 +347,8 @@
                                                                         Style="{StaticResource DownloadVersionButton}"
                                                                         ToolTip="{x:Static p:Resources.PackageSearchViewInstallThisVersion}" 
                                                                         Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
-                                                                        Command="{Binding Path=Item2}" />
+                                                                        Command="{Binding Path=Item2}"
+                                                                        CommandParameter="false" />
                                                                 <Button Name="DownloadVersionButtonDropDown"  
                                                                         Style="{StaticResource DownloadVersionButton}"
                                                                         Content="▾" 

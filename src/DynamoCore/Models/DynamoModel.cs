@@ -45,6 +45,9 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
+    /// <summary>
+    /// The core model of Dynamo.
+    /// </summary>
     public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         #region private members
@@ -1437,6 +1440,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Add a new HomeWorkspace and set as current
         /// </summary>
+        /// <api_stability>1</api_stability>
         public void AddHomeWorkspace()
         {
             var defaultWorkspace = new HomeWorkspaceModel(
