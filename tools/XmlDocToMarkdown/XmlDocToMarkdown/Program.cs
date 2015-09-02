@@ -113,7 +113,24 @@ namespace Dynamo.Docs
         private static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
         {
             var members = xml.Root.Element("members").Elements("member");
+            foreach (var element in members)
+            {
+                if (element.Attribute("name").Value.Contains("``1") ||
+                    element.Attribute("name").Value.Contains("``0"))
+                {
+                    if (element.Element("typeparam") != null)
+                    {
+                        var typeParamelem = element.Element(("typeparam"));
+                        var typeParamName = typeParamelem.Attribute("name").Value;
+                        var text = element.Attribute("name").Value;
+                        text = text.Replace("``1", "{" + typeParamName + "}");
+                        text = text.Replace("``0", "{" + typeParamName + "}");
 
+                        element.Attribute("name").Value = text;
+                    }                                   
+                }
+
+            }
             var sb = new StringBuilder();
 
             sb.AppendLine("#" + t.Name);
@@ -132,7 +149,7 @@ namespace Dynamo.Docs
                     //this returns T,T
                     var genericParamName = string.Join(",", typeParam.Select(ty => ty.Name));          
                     //this returns List<T,T>
-                    methodName = methodName + "<" + genericParamName + ">";
+                    methodName = methodName + "{" + genericParamName + "}";
                 }
                 var fullMethodName = methodParams.Any() ?
                     methodName + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :

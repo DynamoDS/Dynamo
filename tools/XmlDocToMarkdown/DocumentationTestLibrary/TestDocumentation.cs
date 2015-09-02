@@ -17,15 +17,21 @@ namespace Dynamo.DocumentationTestLibrary
 {
     public class TestDocumentation
     {
-
         /// <summary>
+        /// The persons
+        /// </summary>
+        /// <value>
+        /// The persons.
+        /// </value>
+        public List<int> Persons { get; set; }
+
+        /// <summary> 
         /// Mks the array.
         /// </summary>        
         /// <param name="n">The index.</param>
         /// <returns>New Array</returns>
         /// <search>Testing</search>          
-        /// <remarks>Testing remarks tag</remarks>
-        /// <event>Testing events tag</event>
+        /// <remarks>Testing remarks tag</remarks>        
         /// <typeparam name="T">The element type of the array</typeparam>
         public T[] mkArray<T>(int n)
         {
@@ -35,7 +41,14 @@ namespace Dynamo.DocumentationTestLibrary
 
     //public class Person
     //{
+    //    /// <summary>
+    //    /// The name
+    //    /// </summary>
     //    public string name;
+
+    //    /// <summary>
+    //    /// The age
+    //    /// </summary>
     //    public int age;
     //}
 }
