@@ -77,13 +77,6 @@
 
                 <MenuItem Header="{x:Static p:Resources.Watch3DViewContextMenuZoomToFit}"
                           Click="OnZoomToFitClickedHandler" />
-
-                <MenuItem Header="Show Preview Settings Control" Focusable="False" IsCheckable="True">
-                    <MenuItem.IsChecked>
-                        <Binding Path="ShowWatchSettingsControl"
-                                 Mode="TwoWay"/>
-                    </MenuItem.IsChecked>
-                </MenuItem>
                 
             </ContextMenu>
         </Grid.ContextMenu>
@@ -118,12 +111,6 @@
                 <MouseBinding Command="{Binding LeftClickCommand}" Gesture="LeftClick"/>
             </hx:Viewport3DX.InputBindings>            
         </hx:Viewport3DX>
-
-        <Grid Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BoolToVisibilityConverter}}">
-            <preview:Watch3DSettingsControl x:Name="WatchSettingsControl"  
-                                            HorizontalAlignment="Left" 
-                                            VerticalAlignment="Top" Margin="10,30" />
-        </Grid>
         
         <Thumb Name ="resizeThumb" 
                Width="10" Height="10" 
