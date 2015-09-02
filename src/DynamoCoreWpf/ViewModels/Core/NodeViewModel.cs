@@ -971,9 +971,9 @@ namespace Dynamo.ViewModels
         private bool CanAddToGroup(object parameters)
         {          
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups.Any(x => x.IsSelected))
+            if (groups.Any(x => x.IsSelected) && NodeLogic.IsSelected)
             {
-                return !(groups.ContainsModel(NodeLogic.GUID));
+                return !(groups.ContainsModel(NodeLogic.GUID)); 
             }
             return false;
         }
