@@ -2600,7 +2600,7 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// This converter sets the margin for inner elements. Inner elements (e.g File under core)
+        /// This converter sets the margin for inner elements. Inner elements (e.g Core - File)
         /// should have the margin close to the expander. 
         /// For expander margin  <seealso cref=" FullCategoryNameToMarginConverter"/>
         /// </summary>
