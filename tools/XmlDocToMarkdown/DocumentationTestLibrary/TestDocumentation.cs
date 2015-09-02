@@ -17,38 +17,38 @@ namespace Dynamo.DocumentationTestLibrary
 {
     public class TestDocumentation
     {
+        #region properties
+
         /// <summary>
-        /// The persons
+        /// Testing property
         /// </summary>
-        /// <value>
-        /// The persons.
-        /// </value>
-        public List<int> Persons { get; set; }
+        public int property1 { get; set; }
+     
+        #endregion
+
+        #region events       
+        public delegate void ChangedEventHandler(object sender, EventArgs e);
+
+        /// <summary>
+        /// Testing Events
+        /// </summary>
+        public event ChangedEventHandler Changed;
+
+        #endregion
 
         /// <summary> 
         /// Mks the array.
         /// </summary>        
         /// <param name="n">The index.</param>
         /// <returns>New Array</returns>
-        /// <search>Testing</search>          
+        /// <search>
+        /// Testing
+        /// </search>          
         /// <remarks>Testing remarks tag</remarks>        
         /// <typeparam name="T">The element type of the array</typeparam>
         public T[] mkArray<T>(int n)
         {
             return new T[n];
         }
-    }
-
-    //public class Person
-    //{
-    //    /// <summary>
-    //    /// The name
-    //    /// </summary>
-    //    public string name;
-
-    //    /// <summary>
-    //    /// The age
-    //    /// </summary>
-    //    public int age;
-    //}
+    }  
 }

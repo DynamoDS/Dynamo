@@ -113,23 +113,27 @@ namespace Dynamo.Docs
         private static void GenerateMarkdownDocumentForType(Type t, string folder, XDocument xml)
         {
             var members = xml.Root.Element("members").Elements("member");
-            foreach (var element in members)
+
+            //get all the generic members. Generic methods in XML has special characters 
+            // List<T> in xml is List``1. So, replace them with correct values. Here, instead
+            // of angular brackets we use [ ]
+            var genericMembers = members.Where(x => x.Attribute("name").Value.Contains("``1") ||
+                                                    x.Attribute("name").Value.Contains("``0"));
+            foreach (var genericMember in genericMembers)
             {
-                if (element.Attribute("name").Value.Contains("``1") ||
-                    element.Attribute("name").Value.Contains("``0"))
+                if (genericMember.Element("typeparam") != null)
                 {
-                    if (element.Element("typeparam") != null)
+                    var typeParamelem = genericMember.Element(("typeparam"));
+                    if (typeParamelem != null)
                     {
-                        var typeParamelem = element.Element(("typeparam"));
                         var typeParamName = typeParamelem.Attribute("name").Value;
-                        var text = element.Attribute("name").Value;
-                        text = text.Replace("``1", "{" + typeParamName + "}");
-                        text = text.Replace("``0", "{" + typeParamName + "}");
+                        var text = genericMember.Attribute("name").Value;
+                        text = text.Replace("``1", "[" + typeParamName + "]");
+                        text = text.Replace("``0", "[" + typeParamName + "]");
 
-                        element.Attribute("name").Value = text;
-                    }                                   
-                }
-
+                        genericMember.Attribute("name").Value = text;
+                    }
+                }                                                  
             }
             var sb = new StringBuilder();
 
@@ -149,7 +153,7 @@ namespace Dynamo.Docs
                     //this returns T,T
                     var genericParamName = string.Join(",", typeParam.Select(ty => ty.Name));          
                     //this returns List<T,T>
-                    methodName = methodName + "{" + genericParamName + "}";
+                    methodName = methodName + "[" + genericParamName + "]";
                 }
                 var fullMethodName = methodParams.Any() ?
                     methodName + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
@@ -237,7 +241,9 @@ namespace Dynamo.Docs
                     {"returns", "Returns: {0}\n\n"},
                     {"none", ""},
                     {"typeparam", ""},
-                    {"c", "`{0}`"}
+                    {"c", "`{0}`"},
+                    {"search", ">{0}"},
+                    {"notranslation", "\n\n>{0}\n\n"}
                 };
 
         private static Func<string, XElement, string[]> d = 
@@ -333,7 +339,7 @@ namespace Dynamo.Docs
                     {"list", x => new string[0]},
                     // dynamo specific
                     {"notranslation", x => new string[0]},
-                    {"search", x => new string[0]},
+                    {"search", x => new[]{x.Value}},
                     {"filterpriority", x => new string[0]}
                 };
 
