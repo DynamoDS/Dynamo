@@ -9,14 +9,14 @@
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
         mc:Ignorable="d" 
         Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="490" MinWidth="490" MaxWidth="490">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <!-- An unstyled button -->
             <Style x:Key="FlatButton" TargetType="Button">
                 <Setter Property="Background" Value="{x:Null}" />
                 <Setter Property="BorderBrush" Value="{x:Null}" />
-                
+
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
@@ -39,7 +39,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                
+
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#44000000" />
@@ -50,7 +50,44 @@
                         <Setter Property="FontWeight" Value="Normal" />
                     </Trigger>
                 </Style.Triggers>
-                
+
+            </Style>
+
+            <Style x:Key="DownloadVersionButton" TargetType="{x:Type Button}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+
+                            <Border x:Name="container" Background="Transparent">
+                                <TextBlock x:Name="text"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="4,0"
+                                           FontSize="11"
+                                           Foreground="#BBB"
+                                           FontWeight="Bold"
+                                           Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="Button.IsMouseOver" Value="true">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#333333" />
+                                </Trigger>
+
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter TargetName="text"
+                                            Property="Foreground"
+                                            Value="#666" />
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
@@ -62,18 +99,18 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            
+
         </ResourceDictionary>
     </Window.Resources>
-    
-        <Grid>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="2"/>
-                <RowDefinition Height="Auto"/> 
-            </Grid.RowDefinitions>
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
         <Grid Background="Black" Grid.Row="1" MinHeight="200">
 
@@ -85,7 +122,7 @@
             <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" TextAlignment="Center" Margin="20" Text="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToStringConverter}}"/>
 
             <Grid Name="RSearchBoxStackPanel" Grid.Row="0">
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -101,13 +138,13 @@
                            Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                            Text="{x:Static p:Resources.PackageSearchViewSearchTextBox}"/>
 
-                <Button Width="auto" MinWidth="80" Grid.Column="1" Click="SortButton_OnClick"
+                <Button Width="auto" MinWidth="80" Grid.Column="1" Click="OnSortButtonClicked"
                         Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">
 
                     <Button.ContextMenu>
 
                         <ContextMenu>
-                            
+
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Name" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Name, Mode=TwoWay}" />
@@ -182,24 +219,41 @@
                                 </TextBlock>
 
                                 <StackPanel Orientation="Horizontal" Margin="1" Width="450">
-   
-                                    <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#666">
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#888"
+                                                ToolTip="{x:Static p:Resources.PackageSearchViewInstallLatestVersion}">
                                             <Grid Width="40" Height="64">
                                                 <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
-                                                <Ellipse
-                                                            Fill="Transparent"
-                                                            Height="36"
-                                                            Width="36"
-                                                            StrokeThickness="3"
-                                                            Stroke="#666" />
+                                                <Ellipse Fill="Transparent"
+                                                         Height="36"
+                                                         Width="36"
+                                                         StrokeThickness="3"
+                                                         Stroke="#666" />
                                             </Grid>
                                         </Button>
+
+                                        <Button Name="DownloadButtonDropDown" Style="{StaticResource FlatButton}" Click="OnInstallLatestButtonDropDownClicked" Foreground="#888">
+                                            <Grid Width="10" Height="64" Background="Transparent" >
+                                                <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">▾</TextBlock>
+                                            </Grid>
+                                            <Button.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersion}"
+                                                              Command="{Binding DownloadLatestCommand}" />
+                                                    <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
+                                                              Command="{Binding DownloadLatestToCustomPathCommand}"
+                                                              CommandParameter="{Binding Path=Model.LatestVersion}"/>
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                        </Button>
+                                    </StackPanel>
 
                                     <StackPanel Orientation="Vertical">
                                         <StackPanel Orientation="Horizontal">
                                             <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
 
-                                                <StackPanel Width="350" IsHitTestVisible="True" >
+                                                <StackPanel Width="340" IsHitTestVisible="True" >
                                                     <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
 
                                                     <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
@@ -285,12 +339,35 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                        <Button Name="DownloadVersionButton"  
-                                                                ToolTip="{x:Static p:Resources.PackageSearchViewInstallButtonTooltip}" 
-                                                                Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
-                                                                Command="{Binding Path=Item2}" 
-                                                                Style="{StaticResource SBadgeButton}" />
-                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="120" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="100" Margin="24,5,5,5"  Foreground="DarkGray" />
+
+                                                        <Border Background="#000000" Margin="3">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Button Name="DownloadVersionButtonText"  
+                                                                        Style="{StaticResource DownloadVersionButton}"
+                                                                        ToolTip="{x:Static p:Resources.PackageSearchViewInstallThisVersion}" 
+                                                                        Content="{x:Static p:Resources.PackageSearchViewInstallButton}" 
+                                                                        Command="{Binding Path=Item2}"
+                                                                        CommandParameter="false" />
+                                                                <Button Name="DownloadVersionButtonDropDown"  
+                                                                        Style="{StaticResource DownloadVersionButton}"
+                                                                        Content="▾" 
+                                                                        Click="OnInstallVersionButtonDropDownClicked">
+                                                                    <Button.ContextMenu>
+                                                                        <ContextMenu>
+                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersion}"
+                                                                                      Command="{Binding Path=Item2}"
+                                                                                      CommandParameter="false"/>
+                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallThisVersionTo}"
+                                                                                      Command="{Binding Path=Item2}"
+                                                                                      CommandParameter="true"/>
+                                                                        </ContextMenu>
+                                                                    </Button.ContextMenu>
+                                                                </Button>
+                                                            </StackPanel>
+                                                        </Border>
+
+
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
@@ -367,9 +444,9 @@
                             <Border BorderBrush="DimGray" BorderThickness="0,0,0,1">
 
                                 <StackPanel Orientation="Horizontal" Name="SearchEle" >
-                                    
+
                                     <StackPanel Width ="270" >
-                                        
+
                                         <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" Foreground="White" Padding="5"/>
                                         <TextBlock FontSize="10" Name="error" Text="{Binding Path=ErrorString}" Foreground="White"  Padding="5"/>
 
@@ -381,50 +458,50 @@
                                         <TextBlock FontSize="11" Name="version" Text="{Binding Path=VersionName}" Foreground="White"  Padding="5"/>
 
                                     </StackPanel>
-                                    
+
                                 </StackPanel>
-                                
+
                             </Border>
 
                             <DataTemplate.Triggers>
 
-                                    <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Unknown">
-                                        <DataTrigger.Setters>
-                                                    <Setter Property="Background" Value="#CC000000" TargetName="SearchEle" />
-                                        </DataTrigger.Setters>
-                                     </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Unknown">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Background" Value="#CC000000" TargetName="SearchEle" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloaded">
-                                        <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
-                                        </DataTrigger.Setters>
-                                    </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloaded">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloading">
-                                        <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
-                                        </DataTrigger.Setters>
-                                     </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Downloading">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Error">
-                                        <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="LightCoral" TargetName="SearchEle" />
-                                        </DataTrigger.Setters>
-                                    </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Error">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Background" Value="LightCoral" TargetName="SearchEle" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installed">
-                                        <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="LightBlue" TargetName="SearchEle" />
-                                        </DataTrigger.Setters>
-                                    </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installed">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Background" Value="LightBlue" TargetName="SearchEle" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installing">
-                                        <DataTrigger.Setters>
-                                            <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
-                                        </DataTrigger.Setters>
-                                    </DataTrigger>
+                                <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="Installing">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Background" Value="Gray" TargetName="SearchEle" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
 
-                                </DataTemplate.Triggers>
+                            </DataTemplate.Triggers>
 
                         </DataTemplate>
 

@@ -19,6 +19,12 @@ namespace Dynamo.Wpf.ViewModels
         private bool isSelected;
         private SearchViewModel searchViewModel;
 
+        public bool IsTopResult
+        {
+            get;
+            set;
+        }
+
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
         {
@@ -235,6 +241,12 @@ namespace Dynamo.Wpf.ViewModels
             : base(element, svm)
         {
             Path = Model.Path;
+        }
+
+        public CustomNodeSearchElementViewModel(CustomNodeSearchElementViewModel copyElement)
+            : base(copyElement)
+        {
+            Path = copyElement.Path;
         }
 
         public string Path

@@ -1223,6 +1223,11 @@ namespace ProtoFFI
             get { return attributes; }
         }
 
+        public string PreferredShortName
+        {
+            get; private set;
+        }
+
         public FFIClassAttributes(Type type)
         {
             if (type == null)
@@ -1242,6 +1247,10 @@ namespace ProtoFFI
                     ObsoleteMessage = (attr as ObsoleteAttribute).Message;
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
+                }
+                else if (attr is PreferredShortNameAttribute)
+                {
+                    PreferredShortName = (attr as PreferredShortNameAttribute).PreferredShortName;
                 }
             }
         }
@@ -1363,18 +1372,6 @@ namespace ProtoFFI
             }
         }
 
-        public string PreferredShortName
-        {
-            get
-            {
-                object shortName  = null;
-                if (TryGetAttribute("PreferredShortNameAttribute", out shortName))
-                    return shortName as string;
-                else
-                    return null;
-            }
-        }
-
         public FFIParamAttributes(ParameterInfo parameter)
         {
             var attributes = parameter.GetCustomAttributes(false);
@@ -1388,11 +1385,6 @@ namespace ProtoFFI
                 else if (attr is ArbitraryDimensionArrayImportAttribute)
                 {
                     AddAttribute("ArbitraryDimensionArrayImportAttribute", true);
-                }
-                else if (attr is PreferredShortNameAttribute)
-                {
-                    string shortName = (attr as PreferredShortNameAttribute).PreferredShortName;
-                    AddAttribute("PreferredShortNameAttribute", shortName);
                 }
             }
         }

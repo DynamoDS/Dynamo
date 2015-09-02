@@ -854,6 +854,10 @@ It does not contain your graph or any personal data</value>
     <value>Are you sure you want to install {0} {1} ?</value>
     <comment>Message box content</comment>
   </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>Are you sure you want to install {0} {1} to {2} ?</value>
+    <comment>Message box content</comment>
+  </data>
   <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
     <value>You have unsaved changes to custom node workspace: "{0}".
 
@@ -1257,8 +1261,17 @@ You will get a chance to save your work.</value>
     <value>⇓ Install</value>
     <comment>To install package</comment>
   </data>
-  <data name="PackageSearchViewInstallButtonTooltip" xml:space="preserve">
-    <value>Install This Version</value>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>Install latest version</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>Install latest version to folder...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>Install this version</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>Install this version to folder...</value>
   </data>
   <data name="PackageSearchViewKeywords" xml:space="preserve">
     <value>Keywords</value>
