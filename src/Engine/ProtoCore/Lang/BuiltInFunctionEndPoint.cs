@@ -1049,8 +1049,10 @@ namespace ProtoCore.Lang
                                                    StackValue svHasAmountOp,
                                                    ProtoCore.RuntimeCore runtimeCore)
         {
-
-            if (!svStart.IsNumeric || !svEnd.IsNumeric)
+            // If start parameter is not the same as end parameter, show warning.
+            if (!((svStart.IsNumeric && svEnd.IsNumeric)
+                  ||
+                  (svStart.IsString && svEnd.IsString)))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
@@ -1094,113 +1096,131 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            double startValue = svStart.ToDouble().RawDoubleValue;
-            if (double.IsInfinity(startValue) || double.IsNaN(startValue))
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments, 
-                    Resources.kInvalidArgumentsInRangeExpression);
-                return StackValue.Null;
-            }
-            decimal start = new decimal(startValue);
+            StackValue[] range = null;
 
-            double endValue = svEnd.ToDouble().RawDoubleValue;
-            if (double.IsInfinity(endValue) || double.IsNaN(endValue))
+            if (svStart.IsNumeric)
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments, 
-                    Resources.kInvalidArgumentsInRangeExpression);
-                return StackValue.Null;
+                range = GenerateNumericRange(
+                    svStart,
+                    svEnd,
+                    svStep,
+                    svOp,
+                    hasStep,
+                    hasAmountOp,
+                    runtimeCore);
             }
-            decimal end = new decimal(endValue);
-
-            if (svStep.IsDouble)
+            else
             {
-                double stepValue = svStep.RawDoubleValue;
-                if (double.IsInfinity(stepValue) || double.IsNaN(stepValue))
+                if (svStart.IsString)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                        WarningID.kInvalidArguments, 
-                        Resources.kInvalidArgumentsInRangeExpression);
-                    return StackValue.Null;
+                    range = GenerateAlphabetRange(
+                    svStart,
+                    svEnd,
+                    svStep,
+                    svOp,
+                    svHasStep,
+                    svHasAmountOp,
+                    runtimeCore);
                 }
             }
- 
+
+            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
+        }
+
+        private static StackValue[] GenerateNumericRange(StackValue svStart,
+                                                         StackValue svEnd,
+                                                         StackValue svStep,
+                                                         StackValue svOp,
+                                                         bool hasStep,
+                                                         bool hasAmountOp,
+                                                         RuntimeCore runtimeCore)
+        {
+            double startValue = svStart.ToDouble().RawDoubleValue;
+            double endValue = svEnd.ToDouble().RawDoubleValue;
+
+            if (double.IsInfinity(startValue) || double.IsNaN(startValue) ||
+                double.IsInfinity(endValue) || double.IsNaN(endValue) ||
+                svStep.IsDouble && (double.IsInfinity(svStep.RawDoubleValue) || double.IsNaN(svStep.RawDoubleValue)))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            decimal start = new decimal(startValue);
+            decimal end = new decimal(endValue);
             bool isIntRange = svStart.IsInteger && svEnd.IsInteger;
 
-            StackValue[] range = null;
+
             if (hasAmountOp)
             {
                 long amount = svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
                     runtimeCore.RuntimeStatus.LogWarning(
-                       WarningID.kInvalidArguments, 
+                       WarningID.kInvalidArguments,
                        Resources.kInvalidAmountInRangeExpression);
-                   return StackValue.Null;
+                    return null;
                 }
                 decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
-                range = GenerateRangeByAmount(start, amount, stepsize, isIntRange);
+                return GenerateRangeByAmount(start, amount, stepsize, isIntRange);
             }
-            else
+
+            switch (svOp.opdata)
             {
-                switch (svOp.opdata)
+                case (int)RangeStepOperator.stepsize:
                 {
-                    case (int)ProtoCore.DSASM.RangeStepOperator.stepsize:
-                        {
-                            decimal stepsize = (start > end) ? -1 : 1;
-                            if (hasStep)
-                            {
-                                stepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
-                                isIntRange = isIntRange && (svStep.IsInteger);
-                            }
+                    decimal stepsize = (start > end) ? -1 : 1;
+                    if (hasStep)
+                    {
+                        stepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
+                        isIntRange = isIntRange && (svStep.IsInteger);
+                    }
 
-                            range = GenerateRangeByStepSize(start, end, stepsize, isIntRange);
-                            break;
-                        }
-                    case (int)ProtoCore.DSASM.RangeStepOperator.num:
-                        {
-                            decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue));
-                            if (stepnum > 0)
-                            {
-                                range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
-                            }
-                            break;
-                        }
-                    case (int)ProtoCore.DSASM.RangeStepOperator.approxsize:
-                        {
-                            decimal astepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
-                            if (astepsize != 0)
-                            {
-                                decimal dist = end - start;
-                                decimal stepnum = 1;
-                                if (dist != 0)
-                                {
-                                    decimal cstepnum = Math.Ceiling(dist / astepsize);
-                                    decimal fstepnum = Math.Floor(dist / astepsize);
+                    return GenerateRangeByStepSize(start, end, stepsize, isIntRange);
+                }
+                case (int)RangeStepOperator.num:
+                {
+                    decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue));
+                    return stepnum > 0 ? GenerateRangeByStepNumber(start, end, stepnum, isIntRange) : null;
+                }
+                case (int)RangeStepOperator.approxsize:
+                {
+                    decimal astepsize = new decimal(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue);
+                    if (astepsize == 0) return null;
 
-                                    if (cstepnum == 0 || fstepnum == 0)
-                                    {
-                                        stepnum = 2;
-                                    }
-                                    else
-                                    {
-                                        decimal capprox = Math.Abs(dist / cstepnum - astepsize);
-                                        decimal fapprox = Math.Abs(dist / fstepnum - astepsize);
-                                        stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
-                                    }
-                                }
-                                range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
-                            }
-                            break;
-                        }
-                    default:
+                    decimal dist = end - start;
+                    decimal stepnum = 1;
+                    if (dist != 0)
+                    {
+                        decimal cstepnum = Math.Ceiling(dist / astepsize);
+                        decimal fstepnum = Math.Floor(dist / astepsize);
+
+                        if (cstepnum == 0 || fstepnum == 0)
                         {
-                            break;
+                            stepnum = 2;
                         }
+                        else
+                        {
+                            decimal capprox = Math.Abs(dist / cstepnum - astepsize);
+                            decimal fapprox = Math.Abs(dist / fstepnum - astepsize);
+                            stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
+                        }
+                    }
+                    return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                }
+                default:
+                {
+                    return null;
                 }
             }
-            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
+        }
+
+
+        private static StackValue[] GenerateAlphabetRange(StackValue svStart, StackValue svEnd, StackValue svStep, StackValue svOp, StackValue svHasStep, StackValue svHasAmountOp, RuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
         }
     }
     internal class ArrayUtilsForBuiltIns
