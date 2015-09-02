@@ -40,13 +40,19 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public">               
+                         x:FieldModifier="public">
                 <MenuItem Name="deleteElem_cm"
                           Header="{x:Static p:Resources.ContextMenuDelete}"
                           Command="{Binding Path=DeleteCommand}" />
                 <MenuItem Name="createGroup_cm"
                           Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
                           Command="{Binding Path=CreateGroupCommand}" />
+                <MenuItem Name="unGroup_cm"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
+                          Command="{Binding Path=UngroupCommand}" />
+                <MenuItem Name="addtoGroup"
+                          Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
+                          Command="{Binding Path=AddToGroupCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"
@@ -87,14 +93,19 @@
                           IsCheckable="True"
                           IsEnabled="{Binding Path=CanDisplayLabels}" />
                 <MenuItem Name="enablePeriodicUpdate"
-                          Header="Enable Periodic Update"
+                          Header="{x:Static p:Resources.NodeContextMenuEnablePeriodicUpdate}"
                           IsCheckable="True"
-                          IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}" 
+                          IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}"
                           Visibility="{Binding PeriodicUpdateVisibility}"
-                          IsEnabled="False"/>
+                          IsEnabled="False" />
                 <MenuItem Name="rename_cm"
                           Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
                           Command="{Binding Path=RenameCommand}" />
+                <MenuItem Name="isInput_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuIsInput}"
+                          IsChecked="{Binding Path=IsSelectedInput,Mode=TwoWay}"
+                          Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                          IsCheckable="True" />
                 <MenuItem Name="help_cm"
                           Header="{x:Static p:Resources.NodeContextMenuHelp}"
                           Command="{Binding Path=ShowHelpCommand}" />
@@ -215,32 +226,25 @@
             </TextBlock.Foreground>
         </TextBlock>
 
-        <!-- INPUT PORTS -->        
-        <DockPanel Name="inPortGrid"
-                   Grid.Row="2"
-                   Grid.Column="0"
-                   VerticalAlignment="Stretch"
-                   IsHitTestVisible="True"
-                   Margin="0"
-                   Background="Transparent"
-                   Canvas.ZIndex="20">
-            <ItemsControl ItemsSource="{Binding Path=InPorts}"
-                          HorizontalContentAlignment="Stretch">
-            </ItemsControl>
-        </DockPanel>
+        <!-- INPUT PORTS -->
+        <ItemsControl Name="inputPortControl"
+                      Grid.Row="2"
+                      Grid.Column="0"
+                      Canvas.ZIndex="20"
+                      HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
+                      ItemsSource="{Binding Path=InPorts}">
+        </ItemsControl>
 
         <!-- OUTPUT PORTS -->
-
-        <DockPanel Name="outPortGrid"
-                   Grid.Row="2"
-                   Grid.Column="2"
-                   VerticalAlignment="Top"
-                   IsHitTestVisible="True"
-                   Background="Transparent"
-                   Canvas.ZIndex="20">
-            <ItemsControl ItemsSource="{Binding Path=OutPorts}">
-            </ItemsControl>
-        </DockPanel>
+        <ItemsControl Name="outputPortControl"
+                      Grid.Row="2"
+                      Grid.Column="2"
+                      Canvas.ZIndex="20"
+                      HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
+                      ItemsSource="{Binding Path=OutPorts}">
+        </ItemsControl>
 
         <Grid Name="centralGrid"
               Grid.Column="1"
@@ -260,15 +264,22 @@
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   Canvas.ZIndex="21"
-                  IsEnabled="{Binding Path=IsInteractionEnabled}" MinHeight="{Binding Source={x:Static dynamo1:Configurations.PortHeightInPixels}}">
+                  IsEnabled="{Binding Path=IsInteractionEnabled}"
+                  MinHeight="{Binding Source={x:Static dynamo1:Configurations.PortHeightInPixels}}">
             </Grid>
 
         </Grid>
-        
-        <StackPanel Name="GlyphStackPanel" HorizontalAlignment="Right" Orientation="Horizontal" 
-                    Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Canvas.ZIndex="30" Height="25"
+
+        <StackPanel Name="GlyphStackPanel"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    Grid.ColumnSpan="3"
+                    Canvas.ZIndex="30"
+                    Height="25"
                     Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            
+
             <Canvas x:Name="previewIcon"
                     Width="25"
                     Height="25"
@@ -398,8 +409,13 @@
                 Background="Blue">
         </Canvas>
 
-        <Canvas ClipToBounds="False" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-            <Label Content="{Binding ASTText}" HorizontalContentAlignment="Center"></Label>
+        <Canvas ClipToBounds="False"
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Label Content="{Binding ASTText}"
+                   HorizontalContentAlignment="Center"></Label>
         </Canvas>
     </Grid>
 </UserControl>

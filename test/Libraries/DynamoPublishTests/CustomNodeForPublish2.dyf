@@ -1,0 +1,41 @@
+<Workspace Version="0.8.2.1943" X="0" Y="0" zoom="1" Name="CustomNodeForPublish2" ID="758ca4fa-cdea-40f7-b604-31448471f47c" Description="Custom node used for publish tests" Category="Tests">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Function guid="6e6faf63-c5be-4e60-9424-3c0859cb520f" type="Dynamo.Nodes.Function" nickname="CustomNodeForPublish" x="681.5" y="344" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <ID value="f7763655-75b7-44a9-ace0-a4b7367ca64b" />
+      <Name value="CustomNodeForPublish" />
+      <Description value="Custom node used for dynamo publish tests" />
+      <Inputs>
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="a" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol guid="a8243367-34c1-4252-96a3-a3dd69b5c9b2" type="Dynamo.Nodes.Symbol" nickname="Input" x="435.5" y="301" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="a" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function guid="bf565ff0-c5a3-4dd8-ae44-6274ef46f40b" type="Dynamo.Nodes.Function" nickname="CustomNodeForPublish" x="907" y="294" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <ID value="f7763655-75b7-44a9-ace0-a4b7367ca64b" />
+      <Name value="CustomNodeForPublish" />
+      <Description value="Custom node used for dynamo publish tests" />
+      <Inputs>
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="a" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output guid="c39a90db-b2b7-4e58-9825-3f8137b23496" type="Dynamo.Nodes.Output" nickname="Output" x="1180.5" y="330" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="a" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6e6faf63-c5be-4e60-9424-3c0859cb520f" start_index="0" end="bf565ff0-c5a3-4dd8-ae44-6274ef46f40b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a8243367-34c1-4252-96a3-a3dd69b5c9b2" start_index="0" end="6e6faf63-c5be-4e60-9424-3c0859cb520f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bf565ff0-c5a3-4dd8-ae44-6274ef46f40b" start_index="0" end="c39a90db-b2b7-4e58-9825-3f8137b23496" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>

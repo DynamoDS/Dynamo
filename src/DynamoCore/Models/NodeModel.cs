@@ -13,6 +13,7 @@ using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Interfaces;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -21,10 +22,11 @@ using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
 using System.Reflection;
+using Autodesk.DesignScript.Runtime;
 
 namespace Dynamo.Models
 {
-    public abstract class NodeModel : ModelBase, IDisposable
+    public abstract class NodeModel : ModelBase, IRenderPackageSource<NodeModel>, IDisposable
     {
         #region private members
 
@@ -55,36 +57,12 @@ namespace Dynamo.Models
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
         private readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
 
-        private List<IRenderPackage> renderPackages = new List<IRenderPackage>();
-
         #endregion
 
         #region public members
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
-        public Object RenderPackagesMutex = new object();
-        public List<IRenderPackage> RenderPackages
-        {
-            get
-            {
-                lock (RenderPackagesMutex)
-                {
-                    return renderPackages; 
-                }
-            }
-            set
-            {
-                lock (RenderPackagesMutex)
-                {
-                    renderPackages = value;
-                }
-                RaisePropertyChanged("RenderPackages");
-            }
-        }
-
-        public bool HasRenderPackages { get; set; }
 
         /// <summary>
         /// The unique name that was created the node by
@@ -186,6 +164,39 @@ namespace Dynamo.Models
                     isUpstreamVisible = value;
                     RaisePropertyChanged("IsUpstreamVisible");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
+        /// strings, bool, code blocks and custom nodes, which don't specify path.
+        /// </summary>
+        public bool IsInputNode
+        {
+            get
+            {
+                return !inPorts.Any() && !(this is DSFunction);
+            }
+        }
+
+        private bool isSelectedInput = true;
+        /// <summary>
+        /// Specifies whether an input node should be included in a preset. 
+        /// By default, this field is set to true.
+        /// </summary>
+        public bool IsSelectedInput
+        {
+            get
+            {
+                if (!IsInputNode)
+                    return false;
+
+                return isSelectedInput;
+            }
+
+            set
+            {
+                isSelectedInput = value;
             }
         }
 
@@ -452,6 +463,8 @@ namespace Dynamo.Models
                         cachedMirrorData = null;
                     }
                 }
+
+                RaisePropertyChanged("IsUpdated");
             }
         }
 
@@ -567,7 +580,7 @@ namespace Dynamo.Models
             object[] rtAttribs = t.GetCustomAttributes(typeof(NodeDescriptionAttribute), true);
             return rtAttribs.Length > 0
                 ? ((NodeDescriptionAttribute)rtAttribs[0]).ElementDescription
-                : "No description provided";
+                : Properties.Resources.NoDescriptionAvailable;
         }
 
         /// <summary>
@@ -580,11 +593,13 @@ namespace Dynamo.Models
             if (outputIndex < 0 || outputIndex > OutPortData.Count)
                 throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
 
-            //if (OutPortData.Count == 1)
-            //    return AstFactory.BuildIdentifier(/* (IsPartiallyApplied ? "_local_" : "") + */ AstIdentifierBase);
-
-            string id = AstIdentifierBase + "_out" + outputIndex;
-            return AstFactory.BuildIdentifier(id);
+            if (OutPortData.Count <= 1)
+                return AstIdentifierForPreview;
+            else
+            {
+                string id = AstIdentifierBase + "_out" + outputIndex;
+                return AstFactory.BuildIdentifier(id);
+            }
         }
 
         #endregion
@@ -608,17 +623,6 @@ namespace Dynamo.Models
                 {
                     case ("OverrideName"):
                         RaisePropertyChanged("NickName");
-                        break;
-                    case ("IsSelected"):
-                        // Synchronize the selected state of any render packages for this node
-                        // with the selection state of the node.
-                        if (HasRenderPackages)
-                        {
-                            lock (RenderPackagesMutex)
-                            {
-                                RenderPackages.ForEach(rp => ((RenderPackage) rp).Selected = IsSelected);
-                            }
-                        }
                         break;
                 }
             };
@@ -701,7 +705,8 @@ namespace Dynamo.Models
         /// Wraps the publically overrideable `BuildOutputAst` method so that it works with Preview.
         /// </summary>
         /// <param name="inputAstNodes"></param>
-        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        /// <param name="context">Compilation context</param>
+        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             OnBuilt();
 
@@ -721,7 +726,7 @@ namespace Dynamo.Models
                 // The return value of function %nodeAstFailed() is always 
                 // null.
                 var errorMsg = Properties.Resources.NodeProblemEncountered;
-                var fullMsg = String.Format(errorMsg, e.Message);
+                var fullMsg = errorMsg + "\n\n" + e.Message;
                 this.NotifyAstBuildBroken(fullMsg);
 
                 var fullName = this.GetType().ToString();
@@ -1046,39 +1051,30 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Since the ports can have a margin (offset) so that they can moved vertically from its
-        ///     initial position, the center of the port needs to be calculted differently and not only
-        ///     based on the index. The function adds the height of other nodes as well as their margins
+        /// If a "PortModel.LineIndex" property isn't "-1", then it is a PortModel
+        /// meant to match up with a line in code block node. A code block node may 
+        /// contain empty lines in it, resulting in one PortModel being spaced out 
+        /// from another one. In such cases, the vertical position of PortModel is 
+        /// dependent of its "LineIndex".
+        /// 
+        /// If a "PortModel.LineIndex" property is "-1", then it is a regular 
+        /// PortModel. Regular PortModel stacks up on one another with equal spacing,
+        /// so their positions are based solely on "PortModel.Index".
         /// </summary>
-        /// <param name="portModel"> The portModel whose height is to be found</param>
-        /// <returns> Returns the offset of the given port from the top of the ports </returns>
+        /// <param name="portModel">The portModel whose vertical offset is to be computed.</param>
+        /// <returns>Returns the offset of the given port from the top of the ports</returns>
         //TODO(Steve): This kind of UI calculation should probably live on the VM. -- MAGN-5711
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
-            int index = portModel.Index;
+            int index = portModel.LineIndex == -1 ? portModel.Index : portModel.LineIndex;
 
             //If the port was not found, then it should have just been deleted. Return from function
             if (index == -1)
                 return verticalOffset;
 
             double portHeight = portModel.Height;
-
-            switch (portModel.PortType)
-            {
-                case PortType.Input:
-                    for (int i = 0; i < index; i++)
-                        verticalOffset += inPorts[i].MarginThickness.Top + portHeight;
-                    verticalOffset += inPorts[index].MarginThickness.Top;
-                    break;
-                case PortType.Output:
-                    for (int i = 0; i < index; i++)
-                        verticalOffset += outPorts[i].MarginThickness.Top + portHeight;
-                    verticalOffset += outPorts[index].MarginThickness.Top;
-                    break;
-            }
-
-            return verticalOffset;
+            return verticalOffset + index * portModel.Height;
         }
 
         /// <summary>
@@ -1371,7 +1367,12 @@ namespace Dynamo.Models
                     var arr = value.Split(';');
                     for (int i = 0; i < arr.Length; i++)
                     {
-                        InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                        var useDef = !bool.Parse(arr[i]); 
+                        // do not set true, if default value is disabled
+                        if (!useDef || InPorts[i].DefaultValueEnabled)
+                        {
+                            InPorts[i].UsingDefaultValue = useDef;
+                        }
                     }
                     return true;
 
@@ -1422,6 +1423,7 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", IsVisible);
             helper.SetAttribute("isUpstreamVisible", IsUpstreamVisible);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
+            helper.SetAttribute("isSelectedInput", IsSelectedInput.ToString());
 
             var portsWithDefaultValues =
                 inPorts.Select((port, index) => new { port, index })
@@ -1472,6 +1474,7 @@ namespace Dynamo.Models
             isVisible = helper.ReadBoolean("isVisible", true);
             isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
+            IsSelectedInput = helper.ReadBoolean("isSelectedInput", true);
 
             var portInfoProcessed = new HashSet<int>();
 
@@ -1576,7 +1579,7 @@ namespace Dynamo.Models
         /// called from the main/UI thread.
         /// </summary>
         /// 
-        public void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
+        internal void RequestValueUpdateAsync(IScheduler scheduler, EngineController engine)
         {
             // A NodeModel should have its cachedMirrorData reset when it is 
             // requested to update its value. When the QueryMirrorDataAsyncTask 
@@ -1620,58 +1623,26 @@ namespace Dynamo.Models
         /// this node. This method accesses core properties of a NodeModel and 
         /// therefore is typically called on the main/UI thread.
         /// </summary>
-        /// <param name="engine"></param>
-        /// <param name="scheduler"></param>
-        /// <param name="maxTesselationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        public void RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
-        {
-            //if (Workspace.DynamoModel == null)
-            //    return;
-
-            // Imagine a scenario where "NodeModel.RequestVisualUpdateAsync" is being 
-            // called in quick succession from the UI thread -- the first task may 
-            // be updating '_renderPackages' when the second call gets here. In 
-            // this case '_renderPackages' should be protected against concurrent 
-            // accesses.
-            // 
-            lock (RenderPackagesMutex)
-            {
-                renderPackages.Clear();
-                HasRenderPackages = false;
-            }
-
-            RequestVisualUpdateAsyncCore(scheduler, engine, maxTesselationDivisions);
-        }
-
-        /// <summary>
-        /// When called, the base implementation of this method schedules an 
-        /// UpdateRenderPackageAsyncTask to regenerate its render packages 
-        /// asynchronously. Derived classes can optionally override this method 
-        /// to prevent render packages to be generated if they do not require 
-        /// geometric preview.
-        /// </summary>
-        /// <param name="engine"></param>
-        /// <param name="scheduler"></param>
-        /// <param name="maxTesselationDivisions">The maximum number of 
-        /// tessellation divisions to use for regenerating render packages.</param>
-        protected virtual void RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+        /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
+        /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
+        /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        public virtual void
+            RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             var initParams = new UpdateRenderPackageParams()
             {
                 Node = this,
-                MaxTesselationDivisions = maxTesselationDivisions,
+                RenderPackageFactory = factory,
                 EngineController = engine,
                 DrawableIds = GetDrawableIds(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (task.Initialize(initParams))
-            {
-                task.Completed += OnRenderPackageUpdateCompleted;
-                scheduler.ScheduleForExecution(task);
-            }
+            if (!task.Initialize(initParams)) return;
+
+            task.Completed += OnRenderPackageUpdateCompleted;
+            scheduler.ScheduleForExecution(task);
         }
 
         /// <summary>
@@ -1685,12 +1656,10 @@ namespace Dynamo.Models
         /// 
         private void OnRenderPackageUpdateCompleted(AsyncTask asyncTask)
         {
-            lock (RenderPackagesMutex)
+            var task = asyncTask as UpdateRenderPackageAsyncTask;
+            if (task.RenderPackages.Any())
             {
-                var task = asyncTask as UpdateRenderPackageAsyncTask;
-                renderPackages.Clear();
-                renderPackages.AddRange(task.RenderPackages);
-                HasRenderPackages = renderPackages.Any();
+                OnRenderPackagesUpdated(task.RenderPackages);
             }
         }
 
@@ -1721,7 +1690,7 @@ namespace Dynamo.Models
         private string GetDrawableId(int outPortIndex)
         {
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
-            return output == null ? null : output.ToString();
+            return output == null ? null : output.Value;
         }
 
         #endregion
@@ -1773,6 +1742,16 @@ namespace Dynamo.Models
         }
 
         protected bool ShouldDisplayPreviewCore { get; set; }
+        
+        public event Action<NodeModel, IEnumerable<IRenderPackage>> RenderPackagesUpdated;
+
+        private void OnRenderPackagesUpdated(IEnumerable<IRenderPackage> packages)
+        {
+            if(RenderPackagesUpdated != null)
+            {
+                RenderPackagesUpdated(this, packages);
+            }
+        }
     }
 
     public enum ElementState
@@ -2006,6 +1985,32 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public class IsDesignScriptCompatibleAttribute : Attribute { }
 
+    /// <summary>
+    ///    The NodeDescriptionAttribute indicates this node is obsolete
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method |AttributeTargets.Property)]
+    public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
+    {
+        public NodeObsoleteAttribute(string message) : base(message)
+        {
+        }
+
+        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                Message = (string)prop.GetValue(null, null);
+            }
+            else
+            {
+                Message = descriptionResourceID;
+            }
+        }
+    }
     #endregion
     
     public class UIDispatcherEventArgs : EventArgs

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-
+using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-
-using Geometry = Autodesk.DesignScript.Geometry.Geometry;
 
 namespace DSCore
 {
@@ -42,53 +39,71 @@ namespace DSCore
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
+        public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
+            package.RequiresPerVertexColoration = true;
+
             // As you add more data to the render package, you need
             // to keep track of the index where this coloration will 
             // start from.
-            var lineStripStartIndex = package.LineStripVertexColors.Count;
-            var pointVertexStartIndex = package.PointVertexColors.Count;
-            var triangleVertexStartIndex = package.TriangleVertexColors.Count;
 
-            geometry.Tessellate(package, tol, maxGridLines);
+            geometry.Tessellate(package, parameters);
 
-            SetColorOnArray(package.LineStripVertexColors, color, lineStripStartIndex);
-            SetColorOnArray(package.PointVertexColors, color, pointVertexStartIndex);
-            SetColorOnArray(package.TriangleVertexColors, color, triangleVertexStartIndex);
-
-            var surf = geometry as Surface;
-            if (surf != null)
+            if (parameters.ShowEdges)
             {
-                surf.PerimeterCurves().ForEach(
-                        e =>
-                            e.Tessellate(
-                                package,
-                                tol,
-                                maxGridLines));
+                var surf = geometry as Surface;
+                if (surf != null)
+                {
+                    foreach (var curve in surf.PerimeterCurves())
+                    {
+                        curve.Tessellate(package, parameters);
+                        curve.Dispose();
+                    }
+                }
+
+                var solid = geometry as Solid;
+                if (solid != null)
+                {
+                    foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                    {
+                        geom.Tessellate(package, parameters);
+                        geom.Dispose();
+                    }
+                }
             }
 
-            var solid = geometry as Solid;
-            if (solid != null)
+            if (package.LineVertexCount > 0)
             {
-                solid.Edges.ForEach(
-                        e =>
-                            e.CurveGeometry.Tessellate(
-                                package,
-                                tol,
-                                maxGridLines));
+                package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, color.Red, color.Green, color.Blue, color.Alpha));
             }
-    }
 
-        private void SetColorOnArray(IList<byte> array, Color color, int startIndex)
+            if (package.PointVertexCount > 0)
+            {
+                package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, color.Red, color.Green, color.Blue, color.Alpha));
+            }
+
+            if (package.MeshVertexCount > 0)
+            {
+                package.ApplyMeshVertexColors(CreateColorByteArrayOfSize(package.MeshVertexCount, color.Red, color.Green, color.Blue, color.Alpha));
+            }
+        }
+
+        private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
         {
-            for (int i = startIndex; i < array.Count; i += 4)
+            var arr = new byte[size * 4];
+            for (var i = 0; i < arr.Count(); i+=4)
             {
-                array[i] = color.Red;
-                array[i + 1] = color.Green;
-                array[i + 2] = color.Blue;
-                array[i + 3] = color.Alpha;
+                arr[i] = red;
+                arr[i + 1] = green;
+                arr[i + 2] = blue;
+                arr[i + 3] = alpha;
             }
+            return arr;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Display" + "(Geometry = {0}, Appearance = {1})", geometry, color);
         }
     }
 }

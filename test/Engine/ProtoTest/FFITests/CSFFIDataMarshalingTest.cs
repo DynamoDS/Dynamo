@@ -432,6 +432,125 @@ namespace ProtoFFITests
         }
 
         [Test]
+        public void Test_UnMarshalDictionary()
+        {
+            string code =
+                @" t = TestData.TestData();                   d = t.GetDictionary();                     r1 = TestData.GetStringValue(d, ""color"");                   r2 = TestData.GetStringValue(d, ""weight"");                   r3 = TestData.GetObjectValue(d, ""weight"");                   r4 = TestData.GetObjectValue(d, ""invalidkey"");
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = "green", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = null, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 37, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_UnMarshalHybridDictionary()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+arr[""foo""] = ""xyz"";
+r1 = TestData.GetValueFromDictionary(arr, ""foo"");
+r2 = TestData.GetValueFromDictionary(arr, 1);
+r3 = TestData.GetValueFromDictionary(arr, 3);
+";            
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = "xyz", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_UnMarshalHashTable()
+        {
+            string code =
+                @"
+table = TestData.GetHashTable();
+r1 = TestData.GetValueFromHashTable(table, ""color"");
+r2 = TestData.GetValueFromHashTable(table, ""weight"");
+r3 = TestData.GetValueFromHashTable(table, 37);
+r4 = TestData.GetValueFromHashTable(table, 1024);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = "green", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = "thirty-seven", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_UnMarshalArrayToHashTable()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+arr[""foo""] = ""xyz"";
+r1 = TestData.GetValueFromHashTable(arr, 1);
+r2 = TestData.GetValueFromHashTable(arr, ""foo"");
+r3 = TestData.GetValueFromHashTable(arr, 100);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = "xyz", BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_UnMarshal1DArrayToDictionary()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+r1 = TestData.GetValueFromDictionary(arr, 0);
+r2 = TestData.GetValueFromDictionary(arr, 1);
+r3 = TestData.GetValueFromDictionary(arr, 2);
+r4 = TestData.GetValueFromDictionary(arr, 3);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = 21, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 63, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_UnMarshal1DArrayToHashtable()
+        {
+            string code =
+                @"
+arr = {21, 42, 63};
+r1 = TestData.GetValueFromHashTable(arr, 0);
+r2 = TestData.GetValueFromHashTable(arr, 1);
+r3 = TestData.GetValueFromHashTable(arr, 2);
+r4 = TestData.GetValueFromHashTable(arr, 3);
+";
+            ValidationData[] data = { new ValidationData { ValueName = "r1", ExpectedValue = 21, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r2", ExpectedValue = 42, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r3", ExpectedValue = 63, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "r4", ExpectedValue = 1024, BlockIndex = 0 },
+                                    };
+            Type dummy = typeof(FFITarget.TestData);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
         public void Test_DefaultArgument()
         {
             string code =
@@ -509,6 +628,30 @@ d2 = TestData.SumList({1, 2, {3, 4}, {5, {6, {7}}}});
             Type t = typeof(FFITarget.TestData);
             code = string.Format("import(\"{0}\");\r\n{1}", t.AssemblyQualifiedName, code);
             ValidationData[] data = { new ValidationData { ValueName = "value", ExpectedValue = 42, BlockIndex = 0 } };
+            ExecuteAndVerify(code, data);
+        }
+
+        [Test]
+        public void Test_MarshlingPointerToCollection()
+        {
+            String code =
+            @"                import (TestData from ""FFITarget.dll"");
+
+                d = TestData.TestData();
+                arr1 = TestData.JoinList({d, {1,2,3}});
+                arr2 = TestData.JoinList({d, d, d});
+
+                type1 = ToString(arr1[0]);
+                rank1 = Rank(arr1);
+
+                type2 = ToString(arr2[0]);
+                rank2 = Rank(arr2);
+            ";
+            ValidationData[] data = { 
+                new ValidationData { ValueName = "type1", ExpectedValue = "FFITarget.TestData", BlockIndex = 0 }, 
+                new ValidationData { ValueName = "rank1", ExpectedValue = 1, BlockIndex = 0 }, 
+                new ValidationData { ValueName = "type2", ExpectedValue = "FFITarget.TestData", BlockIndex = 0 }, 
+                new ValidationData { ValueName = "rank2", ExpectedValue = 1, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
         }
     }

@@ -1,0 +1,64 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="200" Y="310" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="200" Y="310" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="0358686c-6222-41e9-a884-54b61e3c85be" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="108" y="279" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="5" WorkspaceGuid="d4c7728a-6bf1-40d3-ad28-717b6fab60c1">
+    <ModelGuid>0358686c-6222-41e9-a884-54b61e3c85be</ModelGuid>
+  </UpdateModelValueCommand>
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="1df729fe-4b63-4ac0-8c29-28295e8f8206" type="Dynamo.Nodes.DSFunction" nickname="DateTime.Now" x="235.5" y="396.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.DateTime.Now" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="1df729fe-4b63-4ac0-8c29-28295e8f8206" Modifiers="0" />
+  <DragSelectionCommand X="274" Y="450" DragOperation="0" />
+  <DragSelectionCommand X="138" Y="466" DragOperation="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="9ab64309-4cc5-4ea6-9281-85fe7dd46ebb" type="Dynamo.Nodes.DSFunction" nickname="==" x="259.5" y="420.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="==@var[]..[],var[]..[]" />
+  </CreateNodeCommand>
+  <MakeConnectionCommand NodeId="0358686c-6222-41e9-a884-54b61e3c85be" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="9ab64309-4cc5-4ea6-9281-85fe7dd46ebb" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="1df729fe-4b63-4ac0-8c29-28295e8f8206" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="9ab64309-4cc5-4ea6-9281-85fe7dd46ebb" PortIndex="1" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <MakeConnectionCommand NodeId="0358686c-6222-41e9-a884-54b61e3c85be" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="9ab64309-4cc5-4ea6-9281-85fe7dd46ebb" PortIndex="1" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <MakeConnectionCommand NodeId="1df729fe-4b63-4ac0-8c29-28295e8f8206" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="9ab64309-4cc5-4ea6-9281-85fe7dd46ebb" PortIndex="0" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="ThirdRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="407" Y="632" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="179" Y="632" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="179" Y="632" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="6057c658-0866-4fda-89e6-b33538160fc4" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="87" y="601" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="6;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="6" WorkspaceGuid="d4c7728a-6bf1-40d3-ad28-717b6fab60c1">
+    <ModelGuid>6057c658-0866-4fda-89e6-b33538160fc4</ModelGuid>
+  </UpdateModelValueCommand>
+  <MakeConnectionCommand NodeId="6057c658-0866-4fda-89e6-b33538160fc4" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="9ab64309-4cc5-4ea6-9281-85fe7dd46ebb" PortIndex="0" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="FourthRun" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="FifthRun" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <PausePlaybackCommand Tag="FinalRun" PauseDurationInMs="20" />
+</Commands>

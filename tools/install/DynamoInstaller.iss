@@ -45,6 +45,8 @@ Name: "{app}\libg_220"
 Name: "{app}\libg_221"
 Name: "{app}\libg_locale"
 Name: "{app}\nodes"
+Name: "{app}\extensions"
+Name: "{app}\viewExtensions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\definitions"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\Logs"
 Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
@@ -66,6 +68,8 @@ Source: "Extra\DynamoAddinGenerator.exe"; Flags: dontcopy
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\bin\extensions\*; DestDir: {app}\extensions; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\viewExtensions\*; DestDir: {app}\viewExtensions; Flags: ignoreversion overwritereadonly recursesubdirs skipifsourcedoesntexist; Components: DynamoCore
 Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: temp\bin\README.txt; DestDir: {app}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
@@ -104,6 +108,12 @@ Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\samp
 ;Other Custom Nodes
 Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
+;DirectX
+Source: temp\DirectX\*.*; DestDir: {tmp}\DirectX;
+
+;Gallery
+Source: temp\gallery\*; DestDir: "{commonappdata}\Dynamo\{#Major}.{#Minor}\gallery"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+
 [Registry]
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey
 Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dword; ValueName: "installed"; ValueData: "1"
@@ -130,6 +140,7 @@ Type: filesandordirs; Name: {app}\libg_locale
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
+Filename: "{tmp}\DirectX\dxsetup.exe"; Parameters: "/silent"
 
 [UninstallRun]
 Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: "/uninstall ""{app}"""; Flags: runhidden;
@@ -161,7 +172,6 @@ var
   j: Cardinal;
   sUnInstPath: String;
   sUninstallString: String;
-  sUnInstallParam: String;
   revision: Cardinal;
   iResultCode: Integer;
   exeVersion: String;
@@ -192,7 +202,7 @@ begin
     begin
 	  MsgBox('Dynamo requires an installation of Revit 2014, Revit 2015 or Revit 2016 in order to proceed!', mbCriticalError, MB_OK);
       result := false;
-    end
+    end;
 
   // if old EXE version of 0.8.0 is installed, uninstall it
   sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}_is1'
@@ -223,12 +233,23 @@ begin
 				MsgBox(sMsg + #13#10#13#10 + sMsg2, mbInformation, MB_OK);
 				result := false
 			end
-		else
-			begin
-				RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallParam', sUninstallParam);
-				Exec(sUnInstallString, sUnInstallParam, '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
-			end
 	end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var 
+  sUnInstPath: String;
+  sUninstallString: String;
+  sUnInstallParam: String;
+  iResultCode: Integer;
+begin
+  if (CurStep=ssInstall) then
+    begin
+        sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}');
+        RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallString', sUninstallString);
+        RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallParam', sUninstallParam);
+        Exec(sUnInstallString, sUnInstallParam, '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
+    end;
 end;
 
 // check if the components exists, if they do enable the component for installation

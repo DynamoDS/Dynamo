@@ -13,13 +13,20 @@ namespace Dynamo.Search.SearchElements
         {
             Name = typeLoadData.Name;
             foreach (var aka in typeLoadData.AlsoKnownAs.Concat(typeLoadData.SearchKeys))
+            {
                 SearchKeywords.Add(aka);
+                // By default search tag has weight = 0.5
+                keywordWeights.Add(0.5);
+            }
             FullCategoryName = typeLoadData.Category;
             Description = typeLoadData.Description;
             Assembly = typeLoadData.Assembly.Location;
             inputParameters = new List<System.Tuple<string, string>>();
             outputParameters = new List<string>();
             iconName = typeLoadData.Type.FullName;
+            ElementType = ElementTypes.ZeroTouch;
+            if(typeLoadData.IsPackageMember)
+                ElementType |= ElementTypes.Packaged;
         }
     }
 }

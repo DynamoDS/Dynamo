@@ -4,9 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 
-using Dynamo.Selection;
-using Microsoft.CSharp.RuntimeBinder;
-
 namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
@@ -92,7 +89,6 @@ namespace Dynamo.ViewModels
             {
                 case "OpenFileCommand":
                     this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
-                    this.VisualizationManager.Start();
                     break;
 
                 case "MutateTestCommand":
@@ -123,6 +119,8 @@ namespace Dynamo.ViewModels
                 case "ModelEventCommand":
                 case "UpdateModelValueCommand":
                 case "ConvertNodesToCodeCommand":
+                case "UngroupModelCommand":
+                case "AddModelToGroupCommand":
                     UndoCommand.RaiseCanExecuteChanged();
                     RedoCommand.RaiseCanExecuteChanged();
                     break;
@@ -137,6 +135,8 @@ namespace Dynamo.ViewModels
                 case "SelectModelCommand":
                 case "MakeConnectionCommand":
                 case "CreateCustomNodeCommand":
+                case "AddPresetCommand":
+                case "ApplyPresetCommand":
                     // for this commands there is no need
                     // to do anything after execution
                     break;
@@ -151,14 +151,11 @@ namespace Dynamo.ViewModels
             var name = command.GetType().Name;
             switch (name)
             {
-                case "OpenFileCommand":
-                    this.VisualizationManager.Stop();
-                    break;
-
                 case "MakeConnectionCommand":
                     MakeConnectionImpl(command as DynamoModel.MakeConnectionCommand);
                     break;
 
+                case "OpenFileCommand":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":
@@ -176,6 +173,10 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "SwitchTabCommand":
                 case "MutateTestCommand":
+                case "UngroupModelCommand":
+                case "AddModelToGroupCommand":
+                case "AddPresetCommand":
+                case "ApplyPresetCommand":
                     // for this commands there is no need
                     // to do anything before execution
                     break;
@@ -187,7 +188,7 @@ namespace Dynamo.ViewModels
 
         private void MakeConnectionImpl(DynamoModel.MakeConnectionCommand command)
         {
-            Guid nodeId = command.NodeId;
+            Guid nodeId = command.ModelGuid;
 
             switch (command.ConnectionMode)
             {

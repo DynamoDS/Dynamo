@@ -12,7 +12,7 @@ namespace Dynamo.Core.Threading
         private EngineController engineController;
         private IEnumerable<KeyValuePair<Guid, List<string>>> traceData;
 
-        internal override TaskPriority Priority
+        public override TaskPriority Priority
         {
             get { return TaskPriority.Highest; }
         }
@@ -52,7 +52,7 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskExecutionCore()
         {
-            engineController.LiveRunnerCore.DSExecutable.RuntimeData.SetTraceDataForNodes(traceData);
+            engineController.LiveRunnerRuntimeCore.RuntimeData.SetTraceDataForNodes(traceData);
         }
 
         protected override void HandleTaskCompletionCore()

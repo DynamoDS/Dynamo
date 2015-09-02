@@ -248,6 +248,7 @@ h;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T011_Inline_Using_Variables()
         {
@@ -298,6 +299,7 @@ temp;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T012_Inline_Using_Fun_Calls()
         {
@@ -343,6 +345,7 @@ x7 = power(f) >= power(i) ? power(1) : power(0);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T013_Inline_Using_Class()
         {
@@ -447,6 +450,7 @@ c1;c2;c3;c4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T015_Inline_In_Class_Scope()
         {
             // Assert.Fail("1467168 - Sprint24 : rev 3137 : Compiler error from  Inline Condition and class inheritance issue");
@@ -517,7 +521,6 @@ f = a <= b || c <= d ? 1 : 0;
 g = foo({ 1, 2 }) > 3+ foo({4,5,6}) ?  1 : 3+ foo({4,5,6});
 i = {1,3} > 2 ? 1: 0;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object[][] array = { new Object[] { 7, 8, 9 }, new Object[] { 7, 8, 9 } };
             Object[] array2 = { 0, 1 };
             thisTest.Verify("a", 5.0, 0);
             thisTest.Verify("b", 1, 0);
@@ -525,7 +528,7 @@ i = {1,3} > 2 ? 1: 0;";
             thisTest.Verify("d", 1, 0);
             thisTest.Verify("e1", 0, 0);
             thisTest.Verify("f", 1, 0);
-            thisTest.Verify("g", array, 0);
+            thisTest.Verify("g", new [] {7, 8}, 0);
             thisTest.Verify("i", array2, 0);
         }
 

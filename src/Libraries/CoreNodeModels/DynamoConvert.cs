@@ -12,8 +12,8 @@ namespace DSCoreNodesUI
 {
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert Between Units")]
-    [NodeDescription("ConversionNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("Convert", "Units", "Length", "Area", "Volume")]
+    [NodeDescription("ConversionNodeDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("DynamoConvertSearchTags", typeof(Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DynamoConvert : NodeModel
     {
@@ -108,8 +108,8 @@ namespace DSCoreNodesUI
         {           
             SelectedMetricConversion = ConversionMetricUnit.Length;  
             AssociativeNode defaultNode = new DoubleNode(0.0);
-            InPortData.Add(new PortData("", "A numeric value for conversion.", defaultNode));
-            OutPortData.Add(new PortData("", "A converted numeric value."));
+            InPortData.Add(new PortData("", Properties.Resources.UnitNodeFromPortTooltip, defaultNode));
+            OutPortData.Add(new PortData("", Properties.Resources.UnitNodeToPortToolTip));
 
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;

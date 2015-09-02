@@ -31,13 +31,18 @@ namespace DSCoreNodesUI
 
         protected override string GetInputTooltip(int index)
         {
-            return "Item Index #" + index;
+            return string.Format(Resources.ListCreateInPortToolTip, index);
         }
 
         protected override void RemoveInput()
         {
             if (InPortData.Count > 1)
                 base.RemoveInput();
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

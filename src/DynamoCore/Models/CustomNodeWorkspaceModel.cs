@@ -6,10 +6,11 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
 using ProtoCore.Namespace;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Models
 {
-    public class CustomNodeWorkspaceModel : WorkspaceModel
+    public class CustomNodeWorkspaceModel : WorkspaceModel, ICustomNodeWorkspaceModel
     {
         public Guid CustomNodeId
         {
@@ -39,29 +40,26 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
+                new ElementResolver(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
-            NodeFactory factory, 
+            NodeFactory factory,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             IEnumerable<AnnotationModel> a,
-            WorkspaceInfo info,
-            ElementResolver elementResolver = null) 
-            : base(e, n,a,info, factory)
-
+            IEnumerable<PresetModel> presets,
+            ElementResolver elementResolver, 
+            WorkspaceInfo info)
+            : base(e, n,a, info, factory,presets, elementResolver)
         {
             HasUnsavedChanges = false;
 
             CustomNodeId = Guid.Parse(info.ID);
             Category = info.Category;
             Description = info.Description;
-
-            if (elementResolver != null)
-            {
-                ElementResolver.CopyResolutionMap(elementResolver);
-            }
-
+            IsVisibleInDynamoLibrary = info.IsVisibleInDynamoLibrary;
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -113,7 +111,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName);
+                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName, IsVisibleInDynamoLibrary);
             }
         }
 
@@ -160,6 +158,19 @@ namespace Dynamo.Models
         }
         private string description;
 
+        /// <summary>
+        ///     Custom node visibility in the Dynamo library
+        /// </summary>
+        public bool IsVisibleInDynamoLibrary
+        {
+            get { return isVisibleInDynamoLibrary; }
+            set
+            {
+                isVisibleInDynamoLibrary = value;
+            }
+        }
+        private bool isVisibleInDynamoLibrary;
+
         protected override void RequestRun()
         {
             base.RequestRun();
@@ -194,17 +205,18 @@ namespace Dynamo.Models
             if (handler != null) handler(oldId);
         }
 
-        public override bool SaveAs(string newPath, ProtoCore.Core core)
+        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
         {
-            var originalPath = FileName;
+            if (isBackUp)
+                return base.SaveAs(newPath, runtimeCore, isBackUp);
 
-            if (!base.SaveAs(newPath, core))
-                return false;
+            var originalPath = FileName;
 
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
             if (originalPath != newPath)
             {
+                FileName = newPath;
                 // If it is a newly created node, no need to generate a new guid
                 if (!string.IsNullOrEmpty(originalPath))
                     CustomNodeId = Guid.NewGuid();
@@ -214,7 +226,7 @@ namespace Dynamo.Models
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return true;
+            return base.SaveAs(newPath, runtimeCore, isBackUp);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
@@ -234,7 +246,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
+        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
         {
             // Since custom workspace does not have any runtime data to persist,
             // do not allow base class to serialize any session data.

@@ -259,10 +259,22 @@ namespace ProtoFFI
         {
             Type arrayType = expectedCLRType;
             Type elementType = GetElementType(expectedCLRType);
+
             if (expectedCLRType.IsGenericType)
             {
-                elementType = expectedCLRType.GetGenericArguments()[0];
+                bool isDictionary = expectedCLRType.GetInterfaces()
+                                                   .Where(i => i.IsGenericType)
+                                                   .Select(i => i.GetGenericTypeDefinition())
+                                                   .Contains(typeof(IDictionary<,>));
+                if (isDictionary)
+                    return ToIDictionary(dsObject, context, dsi, expectedCLRType);
+
+                elementType = expectedCLRType.GetGenericArguments().First();
                 arrayType = elementType.MakeArrayType();
+            }
+            else if (typeof(IDictionary).IsAssignableFrom(expectedCLRType))
+            {
+                return ToIDictionary(dsObject, context, dsi, expectedCLRType);
             }
 
             ICollection collection = null;
@@ -274,7 +286,9 @@ namespace ProtoFFI
                 collection = new ArrayList(new object[] { obj });
             }
             else //Convert DS Array to CS Collection
+            {
                 collection = ToICollection(dsObject, context, dsi, arrayType);
+            }
 
             if (expectedCLRType.IsGenericType && !expectedCLRType.IsInterface)
             {
@@ -303,6 +317,59 @@ namespace ProtoFFI
                 elementType = typeof(object);
             return elementType;
         }
+
+        #region DS_ARRAY_TO_CS_DICTIONARY
+
+        private object AddToDictionary(ProtoCore.Runtime.Context context,
+            Interpreter dsi,
+            IDictionary csDictionary,
+            IDictionary<StackValue, StackValue> dsDictionary,
+            System.Type keyType, System.Type valueType)
+        {
+            if (csDictionary == null)
+                throw new ArgumentNullException("csDictionary");
+
+            if (dsDictionary == null)
+                throw new ArgumentNullException("dsDictionary");
+
+            foreach (var pair in dsDictionary)
+            {
+                var key = primitiveMarshaler.UnMarshal(pair.Key, context, dsi, keyType);
+                if (key == null || !keyType.IsAssignableFrom(key.GetType()))
+                    continue;
+
+                var value = primitiveMarshaler.UnMarshal(pair.Value, context, dsi, valueType);
+                if (value != null && valueType.IsAssignableFrom(value.GetType()))
+                    csDictionary.Add(key, value);
+                else
+                    csDictionary.Add(key, null);
+            }
+
+            return csDictionary;
+        }
+
+        private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
+        {
+            if (!dsObject.IsArray)
+                return null;
+
+            Type keyType = typeof(object);
+            Type valueType = typeof(object);
+            Type instanceType = expectedType;
+
+            if (expectedType.IsGenericType)
+            {
+                keyType = expectedType.GetGenericArguments().First();
+                valueType = expectedType.GetGenericArguments().Last();
+                instanceType = expectedType.GetGenericTypeDefinition().MakeGenericType(keyType, valueType);
+            }
+
+            var csDict = (IDictionary)Activator.CreateInstance(instanceType);
+            var dsDict = dsi.runtime.RuntimeCore.Heap.ToHeapObject<DSArray>(dsObject).ToDictionary();
+            return AddToDictionary(context, dsi, csDict, dsDict, keyType, valueType);
+        }
+
+        #endregion
 
         #region CS_ARRAY_TO_DS_ARRAY
 
@@ -381,7 +448,7 @@ namespace ProtoFFI
             }
 
             var heap = dsi.runtime.rmem.Heap;
-            var retVal = heap.AllocateArray(svs);
+            var retVal = heap.AllocateArray(svs.ToArray());
             return retVal;
         }
 
@@ -389,19 +456,17 @@ namespace ProtoFFI
         {
             var runtimeCore = dsi.runtime.RuntimeCore;
 
-            var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-            HeapElement ho = ArrayUtils.GetHeapElement(array, runtimeCore);
-            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
-
+            var svArray = dsi.runtime.rmem.Heap.AllocateArray(new StackValue[] {});
+            DSArray array = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(svArray);
             foreach (var key in dictionary.Keys)
             {
                 var value = dictionary[key];
                 StackValue dsKey = MarshalToStackValue(key, context, dsi);
                 StackValue dsValue = MarshalToStackValue(value, context, dsi);
-                ho.Dict[dsKey] = dsValue;
+                array.SetValueForIndex(dsKey, dsValue, dsi.runtime.RuntimeCore);
             }
 
-            return array;
+            return svArray;
         }
 
         #endregion
@@ -417,8 +482,12 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.RuntimeCore);
             var result = new List<T>();
+            var heap = dsi.runtime.RuntimeCore.Heap;
+            if (!dsObject.IsArray)
+                return result.ToArray();
+
+            var dsElements = heap.ToHeapObject<DSArray>(dsObject).Values;
             Type objType = typeof(T);
 
             foreach (var elem in dsElements)
@@ -428,7 +497,7 @@ namespace ProtoFFI
                 {
                     if (objType.IsValueType)
                         throw new System.InvalidCastException(
-                            string.Format("Null value cannot be cast to {0}", objType.Name));
+                            string.Format(Resources.FailedToCastFromNull, objType.Name));
 
                     result.Add(default(T));
                 }
@@ -470,7 +539,7 @@ namespace ProtoFFI
                 }
             }
 
-            HeapElement hs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject);
+            var dsArray = dsi.runtime.rmem.Heap.ToHeapObject<DSArray>(dsObject);
 
             //  use arraylist instead of object[], this allows us to correctly capture 
             //  the type of objects being passed
@@ -479,7 +548,7 @@ namespace ProtoFFI
             var elementType = arrayType.GetElementType();
             if (elementType == null)
                 elementType = typeof(object);
-            foreach (var sv in hs.VisibleItems)
+            foreach (var sv in dsArray.Values)
             {
                 object obj = primitiveMarshaler.UnMarshal(sv, context, dsi, elementType);
                 arrList.Add(obj);
@@ -508,7 +577,10 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return dsi.runtime.rmem.Heap.GetString(dsObject);
+            var dsString = dsi.runtime.rmem.Heap.ToHeapObject<DSString>(dsObject);
+            if (dsString == null)
+                return null;
+            return dsString.Value;
         }
     }
 
@@ -639,7 +711,7 @@ namespace ProtoFFI
             Validity.Assert(dsObject.IsPointer || dsObject.IsFunctionPointer, 
                 string.Format("Operand type {0} not supported for marshalling", 
                 dsObject.optype));
-            
+
             //Search in the DSObjectMap, for corresponding clrObject.
             object clrObject = null;
             if (DSObjectMap.TryGetValue(dsObject, out clrObject))
@@ -654,8 +726,10 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// Gets marshaler for the given clrType and if it fails
+        /// If clrType is IEnumerable, returns a CollectionMarshaler, otherwise
+        /// gets marshaler for the given clrType and if it fails
         /// to get one, it tries to get primitive marshaler based on dsType.
+        /// 
         /// We want to get correct marshaler specific to the input type because
         /// more than one type gets map to same type in DS.
         /// </summary>
@@ -666,10 +740,6 @@ namespace ProtoFFI
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshler GetMarshalerForCLRType(Type clrType, AddressType dsType)
         {
-            //If the input ds object is pointer type then it can't be marshaled as primitive.
-            if (dsType == AddressType.Pointer)
-                return null;
-
             FFIObjectMarshler marshaler = null;
             //Expected CLR type is object, get marshaled clrType from dsType
             Type expectedType = clrType;
@@ -685,11 +755,17 @@ namespace ProtoFFI
             if (typeof(string) != expectedType && typeof(IEnumerable).IsAssignableFrom(expectedType))
                 collection = true;
 
+            // If the expected type is collection, always marshal to collection
             if (collection)
             {
                 ProtoCore.Type type = PrimitiveMarshler.CreateType(ProtoCore.PrimitiveType.kTypeVar);
                 type.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
                 return new CollectionMarshaler(this, type);
+            }
+            // If the input ds object is pointer type then it can't be marshaled as primitive.
+            else if (dsType == AddressType.Pointer)
+            {
+                return null;
             }
 
             if (!mPrimitiveMarshalers.TryGetValue(expectedType, out marshaler))
@@ -1012,7 +1088,7 @@ namespace ProtoFFI
                 return;
 
             var runtimeCore = dsi.runtime.RuntimeCore;
-            StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).Stack;
+            StackValue[] svs = dsi.runtime.rmem.Heap.ToHeapObject<DSObject>(dsObject).Values.ToArray();
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];

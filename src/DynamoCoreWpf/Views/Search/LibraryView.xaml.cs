@@ -8,7 +8,8 @@ using Dynamo.Controls;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
-
+using Dynamo.UI.Controls;
+using Dynamo.Wpf.Utilities;
 namespace Dynamo.UI.Views
 {
     /// <summary>
@@ -18,28 +19,11 @@ namespace Dynamo.UI.Views
     {
         // See OnExpanderButtonMouseLeftButtonUp for details.
         private bool ignoreMouseEnter;
-
-        // This property is used to prevent a bug.
-        // When user clicks on category it scrolls instead of category content expanding.
-        // The reason is "CategoryTreeView" does not show full content because it is too
-        // big. On category clicking WPF makes autoscroll and doesn't expand content of 
-        // category. We are counting count of calling BringIntoViewCount() functions.        
-        private int bringIntoViewCount;
-        private int BringIntoViewCount
-        {
-            get
-            {
-                return bringIntoViewCount;
-            }
-            set
-            {
-                bringIntoViewCount = value >= 2 ? 2 : value;
-            }
-        }
+        private LibraryDragAndDrop dragDropHelper = new LibraryDragAndDrop();
 
         public LibraryView()
         {
-            InitializeComponent();
+            InitializeComponent(); 
 
             // Invalidate the DataContext here because it will be set at a later 
             // time through data binding expression. This way debugger will not 
@@ -87,10 +71,9 @@ namespace Dynamo.UI.Views
         }
 
         /// When a category is collapsed, the selection of underlying sub-category 
-        /// list is cleared. As a result any visible StandardPanel will be hidden.
+        /// list is cleared. As a result any visible ClassInformationView will be hidden.
         private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
         {
-            BringIntoViewCount++;
             var expanderContent = (sender as FrameworkElement);
 
             var buttons = expanderContent.ChildOfType<ListView>();
@@ -114,8 +97,12 @@ namespace Dynamo.UI.Views
             }
 
             FrameworkElement fromSender = sender as FrameworkElement;
-            libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            var memberVM = fromSender.DataContext as NodeSearchElementViewModel;
+            if (memberVM != null)
+            {
+                libraryToolTipPopup.PlacementTarget = fromSender;
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            }
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -148,7 +135,37 @@ namespace Dynamo.UI.Views
                 {
                     // If class button was clicked, then handle, otherwise leave it.
                     e.Handled = selectedClass.IsClassButton;
-                    selectedElement.BringIntoView();
+
+                    var classInfoPanel = wrapPanel.Children.Cast<FrameworkElement>().
+                        Where(child => child.DataContext is ClassInformationViewModel).FirstOrDefault();
+
+                    classInfoPanel.Loaded += (send, handler) =>
+                        {
+                            // This call is made whenever a class button is clicked on to expand the class 
+                            // information (right after the corresponding "ClassInformationView" view is created).
+                            // "selectedElement" here can either be the TextBlock or Image on the class button.
+                            // 
+                            // Required height is calculated by adding class button and "ClassInformationView" heights.
+                            // If the required height is larger than the visible library height, then the class 
+                            // button is placed on the top of library, with the rest of the space occupied by the 
+                            // "ClassInformationView".
+
+                            var selectedClassButton = WpfUtilities.FindUpVisualTree<Border>(selectedElement);
+                            var height = classInfoPanel.RenderSize.Height + selectedClassButton.RenderSize.Height;
+                            if (height > ScrollLibraryViewer.ActualHeight)
+                            {
+                                selectedClassButton.BringIntoView(new Rect(0, 0, 0, ScrollLibraryViewer.ActualHeight));
+                            }
+                            else
+                            {
+                                // If the class button is already visible on the library, simply bring the 
+                                // "ClassInformationView" into view. Otherwise, the class button is brought into view.
+                                if (IsElementVisible(selectedClassButton, ScrollLibraryViewer))
+                                    classInfoPanel.BringIntoView();
+                                else
+                                    selectedClassButton.BringIntoView();
+                            }
+                        };
                 }
             }
 
@@ -157,6 +174,22 @@ namespace Dynamo.UI.Views
             e.Handled = !(selectedClass is RootNodeCategoryViewModel);
         }
 
+        private bool IsElementVisible(FrameworkElement element, FrameworkElement container)
+        {
+            if (!element.IsVisible)
+                return false;
+
+            // "element" here represents the "Border" object which contains TextBlock/Image of 
+            // a class button. "container" here is the "ScrollLibraryViewer" on the library. 
+            // The bounds of this class button is transformed to the rectangle it occupies in 
+            // the "ScrollLibraryViewer" before being compared to the the region of container 
+            // to determine if it lies outside of the container.
+            // 
+            var elementRect = new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight);
+            var containerRect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
+            elementRect = element.TransformToAncestor(container).TransformBounds(elementRect);
+            return containerRect.IntersectsWith(elementRect);
+        }
 
         private bool ExpandCategory(IEnumerable<NodeCategoryViewModel> categories, NodeCategoryViewModel selectedClass)
         {
@@ -231,14 +264,6 @@ namespace Dynamo.UI.Views
             return foundSelectedClass;
         }
 
-        private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
-        {
-            // Because of bug we mark event as handled for all automatic requests 
-            // until count of our requests less than 1. First request is done for
-            // opened top category when dynamo starts.
-            e.Handled = BringIntoViewCount < 2;
-        }
-
         // Clicking on a member node results in a node being placed on the canvas.
         // Another mouse-enter event will be sent right after this left-button-up, 
         // which brings up the tool-tip. This isn't desirable, so setting a flag 
@@ -265,5 +290,35 @@ namespace Dynamo.UI.Views
 
             e.Handled = true;
         }
+
+        #region Drag&Drop
+
+        private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var senderButton = e.OriginalSource as FrameworkElement;
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+
+            //sender can be RootSearchElementVM or ClassInformationViewModel. 
+            //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+        }
+
+        private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            var senderButton = e.OriginalSource as FrameworkElement;
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            //sender can be RootSearchElementVM or ClassInformationViewModel. 
+            //And we should just fire HandleMouseMove, when ViewModel is NodeSearchElementViewModel
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null)); 
+
+        }
+
+        #endregion
+
     }
 }

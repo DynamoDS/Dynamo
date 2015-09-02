@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ProtoCore.Utils;
+using System.Linq;
 using Operand = ProtoCore.DSASM.StackValue;
 
 namespace ProtoCore.DSASM
@@ -72,18 +73,8 @@ namespace ProtoCore.DSASM
         CALL,
         CALLR,
         RETURN,
-        END,
         JMP,
         CJMP,
-        JMP_EQ,
-        JMP_NEQ,
-        JMP_GT,
-        JMP_LT,
-        JMP_GTEQ,
-        JMP_LTEQ,
-        JLZ,
-        JGZ,
-        JZ,
         JDEP,
         AND,
         OR,
@@ -95,7 +86,6 @@ namespace ProtoCore.DSASM
         GE,
         LE,
         BOUNCE,
-        ALLOC,
         ALLOCA,
         ALLOCC,
         POPM,
@@ -114,7 +104,6 @@ namespace ProtoCore.DSASM
         DEP,
         
         PUSHB,
-        POPB,
 
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
@@ -729,6 +718,42 @@ namespace ProtoCore.DSASM
             return true;
         }
 
+        /// <summary>
+        /// Get an array's next key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public StackValue GetNextKey(RuntimeCore runtimeCore)
+        {
+            StackValue svArray;
+            int index;
+
+            if (!TryGetArrayKey(out svArray, out index))
+            {
+                return StackValue.Null;
+            }
+
+            int nextIndex = Constants.kInvalidIndex;
+
+            if (svArray.IsArray)
+            {
+                DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(svArray);
+                if (array.Values.Count() > index + 1)
+                    nextIndex = index + 1;
+            }
+            else if (svArray.IsString)
+            {
+                DSString str = runtimeCore.Heap.ToHeapObject<DSString>(svArray);
+                if (str.Value.Length > index + 1)
+                    nextIndex = index + 1;
+
+            }
+
+            return nextIndex == Constants.kInvalidIndex ? StackValue.Null : StackValue.BuildArrayKey(svArray, nextIndex);
+        }
+
+
         #region Converters
         /// <summary>
         /// Convert StackValue to boolean typed StackValue. Returns 
@@ -757,7 +782,7 @@ namespace ProtoCore.DSASM
                     return StackValue.BuildBoolean(true);
 
                 case AddressType.String:
-                    string str = runtimeCore.RuntimeMemory.Heap.GetString(this);
+                    string str = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSString>(this).Value;
                     return string.IsNullOrEmpty(str) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:

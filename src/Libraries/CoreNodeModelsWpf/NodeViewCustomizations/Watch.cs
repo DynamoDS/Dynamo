@@ -40,7 +40,7 @@ namespace Dynamo.Wpf.Nodes
             var watchTree = new WatchTree();
 
             // make empty watchViewModel
-            rootWatchViewModel = new WatchViewModel(this.dynamoViewModel.VisualizationManager);
+            rootWatchViewModel = new WatchViewModel();
 
             // Fix the maximum width/height of watch node.
             nodeView.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
@@ -76,7 +76,7 @@ namespace Dynamo.Wpf.Nodes
 
             var rawDataMenuItem = new MenuItem
             {
-                Header = "Show Raw Data",
+                Header = Properties.Resources.WatchNodeRawDataMenu,
                 IsCheckable = true,
             };
             rawDataMenuItem.SetBinding(MenuItem.IsCheckedProperty, checkedBinding);

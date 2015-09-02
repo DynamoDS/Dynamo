@@ -167,8 +167,8 @@ namespace ProtoCore
 
                 Validity.Assert(svData.IsArray);
 
-                HeapElement hs = runtimeCore.RuntimeMemory.Heap.GetHeapElement(svData);
-                foreach (var sv in hs.VisibleItems)
+                DSArray hs = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSArray>(svData);
+                foreach (var sv in hs.Values)
                 {
                     if (sv.IsArray)
                     {

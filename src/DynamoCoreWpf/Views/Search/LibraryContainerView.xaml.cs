@@ -82,7 +82,6 @@ namespace Dynamo.Search
             viewModel.RequestFocusSearch += OnSearchViewModelRequestFocusSearch;
             viewModel.RequestReturnFocusToSearch += OnSearchViewModelRequestReturnFocusToSearch;
 
-            this.librarySearchView.SearchTextBox = SearchTextBox;
         }
 
         private void OnSearchViewMouseLeave(object sender, MouseEventArgs e)
@@ -198,10 +197,17 @@ namespace Dynamo.Search
                     break;
 
                 case Key.Down:
+                    if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
+                        viewModel.MoveSelection(NavigationDirection.Forward);
+                    break;
+
                 case Key.Up:
+                    if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
+                        viewModel.MoveSelection(NavigationDirection.Backward);
+                    break;
                 case Key.Enter:
                     if (viewModel.CurrentMode == SearchViewModel.ViewMode.LibrarySearchView)
-                        librarySearchView.SelectNext(e.Key);
+                        viewModel.ExecuteSelectedMember();
                     break;
             }
         }
@@ -348,6 +354,20 @@ namespace Dynamo.Search
         {
             if (e.Key != Key.Escape) return;
             SearchTextBox.Text = "";
+        }
+
+
+        /// <summary>
+        /// On drag&drop starts change cursor to cursor, that is shown when the user is hovering over the workspace.
+        /// </summary>
+        private void OnLibraryContainerViewGiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            e.UseDefaultCursors = e.Effects.HasFlag(DragDropEffects.Copy) || e.Effects.HasFlag(DragDropEffects.Move);
+
+            if (!e.UseDefaultCursors)
+                Mouse.SetCursor(CursorLibrary.GetCursor(CursorSet.DragMove));
+
+            e.Handled = true;
         }
     }
 }

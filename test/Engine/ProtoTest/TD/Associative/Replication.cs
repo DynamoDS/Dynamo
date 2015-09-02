@@ -247,6 +247,7 @@ list13 = false || list2; // { true, true, false, false, false }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T09_Pass_1_single_list_of_class_type()
         {
@@ -292,6 +293,7 @@ list2_2_x = list2[2].x; // 7";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T10_Pass_2_Lists_Different_Length_2_Integers()
         {
@@ -329,6 +331,7 @@ pointList_9_x = pointList[9].GetValue(); // 184";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T11_Pass_2_lists_of_class_type_same_length_and_1_variable_of_class_type()
         {
@@ -373,6 +376,7 @@ list_2_z = list[2].z; // 4
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T12_Pass_2_Lists_Same_Length_1_Integer()
         {
@@ -406,6 +410,7 @@ pointList_9_x = pointList[9].GetValue(); // 129";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T13_Pass_3_Lists_Different_Length()
         {
@@ -440,6 +445,7 @@ pointList_5_x = pointList[5].GetValue(); // 52";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T14_Pass_3_Lists_Same_Length()
         {
@@ -474,6 +480,7 @@ pointList_9_x = pointList[9].GetValue(); // 60";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T15_Pass_a_3x3_and_2x4_lists()
         {
@@ -515,6 +522,7 @@ list2_1_2 = list3[1][2].GetValue(); // 9
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T16_Pass_a_3x3_List()
         {
@@ -547,6 +555,7 @@ list2_2_2 = list2[2][2].GetValue(); // 9
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T17_Pass_ConstructorCall_Return_List()
         {
@@ -591,6 +600,7 @@ list2_4 = list2[4].GetIndexX(); // 25
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T18_Pass_ConstructorCall_Return_List_to_Function()
         {
@@ -618,6 +628,7 @@ list2 = GetPointIndex(Point_1D.ValueCtor(list1)); // { 1, 2, 3, 4, 5, 6 }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T19_Pass_FunctionCall_Return_List()
         {
@@ -652,6 +663,7 @@ list2_4 = list2[4].GetIndex(); // 390625";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T20_Pass_Single_List()
         {
@@ -680,6 +692,7 @@ pointList_9_x = pointList[9].GetValue(); // 100";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T21_Pass_Single_List_2_Integer()
         {
@@ -712,6 +725,7 @@ pointList_9_x = pointList[9].GetValue(); // 164";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T22_Pass_1_single_list_of_class_type_and_1_variable_of_class_type()
         {
@@ -743,6 +757,7 @@ m = i.Mul(list, i); // { 16, 20, 28 }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T23_Pass_2_lists_of_class_type_with_different_length()
         {
@@ -777,7 +792,9 @@ m = i.Mul(list1, list2); // { 8, 20 }";
             List<Object> _m = new List<Object> { 8, 20 };
             Assert.IsTrue(mirror.CompareArrays("m", _m, typeof(System.Int64)));
         }
+
         [Ignore]
+        [Category("DSDefinedClass")]
         public void T24_Pass_3x3_List_And_2x4_List()
         {
             string code = @"
@@ -806,6 +823,7 @@ list3 = m.Div(list1, list2);  // { { 1, 2, 3 }, { 4, 5, 6 } }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T25_Pass_3_List_Different_Length()
         {
@@ -835,6 +853,7 @@ list4 = m.Div(list1, list2, list3); // { 1.5,3.0,4.5,6.0,7.5} }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T26_Pass_3_List_Different_Length_2_Integers()
         {
@@ -863,6 +882,7 @@ listX2 = m.Div(list1, list2, list3, 15, 25); // { 25, 25, 26, 27, 28 }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T27_Pass_3_List_Same_Length()
         {
@@ -892,6 +912,7 @@ list4 = m.Mul(list1, list2, list3); // { 252, 264, 276, 288, 300, 312, 324, 336,
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T28_Pass_3_List_Same_Length_2_Integers()
         {
@@ -920,6 +941,7 @@ list2 = m.Div(list1, list2, list3, 15, 25);";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T29_Pass_FunctionCall_Reutrn_List001()
         {
@@ -947,6 +969,7 @@ list2 = m.Mul(m.Mul(list1));  // { 100, 200, 300, 400, 500, 600, 700, 800, 900, 
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T30_Pass_FunctionCall_Reutrn_List002()
         {
@@ -978,6 +1001,7 @@ list2 = m.Mul(foo(list1));  // { 10, 40, 90, 160, 250, 360, 490, 640, 810, 1000 
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T31_Pass_FunctionCall_Reutrn_List003()
         {
@@ -1009,6 +1033,7 @@ list2 = foo(m.Mul(list1));  // { 100, 400, 900, 1600, 2500, 3600, 4900, 6400, 81
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T32_Pass_Single_3x3_List()
         {
@@ -1036,6 +1061,7 @@ list2 = m.Mul(list1);  // { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 } }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T33_Pass_Single_List()
         {
@@ -1063,6 +1089,7 @@ list2 = m.Mul(list1);  // { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T34_Pass_Single_List_2_Integers()
         {
@@ -1090,6 +1117,7 @@ list2 = m.Mul(list1, 12, 17); // {300,305,310,315,320,325,330,335,340,345}";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T35_Pass_1_list_of_class_type_and_1_variable_of_class_type()
         {
@@ -1139,6 +1167,7 @@ list3_2_z = list3[2].GetCoor(3); // 19
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T36_Pass_1_single_list_of_class_type()
         {
@@ -1170,6 +1199,7 @@ list2 = Square(list); // { 4, 9, 16, 25 }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T37_Pass_2_lists_of_class_type_different_length()
         {
@@ -1219,6 +1249,7 @@ list3_1_y = list3[1].GetCoor(2); // 25
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T38_Pass_2_lists_of_class_type_different_length_and_1_integer()
         {
@@ -1253,6 +1284,7 @@ list3 = Sum(list1, list2, 10); // { 15, 21, 27 }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T39_Pass_2_lists_of_class_type_same_length_and_1_variable_of_class_type()
         {
@@ -1286,6 +1318,7 @@ list3 = Sum(list1, list2, Integer.ValueCtor(10)); // { 15, 21, 27 }";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T40_Pass_2_List_of_class_type_Same_Length()
         {
@@ -1513,7 +1546,7 @@ list6 = c > a ? 1 : 0; // { 1, 1, 0, 0 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
             thisTest.Verify("list2", new object[] { 1, 0, 1, 0, 1 });
-            thisTest.Verify("list3", 10);
+            thisTest.Verify("list3", new object[] {10, 10, 10, 10, 10});
             thisTest.Verify("list4", new object[] { 1, 0, 1, 0, 1 });
             thisTest.Verify("list5", new object[] { 0, 0, 0, 1, 1 });
             thisTest.Verify("list6", new object[] { 1, 1, 0, 0 });
@@ -1539,12 +1572,12 @@ c = { 1, 4, 7 };
 list8 = a >= b ? a + c : 10; // { 10, 10, 10 }
 list9 = a < b ? 10 : a + c; // { 10, 10, 10 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("list3", new object[] { a1, 0, a1, 0 });
-            thisTest.Verify("list4", new object[] { 0, a1, 0, a1 });
+            thisTest.Verify("list3", new object[] { 1, 0, 3, 0});
+            thisTest.Verify("list4", new object[] { 0, 2, 0, 4 });
             thisTest.Verify("list6", a1);
-            thisTest.Verify("list7", new object[] { -1, -2, -3, -4, -5, -6 });
-            thisTest.Verify("list8", new object[] { 10, 10, a2, a2 });
-            thisTest.Verify("list9", new object[] { 10, 10, a2, a2 });
+            thisTest.Verify("list7", new object[] { -1, -2, -3, -4, -5});
+            thisTest.Verify("list8", new object[] { 10, 10, 10 });
+            thisTest.Verify("list9", new object[] { 10, 10, 10 });
         }
 
         [Test]
@@ -1558,8 +1591,7 @@ c = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 } };
 list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
-            Object[] b1 = new Object[] { new Object[] { new Object[] { new Object[] { 2, 4, 6 }, new Object[] { 9, 11, 13 } }, new Object[] { new Object[] { 2, 4, 6 }, new Object[] { 9, 11, 13 } } }, new Object[] { new Object[] { new Object[] { 2, 4 }, new Object[] { 8, 10 }, new Object[] { 14, 16 } }, new Object[] { new Object[] { 2, 4 }, new Object[] { 8, 10 }, new Object[] { 14, 16 } } } };
-            thisTest.Verify("list", b1);
+            thisTest.Verify("list", new [] { new [] {2, 4}, new [] {8, 10}});
         }
 
         [Test]
@@ -1568,11 +1600,11 @@ list = a > b ? b + c : a + c; // { { 2, 4, }, { 8, 10 } } ";
         {
             Object[] list2 = { 1, 2, 3, 4 };
             Object[] list3 = { -1, -2, -3, -4, -5, -6 };
-            Object[] list4 = new Object[] { list2, list3, list2, list2, list3 };
-            Object[] list5 = new Object[] { list4, list2, list4, list4, list2 };
+            Object[] list4 = new Object[] { 1, -2, 3, 4 };
+            Object[] list5 = new Object[] { 1, 2, 3, 4 };
             Object[] list6 = { -1, -2, -3, -4, -5 };
-            Object[] list7 = new Object[] { list2, list6, list2, list2, list6 };
-            Object[] list8 = new Object[] { new Object[] { 1, 4, 0 }, new Object[] { 0, 5, 1, 5 }, new Object[] { 0, 5, 1, 5 } };
+            Object[] list7 = new Object[] { 1, -2, 3, 4 };
+            Object[] list8 = new Object[] { 1, 5, 1};
             string code = @"
 list1 = { true, false, true, true, false };
 list2 = { 1, 2, 3, 4 };
@@ -1584,7 +1616,7 @@ list7 = list1 ? list2 : list6; // { 1, -2, 3, 4 }
 a = { 3, 0, -1 };
 b = { 2, 1, 0, 3 };
 c = { -2, 4, 1, 2, 0 };
-list8 = a < c ? b + c : a + c; // { 1, 4, 1 }";
+list8 = a < c ? b + c : a + c; // { 1, 5, 1 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1456751 : Sprint16 : Rev 990 : Inline conditions not working with replication over collections");
             thisTest.Verify("list4", list4);
@@ -1599,9 +1631,9 @@ list8 = a < c ? b + c : a + c; // { 1, 4, 1 }";
         {
             Object[] list2 = { 1, 2, 3, 4 };
             Object[] list3 = { -1, -2, -3, -4 };
-            Object[] list6 = new Object[] { new Object[] { -4, -1, 2 }, new Object[] { -4, -1, 2 }, new Object[] { 8, 17, 8 } };
-            Object[] list5 = new Object[] { list3, list2, list2, list3 };
-            Object[] list4 = new Object[] { list2, list3, list3, list2 };
+            Object[] list6 = new Object[] { -4, -1, 8};
+            Object[] list5 = new Object[] { -1, 2, 3, -4 };
+            Object[] list4 = new Object[] { 1, -2, -3, 4};
             string code = @"
 list1 = { true, false, false, true };
 list2 = { 1, 2, 3, 4 };
@@ -1727,6 +1759,7 @@ test;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void ArraySimpleCall02()
         {
@@ -1750,6 +1783,7 @@ x = t.mx;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void ArraySimpleCall03()
         {
@@ -1977,6 +2011,7 @@ a = fun({{1.0}, {2.0}});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TestIncompatibleTypes()
         {
@@ -1998,6 +2033,7 @@ v4 = fun ({A.A(0), A.A(1)});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void TestOverloadDispatchWithTypeConversion()
         {
@@ -2070,6 +2106,7 @@ z = xdata - ydata;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T09_Defect_1456568_Replication_On_Operators_4()
         {
@@ -2110,6 +2147,7 @@ y = z[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T09_Defect_1456568_Replication_On_Operators_6()
         {
@@ -2164,6 +2202,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload()
         {
@@ -2246,6 +2285,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_4()
         {
@@ -2273,6 +2313,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_5()
         {
@@ -2313,6 +2354,7 @@ xdata = { 1.5, 2 };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T57_Defect_1467004_Replication_With_Method_Overload_6()
         {
@@ -2523,6 +2565,7 @@ y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T58_Defect_1456115_Replication_Over_Collections_7()
         {
@@ -2551,6 +2594,7 @@ y = a1.foo( {3, 4 }, { null, 1} );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T58_Defect_1456115_Replication_Over_Collections_8()
         {
@@ -2623,6 +2667,7 @@ list2 = !list1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T59_Defect_1463351_Replication_Over_Unary_Operators_4()
         {
@@ -2642,6 +2687,7 @@ b = !b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances()
         {
@@ -2671,6 +2717,7 @@ y = Count ( pts );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_2()
         {
@@ -2711,6 +2758,7 @@ c1 = Count ( circs );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_3()
         {
@@ -2740,6 +2788,7 @@ c1 = Count ( pts );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_4()
         {
@@ -2770,6 +2819,7 @@ c1 = Count ( pts );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_5()
         {
@@ -2799,6 +2849,7 @@ c1 = Count ( pts );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_1455247_Replication_Over_Class_Instances_6()
         {
@@ -2826,6 +2877,7 @@ c1 = Count ( pts );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T61_Defect_1463338_Replication_CallSite_Assertion()
         {
@@ -2857,6 +2909,7 @@ list2_0_0 = list3[0][0].GetValue();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T50_Defect_1456738_Replication_Race_Condition()
         {
             string code = @"
@@ -3144,6 +3197,7 @@ rad = foo(a, d);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void Array_Ranks_Match_argumentdefinition_1467190()
         {
             String code =
@@ -3203,6 +3257,7 @@ x = a < b ? 1 : 0;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator()
         {
@@ -3224,6 +3279,7 @@ c2 = c1.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_2()
         {
@@ -3249,6 +3305,7 @@ xs;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_3()
         {
@@ -3270,6 +3327,7 @@ p2 = MyPoint.CreateXY(-20.0,-30.0).X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_4()
         {
@@ -3291,6 +3349,7 @@ p2 = MyPoint.CreateXY(0..2,-30.0).X;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_5()
         {
@@ -3313,6 +3372,7 @@ test = { a1, b1}.X ;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_6()
         {
@@ -3340,6 +3400,7 @@ test4 = a1[0].X[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_8()
         {
@@ -3369,6 +3430,7 @@ test4 = a1[0].X[0][1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_9()
         {
@@ -3394,6 +3456,7 @@ test3 = (a1.X[0])[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T67_Defect_1460965_Replication_On_Dot_Operator_10()
         {
@@ -3441,6 +3504,7 @@ x1;x2;x3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T67_Defect_1460965_ExpressionInParenthesis02()
         {
             string code = @"
@@ -3475,6 +3539,7 @@ t1;t2;t3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T67_Defect_1460965_ExpressionInParenthesis03()
         {
             string code = @"
@@ -3507,6 +3572,7 @@ t2;t3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_7()
         {
@@ -3550,6 +3616,7 @@ test = a1.t;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_8()
@@ -3584,6 +3651,7 @@ test = a1.x; //expected :  { 1, { 2, { 0, 1 } } }
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T68_Defect_1460965_Replication_On_Dot_Operator_9()
@@ -3646,6 +3714,7 @@ x = { };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T70_Defect_1467266()
         {
@@ -3679,6 +3748,7 @@ test3 = a1.a.X[0][0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T71_Defect_1467209()
         {
@@ -3703,6 +3773,7 @@ test = { a1, b1}.X ;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T71_Defect_1467209_2()
         {
@@ -3728,6 +3799,7 @@ test3 = (a.X)[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T71_Defect_1467209_3()
         {
@@ -3759,6 +3831,7 @@ a1 = t1[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T71_Defect_1467209_4()
         {
@@ -3805,6 +3878,7 @@ b = a[i] > 0? 1 : 0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T72_Defect_1467169_2()
         {
@@ -3826,10 +3900,11 @@ test = b.a;
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("test", new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } });
+            thisTest.Verify("test", new [] {0, 1});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T72_Defect_1467169_3()
         {
@@ -3988,6 +4063,7 @@ y = x + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T73_Defect_1467069_4()
         {
@@ -4075,6 +4151,7 @@ c = even(x);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T75_Defect_1467282()
         {
@@ -4102,6 +4179,7 @@ y = A.A(a, b).c;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T75_Defect_1467282_2()
         {
@@ -4169,6 +4247,7 @@ x = a[(0..1)<1>][(0..1)<2>];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T75_Defect_1467282_5()
         {
@@ -4200,6 +4279,7 @@ test2 = sum ( a.X<1>, b.X<2>);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T75_Defect_1467282_6()
         {
@@ -4255,6 +4335,7 @@ test2 = sum ( (0..1)<1>, (2..3)<2>);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T76_Defect_1467254()
         {
@@ -4283,6 +4364,7 @@ a.x = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T76_Defect_1467254_2()
         {
@@ -4350,6 +4432,7 @@ y = x [ {0,1} ][{0,1}];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T77_Defect_1467081_3()
         {
@@ -4525,6 +4608,7 @@ b = -a[i];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T79_Defect_1467096_3()
         {
@@ -4550,6 +4634,7 @@ b = a1.a[i];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T79_Defect_1467096_4()
         {
@@ -4575,6 +4660,7 @@ b = a1.a[i];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297()
         {
@@ -4600,6 +4686,7 @@ b = -a1.a[i];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297_2()
         {
@@ -4625,6 +4712,7 @@ b = -a1.a[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297_3()
         {
@@ -4650,6 +4738,7 @@ b = -a1.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297_4()
         {
@@ -4674,6 +4763,7 @@ b = -a1.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297_5()
         {
@@ -4697,6 +4787,7 @@ b = -A.A().a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297_6()
         {
@@ -4728,6 +4819,7 @@ b = -A.A().a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297_7()
         {
@@ -4759,6 +4851,7 @@ b = {A.A(), A.A()}.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T80_Defect_1467297_8()
         {
@@ -4955,6 +5048,7 @@ c1 = add( a<1>, b<2>);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T82_Defect_1467244()
@@ -4985,6 +5079,7 @@ v3 = A.execute(arr);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T82_Defect_1467244_2()
         {
@@ -5008,6 +5103,7 @@ v3 = A.execute(arr);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T82_Defect_1467244_3()
         {
@@ -5092,6 +5188,7 @@ test = foo ( {arr, arr },  { arr, arr} );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T84_Defect_1467313_3()
         {
@@ -5115,6 +5212,7 @@ test = t1.foo ( {arr, arr },  { arr, arr} );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T84_Defect_1467313_4()
         {
@@ -5145,6 +5243,7 @@ test = t1.foo( );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T84_Defect_1467313_5()
         {
@@ -5188,6 +5287,7 @@ test2 = t2.foo2( );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T84_Defect_1467313_6()
         {
@@ -5255,6 +5355,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T85_Defect_1467076()
         {
@@ -5282,6 +5383,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T85_Defect_1467076_a()
         {
@@ -5309,6 +5411,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T85_Defect_1467076_2()
         {
@@ -5338,6 +5441,7 @@ test = foo ( arr,  { arr, arr} );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T85_Defect_1467076_2b()
         {
@@ -5383,6 +5487,7 @@ x[1..2] = 2 ;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T86_Defect_1467285_2()
         {
@@ -5441,6 +5546,7 @@ y = x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T87_Defect_1467284()
@@ -5470,6 +5576,7 @@ test = x[0..1][0..1][0..1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T88_Defect_1467296()
         {
@@ -5495,6 +5602,7 @@ b = A.A().a[i];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T88_Defect_1467296_2()
         {
@@ -5527,6 +5635,7 @@ b = A.A(i).a[i];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T88_Defect_1467296_3()
         {
@@ -5559,6 +5668,7 @@ b = { A.A(i).a[i], -A.A(i).a[i] };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T88_Defect_1467296_4()
         {
@@ -5734,6 +5844,7 @@ c = foo(a,b);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T93_Defect_1467315()
         {
@@ -5762,6 +5873,7 @@ y = A.A().foo(a<1><2>,b<3><4>);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T93_Defect_1467315_2()
         {
@@ -5794,6 +5906,7 @@ y = A.A().foo(a<1><2>,b<3><4>);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T93_Defect_1467315_3()
         {
@@ -5903,6 +6016,7 @@ n = (0..11..#(nums + 2))[1..nums];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T94_Defect_1467265_2()
         {
@@ -5929,6 +6043,7 @@ test = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T94_Defect_1467265_3()
         {
             String code =
@@ -5954,6 +6069,7 @@ test = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T94_Defect_1467265_4()
         {
             String code =
@@ -5977,6 +6093,7 @@ test = (A.A(t1<1>,t1<2>).X)[0][0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T94_Defect_1467265_5()
         {
             String code =
@@ -6007,6 +6124,7 @@ test = (A.A().foo()).X[0][0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T94_Defect_1467265_6()
         {
             String code =
@@ -6039,6 +6157,7 @@ test = ((A.A().foo()).X[0])[0];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T95_Defect_1467398_Replication_Guides_On_Collection()
         {
             String code =
@@ -6068,6 +6187,7 @@ test2 = A.A ( (0..1)<1>, (2..3)<2>).x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T95_Defect_1467398_Replication_Guides_On_Collection_2()
         {
             String code =
@@ -6199,7 +6319,7 @@ d2;f2;
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
-            thisTest.Verify("d2", new Object[] { v1, v1 });
+            thisTest.Verify("d2", v1);
             thisTest.Verify("f2", v1);
 
         }
@@ -6225,10 +6345,11 @@ d2 = [Imperative]
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, false };
-            thisTest.Verify("d2", new Object[] { v1, v1 });
+            thisTest.Verify("d2", v1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T96_Defect_1467192_Replication_Inline_Condition_3()
         {
             String code =
@@ -6253,11 +6374,12 @@ test2 = a.f2;
             String errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             Object[] v1 = new Object[] { false, true };
-            thisTest.Verify("test1", new Object[] { new Object[] { 0, 0 }, 1 });
+            thisTest.Verify("test1", new Object[] { 0, 1 });
             thisTest.Verify("test2", v1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T97_Defect_1467408_Replication_On_Class_Property_Assignment()
         {
@@ -6304,6 +6426,7 @@ c = { { 3 } } + d;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_01()
         {
             String code =
@@ -6326,6 +6449,7 @@ a = p.f({1,2});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_02()
         {
             String code =
@@ -6353,6 +6477,7 @@ a = p.f({1,2.1});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_03()
         {
             String code =
@@ -6380,6 +6505,7 @@ a = p.f({1,2.1,2});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_04()
         {
             String code =
@@ -6408,6 +6534,7 @@ a = p.f({1});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_05()
         {
             String code =
@@ -6436,6 +6563,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T100_Replication_On_Class_Instance_06()
         {
@@ -6470,6 +6598,7 @@ a = p.f({1, 1.5});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_07()
         {
             String code =
@@ -6494,6 +6623,7 @@ a = p.f({1, 2});
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_08()
         {
             String code =
@@ -6521,6 +6651,7 @@ a = foo(p);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_09()
         {
             String code =
@@ -6548,6 +6679,7 @@ a = foo(p);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_10()
         {
             String code =
@@ -6575,6 +6707,7 @@ a = foo(p, 1, 2);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_11()
         {
             String code =
@@ -6605,6 +6738,7 @@ y = 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_12()
         {
             String code =
@@ -6638,6 +6772,7 @@ y = 3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_13()
         {
             String code =
@@ -6664,6 +6799,7 @@ y = 3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_14()
         {
             String code =
@@ -6697,6 +6833,7 @@ y = 3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_15()
         {
             String code =
@@ -6719,6 +6856,7 @@ a = p.f({0,1,2,3}[1..2]);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_16()
         {
             String code =
@@ -6751,6 +6889,7 @@ y = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_17()
         {
             String code =
@@ -6775,6 +6914,7 @@ d1 = d.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_18()
         {
             String code =
@@ -6800,6 +6940,7 @@ y = s.foo(B.B()).b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_19()
         {
             String code =
@@ -6826,6 +6967,7 @@ a1.a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_20()
         {
             String code =
@@ -6854,6 +6996,7 @@ res = ax.foo(1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_21()
         {
             String code =
@@ -6891,6 +7034,7 @@ res;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_22()
         {
             String code =
@@ -6934,6 +7078,7 @@ def foo ( xx : A[] )
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_23()
         {
             String code =
@@ -6978,6 +7123,7 @@ ax = { A.A(), A.A(), A.A() };
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_24()
         {
             String code =
@@ -7005,6 +7151,7 @@ ax = { A.A(), A.A() , A.A()};
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_25()
         {
             String code =
@@ -7041,6 +7188,7 @@ bx = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T100_Replication_On_Class_Instance_26()
         {
             String code =

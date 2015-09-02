@@ -15,12 +15,12 @@ namespace Dynamo.Models
             X = 0; 
             Y = 0;
             RunType = RunType.Automatic;
-            RunPeriod = 100;
+            RunPeriod = RunSettings.DefaultRunPeriod;
             HasRunWithoutCrash = true;
         }
 
         public static bool FromXmlDocument(
-            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceInfo workspaceInfo)
+            XmlDocument xmlDoc, string path, bool isTestMode, bool forceManualExecutionMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try
             {
@@ -33,8 +33,9 @@ namespace Dynamo.Models
                 string description = "";
                 string version = "";
                 var runType = RunType.Manual;
-                int runPeriod = 100;
+                int runPeriod = RunSettings.DefaultRunPeriod;
                 bool hasRunWithoutCrash = false;
+                bool isVisibleInDynamoLibrary = true;
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");
 
@@ -65,11 +66,13 @@ namespace Dynamo.Models
                             description = att.Value;
                         else if (att.Name.Equals("HasRunWithoutCrash"))
                             hasRunWithoutCrash = bool.Parse(att.Value);
+                        else if (att.Name.Equals("IsVisibleInDynamoLibrary"))
+                            isVisibleInDynamoLibrary = bool.Parse(att.Value);
                         else if (att.Name.Equals("Version"))
                             version = att.Value;
                         else if (att.Name.Equals("RunType"))
                         {
-                            if (!Enum.TryParse(att.Value, false, out runType))
+                            if (forceManualExecutionMode || !Enum.TryParse(att.Value, false, out runType))
                             {
                                 runType = RunType.Manual;
                             }
@@ -100,7 +103,8 @@ namespace Dynamo.Models
                     Version = version,
                     RunType  = runType,
                     RunPeriod = runPeriod,
-                    HasRunWithoutCrash = hasRunWithoutCrash
+                    HasRunWithoutCrash = hasRunWithoutCrash,
+                    IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary
                 };
                 return true;
             }
@@ -131,6 +135,7 @@ namespace Dynamo.Models
         public RunType RunType { get; internal set; }
         public int RunPeriod { get; internal set; }
         public bool HasRunWithoutCrash { get; internal set; }
+        public bool IsVisibleInDynamoLibrary { get; internal set; }
         public bool IsCustomNodeWorkspace
         {
             get { return !string.IsNullOrEmpty(ID); }

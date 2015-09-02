@@ -337,8 +337,12 @@ namespace ProtoCore.DSASM
         {
             if (sv1.optype != sv2.optype)
                 return false;
+
             switch (sv1.optype)
             {
+                case AddressType.Invalid:
+                    return true;
+
                 case AddressType.Int:
                 case AddressType.Char:
                     return sv1.opdata == sv2.opdata;
@@ -354,12 +358,16 @@ namespace ProtoCore.DSASM
                 case AddressType.ArrayPointer:
                     if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
-                    return CompareStackValuesFromHeap(sv1, sv2, rtCore1, rtCore2, context);
+
+                    DSArray array1 = rtCore1.Heap.ToHeapObject<DSArray>(sv1);
+                    DSArray array2 = rtCore2.Heap.ToHeapObject<DSArray>(sv2);
+                    return DSArray.CompareFromDifferentCore(array1, array2, rtCore1, rtCore2, context);
+
                 case AddressType.String:
-                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) 
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
-                    string s1 = rtCore1.RuntimeMemory.Heap.GetString(sv1);
-                    string s2 = rtCore1.RuntimeMemory.Heap.GetString(sv2);
+                    DSString s1 = rtCore1.Heap.ToHeapObject<DSString>(sv1);
+                    DSString s2 = rtCore1.Heap.ToHeapObject<DSString>(sv2);
                     return s1.Equals(s2);
                 case AddressType.Pointer:
                     if (sv1.metaData.type != sv2.metaData.type) //if the type of class is different, then stack values can never be equal
@@ -392,7 +400,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        return CompareStackValuesFromHeap(sv1, sv2, rtCore1, rtCore2, context);
+                        return ComparePointerFromHeap(sv1, sv2, rtCore1, rtCore2, context);
                     }
                 default :
                     return sv1.opdata == sv2.opdata;
@@ -400,85 +408,27 @@ namespace ProtoCore.DSASM
         }
 
         //this method compares the heap for the stack variables and determines if the values of the heap are same
-        private static bool CompareStackValuesFromHeap(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context)
+        private static bool ComparePointerFromHeap(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context)
         {
-            HeapElement heap1 = ArrayUtils.GetHeapElement(sv1, rtCore1);
-            HeapElement heap2 = ArrayUtils.GetHeapElement(sv2, rtCore2);
+            var obj1 = rtCore1.Heap.ToHeapObject<DSObject>(sv1);
+            var obj2 = rtCore2.Heap.ToHeapObject<DSObject>(sv2);
 
-            if (heap1.Stack.Length != heap2.Stack.Length)
+            if (obj1.Count != obj2.Count)
             {
                 return false;
             }
 
-            for (int i = 0; i < heap1.Stack.Length; i++)
+            for (int i = 0; i < obj1.Count; i++)
             {
-                if (!CompareStackValues(heap1.Stack[i], heap2.Stack[i], rtCore1, rtCore2, context))
+                if (!CompareStackValues(obj1.GetValueFromIndex(i, rtCore1), 
+                                        obj2.GetValueFromIndex(i, rtCore2), 
+                                        rtCore1, rtCore2, context))
                 {
                     return false;
                 }
             }
 
-            if (heap1.Dict != null && heap2.Dict != null)
-            {
-                if (heap1.Dict == heap2.Dict)
-                {
-                    return true;
-                }
-
-                foreach (var key in heap1.Dict.Keys)
-                {
-                    StackValue value1 = heap1.Dict[key];
-                    StackValue value2 = StackValue.Null;
-                    if (!heap2.Dict.TryGetValue(key, out value2))
-                    {
-                        return false;
-                    }
-
-                    if (!CompareStackValues(value1, value2, rtCore1, rtCore2))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-            else if (heap1.Dict == null && heap2.Dict == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        // heaper method to support negative index into stack
-        public static StackValue GetValue(this HeapElement hs, int ix, RuntimeCore runtimeCore)
-        {
-            int index = ix < 0 ? ix + hs.VisibleSize : ix;
-            if (index >= hs.VisibleSize || index < 0)
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
-                return StackValue.Null;
-            }
-
-            return hs.Stack[index];
-        }
-
-        // helper method to support negative index into stack
-        public static StackValue SetValue(this HeapElement hs, int ix, StackValue sv)
-        {
-            if (ix >= hs.GetAllocatedSize())
-            {
-                throw new System.IndexOutOfRangeException();
-            }
-
-            int index = ix < 0 ? ix + hs.VisibleSize : ix;
-            StackValue svOld = hs.Stack[index];
-            hs.Stack[index] = sv;
-
-            return svOld;
+            return true;
         }
     };
 

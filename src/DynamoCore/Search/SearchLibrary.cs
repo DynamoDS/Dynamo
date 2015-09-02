@@ -22,7 +22,7 @@ namespace Dynamo.Search
         public virtual void Add(TEntry entry)
         {
             Add(entry, entry.Name);
-            Add(entry, entry.SearchTags, .5);
+            Add(entry, entry.SearchTags, entry.SearchTagWeights);
             Add(entry, entry.Description, .1);
         }
 
@@ -30,9 +30,29 @@ namespace Dynamo.Search
         ///     Updates an entry in search.
         /// </summary>
         /// <param name="entry"></param>
-        public void Update(TEntry entry)
+        public void Update(TEntry entry, bool isCategoryChanged = false)
         {
-            Remove(entry);
+            // If entry's category is changed, we need to delete this entry from search.
+            // And add it to new category.
+            if (isCategoryChanged)
+                Remove(entry);
+
+            Dictionary<string, double> keys;
+            if (entryDictionary.TryGetValue(entry, out keys)) // Found the entry to update.
+            {
+                // Remove old tags.
+                keys.Clear();
+                keys.Add(entry.Name.ToLower(), 1);
+                keys.Add(entry.Description.ToLower(), 0.1);
+
+                foreach (var tag in entry.SearchTags.Select(x => x.ToLower()))
+                    keys.Add(tag, 0.5);
+
+                OnEntryUpdated(entry);
+                return; // Entry updated.
+            }
+
+            // Entry could not be found, add it into the search collection.
             Add(entry);
         }
 

@@ -12,6 +12,7 @@ using System.Windows.Media;
 
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Search;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
@@ -20,12 +21,16 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
+using System.Text;
+using Dynamo.Wpf.ViewModels.Watch3D;
+using HelixToolkit.Wpf.SharpDX;
 
 namespace Dynamo.Controls
 {
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
+        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -76,19 +81,19 @@ namespace Dynamo.Controls
             {
                 var st = (PackageManagerSearchViewModel.PackageSearchState)value;
 
-                if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
+                if (st == PackageManagerSearchViewModel.PackageSearchState.NoResults)
                 {
                     return Resources.PackageSearchStateNoResult;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Results)
                 {
                     return "";
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Searching)
                 {
                     return Resources.PackageSearchStateSearching;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Syncing)
                 {
                     return Resources.PackageSearchStateSyncingWithServer;
                 }
@@ -1577,24 +1582,49 @@ namespace Dynamo.Controls
             // if the number of directories deep exceeds threshold
             if (str.Length - str.Replace(@"\", "").Length >= 5)
             {
-                var root = Path.GetPathRoot(str);
-                var name = Path.GetFileName(str);
-
-                var dirInfo = new DirectoryInfo(Path.GetDirectoryName(str));
-
-                var collapsed = new[]
-                {
-                    root + "...",
-                    dirInfo.Parent.Parent.Name,
-                    dirInfo.Parent.Name,
-                    dirInfo.Name,
-                    name
-                };
-
-                return string.Join(@"\", collapsed);
+                return ShortenNestedFilePath(str);
             }
 
             return str;
+        }
+
+        internal static string ShortenNestedFilePath(string str)
+        {
+            //directories to go down under the root
+            const int MAX_FOLDER_DEPTH = 2;
+            var name = Path.GetFileName(str);
+            var path = Path.GetDirectoryName(str);
+
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(name))
+            {
+                return str;
+            }
+
+            var currentDirInfo = new DirectoryInfo(path);
+            var root = currentDirInfo.Root;
+            var rootName = root.FullName;
+
+            var collapsed = new List<string>();
+            collapsed.Add(name);
+
+            for (int count = 0; count < MAX_FOLDER_DEPTH; count++)
+            {
+                if (currentDirInfo.Parent == null)
+                {
+                    break;
+                }
+
+                collapsed.Insert(0, currentDirInfo.Name);
+                currentDirInfo = currentDirInfo.Parent;
+            }
+            //if the next parent is the root then we don't want to add ... to the string
+            if ((currentDirInfo.Parent != null) && (currentDirInfo.Parent != root))
+            {
+                rootName = rootName + "...";
+            }
+            collapsed.Insert(0, rootName);
+
+            return string.Join(@"\", collapsed);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1797,16 +1827,17 @@ namespace Dynamo.Controls
                         return text.Insert(text.LastIndexOf(".") + 1, "\n");
                     return text;
                 case "ClassButton":
-                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
-                    if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
-                    {
-                        if (text.IndexOf(" ") != -1)
-                            text = text.Insert(text.IndexOf(" ") + 1, "\n");
-                        if (text.Length > Configurations.MaxLengthClassButtonTitle)
-                            // If title is too long, we can cat it.
-                            text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
-                                Configurations.TwoDots;
-                    }
+
+                    int maxRowLength = Configurations.MaxLengthRowClassButtonTitle;
+                    int maxRowNumbers = Configurations.MaxRowNumber;
+
+                    var words = Dynamo.Nodes.Utilities.WrapText(text, maxRowLength);
+                    if (words.Count() > maxRowNumbers)
+                        words = Dynamo.Nodes.Utilities.ReduceRowCount(words.ToList(), maxRowNumbers);
+
+                    words = Dynamo.Nodes.Utilities.TruncateRows(words, maxRowLength);
+                    text = String.Join("\n", words);
+
                     return text;
 
                 // Maybe, later we need more string converters.
@@ -2049,6 +2080,15 @@ namespace Dynamo.Controls
 
             var textBlock = values[0] as TextBlock;
             var viewModel = values[1] as SearchViewModel;
+
+            // This converter is used in Library view and in ClassInformation view.
+            // In Library view ViewModel is SearchViewModel, that's why it can't be null.
+            // But in ClassInformation view ViewModel is ClassInformationViewModel.
+            // So, if viewModel is null, that means we are in ClassInformationView
+            // and there is no need to create additional margin.
+            if (viewModel == null)
+                return new Thickness(0, 0, textBlock.ActualWidth, textBlock.ActualHeight);
+
             var searchText = viewModel.SearchText;
             var typeface = viewModel.RegularTypeface;
             var fullText = textBlock.Text;
@@ -2149,5 +2189,156 @@ namespace Dynamo.Controls
         }
     }
 
-    
-}
+    internal class Watch3DBackgroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var homeColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+            var customColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
+
+            //parameter will contain a true or false
+            //whether this is the home space
+            if ((bool)value)
+            {
+                return homeColor.ToColor4();
+            }
+
+            return customColor.ToColor4();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class GroupFontSizeToEditorEnabledConverter : IMultiValueConverter
+    {
+        private const double MinFontFactor = 7.0;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var zoom = System.Convert.ToDouble(values[0]);
+            var fontsize = System.Convert.ToDouble(values[1]);
+
+            var factor = zoom*fontsize;
+            if (factor < MinFontFactor)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GroupTitleVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null) return Visibility.Visible;
+            if (parameter.ToString() == "FlipTextblock")
+            {
+                if ((Visibility) value == Visibility.Collapsed)
+                {
+                    return Visibility.Visible;
+                }
+            }
+            else if (parameter.ToString() == "FlipTextbox")
+            {
+                return (Visibility)value; 
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+        /// Converts element type of node search element in short string.
+        /// E.g. ElementTypes.Packaged => PKG.
+        /// </summary>
+        public class ElementTypeToShortConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var type = (ElementTypes) value;
+
+                switch (type)
+                {
+                    case ElementTypes.Packaged:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
+                        return Resources.PackageTypeShortString;
+
+                    case ElementTypes.ZeroTouch:
+                        return Resources.ZeroTouchTypeShortString;
+
+                    case ElementTypes.CustomNode:
+                        return Resources.CustomNodeTypeShortString;
+
+                    case ElementTypes.BuiltIn:
+                    case ElementTypes.None:
+                    default:
+                        return string.Empty;
+                }
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Converter is used in search library view. If current mode is LibraryView, then hide found members.
+        /// Otherwise show found members.
+        /// </summary>
+        public class LibraryViewModeToBoolConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var mode = (SearchViewModel.ViewMode)value;
+                return mode == SearchViewModel.ViewMode.LibraryView;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Converter is used in WorkspaceView. It makes context menu longer.
+        /// Since context menu includes now inCanvasSearch, it should be align according its' new height.
+        /// </summary>
+        public class WorkspaceContextMenuHeightConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                double actualContextMenuHeight = (double)value;
+
+                return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeight;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }

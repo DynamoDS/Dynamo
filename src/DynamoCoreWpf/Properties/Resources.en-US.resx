@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -151,6 +151,14 @@
   </data>
   <data name="ContextCreateGroupFromSelection" xml:space="preserve">
     <value>Create Group</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>Remove from Group</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextAddGroupFromSelection" xml:space="preserve">
+    <value>Add To Group</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
@@ -442,19 +450,23 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReporting" xml:space="preserve">
-    <value>_Enable detailed usability data reporting</value>
+    <value>Enable detailed usability data reporting (Instrumentation)</value>
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
-    <value>Detailed reporting sends behaviour data that we use for improving {0}.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
+    <value>Detailed reporting sends behaviour data that we use for improving {0}.
+
+It includes the graph being created as well as errors and warnings</value>
     <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
-    <value>Enable anonymous summary reporting</value>
-    <comment>Setting menu | Eanble summary reporting</comment>
+    <value>Enable anonymous summary reporting (Google Analytics)</value>
+    <comment>Setting menu | Enable summary reporting</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReportingTooltip" xml:space="preserve">
-    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
+    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.
+
+It does not contain your graph or any personal data</value>
     <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
@@ -721,6 +733,18 @@
   <data name="StartPageCode" xml:space="preserve">
     <value>CODE</value>
   </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>RECOVER FROM BACKUP</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>BACKUP</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>Backup location</value>
+  </data>
+  <data name="StartPageOpenAll" xml:space="preserve">
+    <value>Open all</value>
+  </data>
   <data name="StartPageDiscussionForum" xml:space="preserve">
     <value>Discussion forum</value>
   </data>
@@ -767,8 +791,8 @@
     <value>Video Tutorials</value>
     <comment>Start page | Link to videos</comment>
   </data>
-  <data name="StartPageVisitDynamoBim" xml:space="preserve">
-    <value>Visit www.dynamobim.org</value>
+  <data name="StartPageVisitWebsite" xml:space="preserve">
+    <value>{0} website</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageAdvancedTutorials" xml:space="preserve">
@@ -828,6 +852,10 @@
   </data>
   <data name="MessageConfirmToInstallPackage" xml:space="preserve">
     <value>Are you sure you want to install {0} {1} ?</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>Are you sure you want to install {0} {1} to {2} ?</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
@@ -1005,6 +1033,10 @@ You will get a chance to save your work.</value>
     <value>Edit Node Name</value>
     <comment>Dialog for editing a node's name</comment>
   </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>Edit Group Title</value>
+    <comment>Dialog for editing a node's name</comment>
+  </data>
   <data name="EditWindowAcceptButton" xml:space="preserve">
     <value>Accept</value>
   </data>
@@ -1021,32 +1053,6 @@ You will get a chance to save your work.</value>
   </data>
   <data name="GenericTaskDialogTitle" xml:space="preserve">
     <value>Generic Task Dialog</value>
-  </data>
-  <data name="UsageReportPromptDialogConsent" xml:space="preserve">
-    <value>I give my consent for Autodesk to collect information on how I use {0}.</value>
-  </data>
-  <data name="UsageReportPromptDialogFeatureUsage" xml:space="preserve">
-    <value>The features and commands you use in {0}</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart1" xml:space="preserve">
-    <value>We would like to collect some information about how {0} is used.
-
-Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
-
-The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
-
-The information being collected is:</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart2" xml:space="preserve">
-    <value>It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting 'Enable usability data reporting' in the settings menu of the UI.
-
-ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.
-
-Many thanks!</value>
-  </data>
-  <data name="UsageReportPromptDialogNodeUsage" xml:space="preserve">
-    <value>The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).
-</value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
     <value>Agreement to collect usability data on your use of {0}</value>
@@ -1255,8 +1261,17 @@ Many thanks!</value>
     <value>⇓ Install</value>
     <comment>To install package</comment>
   </data>
-  <data name="PackageSearchViewInstallButtonTooltip" xml:space="preserve">
-    <value>Install This Version</value>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>Install latest version</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>Install latest version to folder...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>Install this version</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>Install this version to folder...</value>
   </data>
   <data name="PackageSearchViewKeywords" xml:space="preserve">
     <value>Keywords</value>
@@ -1354,7 +1369,7 @@ Many thanks!</value>
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
   </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
-    <value>Publish a Package Online</value>
+    <value>Publish a Package</value>
   </data>
   <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
     <value>Website Url (optional)</value>
@@ -1429,11 +1444,11 @@ Do you want to install the latest Dynamo update?</value>
     <value>Install Dynamo</value>
   </data>
   <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
-    <value>Enable background 3D preview navigation (Ctrl + G)</value>
+    <value>Enable background 3D preview navigation (Ctrl + B)</value>
     <comment>Enable background 3D preview navigation</comment>
   </data>
   <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
-    <value>Enable graph view navigation (Ctrl + G)</value>
+    <value>Enable graph view navigation (Ctrl + B)</value>
     <comment>Enable graph view navigation</comment>
   </data>
   <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
@@ -1544,6 +1559,18 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
+  <data name="PresetsWindowDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>Enter a description for this preset.</value>
+  </data>
+  <data name="PresetsWindowName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>Preset State Properties</value>
+  </data>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
     <value>Run is not available when running Automatically or Periodically.</value>
   </data>
@@ -1567,6 +1594,18 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="RunStartedMessage" xml:space="preserve">
     <value>Run started...</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>Select Background</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>Font Size</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>Ungroup</value>
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
@@ -1619,23 +1658,265 @@ Do you want to install the latest Dynamo update?</value>
     <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
-  <data name="GroupContextMenuBackground" xml:space="preserve">
-    <value>Select Background</value>
-  </data>
-  <data name="GroupContextMenuFont" xml:space="preserve">
-    <value>Font Size</value>
-  </data>
-  <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>Ungroup</value>
-  </data>
   <data name="MoreButton" xml:space="preserve">
     <value>More</value>
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
   </data>
   <data name="PublishPackage" xml:space="preserve">
-    <value>Publish Package !</value>
+    <value>Publish Online</value>
+  </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>What's New</value>
+  </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>I Accept</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>I Decline</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Package Manager Terms of Use</value>
+  </data>
+  <data name="GalleryDynamoVersion" xml:space="preserve">
+    <value>Version {0}.{1}.{2}</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
+  </data>
+  <data name="ConsentFormGoogleAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>Yes, I would like to contribute to this program (Google Analytics).</value>
+  </data>
+  <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
+    <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>PKG</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>Create Preset From Selection</value>
+  </data>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>Delete Preset</value>
+  </data>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>Restore Preset</value>
+  </data>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>Visualization Settings</value>
+  </data>
+  <data name="FileDialogManualMode" xml:space="preserve">
+    <value>Open in Manual Execution Mode</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>No file selected.</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>Edit...</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>Show Raw Data</value>
+  </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>Enable Periodic Update</value>
+  </data>
+  <data name="PackageUploadNoDependency" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
+    <value>A description that helps people understand what the package might be used for.</value>
+  </data>
+  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
+    <value>A unique name for the package.</value>
+  </data>
+  <data name="UnitAcres" xml:space="preserve">
+    <value>Acres</value>
+  </data>
+  <data name="UnitCentimeters" xml:space="preserve">
+    <value>Centimeters</value>
+  </data>
+  <data name="UnitCubicCentimeter" xml:space="preserve">
+    <value>CubicCentimeter</value>
+  </data>
+  <data name="UnitCubicFoot" xml:space="preserve">
+    <value>CubicFoot</value>
+  </data>
+  <data name="UnitCubicInches" xml:space="preserve">
+    <value>CubicInches</value>
+  </data>
+  <data name="UnitCubicMeters" xml:space="preserve">
+    <value>CubicMeters</value>
+  </data>
+  <data name="UnitCubicMillimeter" xml:space="preserve">
+    <value>CubicMillimeter</value>
+  </data>
+  <data name="UnitCubicYards" xml:space="preserve">
+    <value>CubicYards</value>
+  </data>
+  <data name="UnitDecimeters" xml:space="preserve">
+    <value>Decimeters</value>
+  </data>
+  <data name="UnitFeet" xml:space="preserve">
+    <value>Feet</value>
+  </data>
+  <data name="UnitHectares" xml:space="preserve">
+    <value>Hectares</value>
+  </data>
+  <data name="UnitInches" xml:space="preserve">
+    <value>Inches</value>
+  </data>
+  <data name="UnitLitres" xml:space="preserve">
+    <value>Litres</value>
+  </data>
+  <data name="UnitMeters" xml:space="preserve">
+    <value>Meters</value>
+  </data>
+  <data name="UnitMillimeters" xml:space="preserve">
+    <value>Millimeters</value>
+  </data>
+  <data name="UnitSquareCentimeter" xml:space="preserve">
+    <value>SquareCentimeter</value>
+  </data>
+  <data name="UnitSquareFoot" xml:space="preserve">
+    <value>SquareFoot</value>
+  </data>
+  <data name="UnitSquareInch" xml:space="preserve">
+    <value>SquareInch</value>
+  </data>
+  <data name="UnitSquareMeter" xml:space="preserve">
+    <value>SquareMeter</value>
+  </data>
+  <data name="UnitSquareMillimeter" xml:space="preserve">
+    <value>SquareMillimeter</value>
+  </data>
+  <data name="UnitUSGallons" xml:space="preserve">
+    <value>USGallons</value>
+  </data>
+  <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
+    <value>A description that helps people understand what the node might be used for.</value>
+  </data>
+  <data name="CustomNodePromptNameTooltip" xml:space="preserve">
+    <value>A unique name for the node.</value>
+  </data>
+  <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
+    <value>A description of the preset state.</value>
+  </data>
+  <data name="PresetPromptNameTooltip" xml:space="preserve">
+    <value>A unique name for the preset.</value>
+  </data>
+  <data name="SelectNodeButtonChange" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="SelectNodeButtonSelect" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="PresetTextRemaining" xml:space="preserve">
+    <value>Characters Remaining</value>
+  </data>
+  <data name="PresetOverwrite" xml:space="preserve">
+    <value>A preset by this name already exists, do you wish to overwrite?</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
+    <value>Manage Node and Package Paths...</value>
+    <comment>Setting menu | Custom node definition and package paths</comment>
+  </data>
+  <data name="PackagePathViewAccept" xml:space="preserve">
+    <value>Accept Changes</value>
+    <comment>Accept changes button on the package path dialog</comment>
+  </data>
+  <data name="PackagePathViewHeading" xml:space="preserve">
+    <value>Paths:</value>
+    <comment>Package path management dialog content</comment>
+  </data>
+  <data name="PackagePathViewSummary1" xml:space="preserve">
+    <value>Add paths to make nodes and packages show up in the library.</value>
+    <comment>Package path management dialog content</comment>
+  </data>
+  <data name="PackagePathViewSummary2" xml:space="preserve">
+    <value>Top path is the default save location.</value>
+    <comment>Package path management dialog content that describes about the first entry being the default save location.</comment>
+  </data>
+  <data name="PackagePathViewTitle" xml:space="preserve">
+    <value>Manage Node and Package Paths</value>
+    <comment>Package path management dialog title</comment>
+  </data>
+  <data name="PackagePathViewToolTipDown" xml:space="preserve">
+    <value>Move the selected path downward</value>
+    <comment>Tool-tip for down arrow</comment>
+  </data>
+  <data name="PackagePathViewToolTipMinus" xml:space="preserve">
+    <value>Remove the selected path from list</value>
+    <comment>Tool-tip for minus icon</comment>
+  </data>
+  <data name="PackagePathViewToolTipPlus" xml:space="preserve">
+    <value>Add a new path to the list</value>
+    <comment>Tool-tip for plus icon</comment>
+  </data>
+  <data name="PackagePathViewToolTipUp" xml:space="preserve">
+    <value>Move the selected path upward</value>
+    <comment>Tool-tip for up arrow</comment>
+  </data>
+  <data name="NodeContextMenuIsInput" xml:space="preserve">
+    <value>Is Input</value>
+  </data>
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>Available Previews</value>
+  </data>
+  <data name="PresetWarningMessage" xml:space="preserve">
+    <value>No input nodes selected. Select at least one input node to create a preset.</value>
+  </data>
+  <data name="UnitArea" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="UnitLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="UnitVolume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>Units:</value>
+  </data>
+  <data name="PublishPackageLocally" xml:space="preserve">
+    <value>Publish Locally</value>
+  </data>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>Background Preview</value>
+    <comment>The name of the 3D background preview.</comment>
+  </data>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>Camera position information could not be loaded from the file.</value>
+  </data>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>Camera position information could not be saved.</value>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>You do not have write permission to {0}.</value>
   </data>
 </root>

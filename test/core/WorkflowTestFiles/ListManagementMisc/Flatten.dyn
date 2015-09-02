@@ -1,0 +1,37 @@
+<Workspace Version="0.7.5.3327" X="-251.893991509942" Y="-266.818300411252" zoom="0.910909980001543" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7524691f-598d-4ab7-b1ca-ac7441ab0c32" nickname="Number" x="456.552815314207" y="430.39716087825" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0..5" />
+    </Dynamo.Nodes.DoubleInput>
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="08f45b69-0e26-4585-94b2-51821318c8c6" nickname="List.Create" x="638.941223453812" y="430.39716087825" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="1cae41bd-44ac-433e-b3ef-c0dde09344aa" nickname="List.Create" x="916.864821275022" y="931.574648714667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9348354d-1aae-49bf-b1cd-33f650dd42dd" nickname="Flatten" x="1106.0417870193" y="430.39716087825" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Flatten@var[]..[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="94a1354a-9b9d-44dd-8d30-c4596afa8434" nickname="Watch" x="1353.29045082624" y="430.39716087825" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="4063cf99-0c17-42ba-8c7c-07f65ce2b2c0" nickname="Watch" x="1689.25816745901" y="931.574648714667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1c275857-b43c-4f65-8747-666a1f96fe2c" nickname="List.Flatten" x="1440.44564576112" y="931.574648714667" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Flatten@var[]..[],int" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c287cc9d-9e0a-4d6c-b461-9724b3bb1ee8" nickname="Number" x="1310.27458727397" y="1010.65474880873" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="587e3b53-7018-4add-acc2-74c2d54d5217" nickname="Watch" x="1106.73897614842" y="931.574648714667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="9a5c96ac-31dd-4749-836e-b88f8cc630cf" nickname="Watch" x="880.977692878316" y="430.39716087825" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7524691f-598d-4ab7-b1ca-ac7441ab0c32" start_index="0" end="08f45b69-0e26-4585-94b2-51821318c8c6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7524691f-598d-4ab7-b1ca-ac7441ab0c32" start_index="0" end="08f45b69-0e26-4585-94b2-51821318c8c6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7524691f-598d-4ab7-b1ca-ac7441ab0c32" start_index="0" end="08f45b69-0e26-4585-94b2-51821318c8c6" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="08f45b69-0e26-4585-94b2-51821318c8c6" start_index="0" end="1cae41bd-44ac-433e-b3ef-c0dde09344aa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="08f45b69-0e26-4585-94b2-51821318c8c6" start_index="0" end="1cae41bd-44ac-433e-b3ef-c0dde09344aa" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="08f45b69-0e26-4585-94b2-51821318c8c6" start_index="0" end="1cae41bd-44ac-433e-b3ef-c0dde09344aa" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="08f45b69-0e26-4585-94b2-51821318c8c6" start_index="0" end="9a5c96ac-31dd-4749-836e-b88f8cc630cf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1cae41bd-44ac-433e-b3ef-c0dde09344aa" start_index="0" end="587e3b53-7018-4add-acc2-74c2d54d5217" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9348354d-1aae-49bf-b1cd-33f650dd42dd" start_index="0" end="94a1354a-9b9d-44dd-8d30-c4596afa8434" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1c275857-b43c-4f65-8747-666a1f96fe2c" start_index="0" end="4063cf99-0c17-42ba-8c7c-07f65ce2b2c0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c287cc9d-9e0a-4d6c-b461-9724b3bb1ee8" start_index="0" end="1c275857-b43c-4f65-8747-666a1f96fe2c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="587e3b53-7018-4add-acc2-74c2d54d5217" start_index="0" end="1c275857-b43c-4f65-8747-666a1f96fe2c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9a5c96ac-31dd-4749-836e-b88f8cc630cf" start_index="0" end="9348354d-1aae-49bf-b1cd-33f650dd42dd" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Flattening a multi-dimensional list creates a one-dimensional list containing all the elements of all the lists. " x="1019.52913137583" y="350.529665185606" />
+    <Dynamo.Models.NoteModel text="You can also use List.Flatten which allows you to specify the amount you want to flatten. With this node, flattening happens from the outside in. For example, if you specify 1 for the amount, the outer-most level of the hierarchy will be flattened." x="1330.25730988314" y="827.831404276447" />
+  </Notes>
+</Workspace>

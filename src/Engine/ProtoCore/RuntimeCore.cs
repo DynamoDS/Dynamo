@@ -64,13 +64,15 @@ namespace ProtoCore
     /// </summary>
     public class RuntimeCore
     {
-        public RuntimeCore(Heap heap)
+        public RuntimeCore(Heap heap, Options options = null)
         {
             // The heap is initialized by the core and is used to allocate strings
             // Use the that heap for runtime
             Validity.Assert(heap != null);
             this.Heap = heap;
             RuntimeMemory = new RuntimeMemory(Heap);
+
+            this.Options = options;
 
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
@@ -96,6 +98,7 @@ namespace ProtoCore
 
             RuntimeStatus = new ProtoCore.RuntimeStatus(this);
             StartPC = Constants.kInvalidPC;
+            RuntimeData = new ProtoCore.RuntimeData();
         }
 
         /// <summary>
@@ -141,7 +144,7 @@ namespace ProtoCore
                 FFIExecutionManager.Instance.RegisterExtensionApplicationType(this, type);
             }
         }
-
+        public RuntimeData RuntimeData { get; set; }
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }
         public Executive CurrentExecutive { get; private set; }
@@ -216,6 +219,30 @@ namespace ProtoCore
         public List<SymbolNode> WatchSymbolList { get; set; }
 #endregion 
         
+        private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
+
+        public IEnumerable<StackValue> CallSiteGCRoots
+        {
+            get { return callsiteGCRoots.Values.SelectMany(x => x);  }
+        }
+
+        public void AddCallSiteGCRoot(Guid callSiteID, StackValue sv)
+        {
+            if (!sv.IsReferenceType)
+                return;
+
+            if (!callsiteGCRoots.ContainsKey(callSiteID))
+                callsiteGCRoots[callSiteID] = new List<StackValue>();
+
+            List<StackValue> svs = callsiteGCRoots[callSiteID];
+            svs.Add(sv); 
+        }
+
+        public void RemoveCallSiteGCRoot(Guid callSiteID)
+        {
+            callsiteGCRoots.Remove(callSiteID);
+        }
+
         public void ResetForDeltaExecution()
         {
             RunningBlock = 0;
@@ -328,10 +355,11 @@ namespace ProtoCore
         /// <param name="astID"></param>
         /// <param name="sv"></param>
         /// <returns></returns>
-        public int SetValue(int astID, StackValue sv)
+        public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
         {
             ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
-            AssociativeGraph.GraphNode gnode =  ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
+            AssociativeGraph.GraphNode gnode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
+(this, modifiedNodes);
             Validity.Assert(gnode != null);
             return gnode.updateBlock.startpc;
         }

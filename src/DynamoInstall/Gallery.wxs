@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="PROGDATA">
+            <Directory Id="dir1C8915865B289EE352FDB945F1578E1B" Name="gallery" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="GALLERY">
+            <Component Id="cmpDCD9CCBE392A834500A1B112811CCB26" Directory="dirBADE288F68EC4D807363F9641C8A9431" Guid="{9CD6A7D0-4D27-4113-AFCB-713F49337AD7}">
+                <File Id="filE8FDFB087D4AD2AA0673E181DA5E85C4" KeyPath="yes" Source="$(var.gallery)\en-US\colored_geometry.png" />
+            </Component>
+            <Component Id="cmp1F50852B962DA7F084E0D1DCA22A1CC9" Directory="dirBADE288F68EC4D807363F9641C8A9431" Guid="{054E3EF9-E8B1-4360-8FE2-AC2E7DB2C90C}">
+                <File Id="fil1247167F1E10B92942B2AFBA2A5336F6" KeyPath="yes" Source="$(var.gallery)\en-US\crash_recovery.png" />
+            </Component>
+            <Component Id="cmp7C9179C446BD000477FA34ABB133C0F5" Directory="dirBADE288F68EC4D807363F9641C8A9431" Guid="{8C580562-058B-4C15-B0AA-E6A7711C4695}">
+                <File Id="fil5AA0B2259F8D64A3D386AD0B68F8B707" KeyPath="yes" Source="$(var.gallery)\en-US\GalleryContents.xml" />
+            </Component>
+            <Component Id="cmp3C31D3CA82E0C6CBE37D534DCB4595C5" Directory="dirBADE288F68EC4D807363F9641C8A9431" Guid="{AE721505-4906-4C11-BA44-542308B9EDAA}">
+                <File Id="fil60B95FB52F13BEB735D9277A9DA87539" KeyPath="yes" Source="$(var.gallery)\en-US\grouping_annotation.png" />
+            </Component>
+            <Component Id="cmp19B815359A396376506112959BCD577C" Directory="dirBADE288F68EC4D807363F9641C8A9431" Guid="{86CD88BD-4FBC-49E4-B7A1-0BE6301C8F26}">
+                <File Id="fil366F196ADDF2CBF020B17A2EE440FD6C" KeyPath="yes" Source="$(var.gallery)\en-US\library_draggable.png" />
+            </Component>
+            <Component Id="cmpAD07D39D0322B976EBAA3DE9BD6E7DBC" Directory="dirBADE288F68EC4D807363F9641C8A9431" Guid="{1845605B-3CAD-43C8-883D-CEEFB2E32F87}">
+                <File Id="filB10248E690AA21AEE45B99425DE94273" KeyPath="yes" Source="$(var.gallery)\en-US\multiple_previews.png" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir1C8915865B289EE352FDB945F1578E1B">
+            <Directory Id="dirBADE288F68EC4D807363F9641C8A9431" Name="en-US" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>

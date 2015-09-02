@@ -7,6 +7,7 @@ using DSCoreNodesUI;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models.NodeLoaders
 {
@@ -22,7 +23,7 @@ namespace Dynamo.Models.NodeLoaders
             this.libraryServices = libraryServices;
         }
 
-        public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
+        public NodeModel CreateNodeFromXml(XmlElement nodeElement, SaveContext context, ElementResolver resolver)
         {
             string assembly = "";
             string function;
@@ -51,11 +52,8 @@ namespace Dynamo.Models.NodeLoaders
                     function = hintedSigniture;
 
                     // if the node needs additional parameters, add them here
-                    if (libraryServices.FunctionSignatureNeedsAdditionalAttributes(xmlSignature))
-                        libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
-
-                    if (libraryServices.FunctionSignatureNeedsAdditionalElements(xmlSignature))
-                        libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
+                    libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
+                    libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
                 }
                 else
                 {
@@ -112,6 +110,23 @@ namespace Dynamo.Models.NodeLoaders
                 result = new DSFunction(descriptor);
 
             result.Deserialize(nodeElement, context);
+
+            // In case of input parameters mismatch, use default arguments for parameters that have one
+            if (!descriptor.MangledName.EndsWith(function))
+            {
+                string[] oldSignature = function.Split('@');
+                string[] inputTypes = oldSignature.Length > 1 ? oldSignature[1].Split(',') : new string[]{};
+                int i = 0, j = 0;
+                foreach (var param in descriptor.Parameters)
+                {
+                    if (i >= inputTypes.Length || param.Type.ToString() != inputTypes[i])
+                        result.InPorts[j].UsingDefaultValue = result.InPortData[j].DefaultValue != null;
+                    else
+                        i++;
+                    j++;
+                }
+            }
+
             return result;
         }
         

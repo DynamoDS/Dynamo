@@ -2,14 +2,20 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-        Title="SignInWindow" Height="365" Width="360">
-    <Grid>
+        Title="SignInWindow"
+        Height="365"
+        Width="360">
+    <Grid Background="#222">
 
-        <Grid Name="LoadingGrid" Background="#222">
-            <TextBlock Padding="40" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#AAA" Text="{x:Static p:Resources.BrowserWindowLoading}"></TextBlock>
-        </Grid>
-        
-        <WebBrowser Name="Browser" Visibility="Collapsed"></WebBrowser>
-                 
+        <TextBlock Name="LoadingTextBlock"
+                   FontSize="20"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Foreground="#AAA"
+                   Text="{x:Static p:Resources.BrowserWindowLoading}" />
+
+        <WebBrowser Name="Browser"
+                    Visibility="Collapsed" />
+
     </Grid>
 </Window>

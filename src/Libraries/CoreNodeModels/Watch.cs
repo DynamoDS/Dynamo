@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
+using Dynamo.Interfaces;
+
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
-
 
 namespace Dynamo.Nodes
 {
@@ -27,8 +30,8 @@ namespace Dynamo.Nodes
 
         public Watch()
         {
-            InPortData.Add(new PortData("", "Node to evaluate."));
-            OutPortData.Add(new PortData("", "Watch contents."));
+            InPortData.Add(new PortData("", Resources.WatchPortDataInputToolTip));
+            OutPortData.Add(new PortData("", Resources.WatchPortDataResultToolTip));
 
             RegisterAllPorts();
 
@@ -59,13 +62,6 @@ namespace Dynamo.Nodes
             {
                 EvaluationComplete(obj);
             }
-        }
-
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            return outputIndex == 0
-                ? AstIdentifierForPreview
-                : base.GetAstIdentifierForOutputIndex(outputIndex);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(
@@ -104,8 +100,8 @@ namespace Dynamo.Nodes
             return resultAst;
         }
 
-        protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+        public override void RequestVisualUpdateAsync(
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // Do nothing
         }

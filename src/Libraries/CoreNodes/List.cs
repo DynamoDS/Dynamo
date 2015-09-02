@@ -2,9 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-
+using System.Threading;
 using Autodesk.DesignScript.Runtime;
 
 #endregion
@@ -31,7 +32,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to filter duplicates out of.</param>
         /// <returns name="list">Filtered list.</returns>
-        /// <search>removes,duplicates,remove duplicates,cull duplicates,distinct</search>
+        /// <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
         public static IList UniqueItems(IList list)
         {
             return list.Cast<object>().Distinct(DistinctComparer.Instance).ToList();
@@ -43,7 +44,7 @@ namespace DSCore
         /// <param name="list">List to search in.</param>
         /// <param name="item">Item to look for.</param>
         /// <returns name="bool">Whether list contains the given item.</returns>
-        /// <search>item,search,in</search>
+        /// <search>item,search,in,listcontains</search>
         public static bool ContainsItem(IList list, object item)
         {
             return list.Contains(item);
@@ -54,7 +55,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to be reversed.</param>
         /// <returns name="list">New list.</returns>
-        /// <search>flip</search>
+        /// <search>flip,listcontains</search>
         public static IList Reverse(IList list)
         {
             return list.Cast<object>().Reverse().ToList();
@@ -222,7 +223,7 @@ namespace DSCore
         /// <param name="list">List to be split.</param>
         /// <returns name="first">First item in the list.</returns>
         /// <returns name="rest">Rest of the list.</returns>
-        /// <search>first,rest,list split</search>
+        /// <search>first,rest,list split,listcontains</search>
         [MultiReturn(new[] { "first", "rest" })]
         public static IDictionary Deconstruct(IList list)
         {
@@ -277,7 +278,8 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Removes an amount of items from the start of the list.
+        ///     Removes an amount of items from the start of the list. If the amount is a negative value,
+        ///     items are removed from the end of the list.
         /// </summary>
         /// <param name="list">List to remove items from.</param>
         /// <param name="amount">
@@ -299,7 +301,7 @@ namespace DSCore
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
         /// <returns name="list">Shifted list.</returns>
-        /// <search>shift,slide,offset</search>
+        /// <search>shift,offset</search>
         public static IList ShiftIndices(IList list, int amount)
         {
             if (amount == 0)
@@ -512,7 +514,7 @@ namespace DSCore
         /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         /// <returns name="lists">List of lists.</returns>
-        /// <search>sublists,build sublists,slices,partitions,cut</search>
+        /// <search>sublists,build sublists,slices,partitions,cut,listcontains</search>
         public static IList Chop(IList list, int subLength)
         {
             if (list.Count < subLength)
@@ -547,7 +549,7 @@ namespace DSCore
         /// <param name="list">A flat list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
         /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
-        /// <search>diagonal,right,matrix,get diagonals,diagonal sublists, </search>
+        /// <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
         public static IList DiagonalRight([ArbitraryDimensionArrayImport] IList list, int subLength)
         {
             object[] flatList;
@@ -659,7 +661,10 @@ namespace DSCore
 
 
         /// <summary>
-        ///     Swaps rows and columns in a list of lists.
+        ///     Swaps rows and columns in a list of lists. 
+        ///     If there are some rows that are shorter than others,
+        ///     null values are inserted as place holders in the resultant 
+        ///     array such that it is always rectangular.
         /// </summary>
         /// <param name="lists">A list of lists to be transposed.</param>
         /// <returns name="lists">A list of transposed lists.</returns>
@@ -676,11 +681,77 @@ namespace DSCore
 
             foreach (IList sublist in ilists)
             {
-                for (int i = 0; i < sublist.Count; i++)
-                    transposedList[i].Add(sublist[i]);
+                for (int i = 0; i < transposedList.Count; i++)
+                {
+                    transposedList[i].Add(i < sublist.Count ? sublist[i] : null);
+                }
             }
 
             return transposedList;
+        }
+
+        /// <summary>
+        /// Cleans data of nulls and empty lists from a given list of arbitrary dimension
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="preserveIndices">Provide an option to preserve the indices of the data
+        /// such that non-trailing nulls may not be filtered out</param>
+        /// <returns>A list cleaned of nulls and empty lists</returns>
+        public static IList Clean(IList list, bool preserveIndices = true)
+        {
+            if (list == null)
+                return null;
+
+            if (list.Count == 0)
+                return list;
+
+            var culledList = new List<object>();
+            if (preserveIndices)
+            {
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
+                    return null;
+
+                int j = list.Count - 1;
+                while (j >= 0 && list[j] == null)
+                    j--;
+
+                for (int i = 0; i <= j; i++)
+                {
+                    var subList = list[i] as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList);
+                        culledList.Add(val);
+                    }
+                    else
+                    {
+                        culledList.Add(list[i]);    
+                    }
+                }
+            }
+            else
+            {
+                // if list contains only nulls or is empty, e.g. {null, ...} OR {} 
+                if (list.Cast<object>().All(el => el == null))
+                    return new List<object>();
+
+                foreach (var el in list)
+                {
+                    var subList = el as IList;
+                    if (subList != null)
+                    {
+                        var val = Clean(subList, false);
+                        if (!List.IsEmpty(val))
+                            culledList.Add(val);
+                    }
+                    else if (el != null)
+                    {
+                        culledList.Add(el);
+                    }
+                }
+            }
+            return culledList;
         }
 
 
@@ -690,7 +761,7 @@ namespace DSCore
         /// <param name="item">The item to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
         /// <returns name="list">List of repeated items.</returns>
-        /// <search>repeat,repeated,duplicate,list of item,fill list,copies</search>
+        /// <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
         public static IList OfRepeatedItem([ArbitraryDimensionArrayImport] object item, int amount)
         {
             return Enumerable.Repeat(item, amount).ToList();
@@ -780,6 +851,44 @@ namespace DSCore
                 GetCombinations(list.Cast<object>(), length, replace)
                     .Select(x => x.ToList())
                     .ToList();
+        }
+
+        /// <summary>
+        ///     Given an item, returns the zero-based index of its first occurrence 
+        ///     in the list. If the item cannot be found in the list, -1 is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, -1 is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>Zero-based index of the item in the list, or -1 if it is not found.
+        /// </returns>
+        public static int FirstIndexOf(IList list, object item)
+        {
+            if (list == null)
+                return -1;
+
+            int index = list.IndexOf(item);
+            return index;
+        }
+
+        /// <summary>
+        ///     Given an item, returns the zero-based indices of all its occurrences
+        ///     in the list. If the item cannot be found, an empty list is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, an empty list is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>A list of zero-based indices of all occurrences of the item if 
+        /// found, or an empty list if the item does not exist in the list.</returns>
+        public static IList AllIndicesOf(IList list, object item)
+        {
+            if (list == null)
+                return new List<int> { }; 
+
+            var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
+            return indices;
         }
 
         #region Combinatorics Helpers

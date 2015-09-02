@@ -20,7 +20,7 @@ namespace Dynamo
         public CustomNodeDefinition(
             Guid functionId,
             string displayName="",
-            IList<NodeModel> nodeModels=null)
+            IEnumerable<NodeModel> nodeModels=null)
         {
             if (functionId == Guid.Empty)
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");
@@ -230,16 +230,20 @@ namespace Dynamo
     /// </summary>
     public class CustomNodeInfo
     {
-        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path)
+        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path, bool isVisibleInDynamoLibrary = true)
         {
             if (functionId == Guid.Empty)
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");
             
             FunctionId = functionId;
             Name = name;
-            Category = category;
             Description = description;
             Path = path;
+            IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
+
+            Category = category;
+            if (String.IsNullOrWhiteSpace(Category))
+                Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
 
         public Guid FunctionId { get; set; }
@@ -247,5 +251,7 @@ namespace Dynamo
         public string Category { get; set; }
         public string Description { get; set; }
         public string Path { get; set; }
+        public bool IsPackageMember { get; set; }
+        public bool IsVisibleInDynamoLibrary { get; private set; }
     }
 }

@@ -24,7 +24,7 @@ namespace Dynamo.Core.Threading
     {
         #region Private Class Data Members
 
-        internal enum TaskPriority
+        public enum TaskPriority
         {
             Critical,
             Highest,
@@ -80,7 +80,7 @@ namespace Dynamo.Core.Threading
         /// tasks having the same priority.
         /// </summary>
         /// 
-        internal abstract TaskPriority Priority { get; }
+        public abstract TaskPriority Priority { get; }
 
         /// <summary>
         /// This event is raised when the AsyncTask is completed. The event is 
@@ -88,7 +88,12 @@ namespace Dynamo.Core.Threading
         /// access that is needed should be dispatched onto the UI dispatcher.
         /// </summary>
         /// 
-        internal event AsyncTaskCompletedHandler Completed;
+        public event AsyncTaskCompletedHandler Completed;
+
+        /// <summary>
+        /// Raised if the AsyncTask is discarded by an IScheduler and will not be executed
+        /// </summary>
+        internal event AsyncTaskCompletedHandler Discarded;
 
         #endregion
 
@@ -196,6 +201,15 @@ namespace Dynamo.Core.Threading
             // Notify registered event handlers of task completion.
             if (Completed != null)
                 Completed(this);
+        }
+
+
+        internal void HandleTaskDiscarded()
+        {
+            if (Discarded != null)
+            {
+                Discarded(this);
+            }
         }
 
         #endregion

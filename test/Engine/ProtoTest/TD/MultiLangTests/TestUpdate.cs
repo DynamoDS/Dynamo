@@ -99,6 +99,7 @@ c = a + 1;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T04_Update_Class_Instance_Argument()
         {
@@ -129,6 +130,7 @@ b1 = a1.add(t1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T05_Update_Class_Instance_Argument()
         {
@@ -362,6 +364,7 @@ f = c + 1;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T14_Defect_1461209()
         {
             string code = @"
@@ -383,6 +386,7 @@ x = 5;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T14_Defect_1461209_2()
         {
@@ -408,6 +412,7 @@ x = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T14_Defect_1461209_3()
         {
@@ -432,7 +437,7 @@ a2 = y.foo(1);
         }
 
         [Test]
-
+        [Category("DSDefinedClass")]
         public void T14_Defect_1461209_4()
         {
             string code = @"
@@ -461,6 +466,7 @@ x = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935()
         {
@@ -491,6 +497,7 @@ y = x; // expected : null; recieved : 1
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935_2()
         {
@@ -538,6 +545,7 @@ x = false;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935_4()
         {
@@ -590,6 +598,7 @@ y2 = foo ( b2 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
 
         public void T15_Defect_1460935_5()
@@ -618,6 +627,7 @@ x3 = b3.x3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T15_Defect_1460935_6()
         {
@@ -719,6 +729,7 @@ y = foo (x );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T16_Defect_1460623_4()
         {
@@ -755,6 +766,7 @@ z1 = a1.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T17_Defect_1459759()
         {
@@ -889,6 +901,7 @@ b = c + 3;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T19_Update_Class_Properties_Thru_Methods()
         {
@@ -982,6 +995,7 @@ b = foo ( a ) ;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         [Category("Failure")]
         public void T20_Defect_1461391_4()
@@ -1023,6 +1037,7 @@ t2 = y2[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         [Category("Failure")]
         public void T20_Defect_1461391_5()
@@ -1120,6 +1135,7 @@ c;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T22_Update_Class_Instance()
         {
@@ -1173,6 +1189,7 @@ dummy=1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method()
         {
@@ -1191,6 +1208,7 @@ a1.a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_2()
         {
@@ -1209,6 +1227,7 @@ a1.a = {2,3};
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_3()
         {
@@ -1229,6 +1248,7 @@ a1.a = null;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_4()
         {
@@ -1248,6 +1268,7 @@ a1.a = 3.5;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_5()
         {
@@ -1267,6 +1288,7 @@ a1.a = true;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T23_Update_Class_Instance_Using_Set_Method_6()
@@ -1294,6 +1316,7 @@ a1 = foo ( a1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T23_Update_Class_Instance_Using_Set_Method_7()
         {
@@ -1319,6 +1342,7 @@ dummy = foo ( a1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T24_Update_Variable_Type()
         {
@@ -1450,7 +1474,7 @@ e;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("ModifierBlock")] 
         public void T26_Defect_1463663()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -1479,6 +1503,7 @@ c = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Right_Assignment()
         {
             string code = @"
@@ -1502,6 +1527,7 @@ f = a3 + 1;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Function_Call()
         {
             string code = @"
@@ -1531,6 +1557,7 @@ f = a3 + 1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Function_Call_2()
         {
             string code = @"
@@ -1560,7 +1587,9 @@ x = [Associative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Different_Types()
         {
             string code = @"
@@ -1599,7 +1628,9 @@ x = [Associative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Different_Types_2()
         {
             string code = @"
@@ -1639,8 +1670,10 @@ x = [Associative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Function()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4385
@@ -1683,7 +1716,8 @@ x = foo ();
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("DSDefinedClass")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors ";
@@ -1736,8 +1770,9 @@ y = a1.a;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Inside_Class_2()
         {
 
@@ -1796,7 +1831,8 @@ y = { a1.a1, a1.a2, a1.a3, a1.a4, a1.a5, a1.a6, a1.a8 };
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("DSDefinedClass")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_Inside_Class_3()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
@@ -1890,7 +1926,8 @@ xa9 = ax.a9;
         }
 
         [Test]
-        [Category("Modifier Block")]
+        [Category("DSDefinedClass")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_Inside_Class_4()
         {
             string errmsg = "";//1465231 - Sprint 21 : rev 2298 : Modifier stacks are now being allowed in class constructors"; 
@@ -1955,6 +1992,7 @@ res = ax.foo(1);
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T27_Modifier_Stack_Cross_Reference()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack ");
@@ -1978,6 +2016,7 @@ b = {
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update()
         {
             string src = string.Format("{0}{1}", testPath, "T27_Modifier_Stack_Update.ds");
@@ -2026,6 +2065,7 @@ b = {
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_2()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2045,7 +2085,9 @@ b1 = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_Update_3()
         {
             string code = @"
@@ -2099,6 +2141,7 @@ z = a.x;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_4()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2140,6 +2183,7 @@ b2 = a;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Array_2()
         {
             //Assert.Fail("1465319 - sprint 21 : rev 2301 : update issue with modifier stack "); 
@@ -2160,6 +2204,7 @@ a = 4;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Array_3()
         {
             string code = @"
@@ -2188,6 +2233,7 @@ x = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_5()
         {
             string code = @"
@@ -2211,6 +2257,7 @@ y = 2;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Array_4()
         {
             //Assert.Fail("1465127 - Sprint 21 : [Design Issue] rev 2294 : Modifier stack syntax not supported in Imperative block ");
@@ -2245,7 +2292,9 @@ b = a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_Update_6()
         {
             string code = @"
@@ -2277,7 +2326,9 @@ y = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Inline_Condition()
         {
             string code = @"
@@ -2322,7 +2373,9 @@ x = a == 2 ? true : false;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T27_Modifier_Stack_With_Range_Expr()
         {
             string code = @"
@@ -2390,6 +2443,7 @@ a2 = 4;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T27_Modifier_Stack_With_Self_Updates()
         {
             string code = @"
@@ -2407,6 +2461,7 @@ a = {
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T30_Update_Global_Variables_Class()
         {
             // Assert.Fail("1465812 - Sprint 22 : rev 2362 : Global variables cannot be accessed from class scope ");
@@ -2436,6 +2491,7 @@ x = 3;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T30_Update_Global_Variables_Function()
         {
@@ -2500,6 +2556,7 @@ y = x;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777()
         {
@@ -2526,6 +2583,7 @@ c1 = b1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777_2()
         {
@@ -2544,6 +2602,7 @@ a1.a = 2; // expected b = 2; received : b = 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T31_Defect_1459777_3()
         {
@@ -2572,6 +2631,7 @@ c = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T31_Defect_1459777_4()
         {
@@ -2603,6 +2663,8 @@ z2 = z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_5()
         {
@@ -2631,6 +2693,8 @@ x = B.B(y);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
+        [Category("Failure")]
         [Category("Update")]
         public void T31_Defect_1459777_6()
         {
@@ -2664,6 +2728,7 @@ x1 = B.B( y );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T31_Defect_1459777_7()
         {
@@ -2692,6 +2757,7 @@ z3 = y3;";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777_8()
         {
@@ -2714,6 +2780,7 @@ x1.a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T31_Defect_1459777_9()
         {
@@ -2758,6 +2825,7 @@ z1 = y1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T33_Defect_1466107()
         {
@@ -2790,6 +2858,7 @@ a1.a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T33_Defect_1466107_2()
         {
@@ -2831,6 +2900,7 @@ dummy2 = foo2 ( a1 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327()
         {
@@ -2858,6 +2928,7 @@ x = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327_2()
         {
@@ -2888,6 +2959,7 @@ x = [Imperative]
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T34_Defect_DNL_1463327_3()
         {
@@ -2918,6 +2990,7 @@ t = 0.0..2.0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T34_Defect_DNL_1463327_4()
         {
@@ -2944,6 +3017,7 @@ t = 0.0..1.0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T35_Defect_DNL_1463700()
         {
@@ -2968,6 +3042,7 @@ x = a.foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T35_Defect_DNL_1463700_2()
         {
             //Assert.Fail("1467194 - Sprint 25 - rev 3207[Regression] Regressions created by array copy constructions ");
@@ -3007,6 +3082,7 @@ t3 = t1;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T36_Modifier_Block_Multiple_Updates()
         {
             string code = @"
@@ -3023,6 +3099,7 @@ a = { 2 => a1;
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T36_Modifier_Block_Multiple_Updates_2()
         {
             string code = @"
@@ -3058,6 +3135,7 @@ testArrayMember2 = c2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable()
         {
             string code = @"
@@ -3074,6 +3152,7 @@ b1 = 2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T38_Defect_1467059_Modifier_Stack_With_Undefined_Variable_2()
         {
             string code = @"
@@ -3094,6 +3173,7 @@ b1 = 2;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T39_Defect_1465319_Modifier_Stack_Update_Issue()
         {
             string code = @"
@@ -3114,6 +3194,7 @@ y1 = 5;";
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue()
         {
             string code = @"
@@ -3130,6 +3211,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] 
         public void T40_Defect_1467057_Modifier_Stack_Cross_Update_Issue_3()
         {
             //Assert.Fail("1467088 - Sprint23 : rev 2681 : Cross updates across 2 modifier stacks going into infinite loop");
@@ -3150,6 +3232,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue()
         {
             //Assert.Fail("1467088 - Sprint23 : rev 2681 : Cross updates across 2 modifier stacks going into infinite loop");
@@ -3168,6 +3251,7 @@ b = {
 
         [Test]
         [Category("Update")]
+        [Category("ModifierBlock")] 
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_2()
         {
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
@@ -3193,6 +3277,7 @@ a = {
         [Test]
         [Category("Update")]
         [Category("Failure")]
+        [Category("ModifierBlock")] 
         public void T40_Defect_1467088_Modifier_Stack_Cross_Update_Issue_3()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4087
@@ -3216,6 +3301,7 @@ b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T41_Defect_1467072_Class_Update()
         {
@@ -3249,6 +3335,7 @@ gf = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T41_Defect_1467072_Class_Update_2()
         {
@@ -3317,6 +3404,7 @@ d = a + b;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T44_Defect_1457029()
         {
@@ -3341,6 +3429,7 @@ x = c1.Pt;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T44_Defect_1457029_2()
         {
@@ -3445,6 +3534,7 @@ A = 1..10..2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T46_Defect_1467245_2()
         {
@@ -3486,6 +3576,7 @@ t[1] = a[1];
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T46_Defect_1467275_2()
         {
@@ -3512,6 +3603,7 @@ a = a1.a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Update")]
         public void T46_Defect_1467275_3()
         {
@@ -3581,6 +3673,7 @@ t = 2; // expected i = 12
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T49_Defect_1461985()
         {
@@ -3591,7 +3684,6 @@ class A
 x:int = 3; 
 }
 a = A.A();
-a.x = 2;
 b1 = a.x;
 c = [Imperative]
 {
@@ -3630,6 +3722,7 @@ totalLength = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T49_Defect_1461985_3()
         {
@@ -3663,6 +3756,7 @@ i = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T49_Defect_1461985_4()
         {
@@ -3708,6 +3802,7 @@ b = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T50_Defect_1466076()
         {
@@ -3773,6 +3868,7 @@ c = 10;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T52_Defect_1459478()
         {
@@ -3797,6 +3893,7 @@ test = x.x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T52_Defect_1459478_2()
         {
@@ -3829,6 +3926,7 @@ y = x.foo (a );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T53_Defect_1467086()
         {
@@ -3857,6 +3955,7 @@ test1 = test1 + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T53_Defect_1467086_2()
         {
@@ -3882,7 +3981,9 @@ a = a + 1;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T54_Defect_1467185_Modifier_Stack()
         {
             string errmsg = "";
@@ -3939,7 +4040,9 @@ a =
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T54_Defect_1467185_Modifier_Stack_2()
         {
             string errmsg = "DNL-1467375 Sprint 27 - Rev 4127 - in the atatched example the result is expected to be zipped .";
@@ -3984,7 +4087,9 @@ a8 = B.B(a1).bfoo(foo ( a1[a3] ) ); // works fine";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] 
         public void T54_Defect_1467185_Modifier_Stack_3()
         {
             string errmsg = "";//DNL-1467185 Modifier Blocks: Support to be added for exclusion of explicit variable prefixing of instance method/property/operator calls";
@@ -4026,6 +4131,7 @@ a =
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")] [Category("Failure")]
         public void T54_Defect_1467185_CrossLinked_Modifier_Blocks()
         {
             String code = @"
@@ -4073,7 +4179,6 @@ z = 2;";
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T56_Defect_1467342_Inline_Condition_replication()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4088
@@ -4087,6 +4192,7 @@ x = a > 1 ? a : null; ";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T57_Defect_1467399()
@@ -4115,6 +4221,7 @@ a1 = foo ( a1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T57_Defect_1467399_2()
         {
@@ -4141,37 +4248,7 @@ a1.a = -1;
         }
 
         [Test]
-        [Category("SmokeTest")]
-        public void T57_Defect_1467399_3()
-        {
-            String code = @"
-class A
-{
-    a : int[];            
-}
-def foo ( x1 : A)
-{
-    x1.a = -1;
-    return = x1;
-}
-def foo1 ( x1 : A)
-{
-    x1.a = 1;
-    return = x1;
-}
-a1 = A.A();
-a1 = foo ( a1);
-b = a1.a;
-a1 = foo1 ( a1);
-//received b =1 - 15,16,17,18,17 - correct 
- ";
-            Object n1 = null;
-            string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("b", new object[] { 1 });
-        }
-
-        [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T57_Defect_1467399_4()
         {
@@ -4243,6 +4320,7 @@ c = foo();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T59_Defect_1467418_Update_Across_Language_Blocks()
         {
@@ -4285,6 +4363,7 @@ i = 0;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope()
         {
@@ -4318,6 +4397,7 @@ y2 = { y1[0].a, y1[1].a };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_2()
         {
@@ -4337,16 +4417,17 @@ y2 = { y1[0].a, y1[1].a };
 {
     for ( i in y1)
     {
-        i.a = 0;        
+        i.a = 0;        // Modifying  the array y1 will re-execute y2
     }
 }
 ";
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("y2", new Object[] { 1, 2 });
+            thisTest.Verify("y2", new Object[] { 0, 0 });
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T60_Defect_14672007_Update_In_Class_From_Imperative_Scope_3()
         {
@@ -4383,6 +4464,7 @@ y2 = { y1[0].a, y1[1].a };
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T61_Defect_1467410_Update_In_Class_Properties()
         {
@@ -4423,6 +4505,7 @@ z2 = a.Z;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T61_Defect_1467410_Update_In_Class_Properties_2()
         {
@@ -4638,6 +4721,7 @@ a = 33;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_9()
         {
@@ -4753,6 +4837,7 @@ a = 3;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T62_update_wrongsequnce_1467484_13()
         {
@@ -4984,6 +5069,7 @@ b;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T64_1467161_Update_ssie_with_class_member_call_1()
         {
@@ -5018,6 +5104,7 @@ r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T64_1467161_Update_issue_with_class_member_call_2()
         {
@@ -5052,6 +5139,7 @@ r3 = b.foo(1);//after boo is called, r2 is updated, which is not expected
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy()
         {
@@ -5085,6 +5173,7 @@ pt3 = pt2.XPlusY();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_2()
         {
@@ -5124,6 +5213,7 @@ pt3 = pt2.XPlusY();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_3()
         {
@@ -5159,6 +5249,7 @@ pt3 = pt1.XPlusY(pt1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_4()
         {
@@ -5191,6 +5282,7 @@ pt3 = pt1.XPlusY(pt1);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T65_1467495_FalseCyclicDependancy_5()
         {
@@ -5563,6 +5655,7 @@ r = bar();
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T71_Cyclic_globalvariable_1467439()
         {
@@ -5959,6 +6052,7 @@ a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T74_TestUpdate_1467533()
@@ -6082,6 +6176,7 @@ b = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T75_TestUpdate_1467536()
         {
@@ -6357,8 +6452,7 @@ a = 2;
         }
 
         [Test]
-        [Category("SmokeTest")]
-        [Category("Failure")]
+        [Category("SmokeTest")]      
         public void T84_TestUpdate_Crosslangauge_1467513_3()
         {
             String code = @"
@@ -6383,7 +6477,6 @@ a = 2;
 
         [Test]
         [Category("SmokeTest")]
-        [Category("Failure")]
         public void T84_TestUpdate_Crosslangauge_1467513_4()
         {
             String code = @"
@@ -6410,6 +6503,7 @@ a = 2;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods()
         {
@@ -6440,6 +6534,7 @@ y = a1.foo( x1 );
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_2()
         {
@@ -6471,6 +6566,7 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_3()
         {
@@ -6501,6 +6597,7 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         [Category("Failure")]
         public void T85_1467452_update_using_class_methods_4()
@@ -6536,6 +6633,7 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_5()
         {
@@ -6571,6 +6669,7 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_6()
         {
@@ -6602,6 +6701,7 @@ x1 = 4;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T85_1467452_update_using_class_methods_7()
         {
@@ -6700,6 +6800,7 @@ x1 = 4;
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T88_1461985_Update_In_Nested_Blocks_2()
         {
@@ -6775,6 +6876,7 @@ test = b1.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T90_1467510_cyclic()
         {
@@ -6938,6 +7040,7 @@ test = b1.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T91_1467547_4()
         {
@@ -6967,6 +7070,7 @@ test = b1.y;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T91_1467547_5()
         {
@@ -7062,6 +7166,7 @@ a;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T92_Test_Update_Propagation_In_Self_Update_Thru_Inline_Condition()
         {

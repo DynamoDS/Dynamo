@@ -1,0 +1,19 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath=".\nsresolution.dyn" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="NamespaceResolutionTargetTest.Foo(21);" WorkspaceGuid="66a1e711-117a-4e72-81f9-d04546da0fc2">
+    <ModelGuid>e0968721-46c1-47bd-a3fb-66cc618e5279</ModelGuid>
+  </UpdateModelValueCommand>
+  <PausePlaybackCommand Tag="UpdateCBN" PauseDurationInMs="100" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="UndoUpdate" PauseDurationInMs="100" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>e0968721-46c1-47bd-a3fb-66cc618e5279</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="240" Y="228" DragOperation="0" />
+  <DragSelectionCommand X="241" Y="228" DragOperation="1" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="UndoCopyUpdate" PauseDurationInMs="100" />
+</Commands>

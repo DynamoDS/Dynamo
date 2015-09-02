@@ -92,7 +92,9 @@ namespace ProtoCore.Utils
 
             int myself = classNode.typeSystem.classTable.IndexOf(classNode.name);
             bool isInMemberFunctionContext = (classScope == myself) && (functionScope != ProtoCore.DSASM.Constants.kInvalidIndex);
-            bool isInStaticFunction = isInMemberFunctionContext && (classNode.vtable.procList[functionScope].isStatic);
+            bool isInStaticFunction = isInMemberFunctionContext && 
+                classNode.vtable.procList.Count > functionScope &&
+                classNode.vtable.procList[functionScope].isStatic;
 
             // Try for member function variables
             var blocks = GetAncestorBlockIdsOfBlock(blockId, codeblockList);

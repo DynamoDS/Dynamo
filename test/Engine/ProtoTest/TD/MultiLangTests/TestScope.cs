@@ -1012,8 +1012,8 @@ y = 1;
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
 
             Assert.IsTrue(mirror.GetValue("f").DsasmValue.IsNull);
-
-            Assert.IsTrue(mirror.GetValue("p").DsasmValue.IsNull);
+            
+            Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 2);
             Assert.IsTrue(mirror.GetValue("q").DsasmValue.IsNull);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 2);
             Assert.IsTrue((Int64)mirror.GetValue("y1").Payload == 3);
@@ -1030,19 +1030,19 @@ y = 1;
             string src = @"
 a = 5;
 b = 2 * a;
-sum;
+count;
 [Imperative] {
-	sum = 0;
+	count = 0;
 	arr = 0..b;
 	for (i  in arr) {
-		sum = sum + 1;
+		count = count + 1;
 	}
 }
 a = 10;
-// expected: sum = 21
-// result: sum = 11";
+// expected: count = 21
+// result: count = 11";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 11);
+            Assert.IsTrue((Int64)mirror.GetValue("count").Payload == 21);
 
         }
 
@@ -1807,6 +1807,7 @@ a = 10;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T051_Test_Identifier_Scope_01()
         {
@@ -1958,6 +1959,7 @@ def foo(@a:var)
 
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("SmokeTest")]
         public void T052_DNL_1467464()
         {

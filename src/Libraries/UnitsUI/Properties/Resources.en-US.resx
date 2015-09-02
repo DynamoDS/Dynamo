@@ -128,6 +128,9 @@
     <value>Imperial;Metric;Area;Project;units</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
+  <data name="EditHeader" xml:space="preserve">
+    <value>Edit...</value>
+  </data>
   <data name="LengthFromStringDescription" xml:space="preserve">
     <value>Enter a length.</value>
     <comment>Description for Length From String</comment>
@@ -144,7 +147,7 @@
     <comment>Description for Unit Types</comment>
   </data>
   <data name="UnitTypesSearchTags" xml:space="preserve">
-    <value>units</value>
+    <value>units;unittypes;</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="VolumeFromStringDescription" xml:space="preserve">

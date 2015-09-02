@@ -233,7 +233,7 @@
   <data name="CannotOpenFile" xml:space="preserve">
     <value>Your file cannot be opened</value>
   </data>
-  <data name="DisplayEnigineFailureMessageDescription" xml:space="preserve">
+  <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
     <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely "having great difficulties pulling itself together. It is "recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
 
 If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
@@ -286,7 +286,7 @@ Sorry about that.</value>
     <value>Loading node definition for "{0}" from: {1}</value>
   </data>
   <data name="NodeProblemEncountered" xml:space="preserve">
-    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:\n\n{0}</value>
+    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:</value>
   </data>
   <data name="OpeningHomeWorkspace" xml:space="preserve">
     <value>Opening home workspace {0}...</value>
@@ -417,11 +417,6 @@ Sorry about that.</value>
   <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
     <value>Duplicate migration type registered for {0}</value>
   </data>
-  <data name="ExceptionIsNotHeapCorruptionDescription" xml:space="preserve">
-    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better.
-
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
-  </data>
   <data name="FileCannotBeOpened" xml:space="preserve">
     <value>Your file cannot be opened.</value>
   </data>
@@ -524,7 +519,12 @@ value: bool = false</value>
     <value>Instance of a Custom Node</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false</value>
+    <value>A function parameter, use with custom nodes.
+
+You can specify the type and default value for parameter. E.g.,
+
+input : var[]..[]
+value : bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
     <value>Custom node definition is not loaded!</value>
@@ -594,7 +594,7 @@ value: bool = false</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
     <value>&lt;Click here to edit the group title&gt;</value>
-   </data>
+  </data>
   <data name="DefaultValue" xml:space="preserve">
     <value>Default value</value>
     <comment>Default value</comment>
@@ -602,5 +602,26 @@ value: bool = false</value>
   <data name="DefaultValueDisabled" xml:space="preserve">
     <value>(disabled)</value>
     <comment>Default value is disabled</comment>
+  </data>
+  <data name="SymbolSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+    <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
+  </data>
+  <data name="DefaultCustomNodeCategory" xml:space="preserve">
+    <value>Custom nodes</value>
+    <comment>Used for uncategorised custom nodes.</comment>
+  </data>
+  <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
+    <value>The folder '{0}' does not exist</value>
+    <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
+  </data>
+  <data name="CodeBlockSearchTags" xml:space="preserve">
+    <value>codeblock;</value>
+  </data>
+  <data name="NoBinFolder" xml:space="preserve">
+    <value>{0} contains a package without a bin folder.  Ignoring it.</value>
+  </data>
+  <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
+    <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
   </data>
 </root>

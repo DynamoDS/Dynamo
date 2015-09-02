@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 using Dynamo.Core;
@@ -19,10 +20,14 @@ namespace Dynamo
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences
     {
+        public const int DefaultMaxNumRecentFiles = 10;
         public static string DynamoTestPath = null;
         private string numberFormat;
         private string lastUpdateDownloadPath;
-        
+        private int maxNumRecentFiles;
+        public const string DefaultDateFormat = "MMMM dd, yyyy h:mm tt";
+        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
+
         // Variables of the settings that will be persistent
 
         #region Collect Information Settings
@@ -54,7 +59,7 @@ namespace Dynamo
         /// <summary>
         /// Should the background 3D preview be shown?
         /// </summary>
-        public bool FullscreenWatchShowing { get; set; }
+        public bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
         /// The decimal precision used to display numbers.
@@ -74,14 +79,35 @@ namespace Dynamo
         /// </summary>
         public int MaxNumRecentFiles
         {
-            get { return 10; }
-            set { }
+            get { return maxNumRecentFiles; }
+            set
+            {
+                if (value > 0)
+                {
+                    maxNumRecentFiles = value;
+                }
+                else
+                {
+                    maxNumRecentFiles = DefaultMaxNumRecentFiles;
+                }
+                RaisePropertyChanged("MaxNumRecentFiles");
+            }
         }
 
         /// <summary>
         /// A list of recently opened file paths.
         /// </summary>
         public List<string> RecentFiles { get; set; }
+
+        /// <summary>
+        /// A list of backup file paths.
+        /// </summary>
+        public List<string> BackupFiles { get; set; }
+
+        /// <summary>
+        /// A list of folders containing zero-touch nodes and custom nodes.
+        /// </summary>
+        public List<string> CustomPackageFolders { get; set; } 
 
         /// <summary>
         /// A list of packages used by the Package Manager to determine
@@ -114,6 +140,33 @@ namespace Dynamo
         /// </summary>
         public bool UseHardwareAcceleration { get; set; }
 
+        /// <summary>
+        /// This defines how long (in milliseconds) will the graph be automatically saved.
+        /// </summary>
+        public int BackupInterval { get; set; }
+
+        /// <summary>
+        /// This defines how many files will be backed up.
+        /// </summary>
+        public int BackupFilesCount { get; set; }
+
+        /// <summary>
+        /// Indicates if the user has accepted the terms of 
+        /// use for downloading packages from package manager.
+        /// </summary>
+        public bool PackageDownloadTouAccepted { get; set; }
+
+        /// <summary>
+        /// Indicates whether surface and solid edges will 
+        /// be rendered.
+        /// </summary>
+        public bool ShowEdges { get; set; }
+
+        /// Indicates the default state of the "Open in Manual Mode"
+        /// checkbox in OpenFileDialog
+        /// </summary>
+        public bool OpenFileInManualExecutionMode { get; set; }
+
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -129,10 +182,20 @@ namespace Dynamo
             ConsoleHeight = 0;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
-            FullscreenWatchShowing = true;
+            IsBackgroundPreviewActive = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
+            PackageDownloadTouAccepted = false;
+            maxNumRecentFiles = DefaultMaxNumRecentFiles;
+            ShowEdges = false;
+            OpenFileInManualExecutionMode = false;
+
+            BackupInterval = 60000; // 1 minute
+            BackupFilesCount = 1;
+            BackupFiles = new List<string>();
+
+            CustomPackageFolders = new List<string>();
         }
 
         /// <summary>
@@ -172,7 +235,7 @@ namespace Dynamo
         /// <returns>Whether file is saved or error occurred.</returns>
         public bool SaveInternal(string preferenceFilePath)
         {
-            if (!string.IsNullOrEmpty(DynamoTestPath))
+            if (!String.IsNullOrEmpty(DynamoTestPath))
             {
                 preferenceFilePath = DynamoTestPath;
             }
@@ -193,7 +256,7 @@ namespace Dynamo
         {
             var settings = new PreferenceSettings();
 
-            if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
+            if (String.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
                 return settings;
 
             try
@@ -206,6 +269,8 @@ namespace Dynamo
                 }
             }
             catch (Exception) { }
+
+            settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
 
             return settings;
         }

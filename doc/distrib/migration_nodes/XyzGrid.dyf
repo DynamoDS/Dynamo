@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.27348" X="0" Y="0" zoom="1" Description="This node represents an upgrade of the 0.6.3 XyzGrid node to 0.7.x" Category="Migration" Name="XyzGrid" ID="9215492a-4cb9-4ec1-a111-c18d7f6fd5b3">
+<Workspace Version="0.7.0.27348" X="0" Y="0" zoom="1" Description="This node represents an upgrade of the 0.6.3 XyzGrid node to 0.7.x" Category="Migration" Name="XyzGrid" IsVisibleInDynamoLibrary="false" ID="9215492a-4cb9-4ec1-a111-c18d7f6fd5b3">
   <Elements>
     <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5970a802-e70f-4173-a391-ac517cd0359a" nickname="Input" x="100" y="40" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Symbol value="x-count" />

@@ -1,0 +1,19 @@
+<Workspace Version="0.8.1.1046" X="2420.45223756781" Y="1976.77897765469" zoom="0.635281831135645" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <DSCoreNodesUI.ColorRange guid="72a66222-5a7d-4dce-b695-5e18b5a93bc3" type="DSCoreNodesUI.ColorRange" nickname="Color Range" x="-3277.12300863164" y="-3020.01644410094" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="23eadbe7-b9f0-4b23-a9dd-a7781e7f3213" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-3518" y="-2790" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a=Color.ByARGB(255,0,0,255);&#xA;b=Color.ByARGB(255,255,0,0);&#xA;colors={a,b};&#xA;indices={0,1};&#xA;1;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="cfbc8746-0d16-41e9-80d3-f94931753e97" type="Dynamo.Nodes.Watch" nickname="Watch" x="-3357.21929410253" y="-2736.2771538119" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch guid="04c3ecd3-7392-4cc9-b218-fe28278e6354" type="Dynamo.Nodes.Watch" nickname="Watch" x="-2954.24853773387" y="-2966.72605511023" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="72a66222-5a7d-4dce-b695-5e18b5a93bc3" start_index="0" end="04c3ecd3-7392-4cc9-b218-fe28278e6354" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="23eadbe7-b9f0-4b23-a9dd-a7781e7f3213" start_index="1" end="72a66222-5a7d-4dce-b695-5e18b5a93bc3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="23eadbe7-b9f0-4b23-a9dd-a7781e7f3213" start_index="3" end="72a66222-5a7d-4dce-b695-5e18b5a93bc3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="23eadbe7-b9f0-4b23-a9dd-a7781e7f3213" start_index="4" end="72a66222-5a7d-4dce-b695-5e18b5a93bc3" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

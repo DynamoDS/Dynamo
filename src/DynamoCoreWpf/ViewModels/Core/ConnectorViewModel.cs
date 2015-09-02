@@ -56,9 +56,10 @@ namespace Dynamo.ViewModels
             get { return 0; }
         }
 
+        //Changed the connectors ZIndex to 2. Groups have ZIndex of 1.
         public double ZIndex
         {
-            get { return 1; }
+            get { return 2; }
         }
 
         /// <summary>

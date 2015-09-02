@@ -38,19 +38,9 @@ namespace Dynamo.UI
         // Generic Constants
         public static readonly double PortHeightInPixels = 26;
 
-        // Grid Settings
-        public static readonly int GridSpacing = 100;
-        public static readonly int GridThickness = 2;
-
         // Canvas Control
         public static readonly double ZoomIncrement = 0.05;
 
-        // Node/geometry view buttons in the canvas
-        public static readonly double ButtonHeight = 30.0;
-
-        // Double Clicking
-        // Maximum distance allowed between first and second click to be accepted as a double click
-        public static readonly int DoubleClickAcceptableDistance = 10; // in pixel
         #endregion
 
         #region Tab Bar Configurations
@@ -155,7 +145,7 @@ namespace Dynamo.UI
 
         #region CodeBlockNode
 
-        public static readonly double CodeBlockPortHeightInPixels = 17.563333333333336;
+        public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly string HighlightingFile =
             "DesignScript.Resources.SyntaxHighlighting.xshd";
@@ -194,8 +184,8 @@ namespace Dynamo.UI
         #endregion
 
         #region Class button
-        public const int MaxLengthClassButtonTitle = 22;
-        public const int MaxLengthRowClassButtonTitle = 8; // How many characters can be in one row.
+        public const int MaxRowNumber = 2;
+        public const int MaxLengthRowClassButtonTitle = 9; // How many characters can be in one row.
         public const string TwoDots = "..";
         #endregion
 
@@ -219,7 +209,7 @@ namespace Dynamo.UI
 
         #endregion
 
-        #region StandardPanel
+        #region ClassInformationView
 
         public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
         public static string HeaderCreate = Resources.HeaderCreate;
@@ -227,11 +217,17 @@ namespace Dynamo.UI
         public static string HeaderQuery = Resources.HeaderQuery;
 
         #endregion
-    }
 
-    public class ResourceNames
-    {
-        public static readonly string FontResourceUri = "./UI/Fonts/#Open Sans";
-        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCoreWpf;component/UI/Images/";
+        #region InCanvasSearch
+
+        public const double InCanvasSearchTextBoxHeight = 40.0;
+
+        #endregion
+
+        #region Backup
+
+        public static string BackupFileNamePrefix = "backup";
+
+        #endregion
     }
 }

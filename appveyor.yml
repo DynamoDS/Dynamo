@@ -1,0 +1,11 @@
+version: 1.0.{build}
+
+platform: Any CPU
+
+configuration: Release
+
+build:
+  project: src/Dynamo.All.2013.sln
+  verbosity: normal
+  
+test: off

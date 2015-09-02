@@ -32,6 +32,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event EventHandler RequestPackagePathsDialog;
+        public virtual void OnRequestPackagePathsDialog(object sender, EventArgs e)
+        {
+            var handler = RequestPackagePathsDialog;
+            if (handler != null)
+                handler(sender, e);
+        }
+
         public event ImageSaveEventHandler RequestSaveImage;
         public virtual void OnRequestSaveImage(Object sender, ImageSaveEventArgs e)
         {
@@ -77,6 +85,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event RequestShowHideGalleryHandler RequestShowHideGallery;
+        public virtual void OnRequestShowHideGallery(bool showGallery)
+        {
+            if (RequestShowHideGallery != null)
+            {
+                RequestShowHideGallery(showGallery);
+            }
+        }
+
         public event RequestViewOperationHandler RequestViewOperation;
         public void OnRequestViewOperation(ViewOperationEventArgs e)
         {
@@ -84,6 +101,13 @@ namespace Dynamo.ViewModels
             {
                 RequestViewOperation(e);
             }
+        }
+
+        internal event Action RequestPresetsWarningPrompt;
+        private void OnRequestPresetWarningPrompt()
+        {
+            if (RequestPresetsWarningPrompt != null)
+                RequestPresetsWarningPrompt();
         }
 
     }

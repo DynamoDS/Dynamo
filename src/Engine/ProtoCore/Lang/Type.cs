@@ -93,13 +93,11 @@ namespace ProtoCore
         kTypeArray,
         kTypeDouble,
         kTypeInt,
-        kTypeDynamic,
         kTypeBool,
         kTypeChar,
         kTypeString,
         kTypeVar,
         kTypeVoid,
-        kTypeHostEntityID,
         kTypePointer,
         kTypeFunctionPointer,
         kTypeReturn,
@@ -138,7 +136,6 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.kTypeNull] = DSDefinitions.Keyword.Null;
                 primitiveTypeNames[PrimitiveType.kTypeVoid] = DSDefinitions.Keyword.Void;
                 primitiveTypeNames[PrimitiveType.kTypeArray] = DSDefinitions.Keyword.Array;
-                primitiveTypeNames[PrimitiveType.kTypeHostEntityID] = "hostentityid";
                 primitiveTypeNames[PrimitiveType.kTypePointer] = DSDefinitions.Keyword.PointerReserved;
                 primitiveTypeNames[PrimitiveType.kTypeFunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
                 primitiveTypeNames[PrimitiveType.kTypeReturn] = "return_reserved";
@@ -193,71 +190,43 @@ namespace ProtoCore
 
             ClassNode cnode;
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Array, size = 0, rank = 5, symbols = null, vtable = null, typeSystem = this };
-            /*cnode.coerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeChar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeString, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            */
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Array, rank = 5, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeArray;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeArray);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Double, size = 0, rank = 4, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Double, rank = 4, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceDoubleToIntScore);
             cnode.classId = (int)PrimitiveType.kTypeDouble;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeDouble);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Int, size = 0, rank = 3, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Int, rank = 3, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceIntToDoubleScore);
             cnode.classId = (int)PrimitiveType.kTypeInt;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeInt);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Bool, size = 0, rank = 2, symbols = null, vtable = null, typeSystem = this };
-            // if convert operator to method call, without the following statement
-            // a = true + 1 will fail, because _add expects two integers 
-            //cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Bool, rank = 2, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeBool;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeBool);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Char, size = 0, rank = 1, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Char, rank = 1, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeString, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
 
             cnode.classId = (int)PrimitiveType.kTypeChar;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeChar);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.String, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.String, rank = 0, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypeString;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeString);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Var, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
-            /*cnode.coerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeChar, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
-            cnode.coerceTypes.Add((int)PrimitiveType.kTypeString, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);*/
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Var, rank = 0, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeVar;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeVar);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Null, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Null, rank = 0, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
@@ -266,35 +235,21 @@ namespace ProtoCore
             cnode.classId = (int)PrimitiveType.kTypeNull;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeNull);
 
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Void, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Void, rank = 0, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeVoid;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeVoid);
 
-            //
-            //
-            cnode = new ClassNode { name = "hostentityid", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
-            cnode.classId = (int)PrimitiveType.kTypeHostEntityID;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeHostEntityID);
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.PointerReserved, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
-            // if convert operator to method call, without the following statement, 
-            // a = b.c + d.e will fail, b.c and d.e are resolved as pointer and _add method requires two integer
+            cnode = new ClassNode { name = DSDefinitions.Keyword.PointerReserved, rank = 0, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypePointer;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypePointer);
-            //
-            //
-            cnode = new ClassNode { name = DSDefinitions.Keyword.FunctionPointer, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+
+            cnode = new ClassNode { name = DSDefinitions.Keyword.FunctionPointer, rank = 0,typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypeFunctionPointer;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeFunctionPointer);
 
-            //
-            //
-            cnode = new ClassNode { name = "return_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = "return_reserved", rank = 0, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeReturn;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeReturn);
         }
@@ -440,7 +395,6 @@ namespace ProtoCore
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 
-                var hpe = rmem.Heap.GetHeapElement(sv);
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one
@@ -463,7 +417,8 @@ namespace ProtoCore
                     }
                 }
 
-                return ArrayUtils.CopyArray(sv, newTargetType, runtimeCore);
+                var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+                return array.CopyArray(newTargetType, runtimeCore);
             }
 
             if (!sv.IsArray && !sv.IsNull &&
@@ -480,7 +435,7 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
-                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue });
                     return newSv;
                 }
                 else
@@ -494,7 +449,7 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, runtimeCore);
-                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue });
                     return newSv;
                 }
             }
@@ -509,8 +464,8 @@ namespace ProtoCore
             switch (targetType.UID)
             {
                 case (int)PrimitiveType.kInvalidType:
-                    Validity.Assert(false, "Can't convert invalid type");
-                    break;
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidType, Resources.kInvalidType);
+                    return StackValue.Null;
 
                 case (int)PrimitiveType.kTypeBool:
                     return sv.ToBoolean(runtimeCore);
@@ -532,13 +487,6 @@ namespace ProtoCore
                         return StackValue.Null;
                     }
                     return sv;
-
-                case (int)PrimitiveType.kTypeHostEntityID:
-                    {
-                        StackValue newSV = sv.ShallowClone();
-                        newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeHostEntityID };
-                        return newSV;
-                    }
 
                 case (int)PrimitiveType.kTypeInt:
                     {
@@ -590,7 +538,8 @@ namespace ProtoCore
 
                 case (int)PrimitiveType.kTypeArray:
                     {
-                        return ArrayUtils.CopyArray(sv, targetType, runtimeCore);
+                        var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
+                        return array.CopyArray(targetType, runtimeCore);
                     }
 
                 default:

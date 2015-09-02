@@ -1,18 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Core;
+using System.Windows.Input;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.Search
 {
-    public class SearchCategory
+    public class SearchCategory : NotificationObject, ISearchEntryViewModel
     {
         private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
 
         public string Name { get; private set; }
+
+        private bool isExpanded;
+        public bool IsExpanded { get { return isExpanded; } }
+
+        private bool isTopCategory;
+        public bool IsTopCategory { get { return isTopCategory; } }
 
         // TODO: classes functionality.
         //       All functionality marked as 'classes functionality'
@@ -28,11 +38,23 @@ namespace Dynamo.Search
             get { return memberGroups; }
         }
 
-        internal SearchCategory(string name)
+        public ICommand ClickedCommand { get; private set; }
+
+        private void OnClicked(object obj)
+        {
+            isExpanded = !isExpanded;
+            RaisePropertyChanged("IsExpanded");
+        }
+
+        internal SearchCategory(string name, bool isTopResult = false)
         {
             Name = name;
             classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
+            isExpanded = true;
+            isTopCategory = isTopResult;
+
+            ClickedCommand = new DelegateCommand(OnClicked);
         }
 
         internal void AddMemberToGroup(NodeSearchElementViewModel memberNode)
@@ -98,6 +120,32 @@ namespace Dynamo.Search
             // TODO(Vladimir): classes functionality.
             //Classes.ToList().ForEach(x => x.RecursivelySort());
             MemberGroups.ToList().ForEach(x => x.Sort());
+        }
+
+
+        public bool Visibility
+        {
+            get { return true; }
+        }
+
+        public bool IsSelected
+        {
+            get { return false; }
+        }
+
+        public string Description
+        {
+            get { return String.Empty; }
+        }
+
+        public ElementTypes ElementType
+        {
+            get { return ElementTypes.None; }
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Dynamo.Nodes
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("CodeBlockDescription",typeof(Dynamo.Properties.Resources))]
+    [NodeSearchTags("CodeBlockSearchTags", typeof(Dynamo.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {
@@ -41,7 +42,7 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
+        public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
         {
@@ -59,17 +60,17 @@ namespace Dynamo.Nodes
             this.ElementResolver = new ElementResolver();
         }
 
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
+        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
+            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices)
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
-            this.ElementResolver = new ElementResolver();
+            this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
@@ -276,19 +277,15 @@ namespace Dynamo.Nodes
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
 
-            // Lookup namespace resolution map if available and initialize new instance of ElementResolver
-            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
-            ElementResolver = new ElementResolver(resolutionMap);
-
             ProcessCodeDirect();
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             //Do not build if the node is in error.
             if (State == ElementState.Error)
             {
-                return null;
+                return Enumerable.Empty<AssociativeNode>();
             }
 
             var resultNodes = new List<AssociativeNode>();
@@ -302,7 +299,8 @@ namespace Dynamo.Nodes
                     (ident, rhs) =>
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
-                        MapIdentifiers(identNode);
+                        if (context != AstBuilder.CompilationContext.NodeToCode)
+                            MapIdentifiers(identNode);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
                 resultNodes.AddRange(initStatments);
@@ -310,14 +308,26 @@ namespace Dynamo.Nodes
 
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                MapIdentifiers(astNode);
+                if (context != AstBuilder.CompilationContext.NodeToCode)
+                    MapIdentifiers(astNode);
                 resultNodes.Add(astNode as AssociativeNode);
             }
 
             return resultNodes;
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int portIndex)
+        /// <summary>
+        /// For code block nodes, each output identifier of an output port is mapped.
+        /// For an example, "p = 1" would have its internal identifier renamed to 
+        /// "pXXXX", where "XXXX" is the GUID of the code block node. This mapping is 
+        /// done to ensure the uniqueness of the output variable name.
+        /// </summary>
+        /// <param name="portIndex">Output port index</param>
+        /// <param name="forRawName">Set this parameter to true to retrieve the 
+        /// original identifier name "p". If this parameter is false, the mapped 
+        /// identifer name "pXXXX" is returned instead.</param>
+        /// <returns></returns>
+        private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
         {
             if (State == ElementState.Error)
                 return null;
@@ -354,8 +364,21 @@ namespace Dynamo.Nodes
 
             var identNode = binExprNode.LeftNode as IdentifierNode;
             var mappedIdent = NodeUtils.Clone(identNode);
-            MapIdentifiers(mappedIdent);
+
+            if (!forRawName)
+                MapIdentifiers(mappedIdent);
+
             return mappedIdent as IdentifierNode;
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int portIndex)
+        {
+            return GetAstIdentifierForOutputIndexInternal(portIndex, false);
+        }
+
+        public IdentifierNode GetRawAstIdentifierForOutputIndex(int portIndex)
+        {
+            return GetAstIdentifierForOutputIndexInternal(portIndex, true);
         }
 
         #endregion
@@ -550,30 +573,17 @@ namespace Dynamo.Nodes
             if (allDefs.Any() == false)
                 return;
 
-            double prevPortBottom = 0.0;
             foreach (var def in allDefs)
             {
-                var logicalIndex = def.Value - 1;
-
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
 
-                double portCoordsY = Formatting.INITIAL_MARGIN;
-                portCoordsY += logicalIndex * Configurations.CodeBlockPortHeightInPixels;
-
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
-                    VerticalMargin = portCoordsY - prevPortBottom,
+                    LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockPortHeightInPixels
                 });
-
-                // Since we compute the "delta" between the top of the current 
-                // port to the bottom of the previous port, we need to record 
-                // down the bottom coordinate value before proceeding to the next 
-                // port.
-                // 
-                prevPortBottom = portCoordsY + Configurations.CodeBlockPortHeightInPixels;
             }
         }
 

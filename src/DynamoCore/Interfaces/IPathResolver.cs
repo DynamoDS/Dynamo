@@ -60,6 +60,11 @@ namespace Dynamo.Interfaces
     public interface IPathManager
     {
         /// <summary>
+        /// The directory in which DynamoCore.dll is guaranteed to be found.
+        /// </summary>
+        string DynamoCoreDirectory { get; }
+
+        /// <summary>
         /// The local directory that contains user specific data files.
         /// </summary>
         string UserDataDirectory { get; }
@@ -70,9 +75,20 @@ namespace Dynamo.Interfaces
         string CommonDataDirectory { get; }
 
         /// <summary>
-        /// The local directory that contains custom nodes created by the user.
+        /// The default directory that contains custom nodes created by the user.
         /// </summary>
-        string UserDefinitions { get; }
+        string DefaultUserDefinitions { get; }
+
+        /// <summary>
+        /// Directories from where custom nodes are to be loaded. The implementor
+        /// of this interface method should always guarantee that a non-empty 
+        /// list is returned, and that the first entry represents the default 
+        /// custom node directory. Custom nodes created are stored in the
+        /// default directory, which is specific to the current user. Changes to
+        /// custom nodes may or may not be saved to their current location depeding
+        /// on write access.
+        /// </summary>
+        IEnumerable<string> DefinitionDirectories { get; }
 
         /// <summary>
         /// The local directory that contains custom nodes created by all users.
@@ -86,10 +102,30 @@ namespace Dynamo.Interfaces
         string LogDirectory { get; }
 
         /// <summary>
-        /// The packages directory, which contains pacakages downloaded through
+        /// The default directory for saving packages downloaded through
         /// the package manager. This directory is specific to the current user.
         /// </summary>
-        string PackagesDirectory { get; }
+        string DefaultPackagesDirectory { get; }
+
+        /// <summary>
+        /// Directories from where packages are to be loaded. The implementor
+        /// of this interface method should always guarantee that a non-empty 
+        /// list is returned, and that the first entry represents the default 
+        /// package directory. Packages downloaded through package manager are 
+        /// stored in the default package directory, which is specific to the 
+        /// current user.
+        /// </summary>
+        IEnumerable<string> PackagesDirectories { get; }
+
+        /// <summary>
+        /// The directory, which contains ExtensionDefinition .xml files
+        /// </summary>
+        string ExtensionsDirectory { get; }
+
+        /// <summary>
+        /// The directory, which contains ViewExtensionDefinition.xml files
+        /// </summary>
+        string ViewExtensionsDirectory { get; }
 
         /// <summary>
         /// The root directory where all sample files are stored. This directory
@@ -98,10 +134,21 @@ namespace Dynamo.Interfaces
         string SamplesDirectory { get; }
 
         /// <summary>
+        /// The directory where the automatically saved files will be stored.
+        /// </summary>
+        string BackupDirectory { get; }
+
+        /// <summary>
         /// Full path to the preference xml file. This setting file is specific 
         /// to the current user.
         /// </summary>
         string PreferenceFilePath { get; }
+
+        /// <summary>
+        /// Full path to the GalleryContent xml file. The file is located in
+        /// the AppData/Dynamo/version/locale/
+        /// </summary>
+        string GalleryFilePath { get; }
 
         /// <summary>
         /// Folders in which node assemblies can be located.
@@ -143,5 +190,15 @@ namespace Dynamo.Interfaces
         /// <returns>Returns true if the requested file can be located, or false
         /// otherwise.</returns>
         bool ResolveLibraryPath(ref string library);
+
+        /// <summary>
+        /// Given an initial RTF document file name, this method returns the 
+        /// absolute path of the file, if one exists.
+        /// </summary>
+        /// <param name="document">The name of the RTF file. This argument cannot 
+        /// be null or empty.</param>
+        /// <returns>Returns true if the requested document can be located, or 
+        /// false otherwise.</returns>
+        bool ResolveDocumentPath(ref string document);
     }
 }

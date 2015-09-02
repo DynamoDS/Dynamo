@@ -172,7 +172,8 @@ namespace ProtoScript.Runners
             if (changeSet.ForceExecuteASTList.Count > 0)
             {
                 // Mark all graphnodes dirty which are associated with the force exec ASTs
-                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
+(runtimeCore, changeSet.ForceExecuteASTList);
                 Validity.Assert(firstDirtyNode != null);
 
                 // If the only ASTs to execute are force exec, then set the entrypoint here.
@@ -226,7 +227,7 @@ namespace ProtoScript.Runners
                 AssociativeNode node = modifiedNodes[0];
 
                 StackValue sv = GetStackValueForRuntime(node);
-                int startPC = runtimeCore.SetValue((node as BinaryExpressionNode).OriginalAstID, sv);
+                int startPC = runtimeCore.SetValue(modifiedNodes, sv);
                 Validity.Assert(startPC != Constants.kInvalidIndex);
                 runtimeCore.SetStartPC(startPC);
             }
@@ -1278,7 +1279,7 @@ namespace ProtoScript.Runners
         /// </summary>
         private void CreateRuntimeCore()
         {
-            runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap);
+            runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap, runnerCore.Options);
             runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
         }
 
@@ -1724,6 +1725,12 @@ namespace ProtoScript.Runners
             runnerCore.DSExecutable.UpdatedSymbols.Clear();
         }
 
+        private void ForceGC()
+        {
+            var gcRoots = runtimeCore.CurrentExecutive.CurrentDSASMExec.CollectGCRoots();
+            runtimeCore.RuntimeMemory.Heap.FullGC(gcRoots, runtimeCore.CurrentExecutive.CurrentDSASMExec);
+        }
+
         private void ApplyUpdate()
         {
             if (ProtoCore.AssociativeEngine.Utils.IsGlobalScopeDirty(runnerCore.DSExecutable))
@@ -1732,6 +1739,7 @@ namespace ProtoScript.Runners
                 runnerCore.Options.ApplyUpdate = true;
                 Execute(true);
             }
+            ForceGC();
         }
 
         /// <summary>
@@ -1939,6 +1947,10 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
+            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
+            if (runtimeCore == null)
+                return ret;
+
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
             var warnings = runtimeCore.RuntimeStatus
@@ -1947,7 +1959,6 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
             foreach (var w in warnings)
             {
                 Guid guid = w.FirstOrDefault().GraphNodeGuid;
@@ -1963,6 +1974,10 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings()
         {
+            var ret = new Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>>();
+            if (runnerCore == null)
+                return ret;
+
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
             var warnings = runnerCore.BuildStatus
@@ -1971,7 +1986,6 @@ namespace ProtoScript.Runners
                                      .OrderBy(w => w.GraphNodeGuid)
                                      .GroupBy(w => w.GraphNodeGuid);
 
-            var ret = new Dictionary<Guid, List<ProtoCore.BuildData.WarningEntry>>();
             foreach (var w in warnings)
             {
                 Guid guid = w.FirstOrDefault().GraphNodeGuid;

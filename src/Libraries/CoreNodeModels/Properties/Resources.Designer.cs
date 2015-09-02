@@ -151,6 +151,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to colorrange;.
+        /// </summary>
+        internal static string ColorRangeSearchTags {
+            get {
+                return ResourceManager.GetString("ColorRangeSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Combinator.
         /// </summary>
         internal static string CombinatorPortDataCombToolTip {
@@ -223,6 +232,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a DateTime object from a formatted date and time string. Date and time must be of the format &quot;April 12, 1977 12:00 PM&quot;.
+        /// </summary>
+        internal static string DateTimeDescription {
+            get {
+                return ResourceManager.GetString("DateTimeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a directory object from a path..
         /// </summary>
         internal static string DirectoryFromPathDescription {
@@ -277,6 +295,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to directorypath;filepath;.
+        /// </summary>
+        internal static string DirectoryPathSearchTags {
+            get {
+                return ResourceManager.GetString("DirectoryPathSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a number..
         /// </summary>
         internal static string DoubleInputNodeDescription {
@@ -304,11 +331,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to double;number;float;integer;slider;numberslider;.
+        /// </summary>
+        internal static string DoubleSliderSearchTags {
+            get {
+                return ResourceManager.GetString("DoubleSliderSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected {0}.
         /// </summary>
         internal static string DropDownPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("DropDownPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Convert;Units;Length;Area;Volume;convertbetweenunits;.
+        /// </summary>
+        internal static string DynamoConvertSearchTags {
+            get {
+                return ResourceManager.GetString("DynamoConvertSearchTags", resourceCulture);
             }
         }
         
@@ -363,6 +408,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string FilePathDescription {
             get {
                 return ResourceManager.GetString("FilePathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to filepath;.
+        /// </summary>
+        internal static string FilePathSearchTags {
+            get {
+                return ResourceManager.GetString("FilePathSearchTags", resourceCulture);
             }
         }
         
@@ -520,6 +574,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to integerslider;.
+        /// </summary>
+        internal static string IntegerSliderSearchTags {
+            get {
+                return ResourceManager.GetString("IntegerSliderSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is an obsolete node.
         /// </summary>
         internal static string LegacyNodeDescription {
@@ -570,6 +633,15 @@ namespace DSCoreNodesUI.Properties {
         internal static string ListCreateDescription {
             get {
                 return ResourceManager.GetString("ListCreateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Index #{0}.
+        /// </summary>
+        internal static string ListCreateInPortToolTip {
+            get {
+                return ResourceManager.GetString("ListCreateInPortToolTip", resourceCulture);
             }
         }
         
@@ -745,11 +817,29 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to numberrange;numbersequence;.
+        /// </summary>
+        internal static string NumberRangeSearchTags {
+            get {
+                return ResourceManager.GetString("NumberRangeSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a sequence of numbers..
         /// </summary>
         internal static string NumberSequenceDescription {
             get {
                 return ResourceManager.GetString("NumberSequenceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to numbersequence;.
+        /// </summary>
+        internal static string NumberSequenceSearchTags {
+            get {
+                return ResourceManager.GetString("NumberSequenceSearchTags", resourceCulture);
             }
         }
         
@@ -970,6 +1060,96 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Curve.
+        /// </summary>
+        internal static string SelectionEdgeOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionEdgeOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curves.
+        /// </summary>
+        internal static string SelectionEdgesOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionEdgesOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Element.
+        /// </summary>
+        internal static string SelectionElementOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionElementOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Elements.
+        /// </summary>
+        internal static string SelectionElementsOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionElementsOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Surface.
+        /// </summary>
+        internal static string SelectionFaceOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionFaceOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Surfaces.
+        /// </summary>
+        internal static string SelectionFacesOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionFacesOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing selected..
+        /// </summary>
+        internal static string SelectionNodeNothingSelected {
+            get {
+                return ResourceManager.GetString("SelectionNodeNothingSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select something in the model..
+        /// </summary>
+        internal static string SelectionNodeSugestion {
+            get {
+                return ResourceManager.GetString("SelectionNodeSugestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Point.
+        /// </summary>
+        internal static string SelectionPointOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionPointOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Points.
+        /// </summary>
+        internal static string SelectionPointsOutputPortName {
+            get {
+                return ResourceManager.GetString("SelectionPointsOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected elements..
         /// </summary>
         internal static string SelectionPortDataResultToolTip {
@@ -1006,6 +1186,24 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A numeric value for conversion..
+        /// </summary>
+        internal static string UnitNodeFromPortTooltip {
+            get {
+                return ResourceManager.GetString("UnitNodeFromPortTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A converted numeric value..
+        /// </summary>
+        internal static string UnitNodeToPortToolTip {
+            get {
+                return ResourceManager.GetString("UnitNodeToPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Visualize the output of node..
         /// </summary>
         internal static string WatchDescription {
@@ -1024,7 +1222,7 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to image;inspect image;pixels;display;panel;.
+        ///   Looks up a localized string similar to image;inspect image;pixels;display;panel;watchimage;.
         /// </summary>
         internal static string WatchImageSearchTags {
             get {

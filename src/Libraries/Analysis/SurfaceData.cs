@@ -1,49 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
-using System.Dynamic;
 using System.Linq;
-using System.Net.Configuration;
-using System.Text;
-using System.Threading;
-
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
-
-using DSCore;
-
-using MIConvexHull;
-
-using Tessellation;
-using Tessellation.Adapters;
-
+using Dynamo.Models;
 namespace Analysis
 {
     /// <summary>
     /// A class for storing structured surface analysis data.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public class SurfaceData : ISurfaceData<UV, double>, IGraphicItem
+    public class SurfaceData : ISurfaceData<UV, double>
     {
-        private Color[,] colorMap ;
-        private const int COLOR_MAP_WIDTH = 100;
-        private const int COLOR_MAP_HEIGHT = 100;
-
         /// <summary>
         /// The surface which contains the locations.
         /// </summary>
+        [NodeObsolete("SurfaceObsolete", typeof(Properties.Resources))]
         public Surface Surface { get; set; }
 
         /// <summary>
         /// A list of UV locations on the surface.
         /// </summary>
+        [NodeObsolete("ValueLocationsObsolete", typeof(Properties.Resources))]
         public IEnumerable<UV> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of lists of doubles.
         /// </summary>
+        [NodeObsolete("ValueSurfaceObsolete", typeof(Properties.Resources))]
         public IList<double> Values { get; internal set; }
 
         protected SurfaceData(
@@ -53,8 +38,6 @@ namespace Analysis
             //CalculationLocations = CullCalculationLocations(surface, calculationLocations);
             ValueLocations = valueLocations;
             Values = values;
-
-            colorMap = CreateColorMap();
         }
 
         /// <summary>
@@ -63,6 +46,7 @@ namespace Analysis
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
         /// <returns></returns>
+        [NodeObsolete("BySurfacePointObsolete", typeof(Properties.Resources))]
         public static SurfaceData BySurfaceAndPoints(Surface surface, IEnumerable<UV> uvs)
         {
             if (surface == null)
@@ -89,6 +73,7 @@ namespace Analysis
         /// <param name="surface">The surface which contains the locations.</param>
         /// <param name="uvs">A list of UV locations on the surface.</param>
         /// <param name="values">A list of double values.</param>
+        [NodeObsolete("BySurfacePointsAndValues", typeof(Properties.Resources))]
         public static SurfaceData BySurfacePointsAndValues(Surface surface, IEnumerable<UV> uvs, IList<double> values)
         {
             if (surface == null)
@@ -147,66 +132,7 @@ namespace Analysis
             return pts;
         }
 
-        private Color[,] CreateColorMap()
-        {
-            if (Values == null) return null;
-
-            // Find the minimum and the maximum for results
-            var max = Values.Max();
-            var min = Values.Min();
-
-            var colorRange = Utils.CreateAnalyticalColorRange();
-
-            // If the values are all the same, ex. max-min == 0.0,
-            // then return the color at the top of the range. Otherwise,
-            // return the color value at the specified parameter.
-            var analysisColors = Values.Select(v => ((max-min) == 0.0 ? colorRange.GetColorAtParameter(1): colorRange.GetColorAtParameter((v - min) / (max - min)))).ToList();
-
-            var colorRange2D = ColorRange2D.ByColorsAndParameters(analysisColors, ValueLocations.ToList());
-            return colorRange2D.CreateColorMap(COLOR_MAP_WIDTH, COLOR_MAP_HEIGHT);
-        }
-
         #endregion
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
-        {
-            if (!Values.Any() || Values == null)
-            {
-                return;
-            }
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            DelaunayTesselate(Surface, package, 30, 30, ValueLocations);
-
-            DebugTime(sw, "Ellapsed for tessellation.");
-
-            var colorCount = 0;
-            var uvCount = 0;
-
-            for (var i = 0; i < package.TriangleVertices.Count; i += 3)
-            {
-                var uvu = package.TriangleUVs[uvCount];
-                var uvv = package.TriangleUVs[uvCount + 1];
-
-                var uu = (int)(uvu * (COLOR_MAP_WIDTH - 1));
-                var vv = (int)(uvv * (COLOR_MAP_HEIGHT - 1));
-                var color = colorMap[uu,vv];
-
-                package.TriangleVertexColors[colorCount] = color.Red;
-                package.TriangleVertexColors[colorCount + 1] = color.Green;
-                package.TriangleVertexColors[colorCount + 2] = color.Blue;
-                package.TriangleVertexColors[colorCount + 3] = color.Alpha;
-
-                colorCount += 4;
-                uvCount += 2;
-            }
-
-            DebugTime(sw, "Ellapsed for setting colors on mesh.");
-            sw.Stop();
-        }
 
         private static void DebugTime(Stopwatch sw, string message)
         {
@@ -217,159 +143,247 @@ namespace Analysis
         }
 
         /// <summary>
-        /// This method uses the MIConvexHull Delaunay triangulator to create a 
-        /// Delaunay tessellation of a given u and v distribution on the surface.
-        /// It adds to this tessellation all the points on the surface's trim
-        /// curves. Triangles are then deleted from the tessellation based on whether
-        /// the sum of their vertices' distances from the surface are greater than a
-        /// threshold.
+        /// This method constructs a surface through the UV locations,
+        /// converting UVs to Points in the 0,0->1,1 domain. This surface is used
+        /// to calculate gradient values at positions on a grid specified by width
+        /// and height. The Z coordinate of the created points is set to the normalized value 
+        /// associated with that UV locaton. Points are then found on the surface from UVs,
+        /// in a grid of the width and height provided. The Z component of the 
+        /// points is then stored in the map.
         /// </summary>
-        /// <param name="surface">The surface on which to apply the tessellation.</param>
-        /// <param name="package">The IRenderPackage object into which the graphics data will be pushed.</param>
-        /// <param name="uDiv">The number of divisions of the grid on the surface in the U direction.</param>
-        /// <param name="vDiv">The number of divisions of the grid on the surface in the V direction.</param>
-        private static void DelaunayTesselate(Surface surface, IRenderPackage package, int uDiv, int vDiv, IEnumerable<UV> additionalUVs)
-        {
-            var uvs = new List<UV>();
-            for (var i = 0; i <= uDiv; i += 1)
-            {
-                for (var j = 0; j <= vDiv; j += 1)
-                {
-                    var u = (double)i / uDiv;
-                    var v = (double)j / vDiv;
-                    var uv = UV.ByCoordinates(u, v);
-                    uvs.Add(uv);
-                }
-            }
+        /// <param name="width">The width of the value map.</param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        //public double[][] GetValueMap(int width, int height)
+        //{
+        //    const int MinPointCount = 3;
+        //    const double DefaultPointSpacing = 1 / ((double)MinPointCount - 1);
 
-            uvs.AddRange(additionalUVs);
+        //    if (!Values.Any())
+        //    {
+        //        return new double[0][];
+        //    }
 
-            var curves = surface.PerimeterCurves();
-            var coords = GetEdgeCoordinates(curves, 100, surface);
-            curves.ForEach(c=>c.Dispose());
+        //    var min = Values.Min();
+        //    var max = Values.Max();
 
-            var verts = uvs.Select(Vertex2.FromUV).Concat(coords.Select(Vertex2.FromUV)).ToList();
-            var config = new TriangulationComputationConfig
-            {
-                PointTranslationType = PointTranslationType.TranslateInternal,
-                PlaneDistanceTolerance = 0.000001,
-                // the translation radius should be lower than PlaneDistanceTolerance / 2
-                PointTranslationGenerator = TriangulationComputationConfig.RandomShiftByRadius(0.0000001, 0)
-            };
+        //    var domain = max - min;
 
-            var triangulation = DelaunayTriangulation<Vertex2, Cell2>.Create(verts, config);
+        //    if (min == max)
+        //    {
+        //        domain = Math.Abs(max);
+        //    }
 
-            foreach (var cell in triangulation.Cells)
-            {
-                var v1 = cell.Vertices[0].AsVector();
-                var pt1 = surface.PointAtParameter(v1.X, v1.Y);
-                var n1 = surface.NormalAtParameter(v1.X, v1.Y);
+        //    // Normalize the values in the 0->1 range
+        //    var normalizedValues = Values.Select(v => (v - min)/ domain);
 
-                var v2 = cell.Vertices[1].AsVector();
-                var pt2 = surface.PointAtParameter(v2.X, v2.Y);
-                var n2 = surface.NormalAtParameter(v2.X, v2.Y);
+        //    // Create points at locations.
+        //    var zip = ValueLocations.Zip(normalizedValues, (uv, value) => Point.ByCoordinates(uv.U,uv.V,value));
 
-                var v3 = cell.Vertices[2].AsVector();
-                var pt3 = surface.PointAtParameter(v3.X, v3.Y);
-                var n3 = surface.NormalAtParameter(v3.X, v3.Y);
+        //    // Group the points by their x coordinate. Then order,
+        //    // the inner groups by y. 
+        //    var pointGroups = zip.
+        //        GroupBy(pt => pt.X).
+        //        OrderBy(group => group.First().X).
+        //        Select(group=>group.OrderBy(pt=>pt.Y));
 
-                // Calculate the aggregate distance of all vertex 
-                // locations from the surface. Triangles not on the surface
-                // will have a higher aggregate value.
-                var sumDist = pt1.DistanceTo(surface) + pt2.DistanceTo(surface) + pt3.DistanceTo(surface);
-                if (sumDist > 0.05)
-                {
-                    continue;
-                }
+        //    // x - Value location provided
+        //    // o - Value location added to 'square' the grid
+        //    //
+        //    // o-o-o----o-o
+        //    // ----x-------
+        //    // --x------x--
+        //    // o-o-o----o-o
 
-                package.PushTriangleVertex(pt1.X, pt1.Y, pt1.Z);
-                package.PushTriangleVertexNormal(n1.X, n1.Y, n1.Z);
-                package.PushTriangleVertexUV(v1.X, v1.Y);
-                package.PushTriangleVertexColor(0, 0, 0, 255);
+        //    // Project groups to a List<List<Tuple<UV,double>>
+        //    var pointLists = pointGroups.Select(g => g.ToList()).ToList();
 
-                package.PushTriangleVertex(pt2.X, pt2.Y, pt2.Z);
-                package.PushTriangleVertexNormal(n2.X, n2.Y, n2.Z);
-                package.PushTriangleVertexUV(v2.X, v2.Y);
-                package.PushTriangleVertexColor(0, 0, 0, 255);
+        //    // Square any rows that aren't square
+        //    foreach (var pointList in pointLists)
+        //    {
+        //        var vMin = pointList.First().Y;
+        //        var vMax = pointList.Last().Y;
 
-                package.PushTriangleVertex(pt3.X, pt3.Y, pt3.Z);
-                package.PushTriangleVertexNormal(n3.X, n3.Y, n3.Z);
-                package.PushTriangleVertexUV(v3.X, v3.Y);
-                package.PushTriangleVertexColor(0, 0, 0, 255);
+        //        var u = pointList.First().X;
+        //        var v = pointList.First().Y;
 
-                package.PushLineStripVertex(pt1.X, pt1.Y, pt1.Z);
-                package.PushLineStripVertex(pt2.X, pt2.Y, pt2.Z);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexCount(2);
+        //        // If 0,0 0,1 1,0 1,1 continue
+        //        if (u == 0.0 && (v == 0.0 || v==1.0) ||
+        //            u==1.0 && (v==0.0||v==1.0))
+        //        {
+        //            continue;
+        //        }
 
-                package.PushLineStripVertex(pt2.X, pt2.Y, pt2.Z);
-                package.PushLineStripVertex(pt3.X, pt3.Y, pt3.Z);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexCount(2);
+        //        if (vMin != 0.0)
+        //        {
+        //            pointList.Insert(0, Point.ByCoordinates(u, 0.0, 0.0)); 
+        //        }
 
-                package.PushLineStripVertex(pt3.X, pt3.Y, pt3.Z);
-                package.PushLineStripVertex(pt1.X, pt1.Y, pt1.Z);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexCount(2);
+        //        if (vMax != 1.0)
+        //        {
+        //            pointList.Add(Point.ByCoordinates(u,1.0,0.0));
+        //        }
 
-                v1.Dispose(); v2.Dispose(); v3.Dispose();
-                pt1.Dispose(); pt2.Dispose(); pt3.Dispose();
-                n1.Dispose(); n2.Dispose(); n3.Dispose();
-            }
-        }
+        //        // The column should now have start and end points,
+        //        // but what if that's all that was added? 
+        //        if (pointList.Count() == 2)
+        //        {
+        //            pointList.Add(Point.ByCoordinates(u,0.5,0.0));
+        //        }
+        //    }
 
-        private static List<UV> GetEdgeCoordinates(IEnumerable<Curve> curves, int div, Surface surface)
-        {
-            var points = new List<UV>();
-            foreach (var curve in curves)
-            {
-                var line = curve as Line;
-                UV start, end;
+        //    // Check whether we have 'end' rows at u=0 and u=1
+        //    // If not, add them with the correct number of points
+        //    if (!pointLists.Any(list=>list.Any(item=>item.X == 0.0)))
+        //    {
+        //        var startList = new List<Point>();
+        //        for (var i = 0; i < MinPointCount; i++)
+        //        {
+        //            var v = i * DefaultPointSpacing;
+        //            startList.Add(Point.ByCoordinates(0.0,v,0.0));
+        //        }
+        //        pointLists.Insert(0, startList);
+        //    }
 
-                if (line != null)
-                {
-                    start = surface.UVParameterAtPoint(line.PointAtParameter(0));
-                    end = surface.UVParameterAtPoint(line.PointAtParameter(1));
-                    points.Add(start);
-                    points.Add(end);
-                }
-                else
-                {
-                    var step = 1.0 / div;
-                    for (var t = 0.0; t < 1.0; t += step)
-                    {
-                        // Create a line segment
-                        var a = curve.PointAtParameter(t);
-                        var b = curve.PointAtParameter(t + step);
-                        start = surface.UVParameterAtPoint(a);
-                        end = surface.UVParameterAtPoint(b);
-                        if (start.IsAlmostEqualTo(end))
-                            continue;
-                        points.Add(start);
+        //    if (!pointLists.Any(list => list.Any(item => item.X == 1.0)))
+        //    {
+        //        var endList = new List<Point>();
+        //        for (var i = 0; i < MinPointCount; i++)
+        //        {
+        //            var v = i * DefaultPointSpacing;
+        //            endList.Add(Point.ByCoordinates(1.0,v,0.0));
+        //        }
+        //        pointLists.Add(endList);
+        //    }
 
-                        // We don't always add the end point to
-                        // reduce the number of duplicate points.
-                        // We add it here, only if we're at the
-                        // end of the curve.
-                        if (t + step == 1.0)
-                        {
-                            points.Add(end);
-                        }
-                    }
-                }
-            }
-            return points;
-        }
+        //    // Project the IGrouping back into an [][] array
+        //    // this is required for the Surface.ByPoints method
+        //    var pointArr = pointLists.Select(l=>l.ToArray()).ToArray();
+
+        //    //var startUTangents = new List<Vector>();
+        //    //var startVTangents = new List<Vector>();
+        //    //var endUTangents = new List<Vector>();
+        //    //var endVTangents = new List<Vector>();
+
+        //    //for (int i = 0; i < pointArr.Length; i++)
+        //    //{
+        //    //    startUTangents.Add(Vector.XAxis());
+        //    //    endUTangents.Add(Vector.XAxis());
+
+        //    //    if (i == 0)
+        //    //    {
+        //    //        for (int j = 0; j < pointArr[i].Count(); j++)
+        //    //        {
+        //    //            startVTangents.Add(Vector.YAxis());
+        //    //        }
+        //    //    }
+        //    //    else if (i == pointArr.Length - 1)
+        //    //    {
+        //    //        for (int j = 0; j < pointArr[i].Count(); j++)
+        //    //        {
+        //    //            endVTangents.Add(Vector.YAxis());
+        //    //        }
+        //    //    }
+        //    //}
+
+        //    //gradientSurface = NurbsSurface.ByPoints(pointArr);
+        //    //gradientSurface = NurbsSurface.ByPointsTangents(pointArr, startUTangents, startVTangents, endUTangents, endVTangents);
+
+        //    curves = new List<Curve>();
+        //    foreach(var points in pointArr)
+        //    {
+        //        var cpts = new List<Point>();
+        //        var weights = new List<double>();
+        //        var knots = new List<double>();
+
+        //        Point prevPt = null;
+        //        Point currPt = null;
+
+        //        for (var i = 0; i < points.Length; i++)
+        //        {
+        //            currPt = points[i];
+
+        //            if (i == 1 || i == points.Length-1)
+        //            {
+        //                cpts.Add(Point.ByCoordinates(currPt.X, prevPt.Y + (currPt.Y - prevPt.Y) / 2, currPt.Z));
+        //            }
+
+        //            cpts.Add(currPt);
+
+        //            prevPt = currPt;
+        //        }
+
+        //        for (var i = 0; i < cpts.Count; i++)
+        //        {
+        //            if (i == 0 || i == cpts.Count - 1)
+        //            {
+        //                weights.Add(2);
+        //            }
+        //            else
+        //            {
+        //                weights.Add(1);
+        //            }
+        //        }
+
+        //        for (var i = 0; i <= cpts.Count - 3; i++)
+        //        {
+        //            if (i == 0 || i == cpts.Count - 3)
+        //            {
+        //                knots.AddRange(Enumerable.Repeat((double)i, 4));
+        //            }
+        //            else
+        //            {
+        //                knots.Add(i);
+        //            }
+        //        }
+
+        //        // Create a nurbs curve;
+        //        curves.Add(NurbsCurve.ByControlPointsWeightsKnots(cpts, weights.ToArray(), knots.ToArray()));
+        //    }
+
+        //    gradientSurface = NurbsSurface.ByLoft(curves);
+
+        //    var result = new double[width][];
+
+        //    var wStep = 1 / ((double)width);
+        //    var hStep = 1 / ((double)height);
+
+        //    for (var i = 0; i < width; i++)
+        //    {
+        //        result[i] = new double[height];
+        //        for (var j = 0; j < height; j++)
+        //        {
+        //            var projPt = Point.ByCoordinates(i * wStep, j * hStep, 3.0);
+        //            var proj = gradientSurface.ProjectInputOnto(projPt, Vector.ZAxis().Reverse());
+        //            var ptEval = proj.First() as Point;
+
+        //            // Clamp the points to 0 and 1
+        //            if (ptEval.Z > 1.0)
+        //            {
+        //                result[i][j] = 1.0;
+        //            }
+        //            else if (ptEval.Z < 0.0)
+        //            {
+        //                result[i][j] = 0.0;
+        //            }
+        //            else
+        //            {
+        //                result[i][j] = ptEval.Z;
+        //            }
+        //        }
+        //    }
+
+        //    gradientSurface.Dispose();
+
+        //    return null;
+        //}
     }
 
     public static class AnalysisExtensions
     {
         public static bool IsAlmostEqualTo(this UV a, UV b)
         {
-            return System.Math.Abs(a.U - b.U) < 1.0e-6 && System.Math.Abs(a.V - b.V) < 1.0e-6;
+            return Math.Abs(a.U - b.U) < 1.0e-6 && Math.Abs(a.V - b.V) < 1.0e-6;
         }
     }
 }

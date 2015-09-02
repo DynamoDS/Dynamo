@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -19,27 +20,83 @@ namespace Dynamo.DSEngine
 
         #region Public methods
 
-        /// <param name="xml">Don't set it, it's just for tests.</param>
+        /// <summary>
+        /// Get a description of a parameter from the its documentation xml,
+        /// using the corresponding FunctionDescriptor.
+        /// </summary>
+        /// <param name="parameter">The TypedParameter object corresponding to the parameter.</param>
+        /// <param name="xml"></param>
+        /// <returns>The contents of the documentation description for the parameter.</returns>
         public static string GetDescription(this TypedParameter parameter, XmlReader xml = null)
         {
             return GetMemberElement(parameter.Function, xml,
                 DocumentElementType.Description, parameter.Name);
         }
 
-        /// <param name="xml">Don't set it, it's just for tests.</param>
+        /// <summary>
+        /// Get a summary of a method from its documentation xml, 
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>The contents of the documentation summary tag.</returns>
         public static string GetSummary(this FunctionDescriptor member, XmlReader xml = null)
         {
-
             return GetMemberElement(member, xml, DocumentElementType.Summary);
         }
 
-        /// <param name="xml">Don't set it, it's just for tests.</param>
+        /// <summary>
+        /// Get a collection of search tags for a method from its documentation xml,
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>A collection of search tags.</returns>
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XmlReader xml = null)
         {
             return GetMemberElement(member, xml, DocumentElementType.SearchTags)
                 .Split(',')
                 .Select(x => x.Trim())
                 .Where(x => x != String.Empty);
+        }
+
+        /// <summary>
+        /// Get a collection of search tag weights for a method from its documentation xml,
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>A collection of search weights, or an empty collection if the search weights tag is emtpy.</returns>
+        public static IEnumerable<double> GetSearchTagWeights(this FunctionDescriptor member, XmlReader xml = null)
+        {
+            var weights = GetMemberElement(member, xml, DocumentElementType.SearchTagWeights);
+            if (string.IsNullOrEmpty(weights))
+            {
+                return new List<double>();
+            }
+
+            return weights
+                .Split(',')
+                .Select(x => x.Trim())
+                .Where(x => x != String.Empty)
+                .Select(x => Convert.ToDouble(x, CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// Get a collection of return descriptions for a method from its documentation xml,
+        /// using the corresponding FunctionDescriptor object.
+        /// </summary>
+        /// <param name="member">The FunctionDescriptor object corresponding to the method.</param>
+        /// <param name="xml"></param>
+        /// <returns>A collection of return descriptions from the documentation returns tag.</returns>
+        public static IEnumerable<Tuple<string, string>> GetReturns(this FunctionDescriptor member, XmlReader xml = null)
+        {
+            var node = GetMemberDocumentNode(member, xml);
+            if (node == null)
+            {
+                return Enumerable.Empty<Tuple<string,string>>();
+            }
+            return node.Returns;
         }
 
         #endregion
@@ -65,16 +122,19 @@ namespace Dynamo.DSEngine
             return sb.ToString();
         }
 
-        private static string GetMemberElement(
+        private static MemberDocumentNode GetMemberDocumentNode(
             FunctionDescriptor function,
-            XmlReader xml,
-            DocumentElementType property,
-            string paramName = "")
+            XmlReader xml )
         {
+            //customNodeDefinitions typedParameters don't have functionDescriptors
+            if (function == null)
+            {
+                return null;
+            }
             var assemblyName = function.Assembly;
 
-            if (string.IsNullOrEmpty(assemblyName) || (function.Type == FunctionType.GenericFunction))
-                return String.Empty; // Operators, or generic global function in DS script.
+            if (string.IsNullOrEmpty(assemblyName))
+                return null;
 
             var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
                 (assemblyName, GetMemberElementName(function));
@@ -95,11 +155,22 @@ namespace Dynamo.DSEngine
                         Where(key => key.Contains(function.ClassName + "." + function.FunctionName)).FirstOrDefault();
 
                 if (overloadedName == null)
-                    return String.Empty;
+                    return null;
                 if (documentNodes.ContainsKey(overloadedName))
                     documentNode = documentNodes[overloadedName];
             }
-            
+
+            return documentNode;
+        }
+
+        private static string GetMemberElement(
+            FunctionDescriptor function,
+            XmlReader xml,
+            DocumentElementType property,
+            string paramName = "")
+        {
+            var documentNode = GetMemberDocumentNode(function, xml);
+
             if (documentNode == null)
                 return String.Empty;
             if (property.Equals(DocumentElementType.Description) && !documentNode.Parameters.ContainsKey(paramName))
@@ -115,6 +186,9 @@ namespace Dynamo.DSEngine
 
                 case DocumentElementType.SearchTags:
                     return documentNode.SearchTags;
+
+                case DocumentElementType.SearchTagWeights:
+                    return documentNode.SearchTagWeights;
 
                 default:
                     throw new ArgumentException("property");
@@ -191,6 +265,9 @@ namespace Dynamo.DSEngine
                 case FunctionType.StaticProperty:
                     goto case FunctionType.InstanceProperty;
                     break;
+                case FunctionType.GenericFunction:
+                    return member.FunctionName;
+                    break;
 
                 default:
                     throw new ArgumentException("Unknown member type", "member");
@@ -206,14 +283,17 @@ namespace Dynamo.DSEngine
             Member,
             Summary,
             Parameter,
-            SearchTags
+            SearchTags,
+            SearchTagWeights,
+            Returns
         }
 
         private enum DocumentElementType
         {
             Summary,
             Description,
-            SearchTags
+            SearchTags,
+            SearchTagWeights
         }
 
         private static void LoadDataFromXml(XmlReader reader, string assemblyName)
@@ -254,8 +334,24 @@ namespace Dynamo.DSEngine
                                 currentTag = XmlTagType.Parameter;
                                 break;
 
+                            case "returns":
+                                if (reader.MoveToAttribute("name"))
+                                {
+                                    currentParamName = reader.Value;
+                                }
+                                else
+                                {
+                                    currentParamName = null;
+                                }
+                                currentTag = XmlTagType.Returns;
+                                break;
+
                             case "search":
                                 currentTag = XmlTagType.SearchTags;
+                                break;
+
+                            case "weights":
+                                currentTag = XmlTagType.SearchTagWeights;
                                 break;
 
                             default:
@@ -275,8 +371,14 @@ namespace Dynamo.DSEngine
                             case XmlTagType.Parameter:
                                 currentDocNode.Parameters.Add(currentParamName, reader.Value.CleanUpDocString());
                                 break;
+                            case XmlTagType.Returns:
+                                currentDocNode.Returns.Add(new Tuple<string,string>(currentParamName, reader.Value.CleanUpDocString()));
+                                break;
                             case XmlTagType.SearchTags:
                                 currentDocNode.SearchTags = reader.Value.CleanUpDocString();
+                                break;
+                            case XmlTagType.SearchTagWeights:
+                                currentDocNode.SearchTagWeights = reader.Value.CleanUpDocString();
                                 break;
                         }
 

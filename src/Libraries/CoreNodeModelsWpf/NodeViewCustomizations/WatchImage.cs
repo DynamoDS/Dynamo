@@ -48,17 +48,18 @@ namespace Dynamo.Wpf.Nodes
             if (data == null)
                 return;
 
+            // There is a pending memory leak issue with this bitmap object and is being
+            // tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7305
             var bitmap = data.Data as Bitmap;
-            
-            nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { bitmap });
+            if (bitmap != null)
+            {
+                nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { bitmap });
+            }
         }
 
         private void SetImageSource(Bitmap bmp)
         {
-            using (bmp)
-            {
-                image.Source = ResourceUtilities.ConvertToImageSource(bmp);
-            }
+            image.Source = ResourceUtilities.ConvertToImageSource(bmp);
         }
 
         public void Dispose()

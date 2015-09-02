@@ -981,6 +981,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestProtoASTExecute_ClassDecl_PropertyAccess_01()
         {
 
@@ -1062,6 +1063,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestProtoASTExecute_ClassDecl_MemFunctionCall_01()
         {
 
@@ -1389,8 +1391,9 @@ namespace ProtoTest.ProtoAST
                 new ProtoCore.AST.AssociativeAST.IdentifierNode("b"),
                 new ProtoCore.AST.AssociativeAST.IntNode(10),
                 ProtoCore.DSASM.Operator.add);
-            ProtoCore.AST.AssociativeAST.ReturnNode returnNode = new ProtoCore.AST.AssociativeAST.ReturnNode();
-            returnNode.ReturnExpr = returnExpr;
+
+            var returnIdent = new ProtoCore.AST.AssociativeAST.IdentifierNode("return");
+            ProtoCore.AST.AssociativeAST.BinaryExpressionNode returnNode = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(returnIdent, returnExpr);
             cbn.Body.Add(assignment1);
             cbn.Body.Add(returnNode);
             ///
@@ -1406,6 +1409,7 @@ namespace ProtoTest.ProtoAST
 
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestCodeGenDS_ClassDecl_PropertyAccess_01()
         {
 
@@ -1485,6 +1489,7 @@ namespace ProtoTest.ProtoAST
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void TestCodeGenDS_ClassDecl_MemFunctionCall_01()
         {
 

@@ -8,14 +8,33 @@ using System.Windows.Media;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System;
 
 namespace Dynamo.Controls
 {
+    class ViewSettingsChangedEventArgs : EventArgs
+    {
+        internal ViewSettingsChangedEventArgs(double x, double y, double zoom)
+        {
+            X = x;
+            Y = y;
+            Zoom = zoom;
+        }
+
+        internal double X { get; private set; }
+        internal double Y { get; private set; }
+        internal double Zoom { get; private set; }
+    }
+
+    internal delegate void ViewSettingsChangedHandler(ViewSettingsChangedEventArgs args);
+
     public class ZoomBorder : Border
     {
         private UIElement child = null;
         private Point origin;
         private Point start;
+
+        internal event ViewSettingsChangedHandler ViewSettingsChanged;
 
         public TranslateTransform GetChildTranslateTransform()
         {
@@ -86,6 +105,9 @@ namespace Dynamo.Controls
             var tt = GetTranslateTransform(child);
             tt.X = p.X;
             tt.Y = p.Y;
+
+            var st = GetScaleTransform(child);
+            NotifyViewSettingsChanged(tt.X, tt.Y, st.ScaleX);
         }
 
         public void SetZoom(double zoom)
@@ -93,6 +115,9 @@ namespace Dynamo.Controls
             var st = GetScaleTransform(child);
             st.ScaleX = zoom;
             st.ScaleY = zoom;
+
+            var tt = GetTranslateTransform(child);
+            NotifyViewSettingsChanged(tt.X, tt.Y, zoom);
         }
 
         #region Child Events
@@ -111,7 +136,7 @@ namespace Dynamo.Controls
                 vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
 
                 // Reset Fit View Toggle
-                if ( vm.ResetFitViewToggleCommand.CanExecute(null) )
+                if (vm.ResetFitViewToggleCommand.CanExecute(null))
                     vm.ResetFitViewToggleCommand.Execute(null);
             }
         }
@@ -119,7 +144,7 @@ namespace Dynamo.Controls
         private void child_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (child != null &&
-                ( e.ChangedButton == MouseButton.Middle
+                (e.ChangedButton == MouseButton.Middle
                 || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
                 var tt = GetTranslateTransform(child);
@@ -131,8 +156,9 @@ namespace Dynamo.Controls
 
         private void child_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (child != null && 
-                ( e.ChangedButton == MouseButton.Middle
+            if (child != null &&
+                e != null && 
+                (e.ChangedButton == MouseButton.Middle
                 || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
                 child.ReleaseMouseCapture();
@@ -141,96 +167,44 @@ namespace Dynamo.Controls
 
         private void child_MouseMove(object sender, MouseEventArgs e)
         {
-            if (child != null)
+            if ((child == null) || !child.IsMouseCaptured)
+                return;
+
+            var vm = DataContext as WorkspaceViewModel;
+            if (vm == null) return;
+
+            // Change ZoomBorder's child translation
+            Vector v = start - e.GetPosition(this);
+            SetTranslateTransformOrigin(new Point2D
             {
-                if (child.IsMouseCaptured)
-                {
-                    // Change ZoomBorder's child translation
-                    var tt = GetTranslateTransform(child);
-                    Vector v = start - e.GetPosition(this);
-                    tt.X = origin.X - v.X;
-                    tt.Y = origin.Y - v.Y;
+                X = origin.X - v.X,
+                Y = origin.Y - v.Y
+            });
 
-                    
-                    WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+            // Update WorkspaceModel without triggering property changed
+            vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
 
-                    // Update WorkspaceModel without triggering property changed
-                    vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
-                    
-                    // Reset Fit View Toggle
-                    if (vm.ResetFitViewToggleCommand.CanExecute(null))
-                        vm.ResetFitViewToggleCommand.Execute(null);
-                }
-            }
+            // Reset Fit View Toggle
+            if (vm.ResetFitViewToggleCommand.CanExecute(null))
+                vm.ResetFitViewToggleCommand.Execute(null);
         }
 
         private bool IsInPanMode()
         {
-            return ((DataContext as WorkspaceViewModel).IsPanning);
+            var ws = DataContext as WorkspaceViewModel;
+            if (ws == null) return false;
+            return ws.IsPanning;
+        }
+
+        private void NotifyViewSettingsChanged(double x, double y, double zoom)
+        {
+            var handler = ViewSettingsChanged;
+            if (handler != null)
+            {
+                handler(new ViewSettingsChangedEventArgs(x, y, zoom));
+            }
         }
 
         #endregion
-    }
-
-    public class EndlessGrid : Canvas 
-    {
-        private ItemsControl itemsControl;
-
-        public EndlessGrid()
-        {
-            this.RenderTransform = new TranslateTransform();
-            this.Loaded += EndlessGrid_Loaded;
-        }
-
-        void EndlessGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Create ItemsControl in Canvas to bind the grid line onto it
-            this.itemsControl = new ItemsControl();
-
-            FrameworkElementFactory factoryPanel = new FrameworkElementFactory(typeof(Canvas));
-            factoryPanel.SetValue(StackPanel.IsItemsHostProperty, true);
-
-            ItemsPanelTemplate template = new ItemsPanelTemplate();
-            template.VisualTree = factoryPanel;
-
-            itemsControl.ItemsPanel = template;
-            
-
-            this.Children.Add(itemsControl);
-
-            this.Background = Brushes.Transparent;
-
-            // Call ViewModel to compute data required for View
-            ((EndlessGridViewModel)this.DataContext).InitializeOnce();
-
-            CreateBinding();
-        }
-		
-		private void CreateBinding()
-        {
-            // Visibility Binding
-            this.itemsControl.SetBinding(FrameworkElement.VisibilityProperty, new Binding("FullscreenWatchShowing")
-            {
-                Converter = new InverseBoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay
-            });
-
-            // Size Binding
-            this.SetBinding(EndlessGrid.WidthProperty, new Binding("Width")
-            {
-                Mode = BindingMode.OneWay
-            });
-
-            this.SetBinding(EndlessGrid.HeightProperty, new Binding("Height")
-            {
-                Mode = BindingMode.OneWay
-            });
-
-            // GridLine binds to ItemsControl
-            this.itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines")
-            {
-                Mode = BindingMode.OneWay
-            });
-        }
     }
 }

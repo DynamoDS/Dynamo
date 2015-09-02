@@ -3,6 +3,7 @@
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
+using Dynamo.Interfaces;
 
 using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
@@ -31,8 +32,8 @@ namespace Dynamo.Nodes
             yield return AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0]);
         }
 
-        protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+        public override void RequestVisualUpdateAsync(
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             //Do nothing
         }

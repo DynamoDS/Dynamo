@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Utilities;
-using DynamoUtilities;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
@@ -18,10 +14,10 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
 
-using RestSharp;
 
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
+using ProtoCore.Namespace;
 
 namespace Dynamo.DSEngine
 {
@@ -137,6 +133,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
@@ -145,6 +145,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
@@ -153,7 +157,13 @@ namespace Dynamo.DSEngine
 
         public void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
         {
-            var upgradeHint = priorNameHints[functionSignature];
+            var shortKey = GetQualifiedFunction(functionSignature);
+            if (!FunctionSignatureNeedsAdditionalAttributes(functionSignature)
+                && !FunctionSignatureNeedsAdditionalAttributes(shortKey)) return;
+
+            var upgradeHint = FunctionSignatureNeedsAdditionalAttributes(functionSignature)
+                ? priorNameHints[functionSignature]
+                : priorNameHints[shortKey];
 
             foreach (string key in upgradeHint.AdditionalAttributes.Keys)
             {
@@ -171,7 +181,13 @@ namespace Dynamo.DSEngine
 
         public void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
         {
-            var upgradeHint = priorNameHints[functionSignature];
+            var shortKey = GetQualifiedFunction(functionSignature);
+            if (!FunctionSignatureNeedsAdditionalElements(functionSignature)
+                && !FunctionSignatureNeedsAdditionalElements(shortKey)) return;
+
+            var upgradeHint = FunctionSignatureNeedsAdditionalElements(functionSignature)
+                ? priorNameHints[functionSignature]
+                : priorNameHints[shortKey];
 
             foreach (XmlElement elem in upgradeHint.AdditionalElements)
             {
@@ -239,6 +255,22 @@ namespace Dynamo.DSEngine
             string newName = priorNameHints[qualifiedFunction].UpgradeName;
 
             return newName + "@" + splitted[1];
+        }
+
+        private string GetQualifiedFunction(string functionSignature)
+        {
+            // get a short name representation of the function without parameters
+            string[] splitted = functionSignature.Split('@');
+           
+            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                return null;
+
+            string qualifiedFunction = splitted[0];
+
+            if (!priorNameHints.ContainsKey(qualifiedFunction))
+                return null;
+
+            return qualifiedFunction;
         }
 
         /// <summary>
@@ -439,7 +471,7 @@ namespace Dynamo.DSEngine
         }
 
 
-        private void LoadLibraryMigrations(string library)
+        internal void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
 
@@ -629,7 +661,9 @@ namespace Dynamo.DSEngine
                                                                 PathManager = pathManager,
                                                                 ReturnType = method.returntype,
                                                                 FunctionType = FunctionType.GenericFunction,
-                                                                IsVisibleInLibrary = visibleInLibrary
+                                                                IsVisibleInLibrary = visibleInLibrary,
+                                                                IsBuiltIn = true,
+                                                                Assembly = "BuiltIn"
                                                             });
 
             AddBuiltinFunctions(functions);
@@ -668,14 +702,18 @@ namespace Dynamo.DSEngine
                     FunctionName = op,
                     Parameters = args,
                     PathManager = pathManager,
-                    FunctionType = FunctionType.GenericFunction
+                    FunctionType = FunctionType.GenericFunction,
+                    IsBuiltIn = true,
+                    Assembly = "Operators"
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
                     FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
                     Parameters = GetUnaryFuncArgs(),
                     PathManager = pathManager,
-                    FunctionType = FunctionType.GenericFunction
+                    FunctionType = FunctionType.GenericFunction,
+                    IsBuiltIn = true,
+                    Assembly = "Operators"
                 }).AsSingleton());
 
             AddBuiltinFunctions(functions);
@@ -817,8 +855,14 @@ namespace Dynamo.DSEngine
                             defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
-
-                    return new TypedParameter(arg.Name, argType, defaultArgumentNode);
+                    string shortName = null;
+                    if (defaultArgumentNode != null)
+                    {
+                        shortName = defaultArgumentNode.ToString();
+                        var rewriter = new ElementRewriter(LibraryManagementCore.ClassTable, LibraryManagementCore.BuildStatus.LogSymbolConflictWarning);
+                        defaultArgumentNode = defaultArgumentNode.Accept(rewriter);
+                    }
+                    return new TypedParameter(arg.Name, argType, defaultArgumentNode, shortName);
                 }).ToList();
 
             IEnumerable<string> returnKeys = null;
@@ -843,7 +887,8 @@ namespace Dynamo.DSEngine
                 PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
                 ObsoleteMsg = obsoleteMessage,
-                CanUpdatePeriodically = canUpdatePeriodically
+                CanUpdatePeriodically = canUpdatePeriodically,
+                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
             });
 
             AddImportedFunctions(library, new[] { function });

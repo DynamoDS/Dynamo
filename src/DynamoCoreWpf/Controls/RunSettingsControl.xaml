@@ -87,7 +87,7 @@
                                 Focusable="False" Margin="0,0,2.5,0"/>
             
             <TextBox Name="RunPeriodTextBox" 
-                    Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
+                    Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, Mode=TwoWay}"
                      VerticalContentAlignment="Center"
                      Visibility="{Binding RunPeriodInputVisibility}"
                      Width="80" FontSize="14px"

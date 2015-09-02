@@ -8,9 +8,9 @@ using Dynamo.UI;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
-using System;
 using Dynamo.Models;
-using Dynamo.ViewModels;
+using Dynamo.Search;
+using System.Windows;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -18,6 +18,12 @@ namespace Dynamo.Wpf.ViewModels
     {
         private bool isSelected;
         private SearchViewModel searchViewModel;
+
+        public bool IsTopResult
+        {
+            get;
+            set;
+        }
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -28,38 +34,45 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public ElementTypes ElementType
+        {
+            get { return Model.ElementType; }
+        }
+
         public NodeSearchElementViewModel(NodeSearchElement element, SearchViewModel svm)
         {
             Model = element;
             searchViewModel = svm;
 
-            Model.PropertyChanged += ModelOnPropertyChanged;
+            Model.VisibilityChanged += ModelOnVisibilityChanged;
             if (searchViewModel != null)
                 Clicked += searchViewModel.OnSearchElementClicked;
-            ClickedCommand = new DelegateCommand(OnClicked);
+            ClickedCommand = new DelegateCommand(OnClicked);            
+        }
+
+        /// <summary>
+        /// Creates a copy of NodeSearchElementViewModel.
+        /// </summary>
+        public NodeSearchElementViewModel(NodeSearchElementViewModel copyElement)
+        {
+            if (copyElement == null)
+                throw new ArgumentNullException();
+
+            Model = copyElement.Model;
+            Clicked = copyElement.Clicked;
+            RequestBitmapSource = copyElement.RequestBitmapSource;
+            ClickedCommand = copyElement.ClickedCommand;
+        }
+
+        private void ModelOnVisibilityChanged()
+        {           
+            RaisePropertyChanged("Visibility");
         }
 
         public void Dispose()
         {
             if (searchViewModel != null)
                 Clicked -= searchViewModel.OnSearchElementClicked;
-            Model.PropertyChanged -= ModelOnPropertyChanged;
-        }
-
-        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            switch (propertyChangedEventArgs.PropertyName)
-            {
-                case "Name":
-                    RaisePropertyChanged("Name");
-                    break;
-                case "IsVisibleInSearch":
-                    RaisePropertyChanged("Visibility");
-                    break;
-                case "Description":
-                    RaisePropertyChanged("Description");
-                    break;
-            }
         }
 
         public NodeSearchElement Model { get; set; }
@@ -67,6 +80,11 @@ namespace Dynamo.Wpf.ViewModels
         public string Name
         {
             get { return Model.Name; }
+        }
+
+        public string UserFriendlyName
+        {
+            get { return Model.UserFriendlyName; }
         }
 
         public string FullName
@@ -163,15 +181,19 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        internal Point Position { get; set; }
+
         public ICommand ClickedCommand { get; private set; }
 
-        public event Action<NodeModel> Clicked;
+        public event Action<NodeModel, Point> Clicked;
         protected virtual void OnClicked()
         {
             if (Clicked != null)
             {
                 var nodeModel = Model.CreateNode();
-                Clicked(nodeModel);
+                Clicked(nodeModel, Position);
+
+                Dynamo.Services.InstrumentationLogger.LogPiiInfo("Search-NodeAdded", FullName);
             }
         }
 
@@ -187,7 +209,7 @@ namespace Dynamo.Wpf.ViewModels
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected ImageSource GetIcon(string fullNameOfIcon)
+        protected virtual ImageSource GetIcon(string fullNameOfIcon)
         {
             if (string.IsNullOrEmpty(Model.Assembly))
                 return null;
@@ -218,8 +240,13 @@ namespace Dynamo.Wpf.ViewModels
         public CustomNodeSearchElementViewModel(CustomNodeSearchElement element, SearchViewModel svm)
             : base(element, svm)
         {
-            Model.PropertyChanged += ModelOnPropertyChanged;
             Path = Model.Path;
+        }
+
+        public CustomNodeSearchElementViewModel(CustomNodeSearchElementViewModel copyElement)
+            : base(copyElement)
+        {
+            Path = copyElement.Path;
         }
 
         public string Path
@@ -231,12 +258,6 @@ namespace Dynamo.Wpf.ViewModels
                 path = value;
                 RaisePropertyChanged("Path");
             }
-        }
-
-        private void ModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs.PropertyName == "Path")
-                RaisePropertyChanged("Path");
         }
 
         public new CustomNodeSearchElement Model
@@ -251,6 +272,37 @@ namespace Dynamo.Wpf.ViewModels
                 Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;
 
             return GetIcon(Configurations.DefaultCustomNodeIcon + postfix);
+        }
+
+        protected override ImageSource GetIcon(string fullNameOfIcon)
+        {
+            IconRequestEventArgs iconRequest;
+
+            // If there is no path, that means it's just created node.
+            // Use DefaultAssembly to load icon.
+            if (String.IsNullOrEmpty(Path))
+            {
+                iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly, fullNameOfIcon);
+                OnRequestBitmapSource(iconRequest);
+                return iconRequest.Icon;
+            }
+
+            string customizationPath = System.IO.Path.GetDirectoryName(Path);
+            customizationPath = System.IO.Directory.GetParent(customizationPath).FullName;
+            customizationPath = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");
+
+            iconRequest = new IconRequestEventArgs(customizationPath, fullNameOfIcon, false);
+            OnRequestBitmapSource(iconRequest);
+
+            if (iconRequest.Icon != null)
+                return iconRequest.Icon;
+
+            // If there is no icon inside of customization assembly,
+            // try to find it in dynamo assembly.
+            iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly, fullNameOfIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
         }
     }
 }

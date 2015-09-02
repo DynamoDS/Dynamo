@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
 
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
         
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             return Controller.BuildAst(this, inputAstNodes);
         }
@@ -250,8 +250,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("SymbolNodeDescription",typeof(Dynamo.Properties.Resources))]
-    [NodeSearchTags("variable", "argument", "parameter")]
+    [NodeDescription("SymbolNodeDescription",typeof(Properties.Resources))]
+    [NodeSearchTags("SymbolSearchTags", typeof(Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]
@@ -259,7 +259,7 @@ namespace Dynamo.Nodes
     {
         private string inputSymbol = String.Empty;
         private string nickName = String.Empty;
-        private ElementResolver elementResolver;
+        public ElementResolver  ElementResolver { get; set;}
         private ElementResolver workspaceElementResolver;
 
         public Symbol()
@@ -272,7 +272,7 @@ namespace Dynamo.Nodes
 
             InputSymbol = String.Empty;
 
-            elementResolver = new ElementResolver();
+            ElementResolver = new ElementResolver();
         }
 
         public string InputSymbol
@@ -364,9 +364,6 @@ namespace Dynamo.Nodes
             }
 
             ArgumentLacing = LacingStrategy.Disabled;
-
-            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
-            elementResolver = new ElementResolver(resolutionMap);
         }
 
         private bool TryParseInputSymbol(string inputSymbol, 
@@ -381,7 +378,7 @@ namespace Dynamo.Nodes
             
             // During loading of symbol node from file, the elementResolver from the workspace is unavailable
             // in which case, a local copy of the ER obtained from the symbol node is used
-            var resolver = workspaceElementResolver ?? elementResolver;
+            var resolver = workspaceElementResolver ?? ElementResolver;
             var parseParam = new ParseParam(this.GUID, parseString, resolver);
 
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
@@ -450,15 +447,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
-        {
-            if (outputIndex < 0 || outputIndex > OutPortData.Count)
-                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
-
-            return AstIdentifierForPreview;
-        }
-
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             AssociativeNode assignment;
             if (null == inputAstNodes || inputAstNodes.Count == 0)

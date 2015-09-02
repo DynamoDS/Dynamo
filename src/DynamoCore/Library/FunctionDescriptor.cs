@@ -67,6 +67,7 @@ namespace Dynamo.DSEngine
         public IEnumerable<string> ReturnKeys { get; set; }
         public IPathManager PathManager { get; set; }
         public bool IsVarArg { get; set; }
+        public bool IsBuiltIn { get; set; }
     }
 
     /// <summary>
@@ -121,6 +122,7 @@ namespace Dynamo.DSEngine
             IsVisibleInLibrary = funcDescParams.IsVisibleInLibrary;
             ObsoleteMessage = funcDescParams.ObsoleteMsg;
             CanUpdatePeriodically = funcDescParams.CanUpdatePeriodically;
+            IsBuiltIn = funcDescParams.IsBuiltIn;
         }
 
         public bool IsOverloaded { get; set; }
@@ -162,6 +164,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         public bool IsVarArg { get; private set; }
 
+        public bool IsBuiltIn { get; private set; }
+
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
@@ -182,6 +186,17 @@ namespace Dynamo.DSEngine
         {
             get { return !String.IsNullOrEmpty(Summary) ? Summary : string.Empty; }
         }
+
+        private IEnumerable<Tuple<string, string>> returns; 
+
+        /// <summary>
+        ///     If the XML documentation for the function includes a returns field,
+        ///     this parameter contains a collection of tuples of output names to
+        ///     descriptions.
+        /// 
+        ///     Otherwise, this list will be empty.
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> Returns { get { return returns ?? (returns = this.GetReturns()); } }
 
         /// <summary>
         ///     Inputs for Node

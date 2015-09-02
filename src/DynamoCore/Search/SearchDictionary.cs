@@ -12,7 +12,7 @@ namespace Dynamo.Search
     /// </summary>
     public class SearchDictionary<V>
     {
-        private readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
+        protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
         /// <summary>
@@ -55,6 +55,14 @@ namespace Dynamo.Search
             if (handler != null) handler(entry);
         }
 
+        public event Action<V> EntryUpdated;
+
+        protected virtual void OnEntryUpdated(V entry)
+        {
+            var handler = EntryUpdated;
+            if (handler != null) handler(entry);
+        }
+
         /// <summary>
         ///     Add a single element with a single tag
         /// </summary>
@@ -63,7 +71,7 @@ namespace Dynamo.Search
         /// <param name="weight"></param>
         public void Add(V value, string tag, double weight = 1)
         {
-            Add(value, tag.AsSingleton(), weight);
+            Add(value, tag.AsSingleton(), weight.AsSingleton());
         }
 
         /// <summary>
@@ -83,8 +91,8 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="value"> The object to add  </param>
         /// <param name="tags"> The list of strings to identify it in search </param>
-        /// <param name="weight"></param>
-        public void Add(V value, IEnumerable<string> tags, double weight = 1)
+        /// <param name="weights">The list of corresponding weights coefficients</param>
+        public void Add(V value, IEnumerable<string> tags, IEnumerable<double> weights)
         {
             Dictionary<string, double> keys;
             if (!entryDictionary.TryGetValue(value, out keys))
@@ -93,8 +101,16 @@ namespace Dynamo.Search
                 entryDictionary[value] = keys;
                 OnEntryAdded(value);
             }
-            foreach (var tag in tags.Select(x => x.ToLower()))
-                keys[tag] = weight;
+
+            int tagsCount = tags.Count();
+            if (tagsCount != weights.Count())
+                throw new ArgumentException("Number of weights should equal number of search tags.");
+
+            for (int i = 0; i < tagsCount; i++)
+            {
+                var tag = tags.ElementAt(i).ToLower();
+                keys[tag] = weights.ElementAt(i);
+            }
         }
 
         /// <summary>
@@ -107,7 +123,7 @@ namespace Dynamo.Search
         {
             var tagList = tags as IList<string> ?? tags.ToList();
             foreach (var value in values)
-                Add(value, tagList, weight);
+                Add(value, tagList, weight.AsSingleton());
         }
 
         /// <summary>
@@ -222,19 +238,24 @@ namespace Dynamo.Search
         /// <returns></returns>
         private static bool MatchWithQueryString(string key, string[] subPatterns)
         {
-            int index = 0;
-            int currPattern = 0;
-            while (index < key.Length && currPattern < subPatterns.Length)
-            {
-                index = key.IndexOf(subPatterns[currPattern], index);
-                if (index == -1)
-                    return false;
+            int numberOfMatchSymbols = 0;
+            int numberOfAllSymbols = 0;
 
-                index += subPatterns[currPattern].Length;
-                currPattern++;
+            foreach (var subPattern in subPatterns)
+            {
+                for (int i = subPattern.Length; i >= 1; i--)
+                {
+                    var part = subPattern.Substring(0, i);
+                    if (key.IndexOf(part) != -1)
+                    {
+                        numberOfMatchSymbols += part.Length;
+                        break;
+                    }
+                }
+                numberOfAllSymbols += subPattern.Length;
             }
 
-            return currPattern == subPatterns.Length;
+            return (double)numberOfMatchSymbols / numberOfAllSymbols > 0.8;
         }
 
         private static string[] SplitOnWhiteSpace(string s)

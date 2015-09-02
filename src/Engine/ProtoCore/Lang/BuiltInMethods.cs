@@ -72,7 +72,8 @@ namespace ProtoCore.Lang
             kContainsKey,
             kEvaluate,
             kTryGetValueFromNestedDictionaries,
-            kNodeAstFailed
+            kNodeAstFailed,
+            kGC,
         }
 
         private static string[] methodNames = new string[]
@@ -137,7 +138,8 @@ namespace ProtoCore.Lang
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
-            Constants.kNodeAstFailed    // kNodeAstFailed
+            Constants.kNodeAstFailed,   // kNodeAstFailed
+            "__GC",                     // kGC
         };
 
         public static string GetMethodName(MethodID id)
@@ -470,7 +472,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("ObjectB", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kEquals,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.DeterminesObjectsAreEqual}
+                    MethodAttributes = new MethodAttributes(true){Description = Resources.DeterminesObjectsAreEqual}
                    
                 },
 
@@ -616,7 +618,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValue,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
+                    MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),  
                 },
 
@@ -629,7 +631,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
+                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true), 
                 },
 
@@ -817,8 +819,8 @@ namespace ProtoCore.Lang
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
                     {
                         new KeyValuePair<string, ProtoCore.Type>("condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
-                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
+                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = BuiltInMethods.MethodID.kInlineConditional
                 },
@@ -982,6 +984,14 @@ namespace ProtoCore.Lang
                     }.ToList(),
                     ID = MethodID.kNodeAstFailed,
                     MethodAttributes = new MethodAttributes(true),
+                 },
+
+                 new BuiltInMethod
+                 {
+                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                     Parameters = new List<KeyValuePair<string,Type>>(),
+                     ID = MethodID.kGC,
+                     MethodAttributes  = new MethodAttributes(true),
                  }
             };
         }

@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace Dynamo.Wpf.Authentication
 {
-    internal class LoginService
+    public class LoginService
     {
         private readonly SynchronizationContext context;
         private readonly Window parent;
@@ -17,7 +17,7 @@ namespace Dynamo.Wpf.Authentication
 
         public bool ShowLogin(object o)
         {
-            var url = o as Uri;
+            var url = new Uri(o.ToString());
 
             if (o == null) throw new ArgumentException(Dynamo.Wpf.Properties.Resources.InvalidLoginUrl);
 

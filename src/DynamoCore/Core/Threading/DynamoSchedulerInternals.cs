@@ -30,6 +30,16 @@ namespace Dynamo.Core.Threading
         private readonly List<AsyncTask> taskQueue = new List<AsyncTask>();
         private readonly TimeStampGenerator generator = new TimeStampGenerator();
 
+        public IEnumerable<AsyncTask> Tasks
+        {
+            get {
+                lock (taskQueue)
+                {
+                    return taskQueue.ToList();
+                } 
+            }
+        }
+
         #endregion
 
         #region Private Class Helper Methods
@@ -42,6 +52,11 @@ namespace Dynamo.Core.Threading
 
             var e = new TaskStateChangedEventArgs(task, state);
             stateChangedHandler(this, e);
+
+            if (state == TaskState.Discarded)
+            {
+                task.HandleTaskDiscarded();
+            }
         }
 
         /// <summary>

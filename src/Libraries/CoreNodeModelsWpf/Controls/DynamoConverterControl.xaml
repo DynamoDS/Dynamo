@@ -5,7 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
-             mc:Ignorable="d" Width="250" Height="Auto">
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             mc:Ignorable="d" Width="400" Height="Auto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <controls:UnitToTextConverter x:Key="UnitToTextConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <Grid Width="Auto" Height="Auto">
         
@@ -18,8 +25,14 @@
                 ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
                 Grid.Row="0"
                 Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
-                SelectedItem="{Binding SelectedMetricConversion}"/>
-        
+                SelectedItem="{Binding SelectedMetricConversion}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}"></TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
         <Grid Grid.Row="1">
             
             <Grid.ColumnDefinitions>
@@ -35,7 +48,13 @@
                 ToolTip="{Binding SelectionFromBoxToolTip}"
                 ToolTipService.ShowOnDisabled="True" 
                 IsEnabled="{Binding IsSelectionFromBoxEnabled}"
-                SelectedItem="{Binding SelectedFromConversion}"/>
+                SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}"></TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
             <Button Name="DirectionButton"
                 Grid.Column="1"
@@ -49,7 +68,13 @@
                 Grid.Column="2"
         	    ItemsSource="{Binding SelectedToConversionSource}"
                 Height ="{x:Static ui2:Configurations.PortHeightInPixels}"                       
-        	    SelectedItem="{Binding SelectedToConversion}"/>
+        	    SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource UnitToTextConverter}}"></TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
         </Grid>
 

@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Core
 {
@@ -16,17 +17,18 @@ namespace Dynamo.Core
         public List<NoteModel> Notes { get; private set; }
         public List<AnnotationModel> Annotations { get; private set; }
         public ElementResolver ElementResolver { get; private set; }
+        public List<PresetModel> Presets { get; private set; }
   
         private NodeGraph() { }
 
-        private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
+        private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory, ElementResolver resolver)
         {
             XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
             if (elNodes.Count == 0)
                 elNodes = xmlDoc.GetElementsByTagName("dynElements");
             XmlNode elNodesList = elNodes[0];
             return from XmlElement elNode in elNodesList.ChildNodes
-                   select LoadNodeFromXml(elNode, SaveContext.File, nodeFactory);
+                   select LoadNodeFromXml(elNode, SaveContext.File, nodeFactory, resolver);
         }
 
         /// <summary>
@@ -37,9 +39,9 @@ namespace Dynamo.Core
         /// <param name="nodeFactory">A NodeFactory, to be used to create the node.</param>
         /// <returns></returns>
         public static NodeModel LoadNodeFromXml(
-            XmlElement elNode, SaveContext context, NodeFactory nodeFactory)
+            XmlElement elNode, SaveContext context, NodeFactory nodeFactory, ElementResolver resolver)
         {
-            return nodeFactory.CreateNodeFromXml(elNode, context);
+            return nodeFactory.CreateNodeFromXml(elNode, context, resolver);
         }
 
         /// <summary>
@@ -112,7 +114,7 @@ namespace Dynamo.Core
 
         internal static AnnotationModel LoadAnnotationFromXml(XmlNode annotation, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {
-            var instance = new AnnotationModel(nodes,notes,true);             
+            var instance = new AnnotationModel(nodes,notes);             
             instance.Deserialize(annotation as XmlElement, SaveContext.File);
             return instance;
         }
@@ -130,6 +132,48 @@ namespace Dynamo.Core
             return Enumerable.Empty<AnnotationModel>();
         }
 
+        public static IEnumerable<PresetModel> LoadPresetsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodesInNodeGraph)
+        {
+            XmlNodeList PresetsNodes = xmlDoc.GetElementsByTagName("Presets");
+            XmlNode presetlist = PresetsNodes[0];
+            if (presetlist != null)
+            {
+                return from XmlElement stateNode in presetlist.ChildNodes
+                       select PresetFromXml(stateNode, nodesInNodeGraph);
+            }
+            return Enumerable.Empty<PresetModel>();
+        }
+
+        private static PresetModel PresetFromXml(XmlElement stateNode, IEnumerable<NodeModel> nodesInNodeGraph)
+        {
+            var instance = new PresetModel(nodesInNodeGraph);
+            instance.Deserialize(stateNode, SaveContext.File);
+            return instance;
+        }
+
+        private static ElementResolver LoadElementResolverFromXml(XmlDocument xmlDoc)
+        {
+            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
+
+            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+            if (nodes.Count > 0)
+            {
+                foreach (XmlNode child in nodes[0].ChildNodes)
+                {
+                    if (child.Attributes != null)
+                    {
+                        XmlAttribute pName = child.Attributes["partialName"];
+                        XmlAttribute rName = child.Attributes["resolvedName"];
+                        XmlAttribute aName = child.Attributes["assemblyName"];
+                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
+                        resolutionMap.Add(pName.Value, kvp);
+                    }
+                }
+            }
+
+            return new ElementResolver(resolutionMap);
+        }
+
         /// <summary>
         ///     Loads NodeModels, ConnectorModels, and NoteModels from an XmlDocument.
         /// </summary>
@@ -139,12 +183,14 @@ namespace Dynamo.Core
         /// <returns></returns>
         public static NodeGraph LoadGraphFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
-            var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
+            var elementResolver = LoadElementResolverFromXml(xmlDoc);
+            var nodes = LoadNodesFromXml(xmlDoc, nodeFactory, elementResolver).ToList();
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
             var annotations = LoadAnnotationsFromXml(xmlDoc, nodes, notes).ToList();
+            var presets = LoadPresetsFromXml(xmlDoc,nodes).ToList();
 
-            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations};
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations = annotations, Presets = presets, ElementResolver = elementResolver };
         }
 
     }

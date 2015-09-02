@@ -1,103 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using System.Windows;
-using System.Windows.Documents;
-using Dynamo;
+
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.DynamoSandbox;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-using DynamoUtilities;
+
+using Microsoft.Win32;
+
+using Dynamo.Applications;
 
 namespace DynamoSandbox
 {
-    internal class PathResolver : IPathResolver
-    {
-        private readonly List<string> additionalResolutionPaths;
-        private readonly List<string> additionalNodeDirectories;
-        private readonly List<string> preloadedLibraryPaths;
-
-        internal PathResolver(string preloaderLocation)
-        {
-            additionalResolutionPaths = new List<string>
-            {
-                preloaderLocation
-            };
-
-            additionalNodeDirectories = new List<string>();
-            preloadedLibraryPaths = new List<string>
-            {
-                "VMDataBridge.dll",
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "DSOffice.dll",
-                "DSIronPython.dll",
-                "FunctionObject.ds",
-                "Optimize.ds",
-                "DynamoConversions.dll",
-                "DynamoUnits.dll",
-                "Tessellation.dll",
-                "Analysis.dll"
-            };
-        }
-
-        public IEnumerable<string> AdditionalResolutionPaths
-        {
-            get { return additionalResolutionPaths; }
-        }
-
-        public IEnumerable<string> AdditionalNodeDirectories
-        {
-            get { return additionalNodeDirectories; }
-        }
-
-        public IEnumerable<string> PreloadedLibraryPaths
-        {
-            get { return preloadedLibraryPaths; }
-        }
-
-        public string UserDataRootFolder 
-        {
-            get { return string.Empty; }
-        }
-
-        public string CommonDataRootFolder
-        { 
-            get { return string.Empty; }
-        }
-    }
-
+   
     internal class Program
     {
         private static SettingsMigrationWindow migrationWindow;
-
+        
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            var geometryFactoryPath = string.Empty;
-            var preloaderLocation = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
-
-            // TODO(PATHMANAGER): Do we really libg_xxx folder on resolution path?
-            // If not, PathResolver will be completely redundant so please remove it.
-            var pathResolver = new PathResolver(preloaderLocation);
-
+            var model = Dynamo.Applications.StartupUtils.MakeModel(false);
             DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath
-                });
-
-            
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -137,53 +74,21 @@ namespace DynamoSandbox
             }
         }
 
-        private static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
-        {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
 
-            var versions = new[]
-            {
-                LibraryVersion.Version219,
-                LibraryVersion.Version220,
-                LibraryVersion.Version221
-            };
-
-            var preloader = new Preloader(rootFolder, versions);
-            preloader.Preload();
-            geometryFactoryPath = preloader.GeometryFactoryPath;
-            preloaderLocation = preloader.PreloaderLocation;
-        }
+        [DllImport("msvcrt.dll")]
+        public static extern int _putenv(string env);
 
         [STAThread]
         public static void Main(string[] args)
         {
             DynamoViewModel viewModel = null;
-
             try
             {
-                // Running Dynamo sandbox with a command file:
-                // DynamoSandbox.exe /c "C:\file path\file.xml"
-                // 
-                var commandFilePath = string.Empty;
+                var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
+                var locale = Dynamo.Applications.StartupUtils.SetLocale(cmdLineArgs);
+                    _putenv(locale);
 
-                for (var i = 0; i < args.Length; ++i)
-                {
-                    var arg = args[i];
-
-                    // Looking for '/c'
-                    if (arg.Length != 2 || (arg[0] != '/'))
-                        continue;
-
-                    if (arg[1] == 'c' || (arg[1] == 'C'))
-                    {
-                        // If there's at least one more argument...
-                        if (i < args.Length - 1)
-                            commandFilePath = args[i + 1];
-                    }
-                }
-
-                MakeStandaloneAndRun(commandFilePath, out viewModel);
+                    MakeStandaloneAndRun(cmdLineArgs.CommandFilePath, out viewModel);
             }
             catch (Exception e)
             {
@@ -219,5 +124,6 @@ namespace DynamoSandbox
                 Debug.WriteLine(e.StackTrace);
             }
         }
+
     }
 }

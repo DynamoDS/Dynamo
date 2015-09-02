@@ -19,6 +19,7 @@
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
+        xmlns:watch3D="clr-namespace:Dynamo.Wpf.ViewModels.Watch3D"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -29,6 +30,7 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
+        LostFocus="DynamoView_LostFocus"
         Background="#FF353535"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
@@ -86,14 +88,14 @@
 
         <KeyBinding Key="D"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="V"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="B"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="W"
                     Modifiers="Control"
@@ -125,6 +127,9 @@
         <KeyBinding Key="G"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.AddAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="U"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.UngroupAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
@@ -152,13 +157,20 @@
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="P"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=TogglePanCommand}" />
+                    Command="{Binding Path=DataContext.BackgroundPreviewViewModel.TogglePanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+
         <KeyBinding Key="F5"
                     Modifiers="Shift"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                     CommandParameter="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <MouseBinding Gesture="Shift+LeftDoubleClick"
+                      Command="{Binding Path=DataContext.HomeSpaceViewModel.ShowInCanvasSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                      CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
+        <KeyBinding Key="T"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.ShowNewPresetsDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -211,6 +223,63 @@
                 <Menu IsMainMenu="True"
                       Name="menu1"
                       Style="{StaticResource MainMenu}">
+                 <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
+                    <Menu.Resources>
+                        <Style x:Key="SubMenuItemOverride"
+                            BasedOn="{StaticResource MenuItemStyle}"
+                            TargetType="{x:Type MenuItem}">
+
+                            <Style.Resources>                              
+                                <!--  SubmenuItem  -->
+                                <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
+                                                          TargetType="MenuItem">
+                                    
+                                    <Border Name="Border"
+                                            Height="25" Background="Transparent">
+                                        <Grid MinWidth="200">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter Name="HeaderHost"
+                                                              Grid.Column="0"
+                                                              Margin="5,0,0,0"
+                                                              HorizontalAlignment="Stretch"
+                                                              VerticalAlignment="Center"
+                                                              ContentSource="Header"
+                                                              RecognizesAccessKey="False" />                                         
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted"
+                                                           Value="true">
+                                            <Setter TargetName="Border"
+                                                              Property="Background"
+                                                              Value="{StaticResource HighlightedBrush}" />
+                                            <Setter TargetName="HeaderHost"
+                                                               Property="TextBlock.Foreground"
+                                                               Value="{StaticResource ActiveForegroundBrush}" />
+                                            <Setter TargetName="Border"
+                                                                Property="BorderBrush"
+                                                                Value="Transparent" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled"
+                                                                Value="false">
+                                            <Setter Property="Foreground"
+                                                                 Value="{StaticResource DisabledForegroundBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Style.Resources>                         
+                            <Style.Triggers>                                                              
+                                <Trigger Property="Role"
+                                    Value="SubmenuItem">
+                                    <Setter Property="Template"
+                                      Value="{StaticResource {x:Static MenuItem.SubmenuItemTemplateKey}}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Menu.Resources>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenu}"
                               Name="fileMenu"
@@ -334,6 +403,30 @@
                                   Name="paste"
                                   InputGestureText="Ctrl + V" />
                         <Separator />
+
+                       
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuPresetsMenu}"
+                              Name = "PresetsMenu"
+                              Focusable= "False"
+                              IsEnabled="True">
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuCreatePreset}"
+                                      Command="{Binding ShowNewPresetsDialogCommand}"
+                                      Name="newPreset"
+                                      Focusable="False"
+                                      InputGestureText="Ctrl + T"/>
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
+                                      MouseEnter="LoadPresetsMenus"
+                                      Name="RestorePresetMenu"
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
+                                      MouseEnter="LoadPresetsMenus"
+                                      Name="DeletePresetMenu"
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />                                                          
+                        </MenuItem>
+                        <Separator />
+                        
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNote}"
                                   Command="{Binding AddNoteCommand}"
@@ -344,9 +437,14 @@
                                   Command="{Binding AddAnnotationCommand}"
                                   Name="noteMenuAnnotation"
                                   InputGestureText="Ctrl + G" />
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                                  Command="{Binding UngroupAnnotationCommand}"
+                                  Name="ungroupGroup"
+                                  InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
-                                  Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
+                                  Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
                         <MenuItem Focusable="False"
@@ -467,26 +565,28 @@
                                       Command="{Binding ShowHideConnectorsCommand}">
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="{Binding AlternateContextGeometryDisplayText}"
-                                  Name="showGeometryInAlternateContextMenu"
-                                  Focusable="False"
-                                  Visibility="{Binding Path=VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=VisualizationManager.DrawToAlternateContext}">
-                        </MenuItem>
+
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenu3DPreview}"
                                   Name="background3dMenu"
                                   Focusable="False">
-                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
-                                      IsChecked="{Binding Path=FullscreenWatchShowing}"
-                                      Command="{Binding ToggleFullscreenWatchShowingCommand}"
-                                      Focusable="False" />
+
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuAvailablePreviews}" ItemsSource="{Binding Watch3DViewModels}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Name}"/>
+                                        <Setter Property="IsCheckable" Value="True"/>
+                                        <Setter Property="IsChecked" Value="{Binding Active}"/>
+                                        <Setter Property="Focusable" Value="False"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
+
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPreviewNavigate}"
-                                      IsEnabled="{Binding Path=FullscreenWatchShowing}"
-                                      IsChecked="{Binding Path=CanNavigateBackground}"
+                                      IsEnabled="{Binding Path=BackgroundPreviewActive}"
+                                      IsChecked="{Binding Path=BackgroundPreviewViewModel.CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
-                                      Command="{Binding ToggleCanNavigateBackgroundCommand}" />
+                                      Command="{Binding Path=BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
 
@@ -519,14 +619,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
-                              IsEnabled="True">                   
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
-                                  Name="ToggleIsUsageReportingApprovedCommand"
-                                  Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
-                                  Focusable="False" />
+                              IsEnabled="True">
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
@@ -534,6 +627,13 @@
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
                                   Focusable="False"/>
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
+                                  Name="ToggleIsUsageReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
+                                  Focusable="False" />
                         <MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
                                   IsCheckable="True" 
@@ -542,154 +642,7 @@
                                   ToolTipService.ShowOnDisabled="True" 
                                   ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
                                   IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>
-                        
-                        <!--<MenuItem Focusable="False" 
-                                  Name="ShowNodeExecution" 
-                                  IsCheckable="True" 
-                                  IsChecked="{Binding ShowRunPreview}" 
-                                  Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
-                                  ToolTipService.ShowOnDisabled="True" 
-<<<<<<< HEAD
-                                  ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
-                        <MenuItem Focusable="False"
-=======
-                                  ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>-->
-                        
-                        <!--<MenuItem Focusable="False"
->>>>>>> 8ced085d0865451a474d0f033bc4d5ca2016203b
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
-                                  Name="LengthUnitsMenu">
-                            <MenuItem Focusable="False"
-                                      Name="units_inch_1"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="DecimalInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuDecimalInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_inch_2"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="FractionalInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuFractionalInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_foot_1"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="DecimalFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuDecimalFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_foot_2"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalFoot, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="FractionalFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuFractionalFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_mm"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Millimeter, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="Millimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuMillimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_cm"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="Centimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCentimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_m"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}"
-                                      Command="{Binding SetLengthUnitCommand}"
-                                      CommandParameter="Meter"
-                                       Header="{x:Static p:Resources.DynamoViewSettingMenuMeter}" />
-                        </MenuItem>
-                        <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuAreaUnits}"
-                                  Name="AreaUnitsMenu">
-                            <MenuItem Focusable="False"
-                                      Name="units_area_inch"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareInch, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_foot"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareFoot, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_millimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMillimeter, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareMillimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareMillimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_centimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareCentimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareCentimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_area_meter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}"
-                                      Command="{Binding SetAreaUnitCommand}"
-                                      CommandParameter="SquareMeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuSquareMeter}" />
-                        </MenuItem>
-                        <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuVolumeUnits}"
-                                  Name="VolumeUnitsMenu">
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_inch"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicInch, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicInch"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicInch}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_foot"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicFoot, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicFoot"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicFoot}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_millimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicMillimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMillimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_centimeter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="CubicCentimeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicCentimeter}" />
-                            <MenuItem Focusable="False"
-                                      Name="units_volume_meter"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}"
-                                      Command="{Binding SetVolumeUnitCommand}"
-                                      CommandParameter="SquareMeter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMeter}" />
-                        </MenuItem>-->
-                        
+
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}"
                                   Name="NumberFormat">
@@ -733,18 +686,27 @@
                                 <Slider Width="100"
                                         Minimum="12"
                                         Maximum="512"
-                                        Value="{Binding MaxTesselationDivisions, Mode=TwoWay}"></Slider>
+                                        Value="{Binding Path=RenderPackageFactoryViewModel.MaxTessellationDivisions, Mode=TwoWay}"></Slider>
                                 <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                            Margin="10,0,0,0"></TextBlock>
                             </StackPanel>
                         </MenuItem>
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
+                                  Command="{Binding ManagePackagePathsCommand}"
+                                  Name="managePackagePaths" />
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
                               Focusable="False">
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
-                                  Name="SamplesMenu">
+                                  Name="SamplesMenu"
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCoreWpf;component/UI/Images/OpenSelectedItemHS.png"
                                        Width="14"
@@ -809,10 +771,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
-                        <MenuItem Focusable="False"
-                                  Header="Show Watch Settings Control"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding ShowWatchSettingsControl, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 
@@ -856,20 +814,20 @@
               Grid.Column="2"
               Grid.RowSpan="3"
               Background="#232323"
-              Name="background_grid">
+              Name="background_grid"
+              IsHitTestVisible="{Binding BackgroundPreviewViewModel.CanNavigateBackground}">
             <Canvas Name="backgroundCanvas"
                     Margin="0,20,0,0"
-                    ClipToBounds="True"
-                    IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+                    ClipToBounds="True">
                 <Canvas.Background>
                     <SolidColorBrush Color="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
 
-            <controls:Watch3DView x:Name="background_preview"
+            <controls:Watch3DView x:Name="BackgroundPreview" 
+                                  DataContext="{Binding BackgroundPreviewViewModel}"
                                   Margin="0,20,0,0"
-                                  Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                  IsHitTestVisible="{Binding WatchPreviewHitTest}">
+                                  Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
             </controls:Watch3DView>
             
         </Grid>
@@ -1532,8 +1490,8 @@
                                    VerticalAlignment="Stretch"
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
-                                   Margin="5 0 5 0">
-                            Library
+                                   Margin="5 0 5 0"
+                                   Text="{x:Static p:Resources.LibraryViewTitle}">                         
                         </TextBlock>
                     </Grid>
                 </Button>
@@ -1694,13 +1652,14 @@
             </ItemsControl.Visibility>
         </ItemsControl>
 
-        <Grid Grid.Row="2"
-              Grid.Column="2" Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <preview:Watch3DSettingsControl x:Name="watchSettingsControl"  
-                                            DataContext=""
-                                            HorizontalAlignment="Left" 
-                                            VerticalAlignment="Top" Margin="10,30" />
+        <Grid Name="galleryBackground"
+              Visibility="Hidden"
+              MouseLeftButtonDown="OnGalleryBackgroundMouseClick">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.8"/>
+            </Grid.Background>
         </Grid>
+
     </Grid>
 
 

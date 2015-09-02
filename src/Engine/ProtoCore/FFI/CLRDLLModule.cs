@@ -388,6 +388,10 @@ namespace ProtoFFI
                 if (isStaticClass && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
                     continue;
 
+                // Mono issue: m == m.GetBaseDefinition() for methods from Object class returns True instead of False
+                if (m.DeclaringType == typeof(object) && m == m.GetBaseDefinition())
+                    continue;
+
                 //Don't include overriden methods or generic methods
                 if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
                 {
@@ -1219,6 +1223,11 @@ namespace ProtoFFI
             get { return attributes; }
         }
 
+        public string PreferredShortName
+        {
+            get; private set;
+        }
+
         public FFIClassAttributes(Type type)
         {
             if (type == null)
@@ -1238,6 +1247,10 @@ namespace ProtoFFI
                     ObsoleteMessage = (attr as ObsoleteAttribute).Message;
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
+                }
+                else if (attr is PreferredShortNameAttribute)
+                {
+                    PreferredShortName = (attr as PreferredShortNameAttribute).PreferredShortName;
                 }
             }
         }
@@ -1307,6 +1320,13 @@ namespace ProtoFFI
                     var visibleInLibraryAttr = attr as IsVisibleInDynamoLibraryAttribute;
                     HiddenInLibrary = (visibleInLibraryAttr.Visible == false);
                 }
+                else if (attr is IsObsoleteAttribute)
+                {
+                    HiddenInLibrary = true;
+                    ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
+                    if (string.IsNullOrEmpty(ObsoleteMessage))
+                        ObsoleteMessage = "Obsolete";
+                }
                 else if (attr is ObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
@@ -1352,18 +1372,6 @@ namespace ProtoFFI
             }
         }
 
-        public string PreferredShortName
-        {
-            get
-            {
-                object shortName  = null;
-                if (TryGetAttribute("PreferredShortNameAttribute", out shortName))
-                    return shortName as string;
-                else
-                    return null;
-            }
-        }
-
         public FFIParamAttributes(ParameterInfo parameter)
         {
             var attributes = parameter.GetCustomAttributes(false);
@@ -1377,11 +1385,6 @@ namespace ProtoFFI
                 else if (attr is ArbitraryDimensionArrayImportAttribute)
                 {
                     AddAttribute("ArbitraryDimensionArrayImportAttribute", true);
-                }
-                else if (attr is PreferredShortNameAttribute)
-                {
-                    string shortName = (attr as PreferredShortNameAttribute).PreferredShortName;
-                    AddAttribute("PreferredShortNameAttribute", shortName);
                 }
             }
         }
