@@ -39,8 +39,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class CameraData
     {
-        private readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
-        private readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
+        private readonly Vector3D defaultCameraLookDirection = new Vector3D(2, -5, -50);
+        private readonly Point3D defaultCameraPosition = new Point3D(-2, 15, 50);
         private readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0);
         private const double defaultNearPlaneDistance = 0.1;
         private const double defaultFarPlaneDistance = 10000000;
