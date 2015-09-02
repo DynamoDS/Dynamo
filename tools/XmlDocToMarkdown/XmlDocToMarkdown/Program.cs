@@ -160,27 +160,50 @@ namespace Dynamo.Docs
                     methodName;
                 
                 Debug.WriteLine(t.FullName + "." + fullMethodName);
-                sb.Append(GetMarkdownForMethod(members, t.FullName + "." + fullMethodName));
+
+                var current = GetMarkdownForMethod(members, t.FullName + "." + fullMethodName);
+                var result = CheckAndAppendStability(current);
+
+                sb.Append(result);
             }
             sb.AppendLine("---");
 
             sb.AppendLine("##Properties:  ");
             foreach (var property in t.GetProperties())
             {
-                sb.Append(GetMarkdownForProperty(members, t.FullName + "." + property.Name));
+                var current = GetMarkdownForProperty(members, t.FullName + "." + property.Name);
+                var result = CheckAndAppendStability(current);
+                sb.Append(result);
             }
             sb.AppendLine("---");
 
             sb.AppendLine("##Events:  ");
             foreach (var e in t.GetEvents())
             {
-                sb.Append(GetMarkdownForEvent(members, t.FullName + "." + e.Name));
+                var current = GetMarkdownForEvent(members, t.FullName + "." + e.Name);
+                var result = CheckAndAppendStability(current);
+                sb.Append(result);
             }
             sb.AppendLine("---");
 
             var fileName = t.Name + ".md";
             var filePath = Path.Combine(folder, t.Name + ".md");
             System.IO.File.WriteAllText(filePath, sb.ToString());
+        }
+
+        private static string CheckAndAppendStability(string current)
+        {
+            if (string.IsNullOrEmpty(current))
+            {
+                return current;
+            }
+
+            if (current.Contains(XmlToMarkdown.ApiStabilityStub))
+            {
+                return current;
+            }
+
+            return current += string.Format(XmlToMarkdown.ApiStabilityTemplate+"\n", 1);
         }
 
         private static string GetMarkdownForMethod(IEnumerable<XElement> members, string methodName)
@@ -222,6 +245,10 @@ namespace Dynamo.Docs
 
     static class XmlToMarkdown
     {
+        private static string ApiStabilityTag = "api_stability";
+        internal static string ApiStabilityStub = "stability=";
+        internal static string ApiStabilityTemplate = ApiStabilityStub + "{0}";
+
         private static Dictionary<string,string> templates = 
             new Dictionary<string, string>
                 {
@@ -243,7 +270,8 @@ namespace Dynamo.Docs
                     {"typeparam", ""},
                     {"c", "`{0}`"},
                     {"search", ">{0}"},
-                    {"notranslation", "\n\n>{0}\n\n"}
+                    {"notranslation", "\n\n>{0}\n\n"},
+                    {ApiStabilityTag, ApiStabilityTemplate}
                 };
 
         private static Func<string, XElement, string[]> d = 
@@ -338,9 +366,10 @@ namespace Dynamo.Docs
                     {"c", x => new[]{x.Value}},
                     {"list", x => new string[0]},
                     // dynamo specific
-                    {"notranslation", x => new string[0]},
-                    {"search", x => new[]{x.Value}},
-                    {"filterpriority", x => new string[0]}
+                    {"notranslation", x => new string[0]},                   
+                    {"search", x => new string[0]},
+                    {"filterpriority", x => new string[0]},
+                    {"api_stability", x => new []{x.Value}}
                 };
 
         internal static string ToMarkDown(this XNode e)

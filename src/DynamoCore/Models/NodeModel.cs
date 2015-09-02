@@ -1690,7 +1690,7 @@ namespace Dynamo.Models
         private string GetDrawableId(int outPortIndex)
         {
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
-            return output == null ? null : output.ToString();
+            return output == null ? null : output.Value;
         }
 
         #endregion
