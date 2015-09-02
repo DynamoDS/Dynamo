@@ -23,7 +23,6 @@ namespace Dynamo.Publish
         private MenuItem manageCustomizersMenuItem;
         private Separator separator = new Separator();
  
-
         #region IViewExtension implementation
 
         public string UniqueId

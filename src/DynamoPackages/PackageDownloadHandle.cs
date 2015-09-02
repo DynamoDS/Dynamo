@@ -64,7 +64,7 @@ namespace Dynamo.PackageManager
             return packagesDirectory + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
         }
 
-        public bool Extract(DynamoModel dynamoModel, out Package pkg)
+        public bool Extract(DynamoModel dynamoModel, string installDirectory, out Package pkg)
         {
             this.DownloadState = State.Installing;
 
@@ -75,8 +75,10 @@ namespace Dynamo.PackageManager
                 throw new Exception(Properties.Resources.PackageEmpty);
             }
 
-            var packagesDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
-            var installedPath = BuildInstallDirectoryString(packagesDirectory);
+            if (String.IsNullOrEmpty(installDirectory))
+                installDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
+
+            var installedPath = BuildInstallDirectoryString(installDirectory);
             Directory.CreateDirectory(installedPath);
 
             // Now create all of the directories
