@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Xml;
 using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {

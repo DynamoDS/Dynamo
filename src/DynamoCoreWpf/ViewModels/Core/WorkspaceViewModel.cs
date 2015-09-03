@@ -59,7 +59,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToViewportCenter(object sender, ZoomEventArgs e)
+        private void OnRequestZoomToViewportCenter(object sender, ZoomEventArgs e)
         {
             if (RequestZoomToViewportCenter != null)
             {
@@ -72,7 +72,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToViewportPoint(object sender, ZoomEventArgs e)
+        internal void OnRequestZoomToViewportPoint(object sender, ZoomEventArgs e)
         {
             if (RequestZoomToViewportPoint != null)
             {
@@ -85,7 +85,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToFitView(object sender, ZoomEventArgs e)
+        private void OnRequestZoomToFitView(object sender, ZoomEventArgs e)
         {
             if (RequestZoomToFitView != null)
             {
@@ -93,7 +93,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
+        internal virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);

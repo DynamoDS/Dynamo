@@ -9,12 +9,12 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
-using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
+using Dynamo.Migration;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
 using Dynamo.Properties;
@@ -24,6 +24,8 @@ using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
+using Dynamo.Logging;
+
 using DynamoServices;
 using DynamoUnits;
 using Greg;
@@ -34,7 +36,7 @@ using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using Utils = Dynamo.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
-using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
+using FunctionGroup = Dynamo.Engine.FunctionGroup;
 
 namespace Dynamo.Models
 {
@@ -59,17 +61,17 @@ namespace Dynamo.Models
 
         #region events
 
-        public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
-        public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
-        public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
+        internal delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
+        internal event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
+        internal void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
         {
             if (RequestsFunctionNamePrompt != null)
                 RequestsFunctionNamePrompt(this, e);
         }
 
 
-        public event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
-        public void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
+        internal event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
+        internal void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
         {
             if (RequestPresetsNamePrompt != null)
                 RequestPresetsNamePrompt(e);
@@ -1762,7 +1764,7 @@ namespace Dynamo.Models
         }
 
 #if DEBUG_LIBRARY
-        private void DumpLibrarySnapshot(IEnumerable<DSEngine.FunctionGroup> functionGroups)
+        private void DumpLibrarySnapshot(IEnumerable<Engine.FunctionGroup> functionGroups)
         {
             if (null == functionGroups)
                 return;

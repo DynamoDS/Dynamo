@@ -2,6 +2,7 @@
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Logging;
 using Dynamo.Wpf.Authentication;
 using Greg;
 using Greg.AuthProviders;

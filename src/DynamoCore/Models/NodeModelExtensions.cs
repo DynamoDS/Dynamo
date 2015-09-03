@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Models;
 using ProtoCore.Mirror;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Models
 {
     public static class NodeModelExtensions
     {

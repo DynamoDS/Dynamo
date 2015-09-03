@@ -2,7 +2,7 @@
 
 #endregion
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     The type of a function.

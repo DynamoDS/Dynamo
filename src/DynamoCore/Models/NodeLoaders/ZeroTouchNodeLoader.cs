@@ -3,8 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using DSCoreNodesUI;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.Namespace;
@@ -14,7 +13,7 @@ namespace Dynamo.Models.NodeLoaders
     /// <summary>
     ///     Xml Loader for ZeroTouch nodes.
     /// </summary>
-    public class ZeroTouchNodeLoader : INodeLoader<NodeModel>
+    internal class ZeroTouchNodeLoader : INodeLoader<NodeModel>
     {
         private readonly LibraryServices libraryServices;
 

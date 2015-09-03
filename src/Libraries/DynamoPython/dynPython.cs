@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Xml;
 
+using Dynamo.Migration;
 using Dynamo.Models;
 
 namespace Dynamo.Nodes

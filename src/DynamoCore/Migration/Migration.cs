@@ -5,12 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Dynamo.Models
+namespace Dynamo.Migration
 {
     internal class Migration
     {
@@ -900,7 +902,7 @@ namespace Dynamo.Models
                 throw new ArgumentException(message, "outportCount");
             }
 
-            const string dummyNodeName = "DSCoreNodesUI.DummyNode";
+            const string dummyNodeName = "Dynamo.Nodes.DummyNode";
             XmlDocument document = element.OwnerDocument;
             XmlElement dummy = document.CreateElement(dummyNodeName);
 
