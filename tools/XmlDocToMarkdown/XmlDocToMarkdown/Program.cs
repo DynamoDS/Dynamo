@@ -121,8 +121,8 @@ namespace Dynamo.Docs
                     {
                         var typeParamName = typeParamelem.Attribute("name").Value;
                         var text = genericMember.Attribute("name").Value;
-                        text = text.Replace("``1", "[" + typeParamName + "]");
-                        text = text.Replace("``0", "[" + typeParamName + "]");
+                        text = text.Replace("``1", "<*" + typeParamName + "*>");
+                        text = text.Replace("``0", "<*" + typeParamName + "*>");
 
                         genericMember.Attribute("name").Value = text;
                     }
@@ -146,7 +146,7 @@ namespace Dynamo.Docs
                     //this returns T,T
                     var genericParamName = string.Join(",", typeParam.Select(ty => ty.Name));          
                     //this returns List<T,T>
-                    methodName = methodName + "[" + genericParamName + "]";
+                    methodName = methodName + "<*" + genericParamName + "*>";
                 }
                 var fullMethodName = methodParams.Any() ?
                     methodName + "(" + string.Join(",", methodParams.Select(pi => pi.ParameterType.FullName)) + ")" :
@@ -303,9 +303,8 @@ namespace Dynamo.Docs
                             if (methodParams[i].Contains("Dynamo"))
                             {                                
                                 className = methodParams[i].Split('.').Last();
-                                var url = ConstructUrl(methodParams[i]) + "/" + className;
-                                var style = "color:#CC0000";
-                                className = "<a href = " + url + " style= " + style + ">" + className + "</a>" ;
+                                var url = ConstructUrl(methodParams[i]) + "/" + className;                                                               
+                                className = "[" + className + "]" + "(" + url + ")";
                             }
                             else
                             {

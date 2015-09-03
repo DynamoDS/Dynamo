@@ -41,14 +41,42 @@ namespace Dynamo.DocumentationTestLibrary
         /// </summary>        
         /// <param name="n">The index.</param>
         /// <returns>New Array</returns>
-        /// <search>
-        /// Testing
-        /// </search>          
+        /// <search> Testing Search Tag </search>          
         /// <remarks>Testing remarks tag</remarks>        
         /// <typeparam name="T">The element type of the array</typeparam>
-        public T[] mkArray<T>(int n)
+        /// <api_stability>2</api_stability>
+        public T[] TestingGenerics<T>(int n)
         {
             return new T[n];
         }
-    }  
+
+        /// <summary>
+        /// Tests the hyper link.
+        /// </summary>
+        /// <param name="p">The p.</param>
+        /// <returns></returns>
+        public Person TestHyperLink(Person p)
+        {
+            return null;
+        }
+    }
+
+    public class Person
+    {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the age.
+        /// </summary>
+        /// <value>
+        /// The age.
+        /// </value>
+        public int age { get; set; }
+    }
 }
