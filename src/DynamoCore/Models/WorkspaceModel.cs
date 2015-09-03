@@ -74,12 +74,6 @@ namespace Dynamo.Models
         #region events
 
         /// <summary>
-        ///     Function that can be used to repsond to a saved workspace.
-        /// </summary>
-        /// <param name="model"></param>
-        public delegate void WorkspaceSavedEvent(WorkspaceModel model);
-
-        /// <summary>
         ///     Event that is fired when a workspace requests that a Node or Note model is
         ///     centered.
         /// </summary>
@@ -153,14 +147,14 @@ namespace Dynamo.Models
         /// <summary>
         ///     Event that is fired when the workspace is saved.
         /// </summary>
-        public event Action WorkspaceSaved;
-        protected virtual void OnWorkspaceSaved()
+        public event WorkspaceSavedHandler WorkspaceSaved;
+        protected virtual void OnWorkspaceSaved(WorkspaceEventArgs args)
         {
             LastSaved = DateTime.Now;
             HasUnsavedChanges = false;
 
             if (WorkspaceSaved != null)
-                WorkspaceSaved();
+                WorkspaceSaved(args);
         }
 
         /// <summary>
@@ -727,8 +721,8 @@ namespace Dynamo.Models
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore) && !isBackup)
-                    OnWorkspaceSaved();
+                if (SaveInternal(newPath, runtimeCore))
+                    OnWorkspaceSaved(new WorkspaceEventArgs(this, isBackup));
             }
             catch (Exception ex)
             {

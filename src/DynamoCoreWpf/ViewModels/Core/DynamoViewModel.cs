@@ -645,9 +645,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void ModelWorkspaceSaved(WorkspaceModel model)
+        private void ModelWorkspaceSaved(WorkspaceEventArgs args)
         {
-            this.AddToRecentFiles(model.FileName);
+            if (!args.IsBackUp)
+                this.AddToRecentFiles(args.Workspace.FileName);
         }
 
         private void ModelWorkspaceCleared(WorkspaceModel workspace)

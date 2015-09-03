@@ -224,10 +224,12 @@ namespace Dynamo.Models
     public class WorkspaceEventArgs
     {
         public WorkspaceModel Workspace { get; set; }
+        public readonly bool IsBackUp;
 
-        public WorkspaceEventArgs(WorkspaceModel workspace)
+        public WorkspaceEventArgs(WorkspaceModel workspace, bool isBackUp)
         {
             this.Workspace = workspace;
+            IsBackUp = isBackUp;
         }
     }
 
