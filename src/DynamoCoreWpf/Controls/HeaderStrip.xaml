@@ -4,23 +4,39 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             Name="HeaderStripControl">
-    <UserControl.Resources>
-        <controls:SelectedItemToActiveConverter x:Key="SelectedItemToActiveConverter"
-                                                NormalColor="Transparent"
-                                                ActiveColor="#393939" />
+             Name="HeaderStripControl"
+             Margin="-20,0,0,0"  
+             Padding="10,15,0,0"
+             FlowDirection="RightToLeft">
+    
+   <UserControl.LayoutTransform>
+       <RotateTransform Angle="-90"></RotateTransform>
+   </UserControl.LayoutTransform>
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <controls:SelectedItemToActiveConverter x:Key="SelectedItemToActiveConverter"
+                                                NormalColor="Transparent"
+                                                ActiveColor="#393939" />      
         <Style x:Key="HeaderTextBlockStyle"
                TargetType="{x:Type TextBlock}">
             <Setter Property="VerticalAlignment"
                     Value="Center" />
             <Setter Property="Foreground"
-                    Value="#999999" />
+                    Value="#868686" />
             <Setter Property="FontSize"
-                    Value="9" />
+                    Value="12" />
+            <!--<Setter Property="FontStyle"
+                    Value="Italic"/>-->
         </Style>
         <Style x:Key="HeaderListButtonStyle"
                TargetType="{x:Type Button}">
@@ -62,8 +78,8 @@
 
         <DataTemplate x:Key="SingleItemListTemplate">
             <Border x:Name="container"
-                    Padding="8,3,8,3"
-                    Background="#393939">
+                    Padding="0,3,8,3"
+                    Background="Transparent">
                 <TextBlock x:Name="text"
                            Style="{StaticResource HeaderTextBlockStyle}"
                            Text="{Binding SelectedItem.Text, ElementName=HeaderStripControl}">
@@ -76,7 +92,7 @@
                      BorderThickness="0">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Template">
+                        <!--<Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate>
                                     <Button Margin="0,0,16,0"
@@ -93,7 +109,7 @@
                                     </Button>
                                 </ControlTemplate>
                             </Setter.Value>
-                        </Setter>
+                        </Setter>-->
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemsPanel>
@@ -107,7 +123,8 @@
 
         <controls:HeaderTemplateSelector x:Key="HeaderTemplateSelector"
                                          SingleHeaderTemplate="{StaticResource SingleItemListTemplate}"
-                                         HeadersListTemplate="{StaticResource HeadersListTemplate}" />
+                                   HeadersListTemplate="{StaticResource HeadersListTemplate}" />
+       </ResourceDictionary>
     </UserControl.Resources>
     <ContentControl Content="{Binding HeadersList}"
                     ContentTemplateSelector="{StaticResource HeaderTemplateSelector}" />
