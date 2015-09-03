@@ -337,8 +337,8 @@ namespace GraphLayout
             }
 
             // Put all isolated nodes on the leftmost layer
-            AddToLayer(Nodes.Where(x =>
-                (x.LeftEdges.Count == 0 && x.RightEdges.Count == 0)).ToList(), Layers.Count);
+            AddToLayer(Nodes.Where(x => (x.Layer < 0 &&
+                x.LeftEdges.Count == 0 && x.RightEdges.Count == 0)).ToList(), Layers.Count);
 
             // Assign nodes with unconnected input ports right behind its next layer
             foreach (Node n in Nodes.Where(x => x.LeftEdges.Count == 0 && x.RightEdges.Count > 0))
