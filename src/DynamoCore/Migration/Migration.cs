@@ -902,7 +902,7 @@ namespace Dynamo.Migration
                 throw new ArgumentException(message, "outportCount");
             }
 
-            const string dummyNodeName = "DSCoreNodesUI.DummyNode";
+            const string dummyNodeName = "Dynamo.Nodes.DummyNode";
             XmlDocument document = element.OwnerDocument;
             XmlElement dummy = document.CreateElement(dummyNodeName);
 

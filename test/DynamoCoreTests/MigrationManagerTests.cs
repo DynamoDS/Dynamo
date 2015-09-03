@@ -327,8 +327,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("2", attribs["b"].Value);
             Assert.AreEqual("3", attribs["c"].Value);
 
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", dummy.Name);
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Nodes.DummyNode", dummy.Name);
+            Assert.AreEqual("Dynamo.Nodes.DummyNode", attribs["type"].Value);
             Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
             Assert.AreEqual("Deprecated", attribs["nodeNature"].Value);
             Assert.AreEqual("6", attribs["inputCount"].Value);
@@ -353,8 +353,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("2", attribs["b"].Value);
             Assert.AreEqual("3", attribs["c"].Value);
 
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", dummy.Name);
-            Assert.AreEqual("DSCoreNodesUI.DummyNode", attribs["type"].Value);
+            Assert.AreEqual("Dynamo.Nodes.DummyNode", dummy.Name);
+            Assert.AreEqual("Dynamo.Nodes.DummyNode", attribs["type"].Value);
             Assert.AreEqual("OldNamespace.OldClass", attribs["legacyNodeName"].Value);
             Assert.AreEqual("Unresolved", attribs["nodeNature"].Value);
             Assert.AreEqual("6", attribs["inputCount"].Value);

@@ -2086,3 +2086,20 @@ namespace Dynamo.Nodes
         }
     }
 }
+
+namespace DSCoreNodesUI
+{
+    public class DummyNode : MigrationNode
+    {
+        [NodeMigration(@from: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(oldNode, "Dynamo.Nodes.DummyNode", oldNode.Attributes["nickname"].Value, true);
+            migrationData.AppendNode(newNode);
+
+            return migrationData;
+        }
+    }
+}
