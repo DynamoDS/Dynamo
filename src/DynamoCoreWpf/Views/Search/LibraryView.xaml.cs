@@ -296,12 +296,15 @@ namespace Dynamo.UI.Views
         private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var senderButton = e.OriginalSource as FrameworkElement;
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (senderButton != null)
+            {
+                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
 
-            //sender can be RootSearchElementVM or ClassInformationViewModel. 
-            //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
-            if (searchElementVM != null)
-                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+                //sender can be RootSearchElementVM or ClassInformationViewModel. 
+                //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
+                if (searchElementVM != null)
+                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+            }
         }
 
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
@@ -310,12 +313,15 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (senderButton != null)
+            {
+                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
 
-            //sender can be RootSearchElementVM or ClassInformationViewModel. 
-            //And we should just fire HandleMouseMove, when ViewModel is NodeSearchElementViewModel
-            if (searchElementVM != null)
-                dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null)); 
+                //sender can be RootSearchElementVM or ClassInformationViewModel. 
+                //And we should just fire HandleMouseMove, when ViewModel is NodeSearchElementViewModel
+                if (searchElementVM != null)
+                    dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            }
         }
 
         #endregion
