@@ -677,6 +677,7 @@
                           Background="{StaticResource LibraryItemHostBackground}"
                           ItemContainerStyle="{StaticResource ClassTreeViewItem}"
                           BorderThickness="0"
+                          FocusManager.IsFocusScope="true"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                           ScrollViewer.VerticalScrollBarVisibility="Hidden"
                           ScrollViewer.CanContentScroll="False"
@@ -789,7 +790,8 @@
                 <TreeView ItemsSource="{Binding BrowserRootCategories}"
                           ItemTemplateSelector="{StaticResource LibraryTreeTemplateSelector}"
                           ItemContainerStyle="{StaticResource LibraryTreeViewItem}"
-                          Name="CategoryTreeView">
+                          Name="CategoryTreeView"
+                          FocusManager.IsFocusScope="true">
                     <TreeView.Template>
                         <ControlTemplate>
                             <ItemsPresenter />
