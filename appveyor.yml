@@ -13,6 +13,6 @@ build_script:
   - msbuild %xmlDocs_solution%
 
 after_build:
-    - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/XmlDocToMarkdown.exe bin/AnyCPU/Release/DynamoCore.dll  bin/AnyCPU/Release/DynamoCore.xml	
+    - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1 	
   
 test: off
