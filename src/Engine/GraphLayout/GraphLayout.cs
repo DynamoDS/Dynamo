@@ -486,13 +486,10 @@ namespace GraphLayout
         /// </summary>
         public void NormalizeGraphPosition()
         {
-            List<List<Node>> ReversedLayers = Layers;
-            ReversedLayers.Reverse();
-
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
 
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.AsEnumerable().Reverse())
             {
                 double layerWidth = layer.Max(x => x.Width);
 

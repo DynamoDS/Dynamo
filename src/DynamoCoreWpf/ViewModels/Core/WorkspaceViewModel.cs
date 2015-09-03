@@ -1055,7 +1055,8 @@ namespace Dynamo.ViewModels
             if (Model.Nodes.Count() == 0)
                 return;
 
-            var graph = new GraphLayout.Graph();
+            Model.GraphLayoutGraph = new GraphLayout.Graph();
+            var graph = Model.GraphLayoutGraph;
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
 
             foreach (AnnotationModel group in Model.Annotations)
