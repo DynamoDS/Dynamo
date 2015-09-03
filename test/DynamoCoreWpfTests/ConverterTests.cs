@@ -355,32 +355,24 @@ namespace Dynamo.Tests
             string name = "";
             var thickness = new Thickness(5, 0, 0, 0);
             object result;
-
-            //1. Name is null.
-            //2. Name is empty.
-            //3. Name is "Category".
-            //4. Name is "Category.NestedClass1".
-            //5. Name is "Category.NestedClass1.NestedClass2".
-
-            // 1 case            
-            Assert.Throws<ArgumentException>(() => converter.Convert(null, null, null, null));
-
-            // 2 case            
-            Assert.Throws<ArgumentException>(() => converter.Convert(name, null, null, null));
-
-            // 3 case
+            
+            //1. Name is "Category".
+            //2. Name is "Category.NestedClass1".
+            //3. Name is "Category.NestedClass1.NestedClass2".
+           
+            // 1 case
             name = "Category";
             thickness = new Thickness(5, 0, 0, 0);
             result = converter.Convert(name, null, null, null);
             Assert.AreEqual(thickness, result);
 
-            // 4 case
+            // 2 case
             name = "Category.NestedClass1";
             thickness = new Thickness(25, 0, 20, 0);
             result = converter.Convert(name, null, null, null);
             Assert.AreEqual(thickness, result);
 
-            // 5 case
+            // 3 case
             name = "Category.NestedClass1.NestedClass2";
             thickness = new Thickness(45, 0, 20, 0);
             result = converter.Convert(name, null, null, null);
