@@ -11,5 +11,8 @@ environment:
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
+
+after_build:
+    - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/XmlDocToMarkdown.exe bin/AnyCPU/Release/DynamoCore.dll  bin/AnyCPU/Release/DynamoCore.xml	
   
 test: off
