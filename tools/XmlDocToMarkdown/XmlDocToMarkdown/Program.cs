@@ -43,13 +43,6 @@ namespace Dynamo.Docs
             }
 
             GenerateDocYaml();
-
-            //var xml = File.ReadAllText(args[0]);
-            //var doc = XDocument.Parse(xml);
-            //var md = doc.Root.ToMarkDown();
-            //Console.WriteLine(md);
-
-            //System.IO.File.WriteAllText(@"result.md", md);
         }
 
         private static DirectoryInfo CreateDocsFolder()
@@ -268,9 +261,7 @@ namespace Dynamo.Docs
                     {"returns", "Returns: {0}\n\n"},
                     {"none", ""},
                     {"typeparam", ""},
-                    {"c", "`{0}`"},
-                    {"search", ">{0}"},
-                    {"notranslation", "\n\n>{0}\n\n"},
+                    {"c", "`{0}`"},                   
                     {ApiStabilityTag, ApiStabilityTemplate}
                 };
 
