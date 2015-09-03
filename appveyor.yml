@@ -4,8 +4,13 @@ platform: Any CPU
 
 configuration: Release
 
-build:
-  project: src/Dynamo.All.2013.sln
-  verbosity: normal
+environment:
+  matrix:
+  - dynamo_solution	: src/Dynamo.All.2013.sln
+  - xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
+
+build_script:
+  - msbuild %dynamo_solution%
+  - msbuild %xmlDocs_solution%
   
 test: off
