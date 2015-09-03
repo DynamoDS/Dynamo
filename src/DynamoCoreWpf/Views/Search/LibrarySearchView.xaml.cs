@@ -150,6 +150,7 @@ namespace Dynamo.UI.Views
                 dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
             else
                 dragDropHelper.Clear();
+
         }
 
         #endregion

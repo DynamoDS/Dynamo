@@ -63,7 +63,7 @@ namespace Dynamo.UI.Views
 
         private void OnClassButtonCollapse(object sender, MouseButtonEventArgs e)
         {
-            var classButton = sender as ListViewItem;
+            var classButton = sender as TreeViewItem;
             if ((classButton == null) || !classButton.IsSelected) return;
 
             classButton.IsSelected = false;
@@ -97,11 +97,11 @@ namespace Dynamo.UI.Views
             }
 
             FrameworkElement fromSender = sender as FrameworkElement;
+            libraryToolTipPopup.PlacementTarget = fromSender;
             var memberVM = fromSender.DataContext as NodeSearchElementViewModel;
             if (memberVM != null)
             {
-                libraryToolTipPopup.PlacementTarget = fromSender;
-                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+                libraryToolTipPopup.SetDataContext(memberVM);
             }
         }
 
@@ -296,12 +296,15 @@ namespace Dynamo.UI.Views
         private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var senderButton = e.OriginalSource as FrameworkElement;
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (senderButton != null)
+            {
+                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
 
-            //sender can be RootSearchElementVM or ClassInformationViewModel. 
-            //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
-            if (searchElementVM != null)
-                dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+                //sender can be RootSearchElementVM or ClassInformationViewModel. 
+                //And we should just fire HandleMouseLeftButtonDown, when ViewModel is NodeSearchElementViewModel
+                if (searchElementVM != null)
+                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+            }
         }
 
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
@@ -310,12 +313,15 @@ namespace Dynamo.UI.Views
                 return;
 
             var senderButton = e.OriginalSource as FrameworkElement;
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            //sender can be RootSearchElementVM or ClassInformationViewModel. 
-            //And we should just fire HandleMouseMove, when ViewModel is NodeSearchElementViewModel
-            if (searchElementVM != null)
-                dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null)); 
+            if (senderButton != null)
+            {
+                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
 
+                //sender can be RootSearchElementVM or ClassInformationViewModel. 
+                //And we should just fire HandleMouseMove, when ViewModel is NodeSearchElementViewModel
+                if (searchElementVM != null)
+                    dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            }
         }
 
         #endregion
