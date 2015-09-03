@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -8,6 +11,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
@@ -617,6 +621,27 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\\Home\somedyn.dyn"));
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\somedyn.dyn"));
             Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn"));
+        }
+
+        [Test]
+        public void TreeViewListBoxTitleConverterTest()
+        {
+            var headerStrip = new HeaderStrip();
+            List<HeaderStripItem> headerItems = new List<HeaderStripItem>();
+            headerItems.Add(new HeaderStripItem() { Text = "CREATE" });
+            headerStrip.HeaderStripItems = headerItems;
+            var listBox = new ListBox();
+            listBox.Items.Add("Test");
+
+            object[] objects = new object[2];
+            objects[0] = headerStrip;
+            objects[1] = listBox;
+            
+            var converter = new TreeViewListBoxTitleConverter();
+            converter.Convert(objects, null, null, null);
+
+            var item = headerItems.FirstOrDefault();
+            Assert.AreEqual("C", item.Text);
         }
     }
 }
