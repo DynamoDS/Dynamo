@@ -1,31 +1,29 @@
 ﻿Write-Host "Running Xml Markdown"
 
-$app = "C:\projects\dynamo\tools\XmlDocToMarkdown\bin\Release\XmlDocToMarkdown.exe"
-$arg1 = "C:\projects\dynamo\bin\Release\DynamoCore.dll"
-$arg2 = "C:\projects\dynamo\bin\Release\DynamoCore.xml"
+$app = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\AnyCPU\Release\XmlDocToMarkdown.exe"
+$arg1 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.dll"
+$arg2 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.xml"
 
 If(-not(Test-Path -path $app))
   {
-    Write-Host "File does not exists on XmlDocToMarkdown "
-	Write-Host "Dynamo Path"		 
-	Get-ChildItem -Path C:\projects\dynamo\  –Directory
-	Write-Host "Dynamo Path1"
-	Get-ChildItem -Path C:\projects\dynamo\bin\AnyCPU\ –Directory
-	Write-Host "Dynamo Path2"
-	Get-ChildItem -Path C:\projects\dynamo\bin\AnyCPU\Release\ –File
-	Write-Host "Dynamo Path3"
-	Get-ChildItem -Path C:\projects\dynamo\tools -Directory
-	Write-Host "Dynamo Path4"
-	Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\bin -Directory
-	Write-Host "Dynamo Path5"
-	Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\bin\AnyCPU\Release -File
+    $app
+    Write-Host "File does not exists"
+	{ "File does not exists" ; exit }
+  }
+ 
+ If(-not(Test-Path -path $arg1))
+  {
+    $arg1
+    Write-Host "File does not exists"
+	{ "File does not exists" ; exit }
   }
   
-$check = "bin\Release\XmlDocToMarkdown.exe"
-
-If(-not(Test-Path -path $arg1))
+  If(-not(Test-Path -path $arg2))
   {
-    Write-Host "File does not exists on Dynamo"
+    $arg2
+    Write-Host "File does not exists"
+	{ "File does not exists" ; exit }
   }
+  
 
 & $app $arg1 $arg2
