@@ -56,7 +56,7 @@ namespace Dynamo.Wpf.Authentication
             return navigateSuccess;
         }
 
-        public void ShowShapewaysLogin(ShapewaysClient client) 
+        internal void ShowShapewaysLogin(ShapewaysClient client) 
         {
             context.Send((_) =>
             {
@@ -89,6 +89,11 @@ namespace Dynamo.Wpf.Authentication
             }, null);
         }
 
+        /// <summary>
+        /// Hides or allows displaying of script errors in WebBrowser control
+        /// </summary>
+        /// <param name="wb">WebBrowser object</param>
+        /// <param name="Hide">Indicates whether scripts will be displayed or not</param>
         private void HideScriptErrors(WebBrowser wb, bool Hide)
         {
             FieldInfo fiComWebBrowser = typeof(WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
