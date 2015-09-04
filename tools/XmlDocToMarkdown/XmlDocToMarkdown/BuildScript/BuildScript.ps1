@@ -22,8 +22,8 @@ If(-not(Test-Path -path $app))
     Write-Host "File does not exists"	
   }
   
-Write-Host "Running Xml Markdown exe"
 & $app $arg1 $arg2
+Write-Host "XMLMarkdown ran successfully"
 
 Write-Host "copying the markdown file"
 
@@ -38,5 +38,10 @@ If(-not(Test-Path -path $docsDir))
  Else
 	{
 		Copy-Item $mdFile  $docsDir
+		Write-Host "Markdown file copied"
 	}
+	
+Write-Host "Checking MkDocs"
+Get-ChildItem -Path "C:\" -Directory
+
   
