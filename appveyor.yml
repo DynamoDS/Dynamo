@@ -8,6 +8,9 @@ environment:
   dynamo_solution	: src/Dynamo.All.2013.sln
   xmlDocs_solution	: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
 
+install:
+	- cinst MkDocs
+  
 build_script:
   - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
