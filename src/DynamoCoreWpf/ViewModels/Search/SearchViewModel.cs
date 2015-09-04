@@ -52,6 +52,13 @@ namespace Dynamo.ViewModels
                 SearchTextChanged(this, e);
         }
 
+        internal event Action<int,int,int> SelectionChanged;
+        private void OnSelectionChanged(int categoryIndex, int groupIndex, int memberIndex)
+        {
+            if (SelectionChanged != null)
+                SelectionChanged(categoryIndex, groupIndex, memberIndex);
+        }
+
         #endregion
 
         #region Properties/Fields
@@ -875,6 +882,9 @@ namespace Dynamo.ViewModels
         public void MoveSelection(NavigationDirection direction)
         {
             selectionNavigator.MoveSelection(direction);
+            OnSelectionChanged(selectionNavigator.selectedCategoryIndex,
+                               selectionNavigator.selectedMemberGroupIndex,
+                               selectionNavigator.selectedMemberIndex);
         }
 
         internal void ExecuteSelectedMember()

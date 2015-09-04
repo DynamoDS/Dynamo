@@ -18,17 +18,17 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Used during library search key navigation. Indicates which item index is selected.
         /// </summary>
-        private int selectedCategoryIndex = -1;
+        internal int selectedCategoryIndex = -1;
 
         /// <summary>
         /// Used during library search key navigation. Indicates which group index is selected.
         /// </summary>
-        private int selectedMemberGroupIndex = -1;
+        internal int selectedMemberGroupIndex = -1;
 
         /// <summary>
         /// Used during library search key navigation. Indicates which category index is selected.
         /// </summary>
-        private int selectedMemberIndex = -1;
+        internal int selectedMemberIndex = -1;
 
         private IEnumerable<SearchCategory> root = null;
 
