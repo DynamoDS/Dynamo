@@ -372,8 +372,8 @@
   <data name="MapPortDataResultToolTip" xml:space="preserve">
     <value>Mapped list</value>
   </data>
-  <data name="NumberRangeDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers in the specified range.</value>
+  <data name="RangeDescription" xml:space="preserve">
+    <value>Creates a sequence of numbers or letters in the specified range.</value>
     <comment>Description for Number Range</comment>
   </data>
   <data name="NumberSequenceDescription" xml:space="preserve">
@@ -554,7 +554,7 @@
   <data name="IntegerSliderSearchTags" xml:space="preserve">
     <value>integerslider;</value>
   </data>
-  <data name="NumberRangeSearchTags" xml:space="preserve">
+  <data name="RangeSearchTags" xml:space="preserve">
     <value>numberrange;numbersequence;</value>
   </data>
   <data name="NumberSequenceSearchTags" xml:space="preserve">
