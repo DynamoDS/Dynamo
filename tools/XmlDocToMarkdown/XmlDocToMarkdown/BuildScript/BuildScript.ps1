@@ -30,8 +30,9 @@ Write-Host "copying the markdown file"
 $mdFile = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\index.md"
 $docsDir = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs"
 
-If(-not(Test-Path -path $mdFile) or -not(Test-Path -path $docsDir) )
-  {    
+If(-not(Test-Path -path $docsDir))
+  {  
+	 $docsDir  
      Write-Host "File does not exists, Cannot copy item"	
   }
  Else
