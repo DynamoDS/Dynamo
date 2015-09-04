@@ -4,6 +4,12 @@ $app = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\AnyCPU\Re
 $arg1 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.dll"
 $arg2 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.xml"
 
+Write-Host "Dynamo Path3"
+Get-ChildItem -Path C:\projects\dynamo\bin\AnyCPU\Release -File
+
+Write-Host "Dynamo Path4"
+Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown -Directory
+
 If(-not(Test-Path -path $app))
   {
     $app
