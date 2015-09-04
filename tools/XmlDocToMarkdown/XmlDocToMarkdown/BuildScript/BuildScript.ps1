@@ -7,14 +7,18 @@ $arg2 = "C:\projects\dynamo\bin\Release\DynamoCore.xml"
 If(-not(Test-Path -path $app))
   {
     Write-Host "File does not exists on XmlDocToMarkdown "
-	Write-Host "Root Path"
-	
-	resolve-path ~
-    
-	Get-ChildItem -Path \bin\Release\ –File
-	Get-ChildItem -Path \dynamo\tools -Directory
-	Get-ChildItem -Path \dynamo\tools\XmlDocToMarkdown\bin -Directory
-	Get-ChildItem -Path \dynamo\tools\XmlDocToMarkdown\bin\Release -File
+	Write-Host "Dynamo Path"		 
+	Get-ChildItem -Path C:\projects\dynamo\  –Directory
+	Write-Host "Dynamo Path1"
+	Get-ChildItem -Path C:\projects\dynamo\bin\ –Directory
+	Write-Host "Dynamo Path2"
+	Get-ChildItem -Path C:\projects\dynamo\bin\Release\ –File
+	Write-Host "Dynamo Path3"
+	Get-ChildItem -Path C:\projects\dynamo\tools\dynamo\tools -Directory
+	Write-Host "Dynamo Path4"
+	Get-ChildItem -Path C:\projects\dynamo\tools\dynamo\tools\XmlDocToMarkdown\bin -Directory
+	Write-Host "Dynamo Path5"
+	Get-ChildItem -Path C:\projects\dynamo\tools\dynamo\tools\XmlDocToMarkdown\bin\Release -File
   }
   
 $check = "bin\Release\XmlDocToMarkdown.exe"
