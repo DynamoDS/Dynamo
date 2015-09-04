@@ -4732,7 +4732,7 @@ f1;f2;f3;f4;
 
         }
 
-        [Test] //Fuqiang: this is changed due to the implementation of function pointer
+        [Test] 
         [Category("SmokeTest")]
         public void TV57_Defect_1454932()
         {
@@ -4748,7 +4748,6 @@ f1;f2;f3;f4;
 	c = Foo;
 }";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("c", 5, 0);
         }
 
         [Test]
