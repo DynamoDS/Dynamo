@@ -9,7 +9,7 @@ If(-not(Test-Path -path $app))
     Write-Host "File does not exists on XmlDocToMarkdown "
   }
   
-$check = "C:\projects\dynamo\bin\Release\XmlDocToMarkdown.exe"
+$check = "bin\Release\XmlDocToMarkdown.exe"
 
 If(-not(Test-Path -path $check))
   {
