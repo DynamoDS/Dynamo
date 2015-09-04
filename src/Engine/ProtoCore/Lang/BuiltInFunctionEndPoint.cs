@@ -1216,7 +1216,7 @@ namespace ProtoCore.Lang
                         }
                     default:
                         {
-                            return null;
+                            break;
                         }
                 }
             }
