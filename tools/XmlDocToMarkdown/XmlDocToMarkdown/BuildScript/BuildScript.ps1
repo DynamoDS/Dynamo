@@ -1,7 +1,7 @@
-Write-Host "Running Xml Markdown"
+﻿Write-Host "Running Xml Markdown"
 
-$app = 'tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\XmlDocToMarkdown.exe'
-$arg1 = '/bin/AnyCPU/Release/DynamoCore.dll'
-$arg2 = '/bin/AnyCPU/Release/DynamoCore.xml'
+$app = "tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Debug\XmlDocToMarkdown.exe"
+$arg1 = "bin\AnyCPU\Release\DynamoCore.dll"
+$arg2 = "bin\AnyCPU\Release\DynamoCore.xml"
 
 & $app $arg1 $arg2
