@@ -4,4 +4,16 @@ $app = "C:\projects\dynamo\tools\XmlDocToMarkdown\bin\Release\XmlDocToMarkdown.e
 $arg1 = "C:\projects\dynamo\bin\Release\DynamoCore.dll"
 $arg2 = "C:\projects\dynamo\bin\Release\DynamoCore.xml"
 
+If(-not(Test-Path -path $app))
+  {
+    Write-Host "File does not exists on XmlDocToMarkdown "
+  }
+  
+$check = "C:\projects\dynamo\bin\Release\XmlDocToMarkdown.exe"
+
+If(-not(Test-Path -path $check))
+  {
+    Write-Host "File does not exists on Dynamo"
+  }
+
 & $app $arg1 $arg2
