@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Threading;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -25,10 +25,10 @@ namespace Dynamo.TestInfrastructure
             bool pass = false;
 
             var nodes = DynamoViewModel.Model.CurrentWorkspace.Nodes;
-            if (nodes.Count == 0)
-                return pass;
+            if (nodes.Count() == 0)
+                return true;
 
-            int nodesCountBeforeDelete = nodes.Count;
+            int nodesCountBeforeDelete = nodes.Count();
 
             writer.WriteLine("### - Beginning readout");
             
@@ -37,7 +37,7 @@ namespace Dynamo.TestInfrastructure
 
             int numberOfUndosNeeded = Mutate(node);
 
-            Thread.Sleep(100);
+            Thread.Sleep(0);
 
             writer.WriteLine("### - delete complete");
             writer.Flush();
@@ -51,14 +51,14 @@ namespace Dynamo.TestInfrastructure
 
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
-            Thread.Sleep(100);
+            Thread.Sleep(0);
 
             writer.WriteLine("### - re-exec complete");
             writer.Flush();
 
             writer.WriteLine("### - Beginning undo");
 
-            int nodesCountAfterDelete = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
+            int nodesCountAfterDelete = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count();
 
             if (nodesCountBeforeDelete > nodesCountAfterDelete)
             {
@@ -72,29 +72,18 @@ namespace Dynamo.TestInfrastructure
 
                         DynamoViewModel.ExecuteCommand(undoCommand);
                     }));
-                    Thread.Sleep(100);
+                    Thread.Sleep(0);
                 }
                 writer.WriteLine("### - undo complete");
                 writer.Flush();
 
                 writer.WriteLine("### - Beginning re-exec");
 
-                DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-                {
-                    DynamoModel.RunCancelCommand runCancel =
-                        new DynamoModel.RunCancelCommand(false, false);
-
-                    DynamoViewModel.ExecuteCommand(runCancel);
-                }));
-                Thread.Sleep(10);
-                while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-                {
-                    Thread.Sleep(10);
-                }
+                ExecuteAndWait();
                 writer.WriteLine("### - re-exec complete");
                 writer.Flush();
 
-                int nodesCountAfterUbdo = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
+                int nodesCountAfterUbdo = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count();
                 if (nodesCountBeforeDelete == nodesCountAfterUbdo)
                     writer.WriteLine("### - Node was restored");
                 else

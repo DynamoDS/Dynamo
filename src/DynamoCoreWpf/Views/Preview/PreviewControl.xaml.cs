@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+using Dynamo.Extensions;
 
 namespace Dynamo.UI.Controls
 {
@@ -297,6 +298,10 @@ namespace Dynamo.UI.Controls
                     {
                         newContent = mirrorData.Class.ClassName;
                     }
+                    else if (mirrorData.Data is Enum)
+                    {
+                        newContent = ((Enum) mirrorData.Data).GetDescription();
+                    }
                     else
                     {
                         newContent = mirrorData.StringData;
@@ -334,7 +339,7 @@ namespace Dynamo.UI.Controls
             if (largeContentGrid.Children.Count == 0)
             {
                 var tree = new WatchTree();
-                tree.DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.VisualizationManager);
+                tree.DataContext = new WatchViewModel();
                 largeContentGrid.Children.Add(tree);
             }
 

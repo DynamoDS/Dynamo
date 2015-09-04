@@ -6,7 +6,7 @@ using Dynamo.Models;
 
 namespace Dynamo.Core
 {
-    public class PulseMaker
+    internal class PulseMaker
     {
         #region Class Data Members and Properties
 

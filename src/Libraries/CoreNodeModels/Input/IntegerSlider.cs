@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
@@ -16,6 +17,7 @@ namespace DSCoreNodesUI.Input
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("IntegerSliderNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("IntegerSliderSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class IntegerSlider : SliderBase<int>

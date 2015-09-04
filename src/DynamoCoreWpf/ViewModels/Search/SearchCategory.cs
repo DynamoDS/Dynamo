@@ -11,7 +11,7 @@ using Dynamo.UI.Commands;
 
 namespace Dynamo.Search
 {
-    public class SearchCategory : NotificationObject
+    public class SearchCategory : NotificationObject, ISearchEntryViewModel
     {
         private readonly ObservableCollection<NodeCategoryViewModel> classes;
         private readonly List<SearchMemberGroup> memberGroups;
@@ -20,6 +20,9 @@ namespace Dynamo.Search
 
         private bool isExpanded;
         public bool IsExpanded { get { return isExpanded; } }
+
+        private bool isTopCategory;
+        public bool IsTopCategory { get { return isTopCategory; } }
 
         // TODO: classes functionality.
         //       All functionality marked as 'classes functionality'
@@ -43,12 +46,13 @@ namespace Dynamo.Search
             RaisePropertyChanged("IsExpanded");
         }
 
-        internal SearchCategory(string name)
+        internal SearchCategory(string name, bool isTopResult = false)
         {
             Name = name;
             classes = new ObservableCollection<NodeCategoryViewModel>();
             memberGroups = new List<SearchMemberGroup>();
             isExpanded = true;
+            isTopCategory = isTopResult;
 
             ClickedCommand = new DelegateCommand(OnClicked);
         }
@@ -116,6 +120,32 @@ namespace Dynamo.Search
             // TODO(Vladimir): classes functionality.
             //Classes.ToList().ForEach(x => x.RecursivelySort());
             MemberGroups.ToList().ForEach(x => x.Sort());
+        }
+
+
+        public bool Visibility
+        {
+            get { return true; }
+        }
+
+        public bool IsSelected
+        {
+            get { return false; }
+        }
+
+        public string Description
+        {
+            get { return String.Empty; }
+        }
+
+        public ElementTypes ElementType
+        {
+            get { return ElementTypes.None; }
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

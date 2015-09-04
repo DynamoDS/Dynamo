@@ -32,19 +32,22 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Logging;
 
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Gallery;
+using System.Collections.Generic;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Interfaces;
+using Dynamo.Wpf.Views.PackageManager;
 
 namespace Dynamo.Controls
 {
     /// <summary>
     ///     Interaction logic for DynamoForm.xaml
     /// </summary>
-    public partial class DynamoView : Window
+    public partial class DynamoView : Window, IDisposable
     {
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
         private DynamoViewModel dynamoViewModel;
@@ -53,7 +56,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private LoginService loginService;
-        private ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
+        internal ViewExtensionManager viewExtensionManager = new ViewExtensionManager();
 
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -114,18 +117,26 @@ namespace Dynamo.Controls
 
             _workspaceResizeTimer.Tick += _resizeTimer_Tick;
 
-            loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            {
+                loginService = new LoginService(this, new System.Windows.Forms.WindowsFormsSynchronizationContext());
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin += loginService.ShowLogin;
+            }
 
             var viewExtensions = viewExtensionManager.ExtensionLoader.LoadDirectory(dynamoViewModel.Model.PathManager.ViewExtensionsDirectory);
             viewExtensionManager.MessageLogged += Log;
+
+            var startupParams = new ViewStartupParams(dynamoViewModel);
 
             foreach (var ext in viewExtensions)
             {
                 try
                 {
-                    ext.Startup(null);
+                    var logSource = ext as ILogSource;
+                    if (logSource != null)
+                        logSource.MessageLogged += Log;
+
+                    ext.Startup(startupParams);
                     viewExtensionManager.Add(ext);
                 }
                 catch (Exception exc)
@@ -336,23 +347,23 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestViewOperation(ViewOperationEventArgs e)
         {
-            if (dynamoViewModel.CanNavigateBackground == false)
+            if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground == false)
                 return;
 
             switch (e.ViewOperation)
             {
                 case ViewOperationEventArgs.Operation.FitView:
-                    background_preview.View.ZoomExtents();
+                    BackgroundPreview.View.ZoomExtents();
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
-                    var camera1 = background_preview.View.CameraController;
-                    camera1.Zoom(-0.5 * background_preview.View.ZoomSensitivity);
+                    var camera1 = BackgroundPreview.View.CameraController;
+                    camera1.Zoom(-0.5 * BackgroundPreview.View.ZoomSensitivity);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
-                    var camera2 = background_preview.View.CameraController;
-                    camera2.Zoom(0.5 * background_preview.View.ZoomSensitivity);
+                    var camera2 = BackgroundPreview.View.CameraController;
+                    camera2.Zoom(0.5 * BackgroundPreview.View.ZoomSensitivity);
                     break;
             }
         }
@@ -398,6 +409,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackagePathsDialog += DynamoViewModelRequestPackagePaths;
 
             #endregion
 
@@ -414,6 +426,7 @@ namespace Dynamo.Controls
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt += DynamoViewModelRequestPresetNamePrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt += DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
@@ -440,13 +453,13 @@ namespace Dynamo.Controls
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
 
-            watchSettingsControl.DataContext = background_preview;
+            var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
 
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
                 try
                 {
-                    ext.Loaded(null);
+                    ext.Loaded(loadedParams);
                 }
                 catch (Exception exc)
                 {
@@ -577,6 +590,13 @@ namespace Dynamo.Controls
             _pkgSearchVM.RefreshAndSearchAsync();
         }
 
+        private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
+        {
+            var viewModel = new PackagePathViewModel(dynamoViewModel.PreferenceSettings);
+            var view = new PackagePathView(viewModel) { Owner = this };
+            view.ShowDialog();
+        }
+
         private InstalledPackagesView _installedPkgsView;
         void DynamoViewModelRequestShowInstalledPackages(object s, EventArgs e)
         {
@@ -647,6 +667,7 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.CopyCommand.RaiseCanExecuteChanged();
             dynamoViewModel.PasteCommand.RaiseCanExecuteChanged();
+            dynamoViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
         }
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
@@ -663,50 +684,77 @@ namespace Dynamo.Controls
 
         void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
-            if (!string.IsNullOrEmpty(e.Path))
+            if (string.IsNullOrEmpty(e.Path))
+                return;
+
+            var workspace = dynamoViewModel.Model.CurrentWorkspace;
+            if (workspace == null)
+                return;
+
+            if (!workspace.Nodes.Any() && (!workspace.Notes.Any()))
+                return; // An empty graph.
+
+            var initialized = false;
+            var bounds = new Rect();
+
+            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
+            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
+            for (int index = 0; index < childrenCount; ++index)
             {
-                var control = WpfUtilities.ChildOfType<ZoomBorder>(this, "zoomBorder");
+                var child = VisualTreeHelper.GetChild(dragCanvas, index);
+                var firstChild = VisualTreeHelper.GetChild(child, 0);
+                if ((!(firstChild is NodeView)) && (!(firstChild is NoteView)))
+                    continue;
 
-                double width = 1;
-                double height = 1;
+                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
+                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
+                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
 
-                // connectors are most often within the bounding box of the nodes and notes
-
-                foreach (NodeModel n in dynamoViewModel.Model.CurrentWorkspace.Nodes)
+                if (initialized)
+                    bounds.Union(childBounds);
+                else
                 {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
+                    initialized = true;
+                    bounds = childBounds;
                 }
+            }
 
-                foreach (NoteModel n in dynamoViewModel.Model.CurrentWorkspace.Notes)
+            // Add padding to the edge and make them multiples of two.
+            bounds.Width = (((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01;
+            bounds.Height = (((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01;
+
+            var drawingVisual = new DrawingVisual();
+            using (var drawingContext = drawingVisual.RenderOpen())
+            {
+                var targetRect = new Rect(0, 0, bounds.Width, bounds.Height);
+                var visualBrush = new VisualBrush(dragCanvas);
+                drawingContext.DrawRectangle(visualBrush, null, targetRect);
+
+                // drawingContext.DrawRectangle(null, new Pen(Brushes.Blue, 1.0), childBounds);
+            }
+
+            // var m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
+            // region.Scale(m.M11, m.M22);
+
+            var rtb = new RenderTargetBitmap(((int)bounds.Width),
+                ((int)bounds.Height), 96, 96, PixelFormats.Default);
+
+            rtb.Render(drawingVisual);
+
+            //endcode as PNG
+            var pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            try
+            {
+                using (var stm = File.Create(e.Path))
                 {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
+                    pngEncoder.Save(stm);
                 }
-
-                var rtb = new RenderTargetBitmap(Math.Max((int)control.ActualWidth, (int)width),
-                                                  Math.Max((int)control.ActualHeight, (int)height),
-                                                  96,
-                                                  96,
-                                                  PixelFormats.Default);
-
-                rtb.Render(control);
-
-                //endcode as PNG
-                var pngEncoder = new PngBitmapEncoder();
-                pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
-
-                try
-                {
-                    using (var stm = File.Create(e.Path))
-                    {
-                        pngEncoder.Save(stm);
-                    }
-                }
-                catch
-                {
-                    dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
-                }
+            }
+            catch
+            {
+                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToSaveAsImage);
             }
         }
 
@@ -737,7 +785,7 @@ namespace Dynamo.Controls
         /// <param name="name"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        public void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
+        internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
             var categorized =
                 SearchCategoryUtil.CategorizeSearchEntries(
@@ -792,11 +840,16 @@ namespace Dynamo.Controls
             ShowNewPresetDialog(e);
         }
 
+        void DynamoViewModelRequestPresetWarningPrompt()
+        {
+            ShowPresetWarning();
+        }
+
         /// <summary>
         /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
         /// a preset name/timestamp and description.
         /// </summary>
-        public void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
+        internal void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
         {
             string error = "";
 
@@ -836,6 +889,19 @@ namespace Dynamo.Controls
             } while (!error.Equals(""));
 
             e.Success = true;
+        }
+
+        private void ShowPresetWarning()
+        {
+            var newDialog = new  PresetOverwritePrompt()
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Text =  Wpf.Properties.Resources.PresetWarningMessage,
+                IsCancelButtonVisible = Visibility.Collapsed
+            };
+
+            newDialog.ShowDialog();
         }
         
         private bool PerformShutdownSequenceOnViewModel()
@@ -895,12 +961,14 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestManagePackagesDialog -= DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackagePathsDialog -= DynamoViewModelRequestPackagePaths;
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
 
             //Preset Name Prompt
             dynamoViewModel.Model.RequestPresetsNamePrompt -= DynamoViewModelRequestPresetNamePrompt;
+            dynamoViewModel.RequestPresetsWarningPrompt -= DynamoViewModelRequestPresetWarningPrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
@@ -943,15 +1011,28 @@ namespace Dynamo.Controls
         // passes it to thecurrent workspace
         void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
-                dynamoViewModel.WatchEscapeIsDown = true;
+            if (e.Key == Key.Escape && this.IsMouseOver)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = true;
+                e.Handled = true;
+            }
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            if (e.Key == Key.Escape && dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
             {
-                dynamoViewModel.WatchEscapeIsDown = false;
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+                dynamoViewModel.EscapeCommand.Execute(null);
+                e.Handled = true;
+            }
+        }
+
+        void DynamoView_LostFocus(object sender, EventArgs e)
+        {
+            if (dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown)
+            {
+                dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
                 dynamoViewModel.EscapeCommand.Execute(null);
             }
         }
@@ -1025,7 +1106,7 @@ namespace Dynamo.Controls
         {
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
-            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.Guid));
+            dynamoViewModel.ExecuteCommand(new DynamoModel.ApplyPresetCommand(workspace.Guid, state.GUID));
         }
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)
@@ -1033,12 +1114,12 @@ namespace Dynamo.Controls
             PresetModel state = (sender as MenuItem).Tag as PresetModel;
             var workspace = dynamoViewModel.CurrentSpace;
             workspace.HasUnsavedChanges = true;
-            dynamoViewModel.Model.CurrentWorkspace.RemoveState(state);
-            
+            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(state.GUID));
+            //This is to remove the PATH (>) indicator from the preset submenu header
+            //if there are no presets.
+            dynamoViewModel.ShowNewPresetsDialogCommand.RaiseCanExecuteChanged();                       
         }
         
-
-
 #if !__NO_SAMPLES_MENU
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
@@ -1433,7 +1514,8 @@ namespace Dynamo.Controls
 
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
-            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+            if (WorkspaceTabs.SelectedIndex >= 0)
+                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
 
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1472,6 +1554,25 @@ namespace Dynamo.Controls
         private void Log(string message)
         {
             Log(LogMessage.Info(message));
+        }
+
+        public void Dispose()
+        {
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Dispose();
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
+                }
+            }
+            if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
+            {
+                dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
+            }
         }
     }
 }

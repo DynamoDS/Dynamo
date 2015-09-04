@@ -6,8 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {
@@ -2084,6 +2083,23 @@ namespace Dynamo.Nodes
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
             return MigrateToDsFunction(data, "DSCoreNodes.dll", "String.Substring", "String.Substring@string,int,int");
+        }
+    }
+}
+
+namespace DSCoreNodesUI
+{
+    public class DummyNode : MigrationNode
+    {
+        [NodeMigration(@from: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(oldNode, "Dynamo.Nodes.DummyNode", oldNode.Attributes["nickname"].Value, true);
+            migrationData.AppendNode(newNode);
+
+            return migrationData;
         }
     }
 }

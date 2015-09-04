@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Models;
+using Dynamo.Nodes;
 
 namespace DSCore
 {
@@ -14,7 +16,7 @@ namespace DSCore
     {
         // It has been moved to String.FromObject UI node, which is compiled 
         // to built-in function __ToStringFromObject().
-        [Obsolete("This node is obsolete, please use \"String from Object\"")]
+        [NodeObsolete("FromObjectObsolete", typeof(Properties.Resources))]
         public static string FromObject(object obj)
         {
             return obj.ToString();

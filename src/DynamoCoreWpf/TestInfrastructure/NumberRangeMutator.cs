@@ -7,7 +7,7 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using System.IO;
 using System.Threading;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 
 namespace Dynamo.TestInfrastructure
 {
@@ -125,9 +125,6 @@ namespace Dynamo.TestInfrastructure
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 Guid guidNumber = Guid.NewGuid();
-
-                double coordinatesX = 120;
-                double coordinatesY = 180;
 
                 DynamoModel.CreateNodeCommand createNodeCmd1 = null;
                     //new DynamoModel.AddNodeCommand(guidNumber, "Number", coordinatesX,

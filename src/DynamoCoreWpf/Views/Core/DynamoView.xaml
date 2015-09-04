@@ -19,6 +19,7 @@
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
+        xmlns:watch3D="clr-namespace:Dynamo.Wpf.ViewModels.Watch3D"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -29,6 +30,7 @@
         AllowsTransparency="False"
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
+        LostFocus="DynamoView_LostFocus"
         Background="#FF353535"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
@@ -86,14 +88,14 @@
 
         <KeyBinding Key="D"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.CurrentSpaceViewModel.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.NodeFromSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="V"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="B"
                     Modifiers="Control"
-                    Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
         <KeyBinding Key="W"
                     Modifiers="Control"
@@ -155,7 +157,8 @@
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="P"
                     Modifiers="Ctrl"
-                    Command="{Binding Path=TogglePanCommand}" />
+                    Command="{Binding Path=DataContext.BackgroundPreviewViewModel.TogglePanCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+
         <KeyBinding Key="F5"
                     Modifiers="Shift"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
@@ -167,7 +170,7 @@
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"/>
         <KeyBinding Key="T"
                     Modifiers="Control"
-                    Command="{Binding ShowNewPresetsDialogCommand}"/>
+                    Command="{Binding Path=DataContext.ShowNewPresetsDialogCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -220,6 +223,63 @@
                 <Menu IsMainMenu="True"
                       Name="menu1"
                       Style="{StaticResource MainMenu}">
+                 <!--Accessor key = false. This is to include underscore in header(only for SubMenuItem-->
+                    <Menu.Resources>
+                        <Style x:Key="SubMenuItemOverride"
+                            BasedOn="{StaticResource MenuItemStyle}"
+                            TargetType="{x:Type MenuItem}">
+
+                            <Style.Resources>                              
+                                <!--  SubmenuItem  -->
+                                <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}"
+                                                          TargetType="MenuItem">
+                                    
+                                    <Border Name="Border"
+                                            Height="25" Background="Transparent">
+                                        <Grid MinWidth="200">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter Name="HeaderHost"
+                                                              Grid.Column="0"
+                                                              Margin="5,0,0,0"
+                                                              HorizontalAlignment="Stretch"
+                                                              VerticalAlignment="Center"
+                                                              ContentSource="Header"
+                                                              RecognizesAccessKey="False" />                                         
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsHighlighted"
+                                                           Value="true">
+                                            <Setter TargetName="Border"
+                                                              Property="Background"
+                                                              Value="{StaticResource HighlightedBrush}" />
+                                            <Setter TargetName="HeaderHost"
+                                                               Property="TextBlock.Foreground"
+                                                               Value="{StaticResource ActiveForegroundBrush}" />
+                                            <Setter TargetName="Border"
+                                                                Property="BorderBrush"
+                                                                Value="Transparent" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled"
+                                                                Value="false">
+                                            <Setter Property="Foreground"
+                                                                 Value="{StaticResource DisabledForegroundBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Style.Resources>                         
+                            <Style.Triggers>                                                              
+                                <Trigger Property="Role"
+                                    Value="SubmenuItem">
+                                    <Setter Property="Template"
+                                      Value="{StaticResource {x:Static MenuItem.SubmenuItemTemplateKey}}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Menu.Resources>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenu}"
                               Name="fileMenu"
@@ -355,13 +415,15 @@
                                       Focusable="False"
                                       InputGestureText="Ctrl + T"/>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuRestorePreset}"
-                                    MouseEnter="LoadPresetsMenus"
+                                      MouseEnter="LoadPresetsMenus"
                                       Name="RestorePresetMenu"
-                                      Focusable="False" />
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />
                             <MenuItem Header="{x:Static p:Resources.DynamoViewEditMenuDeletePreset}"
-                                    MouseEnter="LoadPresetsMenus"
+                                      MouseEnter="LoadPresetsMenus"
                                       Name="DeletePresetMenu"
-                                      Focusable="False" />
+                                      ItemContainerStyle="{StaticResource SubMenuItemOverride}"
+                                      Focusable="False" IsEnabled="{Binding EnablePresetOptions}" />                                                          
                         </MenuItem>
                         <Separator />
                         
@@ -382,7 +444,7 @@
                                   InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
-                                  Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
+                                  Command="{Binding Path=NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
                                   InputGestureText="Ctrl + D" />
                         <MenuItem Focusable="False"
@@ -503,26 +565,28 @@
                                       Command="{Binding ShowHideConnectorsCommand}">
                             </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="{Binding AlternateContextGeometryDisplayText}"
-                                  Name="showGeometryInAlternateContextMenu"
-                                  Focusable="False"
-                                  Visibility="{Binding Path=VisualizationManager.AlternateDrawingContextAvailable , Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding Path=VisualizationManager.DrawToAlternateContext}">
-                        </MenuItem>
+
                         <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenu3DPreview}"
                                   Name="background3dMenu"
                                   Focusable="False">
-                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}"
-                                      IsChecked="{Binding Path=FullscreenWatchShowing}"
-                                      Command="{Binding ToggleFullscreenWatchShowingCommand}"
-                                      Focusable="False" />
+
+                            <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuAvailablePreviews}" ItemsSource="{Binding Watch3DViewModels}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Name}"/>
+                                        <Setter Property="IsCheckable" Value="True"/>
+                                        <Setter Property="IsChecked" Value="{Binding Active}"/>
+                                        <Setter Property="Focusable" Value="False"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                            </MenuItem>
+
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPreviewNavigate}"
-                                      IsEnabled="{Binding Path=FullscreenWatchShowing}"
-                                      IsChecked="{Binding Path=CanNavigateBackground}"
+                                      IsEnabled="{Binding Path=BackgroundPreviewActive}"
+                                      IsChecked="{Binding Path=BackgroundPreviewViewModel.CanNavigateBackground}"
                                       InputGestureText="Ctrl + B"
                                       Focusable="False"
-                                      Command="{Binding ToggleCanNavigateBackgroundCommand}" />
+                                      Command="{Binding Path=BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
 
@@ -631,6 +695,10 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=RenderPackageFactoryViewModel.ShowEdges, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowEdges}"></MenuItem>
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
+                                  Command="{Binding ManagePackagePathsCommand}"
+                                  Name="managePackagePaths" />
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
@@ -638,7 +706,7 @@
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"
                                   Name="SamplesMenu"
-                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}">
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCoreWpf;component/UI/Images/OpenSelectedItemHS.png"
                                        Width="14"
@@ -703,10 +771,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
-                        <MenuItem Focusable="False"
-                                  Header="Show Watch Settings Control"
-                                  IsCheckable="True"
-                                  IsChecked="{Binding ShowWatchSettingsControl, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 
@@ -750,20 +814,20 @@
               Grid.Column="2"
               Grid.RowSpan="3"
               Background="#232323"
-              Name="background_grid">
+              Name="background_grid"
+              IsHitTestVisible="{Binding BackgroundPreviewViewModel.CanNavigateBackground}">
             <Canvas Name="backgroundCanvas"
                     Margin="0,20,0,0"
-                    ClipToBounds="True"
-                    IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+                    ClipToBounds="True">
                 <Canvas.Background>
                     <SolidColorBrush Color="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
 
-            <controls:Watch3DView x:Name="background_preview"
+            <controls:Watch3DView x:Name="BackgroundPreview" 
+                                  DataContext="{Binding BackgroundPreviewViewModel}"
                                   Margin="0,20,0,0"
-                                  Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                  IsHitTestVisible="{Binding WatchPreviewHitTest}">
+                                  Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
             </controls:Watch3DView>
             
         </Grid>
@@ -1426,8 +1490,8 @@
                                    VerticalAlignment="Stretch"
                                    Foreground="#aaaaaa"
                                    FontWeight="Normal"
-                                   Margin="5 0 5 0">
-                            Library
+                                   Margin="5 0 5 0"
+                                   Text="{x:Static p:Resources.LibraryViewTitle}">                         
                         </TextBlock>
                     </Grid>
                 </Button>
@@ -1587,14 +1651,6 @@
                          UpdateSourceTrigger="Explicit" />
             </ItemsControl.Visibility>
         </ItemsControl>
-
-        <Grid Grid.Row="2"
-              Grid.Column="2" Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <preview:Watch3DSettingsControl x:Name="watchSettingsControl"  
-                                            DataContext=""
-                                            HorizontalAlignment="Left" 
-                                            VerticalAlignment="Top" Margin="10,30" />
-        </Grid>
 
         <Grid Name="galleryBackground"
               Visibility="Hidden"

@@ -14,7 +14,7 @@ namespace Dynamo.Services
     /// <summary>
     /// Interception class to handle whether logging is called or not
     /// </summary>
-    public class InstrumentationLogger
+    internal class InstrumentationLogger
     {
         private const bool IS_VERBOSE_DIAGNOSTICS = false;
 

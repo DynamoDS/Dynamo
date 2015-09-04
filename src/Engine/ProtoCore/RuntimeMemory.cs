@@ -284,7 +284,7 @@ namespace ProtoCore
                 int offset = exe.classTable.ClassNodes[scope].symbols.symbolList[symbolindex].index;
 
                 var obj = Heap.ToHeapObject<DSObject>(thisptr);
-                if (!obj.VisibleItems.Any())
+                if (!obj.Values.Any())
                     return StackValue.Null;
 
                 StackValue sv = obj.GetValueFromIndex(offset, null);
@@ -304,7 +304,7 @@ namespace ProtoCore
                 Validity.Assert(nextPtr.opdata >= 0);
                 obj = Heap.ToHeapObject<DSObject>(nextPtr);
 
-                if (obj.VisibleItems.Any()) 
+                if (obj.Values.Any()) 
                 {
                     StackValue data = obj.GetValueFromIndex(0, null);
                     bool isActualData = !data.IsPointer && !data.IsArray && !data.IsInvalid; 
@@ -396,16 +396,6 @@ namespace ProtoCore
                     fp = stackFrame.FramePointer;
                     yield return stackFrame;
                 }
-            }
-
-            /// <summary>
-            /// Mark and sweep garbage collection.
-            /// </summary>
-            /// <param name="gcRootPointers"></param>
-            /// <param name="exe"></param>
-            public void GC(List<StackValue> gcRootPointers, DSASM.Executive exe)
-            {
-                Heap.GCMarkAndSweep(gcRootPointers.ToList(), exe);
             }
         }
     }

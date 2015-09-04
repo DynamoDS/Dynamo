@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using MIConvexHull;
@@ -17,42 +18,41 @@ namespace Tessellation.Adapters
         {
             // From MathWorld: http://mathworld.wolfram.com/Circumcircle.html
 
-            //var points = Vertices;
+            var points = Vertices;
 
-            //var m = new double[3, 3];
+            var m = new double[3, 3];
 
-            //// x, y, 1
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    m[i, 0] = points[i].Position[0];
-            //    m[i, 1] = points[i].Position[1];
-            //    m[i, 2] = 1;
-            //}
-            //var a = StarMath.determinant(m);
+            // x, y, 1
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 0] = points[i].Position[0];
+                m[i, 1] = points[i].Position[1];
+                m[i, 2] = 1;
+            }
+            var a = StarMath.determinant(m);
 
-            //// size, y, 1
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    m[i, 0] = StarMath.norm2(points[i].Position, 2, true);
-            //}
-            //var dx = -StarMath.determinant(m);
+            // size, y, 1
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 0] = StarMath.norm2(points[i].Position, true);
+            }
+            var dx = -StarMath.determinant(m);
 
-            //// size, x, 1
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    m[i, 1] = points[i].Position[0];
-            //}
-            //var dy = StarMath.determinant(m);
+            // size, x, 1
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 1] = points[i].Position[0];
+            }
+            var dy = StarMath.determinant(m);
 
-            //// size, x, y
-            //for (int i = 0; i < 3; i++)
-            //{
-            //    m[i, 2] = points[i].Position[1];
-            //}
+            // size, x, y
+            for (int i = 0; i < 3; i++)
+            {
+                m[i, 2] = points[i].Position[1];
+            }
 
-            //var s = -1.0 / (2.0 * a);
-            //return Point.ByCoordinates(s * dx, s * dy);
-            return null;
+            var s = -1.0 / (2.0 * a);
+            return Point.ByCoordinates(s * dx, s * dy);
         }
 
         Point GetCentroid()

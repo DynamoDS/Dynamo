@@ -200,8 +200,8 @@ namespace DynamoCoreWpfTests
             var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(2, eles.Count());
 
-            var inPortGrid = nodeView.inPortGrid;
-            Assert.AreEqual(3, inPortGrid.ChildrenOfType<TextBlock>().Count());
+            var inputPortControl = nodeView.inputPortControl;
+            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -214,8 +214,8 @@ namespace DynamoCoreWpfTests
             var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(2, eles.Count());
 
-            var inPortGrid = nodeView.inPortGrid;
-            Assert.AreEqual(4, inPortGrid.ChildrenOfType<TextBlock>().Count());
+            var inputPortControl = nodeView.inputPortControl;
+            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -264,24 +264,6 @@ namespace DynamoCoreWpfTests
             Assert.Greater(img.ActualHeight, 10);
         }
 
-        [Test, Category("Failure")]
-        public void Watch3DContainsExpectedGeometry()
-        {
-            OpenAndRun(@"UI\WatchUINodes.dyn");
-
-            var nodeView = NodeViewWithGuid("6edc4c28-15ef-4d60-af6d-6ed829871973");
-                // NodeViewOf<Dynamo.Nodes.Watch3D>();
-
-            var watch3ds = nodeView.ChildrenOfType<Watch3DView>();
-
-            Assert.AreEqual(1, watch3ds.Count());
-
-            var watch3DView = watch3ds.First();
-
-            //Assert.AreEqual(1, watch3DView.Points.Positions.Count);
-            Assert.AreEqual(1, Model.CurrentWorkspace.TotalPointsToRender());
-        }
-
         [Test]
         public void CustomNodeIsCustomized()
         {
@@ -303,24 +285,24 @@ namespace DynamoCoreWpfTests
             var eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(2, eles.Count());
 
-            var inPortGrid = nodeView.inPortGrid;
-            Assert.AreEqual(3, inPortGrid.ChildrenOfType<TextBlock>().Count());
+            var inputPortControl = nodeView.inputPortControl;
+            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("2f031397-539e-4df4-bfca-d94d0bd02bc1"); // String.Concat node
 
             eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(2, eles.Count());
 
-            inPortGrid = nodeView.inPortGrid;
-            Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
+            inputPortControl = nodeView.inputPortControl;
+            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
 
             nodeView = NodeViewWithGuid("0cb04cce-1b05-47e0-a73f-ee81af4b7f43"); // List.Join node
 
             eles = nodeView.inputGrid.ChildrenOfType<DynamoNodeButton>();
             Assert.AreEqual(2, eles.Count());
 
-            inPortGrid = nodeView.inPortGrid;
-            Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
+            inputPortControl = nodeView.inputPortControl;
+            Assert.AreEqual(2, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]

@@ -52,8 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtensionTests.cs" />
+    <Compile Include="PackageManagerExtensionTests.cs" />
     <Compile Include="PackageDirectoryBuilderTests.cs" />
+    <Compile Include="PackageLoaderCustomTest.cs" />
     <Compile Include="PackageLoaderTests.cs" />
     <Compile Include="PackageManagerClientTests.cs" />
     <Compile Include="PackageTests.cs" />
@@ -76,6 +77,9 @@
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,7 +7,7 @@ using Dynamo.Core;
 
 namespace Dynamo.Selection
 {
-    public class DynamoSelection : NotificationObject
+    internal class DynamoSelection : NotificationObject
     {
         private static DynamoSelection _instance;
         private SmartCollection<ISelectable> selection = new SmartCollection<ISelectable>();
@@ -43,7 +43,7 @@ namespace Dynamo.Selection
         /// <summary>
         /// Returns a collection of ISelectable elements.
         /// </summary>
-        public SmartCollection<ISelectable> Selection
+        internal SmartCollection<ISelectable> Selection
         {
             get { return selection; }
             set
@@ -108,7 +108,7 @@ namespace Dynamo.Selection
     /// See: http://stackoverflow.com/questions/13302933/how-to-avoid-firing-observablecollection-collectionchanged-multiple-times-when-r
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class SmartCollection<T> : ObservableCollection<T>
+    internal class SmartCollection<T> : ObservableCollection<T>
     {
         public SmartCollection()
             : base()

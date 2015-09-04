@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using Dynamo.Models;
@@ -44,7 +45,7 @@ namespace Dynamo.Tests
         {
             var nodes = GetModel().CurrentWorkspace.Nodes;
 
-            var dummyNodes = nodes.OfType<DSCoreNodesUI.DummyNode>();
+            var dummyNodes = nodes.OfType<Dynamo.Nodes.DummyNode>();
             string logs = string.Empty;
             foreach (var node in dummyNodes)
             {

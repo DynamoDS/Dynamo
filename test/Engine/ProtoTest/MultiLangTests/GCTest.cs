@@ -9,6 +9,7 @@ namespace ProtoTest.MultiLangTests
         string testCasePath = "..\\..\\..\\test\\Engine\\ProtoTest\\ImportFiles\\";
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T01_TestGCArray()
         {
             string code = @"
@@ -35,6 +36,7 @@ a = foo( { a1, a2 });
 a2 = A.A();
 v3 = DisposeVerify.x; // 6
 }
+__GC();
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
@@ -42,6 +44,7 @@ v4 = DisposeVerify.x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T02_TestGCEndofIfBlk()
         {
             string code = @"
@@ -57,12 +60,14 @@ a1 = A.A();
         a3 = A.A();
     a4 = A.A();
 }
+__GC();
 v = DisposeVerify.x; // 3";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v", 3);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T03_TestGCEndofLangBlk()
         {
             string code = @"
@@ -81,6 +86,7 @@ v1;
 	a5 = a1;
 	v1 = DisposeVerify.x; // 2
 }
+__GC();
 v2 = DisposeVerify.x; // 3";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
 
@@ -88,6 +94,7 @@ v2 = DisposeVerify.x; // 3";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T04_TestGCReturnFromLangBlk()
         {
             string code = @"
@@ -106,6 +113,7 @@ v1;
 	// %tempLangBlk, same value as a1, is gcced here, this is also to test after assign the return value from the language 
 	// block, the ref count of that value is still 1
 }
+__GC();
 v2 = DisposeVerify.x; // 2";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v1", 1);
@@ -113,6 +121,7 @@ v2 = DisposeVerify.x; // 2";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T05_TestGCReturnFromFunction()
         {
             string code = @"
@@ -134,12 +143,14 @@ m = 10;
 // test after assign the return value from foo, the ref count of that value is 1
 v2 = DisposeVerify.x; // 4
 }
+__GC();
 v3 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v3", 4);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T06_TestGCEndofWhileBlk()
         {
             string code = @"
@@ -169,6 +180,7 @@ v2 = DisposeVerify.x; // 4
 arr = null;
 v3 = DisposeVerify.x; // 7
 }
+__GC();
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
@@ -176,6 +188,7 @@ v4 = DisposeVerify.x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T07_TestGCEndofForBlk()
         {
             string code = @"
@@ -204,6 +217,7 @@ v2 = DisposeVerify.x; // 4
 arr = null;
 v3 = DisposeVerify.x; // 7
 }
+__GC();
 v4 = DisposeVerify.x;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
@@ -211,6 +225,7 @@ v4 = DisposeVerify.x;
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T08_TestGCArray02()
         {
             string code = @"
@@ -249,12 +264,14 @@ a3 = null;
 v7 = DisposeVerify.x; // 7
 }
 
+__GC();
 v8 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
                 thisTest.Verify("v8", 7);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T09_TestGCPassingArguments()
         {
             string code = @"
@@ -291,6 +308,7 @@ b = foo2(A.A());
 v5 = DisposeVerify.x; // 6
 c = foo( { A.A(), A.A(), A.A() } );
 }
+__GC();
 v6 = DisposeVerify.x; // 9";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
 
@@ -303,6 +321,7 @@ v6 = DisposeVerify.x; // 9";
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T10_TestGCReturnArguments()
         {
             string code = @"
@@ -322,12 +341,14 @@ v1 = DisposeVerify.x; // 3
 m = null; 
 v2 = DisposeVerify.x; // 4
 }
+__GC();
 v3 = DisposeVerify.x;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
                 thisTest.Verify("v3", 4);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T11_TestGCLangBlkInFunction()
         {
             string code = @"
@@ -352,6 +373,7 @@ v1 = DisposeVerify.x; // 2
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T12_TestGCIfElseInFunction()
         {
             string code = @"
@@ -381,12 +403,14 @@ v1;
 	cc = foo(aa);
 	v1 = DisposeVerify.x;
 }
+__GC();
 v2 = DisposeVerify.x; // 4";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
             thisTest.Verify("v2", 7);
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T13_GCTestComplexCase()
         {
             string code = @"
@@ -418,6 +442,7 @@ v1 = DisposeVerify.x; // 1
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T14_TestGCPointer_AssociativeScope()
         {
             string code = @"
@@ -428,6 +453,7 @@ import(""DisposeVerify.ds"");
     arr = A.A();
     arr = 1;                // Dispose A.A() 
 }
+__GC();
     v1 = DisposeVerify.x;   // Reflect the disposed object
 
 ";
@@ -436,6 +462,7 @@ import(""DisposeVerify.ds"");
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T15_TestGCArray_AssociativeScope()
         {
             string code = @"
@@ -447,6 +474,7 @@ import(""DisposeVerify.ds"");
     arr = {A.A()};
     arr = 1;                // Dispose A.A() 
 }
+__GC();
     v1 = DisposeVerify.x;   // Reflect the disposed object
 
 ";

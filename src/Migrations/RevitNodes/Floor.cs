@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {

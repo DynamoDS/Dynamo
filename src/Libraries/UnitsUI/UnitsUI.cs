@@ -15,6 +15,7 @@ using DSCoreNodesUI;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;
@@ -45,7 +46,7 @@ namespace UnitsUI
             //main context window
             var editWindowItem = new MenuItem()
             {
-                Header = "Edit...",
+                Header = Properties.Resources.EditHeader,
                 IsCheckable = false,
                 Tag = nodeView.ViewModel.DynamoViewModel
             };

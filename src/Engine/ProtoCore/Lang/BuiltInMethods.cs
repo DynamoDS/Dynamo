@@ -72,7 +72,8 @@ namespace ProtoCore.Lang
             kContainsKey,
             kEvaluate,
             kTryGetValueFromNestedDictionaries,
-            kNodeAstFailed
+            kNodeAstFailed,
+            kGC,
         }
 
         private static string[] methodNames = new string[]
@@ -137,7 +138,8 @@ namespace ProtoCore.Lang
             "ContainsKey",              // kContainsKey
             "Evaluate",                 // kEvaluateFunctionPointer
             "__TryGetValueFromNestedDictionaries",// kTryGetValueFromNestedDictionaries
-            Constants.kNodeAstFailed    // kNodeAstFailed
+            Constants.kNodeAstFailed,   // kNodeAstFailed
+            "__GC",                     // kGC
         };
 
         public static string GetMethodName(MethodID id)
@@ -616,7 +618,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 1)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValue,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
+                    MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),  
                 },
 
@@ -629,7 +631,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("ascending", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kSortIndexByValueWithMode,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValueInAscending}
+                     MethodAttributes = new MethodAttributes(){Description = Resources.SortsListByValue}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true), 
                 },
 
@@ -982,6 +984,14 @@ namespace ProtoCore.Lang
                     }.ToList(),
                     ID = MethodID.kNodeAstFailed,
                     MethodAttributes = new MethodAttributes(true),
+                 },
+
+                 new BuiltInMethod
+                 {
+                     ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVoid, 0),
+                     Parameters = new List<KeyValuePair<string,Type>>(),
+                     ID = MethodID.kGC,
+                     MethodAttributes  = new MethodAttributes(true),
                  }
             };
         }

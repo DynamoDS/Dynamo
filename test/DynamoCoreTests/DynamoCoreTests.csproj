@@ -53,6 +53,7 @@
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -67,6 +68,7 @@
     <Compile Include="DefaultArgumentTests.cs" />
     <Compile Include="DSEvaluationUnitTestBase.cs" />
     <Compile Include="DynamoModelTestBase.cs" />
+    <Compile Include="ExtensionTests.cs" />
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="MockMaker.cs" />
     <Compile Include="NodeConstructionTests.cs" />
@@ -173,6 +175,9 @@
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

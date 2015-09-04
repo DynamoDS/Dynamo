@@ -611,4 +611,17 @@ value : bool = false</value>
     <value>Custom nodes</value>
     <comment>Used for uncategorised custom nodes.</comment>
   </data>
+  <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
+    <value>The folder '{0}' does not exist</value>
+    <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
+  </data>
+  <data name="CodeBlockSearchTags" xml:space="preserve">
+    <value>codeblock;</value>
+  </data>
+  <data name="NoBinFolder" xml:space="preserve">
+    <value>{0} contains a package without a bin folder.  Ignoring it.</value>
+  </data>
+  <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
+    <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
+  </data>
 </root>

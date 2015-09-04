@@ -11,7 +11,8 @@
     <RootNamespace>ProtoTestFx</RootNamespace>
     <AssemblyName>ProtoTestFx</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
@@ -79,6 +80,10 @@
     <AssemblyOriginatorKeyFile>ProtoTestFx.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
@@ -102,6 +107,7 @@
     <Compile Include="DebugService.cs" />
     <Compile Include="DebugTestFx.cs" />
     <Compile Include="GeometryTestFrame.cs" />
+    <Compile Include="JsonDecoder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFrameWork.cs" />

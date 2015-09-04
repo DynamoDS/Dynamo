@@ -4,13 +4,14 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models.NodeLoaders
 {
     /// <summary>
     ///     Xml Loader for Custom Nodes.
     /// </summary>
-    public class CustomNodeLoader : INodeLoader<Function>
+    internal class CustomNodeLoader : INodeLoader<Function>
     {
         private readonly ICustomNodeSource customNodeManager;
         private readonly bool isTestMode;
@@ -21,7 +22,7 @@ namespace Dynamo.Models.NodeLoaders
             this.isTestMode = isTestMode;
         }
         
-        public Function CreateNodeFromXml(XmlElement nodeElement, SaveContext context)
+        public Function CreateNodeFromXml(XmlElement nodeElement, SaveContext context, ElementResolver resolver)
         {
             XmlNode idNode =
                 nodeElement.ChildNodes.Cast<XmlNode>()

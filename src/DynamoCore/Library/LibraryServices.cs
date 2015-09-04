@@ -7,6 +7,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
@@ -19,7 +20,7 @@ using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 using ProtoCore.Namespace;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     LibraryServices is a singleton class which manages builtin libraries
@@ -133,6 +134,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
@@ -141,6 +146,10 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
         {
+            if (functionSignature == null)
+            {
+                return false;
+            }
             if (!priorNameHints.ContainsKey(functionSignature))
                 return false;
 
@@ -149,7 +158,13 @@ namespace Dynamo.DSEngine
 
         public void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
         {
-            var upgradeHint = priorNameHints[functionSignature];
+            var shortKey = GetQualifiedFunction(functionSignature);
+            if (!FunctionSignatureNeedsAdditionalAttributes(functionSignature)
+                && !FunctionSignatureNeedsAdditionalAttributes(shortKey)) return;
+
+            var upgradeHint = FunctionSignatureNeedsAdditionalAttributes(functionSignature)
+                ? priorNameHints[functionSignature]
+                : priorNameHints[shortKey];
 
             foreach (string key in upgradeHint.AdditionalAttributes.Keys)
             {
@@ -167,7 +182,13 @@ namespace Dynamo.DSEngine
 
         public void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
         {
-            var upgradeHint = priorNameHints[functionSignature];
+            var shortKey = GetQualifiedFunction(functionSignature);
+            if (!FunctionSignatureNeedsAdditionalElements(functionSignature)
+                && !FunctionSignatureNeedsAdditionalElements(shortKey)) return;
+
+            var upgradeHint = FunctionSignatureNeedsAdditionalElements(functionSignature)
+                ? priorNameHints[functionSignature]
+                : priorNameHints[shortKey];
 
             foreach (XmlElement elem in upgradeHint.AdditionalElements)
             {
@@ -235,6 +256,22 @@ namespace Dynamo.DSEngine
             string newName = priorNameHints[qualifiedFunction].UpgradeName;
 
             return newName + "@" + splitted[1];
+        }
+
+        private string GetQualifiedFunction(string functionSignature)
+        {
+            // get a short name representation of the function without parameters
+            string[] splitted = functionSignature.Split('@');
+           
+            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                return null;
+
+            string qualifiedFunction = splitted[0];
+
+            if (!priorNameHints.ContainsKey(qualifiedFunction))
+                return null;
+
+            return qualifiedFunction;
         }
 
         /// <summary>
@@ -435,7 +472,7 @@ namespace Dynamo.DSEngine
         }
 
 
-        private void LoadLibraryMigrations(string library)
+        internal void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
 

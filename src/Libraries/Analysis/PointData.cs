@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Models;
+using Dynamo.Nodes;
 
 namespace Analysis
 {
@@ -15,13 +17,13 @@ namespace Analysis
         /// <summary>
         /// A list of Points.
         /// </summary>
-        [Obsolete("Use the Points available elsewhere in your graph.")]
+        [NodeObsolete("ValueLocationObsolete", typeof(Properties.Resources))]
         public IEnumerable<Point> ValueLocations { get; internal set; }
 
         /// <summary>
         /// A dictionary of lists of double values.
         /// </summary>
-        [Obsolete("Use the values provided by the node conducting the analysis.")]
+        [NodeObsolete("ValuesObsolete", typeof(Properties.Resources))]
         public IList<double> Values { get; internal set; }
 
         protected PointData(
@@ -36,7 +38,7 @@ namespace Analysis
         /// </summary>
         /// <param name="points">A list of Points.</param>
         /// <param name="values">A list of double values.</param>
-        [Obsolete("Use Point nodes and Number nodes as direct inputs to nodes which previously used PointData nodes.")]
+        [NodeObsolete("ByPointsAndValueObsolete", typeof(Properties.Resources))]
         public static PointData ByPointsAndValues(IEnumerable<Point> points, IList<double> values)
         {
             if (points == null)

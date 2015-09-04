@@ -207,6 +207,7 @@ namespace ProtoTest.EventTests
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void RunDSPropertyChangedTest()
         {

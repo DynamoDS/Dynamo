@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -23,6 +23,7 @@ namespace Dynamo.Nodes
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("CodeBlockDescription",typeof(Dynamo.Properties.Resources))]
+    [NodeSearchTags("CodeBlockSearchTags", typeof(Dynamo.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class CodeBlockNodeModel : NodeModel
     {
@@ -41,7 +42,7 @@ namespace Dynamo.Nodes
             internal set { shouldFocus = value; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
+        public ElementResolver ElementResolver { get; set; }
 
         private struct Formatting
         {
@@ -59,17 +60,17 @@ namespace Dynamo.Nodes
             this.ElementResolver = new ElementResolver();
         }
 
-        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
-            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices) { }
+        public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
+            : this(userCode, Guid.NewGuid(), xPos, yPos, libraryServices, resolver) { }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices)
+        public CodeBlockNodeModel(string userCode, Guid guid, double xPos, double yPos, LibraryServices libraryServices, ElementResolver resolver)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             X = xPos;
             Y = yPos;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
-            this.ElementResolver = new ElementResolver();
+            this.ElementResolver = resolver;
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
@@ -275,10 +276,6 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
-
-            // Lookup namespace resolution map if available and initialize new instance of ElementResolver
-            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
-            ElementResolver = new ElementResolver(resolutionMap);
 
             ProcessCodeDirect();
         }
@@ -576,30 +573,17 @@ namespace Dynamo.Nodes
             if (allDefs.Any() == false)
                 return;
 
-            double prevPortBottom = 0.0;
             foreach (var def in allDefs)
             {
-                var logicalIndex = def.Value - 1;
-
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
 
-                double portCoordsY = Formatting.INITIAL_MARGIN;
-                portCoordsY += logicalIndex * Configurations.CodeBlockPortHeightInPixels;
-
                 OutPortData.Add(new PortData(string.Empty, tooltip)
                 {
-                    VerticalMargin = portCoordsY - prevPortBottom,
+                    LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockPortHeightInPixels
                 });
-
-                // Since we compute the "delta" between the top of the current 
-                // port to the bottom of the previous port, we need to record 
-                // down the bottom coordinate value before proceeding to the next 
-                // port.
-                // 
-                prevPortBottom = portCoordsY + Configurations.CodeBlockPortHeightInPixels;
             }
         }
 

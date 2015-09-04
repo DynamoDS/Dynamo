@@ -29,10 +29,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
            
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -64,10 +64,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -96,10 +96,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -115,10 +115,10 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.ClearSelection();
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
 
             //verify the node was created
-            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the nodes again - add node is in a group and secondnode is not in a group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -135,10 +135,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -154,10 +154,10 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.ClearSelection();
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
 
             //verify the node was created
-            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node 
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -172,10 +172,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -191,7 +191,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.ClearSelection();
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
           
             //Select the node 
             DynamoSelection.Instance.Selection.Add(secondNode);
@@ -206,10 +206,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -228,7 +228,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.Selection.Add(annotation);
 
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(secondNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
 
             //Select the node 
             DynamoSelection.Instance.Selection.Add(secondNode);
@@ -243,10 +243,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -275,10 +275,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
            
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -289,7 +289,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(annotation);
 
             //verify that group was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //select the group for deletion
             DynamoSelection.Instance.Selection.Add(annotation);
@@ -297,10 +297,10 @@ namespace DynamoCoreWpfTests
 
             //delete the note
             ViewModel.DeleteCommand.Execute(null);
-            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //verify only annotation was deleted and not the note
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
         }
 
         [Test]
@@ -313,7 +313,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(note);
@@ -324,7 +324,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(annotation);
 
             //verify that group was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //verify whether group is not empty
             Assert.AreNotEqual(0, annotation.Y);
@@ -343,7 +343,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Create a Group around that note
             ViewModel.AddAnnotationCommand.Execute(null);
@@ -351,7 +351,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(annotation);
 
             //verify that group was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //select the group for deletion
             DynamoSelection.Instance.Selection.Add(annotation);
@@ -359,10 +359,10 @@ namespace DynamoCoreWpfTests
 
             //delete the note
             ViewModel.DeleteCommand.Execute(null);
-            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count);
+            Assert.AreEqual(0, ViewModel.Model.CurrentWorkspace.Annotations.Count());
 
             //verify only annotation was deleted and not the note
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
         }
 
         [Test]
@@ -375,7 +375,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(note);
@@ -407,7 +407,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(note);
@@ -428,7 +428,7 @@ namespace DynamoCoreWpfTests
 
 
             //verify the node was created
-            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the notes again 
             DynamoSelection.Instance.Selection.Add(note);
@@ -448,7 +448,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(note);
@@ -468,7 +468,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(secondnote);
 
             //verify the node was created
-            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the note
             DynamoSelection.Instance.Selection.Add(secondnote);
@@ -487,7 +487,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(note);
@@ -527,7 +527,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(note);
 
             //verify the note was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Notes.Count());
 
             //Select the note for group
             DynamoSelection.Instance.Selection.Add(note);
@@ -555,10 +555,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -586,10 +586,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -621,10 +621,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);
@@ -665,10 +665,10 @@ namespace DynamoCoreWpfTests
         {
             //Create a Node
             var addNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
-            ViewModel.Model.CurrentWorkspace.AddNode(addNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
             //verify the node was created
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node for group
             DynamoSelection.Instance.Selection.Add(addNode);

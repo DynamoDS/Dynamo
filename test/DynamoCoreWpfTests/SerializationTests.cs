@@ -296,7 +296,7 @@ namespace DynamoCoreWpfTests
             System.Threading.Thread.Sleep(500);
 
             // check if the node is loaded
-            //Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            //Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
 
             var graphNode = model.CurrentWorkspace.NodeFromWorkspace<Function>("9c8c2279-6f59-417c-8218-3b337230bd99");
             //var graphNode = (Function)model.Nodes.First(x => x is Function);
@@ -335,7 +335,7 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
-            var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
+            var dummyNode = workspace.NodeFromWorkspace<Dynamo.Nodes.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
             Assert.IsNotNull(dummyNode);
@@ -358,7 +358,7 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
-            var dummyNode = workspace.NodeFromWorkspace<DSCoreNodesUI.DummyNode>(
+            var dummyNode = workspace.NodeFromWorkspace<Dynamo.Nodes.DummyNode>(
                 Guid.Parse("37bffbb9-3438-4c6c-81d6-7b41b5fb5b87"));
 
             Assert.IsNotNull(dummyNode);
@@ -384,7 +384,7 @@ namespace DynamoCoreWpfTests
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "dummyNode.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
-            var dummyNode = workspace.Nodes.OfType<DSCoreNodesUI.DummyNode>().FirstOrDefault();
+            var dummyNode = workspace.Nodes.OfType<Dynamo.Nodes.DummyNode>().FirstOrDefault();
 
             Assert.IsNotNull(dummyNode);
             var xmlDocument = new XmlDocument();

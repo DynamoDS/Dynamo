@@ -159,8 +159,8 @@
   <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
     <value>A function call is not allowed on the left hand side of an assignment</value>
   </data>
-  <data name="FUNCTION_GROUP_RESOLUTION_FAILURE" xml:space="preserve">
-    <value>No function called {0} could be found. Please check the name of the function</value>
+  <data name="FunctionGroupNotFound" xml:space="preserve">
+    <value>No function called {0} on a {1} could be found</value>
   </data>
   <data name="GetKeys" xml:space="preserve">
     <value>Gets all keys from the specified key-value pair list</value>
@@ -349,7 +349,7 @@
     <value>Property '{0}' not found</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>Class '{0}' does not have a property '{1}'</value>
+    <value>No property called {0} on {1} could be found</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>An amount operator cannot be used together with a step operator</value>
@@ -895,5 +895,8 @@
   <data name="ArgumentNullException" xml:space="preserve">
     <value>Value cannot be null.
 Parameter name: {0}</value>
+  </data>
+  <data name="FunctionGroupWithParameterNotFound" xml:space="preserve">
+    <value>No function called {0} on a {1} that takes {2} could be found</value>
   </data>
 </root>

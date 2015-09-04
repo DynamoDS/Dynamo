@@ -8,6 +8,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;
+using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;

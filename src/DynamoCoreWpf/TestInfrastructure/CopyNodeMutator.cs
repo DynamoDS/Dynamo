@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -24,13 +24,13 @@ namespace Dynamo.TestInfrastructure
             const bool pass = false;
 
             var nodes = DynamoViewModel.Model.CurrentWorkspace.Nodes;
-            if (nodes.Count == 0)
+            if (nodes.Count() == 0)
                 return pass;
 
-            int nodesCountBeforeCopying = nodes.Count;
+            int nodesCountBeforeCopying = nodes.Count();
 
             int numberOfUndosNeeded = this.Mutate(node);
-            Thread.Sleep(100);
+            Thread.Sleep(10);
 
             writer.WriteLine("### - Beginning undo");
             for (int iUndo = 0; iUndo < numberOfUndosNeeded; iUndo++)
@@ -42,28 +42,19 @@ namespace Dynamo.TestInfrastructure
                     DynamoViewModel.ExecuteCommand(undoCommand);
 
                 }));
-                Thread.Sleep(100);
+                Thread.Sleep(0);
             }
             writer.WriteLine("### - undo complete");
             writer.Flush();
 
-            DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
-            {
-                DynamoModel.RunCancelCommand runCancel =
-                    new DynamoModel.RunCancelCommand(false, false);
-                DynamoViewModel.ExecuteCommand(runCancel);
-            }));
-            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
-            {
-                Thread.Sleep(10);
-            }
+            ExecuteAndWait();
 
             writer.WriteLine("### - Beginning test of CopyNode");
             if (node.OutPorts.Count > 0)
             {
                 try
                 {
-                    int nodesCountAfterCopying = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count;
+                    int nodesCountAfterCopying = DynamoViewModel.Model.CurrentWorkspace.Nodes.Count();
 
                     if (nodesCountBeforeCopying != nodesCountAfterCopying)
                     {

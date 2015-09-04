@@ -44,7 +44,7 @@ namespace Dynamo.Tests
             var workspace = dynamoModel.CurrentWorkspace;
             Assert.AreEqual(false, workspace.CanUndo);
             Assert.AreEqual(false, workspace.CanRedo);
-            Assert.AreEqual(0, workspace.Nodes.Count); // An empty workspace
+            Assert.AreEqual(0, workspace.Nodes.Count()); // An empty workspace
 
             var addNode = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             var createNodeCommand = new DynamoModel.CreateNodeCommand(
@@ -52,7 +52,7 @@ namespace Dynamo.Tests
 
             // Create a new node in the empty workspace.
             ViewModel.ExecuteCommand(createNodeCommand);
-            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count());
 
             Assert.AreEqual(true, workspace.CanUndo);
             Assert.AreEqual(false, workspace.CanRedo);
@@ -451,9 +451,9 @@ namespace Dynamo.Tests
 
             // make change
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
-            dynamoModel.CurrentWorkspace.AddNode(node, false);
+            dynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             // save
             var newPath = GetNewFileNameOnTempPath("dyn");
@@ -462,6 +462,26 @@ namespace Dynamo.Tests
             // check expected
             Assert.IsFalse(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
 
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanSaveAndReadWorkspaceDescription()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+
+            // set description
+            dynamoModel.CurrentWorkspace.Description = "dummy description";
+
+            // save
+            var newPath = GetNewFileNameOnTempPath("dyn");
+            ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+
+            // load
+            ViewModel.Model.OpenFileFromPath(newPath);
+            Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
         }
 
         [Test]
@@ -481,9 +501,9 @@ namespace Dynamo.Tests
             Assert.IsFalse(def.HasUnsavedChanges);
 
             var node = new DSFunction(dynamoModel.LibraryServices.GetFunctionDescriptor("+"));
-            def.AddNode(node, false);
+            def.AddAndRegisterNode(node, false);
             Assert.IsTrue(def.HasUnsavedChanges);
-            Assert.AreEqual(1, def.Nodes.Count );
+            Assert.AreEqual(1, def.Nodes.Count() );
             
             var newPath = GetNewFileNameOnTempPath("dyf");
             def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
@@ -640,10 +660,10 @@ namespace Dynamo.Tests
             model.CurrentWorkspace = ViewModel.HomeSpace;
             var newCustNodeInstance =
                 model.CustomNodeManager.CreateCustomNodeInstance(nodeWorkspace.CustomNodeId);
-            model.CurrentWorkspace.AddNode(newCustNodeInstance, false);
+            model.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
 
             // run expression
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
 
             // run expression is correct
             ViewModel.HomeSpace.Run();
@@ -721,7 +741,7 @@ namespace Dynamo.Tests
             foreach (var _ in Enumerable.Range(0, 10))
             {
                 var node = model.CustomNodeManager.CreateCustomNodeInstance(oldId);
-                model.CurrentWorkspace.AddNode(node, false);
+                model.CurrentWorkspace.AddAndRegisterNode(node, false);
             }
 
             // SaveAs
@@ -735,7 +755,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(nodeWorkspace.CustomNodeDefinition);
 
             // can get instances of original custom node
-            Assert.AreEqual(10, homeWorkspace.Nodes.Count);
+            Assert.AreEqual(10, homeWorkspace.Nodes.Count());
             var funcs =
                 homeWorkspace.Nodes.OfType<Function>()
                     .Where(x => x.Definition.FunctionId == nodeWorkspace.CustomNodeId)

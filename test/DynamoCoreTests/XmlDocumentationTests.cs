@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.IO;
 
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Library;
 
 using NUnit.Framework;
@@ -30,7 +31,8 @@ namespace Dynamo.Tests
             <search>
             move,push
             </search>
-            <returns>Transformed Geometry.</returns>
+            <weights>0.4,0.2</weights>
+            <returns name=""foo"">Transformed Geometry.</returns>
         </member>
         <member name=""M:MyNamespace.MyClass.#ctor"">
             <summary>
@@ -135,6 +137,37 @@ namespace Dynamo.Tests
             var summary = method.GetSummary(SampleDocument);
 
             Assert.AreEqual("Constructor summary.", summary);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetReturnKeys_FromMyMethod()
+        {
+            var method = GetMyMethod();
+
+            var returns = method.GetReturns(SampleDocument);
+
+            Assert.AreEqual(1, returns.Count());
+            Assert.AreEqual("foo", returns.ElementAt(0).Item1);
+            Assert.AreEqual("Transformed Geometry.", returns.ElementAt(0).Item2);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetTagsAndWeights_FromMethod()
+        {
+            var method = GetMyMethod();
+
+            var tags = method.GetSearchTags(SampleDocument);
+            var weights = method.GetSearchTagWeights(SampleDocument);
+
+            Assert.AreEqual(2, tags.Count());
+            Assert.AreEqual("move", tags.First());
+            Assert.AreEqual("push", tags.Last());
+
+            Assert.AreEqual(2, weights.Count());
+            Assert.AreEqual(0.4, weights.First());
+            Assert.AreEqual(0.2, weights.Last());
         }
 
     }

@@ -1,0 +1,35 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="159" Y="144" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="159" Y="144" DefaultPosition="false" TransformCoordinates="true">
+    <ModelGuid>eb506dff-f1b7-4bfd-8b53-a7562362c9e7</ModelGuid>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="eb506dff-f1b7-4bfd-8b53-a7562362c9e7" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="67" y="113" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="09a3ef25-f876-499e-80e0-91e3f59657b5">
+    <ModelGuid>eb506dff-f1b7-4bfd-8b53-a7562362c9e7</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </SelectModelCommand>
+  <SelectInRegionCommand X="111" Y="266" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>eb506dff-f1b7-4bfd-8b53-a7562362c9e7</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="117" Y="134" DragOperation="0" />
+  <DragSelectionCommand X="117" Y="134" DragOperation="1" />
+  <DeleteModelCommand>
+    <ModelGuid>00000000-0000-0000-0000-000000000000</ModelGuid>
+  </DeleteModelCommand>
+  <UndoRedoCommand CmdOperation="0" />
+  <SelectModelCommand Modifiers="0">
+    <ModelGuid>eb506dff-f1b7-4bfd-8b53-a7562362c9e7</ModelGuid>
+  </SelectModelCommand>
+  <DragSelectionCommand X="131" Y="187" DragOperation="0" />
+  <DragSelectionCommand X="131" Y="187" DragOperation="1" />
+  <PausePlaybackCommand Tag="Run" PauseDurationInMs="20" />
+</Commands>

@@ -5,7 +5,7 @@ using System.Xml;
 using Autodesk.DesignScript.Runtime;
 
 using Dynamo.Core;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Library;
 using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
             VarInputController.DeserializeCore(nodeElement, context);
         }
 
-        protected override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             return VarInputController.HandleModelEventCore(eventName, recorder)
                 || base.HandleModelEventCore(eventName, recorder);
@@ -117,16 +117,20 @@ namespace Dynamo.Nodes
             if (!model.IsPartiallyApplied)
             {
                 var paramCount = Definition.Parameters.Count();
-                var packId = "__var_arg_pack_" + model.GUID;
-                resultAst.Add(
-                    AstFactory.BuildAssignment(
-                        AstFactory.BuildIdentifier(packId),
-                        AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList())));
 
-                inputAstNodes =
-                    inputAstNodes.Take(paramCount - 1)
-                        .Concat(new[] { AstFactory.BuildIdentifier(packId) })
-                        .ToList();
+                // Suppose a fucntion foo() with var args, its signature is:
+                //
+                //    foo(x1, x2, ..., xn, params y)
+                //
+                // so paramCount == n + 1 here, and suppose inputs are
+                //
+                //        i1, i2, ...., in, y1, y2, ..., ym
+                //
+                // Here we pack all var arguments in an array {y1, y2, ..., ym}
+                // (skipping the first n == paramCount - 1 inputs)
+                var argPack = AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList()); 
+                inputAstNodes = inputAstNodes.Take(paramCount - 1).ToList();
+                inputAstNodes.Add(argPack);
             }
 
             base.BuildOutputAst(model, inputAstNodes, resultAst);

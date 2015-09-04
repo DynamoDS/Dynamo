@@ -12,13 +12,18 @@ namespace Dynamo.Controls
         // value is the selection
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            string stUnit = string.Empty;
+
             if (value is ConversionUnit)
             {
-                ConversionUnit st = (ConversionUnit) value;
-                string localizedEnum = Resources.ResourceManager.GetString("Unit" + st, culture);
-                return localizedEnum ?? string.Empty;
+                stUnit = ((ConversionUnit)value).ToString();
             }
-            return string.Empty;
+            else if (value is ConversionMetricUnit)
+            {
+                stUnit = ((ConversionMetricUnit)value).ToString();
+            }
+            string localizedEnum = Resources.ResourceManager.GetString("Unit" + stUnit, CultureInfo.CurrentUICulture);
+            return localizedEnum ?? string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

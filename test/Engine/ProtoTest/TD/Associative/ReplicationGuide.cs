@@ -117,6 +117,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T0001_Replication_Guide_Function_With_2_Arg_9()
         {
@@ -312,6 +313,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_1()
         {
@@ -325,6 +327,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_2()
         {
@@ -337,6 +340,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_3()
         {
@@ -349,6 +353,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test] //post R1
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T0003_Replication_Guide_Class_Constructor_With_2_Arg_4()
@@ -362,6 +367,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg()
         {
@@ -375,6 +381,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_2()
         {
@@ -389,6 +396,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T0004_Replication_Guide_Class_Constructor_With_3_Arg_3()
@@ -425,6 +433,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T033_Replication_Guide_1467383()
         {
@@ -438,6 +447,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T033_Replication_Guide_1467382()
         {
@@ -555,6 +565,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_6()
         {
@@ -568,6 +579,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_7()
         {
@@ -581,6 +593,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_8()
         {
@@ -608,6 +621,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T034_Replication_Guides_Not_On_All_Arguments_8_a()
         {
@@ -624,6 +638,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances()
         {
@@ -637,6 +652,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_2()
         {
@@ -650,6 +666,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T035_Defect_1467317_Replication_Guide_On_Instances_3()
         {
@@ -664,6 +681,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T036_Defect_1467383_Replication_Guide_On_Collection()
         {
@@ -709,6 +727,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_3()
         {
@@ -719,6 +738,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T037_ReplicationGuidebrackets_1467328_4()
         {
@@ -811,6 +831,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T038_ReplicationGuide_Not_In_Sequence()
         {
@@ -833,6 +854,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_2()
         {
@@ -844,6 +866,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_3()
         {
@@ -855,6 +878,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_4()
         {
@@ -866,6 +890,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_5()
         {
@@ -910,6 +935,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_9()
         {
@@ -921,6 +947,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T039_1467423_replication_guide_on_array_10()
         {
@@ -977,6 +1004,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T040_1467488_replication_guide_on_array_slices_4()
         {
@@ -988,6 +1016,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T040_1467488_replication_guide_on_array_slices_5()
         {
@@ -1000,6 +1029,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T040_1467488_replication_guide_on_array_slices_6()
@@ -1013,6 +1043,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         public void T040_1467488_replication_guide_on_array_slices_7()
         {
@@ -1025,6 +1056,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Replication")]
         [Category("Failure")]
         public void T040_1467488_replication_guide_on_array_slices_8()
@@ -1037,6 +1069,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T041_1467460_replication_guide_not_in_sequence_01()
         {
             string code =
@@ -1047,6 +1080,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_02()
         {
@@ -1058,6 +1092,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_03()
         {
@@ -1070,6 +1105,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T041_1467460_replication_guide_not_in_sequence_04()
         {
@@ -1081,6 +1117,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T041_1467460_replication_guide_not_in_sequence_05()
         {
             string code =
@@ -1091,6 +1128,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T041_1467460_replication_guide_not_in_sequence_06()
         {
             string code =
@@ -1101,6 +1139,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T041_1467460_replication_guide_not_in_sequence_07()
         {
             string code =
@@ -1113,6 +1152,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T041_1467460_replication_guide_not_in_sequence_08()
         {
             string code =
@@ -1125,6 +1165,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T041_1467460_replication_guide_not_in_sequence_09()
         {
             string code =
@@ -1186,6 +1227,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T042_1467555_cartesion_product_in_dot_operation_1()
         {
@@ -1198,6 +1240,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0100_FuncCall_Int_AllGuides()
         {
             string code =
@@ -1212,6 +1255,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0101_FuncCall_Double_SomeGuides()
         {
@@ -1241,6 +1285,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0103_FuncCall_Bool_NotInSeq()
         {
             string code =
@@ -1255,6 +1300,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0104_FuncCall_Bool_NotInSeq()
         {
             string code =
@@ -1269,6 +1315,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0105_FuncCall_Int_NotAllGuides_NotInSeq()
         {
@@ -1283,6 +1330,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0106_FuncCall_Int_MultipleGuides()
         {
             string code =
@@ -1296,6 +1344,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0107_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1310,6 +1359,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0108_FuncCall_Int_MultipleGuides_NotAllInSeq()
         {
             string code =
@@ -1357,6 +1407,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0112_FuncCall_Int_SingleAndMultipleGuides()
         {
             string code =
@@ -1370,6 +1421,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0113_FuncCall_Int_SingleAndMultipleGuides_NotInSeq()
         {
@@ -1395,6 +1447,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0115_FuncCall_HeterogenousInput()
         {
             string code =
@@ -1405,6 +1458,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0116_FuncCall_HeterogenousInput_MultipleGuides()
         {
             string code =
@@ -1415,6 +1469,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0117_FuncCall_HeterogenousInput_MultipleGuides()
         {
             string code =
@@ -1425,6 +1480,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0118_FuncCall_HeterogenousInput_SingleGuides()
         {
@@ -1436,6 +1492,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0119_FuncCall_HeterogenousInput_SingleGuides()
         {
@@ -1447,6 +1504,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0120_FuncCall_HeterogenousInput_jagged_SingleGuides()
         {
             string code =
@@ -1458,6 +1516,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0121_InstanceCall_Int_SingleGuides()
         {
             string code =
@@ -1468,6 +1527,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0122_ReplicationGudes_Inside_ClassAndFunctionBody()
         {
@@ -1552,6 +1612,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0127_ReplicationGudes_ModifierBlock()
         {
@@ -1569,6 +1630,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0128_ReplicationGudes_InlineCondition()
         {
@@ -1599,6 +1661,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0130_ReplicationGudes_InlineCondition()
         {
             string code =
@@ -1609,6 +1672,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0131_ReplicationGudes_InlineCondition()
         {
             string code =
@@ -1619,6 +1683,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0132_ReplicationGudes_InlineCondition()
         {
             string code =
@@ -1632,6 +1697,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0133_ReplicationGudes_RangeExpr()
         {
             string code =
@@ -1645,6 +1711,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0134_ReplicationGudes_RangeExpr()
         {
             string code =
@@ -1658,6 +1725,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0135_ReplicationGudes_ArraySlicingScope()
         {
             string code =
@@ -1743,6 +1811,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void T0142_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {
             string code =
@@ -1758,6 +1827,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         [Category("Failure")]
         public void T0143_ReplicationGudes_On_Both_Instance_And_Method_Call()
         {
@@ -1912,6 +1982,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RegressMagn4853_2()
         {
             // Test replication on singleton
@@ -1924,6 +1995,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RegressMagn4853_3()
         {
             // Test replication on singleton 
@@ -1936,6 +2008,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RegressMagn4853_4()
         {
             // Test replication on LHS
@@ -1948,6 +2021,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RegressMagn4853_5()
         {
             // Test replication on LHS
@@ -1960,6 +2034,7 @@ namespace ProtoTest.TD.Associative
         }
 
         [Test]
+        [Category("DSDefinedClass")]
         public void RegressMagn4853_6()
         {
             // Test replication on LHS

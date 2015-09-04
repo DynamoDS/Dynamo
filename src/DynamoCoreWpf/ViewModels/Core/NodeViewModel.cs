@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 
@@ -92,6 +92,30 @@ namespace Dynamo.ViewModels
             get
             {
                 return nodeLogic.IsSelected;
+            }
+        }
+
+        public bool IsInput
+        {
+            get
+            {
+                return nodeLogic.IsInputNode;
+            }
+        }
+
+        public bool IsSelectedInput
+        {
+            get
+            {
+                return nodeLogic.IsSelectedInput;
+            }
+            set
+            {
+                if (nodeLogic.IsSelectedInput != value)
+                {
+                    nodeLogic.IsSelectedInput = value;
+                    RaisePropertyChanged("IsSelectedInput");
+                }
             }
         }
 

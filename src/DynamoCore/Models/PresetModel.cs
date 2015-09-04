@@ -14,11 +14,11 @@ namespace Dynamo.Models
     /// This class references a set of nodemodels, and a set of serialized versions of those nodemodels
     /// a client can use this class to store the state of a set of nodes from a graph
     /// </summary>
-    public class PresetModel
+    public class PresetModel:ModelBase
     {
-        private Guid guid;
-        private readonly List<NodeModel> nodes;
-        private readonly List<XmlElement> serializedNodes;
+       
+        private List<NodeModel> nodes;
+        private List<XmlElement> serializedNodes;
 
         # region properties
 
@@ -35,14 +35,7 @@ namespace Dynamo.Models
         /// </summary>
         public IEnumerable<XmlElement> SerializedNodes { get { return serializedNodes; }}
 
-        /// <summary>
-        /// A unique identifier for the state.
-        /// </summary>
-        public Guid Guid
-        {
-            get { return guid; }
-        }
-
+       
         public const string GuidAttributeName = "guid";
         public const string NameAttributeName = "Name";
         public const string DescriptionAttributeName = "Description";
@@ -54,13 +47,12 @@ namespace Dynamo.Models
         /// <summary>
         /// create a new presetsState, this will serialize all the referenced nodes by calling their serialize method, 
         /// the resulting XML elements will be used to save this state when the presetModel is saved on workspace save
-        /// the below temp root and doc is to avoid exceptions thrown by the zero touch serialization methods
         /// </summary>
         /// <param name="name">name for the state, must not be null </param>
         /// <param name="description">description of the state, can be null</param>
         /// <param name="inputsToSave">set of nodeModels, must not be null</param>
         /// <param name="id">an id GUID, can be empty GUID</param>
-        public PresetModel(string name, string description, IEnumerable<NodeModel> inputsToSave, Guid id)
+        public PresetModel(string name, string description, IEnumerable<NodeModel> inputsToSave):base()
         {
             if (String.IsNullOrEmpty(name))
             {
@@ -72,16 +64,7 @@ namespace Dynamo.Models
                 throw new ArgumentNullException("inputsToSave");
             } 
 
-            //if we have not supplied a guid at construction then create a new one
-            if (id == Guid.Empty)
-            {
-                guid = Guid.NewGuid();
-            }
-            else
-            {
-                guid = id;
-            }
-            
+           
             Name = name;
             Description = description;
             nodes = inputsToSave.ToList();
@@ -98,20 +81,22 @@ namespace Dynamo.Models
         //this overload is used for loading
         private PresetModel(string name, string description, List<NodeModel> nodes, List<XmlElement> serializedNodes, Guid id)
         {
-
             Name = name;
             Description = description;
             this.nodes = nodes;
             this.serializedNodes = serializedNodes;
-            //if we have not supplied a guid at load then create a new one
-            if (id == Guid.Empty)
-            {
-                guid = Guid.NewGuid();
-            }
-            else
-            {
-                guid = id;
-            }
+            GUID = id;
+        }
+
+        /// <summary>
+        /// this overload is used for loading with deserializeCore, we must pass the nodesInTheGraph to the instance of the Preset so that
+        /// we can detect missing nodes
+        /// </summary>
+        /// <param name="nodesInGraph"></param>
+ 
+        public PresetModel(IEnumerable<NodeModel> nodesInGraph)
+        {
+            this.nodes = nodesInGraph.ToList();
         }
         #endregion
 
@@ -119,35 +104,11 @@ namespace Dynamo.Models
 
         #region serialization / deserialzation
 
-        //grabbed some methods needed from modelbase for serialization
-        protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
-        {
-            string typeName = GetType().ToString();
-            XmlElement element = xmlDocument.CreateElement(typeName);
-            return element;
-        }
-
-        /// <summary>
-        /// we serialze the presets to xml like a model, but we deserialze them before the workspacemodel is constructed
-        /// during save of the graph, workspace model serializes its list of presetModels into a "Presets" xml element
-        /// when a new presetModel is created we'll serialize all the current nodes into a new xmlelement
-        /// but not actually write this xml to a file until the graph is saved
-        /// </summary>
-        /// <param name="xmlDocument"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
-        {
-            var element = CreateElement(xmlDocument, context);
-            SerializeCore(element, context);
-            return element;
-        }
-
-        protected virtual void SerializeCore(System.Xml.XmlElement element, SaveContext context)
+        protected override void SerializeCore(System.Xml.XmlElement element, SaveContext context)
         {
             element.SetAttribute(NameAttributeName, this.Name);
             element.SetAttribute(DescriptionAttributeName, this.Description);
-            element.SetAttribute(GuidAttributeName, this.Guid.ToString());
+            element.SetAttribute(GuidAttributeName, this.GUID.ToString());
             //the states are already serialized
             foreach (var serializedNode in this.SerializedNodes)
             {
@@ -155,61 +116,59 @@ namespace Dynamo.Models
                 var importNode = element.OwnerDocument.ImportNode(serializedNode, true);
                 element.AppendChild(importNode);
             }
-
         }
 
-        public static PresetModel LoadFromXml(XmlElement element,IEnumerable<NodeModel> nodesInNodeGraph,ILogger logger)
+        
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            return loadFromXmlCore(element, nodesInNodeGraph, logger);
+            var stateName = nodeElement.GetAttribute(NameAttributeName);
+            var stateguidString = nodeElement.GetAttribute(GuidAttributeName);
+            var stateDescription = nodeElement.GetAttribute(DescriptionAttributeName);
+
+            Guid stateID;
+            if (!Guid.TryParse(stateguidString, out stateID))
+            {
+                this.Log("unable to parse the GUID for preset state: " + stateName + ", will atttempt to load this state anyway");
+            }
+
+            var foundNodes = new List<NodeModel>();
+            var deserialzedNodes = new List<XmlElement>();
+            //now find the nodes we're looking for by their guids in the loaded nodegraph
+            //it's possible they may no longer be present, and we must not fail to set the
+            //rest of the serialized versions
+            //iterate each actual saved nodemodel in the state
+            foreach (XmlElement node in nodeElement.ChildNodes)
+            {
+                var nodename = node.GetAttribute(NicknameAttributeName);
+                var guidString = node.GetAttribute(GuidAttributeName);
+                Guid nodeID;
+                if (!Guid.TryParse(guidString, out nodeID))
+                {
+                    this.Log("unable to parse GUID for node " + nodename);
+                    continue;
+                }
+
+                var nodebyGuid = this.nodes.Where(x => x.GUID == nodeID);
+                if (nodebyGuid.Count() > 0)
+                {
+                    foundNodes.Add(nodebyGuid.First());
+                    deserialzedNodes.Add(node);
+                }
+                else
+                {   //add the deserialized version anyway so we dont lose this node from all states.
+                    deserialzedNodes.Add(node);
+                    this.Log(nodename + nodeID.ToString() + " could not be found in the loaded .dyn");
+                }
+            }
+
+            this.Name = stateName;
+            this.GUID = stateID;
+            this.Description = stateDescription;
+            this.serializedNodes = deserialzedNodes;
+            //at the time of deserialization, nodes contains all the nodes in the nodegraph
+            //we now replace it with the found nodes that this preset serializes
+            this.nodes = foundNodes;
         }
-
-
-         protected static PresetModel loadFromXmlCore(XmlElement element,IEnumerable<NodeModel> nodesInNodeGraph,ILogger logger)
-      {
-          var stateName = element.GetAttribute(NameAttributeName);
-          var stateguidString = element.GetAttribute(GuidAttributeName);
-          var stateDescription = element.GetAttribute(DescriptionAttributeName);
-
-          Guid stateID;
-          if (!Guid.TryParse(stateguidString, out stateID))
-          {
-              logger.LogError("unable to parse the GUID for preset state: " + stateName + ", will atttempt to load this state anyway");
-          }
-
-          var nodes = new List<NodeModel>();
-          var deserialzedNodes = new List<XmlElement>();
-          //now find the nodes we're looking for by their guids in the loaded nodegraph
-          //it's possible they may no longer be present, and we must not fail to set the
-
-          //iterate each actual saved nodemodel in the state
-          foreach (XmlElement node in element.ChildNodes)
-          {
-              var nodename = node.GetAttribute(NicknameAttributeName);
-              var guidString = node.GetAttribute(GuidAttributeName);
-              Guid nodeID;
-              if (!Guid.TryParse(guidString, out nodeID))
-              {
-                  logger.LogError("unable to parse GUID for node " + nodename);
-                  continue;
-              }
-
-              var nodebyGuid = nodesInNodeGraph.Where(x => x.GUID == nodeID).ToList();
-              if (nodebyGuid.Count > 0)
-              {
-                  nodes.Add(nodebyGuid.First());
-                  deserialzedNodes.Add(node);
-              }
-              else
-              {   //add the deserialized version anyway so we dont lose this node from all states.
-                  deserialzedNodes.Add(node);
-                  logger.Log(nodename + nodeID.ToString() + " could not be found in the loaded .dyn");
-              }
-
-          }
-          return new PresetModel(stateName, stateDescription, nodes, deserialzedNodes, stateID);
-
-        }
-
         #endregion
     }
 }

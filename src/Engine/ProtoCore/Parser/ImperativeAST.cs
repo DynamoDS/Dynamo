@@ -6,6 +6,7 @@ using System.Text;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
 using ProtoCore.AST.AssociativeAST;
+using System.Globalization;
 
 namespace ProtoCore.AST.ImperativeAST
 {
@@ -230,7 +231,7 @@ namespace ProtoCore.AST.ImperativeAST
 
         public override string ToString()
         {
-            return Value.ToString();
+            return Value.ToString(CultureInfo.InvariantCulture);
         }
     }
 
@@ -259,7 +260,7 @@ namespace ProtoCore.AST.ImperativeAST
 
         public override string ToString()
         {
-            return Value.ToString();
+            return Value.ToString(CultureInfo.InvariantCulture);
         }
     }
 

@@ -7,7 +7,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Models;
 using Dynamo.Properties;
 using Dynamo.Interfaces;
@@ -185,11 +185,13 @@ namespace Dynamo.Core.Threading
                         var solid = graphicItem as Solid;
                         if (solid != null)
                         {
-                            foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                            var edges = solid.Edges;
+                            foreach (var geom in edges.Select(edge => edge.CurveGeometry))
                             {
                                 geom.Tessellate(package, factory.TessellationParameters);
                                 geom.Dispose();
                             }
+                            edges.ForEach(x => x.Dispose());
                         }
                     }
                     

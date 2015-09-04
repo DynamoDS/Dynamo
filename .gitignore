@@ -84,3 +84,4 @@ src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 /src/Libraries/GeometryUI/*.resources
 /src/Libraries/PythonNodeModelsWpf/*.resources
 /src/Libraries/PythonNodeModels/*.resources
+GregStandaloneAuth.dll

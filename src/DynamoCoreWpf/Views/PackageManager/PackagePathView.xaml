@@ -1,0 +1,236 @@
+﻿<Window x:Class="Dynamo.Wpf.Views.PackageManager.PackagePathView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        mc:Ignorable="d"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:uictrl="clr-namespace:Dynamo.UI.Controls"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        Title="{x:Static p:Resources.PackagePathViewTitle}"
+        Height="450"
+        Width="550"
+        MinWidth="550"
+        MinHeight="450"
+        d:DesignHeight="300"
+        d:DesignWidth="300"
+        Background="#515151"
+        Style="{DynamicResource DynamoWindowStyle}"
+        d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="PathListBoxStyle"
+                   TargetType="ListBox">
+                <Setter Property="SnapsToDevicePixels"
+                        Value="true" />
+                <Setter Property="OverridesDefaultStyle"
+                        Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                        Value="Hidden" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                        Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll"
+                        Value="true" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBox">
+                            <Border BorderBrush="#666666"
+                                    BorderThickness="1">
+                                <ScrollViewer Margin="0,0,0,1"
+                                              Focusable="false">
+                                    <StackPanel IsItemsHost="True" />
+                                </ScrollViewer>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <Grid ToolTip="{Binding}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding}"
+                                           Margin="6,7,0,8"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1"
+                                           Text="..."
+                                           Cursor="Hand"
+                                           MouseLeftButtonUp="OnEllipsisClicked"
+                                           Margin="6,7,10,8"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="PathListBoxItemStyle"
+                   TargetType="ListBoxItem">
+                <Setter Property="SnapsToDevicePixels"
+                        Value="true" />
+                <Setter Property="OverridesDefaultStyle"
+                        Value="true" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border x:Name="Border"
+                                    Padding="0,0,0,1"
+                                    SnapsToDevicePixels="true"
+                                    Background="Transparent">
+                                <ContentPresenter />
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected"
+                                         Value="True">
+                                    <Setter TargetName="Border"
+                                            Property="Background"
+                                            Value="#3f3f3f" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver"
+                                                   Value="True" />
+                                        <Condition Property="IsSelected"
+                                                   Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="Border"
+                                            Property="Background"
+                                            Value="#666666" />
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="10"
+          TextBlock.Foreground="#cccccc"
+          TextBlock.FontSize="14"
+          TextBlock.FontFamily="{StaticResource OpenSansRegular}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2">
+            <TextBlock TextWrapping="Wrap"
+                       Text="{x:Static p:Resources.PackagePathViewSummary1}" />
+            <TextBlock TextWrapping="Wrap"
+                       FontStyle="Italic"
+                       Text="{x:Static p:Resources.PackagePathViewSummary2}" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="1"
+                   Grid.Column="1"
+                   Margin="0,10,0,5"
+                   Text="{x:Static p:Resources.PackagePathViewHeading}" />
+
+        <StackPanel Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="0,0,8,0"
+                    Orientation="Vertical">
+
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,0,5,0"
+                                CommandParameter="{Binding Path=SelectedIndex}"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipUp}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-move-up.png">
+                <uictrl:ImageButton.Command>
+                    <Binding Path="DataContext.MovePathUpCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
+                </uictrl:ImageButton.Command>
+            </uictrl:ImageButton>
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,5,5,0"
+                                CommandParameter="{Binding Path=SelectedIndex}"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipDown}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-move-down.png">
+                <uictrl:ImageButton.Command>
+                    <Binding Path="DataContext.MovePathDownCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
+                </uictrl:ImageButton.Command>
+            </uictrl:ImageButton>
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,5,5,0"
+                                CommandParameter="{Binding Path=SelectedIndex}"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-plus.png">
+                <uictrl:ImageButton.Command>
+                    <Binding Path="DataContext.AddPathCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
+                </uictrl:ImageButton.Command>
+            </uictrl:ImageButton>
+            <uictrl:ImageButton Width="32"
+                                Height="32"
+                                Margin="0,5,5,0"
+                                CommandParameter="{Binding Path=SelectedIndex}"
+                                ToolTip="{x:Static p:Resources.PackagePathViewToolTipMinus}"
+                                StateImage="/DynamoCoreWpf;component/UI/Images/PackageManager/custom-path-dialog-minus.png">
+                <uictrl:ImageButton.Command>
+                    <Binding Path="DataContext.DeletePathCommand"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
+                </uictrl:ImageButton.Command>
+            </uictrl:ImageButton>
+
+        </StackPanel>
+
+        <ListBox x:Name="PathListBox"
+                 Grid.Row="2"
+                 Grid.Column="1"
+                 SelectionMode="Single"
+                 SelectionChanged="OnPathSelectionChanged"
+                 Style="{StaticResource PathListBoxStyle}"
+                 ItemContainerStyle="{StaticResource PathListBoxItemStyle}">
+            <ListBox.ItemsSource>
+                <Binding Path="DataContext.RootLocations"
+                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" />
+            </ListBox.ItemsSource>
+        </ListBox>
+
+        <StackPanel Grid.Row="3"
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Right">
+            <Button Margin="0,0,10,0"
+                    Click="OnOkButtonClicked"
+                    Background="#cccccc"
+                    TextBlock.Foreground="Blue"
+                    Style="{StaticResource STextButtonDefault}"
+                    Content="{x:Static p:Resources.PackagePathViewAccept}">
+            </Button>
+            <Button Click="OnCancelButtonClicked"
+                    Style="{StaticResource STextButton}"
+                    Content="{x:Static p:Resources.CancelButton}">
+            </Button>
+        </StackPanel>
+
+    </Grid>
+
+</Window>

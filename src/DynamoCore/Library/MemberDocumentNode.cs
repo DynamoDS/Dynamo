@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     class MemberDocumentNode
     {
         private readonly string fullyQualifiedName;
         private string summary = String.Empty;
         private string searchTags = String.Empty;
+        private string searchTagWeights = String.Empty;
         private readonly Dictionary<string, string> parameters;
+        private readonly List<Tuple<string, string>> returns;
 
         public string FullyQualifiedName { get { return fullyQualifiedName; } }
 
@@ -40,6 +42,25 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public string SearchTagWeights
+        {
+            get
+            {
+                return searchTagWeights;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                searchTagWeights = value;
+            }
+        }
+
+        public IList<Tuple<string,string>> Returns
+        {
+            get { return returns; }
+        }
+
         public IDictionary<string, string> Parameters { get { return parameters; } }
 
         /// <summary>
@@ -64,6 +85,7 @@ namespace Dynamo.DSEngine
 
             fullyQualifiedName = MakeFullyQualifiedName(assemblyName, memberName);
             parameters = new Dictionary<string, string>();
+            returns = new List<Tuple<string, string>>();
         }
 
         internal void AddParameter(string name, string description)

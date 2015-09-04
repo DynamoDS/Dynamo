@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism.Commands;
 using Dynamo.PackageManager.UI;
 using System.Reflection;
 using System.IO;
+using System.Threading;
 
 namespace Dynamo.ViewModels
 {
@@ -36,6 +37,7 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class TermsOfUseHelper
     {
+        private static int currentRequestCount = 0;
         private readonly IBrandingResourceProvider resourceProvider;
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
@@ -62,6 +64,14 @@ namespace Dynamo.ViewModels
 
         public void Execute()
         {
+            if (Interlocked.Increment(ref currentRequestCount) > 1)
+            {
+                // Determine if there is already a previous request to display
+                // terms of use dialog, if so, do nothing for the second time.
+                Interlocked.Decrement(ref currentRequestCount);
+                return;
+            }
+
             Task<bool>.Factory.StartNew(() => packageManagerClient.GetTermsOfUseAcceptanceStatus()).
                 ContinueWith(t =>
                 {
@@ -84,6 +94,12 @@ namespace Dynamo.ViewModels
                         // Prompt user to accept the terms of use.
                         ShowTermsOfUseForPublishing();
                     }
+
+                }, TaskScheduler.FromCurrentSynchronizationContext()).
+                ContinueWith(t =>
+                {
+                    // Done with terms of use dialog, decrement counter.
+                    Interlocked.Decrement(ref currentRequestCount);
 
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -166,6 +182,22 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public AuthenticationManager AuthenticationManager { get; set; }
         internal PackageManagerClient Model { get; private set; }
+
+        public LoginState LoginState
+        {
+            get
+            {
+                return AuthenticationManager.LoginState;
+            }
+        }
+
+        public string Username
+        {
+            get
+            {
+                return AuthenticationManager.Username;
+            }
+        }
 
         #endregion
 
@@ -402,7 +434,7 @@ namespace Dynamo.ViewModels
         /// 
         /// Note that, if the package is already installed, it must be uninstallable
         /// </summary>
-        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
+        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath)
         {
             Downloads.Add(packageDownloadHandle);
 
@@ -449,7 +481,7 @@ namespace Dynamo.ViewModels
                             }
                         }
 
-                        if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
+                        if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
                         {
                             var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
                             pmExtension.PackageLoader.Load(p);

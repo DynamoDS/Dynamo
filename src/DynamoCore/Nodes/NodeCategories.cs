@@ -5,7 +5,7 @@ using System.Xml;
 using Dynamo.UI;
 using System.IO;
 using System.Text;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Library;
 
 namespace Dynamo.Nodes
@@ -548,9 +548,10 @@ namespace Dynamo.Nodes
                     continue;
                 }
 
-                if (row != lastRow)
+                if (row != lastRow || rows.Count() == 1)
                 {
                     // Rows other than the last get dots appended to the end.
+                    // Or if there is only one row.
                     results.Add(row.Substring(0, maxAfterTruncate) + Configurations.TwoDots);
                 }
                 else

@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Search.SearchElements;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.UI.Views
 {
@@ -20,6 +21,7 @@ namespace Dynamo.UI.Views
     public partial class LibrarySearchView : UserControl
     {
         private SearchViewModel viewModel;
+        private LibraryDragAndDrop dragDropHelper = new LibraryDragAndDrop();
 
         public LibrarySearchView()
         {
@@ -36,7 +38,7 @@ namespace Dynamo.UI.Views
         private void OnLibrarySearchViewLoaded(object sender, RoutedEventArgs e)
         {
             viewModel = DataContext as SearchViewModel;
-
+            viewModel.SearchTextChanged +=viewModel_SearchTextChanged;
             // RequestReturnFocusToSearch calls, when workspace was clicked.
             // We should hide tooltip.
             viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
@@ -44,17 +46,14 @@ namespace Dynamo.UI.Views
             viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
         }
 
-        private void OnPreviewMouseMove(object sender, MouseEventArgs e)
+        private void viewModel_SearchTextChanged(object sender, EventArgs e)
         {
-            if (e.LeftButton != MouseButtonState.Pressed)
-                return;
-            var senderButton = e.OriginalSource as FrameworkElement;
-
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-                return;
-
-            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
+            //Get the scrollview and scroll to top on every text entered
+            var scroll = CategoryTreeView.ChildOfType<ScrollViewer>();
+            if (scroll != null)
+            {               
+                scroll.ScrollToTop();
+            }
         }
 
         private void OnNoMatchFoundButtonClick(object sender, RoutedEventArgs e)
@@ -118,6 +117,40 @@ namespace Dynamo.UI.Views
         private void OnRequestCloseToolTip(object sender, EventArgs e)
         {
             CloseToolTipInternal(true);
+        }
+
+        #endregion
+
+        #region Drag&Drop
+
+        private void OnButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var senderButton = e.OriginalSource as FrameworkElement;
+            if (senderButton != null)
+            {
+                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+
+                if (searchElementVM != null)
+                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
+            }          
+        }
+
+        private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            var senderButton = e.OriginalSource as FrameworkElement;
+
+            if (senderButton == null)
+                return;
+
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseMove(senderButton, e.GetPosition(null));
+            else
+                dragDropHelper.Clear();
+
         }
 
         #endregion

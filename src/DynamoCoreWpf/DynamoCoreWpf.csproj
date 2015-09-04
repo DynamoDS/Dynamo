@@ -69,6 +69,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -83,6 +84,9 @@
   <ItemGroup>
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
       <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InfiniteGridView.xaml.cs">
+      <DependentUpon>InfiniteGridView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -134,18 +138,22 @@
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="UI\DefaultBrandingResourceProvider.cs" />
     <Compile Include="UI\FrozenResources.cs" />
+    <Compile Include="UI\InOutPortPanel.cs" />
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
+    <Compile Include="UI\Prompts\PresetOverwritePrompt.xaml.cs">
+      <DependentUpon>PresetOverwritePrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Prompts\PresetPrompt.xaml.cs">
       <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\VisualConfigurations.cs" />
+    <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="Utilities\DelegateCommand.cs" />
     <Compile Include="Interfaces\IViewModelView.cs" />
-    <Compile Include="Interfaces\IVisualizationManager.cs" />
     <Compile Include="Interfaces\IWatchHandler.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomizations.cs" />
     <Compile Include="NodeViewCustomization\INodeViewCustomization.cs" />
@@ -223,6 +231,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
@@ -235,12 +244,17 @@
     <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
     <Compile Include="ViewModels\Search\SelectionNavigator.cs" />
     <Compile Include="ViewModels\RenderPackageFactoryViewModel.cs" />
+    <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
+    <Compile Include="ViewModels\Watch3D\Watch3DViewModelBase.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
+      <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
@@ -318,10 +332,8 @@
     <Compile Include="ViewModels\Core\DynamoViewModelDelegates.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEventArgs.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
-    <Compile Include="ViewModels\Core\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
-    <Compile Include="ViewModels\Preview\IWatchViewModel.cs" />
     <Compile Include="ViewModels\Core\NodeViewModel.cs" />
     <Compile Include="ViewModels\Core\NoteViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageItemInternalViewModel.cs" />
@@ -339,8 +351,6 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
-    <Compile Include="VisualizationManager\STLExport.cs" />
-    <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
@@ -352,6 +362,10 @@
     <Page Include="Controls\InCanvasSearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InfiniteGridView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Login.xaml">
       <SubType>Designer</SubType>
@@ -919,6 +933,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Prompts\PresetOverwritePrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1003,6 +1021,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Gallery\GalleryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\PackagePathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1178,6 +1200,12 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\customizerWorkflow.png" />
+    <Resource Include="UI\Images\dynamowithtext.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-minus.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-down.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-up.png" />
+    <Resource Include="UI\Images\PackageManager\custom-path-dialog-plus.png" />
     <Resource Include="UI\Images\drag_move.cur" />
     <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
@@ -1185,11 +1213,7 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
+    <MakeDir Directories="$(OutputPath)\viewExtensions\" />
   </Target>
-  -->
 </Project>

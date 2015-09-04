@@ -441,7 +441,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Defect_MAGN_829_1.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
 
@@ -455,7 +455,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Defect_MAGN_829_2.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
@@ -468,7 +468,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Defect_MAGN_829_3.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
@@ -481,7 +481,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Defect_MAGN_829_4.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
@@ -495,7 +495,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Defect_MAGN_829_5.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             Assert.Pass("Execution completed successfully");
         }
@@ -570,7 +570,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Defect_MAGN_2479.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
             AssertPreviewValue("0ffe94bd-f926-4e81-83f7-7975e67a3713",
                 new int[] { 2, 4, 6, 8 });
@@ -586,7 +586,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\Defect_MAGN_2375_3487.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             CurrentDynamoModel.AddToSelection(CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
@@ -595,7 +595,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.Copy();
             CurrentDynamoModel.Paste();
 
-            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             //run the graph after copy paste
@@ -995,6 +995,15 @@ namespace Dynamo.Tests
             AssertPreviewValue("980dcd47-84e7-412c-8d9e-d66f166d2370", new object[] { new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false }, new object[] { false } });
 
         }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void TestListJoin()
+        {
+            var dynFilePath = Path.Combine(TestDirectory, @"core\list\ListJoin.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("ea031ca8-9c49-4d14-a702-54022cb60e0f", 5);
+        }
     }
 
     [Category("DSCustomNode")]
@@ -1025,7 +1034,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             AssertPreviewValue("f9c6aa7f-3fb4-40df-b4c5-6694e8c437cd", 
                 new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
@@ -1144,6 +1153,5 @@ namespace Dynamo.Tests
 
             AssertPreviewValue("42693721-622d-475e-a82e-bfe793ddc153", new object[] {2, 3, 4, 5, 6});
         }
-        
     }
 }
