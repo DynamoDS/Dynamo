@@ -1895,5 +1895,44 @@ b = 0..10..a;
             thisTest.VerifyRuntimeWarningCount(1);
             thisTest.Verify("b", null);
         }
+
+        [Test]
+        [Category("SmokeTest")]
+        public void AlphabetSequence()
+        {
+            string src = @"a1;a2;a3;a4;a5;a6;a7;
+[Imperative]
+{
+	a1 = ""a""..""c""..1;
+    a2 = ""A""..""E""..1;
+    a3 = ""A""..""E""..2;
+    a4 = ""a""..""e""..3;
+    a5 = ""e""..""a""..1;
+    a6 = ""z""..""v""..1;
+    a7 = ""z""..""v""..4;
+}
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(src);
+            List<Object> result = new List<Object> { 'a', 'b', 'c'};
+            Assert.IsTrue(mirror.CompareArrays("a1", result, typeof(System.Char)));
+
+            result = new List<Object> { 'A', 'B', 'C', 'D', 'E' };
+            Assert.IsTrue(mirror.CompareArrays("a2", result, typeof(System.Char)));
+
+            result = new List<Object> { 'A', 'C', 'E' };
+            Assert.IsTrue(mirror.CompareArrays("a3", result, typeof(System.Char)));
+
+            result = new List<Object> { 'a', 'd' };
+            Assert.IsTrue(mirror.CompareArrays("a4", result, typeof(System.Char)));
+
+            result = new List<Object> { 'e', 'd', 'c', 'b', 'a' };
+            Assert.IsTrue(mirror.CompareArrays("a5", result, typeof(System.Char)));
+
+            result = new List<Object> { 'z', 'y', 'x', 'w', 'v' };
+            Assert.IsTrue(mirror.CompareArrays("a6", result, typeof(System.Char)));
+
+            result = new List<Object> { 'z', 'v' };
+            Assert.IsTrue(mirror.CompareArrays("a7", result, typeof(System.Char)));
+        }
     }
 }
