@@ -315,9 +315,7 @@ result2;
         [Category("SmokeTest")]
         public void T014_Associative_Function_DuplicateVariableAndFunctionName_Negative()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Associative]
 {
 	def Foo : int ()
@@ -328,8 +326,7 @@ result2;
 	
 	
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]

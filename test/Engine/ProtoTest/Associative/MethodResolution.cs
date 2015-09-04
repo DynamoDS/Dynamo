@@ -406,12 +406,30 @@ return = [Imperative]
 }
 }
 
+def qux1()
+{
+    qux1 = 21;
+    return = qux1 + 1;
+}
+
+def qux2()
+{
+    return = [Imperative] {
+       qux2 = 21;
+       return = qux2 + 1;
+    }
+}
+
 x = foo({1,2,3});
 y = bar({4,5,6});
+z1 = qux1();
+z2 = qux2();
 ";
             thisTest.VerifyRunScriptSource(code, "");
             thisTest.Verify("x", new object[] { 1, 2, 3 });
             thisTest.Verify("y", new object[] { 4, 5, 6 });
+            thisTest.Verify("z1", 22);
+            thisTest.Verify("z2", 22);
         }
     }
 }
