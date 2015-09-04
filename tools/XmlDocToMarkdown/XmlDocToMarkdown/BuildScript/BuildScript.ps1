@@ -10,12 +10,12 @@ If(-not(Test-Path -path $app))
 	Write-Host "Root Path"
 	
 	resolve-path ~
-	
-	resolve-path APPVEYOR_BUILD_FOLDER	
-	resolve-path bin\Release\DynamoCore.dll
-	resolve-path bin\Release\DynamoCore.xml
-	resolve-path tools\XmlDocToMarkdown\bin\Release\XmlDocToMarkdown.exe
-	
+
+    Get-ChildItem -Path ~ –Directory
+	Get-ChildItem -Path \bin\Release\ –Directory	
+	Get-ChildItem -Path bin\Release\ –Directory
+	Get-ChildItem -Path c:\projects –Directory
+	Get-ChildItem -Path c:\projects\dynamo –Directory	
   }
   
 $check = "bin\Release\XmlDocToMarkdown.exe"
