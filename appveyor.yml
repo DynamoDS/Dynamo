@@ -9,7 +9,7 @@ environment:
   xmlDocs_solution	: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
 
 install:
-	- cinst MkDocs
+	- cinst choco install
   
 build_script:
   - msbuild %dynamo_solution%
