@@ -11,7 +11,7 @@ If(-not(Test-Path -path $app))
   
 $check = "bin\Release\XmlDocToMarkdown.exe"
 
-If(-not(Test-Path -path $check))
+If(-not(Test-Path -path $arg1))
   {
     Write-Host "File does not exists on Dynamo"
   }
