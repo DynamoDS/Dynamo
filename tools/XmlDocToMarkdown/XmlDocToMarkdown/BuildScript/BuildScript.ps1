@@ -42,6 +42,6 @@ If(-not(Test-Path -path $docsDir))
 	}
 	
 Write-Host "Checking MkDocs"
-Get-ChildItem -Path "C:\" -Directory
+Get-ChildItem -Path "C:\Python34" -File
 
   
