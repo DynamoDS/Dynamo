@@ -10,15 +10,15 @@ If(-not(Test-Path -path $app))
 	Write-Host "Dynamo Path"		 
 	Get-ChildItem -Path C:\projects\dynamo\  –Directory
 	Write-Host "Dynamo Path1"
-	Get-ChildItem -Path C:\projects\dynamo\bin\ –Directory
+	Get-ChildItem -Path C:\projects\dynamo\bin\AnyCPU\ –Directory
 	Write-Host "Dynamo Path2"
-	Get-ChildItem -Path C:\projects\dynamo\bin\Release\ –File
+	Get-ChildItem -Path C:\projects\dynamo\bin\AnyCPU\Release\ –File
 	Write-Host "Dynamo Path3"
-	Get-ChildItem -Path C:\projects\dynamo\tools\dynamo\tools -Directory
+	Get-ChildItem -Path C:\projects\dynamo\tools -Directory
 	Write-Host "Dynamo Path4"
-	Get-ChildItem -Path C:\projects\dynamo\tools\dynamo\tools\XmlDocToMarkdown\bin -Directory
+	Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\bin -Directory
 	Write-Host "Dynamo Path5"
-	Get-ChildItem -Path C:\projects\dynamo\tools\dynamo\tools\XmlDocToMarkdown\bin\Release -File
+	Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\bin\AnyCPU\Release -File
   }
   
 $check = "bin\Release\XmlDocToMarkdown.exe"
