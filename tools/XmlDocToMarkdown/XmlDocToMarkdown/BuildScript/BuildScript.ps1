@@ -7,26 +7,35 @@ $arg2 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.xml"
 If(-not(Test-Path -path $app))
   {
     $app
-    Write-Host "File does not exists"
-	{ "File does not exists" ; exit }
+    Write-Host "File does not exists"	
   }
  
  If(-not(Test-Path -path $arg1))
   {
     $arg1
-    Write-Host "File does not exists"
-	{ "File does not exists" ; exit }
+    Write-Host "File does not exists"	
   }
   
   If(-not(Test-Path -path $arg2))
   {
     $arg2
-    Write-Host "File does not exists"
-	{ "File does not exists" ; exit }
+    Write-Host "File does not exists"	
   }
   
 Write-Host "Running Xml Markdown exe"
 & $app $arg1 $arg2
 
 Write-Host "copying the markdown file"
-Copy-Item C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\index.md  C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs
+
+$mdFile = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\index.md"
+$docsDir = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs"
+
+If(-not(Test-Path -path $mdFile) or -not(Test-Path -path $docsDir) )
+  {    
+     Write-Host "File does not exists, Cannot copy item"	
+  }
+ Else
+	{
+		Copy-Item $mdFile  $docsDir
+	}
+  
