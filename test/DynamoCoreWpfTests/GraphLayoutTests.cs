@@ -122,6 +122,20 @@ namespace Dynamo.Tests
             Assert.Greater(nodes.ElementAt(3).X, 0);   // rightmost Watch node
 
             AssertNoOverlap();
+            AssertMaxCrossings(2);
+        }
+
+        [Test]
+        public void GraphLayoutCrossings()
+        {
+            OpenModel(GetDynPath("GraphLayoutCrossings.dyn"));
+            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertGraphLayoutLayers(new List<int> { 2, 2 });
+
+            AssertNoOverlap();
+            AssertMaxCrossings(5);
         }
 
         [Test]
@@ -134,6 +148,7 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new List<int> { 3, 5, 8, 3 });
 
             AssertNoOverlap();
+            AssertMaxCrossings(4);
         }
 
         [Test]
@@ -146,6 +161,7 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new List<int> { 3, 7, 2, 2, 1, 1, 1 });
 
             AssertNoOverlap();
+            AssertMaxCrossings(7);
         }
 
         [Test]
@@ -158,6 +174,7 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new List<int> { 2, 3, 5, 4 });
 
             AssertNoOverlap();
+            AssertMaxCrossings(4);
         }
 
         [Test]
@@ -170,6 +187,7 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new List<int> { 1, 1, 2, 4, 1, 2, 3 });
 
             AssertNoOverlap();
+            AssertMaxCrossings(6);
         }
 
         [Test]
@@ -182,6 +200,7 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new List<int> { 1, 1, 1 });
 
             AssertNoOverlap();
+            AssertMaxCrossings(5);
         }
 
         [Test]
@@ -194,6 +213,7 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new List<int> { 3 });
 
             AssertNoOverlap();
+            AssertMaxCrossings(4);
         }
 
         [Test]
@@ -206,9 +226,56 @@ namespace Dynamo.Tests
             AssertGraphLayoutLayers(new List<int> { 1, 1, 1 });
 
             AssertNoOverlap();
+            AssertMaxCrossings(7);
         }
 
         #endregion
+
+        private void AssertMaxCrossings(int maxCrossings)
+        {
+            GraphLayout.Graph g = ViewModel.CurrentSpace.GraphLayoutGraph;
+            int crossings = 0;
+
+            var list = ViewModel.CurrentSpace.Connectors;
+
+            var combinations = list.Select((value, index) => new { value, index })
+                .SelectMany(x => list.Skip(x.index + 1), (x, y) => Tuple.Create(x.value, y))
+                .Where(x => !x.Item1.Start.Equals(x.Item2.Start));
+
+            foreach (var pair in combinations)
+            {
+                var a = pair.Item1.Start.Center;
+                var b = pair.Item1.End.Center;
+                var c = pair.Item2.Start.Center;
+                var d = pair.Item2.End.Center;
+
+                double denominator = ((b.X - a.X) * (d.Y - c.Y)) - ((b.Y - a.Y) * (d.X - c.X));
+                double numerator1 = ((a.Y - c.Y) * (d.X - c.X)) - ((a.X - c.X) * (d.Y - c.Y));
+                double numerator2 = ((a.Y - c.Y) * (b.X - a.X)) - ((a.X - c.X) * (b.Y - a.Y));
+
+                // Detect coincident lines (has a problem, read below)
+                if (denominator == 0 && numerator1 == 0 && numerator2 == 0)
+                {
+                    crossings++;
+                }
+                else
+                {
+                    double r = numerator1 / denominator;
+                    double s = numerator2 / denominator;
+
+                    if ((r >= 0 && r <= 1) && (s >= 0 && s <= 1))
+                    {
+                        crossings++;
+                    }
+                }
+            }
+
+            if (crossings > maxCrossings)
+            {
+                Assert.Fail("Number of edge crossings is " + crossings +
+                    ", more than the specified max " + maxCrossings);
+            }
+        }
 
         private void AssertNoOverlap()
         {

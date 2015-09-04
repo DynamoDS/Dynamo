@@ -1093,8 +1093,7 @@ namespace Dynamo.ViewModels
                     graph.AddEdge(
                         startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
                         endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
-                        edge.Start.Center.Y,
-                        edge.End.Center.Y);
+                        edge.Start.Center.X, edge.Start.Center.Y, edge.End.Center.X, edge.End.Center.Y);
                 }
 
                 models.Add(edge, UndoRedoRecorder.UserAction.Modification);
