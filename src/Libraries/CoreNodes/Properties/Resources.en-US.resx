@@ -153,6 +153,9 @@
   <data name="LoadImageFromPathObsolete" xml:space="preserve">
     <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
   </data>
+  <data name="ObjectArgumentExceptionMessage" xml:space="preserve">
+    <value>Object cannot be null, please provide appropriate value.</value>
+  </data>
   <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
     <value>You cannot construct a quadtree from an empty set of points.</value>
   </data>

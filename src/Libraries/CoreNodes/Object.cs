@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Resources = DSCore.Properties.Resources;
+
 namespace DSCore
 {
     /// <summary>
@@ -37,6 +39,10 @@ namespace DSCore
         /// <returns>Type of object.</returns>
         public static string Type(object obj)
         {
+            if (obj == null)
+            {
+                throw new ArgumentException(Resources.ObjectArgumentExceptionMessage, "obj");
+            }
             return obj.GetType().ToString();
         }
     }

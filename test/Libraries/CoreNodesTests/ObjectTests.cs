@@ -13,7 +13,7 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void Type()
         {
-            Assert.Throws<NullReferenceException>(() => Object.Type(null));
+            Assert.Throws<ArgumentException>(() => Object.Type(null));
 
             var result = Object.Type(string.Empty);
             Assert.AreEqual("System.String", result);
