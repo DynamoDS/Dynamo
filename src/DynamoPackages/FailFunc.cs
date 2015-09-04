@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dynamo.Utilities
+namespace Dynamo.PackageManager
 {
     public static class FailFunc
     {

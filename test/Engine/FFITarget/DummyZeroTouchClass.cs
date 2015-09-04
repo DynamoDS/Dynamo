@@ -1,4 +1,6 @@
 ﻿using Dynamo.Models;
+using Dynamo.Nodes;
+
 namespace FFITarget
 {
     public class DummyZeroTouchClass

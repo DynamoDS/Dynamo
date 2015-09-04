@@ -7,7 +7,7 @@ using System.Linq;
 using DSOffice;
 using NUnit.Framework;
 using ProtoCore.Mirror;
-using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.Engine.CodeCompletion;
 using Dynamo.Models;
 using Dynamo.Nodes;
 

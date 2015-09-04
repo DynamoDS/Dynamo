@@ -6,6 +6,7 @@ using System.Linq;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Models;
+using Dynamo.Logging;
 
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
@@ -14,7 +15,7 @@ using Type = ProtoCore.Type;
 
 #endregion
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     Get notification when AstBuilder starts building node and

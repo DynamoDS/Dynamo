@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Nodes
 {
     [NodeName("Legacy Node")]
     [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
@@ -21,7 +23,7 @@ namespace DSCoreNodesUI
 
         public DummyNode()
         {
-            LegacyNodeName = "DSCoreNodesUI.DummyNode";
+            LegacyNodeName = "Dynamo.Nodes.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
             Description = GetDescription();

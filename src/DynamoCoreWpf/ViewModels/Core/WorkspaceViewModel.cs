@@ -59,7 +59,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToViewportCenter(object sender, ZoomEventArgs e)
+        private void OnRequestZoomToViewportCenter(object sender, ZoomEventArgs e)
         {
             if (RequestZoomToViewportCenter != null)
             {
@@ -72,7 +72,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToViewportPoint(object sender, ZoomEventArgs e)
+        internal void OnRequestZoomToViewportPoint(object sender, ZoomEventArgs e)
         {
             if (RequestZoomToViewportPoint != null)
             {
@@ -85,7 +85,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestZoomToFitView(object sender, ZoomEventArgs e)
+        private void OnRequestZoomToFitView(object sender, ZoomEventArgs e)
         {
             if (RequestZoomToFitView != null)
             {
@@ -93,7 +93,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
+        internal virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
                 RequestCenterViewOnElement(this, e);
@@ -1058,47 +1058,45 @@ namespace Dynamo.ViewModels
             var graph = new GraphLayout.Graph();
             var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
 
-            foreach (AnnotationModel n in Model.Annotations)
+            foreach (AnnotationModel group in Model.Annotations)
             {
                 // Treat a group as a graph layout node/vertex
-                graph.AddNode(n.GUID, n.Width, n.Height, n.Y);
-                models.Add(n, UndoRedoRecorder.UserAction.Modification);
+                graph.AddNode(group.GUID, group.Width, group.Height, group.Y);
+                models.Add(group, UndoRedoRecorder.UserAction.Modification);
             }
 
-            foreach (NodeModel n in Model.Nodes)
+            foreach (NodeModel node in Model.Nodes)
             {
                 AnnotationModel group = Model.Annotations.Where(
-                    s => s.SelectedModels.Contains(n)).ToList().FirstOrDefault();
+                    g => g.SelectedModels.Contains(node)).ToList().FirstOrDefault();
 
                 // Do not process nodes within groups
                 if (group == null)
                 {
-                    graph.AddNode(n.GUID, n.Width, n.Height, n.Y, n.InPorts.Count);
-                    models.Add(n, UndoRedoRecorder.UserAction.Modification);
+                    graph.AddNode(node.GUID, node.Width, node.Height, node.Y);
+                    models.Add(node, UndoRedoRecorder.UserAction.Modification);
                 }
             }
 
-            foreach (ConnectorModel x in Model.Connectors)
+            foreach (ConnectorModel edge in Model.Connectors)
             {
                 AnnotationModel startGroup = null, endGroup = null;
                 startGroup = Model.Annotations.Where(
-                    s => s.SelectedModels.Contains(x.Start.Owner)).ToList().FirstOrDefault();
+                    g => g.SelectedModels.Contains(edge.Start.Owner)).ToList().FirstOrDefault();
                 endGroup = Model.Annotations.Where(
-                    s => s.SelectedModels.Contains(x.End.Owner)).ToList().FirstOrDefault();
+                    g => g.SelectedModels.Contains(edge.End.Owner)).ToList().FirstOrDefault();
 
-                // Connector does not belong to any group
-                if ((startGroup == null) && (endGroup == null))
-                    graph.AddEdge(x.Start.Owner.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
+                // Treat a group as a node, but do not process edges within a group
+                if (startGroup == null || endGroup == null || startGroup != endGroup)
+                {
+                    graph.AddEdge(
+                        startGroup == null ? edge.Start.Owner.GUID : startGroup.GUID,
+                        endGroup == null ? edge.End.Owner.GUID : endGroup.GUID,
+                        edge.Start.Center.Y,
+                        edge.End.Center.Y);
+                }
 
-                // Connector starts from a node within a group
-                else if ((startGroup != null) && (endGroup == null))
-                    graph.AddEdge(startGroup.GUID, x.End.Owner.GUID, x.Start.Center.Y, x.End.Center.Y);
-
-                // Connector ends at a node within a group
-                else if ((startGroup == null) && (endGroup != null))
-                    graph.AddEdge(x.Start.Owner.GUID, endGroup.GUID, x.Start.Center.Y, x.End.Center.Y);
-
-                models.Add(x, UndoRedoRecorder.UserAction.Modification);
+                models.Add(edge, UndoRedoRecorder.UserAction.Modification);
             }
 
             // Support undo for graph layout command
@@ -1112,28 +1110,28 @@ namespace Dynamo.ViewModels
             graph.NormalizeGraphPosition();
 
             // Assign coordinates to nodes inside groups
-            foreach (var x in Model.Annotations)
+            foreach (var group in Model.Annotations)
             {
-                var id = x.GUID;
-                double deltaX = graph.FindNode(id).X - x.X;
-                double deltaY = graph.FindNode(id).Y - x.Y;
-                foreach (var n in x.SelectedModels)
+                var g = graph.FindNode(group.GUID);
+                double deltaX = g.X - group.X;
+                double deltaY = g.Y - group.Y;
+                foreach (var node in group.SelectedModels)
                 {
-                    n.X += deltaX;
-                    n.Y += deltaY;
-                    n.ReportPosition();
+                    node.X += deltaX;
+                    node.Y += deltaY;
+                    node.ReportPosition();
                 }
             }
 
             // Assign coordinates to nodes outside groups
-            foreach (var x in Model.Nodes)
+            foreach (var node in Model.Nodes)
             {
-                var n = graph.FindNode(x.GUID);
+                var n = graph.FindNode(node.GUID);
                 if (n != null)
                 {
-                    x.X = n.X;
-                    x.Y = n.Y;
-                    x.ReportPosition();
+                    node.X = n.X;
+                    node.Y = n.Y;
+                    node.ReportPosition();
                 }
             }
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Input;
 
 using Dynamo.Wpf.ViewModels;
+using Dynamo.ViewModels;
 
 using Greg.Responses;
 
@@ -19,6 +20,7 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand DownvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
+        public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
         public new PackageManagerSearchElement Model { get; internal set; }
 
@@ -27,13 +29,26 @@ namespace Dynamo.PackageManager.ViewModels
             this.Model = element;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
-            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last()));
+
+            this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), false));
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
+
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
             this.DownvoteCommand = new DelegateCommand(Model.Downvote, () => canLogin);
+
             this.VisitSiteCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+        }
+
+        public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
+        public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
+        {
+            if (RequestShowFileDialog != null)
+            {
+                RequestShowFileDialog(sender, e);
+            }
         }
 
         private static string FormatUrl(string url)
@@ -58,24 +73,55 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
-        public List<Tuple<PackageVersion, DelegateCommand>> Versions
+        public List<Tuple<PackageVersion, DelegateCommand<object>>> Versions
         {
             get
             {
                 return
                     Model.Header.versions.Select(
-                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() => OnRequestDownload(x)))).Reverse().ToList();
+                        x => new Tuple<PackageVersion, DelegateCommand<object>>(
+                            x, new DelegateCommand<object>((p) => OnRequestDownload(x, p.Equals("true")))
+                        )).Reverse().ToList();
             }
         }
 
-        public delegate void PackageSearchElementDownloadHandler(PackageManagerSearchElement element, PackageVersion version);
+        private List<String> CustomPackageFolders;
+
+        public delegate void PackageSearchElementDownloadHandler(
+            PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
-        public void OnRequestDownload(PackageVersion version)
+
+        public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
-            if (RequestDownload != null)
+            string downloadPath = String.Empty;
+
+            if (downloadToCustomPath)
             {
-                RequestDownload(this.Model, version);
+                downloadPath = GetDownloadPath();
+
+                if (String.IsNullOrEmpty(downloadPath))
+                    return;
             }
+
+            if (RequestDownload != null)
+                RequestDownload(this.Model, version, downloadPath);
+        }
+
+        private string GetDownloadPath()
+        {
+            var args = new PackagePathEventArgs();
+
+            ShowFileDialog(args);
+
+            if (args.Cancel)
+                return string.Empty;
+
+            return args.Path;
+        }
+
+        private void ShowFileDialog(PackagePathEventArgs e)
+        {
+            OnRequestShowFileDialog(this, e);
         }
     }
 }

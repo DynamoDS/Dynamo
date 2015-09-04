@@ -109,7 +109,7 @@ namespace Dynamo.Wpf.ViewModels
                 RequestBitmapSource(e);
             }
         }
-
+      
         public string Name
         {
             get { return name; }
@@ -416,6 +416,11 @@ namespace Dynamo.Wpf.ViewModels
             }
 
             IsExpanded = endState;
+            if (TreeViewItems != null)
+            {                 
+                //ClassDetails.IsExpanded = IsExpanded;
+                TreeViewItems[0].IsExpanded = IsExpanded;
+            }
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -547,11 +552,22 @@ namespace Dynamo.Wpf.ViewModels
             }
             return nextLargerItemIndex;
         }
-    }
 
-    public class RootNodeCategoryViewModel : NodeCategoryViewModel
-    {
-        private ClassInformationViewModel classDetails;
+        private List<ClassInformationViewModel> treeViewIems;
+        public List<ClassInformationViewModel> TreeViewItems
+        {
+            get
+            {
+                var ci = new ClassInformationViewModel();
+                ci.IsRootCategoryDetails = false;
+                ci.PopulateMemberCollections(this);
+                treeViewIems = new List<ClassInformationViewModel>();
+                treeViewIems.Add(ci);
+                return treeViewIems;
+            }            
+        }
+
+        protected ClassInformationViewModel classDetails;
         public ClassInformationViewModel ClassDetails
         {
             get
@@ -559,14 +575,20 @@ namespace Dynamo.Wpf.ViewModels
                 if (classDetails == null && IsClassButton)
                 {
                     classDetails = new ClassInformationViewModel();
-                    classDetails.IsRootCategoryDetails = true;
-                    classDetails.PopulateMemberCollections(this);
+                    classDetails.IsRootCategoryDetails = false;
+                    //classDetails.PopulateMemberCollections(this);
+                    //if (listDetails == null && listDetails.Contains(classDetails))
+                    //    listDetails = new List<ClassInformationViewModel>();
+                    //listDetails.Add(classDetails);
                 }
 
                 return classDetails;
             }
-        }
+        }       
+    }
 
+    public class RootNodeCategoryViewModel : NodeCategoryViewModel
+    {      
         public RootNodeCategoryViewModel(string name) : base(name) { }
 
         public RootNodeCategoryViewModel(

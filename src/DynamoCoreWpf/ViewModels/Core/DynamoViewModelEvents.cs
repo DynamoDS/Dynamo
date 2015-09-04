@@ -94,8 +94,8 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event RequestViewOperationHandler RequestViewOperation;
-        public void OnRequestViewOperation(ViewOperationEventArgs e)
+        internal event RequestViewOperationHandler RequestViewOperation;
+        private void OnRequestViewOperation(ViewOperationEventArgs e)
         {
             if (RequestViewOperation != null)
             {

@@ -6,6 +6,7 @@ using System.Linq;
 using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Logging;
 
 using Greg;
 using System.Reflection;
