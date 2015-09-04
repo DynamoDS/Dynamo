@@ -11,6 +11,7 @@ If(-not(Test-Path -path $app))
 	
 	resolve-path ~
 	
+	resolve-path APPVEYOR_BUILD_FOLDER	
 	resolve-path bin\Release\DynamoCore.dll
 	resolve-path bin\Release\DynamoCore.xml
 	resolve-path tools\XmlDocToMarkdown\bin\Release\XmlDocToMarkdown.exe
