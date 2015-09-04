@@ -229,6 +229,36 @@ namespace Dynamo.Tests
             AssertMaxCrossings(7);
         }
 
+        [Test]
+        public void GraphLayoutComplex()
+        {
+            OpenModel(GetDynPath("GraphLayoutComplex.dyn"));
+            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+            ViewModel.DoGraphAutoLayout(null);
+
+            AssertGraphLayoutLayers(new List<int> { 13, 8, 6, 9, 12, 16, 17,
+                9, 9, 9, 4, 3, 5, 4, 3, 1, 2, 3, 1, 3, 7, 7, 1, 1, 2, 4, 3, 2, 3 });
+
+            AssertNoOverlap();
+            AssertMaxCrossings(198);
+        }
+
+        [Test]
+        public void GraphLayoutDyf()
+        {
+            OpenModel(GetDynPath("GraphLayout.dyf"));
+            ViewModel.CurrentWorkspaceIndex = 1;
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel);
+
+            IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+            ViewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
+
+            AssertGraphLayoutLayers(new List<int> { 1, 1, 2, 2, 2, 2 });
+
+            AssertNoOverlap();
+            AssertMaxCrossings(1);
+        }
+
         #endregion
 
         private void AssertMaxCrossings(int maxCrossings)
