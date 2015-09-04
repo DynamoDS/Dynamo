@@ -364,17 +364,17 @@ namespace Dynamo.Nodes
         }
     }
 
-    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq")]
+    [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq", "DSCoreNodesUI.NumberRange")]
     public class NumberRange : MigrationNode
     {
-        [NodeMigration(from: "0.6.3.0", to: "0.7.0.0")]
-        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        [NodeMigration(from: "0.8.2.0", to: "0.8.3.0")]
+        public static NodeMigrationData Migrate_0820_to_0830(NodeMigrationData data)
         {
             NodeMigrationData migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
 
             XmlElement newNode = MigrationManager.CloneAndChangeName(
-                oldNode, "DSCoreNodesUI.NumberRange", "Number Range");
+                oldNode, "DSCoreNodesUI.Range", "Range");
 
             migrationData.AppendNode(newNode);
             return migrationData;
