@@ -11,10 +11,10 @@ If(-not(Test-Path -path $app))
 	
 	resolve-path ~
     
-	Get-ChildItem -Path \bin\Release\ –Files
+	Get-ChildItem -Path \bin\Release\ –File
 	Get-ChildItem -Path \dynamo\tools -Directory
 	Get-ChildItem -Path \dynamo\tools\XmlDocToMarkdown\bin -Directory
-	Get-ChildItem -Path \dynamo\tools\XmlDocToMarkdown\bin\Release -Files
+	Get-ChildItem -Path \dynamo\tools\XmlDocToMarkdown\bin\Release -File
   }
   
 $check = "bin\Release\XmlDocToMarkdown.exe"
