@@ -1,6 +1,6 @@
 ﻿Write-Host "Running Xml Markdown"
 
-$app = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\AnyCPU\Release\XmlDocToMarkdown.exe"
+$app = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\XmlDocToMarkdown.exe"
 $arg1 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.dll"
 $arg2 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.xml"
 
@@ -8,7 +8,10 @@ Write-Host "Dynamo Path3"
 Get-ChildItem -Path C:\projects\dynamo\bin\AnyCPU\Release -File
 
 Write-Host "Dynamo Path4"
-Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown -Directory
+Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown -Directory
+
+Write-Host "Dynamo Path5"
+Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin -Directory
 
 If(-not(Test-Path -path $app))
   {
