@@ -4,15 +4,6 @@ $app = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\X
 $arg1 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.dll"
 $arg2 = "C:\projects\dynamo\bin\AnyCPU\Release\DynamoCore.xml"
 
-Write-Host "Dynamo Path3"
-Get-ChildItem -Path C:\projects\dynamo\bin\AnyCPU\Release -File
-
-Write-Host "Dynamo Path4"
-Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown -Directory
-
-Write-Host "Dynamo Path5"
-Get-ChildItem -Path C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin -Directory
-
 If(-not(Test-Path -path $app))
   {
     $app
@@ -34,5 +25,8 @@ If(-not(Test-Path -path $app))
 	{ "File does not exists" ; exit }
   }
   
-
+Write-Host "Running Xml Markdown exe"
 & $app $arg1 $arg2
+
+Write-Host "copying the markdown file"
+Copy-Item C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\index.md  C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\docs
