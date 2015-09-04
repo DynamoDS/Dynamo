@@ -12,6 +12,9 @@ If(-not(Test-Path -path $app))
 	resolve-path ~
 	
 	resolve-path bin\Release\DynamoCore.dll
+	resolve-path bin\Release\DynamoCore.xml
+	resolve-path tools\XmlDocToMarkdown\bin\Release\XmlDocToMarkdown.exe
+	
   }
   
 $check = "bin\Release\XmlDocToMarkdown.exe"
