@@ -389,7 +389,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    public sealed class UpdateManager : NotificationObject, IUpdateManager
+    internal sealed class UpdateManager : NotificationObject, IUpdateManager
     {
         #region Private Class Data Members
 
@@ -1103,7 +1103,7 @@ namespace Dynamo.UpdateManager
     /// <summary>
     /// Lookup for installed products
     /// </summary>
-    public abstract class DynamoLookUp : IDynamoLookUp
+    internal abstract class DynamoLookUp : IDynamoLookUp
     {
         /// <summary>
         /// Gets the version of latest product

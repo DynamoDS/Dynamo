@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 
 namespace Dynamo.Nodes
 {

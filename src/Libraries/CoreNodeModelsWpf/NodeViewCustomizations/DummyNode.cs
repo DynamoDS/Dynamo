@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using DSCoreNodesUI;
+using Dynamo.Nodes;
 using Dynamo.Wpf;
 
 namespace Dynamo.Wpf.Nodes

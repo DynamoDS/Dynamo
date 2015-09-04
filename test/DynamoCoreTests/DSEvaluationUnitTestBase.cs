@@ -45,7 +45,7 @@ namespace Dynamo.Tests
         {
             var nodes = GetModel().CurrentWorkspace.Nodes;
 
-            var dummyNodes = nodes.OfType<DSCoreNodesUI.DummyNode>();
+            var dummyNodes = nodes.OfType<Dynamo.Nodes.DummyNode>();
             string logs = string.Empty;
             foreach (var node in dummyNodes)
             {

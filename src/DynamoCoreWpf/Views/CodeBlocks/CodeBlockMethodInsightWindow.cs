@@ -1,4 +1,4 @@
-﻿using Dynamo.DSEngine.CodeCompletion;
+﻿using Dynamo.Engine.CodeCompletion;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
 using Microsoft.Practices.Prism.ViewModel;
