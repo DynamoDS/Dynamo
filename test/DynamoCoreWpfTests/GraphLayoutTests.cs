@@ -32,7 +32,7 @@ namespace Dynamo.Tests
 
             ViewModel.DoGraphAutoLayout(null);
 
-            Assert.IsNull(ViewModel.CurrentSpace.GraphLayoutGraph);
+            Assert.IsNull(ViewModel.CurrentSpace.LayoutGraph);
 
             Assert.Inconclusive("RequestZoomToFitView is null");
 
@@ -263,7 +263,7 @@ namespace Dynamo.Tests
 
         private void AssertMaxCrossings(int maxCrossings)
         {
-            GraphLayout.Graph g = ViewModel.CurrentSpace.GraphLayoutGraph;
+            GraphLayout.Graph g = ViewModel.CurrentSpace.LayoutGraph;
             int crossings = 0;
 
             var list = ViewModel.CurrentSpace.Connectors;
@@ -309,7 +309,7 @@ namespace Dynamo.Tests
 
         private void AssertNoOverlap()
         {
-            GraphLayout.Graph g = ViewModel.CurrentSpace.GraphLayoutGraph;
+            GraphLayout.Graph g = ViewModel.CurrentSpace.LayoutGraph;
 
             foreach (var a in g.Nodes)
             {
@@ -327,7 +327,7 @@ namespace Dynamo.Tests
 
         private void AssertGraphLayoutLayers(List<int> layerCount)
         {
-            GraphLayout.Graph g = ViewModel.CurrentSpace.GraphLayoutGraph;
+            GraphLayout.Graph g = ViewModel.CurrentSpace.LayoutGraph;
             bool same = layerCount.SequenceEqual(g.Layers.Select(layer => layer.Count).ToList());
             Assert.IsTrue(same);
         }
