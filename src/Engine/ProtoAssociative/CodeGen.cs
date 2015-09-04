@@ -8510,20 +8510,12 @@ namespace ProtoAssociative
                     leftNodeGlobalRef = GetUpdatedNodeRef(bnode.LeftNode);
 
                     // check whether the variable name is a function name
-                    bool isAccessibleFp;
-                    int realType;
-                    ProtoCore.DSASM.ProcedureNode procNode = null;
                     if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
                     {
-                        procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                    }
-                    if (procNode == null)
-                    {
-                        procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
-                    }
-                    if (procNode != null)
-                    {
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
+                        bool isAccessibleFp;
+                        int realType;
+                        var procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
+                        if (procNode != null && procNode.procId != Constants.kInvalidIndex && emitDebugInfo)
                         {
                             buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVariableError, t.Name), core.CurrentDSFileName, t.line, t.col);
                         }

@@ -2110,25 +2110,15 @@ namespace ProtoImperative
                 }
                 else
                 {
+                    // check whether the variable name is a function name
+                    if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
                     {
-                        // check whether the variable name is a function name
                         bool isAccessibleFp;
                         int realType;
-                        ProtoCore.DSASM.ProcedureNode procNode = null;
-                        if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
+                        var procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
+                        if (procNode != null && procNode.procId != Constants.kInvalidIndex && emitDebugInfo)
                         {
-                            procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                        }
-                        if (procNode == null)
-                        {
-                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
-                        }
-                        if (procNode != null)
-                        {
-                            if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
-                            {
-                                buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVaribleError,t.Name), core.CurrentDSFileName, t.line, t.col);
-                            }
+                            buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVaribleError, t.Name), core.CurrentDSFileName, t.line, t.col);
                         }
                     }
 
