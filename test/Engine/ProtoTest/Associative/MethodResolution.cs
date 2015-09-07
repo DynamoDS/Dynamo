@@ -8,11 +8,11 @@ namespace ProtoTest.Associative
     class MethodResolution : ProtoTestBase
     {
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void SimpleCtorResolution01()
         {
             String code =
-@"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}// Construct class 'f'	cf = f.f();	x = cf.fx;	y = cf.fy;";
+@"	fx : var;	fy : var;	fx = 123;	fy = 345;		x = fx;	y = fy;";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 123);
@@ -20,25 +20,23 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void SimpleCtorResolution02()
         {
             String code =
-@"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}        constructor f(x : int, y : int)        {            fx = x;            fy = y;        }	}    // Construct class 'f'	cf = f.f();	x = cf.fx;	y = cf.fy;    cy = f.f(1,2);    x2 = cy.fx;    y2 = cy.fy;";
+@"	def f()	{		return = 123;	}    def f(a : int)    {        return = a;	}    x = f();    y = f(345);";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 123);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 345);
-            Assert.IsTrue((Int64)mirror.GetValue("x2").Payload == 1);
-            Assert.IsTrue((Int64)mirror.GetValue("y2").Payload == 2);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void SimpleCtorResolution03()
         {
             String code =
-@"	class vector2D	{		mx : var;		my : var;				constructor vector2D(px : int, py : int)		{			mx = px; 			my = py; 		}        def scale : int()		{			mx = mx * 2; 			my = my * 2;             return = 0;		}        def scale : int(s: int)		{			mx = mx * s; 			my = my * s;             return = 0;		}	}	p = vector2D.vector2D(10,40);	x = p.mx;	y = p.my;    	n = p.scale();	n = p.scale(10);";
+@"	x : var;	y : var;    def scale : int()	{		x = x * 2;		y = y * 2;        return = 0;	}    def scale : int(s: int)	{		x = x * s;		y = y * s;        return = 0;	}	x = 10;    y = 40;	n = scale();	n = scale(10);";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 200);
@@ -46,7 +44,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void SimpleCtorResolution04()
         {
             String code =
@@ -57,7 +55,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverload1()
         {
             string code =
@@ -69,7 +67,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverload2()
         {
             string code =
@@ -81,7 +79,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverload3()
         {
             string code =
@@ -93,7 +91,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverload4()
         {
             string code =
@@ -105,7 +103,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodResolutionOverInheritance()
         {
             string code =
@@ -117,11 +115,11 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestMethodOverlaodAndArrayInput1()
         {
             string code =
-                @"                class A                {                    def execute(a : A)                    {                         return = -1;                     }                }                class B extends A                {                    def execute(arr : B[])                    {                        return = 2;                    }                }                b = B.B();                arr = {B.B(), B.B(), B.B()};                val = b.execute(arr);                ";
+                @"                def execute(a : var)                {                     return = -1;                 }                def execute(arr : var[])                {                    return = 2;                }                arr = {1, 2, 3};                val = execute(arr);                ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 2);
@@ -129,7 +127,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverlaodAndArrayInput2()
         {
             string code =
@@ -141,7 +139,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverlaodAndArrayInput3()
         {
             string code =
@@ -152,7 +150,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverlaodAndArrayInput4()
         {
             string code =
@@ -166,7 +164,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverlaodAndArrayInput4Min()
         {
             string code =
@@ -179,13 +177,19 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         [Category("Method Resolution")]
         public void TestStaticDispatchOnArray()
         {
             //Recorded as defect: DNL-1467146
             string code =
-                @"class A{static def execute(b : A){ return = 100; }}arr = {A.A()};v = A.execute(arr);val = v[0];                ";
+                @"def execute(b : var)
+{
+	return = 100; 
+}
+arr = {3};
+v = execute(arr);
+val = v[0];                ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 100);
@@ -195,11 +199,11 @@ namespace ProtoTest.Associative
         [Test]
         [Category("Method Resolution")]
         [Category("Escalate")]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestStaticDispatchOnEmptyArray()
         {
             string code =
-                @"class A{static def execute(b : A){ return = 100; }}arr = {};v = A.execute(arr);val = v[0];                ";
+                @"def execute(b : var){    return = 100; }arr = {};v = execute(arr);val = v[0];                ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             //Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 100);
@@ -207,7 +211,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverlaodAndArrayInput5()
         {
             string code =
@@ -218,7 +222,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodOverlaodAndArrayInput6()
         {
             string code =
@@ -229,10 +233,10 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestMethodWithArrayInput1()
         {
-            string code = @"                            class A                            {                            }                            class B extends A                            {                            }                            def Test(arr : A[])                            {                                    return = 123;                            }                            a = {B.B(), B.B(), B.B()};                            val = Test(a);                            ";
+            string code = @"                            def Test(arr : var[])                            {                                return = 123;                            }                            a = {3, 4, 5};                            val = Test(a);                            ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 123);
@@ -240,7 +244,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodWithArrayInput2()
         {
             string code = @"                            class A                            {                            }                            class B extends A                            {                            }                            def Test(arr : A[])                            {                                    return = 123;                            }                            a = {B.B(), A.A(), B.B()};                            val = Test(a);                            ";
@@ -252,10 +256,10 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestMethodWithArrayInputOverload()
         {
-            string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                                def foo(x : double[]) 	                            { return = 2; }	                            def foo(x : double[][]) 	                            { return = 3; }                            }                            arr = 1..20..2;                            val = A.A().foo(arr);                            ";
+            string code = @"                            def foo(x : double)                            { return = 1; }                            def foo(x : double[]) 	                        { return = 2; }	                        def foo(x : double[][]) 	                        { return = 3; }                            arr = 1..20..2;                            val = foo(arr);                            ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 2);
@@ -264,10 +268,10 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("Method Resolution")]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestMethodWithArrayInputOverloadDirectType()
         {
-            string code = @"                            class A                            {	                            def foo(x : int)                                { return = 1; }                                def foo(x : int[]) 	                            { return = 2; }	                            def foo(x : int[][]) 	                            { return = 3; }                            }                            arr = 1..20..2;                            val = A.A().foo(arr);                            ";
+            string code = @"                            def foo(x : int)                            { return = 1; }                            def foo(x : int[]) 	                        { return = 2; }	                        def foo(x : int[][]) 	                        { return = 3; }                            arr = 1..20..2;                            val = foo(arr);                            ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("val").Payload == 2);
@@ -275,7 +279,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestMethodWithOverrides()
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                        a = A.A();                            val1 = a.foo(0.0);                                                      //  b = B.B();                                                      //  val2 =b.foo(0.0);                            ";
@@ -286,7 +290,7 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignore")]
         public void TestOverridenMethod()
         {
             string code = @"                            class A                            {	                            def foo(x : double)                                { return = 1; }                            }                            class B extends A                            {                                def foo(x : double)                                { return = 2; }                            }                                                      //  a = A.A();                          //  val1 = a.foo(0.0);                                                      b = B.B();                                                      val2 =b.foo(0.0);                            ";
