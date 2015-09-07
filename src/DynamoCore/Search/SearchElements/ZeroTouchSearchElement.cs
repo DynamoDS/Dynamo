@@ -36,7 +36,6 @@ namespace Dynamo.Search.SearchElements
 
                 UserFriendlyName += parameters;
             }
-
             
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
