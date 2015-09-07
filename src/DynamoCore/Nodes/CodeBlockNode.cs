@@ -430,7 +430,8 @@ namespace Dynamo.Nodes
             if (functionCallNode != null)
             {
                 ProtoCore.FunctionGroup funcGroup;
-                if (core.FunctionTable.FunctionList.TryGetValue(functionCallNode.Name, out funcGroup))
+                var funcTable = core.FunctionTable.GlobalFuncTable[0];
+                if (funcTable.TryGetValue(functionCallNode.Function.Name, out funcGroup))
                 {
                     var func = funcGroup.FunctionEndPoints.FirstOrDefault();
                     if (func != null)

@@ -958,15 +958,9 @@ namespace Dynamo.Engine
                 string shortName;
                 if (shortNameMap.TryGetValue(n.Value, out shortName))
                 {
-                    if (shortName == string.Empty)
+                    if (string.IsNullOrEmpty(shortName))
                     {
-                        ProtoCore.Type typeHint;
-                        bool hasTypeHint = typeHints.TryGetValue(n.Value, out typeHint);
-
-                        shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
-                        while (mappedVariables.Contains(shortName))
-                            shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
-
+                        shortName = GetNextShortName(nameGenerator, typeHints, mappedVariables, n.Value);
                         shortNameMap[n.Value] = shortName;
                     }
                     n.Value = n.Name = shortName; 
@@ -975,6 +969,33 @@ namespace Dynamo.Engine
 
             IdentifierVisitor visitor = new IdentifierVisitor(func, core);
             astNode.Accept(visitor);
+        }
+
+        /// <summary>
+        /// Get type-dependent short name based on the type hint of input variable
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="typeHints"></param>
+        /// <param name="mappedVariables"></param>
+        /// <param name="varName"></param>
+        /// <returns></returns>
+        private static string GetNextShortName(
+            ShortNameGenerator generator, 
+            Dictionary<string, ProtoCore.Type> typeHints, 
+            HashSet<string> mappedVariables,
+            string varName)
+        {
+            ProtoCore.Type typeHint;
+            bool hasHint = typeHints.TryGetValue(varName, out typeHint);
+
+            var shortName = hasHint ? generator.GenerateNextNameForType(typeHint) 
+                                    : generator.GenerateNextDefaultName();
+
+            while (mappedVariables.Contains(shortName))
+                shortName = hasHint ? generator.GenerateNextNameForType(typeHint) 
+                                    : generator.GenerateNextDefaultName();
+
+            return shortName;
         }
 
         /// <summary>
@@ -1207,13 +1228,7 @@ namespace Dynamo.Engine
                if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
                    outputMap[key].StartsWith(Constants.kTempVarForNonAssignment))
                {
-                   ProtoCore.Type typeHint;
-                   bool hasTypeHint = typeHints.TryGetValue(key, out typeHint);
-
-                   var shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
-                   while (mappedVariables.Contains(shortName))
-                       shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
-
+                   var shortName = GetNextShortName(nameGenerator, typeHints, mappedVariables, key); 
                    var tempVar = outputMap[key];
                    outputMap[key] = shortName;
                    outputMap[tempVar] = shortName;
