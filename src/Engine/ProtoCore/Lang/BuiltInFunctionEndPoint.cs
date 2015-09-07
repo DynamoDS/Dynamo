@@ -1270,7 +1270,7 @@ namespace ProtoCore.Lang
                 // Take just letters.
                  .Where(x => Char.IsLetter((char)x))
                 // Create stack values.
-                 .Select(x => StackValue.BuildChar((char)x))
+                 .Select(x => StackValue.BuildString(Char.ToString((char)x), runtimeCore.Heap))
                  .ToArray();
 
             return letters;
