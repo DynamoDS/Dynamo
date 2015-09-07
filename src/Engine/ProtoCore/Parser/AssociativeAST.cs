@@ -1357,10 +1357,11 @@ namespace ProtoCore.AST.AssociativeAST
         public bool HiddenInLibrary { get; protected set; }
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
-        public ClassAttributes(string msg = "")
+        public ClassAttributes(string msg = "", string preferredShortName = "")
         {
             ObsoleteMessage = msg;
             HiddenInLibrary = IsObsolete;
+            PreferredShortName = preferredShortName;
         }
     }
 

@@ -510,16 +510,59 @@ namespace Dynamo.Engine
         /// </summary>
         private class ShortNameGenerator
         {
-            private NumberingState ns = new NumberingState(AstBuilder.StringConstants.ShortVarPrefix);
+            private ProtoCore.Core core;
+            private Dictionary<ProtoCore.Type, NumberingState> prefixNumberingMap = new Dictionary<ProtoCore.Type, NumberingState>();
+            private NumberingState defaultNS = new NumberingState(AstBuilder.StringConstants.ShortVarPrefix);
 
-            public ShortNameGenerator()
+            public ShortNameGenerator(ProtoCore.Core core)
             {
-
+                this.core = core;
             }
-            public string GetNextName()
+
+            public string GenerateNextDefaultName()
             {
+                defaultNS.BumpID();
+                return defaultNS.NumberedVariable;
+            }
+
+            public string GenerateNextNameForType(ProtoCore.Type type)
+            {
+                var ns = GetNumberingStateForType(type);
                 ns.BumpID();
                 return ns.NumberedVariable;
+            }
+
+            private NumberingState GetNumberingStateForType(ProtoCore.Type type)
+            {
+                NumberingState ns;
+                if (prefixNumberingMap.TryGetValue(type, out ns))
+                    return ns;
+
+                if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
+                {
+                    // If class provides short name, then use it.
+                    var classNode = core.ClassTable.ClassNodes[type.UID];
+                    var preferredShortName = String.Empty;
+                    if (classNode.ClassAttributes != null)
+                        preferredShortName = classNode.ClassAttributes.PreferredShortName;
+
+                    // Otherwise change class name to its lower case
+                    if (String.IsNullOrEmpty(preferredShortName) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
+                    {
+                        preferredShortName = type.ToShortString();
+                        if (!String.IsNullOrEmpty(preferredShortName)) 
+                            preferredShortName = preferredShortName.ToLower();
+                    }
+
+                    if (!string.IsNullOrEmpty(preferredShortName)) 
+                    {
+                        var newNS = new NumberingState(preferredShortName);
+                        prefixNumberingMap[type] = newNS;
+                        return newNS;
+                    }
+                }
+
+                return defaultNS;
             }
         }
 
@@ -892,7 +935,8 @@ namespace Dynamo.Engine
             AssociativeNode astNode,
             Dictionary<string, string> shortNameMap,
             ShortNameGenerator nameGenerator,
-            HashSet<string> mappedVariables)
+            HashSet<string> mappedVariables,
+            ProtoCore.Type typeHint)
         {
             Action<IdentifierNode> func = n =>
             {
@@ -901,9 +945,9 @@ namespace Dynamo.Engine
                 {
                     if (shortName == string.Empty)
                     {
-                        shortName = nameGenerator.GetNextName();
+                        shortName = nameGenerator.GenerateNextNameForType(typeHint);
                         while (mappedVariables.Contains(shortName))
-                            shortName = nameGenerator.GetNextName();
+                            shortName = nameGenerator.GenerateNextNameForType(typeHint);
 
                         shortNameMap[n.Value] = shortName;
                     }
@@ -1018,6 +1062,38 @@ namespace Dynamo.Engine
             }
         }
 
+        private static bool TryGetTypeHint(AssociativeNode node, ClassTable classTable, out ProtoCore.Type type)
+        {
+            type = new ProtoCore.Type();
+
+            BinaryExpressionNode expr = node as BinaryExpressionNode;
+            if (expr == null || expr.Optr != Operator.assign)
+                return false;
+
+            var identListNode = expr.RightNode as IdentifierListNode;
+            if (identListNode != null)
+            {
+                var funcNode = identListNode.RightNode as FunctionCallNode;
+                if (funcNode == null)
+                    return false;
+
+                string fullyQualitifiedName = CoreUtils.GetIdentifierExceptMethodName(identListNode);
+                if (string.IsNullOrEmpty(fullyQualitifiedName))
+                    return false;
+
+                var classIndex = classTable.IndexOf(fullyQualitifiedName);
+                if (classIndex == -1)
+                    return false;
+
+                var targetClass = classTable.ClassNodes[classIndex];
+                var func = targetClass.GetFirstMemberFunctionBy(funcNode.Name);
+                type = func.returntype;
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Compile a set of nodes to ASTs. 
         ///
@@ -1073,6 +1149,19 @@ namespace Dynamo.Engine
             var sortedNodes = sortedGraph.Where(nodes.Contains);
 
             var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
+
+            foreach (var item in allAstNodes)
+            {
+                var type = item.Item1.OutputType;
+
+                /*
+                foreach (var node in item.Item2)
+                {
+                    ProtoCore.Type type;
+                    TryGetTypeHint(node, core.ClassTable, out type);
+                }
+                */
+            }
 
             #endregion
 
@@ -1134,7 +1223,7 @@ namespace Dynamo.Engine
             #endregion
 
             #region Step 4 Generate short name
-            var nameGenerator = new ShortNameGenerator();
+            var nameGenerator = new ShortNameGenerator(core);
 
             // temporary variables are double mapped.
             foreach (var key in outputMap.Keys.ToList())
@@ -1142,9 +1231,9 @@ namespace Dynamo.Engine
                if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
                    outputMap[key].StartsWith(Constants.kTempVarForNonAssignment))
                {
-                   string shortName = nameGenerator.GetNextName();
+                   string shortName = nameGenerator.GenerateNextDefaultName();
                    while (mappedVariables.Contains(shortName))
-                       shortName = nameGenerator.GetNextName();
+                       shortName = nameGenerator.GenerateNextDefaultName();
 
                    var tempVar = outputMap[key];
                    outputMap[key] = shortName;
@@ -1156,15 +1245,21 @@ namespace Dynamo.Engine
 
             foreach (var ts in allAstNodes)
             {
+                ProtoCore.Type typeHint;
+                if (ts.Item2.Count() == 1)
+                    typeHint = ts.Item1.OutputType;
+                else
+                    typeHint = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+
                 foreach (var astNode in ts.Item2)
                 {
-                    ShortNameMapping(core, astNode, inputMap, nameGenerator, mappedVariables);
+                    ShortNameMapping(core, astNode, inputMap, nameGenerator, mappedVariables, typeHint);
                     foreach (var kvp in inputMap)
                     {
                         if (kvp.Value != String.Empty && outputMap.ContainsKey(kvp.Key))
                             outputMap[kvp.Key] = kvp.Value;
                     }
-                    ShortNameMapping(core, astNode, outputMap, nameGenerator, mappedVariables);
+                    ShortNameMapping(core, astNode, outputMap, nameGenerator, mappedVariables, typeHint);
                 }
             }
             #endregion
