@@ -5751,7 +5751,7 @@ namespace ProtoAssociative
                 if (globalClassIndex != -1)
                     localProcedure.returntype.Name = core.ClassTable.ClassNodes[globalClassIndex].name;
                 localProcedure.returntype.UID = globalClassIndex;
-                localProcedure.returntype.rank = Constants.kArbitraryRank;
+                localProcedure.returntype.rank = 0;
                 localProcedure.isConstructor = true;
                 localProcedure.runtimeIndex = 0;
                 localProcedure.isExternal = funcDef.IsExternLib;
