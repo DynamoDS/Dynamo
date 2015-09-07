@@ -9,7 +9,7 @@ namespace ProtoTest.Associative
     {
         [Test]
         [Category("DSDefinedClass_Ported")]
-        public void SimpleCtorResolution01()
+        public void SimpleAssignment()
         {
             String code =
 @"	fx : var;	fy : var;	fx = 123;	fy = 345;		x = fx;	y = fy;";
@@ -21,7 +21,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        public void SimpleCtorResolution02()
+        public void SimpleMethodOverload1()
         {
             String code =
 @"	def f()	{		return = 123;	}    def f(a : int)    {        return = a;	}    x = f();    y = f(345);";
@@ -33,7 +33,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        public void SimpleCtorResolution03()
+        public void SimpleMethodOverload2()
         {
             String code =
 @"	x : var;	y : var;    def scale : int()	{		x = x * 2;		y = y * 2;        return = 0;	}    def scale : int(s: int)	{		x = x * s;		y = y * s;        return = 0;	}	x = 10;    y = 40;	n = scale();	n = scale(10);";
@@ -116,7 +116,7 @@ namespace ProtoTest.Associative
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        public void TestMethodOverlaodAndArrayInput1()
+        public void TestMethodOverloadArray()
         {
             string code =
                 @"                def execute(a : var)                {                     return = -1;                 }                def execute(arr : var[])                {                    return = 2;                }                arr = {1, 2, 3};                val = execute(arr);                ";
@@ -179,7 +179,7 @@ namespace ProtoTest.Associative
         [Test]
         [Category("DSDefinedClass_Ported")]
         [Category("Method Resolution")]
-        public void TestStaticDispatchOnArray()
+        public void TestDispatchArray()
         {
             //Recorded as defect: DNL-1467146
             string code =
@@ -200,7 +200,7 @@ val = v[0];                ";
         [Category("Method Resolution")]
         [Category("Escalate")]
         [Category("DSDefinedClass_Ported")]
-        public void TestStaticDispatchOnEmptyArray()
+        public void TestDispatchEmptyArray()
         {
             string code =
                 @"def execute(b : var){    return = 100; }arr = {};v = execute(arr);val = v[0];                ";
@@ -234,7 +234,7 @@ val = v[0];                ";
 
         [Test]
         [Category("DSDefinedClass_Ported")]
-        public void TestMethodWithArrayInput1()
+        public void TestMethodWithArrayInput()
         {
             string code = @"                            def Test(arr : var[])                            {                                return = 123;                            }                            a = {3, 4, 5};                            val = Test(a);                            ";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
