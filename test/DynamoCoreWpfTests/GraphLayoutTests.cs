@@ -53,6 +53,8 @@ namespace Dynamo.Tests
 
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 1);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 0);
             AssertGraphLayoutLayers(new List<int> { 1 });
 
             Assert.AreEqual(nodes.ElementAt(0).X, 0);
@@ -74,6 +76,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 2);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 1);
             AssertGraphLayoutLayers(new List<int> { 1, 1 });
 
             Assert.AreEqual(nodes.ElementAt(0).Y, 0);
@@ -92,6 +96,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 3);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 0);
             AssertGraphLayoutLayers(new List<int> { 3 });
 
             Assert.AreEqual(nodes.ElementAt(0).X, 0);
@@ -112,6 +118,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 15);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 17);
             AssertGraphLayoutLayers(new List<int> { 1, 1, 2, 1, 1, 2, 2, 2, 1, 2 });
 
             Assert.AreEqual(nodes.ElementAt(5).X, 0);  // "put"
@@ -132,6 +140,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 4);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 6);
             AssertGraphLayoutLayers(new List<int> { 2, 2 });
 
             AssertNoOverlap();
@@ -145,6 +155,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 19);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 20);
             AssertGraphLayoutLayers(new List<int> { 3, 5, 8, 3 });
 
             AssertNoOverlap();
@@ -158,6 +170,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 17);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 21);
             AssertGraphLayoutLayers(new List<int> { 3, 7, 2, 2, 1, 1, 1 });
 
             AssertNoOverlap();
@@ -171,6 +185,9 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 19);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 20);
+            Assert.AreEqual(ViewModel.CurrentSpace.Annotations.Count(), 1);
             AssertGraphLayoutLayers(new List<int> { 2, 3, 5, 4 });
 
             AssertNoOverlap();
@@ -184,6 +201,9 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 19);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 23);
+            Assert.AreEqual(ViewModel.CurrentSpace.Annotations.Count(), 1);
             AssertGraphLayoutLayers(new List<int> { 1, 1, 2, 4, 1, 2, 3 });
 
             AssertNoOverlap();
@@ -197,6 +217,9 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 19);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 23);
+            Assert.AreEqual(ViewModel.CurrentSpace.Annotations.Count(), 3);
             AssertGraphLayoutLayers(new List<int> { 1, 1, 1 });
 
             AssertNoOverlap();
@@ -210,6 +233,9 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 19);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 20);
+            Assert.AreEqual(ViewModel.CurrentSpace.Annotations.Count(), 3);
             AssertGraphLayoutLayers(new List<int> { 3 });
 
             AssertNoOverlap();
@@ -223,6 +249,9 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 19);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 24);
+            Assert.AreEqual(ViewModel.CurrentSpace.Annotations.Count(), 3);
             AssertGraphLayoutLayers(new List<int> { 1, 1, 1 });
 
             AssertNoOverlap();
@@ -236,6 +265,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.DoGraphAutoLayout(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 167);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 217);
             AssertGraphLayoutLayers(new List<int> { 13, 8, 6, 9, 12, 16, 17,
                 9, 9, 9, 4, 3, 5, 4, 3, 1, 2, 3, 1, 3, 7, 7, 1, 1, 2, 4, 3, 2, 3 });
 
@@ -253,6 +284,8 @@ namespace Dynamo.Tests
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
             ViewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
 
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 10);
+            Assert.AreEqual(ViewModel.CurrentSpace.Connectors.Count(), 13);
             AssertGraphLayoutLayers(new List<int> { 1, 1, 2, 2, 2, 2 });
 
             AssertNoOverlap();
