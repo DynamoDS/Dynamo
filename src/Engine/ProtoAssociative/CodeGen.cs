@@ -5748,6 +5748,8 @@ namespace ProtoAssociative
                 localProcedure.name = funcDef.Name;
                 localProcedure.pc = ProtoCore.DSASM.Constants.kInvalidIndex;
                 localProcedure.localCount = 0;// Defer till all locals are allocated
+                if (globalClassIndex != -1)
+                    localProcedure.returntype.Name = core.ClassTable.ClassNodes[globalClassIndex].name;
                 localProcedure.returntype.UID = globalClassIndex;
                 localProcedure.returntype.rank = Constants.kArbitraryRank;
                 localProcedure.isConstructor = true;
