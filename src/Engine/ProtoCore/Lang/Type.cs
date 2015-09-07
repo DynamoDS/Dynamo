@@ -220,6 +220,7 @@ namespace ProtoCore
             cnode = new ClassNode { name = DSDefinitions.Keyword.String, rank = 0, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypeString;
+            cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "str");
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeString);
 
             cnode = new ClassNode { name = DSDefinitions.Keyword.Var, rank = 0, typeSystem = this };
@@ -247,6 +248,7 @@ namespace ProtoCore
             cnode = new ClassNode { name = DSDefinitions.Keyword.FunctionPointer, rank = 0,typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypeFunctionPointer;
+            cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "fptr");
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeFunctionPointer);
 
             cnode = new ClassNode { name = "return_reserved", rank = 0, typeSystem = this };
