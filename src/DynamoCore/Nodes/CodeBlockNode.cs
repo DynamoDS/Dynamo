@@ -316,18 +316,7 @@ namespace Dynamo.Nodes
             return resultNodes;
         }
 
-        /// <summary>
-        /// For code block nodes, each output identifier of an output port is mapped.
-        /// For an example, "p = 1" would have its internal identifier renamed to 
-        /// "pXXXX", where "XXXX" is the GUID of the code block node. This mapping is 
-        /// done to ensure the uniqueness of the output variable name.
-        /// </summary>
-        /// <param name="portIndex">Output port index</param>
-        /// <param name="forRawName">Set this parameter to true to retrieve the 
-        /// original identifier name "p". If this parameter is false, the mapped 
-        /// identifer name "pXXXX" is returned instead.</param>
-        /// <returns></returns>
-        private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
+        private Statement GetStatementForOutput(int portIndex)
         {
             if (State == ElementState.Error)
                 return null;
@@ -355,6 +344,23 @@ namespace Dynamo.Nodes
                 }
             }
 
+            return statement;
+        }
+
+        /// <summary>
+        /// For code block nodes, each output identifier of an output port is mapped.
+        /// For an example, "p = 1" would have its internal identifier renamed to 
+        /// "pXXXX", where "XXXX" is the GUID of the code block node. This mapping is 
+        /// done to ensure the uniqueness of the output variable name.
+        /// </summary>
+        /// <param name="portIndex">Output port index</param>
+        /// <param name="forRawName">Set this parameter to true to retrieve the 
+        /// original identifier name "p". If this parameter is false, the mapped 
+        /// identifer name "pXXXX" is returned instead.</param>
+        /// <returns></returns>
+        private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
+        {
+            var statement = GetStatementForOutput(portIndex);
             if (statement == null)
                 return null;
 
@@ -381,6 +387,59 @@ namespace Dynamo.Nodes
             return GetAstIdentifierForOutputIndexInternal(portIndex, true);
         }
 
+        /// <summary>
+        /// Return possible type of the output at specified output port.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public override ProtoCore.Type GetTypeHintForOutput(int index)
+        {
+            ProtoCore.Type type = new ProtoCore.Type();
+            var statement = GetStatementForOutput(index);
+            if (statement == null)
+                return type;
+
+            BinaryExpressionNode expr = statement.AstNode as BinaryExpressionNode;
+            if (expr == null || expr.Optr != Operator.assign)
+                return type;
+            
+            var core = libraryServices.LibraryManagementCore;
+
+            var identListNode = expr.RightNode as IdentifierListNode;
+            if (identListNode != null)
+            {
+                var funcNode = identListNode.RightNode as FunctionCallNode;
+                if (funcNode == null)
+                    return type;
+
+                string fullyQualitifiedName = CoreUtils.GetIdentifierExceptMethodName(identListNode);
+                if (string.IsNullOrEmpty(fullyQualitifiedName))
+                    return type;
+
+                var classIndex = core.ClassTable.IndexOf(fullyQualitifiedName);
+                if (classIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
+                    return type;
+
+                var targetClass = core.ClassTable.ClassNodes[classIndex];
+                var func = targetClass.GetFirstMemberFunctionBy(funcNode.Name);
+                type = func.returntype;
+                return type;
+            }
+
+            var functionCallNode = expr.RightNode as FunctionCallNode;
+            if (functionCallNode != null)
+            {
+                ProtoCore.FunctionGroup funcGroup;
+                if (core.FunctionTable.FunctionList.TryGetValue(functionCallNode.Name, out funcGroup))
+                {
+                    var func = funcGroup.FunctionEndPoints.FirstOrDefault();
+                    if (func != null)
+                        return func.procedureNode.returntype;
+                }
+            }
+
+            return type;
+        }
         #endregion
 
         #region Private Methods

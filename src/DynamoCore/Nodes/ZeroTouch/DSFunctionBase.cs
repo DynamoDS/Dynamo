@@ -68,13 +68,10 @@ namespace Dynamo.Nodes
             return Controller.BuildAst(this, inputAstNodes);
         }
 
-        public override ProtoCore.Type OutputType
+        public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            get
-            {
-                return Controller.Definition.ReturnType;
-            }
-        }
+            return Controller.Definition.ReturnType;
+        } 
     }
     
 
