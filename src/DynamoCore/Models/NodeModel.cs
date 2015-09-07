@@ -603,6 +603,17 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///      The type of node's output 
+        /// </summary>
+        /// <returns></returns>
+        public virtual ProtoCore.Type OutputType
+        {
+            get 
+            {
+                return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+            }
+        }
         #endregion
 
         protected NodeModel()

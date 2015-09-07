@@ -44,7 +44,7 @@ namespace Dynamo.Search.SearchElements
                 ElementType |= ElementTypes.Packaged;
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
-            outputParameters = new List<string>() { functionDescriptor.ReturnType };
+            outputParameters = new List<string>() { functionDescriptor.ReturnType.ToShortString() };
 
             foreach (var tag in functionDescriptor.GetSearchTags())
                 SearchKeywords.Add(tag);
