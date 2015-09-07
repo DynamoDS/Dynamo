@@ -727,15 +727,18 @@ namespace Dynamo.Engine
         /// <param name="inputMap"></param>
         /// <param name="outputMap"></param>
         /// <param name="renamingMap"></param>
+        /// <param name="typeHintMap"></param>
         private static void GetInputOutputMap(
             IEnumerable<NodeModel> nodes, 
             out Dictionary<string, string> inputMap,
             out Dictionary<string, string> outputMap,
-            out Dictionary<string, string> renamingMap)
+            out Dictionary<string, string> renamingMap,
+            out Dictionary<string, ProtoCore.Type> typeHintMap)
         {
             inputMap = new Dictionary<string, string>();
             outputMap = new Dictionary<string, string>();
             renamingMap = new Dictionary<string, string>();
+            typeHintMap = new Dictionary<string, ProtoCore.Type>(); 
 
             foreach (var node in nodes)
             {
@@ -753,6 +756,9 @@ namespace Dynamo.Engine
                     {
                         string inputVar = inputNode.GetAstIdentifierForOutputIndex(portIndex).Value;
                         inputMap[inputVar] = string.Empty;
+
+                        ProtoCore.Type type = inputNode.GetTypeHintForOutput(portIndex);
+                        typeHintMap[inputVar] = type;
                     }
                 }
 
@@ -772,6 +778,9 @@ namespace Dynamo.Engine
                         renamingMap[key] = mappedInputVar;
 
                         outputMap[mappedInputVar] = originalVar;
+
+                        ProtoCore.Type type = thisCBN.GetTypeHintForOutput(i);
+                        typeHintMap[mappedInputVar] = type;
                     }
                 }
                 else
@@ -780,6 +789,9 @@ namespace Dynamo.Engine
                     {
                         var inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
                         outputMap[inputVar] = string.Empty;
+
+                        ProtoCore.Type type = node.GetTypeHintForOutput(i);
+                        typeHintMap[inputVar] = type;
                     }
 
                     var previewVar = node.AstIdentifierForPreview.Value;
@@ -927,16 +939,19 @@ namespace Dynamo.Engine
         /// <summary>
         /// Map variable to shorter name.
         /// </summary>
+        /// <param name="core"></param>
         /// <param name="astNode"></param>
         /// <param name="shortNameMap"></param>
         /// <param name="nameGenerator"></param>
+        /// <param name="mappedVariables"></param>
+        /// <param name="typeHints"></param>
         private static void ShortNameMapping(
             ProtoCore.Core core,
             AssociativeNode astNode,
             Dictionary<string, string> shortNameMap,
             ShortNameGenerator nameGenerator,
             HashSet<string> mappedVariables,
-            ProtoCore.Type typeHint)
+            Dictionary<string, ProtoCore.Type> typeHints)
         {
             Action<IdentifierNode> func = n =>
             {
@@ -945,9 +960,12 @@ namespace Dynamo.Engine
                 {
                     if (shortName == string.Empty)
                     {
-                        shortName = nameGenerator.GenerateNextNameForType(typeHint);
+                        ProtoCore.Type typeHint;
+                        bool hasTypeHint = typeHints.TryGetValue(n.Value, out typeHint);
+
+                        shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
                         while (mappedVariables.Contains(shortName))
-                            shortName = nameGenerator.GenerateNextNameForType(typeHint);
+                            shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
 
                         shortNameMap[n.Value] = shortName;
                     }
@@ -1062,38 +1080,6 @@ namespace Dynamo.Engine
             }
         }
 
-        private static bool TryGetTypeHint(AssociativeNode node, ClassTable classTable, out ProtoCore.Type type)
-        {
-            type = new ProtoCore.Type();
-
-            BinaryExpressionNode expr = node as BinaryExpressionNode;
-            if (expr == null || expr.Optr != Operator.assign)
-                return false;
-
-            var identListNode = expr.RightNode as IdentifierListNode;
-            if (identListNode != null)
-            {
-                var funcNode = identListNode.RightNode as FunctionCallNode;
-                if (funcNode == null)
-                    return false;
-
-                string fullyQualitifiedName = CoreUtils.GetIdentifierExceptMethodName(identListNode);
-                if (string.IsNullOrEmpty(fullyQualitifiedName))
-                    return false;
-
-                var classIndex = classTable.IndexOf(fullyQualitifiedName);
-                if (classIndex == -1)
-                    return false;
-
-                var targetClass = classTable.ClassNodes[classIndex];
-                var func = targetClass.GetFirstMemberFunctionBy(funcNode.Name);
-                type = func.returntype;
-                return true;
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// Compile a set of nodes to ASTs. 
         ///
@@ -1150,19 +1136,6 @@ namespace Dynamo.Engine
 
             var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
 
-            foreach (var item in allAstNodes)
-            {
-                var type = item.Item1.OutputType;
-
-                /*
-                foreach (var node in item.Item2)
-                {
-                    ProtoCore.Type type;
-                    TryGetTypeHint(node, core.ClassTable, out type);
-                }
-                */
-            }
-
             #endregion
 
             #region Step 2 Varialbe numbering
@@ -1181,8 +1154,11 @@ namespace Dynamo.Engine
             // Output variable to renamed output variable map
             Dictionary<string, string> outputMap = null;
 
+            // Collect type ints for all variables
+            Dictionary<string, ProtoCore.Type> typeHints = new Dictionary<string, ProtoCore.Type>();
+
             // Collect all inputs/outputs/candidate renaming variables
-            GetInputOutputMap(nodes, out inputMap, out outputMap, out renamingMap);
+            GetInputOutputMap(nodes, out inputMap, out outputMap, out renamingMap, out typeHints);
 
             // Variable numbering map. Value field indicates current current
             // numbering value of the variable. For example, there are variables
@@ -1231,9 +1207,12 @@ namespace Dynamo.Engine
                if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
                    outputMap[key].StartsWith(Constants.kTempVarForNonAssignment))
                {
-                   string shortName = nameGenerator.GenerateNextDefaultName();
+                   ProtoCore.Type typeHint;
+                   bool hasTypeHint = typeHints.TryGetValue(key, out typeHint);
+
+                   var shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
                    while (mappedVariables.Contains(shortName))
-                       shortName = nameGenerator.GenerateNextDefaultName();
+                       shortName = hasTypeHint ? nameGenerator.GenerateNextNameForType(typeHint) : nameGenerator.GenerateNextDefaultName();
 
                    var tempVar = outputMap[key];
                    outputMap[key] = shortName;
@@ -1245,21 +1224,15 @@ namespace Dynamo.Engine
 
             foreach (var ts in allAstNodes)
             {
-                ProtoCore.Type typeHint;
-                if (ts.Item2.Count() == 1)
-                    typeHint = ts.Item1.OutputType;
-                else
-                    typeHint = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
-
                 foreach (var astNode in ts.Item2)
                 {
-                    ShortNameMapping(core, astNode, inputMap, nameGenerator, mappedVariables, typeHint);
+                    ShortNameMapping(core, astNode, inputMap, nameGenerator, mappedVariables, typeHints);
                     foreach (var kvp in inputMap)
                     {
                         if (kvp.Value != String.Empty && outputMap.ContainsKey(kvp.Key))
                             outputMap[kvp.Key] = kvp.Value;
                     }
-                    ShortNameMapping(core, astNode, outputMap, nameGenerator, mappedVariables, typeHint);
+                    ShortNameMapping(core, astNode, outputMap, nameGenerator, mappedVariables, typeHints);
                 }
             }
             #endregion

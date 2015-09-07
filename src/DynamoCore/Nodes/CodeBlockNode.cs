@@ -394,7 +394,7 @@ namespace Dynamo.Nodes
         /// <returns></returns>
         public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            ProtoCore.Type type = new ProtoCore.Type();
+            ProtoCore.Type type = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
             var statement = GetStatementForOutput(index);
             if (statement == null)
                 return type;
@@ -421,7 +421,7 @@ namespace Dynamo.Nodes
                     return type;
 
                 var targetClass = core.ClassTable.ClassNodes[classIndex];
-                var func = targetClass.GetFirstMemberFunctionBy(funcNode.Name);
+                var func = targetClass.GetFirstMemberFunctionBy(funcNode.Function.Name);
                 type = func.returntype;
                 return type;
             }
