@@ -17,6 +17,7 @@ using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore.Utils;
 using Dynamo.UI;
+using ProtoCore;
 
 namespace Dynamo.Nodes
 {
@@ -394,7 +395,7 @@ namespace Dynamo.Nodes
         /// <returns></returns>
         public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
-            ProtoCore.Type type = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+            ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
             var statement = GetStatementForOutput(index);
             if (statement == null)
                 return type;
@@ -405,9 +406,9 @@ namespace Dynamo.Nodes
             
             var core = libraryServices.LibraryManagementCore;
 
-            var identListNode = expr.RightNode as IdentifierListNode;
-            if (identListNode != null)
+            if (expr.RightNode is IdentifierListNode) 
             {
+                var identListNode = expr.RightNode as IdentifierListNode;
                 var funcNode = identListNode.RightNode as FunctionCallNode;
                 if (funcNode == null)
                     return type;
@@ -425,10 +426,9 @@ namespace Dynamo.Nodes
                 type = func.returntype;
                 return type;
             }
-
-            var functionCallNode = expr.RightNode as FunctionCallNode;
-            if (functionCallNode != null)
+            else if (expr.RightNode is FunctionCallNode)
             {
+                var functionCallNode = expr.RightNode as FunctionCallNode;
                 ProtoCore.FunctionGroup funcGroup;
                 var funcTable = core.FunctionTable.GlobalFuncTable[0];
                 if (funcTable.TryGetValue(functionCallNode.Function.Name, out funcGroup))
@@ -438,6 +438,14 @@ namespace Dynamo.Nodes
                         return func.procedureNode.returntype;
                 }
             }
+            else if (expr.RightNode is IntNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeInt);
+            else if (expr.RightNode is StringNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
+            else if (expr.RightNode is DoubleNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble);
+            else if (expr.RightNode is StringNode)
+                return TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString);
 
             return type;
         }
