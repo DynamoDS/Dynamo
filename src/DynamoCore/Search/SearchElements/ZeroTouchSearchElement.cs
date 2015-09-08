@@ -25,7 +25,6 @@ namespace Dynamo.Search.SearchElements
             this.functionDescriptor = functionDescriptor;
 
             Name = functionDescriptor.UserFriendlyName;
-            UserFriendlyName = Name;
             
             if (functionDescriptor.IsOverloaded)
             {
@@ -34,7 +33,7 @@ namespace Dynamo.Search.SearchElements
                 parameters.Append(String.Join(", ", functionDescriptor.Parameters.Select(x => x.Name)));
                 parameters.Append(")");
 
-                UserFriendlyName += parameters;
+                Parameters = parameters.ToString();
             }
             
             FullCategoryName = functionDescriptor.Category;
