@@ -7,8 +7,7 @@ configuration: Release
 environment:   
   xmlDocs_solution	: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
 
-build_script:
-  - msbuild %dynamo_solution%
+build_script:  
   - msbuild %xmlDocs_solution%
 
 after_build:
