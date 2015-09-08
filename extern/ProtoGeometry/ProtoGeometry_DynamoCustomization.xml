@@ -8,4 +8,7 @@
             <category>Geometry</category>
         </namespace>
     </namespaces>
+    <classes>
+        <class name="Autodesk.DesignScript.Geometry.Point" shortname="pt"/>
+    </classes>
 </doc>
