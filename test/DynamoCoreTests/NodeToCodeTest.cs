@@ -143,7 +143,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             // We should get 3 ast nodes, but their order is not important. 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
@@ -175,7 +175,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             // We should get 3 ast nodes, but their order is not important. 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
@@ -205,7 +205,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
             Assert.AreEqual(3, result.AstNodes.Count());
@@ -237,7 +237,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
             Assert.AreEqual(6, result.AstNodes.Count());
@@ -269,7 +269,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
             Assert.AreEqual(3, result.AstNodes.Count());
@@ -295,7 +295,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
@@ -327,7 +327,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
             Assert.AreEqual(4, result.AstNodes.Count());
@@ -359,7 +359,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
@@ -385,7 +385,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
@@ -400,7 +400,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
@@ -454,7 +454,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -483,7 +483,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -512,7 +512,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -541,7 +541,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -567,7 +567,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -593,7 +593,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -625,7 +625,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -654,7 +654,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -683,7 +683,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsNotNull(result);
@@ -707,7 +707,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.AstNodes);
@@ -807,7 +807,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
@@ -830,7 +830,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
@@ -852,7 +852,7 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
 
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
             NodeToCodeUtils.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
             Assert.IsTrue(result != null && result.AstNodes != null);
@@ -925,7 +925,7 @@ namespace Dynamo.Tests
             OpenModel(@"core\node2code\stringNode.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result.AstNodes);
 
             var assignment = result.AstNodes.FirstOrDefault();
@@ -943,7 +943,7 @@ namespace Dynamo.Tests
             OpenModel(@"core\node2code\integerSlider.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result.AstNodes);
 
             var assignment = result.AstNodes.FirstOrDefault();
@@ -961,7 +961,7 @@ namespace Dynamo.Tests
             OpenModel(@"core\node2code\numberSlider.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result.AstNodes);
 
             var assignment = result.AstNodes.FirstOrDefault();
@@ -979,7 +979,7 @@ namespace Dynamo.Tests
             OpenModel(@"core\node2code\boolSelector.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result.AstNodes);
 
             var assignment = result.AstNodes.FirstOrDefault();
@@ -997,7 +997,7 @@ namespace Dynamo.Tests
             OpenModel(@"core\node2code\CreateList.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result.AstNodes);
 
             Assert.AreEqual(3, result.AstNodes.Count());
@@ -1016,7 +1016,7 @@ namespace Dynamo.Tests
             OpenModel(@"core\node2code\numberSequence.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result.AstNodes);
 
             var assignment = result.AstNodes.LastOrDefault();
@@ -1034,7 +1034,7 @@ namespace Dynamo.Tests
             OpenModel(@"core\node2code\numberRange.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
+            var result = engine.ConvertNodesToCode(nodes, nodes, CurrentDynamoModel.PathManager);
             Assert.IsNotNull(result.AstNodes);
 
             var assignment = result.AstNodes.LastOrDefault();
