@@ -1161,7 +1161,6 @@ namespace Dynamo.Tests
 
             var command = new DynamoModel.ConvertNodesToCodeCommand();
             CurrentDynamoModel.ExecuteCommand(command);
-            CurrentDynamoModel.ForceRun();
 
             var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             Assert.IsNotNull(cbn);
@@ -1178,7 +1177,6 @@ namespace Dynamo.Tests
 
             var command = new DynamoModel.ConvertNodesToCodeCommand();
             CurrentDynamoModel.ExecuteCommand(command);
-            CurrentDynamoModel.ForceRun();
 
             var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             Assert.IsNotNull(cbn);
