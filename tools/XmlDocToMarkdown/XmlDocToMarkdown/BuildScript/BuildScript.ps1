@@ -59,7 +59,7 @@ $mkDocsLoc = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Rel
 
 Set-Location -Path $mkDocsLoc
 Get-Location
-$mkDocsFile = "mkDocs.exe"
+$mkDocsFile = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release\mkDocs.exe"
 $mkarg1 = "gh-deploy"
 $mkarg2 = "-c"
 
