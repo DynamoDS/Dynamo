@@ -303,7 +303,7 @@ namespace Dynamo.Tests
 
               //save these states
               var newPath = GetNewFileNameOnTempPath("dyn");
-              var res = model.CurrentWorkspace.SaveAs(newPath, model.EngineController.LiveRunnerRuntimeCore);
+              var res = model.CurrentWorkspace.SaveAs(newPath);
 
               Assert.IsTrue(res);
               Assert.IsTrue(File.Exists(newPath));
@@ -329,7 +329,7 @@ namespace Dynamo.Tests
             //then save this dyn
             
             var newPath = GetNewFileNameOnTempPath("dyn");
-            var res = model.CurrentWorkspace.SaveAs(newPath, model.EngineController.LiveRunnerRuntimeCore);
+            var res = model.CurrentWorkspace.SaveAs(newPath);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));

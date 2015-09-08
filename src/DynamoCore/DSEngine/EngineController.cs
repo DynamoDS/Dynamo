@@ -31,12 +31,12 @@ namespace Dynamo.DSEngine
     {
         public event AstBuiltEventHandler AstBuilt;
 
-        public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        public event Action<TraceReconciliationEventArgs> TraceReconciliationComplete;
         private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
         {
-            if (TraceReconcliationComplete != null)
+            if (TraceReconciliationComplete != null)
             {
-                TraceReconcliationComplete(e);
+                TraceReconciliationComplete(e);
             }
         }
 

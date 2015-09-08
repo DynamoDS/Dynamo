@@ -205,10 +205,10 @@ namespace Dynamo.Models
             if (handler != null) handler(oldId);
         }
 
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore, bool isBackUp = false)
+        public override bool SaveAs(string newPath, bool isBackUp = false)
         {
             if (isBackUp)
-                return base.SaveAs(newPath, runtimeCore, isBackUp);
+                return base.SaveAs(newPath, isBackUp);
 
             var originalPath = FileName;
 
@@ -226,7 +226,7 @@ namespace Dynamo.Models
                 SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
-            return base.SaveAs(newPath, runtimeCore, isBackUp);
+            return base.SaveAs(newPath, isBackUp);
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
@@ -244,12 +244,6 @@ namespace Dynamo.Models
             root.SetAttribute("Category", Category);
             
             return true;
-        }
-
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
-        {
-            // Since custom workspace does not have any runtime data to persist,
-            // do not allow base class to serialize any session data.
         }
     }
 }

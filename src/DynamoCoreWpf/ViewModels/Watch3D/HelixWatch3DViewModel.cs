@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -76,7 +78,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double nearPlaneDistanceFactor = 0.01;
         private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
-        private bool showWatchSettingsControl = false;
 
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
@@ -273,16 +274,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public bool IsResizable { get; protected set; }
 
-        public bool ShowWatchSettingsControl
-        {
-            get { return showWatchSettingsControl; }
-            set
-            {
-                showWatchSettingsControl = value;
-                RaisePropertyChanged("ShowWatchSettingsControl");
-            }
-        }
-
         public IEnumerable<Model3D> SceneItems
         {
             get
@@ -312,7 +303,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                return canNavigateBackground || navigationKeyIsDown; 
+                return canNavigateBackground || navigationKeyIsDown;
             }
             set
             {
@@ -325,14 +316,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public bool NavigationKeyIsDown
         {
             get { return navigationKeyIsDown; }
-            set 
-            { 
+            set
+            {
                 navigationKeyIsDown = value;
                 RaisePropertyChanged("NavigationKeyIsDown");
                 RaisePropertyChanged("CanNavigateBackground");
             }
         }
-        
+
         #endregion
 
         protected HelixWatch3DViewModel(Watch3DViewModelStartupParams parameters) : base(parameters)
@@ -557,27 +548,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 case "IsUpdated":
                     // Only request updates when this is true. All nodes are marked IsUpdated=false
                     // before an evaluation occurs.
-
                     if (node.IsUpdated)
                     {
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                        node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
                     }
                     break;
 
                 case "DisplayLabels":
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
                     break;
 
                 case "IsVisible":
                     var geoms = FindAllGeometryModel3DsForNode(node.AstIdentifierBase);
-                    foreach(var g in geoms)
+                    foreach (var g in geoms)
                     {
                         g.Value.Visibility = node.IsVisible ? Visibility.Visible : Visibility.Hidden;
                         //RaisePropertyChanged("SceneItems");
                     }
 
                     node.IsUpdated = true;
-                    node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                    node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
 
                     break;
             }
@@ -648,10 +638,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 case "CurrentWorkspace":
                     OnClear();
+
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
-                        node.IsUpdated = true;
-                        node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory);
+                        // TODO: magn-8237 why is this necessary?
+                        //node.IsUpdated = true;
+                        node.RequestVisualUpdateAsync(scheduler, EngineController, renderPackageFactory);
                     }
                     break;
             }
@@ -1301,12 +1293,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 tw.WriteLine("solid {0}", model.CurrentWorkspace.Name);
                 foreach (var g in geoms)
                 {
-                    var n = ((MeshGeometry3D) g.Geometry).Normals.ToList();
+                    var n = ((MeshGeometry3D)g.Geometry).Normals.ToList();
                     var t = ((MeshGeometry3D)g.Geometry).Triangles.ToList();
 
-                    for (var i = 0; i < t.Count(); i ++)
+                    for (var i = 0; i < t.Count(); i++)
                     {
-                        var nCount = i*3;
+                        var nCount = i * 3;
                         tw.WriteLine("\tfacet normal {0} {1} {2}", n[nCount].X, n[nCount].Y, n[nCount].Z);
                         tw.WriteLine("\t\touter loop");
                         tw.WriteLine("\t\t\tvertex {0} {1} {2}", t[i].P0.X, t[i].P0.Y, t[i].P0.Z);

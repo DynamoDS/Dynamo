@@ -16,7 +16,7 @@
              MouseMove="OnMouseMove"
              KeyDown="WorkspaceView_KeyDown"
              KeyUp="WorkspaceView_KeyUp"
-             IsHitTestVisible="{Binding IsCurrentSpace}"
+             IsHitTestVisible="{Binding IsCurrentWorkspace}"
              AllowDrop="True"
              Drop="OnWorkspaceDrop">
 
@@ -207,15 +207,15 @@
                            Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                            Command="{Binding FindNodesFromSelectionCommand}" />
 
-                <Separator Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+                <Separator Visibility="{Binding Path=IsHomeWorkspace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                 <MenuItem  Header="{x:Static p:Resources.ContextMenuEditCustomNodeProperty}"
                            Click="WorkspacePropertyEditClick"
-                           Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+                           Visibility="{Binding Path=IsHomeWorkspace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
                 <MenuItem  Header="{x:Static p:Resources.ContextMenuPublishCustomNode}"
                            Name="Publish"
                            Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand }"
-                           Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+                           Visibility="{Binding Path=IsHomeWorkspace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                 <Separator />
 

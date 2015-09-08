@@ -92,7 +92,7 @@ namespace DynamoCoreWpfTests
             cam.LookDirection = testLook;
 
             var tempFileName = Path.GetTempPath() + ".dyn";
-            ViewModel.Model.CurrentWorkspace.SaveAs(tempFileName, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            ViewModel.Model.CurrentWorkspace.SaveAs(tempFileName);
 
             ViewModel.Model.ClearCurrentWorkspace();
             Assert.True(CameraHasDefaultOrientation());

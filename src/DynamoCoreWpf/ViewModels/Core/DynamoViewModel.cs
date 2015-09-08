@@ -82,7 +82,7 @@ namespace Dynamo.ViewModels
 
         public bool ViewingHomespace
         {
-            get { return model.CurrentWorkspace == HomeSpace; }
+            get { return model.CurrentWorkspace is HomeWorkspaceModel; }
         }
 
         public bool IsAbleToGoHome
@@ -90,25 +90,19 @@ namespace Dynamo.ViewModels
             get { return !(model.CurrentWorkspace is HomeWorkspaceModel); }
         }
 
+        //TODO : MAGN-8237
         public HomeWorkspaceModel HomeSpace
         {
-            get
-            {
-                return model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
-            }
+            get { return HomeSpaceViewModel.Model as HomeWorkspaceModel; }
         }
 
-        public WorkspaceViewModel HomeSpaceViewModel
-        {
-            get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
-        }
+        public WorkspaceViewModel HomeSpaceViewModel { get; private set; }
 
-        // MHWS
-        public EngineController EngineController { get { return Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController; } }
+        //public EngineController EngineController { get { return Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController; } }
 
         public WorkspaceModel CurrentSpace
         {
-            get { return model.CurrentWorkspace; }
+            get { return Model.CurrentWorkspace; }
         }
 
         public double WorkspaceActualHeight { get; set; }
@@ -122,7 +116,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("WorkspaceActualWidth");
         }
 
+        /// <summary>
+        /// The currently active WorkspaceViewModel
+        /// </summary>
         private WorkspaceViewModel currentWorkspaceViewModel;
+
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -145,6 +143,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
+                // MAGN-8237
                 // It happens when current workspace is home workspace, and we 
                 // open a new home workspace. At this moment, the old homework 
                 // space is removed, before new home workspace is added, Dynamo
@@ -450,9 +449,8 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
-            workspaces.Add(homespaceViewModel);
-            currentWorkspaceViewModel = homespaceViewModel;
+            WorkspaceAdded(model.CurrentWorkspace);
+            currentWorkspaceViewModel = this.Workspaces.First();
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -973,24 +971,26 @@ namespace Dynamo.ViewModels
             }  
         }
 
-        private void WorkspaceAdded(WorkspaceModel item)
+        private void WorkspaceAdded(WorkspaceModel ws)
         {
-            if (item is HomeWorkspaceModel)
+            if (ws is HomeWorkspaceModel)
             {
-                var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
-                workspaces.Add(newVm);
+                var vm = new HomeWorkspaceViewModel(ws as HomeWorkspaceModel, this);
+                workspaces.Add(vm);
 
+                // MAGN-8237
+                HomeSpaceViewModel = vm; // kill this
+                
                 // The RunSettings control is a child of the DynamoView, 
                 // but has its DataContext set to the RunSettingsViewModel 
                 // on the HomeWorkspaceViewModel. When the home workspace is changed,
                 // we need to raise a property change notification for the 
                 // homespace view model, so the RunSettingsControl's bindings
                 // get updated.
-                RaisePropertyChanged("HomeSpaceViewModel");
             }
             else
             {
-                var newVm = new WorkspaceViewModel(item, this);
+                var newVm = new WorkspaceViewModel(ws, this);
                 workspaces.Add(newVm);
             }
         }
@@ -1195,7 +1195,7 @@ namespace Dynamo.ViewModels
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerRuntimeCore);
+            Model.CurrentWorkspace.SaveAs(path);
         }
 
         /// <summary>
@@ -1209,7 +1209,7 @@ namespace Dynamo.ViewModels
             // crash sould always allow save as
             if (!String.IsNullOrEmpty(workspace.FileName) && !DynamoModel.IsCrashing)
             {
-                workspace.Save(EngineController.LiveRunnerRuntimeCore);
+                workspace.Save();
                 return true;
             }
             else
@@ -1220,7 +1220,7 @@ namespace Dynamo.ViewModels
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    workspace.SaveAs(fd.FileName, EngineController.LiveRunnerRuntimeCore);
+                    workspace.SaveAs(fd.FileName);
                     return true;
                 }
             }
@@ -1512,6 +1512,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        // MAGN-8237
         public void GoHome(object _)
         {
             model.CurrentWorkspace = HomeSpace;
@@ -1573,15 +1574,10 @@ namespace Dynamo.ViewModels
         /// 
         private bool ClearHomeWorkspaceInternal()
         {
-
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
             if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
             {
-               // MHWS model.ClearCurrentWorkspace();
-
-                
-
                 return true;
             }
 
@@ -1917,7 +1913,11 @@ namespace Dynamo.ViewModels
             {
                 foreach (var file in openFileDialog.FileNames)
                 {
-                    EngineController.ImportLibrary(file);
+                    // todo: magn-8237 ensure all libraries are loaded into each workspace
+                    foreach (var hws in Model.Workspaces.OfType<IHomeWorkspaceModel>())
+                    {
+                        hws.EngineController.ImportLibrary(file);
+                    }
                 }
                 SearchViewModel.SearchAndUpdateResults();
             }

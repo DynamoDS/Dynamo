@@ -77,7 +77,6 @@ namespace Dynamo.Controls
             DataContextChanged += OnDataContextChanged;
 
             Panel.SetZIndex(this, 1);
-
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)

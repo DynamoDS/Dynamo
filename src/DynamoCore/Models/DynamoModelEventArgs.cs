@@ -129,6 +129,8 @@ namespace Dynamo.Models
 
         public bool EvaluationTookPlace { get; private set; }
 
+        public IHomeWorkspaceModel HomeWorkspaceModel { get; private set; }
+
         public bool EvaluationSucceeded
         {
             get { return !error.HasValue(); }
@@ -148,8 +150,10 @@ namespace Dynamo.Models
             }
         }
 
-        public EvaluationCompletedEventArgs(bool evaluationTookPlace, Exception errorMsg = null)
+        public EvaluationCompletedEventArgs(IHomeWorkspaceModel model, bool evaluationTookPlace, Exception errorMsg = null)
         {
+            this.HomeWorkspaceModel = model;
+
             EvaluationTookPlace = evaluationTookPlace;
 
             error = errorMsg != null ? Option.Some(errorMsg) : Option.None<Exception>();

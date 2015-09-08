@@ -31,22 +31,16 @@ using ProtoCore;
 using ProtoCore.Exceptions;
 using ProtoCore.Runtime;
 using Compiler = ProtoAssociative.Compiler;
-// Dynamo package manager
 using Utils = Dynamo.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 
 namespace Dynamo.Models
 {
-    public interface IEngineControllerManager
-    {
-        EngineController EngineController { get; }
-    }
-
     /// <summary>
     /// The core model of Dynamo.
     /// </summary>
-    public partial class DynamoModel : IDynamoModel, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor
+    public partial class DynamoModel : IDynamoModel, IDisposable, ITraceReconciliationProcessor
     {
         #region Private Fields
 
@@ -164,13 +158,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     EngineController used for various operations like Node to Code, Autocomplete, and more
         /// </summary>
-        public EngineController EngineController {
-            // TODO: MAGN-8237 This is awkward. What if there is no HomeWorkspaceModel. What if this WorkspaceModel is in use?
-            get
-            {
-                return Workspaces.OfType<HomeWorkspaceModel>().First().EngineController;
-            } 
-        }
+        public EngineController EngineController { get; private set; }
 
         /// <summary>
         ///     Manages all loaded ZeroTouch libraries.
@@ -617,7 +605,7 @@ namespace Dynamo.Models
             }
         }
            
-        // TODO: MAGN-8237
+        // TODO: MAGN-8237 Why is this unused
         private void RemoveExtension(IExtension ext)
         {
             ExtensionManager.Remove(ext);
@@ -627,7 +615,7 @@ namespace Dynamo.Models
                 logSource.MessageLogged -= LogMessage;
         }
 
-        private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
+        private void EngineControllerTraceReconciliationComplete(TraceReconciliationEventArgs obj)
         {
             Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
             
@@ -752,7 +740,7 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
+            EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
@@ -764,7 +752,7 @@ namespace Dynamo.Models
             Logger.Dispose();
 
             EngineController.Dispose();
-            //EngineController = null; // MAGN-8237
+            EngineController = null;
 
             if (backupFilesTimer != null)
             {
@@ -1008,9 +996,6 @@ namespace Dynamo.Models
         /// Responds to property update notifications on the preferences,
         /// and synchronizes with the Units Manager.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //TODO(Steve): See if we can't just do this in PreferenceSettings by making the properties directly access BaseUnit
         private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -1027,9 +1012,9 @@ namespace Dynamo.Models
         /// <param name="args"></param>
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
-            //TODO: MAGN-8237
-            //Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            //EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
+            //TODO: MAGN-8237 What is the use of this?
+            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
         }
 
         #endregion
@@ -1040,7 +1025,6 @@ namespace Dynamo.Models
         ///     Register custom node defintion and execute all custom node 
         ///     instances.
         /// </summary>
-        /// <param name="?"></param>
         private void UpdateCustomNodeDefinition(CustomNodeDefinition definition)
         {
             RegisterCustomNodeDefinitionWithEngine(definition);
@@ -1053,13 +1037,18 @@ namespace Dynamo.Models
         /// </summary>
         private void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
         {
-            foreach (var ec in Workspaces.OfType<HomeWorkspaceModel>().Select(x => x.EngineController))
+            foreach (var workspace in Workspaces.OfType<HomeWorkspaceModel>())
             {
-                ec.GenerateGraphSyncDataForCustomNode(
-                    Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
-                    definition,
-                    DebugSettings.VerboseLogging);
+                RegisterCustomNodeDefinitionWithWorkspace(definition, workspace);
             }
+        }
+
+        private void RegisterCustomNodeDefinitionWithWorkspace(CustomNodeDefinition definition, HomeWorkspaceModel workspace)
+        {
+            workspace.EngineController.GenerateGraphSyncDataForCustomNode(
+                workspace.Nodes,
+                definition,
+                DebugSettings.VerboseLogging);
         }
 
         /// <summary>
@@ -1094,37 +1083,26 @@ namespace Dynamo.Models
                 ws.ResetEngine(this.LibraryServices, this.geometryFactoryPath, DebugSettings.VerboseLogging);
             }
 
-            // TODO: MAGN-8237
+            // TODO MAGN-8237 - Do we need an EngineController on DynamoModel?
+            // Reset the DynamoModel EngineController
+            if (EngineController != null)
+            {
+                EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
+                EngineController.MessageLogged -= LogMessage;
+                EngineController.Dispose();
+                EngineController = null;
+            }
 
-//=======
-//            ResetEngineInternal();
-//            foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
-//            {
-//                workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
-//            }
-        }
+            EngineController = new EngineController(
+                LibraryServices,
+                geometryFactoryPath,
+                DebugSettings.VerboseLogging);
 
-        protected void ResetEngineInternal()
-        {
-            // TODO: MAGN-8237
-            //if (EngineController != null)
-            //{
-            //    EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
-            //    EngineController.MessageLogged -= LogMessage;
-            //    EngineController.Dispose();
-            //    EngineController = null;
-            //}
+            EngineController.MessageLogged += LogMessage;
+            EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
 
-            //EngineController = new EngineController(
-            //    LibraryServices,
-            //    geometryFactoryPath,
-            //    DebugSettings.VerboseLogging);
-            
-            //EngineController.MessageLogged += LogMessage;
-            //EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
-
-            //foreach (var def in CustomNodeManager.LoadedDefinitions)
-            //    RegisterCustomNodeDefinitionWithEngine(def);
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
         }
 
         /// <summary>
@@ -1162,42 +1140,8 @@ namespace Dynamo.Models
                     WorkspaceModel ws;
                     if (OpenFile(workspaceInfo, xmlDoc, out ws))
                     {
-                        // TODO: #4258
-                        // The logic to remove all other home workspaces from the model
-                        // was moved from the ViewModel. When #4258 is implemented, we will need to
-                        // remove this step.
-                        var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
-                        if (currentHomeSpaces.Any())
-                        {
-                            // If the workspace we're opening is a home workspace,
-                            // then remove all the other home workspaces. Otherwise,
-                            // Remove all but the first home workspace.
-                            var end = ws is HomeWorkspaceModel ? 0 : 1;
-
-                            for (var i = currentHomeSpaces.Count - 1; i >= end; i--)
-                            {
-                                RemoveWorkspace(currentHomeSpaces[i]);
-                            }
-                        }
-
                         AddWorkspace(ws);
-
                         OnWorkspaceOpening(xmlDoc);
-
-                        // TODO: #4258
-                        // Remove this ResetEngine call when multiple home workspaces is supported.
-                        // This call formerly lived in DynamoViewModel
-                        ResetEngine();
-
-                        // TODO: #4258
-                        // The following logic to start periodic evaluation will need to be moved
-                        // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
-                        // as it causes an immediate crash due to the above ResetEngine call.
-                        var hws = ws as HomeWorkspaceModel;
-                        if (hws != null && hws.RunSettings.RunType == RunType.Periodic)
-                        {
-                            hws.StartPeriodicEvaluation();
-                        }
 
                         CurrentWorkspace = ws;
                         return;
@@ -1243,6 +1187,9 @@ namespace Dynamo.Models
                 DebugSettings.VerboseLogging, 
                 IsTestMode
                );
+
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
 
             RegisterHomeWorkspace(newWorkspace);
 
@@ -1298,7 +1245,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     var oldFileName = workspace.FileName;
                     var oldName = workspace.Name;
-                    workspace.SaveAs(savePath, null, true);
+                    workspace.SaveAs(savePath, true);
                     workspace.FileName = oldFileName;
                     workspace.Name = oldName;
                     backupFilesDict.Add(workspace.Guid, savePath);
@@ -1464,6 +1411,9 @@ namespace Dynamo.Models
                 NodeFactory,
                 DebugSettings.VerboseLogging,
                 IsTestMode,string.Empty);
+
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);

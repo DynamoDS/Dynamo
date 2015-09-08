@@ -10,13 +10,26 @@ using System.Xml;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
-
+using Dynamo.Interfaces;
+using Dynamo.Nodes;
 using ProtoCore;
 using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
-    public class HomeWorkspaceModel : WorkspaceModel
+    public interface IEngineControllerManager
+    {
+        EngineController EngineController { get; }
+    }
+
+    public interface IHomeWorkspaceModel : IWorkspaceModel, IEngineControllerManager
+    {
+        event EventHandler<EventArgs> EvaluationStarted;
+        event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        event EventHandler<EvaluationCompletedEventArgs> RefreshCompleted;
+    }
+
+    public class HomeWorkspaceModel : WorkspaceModel, IHomeWorkspaceModel
     {
         #region Class Data Members and Properties
 
@@ -26,6 +39,9 @@ namespace Dynamo.Models
         private bool graphExecuted;
         private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
 
+        /// <summary>
+        /// The EngineController for this particular home workspace.
+        /// </summary>
         public EngineController EngineController { get; private set; }
 
         /// <summary>
@@ -177,24 +193,24 @@ namespace Dynamo.Models
             EngineController = engine;
             this.EngineController.MessageLogged += Log;
 
-            // TODO: MAGN-8237
-//=======
+            if (this.RunSettings.RunType == RunType.Periodic)
+            {
+                this.StartPeriodicEvaluation();
+            }
 
-//            // The first time the preloaded trace data is set, we cache
-//            // the data as historical. This will be used after the initial
-//            // run of this workspace, when the PreloadedTraceData has been
-//            // nulled, to check for node deletions and reconcile the trace data.
-//            // We do a deep copy of this data because the PreloadedTraceData is
-//            // later set to null before the graph update.
-//            var copiedData = new List<KeyValuePair<Guid, List<string>>>();
-//            foreach (var kvp in PreloadedTraceData)
-//            {
-//                var strings = kvp.Value.Select(string.Copy).ToList();
-//                copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
-//            }
-//            historicalTraceData = copiedData;
-
-//>>>>>>> upstream/master
+            // The first time the preloaded trace data is set, we cache
+            // the data as historical. This will be used after the initial
+            // run of this workspace, when the PreloadedTraceData has been
+            // nulled, to check for node deletions and reconcile the trace data.
+            // We do a deep copy of this data because the PreloadedTraceData is
+            // later set to null before the graph update.
+            var copiedData = new List<KeyValuePair<Guid, List<string>>>();
+            foreach (var kvp in PreloadedTraceData)
+            {
+                var strings = kvp.Value.Select(string.Copy).ToList();
+                copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
+            }
+            historicalTraceData = copiedData;
         }
 
         #endregion
@@ -430,8 +446,8 @@ namespace Dynamo.Models
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true)
-                : new EvaluationCompletedEventArgs(true, task.Exception);
+                ? new EvaluationCompletedEventArgs(this, true)
+                : new EvaluationCompletedEventArgs(this, true, task.Exception);
 
             EvaluationCount ++;
 
@@ -508,7 +524,7 @@ namespace Dynamo.Models
             else
             {
                 // Notify handlers that evaluation did not take place.
-                var e = new EvaluationCompletedEventArgs(false);
+                var e = new EvaluationCompletedEventArgs(this, false);
                 OnEvaluationCompleted(e);
             }
         }
@@ -586,6 +602,47 @@ namespace Dynamo.Models
             historicalTraceData = null;
 
             return orphans;
-        } 
+        }
+
+        /// <summary>
+        /// Add trace data to the document before being saved
+        /// </summary>
+        /// <param name="document">The XmlDocument being saved</param>
+        protected override void SaveCustomData(XmlDocument document)
+        {
+            var runtimeCore = EngineController.LiveRunnerRuntimeCore;
+
+            if (document.DocumentElement == null)
+            {
+                const string message = "Workspace should have been saved before this";
+                throw new InvalidOperationException(message);
+            }
+
+            try
+            {
+                if (runtimeCore == null) // No execution yet as of this point.
+                    return;
+
+                // Selecting all nodes that are either a DSFunction,
+                // a DSVarArgFunction or a CodeBlockNodeModel into a list.
+                var nodeGuids =
+                    Nodes.Where(
+                        n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
+                        .Select(n => n.GUID);
+
+                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
+
+                if (nodeTraceDataList.Any())
+                    Dynamo.Nodes.Utilities.SaveTraceDataToXmlDocument(document, nodeTraceDataList);
+            }
+            catch (Exception exception)
+            {
+                // We'd prefer file saving process to not crash Dynamo,
+                // otherwise user will lose the last hope in retaining data.
+                Log(exception.Message);
+                Log(exception.StackTrace);
+            }
+        }
+
     }
 }

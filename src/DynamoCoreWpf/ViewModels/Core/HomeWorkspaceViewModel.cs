@@ -80,6 +80,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <param name="obj">The object.</param>
         public override void OnNodeModified(NodeModel obj)
         {
+            // TODO: MAGN-8237
             if (DynamoViewModel.HomeSpace.RunSettings.RunType == RunType.Manual)
                 DynamoViewModel.HomeSpace.GetExecutingNodes(DynamoViewModel.ShowRunPreview);
         }
