@@ -1,0 +1,23 @@
+<Workspace Version="0.8.3.2452" X="664.231711366788" Y="339.308668130155" zoom="1.37174014871769" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="72c9d165-1f11-4d12-b3fd-c02cebbaa1f6" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-208.582604351674" y="-78.3386279016657" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" CodeText="a;&#xA;b;&#xA;c;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="f29c2d86-c62d-406c-a0eb-1ba4f1878325" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-204.257158639313" y="131.086072383517" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" CodeText="d;&#xA;e;&#xA;f;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="52529f2f-830a-4449-b433-7186e8a56c97" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="350.215049229428" y="-15.8877690695024" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" CodeText="g;&#xA;h;&#xA;i;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="61e96585-4475-44af-90aa-f47b79f29734" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="352.522096436542" y="145.558163170542" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" CodeText="j;&#xA;k;&#xA;l;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="72c9d165-1f11-4d12-b3fd-c02cebbaa1f6" start_index="0" end="61e96585-4475-44af-90aa-f47b79f29734" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="72c9d165-1f11-4d12-b3fd-c02cebbaa1f6" start_index="1" end="52529f2f-830a-4449-b433-7186e8a56c97" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="72c9d165-1f11-4d12-b3fd-c02cebbaa1f6" start_index="2" end="61e96585-4475-44af-90aa-f47b79f29734" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f29c2d86-c62d-406c-a0eb-1ba4f1878325" start_index="0" end="52529f2f-830a-4449-b433-7186e8a56c97" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f29c2d86-c62d-406c-a0eb-1ba4f1878325" start_index="1" end="61e96585-4475-44af-90aa-f47b79f29734" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f29c2d86-c62d-406c-a0eb-1ba4f1878325" start_index="2" end="52529f2f-830a-4449-b433-7186e8a56c97" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>
