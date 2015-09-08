@@ -153,9 +153,14 @@
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
-      <Name>IronPythonUI</Name>
+      <Name>PythonNodeModelsWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{4a964723-c7a9-45a9-b448-e1d042ec8820}</Project>
+      <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">

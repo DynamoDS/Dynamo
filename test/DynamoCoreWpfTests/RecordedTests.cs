@@ -6,7 +6,6 @@ using System.Xml;
 
 using SystemTestServices;
 
-using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -18,6 +17,9 @@ using DynamoShapeManager;
 using NUnit.Framework;
 using Dynamo.UI;
 using System.Reflection;
+
+using PythonNodeModels;
+
 using TestServices;
 
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;

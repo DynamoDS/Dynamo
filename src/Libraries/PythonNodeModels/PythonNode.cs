@@ -2,23 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Input;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
+
+using Autodesk.DesignScript.Runtime;
+
 using DSIronPython;
-using Dynamo.Controls;
-using Dynamo.Core;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf;
 
 using ProtoCore.AST.AssociativeAST;
-using Autodesk.DesignScript.Runtime;
-using ProtoCore.Namespace;
 
-namespace DSIronPythonNode
+namespace PythonNodeModels
 {
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
     {
@@ -110,7 +107,7 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("PythonScriptDescription", typeof(DSIronPythonNode.Properties.Resources))]
+    [NodeDescription("PythonScriptDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
@@ -199,7 +196,7 @@ namespace DSIronPythonNode
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
-    [NodeDescription("PythonScriptFromStringDescription", typeof(DSIronPythonNode.Properties.Resources))]
+    [NodeDescription("PythonScriptFromStringDescription", typeof(Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public sealed class PythonStringNode : PythonNodeBase
@@ -234,5 +231,4 @@ namespace DSIronPythonNode
             };
         }
     }
-
 }
