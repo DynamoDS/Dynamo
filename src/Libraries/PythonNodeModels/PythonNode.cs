@@ -17,51 +17,6 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
-<<<<<<< HEAD:src/Libraries/PythonNodeModels/PythonNode.cs
-=======
-    public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
-    {
-        private DynamoViewModel dynamoViewModel;
-        private PythonNode model;
-
-        public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
-        {
-            base.CustomizeView(nodeModel, nodeView);
-
-            model = nodeModel;
-            dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            var editWindowItem = new MenuItem { Header = Properties.Resources.EditHeader, IsCheckable = false };
-            nodeView.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += delegate { EditScriptContent(); };
-            nodeView.UpdateLayout();
-
-            nodeView.MouseDown += view_MouseDown;
-        }
-
-        private void view_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount >= 2)
-            {
-                EditScriptContent();
-                e.Handled = true;
-            }
-        }
-
-        private void EditScriptContent()
-        {
-            var editWindow = new ScriptEditorWindow(dynamoViewModel);
-            editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
-            bool? acceptChanged = editWindow.ShowDialog();
-            if (acceptChanged.HasValue && acceptChanged.Value)
-            {
-                // Mark node for update
-                model.OnNodeModified();
-            }
-        }
-    }
-
->>>>>>> cd24eae3a215961de97a1965b64cc58463f5abb1:src/Libraries/IronPython/PythonNode.cs
     public abstract class PythonNodeBase : VariableInputNode
     {
         protected PythonNodeBase()
