@@ -603,9 +603,9 @@ namespace Dynamo.Engine
 
         #region Node2Code
 
-        internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes)
+        internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes, IPathManager pathManager)
         {
-            return NodeToCodeUtils.NodeToCode(libraryServices.LibraryManagementCore, astBuilder, graph, nodes);
+            return NodeToCodeUtils.NodeToCode(libraryServices.LibraryManagementCore, pathManager, astBuilder, graph, nodes);
         }
 
         private bool HasVariableDefined(string var)

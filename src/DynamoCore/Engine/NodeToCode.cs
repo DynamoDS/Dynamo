@@ -12,6 +12,7 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using Dynamo.Core;
 using ProtoCore.Namespace;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Engine
 {
@@ -512,12 +513,15 @@ namespace Dynamo.Engine
         private class ShortNameGenerator
         {
             private ProtoCore.Core core;
+            private IPathManager pathManager;
             private Dictionary<ProtoCore.Type, NumberingState> prefixNumberingMap = new Dictionary<ProtoCore.Type, NumberingState>();
+            private Dictionary<string, LibraryCustomization> libCustomizationMap = new Dictionary<string, LibraryCustomization>();
             private NumberingState defaultNS = new NumberingState(AstBuilder.StringConstants.ShortVarPrefix);
 
-            public ShortNameGenerator(ProtoCore.Core core)
+            public ShortNameGenerator(ProtoCore.Core core, IPathManager pathManager)
             {
                 this.core = core;
+                this.pathManager = pathManager;
             }
 
             public string GetName(ProtoCore.Type? typeHint)
@@ -537,38 +541,88 @@ namespace Dynamo.Engine
                 {
                     // If class provides short name, then use it.
                     var classNode = core.ClassTable.ClassNodes[type.UID];
-                    var preferredShortName = String.Empty;
-                    if (classNode.ClassAttributes != null)
-                        preferredShortName = classNode.ClassAttributes.PreferredShortName;
-
-                    // Otherwise check if its base class provides a short name.
-                    var baseClass = classNode;
-                    while (String.IsNullOrEmpty(preferredShortName) && baseClass.baseList.Any())
-                    {
-                        var baseIndex = baseClass.baseList[0];
-                        baseClass = core.ClassTable.ClassNodes[baseIndex];
-
-                        if (baseClass.ClassAttributes != null)
-                            preferredShortName = baseClass.ClassAttributes.PreferredShortName;
-                    }
+                    var shortName = GetShortName(classNode);
 
                     // Otherwise change class name to its lower case
-                    if (String.IsNullOrEmpty(preferredShortName) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
+                    if (String.IsNullOrEmpty(shortName) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
                     {
-                        preferredShortName = type.ToShortString();
-                        if (!String.IsNullOrEmpty(preferredShortName)) 
-                            preferredShortName = preferredShortName.ToLower();
+                        shortName = type.ToShortString();
+                        if (!String.IsNullOrEmpty(shortName))
+                            shortName = shortName.ToLower();
                     }
 
-                    if (!string.IsNullOrEmpty(preferredShortName)) 
+                    if (!string.IsNullOrEmpty(shortName)) 
                     {
-                        var newNS = new NumberingState(preferredShortName);
+                        var newNS = new NumberingState(shortName);
                         prefixNumberingMap[type] = newNS;
                         return newNS;
                     }
                 }
 
                 return defaultNS;
+            }
+
+            private LibraryCustomization GetLibraryCustomization(ClassNode classNode)
+            {
+                if (pathManager == null)
+                    return null;
+
+                LibraryCustomization libCustomization = null;
+                if (classNode.ExternLib != null)
+                {
+                    if (!libCustomizationMap.TryGetValue(classNode.ExternLib, out libCustomization))
+                    {
+                        libCustomization = LibraryCustomizationServices.GetForAssembly(classNode.ExternLib, pathManager);
+                        if (libCustomization != null)
+                            libCustomizationMap[classNode.ExternLib] = libCustomization;
+                    }
+                }
+
+                return libCustomization;
+            }
+        
+            private string GetShortName(ClassNode classNode)
+            {
+                string shortName = string.Empty;
+
+                var customization = GetLibraryCustomization(classNode);
+                if (customization != null)
+                {
+                    shortName = customization.GetShortName(classNode.name);
+                    if (!String.IsNullOrEmpty(shortName))
+                        return shortName;
+                }
+
+                if (classNode.ClassAttributes != null)
+                {
+                    shortName = classNode.ClassAttributes.PreferredShortName;
+                    if (!String.IsNullOrEmpty(shortName))
+                        return shortName;
+                }
+
+                // Otherwise check if its base class provides a short name.
+                var baseClass = classNode;
+                while (baseClass.baseList.Any())
+                {
+                    var baseIndex = baseClass.baseList[0];
+                    baseClass = core.ClassTable.ClassNodes[baseIndex];
+
+                    if (customization != null)
+                    {
+                        shortName = customization.GetShortName(baseClass.name);
+                        if (!String.IsNullOrEmpty(shortName))
+                            return shortName;
+                    }
+
+                    if (baseClass.ClassAttributes != null)
+                    {
+                        shortName = baseClass.ClassAttributes.PreferredShortName;
+                        if (!String.IsNullOrEmpty(shortName))
+                            return shortName;
+                    }
+                }
+
+                return shortName;
             }
         }
 
@@ -1126,12 +1180,14 @@ namespace Dynamo.Engine
         ///    order in the final code block node.
         /// </summary>
         /// <param name="core">Library core</param>
+        /// <param name="pathManager">Path manager</param>
         /// <param name="astBuilder">Ast builder</param>
         /// <param name="workspaceNodes">The whole workspace nodes</param>
         /// <param name="nodes">Selected node that can be converted to a single code block node</param>
         /// <returns></returns>
         internal static NodeToCodeResult NodeToCode(
             ProtoCore.Core core,
+            IPathManager pathManager,
             AstBuilder astBuilder, 
             IEnumerable<NodeModel> workspaceNodes,
             IEnumerable<NodeModel> nodes)
@@ -1225,7 +1281,7 @@ namespace Dynamo.Engine
             #endregion
 
             #region Step 4 Generate short name
-            var nameGenerator = new ShortNameGenerator(core);
+            var nameGenerator = new ShortNameGenerator(core, pathManager);
 
             // temporary variables are double mapped.
             foreach (var key in outputMap.Keys.ToList())

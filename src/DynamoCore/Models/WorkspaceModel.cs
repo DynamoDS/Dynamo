@@ -1338,7 +1338,7 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void ConvertNodesToCodeInternal(EngineController engineController)
+        internal void ConvertNodesToCodeInternal(EngineController engineController, IPathManager pathManager)
         {
             var selectedNodes = DynamoSelection.Instance
                                                .Selection
@@ -1365,7 +1365,7 @@ namespace Dynamo.Models
                     //Also collect the average X and Y co-ordinates of the different nodes
                     int nodeCount = nodeList.Count;
 
-                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList);
+                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList, pathManager);
 
                     #region Step I. Delete all nodes and their connections
 

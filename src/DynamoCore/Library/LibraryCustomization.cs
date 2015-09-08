@@ -139,5 +139,16 @@ namespace Dynamo.Engine
                 obj = xmlDocument.XPathEvaluate(String.Format(format, namespaceName));
             return obj.ToString().Trim();
         }
+
+        public string GetShortName(string className)
+        {
+            var format = "string(/doc/classes/class[@name='{0}']/@shortname)";
+
+            object shortName = string.Empty;
+            if (xmlDocument != null)
+                shortName = xmlDocument.XPathEvaluate(String.Format(format, className));
+
+            return shortName.ToString().Trim();
+        }
     }
 }
