@@ -516,4 +516,45 @@ namespace DSCore
             };
         }
     }
+
+    [NodeName("List.GroupByKey")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
+    [IsDesignScriptCompatible]
+    public class GroupByKey : NodeModel
+    {
+        public GroupByKey()
+        {
+            InPortData.Add(new PortData("list", ""));
+            InPortData.Add(new PortData("keys", ""));
+
+            OutPortData.Add(new PortData("groups", ""));
+            OutPortData.Add(new PortData("unique keys", ""));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            var packedId = "__temp" + GUID.ToString().Replace("-", "");
+            return new[]
+            {
+                AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(packedId),
+                    AstFactory.BuildFunctionCall("__GroupByKey", inputAstNodes)),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(0) }
+                    }),
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(1),
+                    new IdentifierNode(packedId)
+                    {
+                        ArrayDimensions = new ArrayNode { Expr = AstFactory.BuildIntNode(1) }
+                    })
+            };
+        }
+    }
 }

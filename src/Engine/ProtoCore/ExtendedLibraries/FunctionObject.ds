@@ -606,3 +606,13 @@ def LoopWhile(init: var[]..[], continueWhile: _FunctionObject, loopBody: _Functi
 		return = init;
 	};
 }
+
+def __GroupByKey(list: var[]..[], keys: var[]..[])
+{
+	return = [Imperative]
+	{
+		_sortedList = Sorting.groupByKey(list, keys);
+		_uniqueKeys = Sorting.uniqueItems(keys);
+		return = {_sortedList, _uniqueKeys};
+	};
+}
