@@ -381,6 +381,15 @@ namespace Dynamo.Tests
         {
             // Avoid base method which access EngineController.
         }
+
+        protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as UpdateGraphAsyncTask;
+            if (theOtherTask == null)
+                return TaskMergeInstruction.KeepBoth;
+
+            return TaskMergeInstruction.KeepOther;
+        }
     }
 
     internal class FakeUpdateRenderPackageAsyncTask : UpdateRenderPackageAsyncTask
