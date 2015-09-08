@@ -520,15 +520,9 @@ namespace Dynamo.Engine
                 this.core = core;
             }
 
-            public string GenerateNextDefaultName()
+            public string GetName(ProtoCore.Type? typeHint)
             {
-                defaultNS.BumpID();
-                return defaultNS.NumberedVariable;
-            }
-
-            public string GenerateNextNameForType(ProtoCore.Type type)
-            {
-                var ns = GetNumberingStateForType(type);
+                var ns = typeHint.HasValue ? GetNumberingStateForType(typeHint.Value) : defaultNS;
                 ns.BumpID();
                 return ns.NumberedVariable;
             }
@@ -997,15 +991,14 @@ namespace Dynamo.Engine
             HashSet<string> mappedVariables,
             string varName)
         {
-            ProtoCore.Type typeHint;
-            bool hasHint = typeHints.TryGetValue(varName, out typeHint);
+            ProtoCore.Type? type = null;
+            ProtoCore.Type t;
+            if (typeHints.TryGetValue(varName, out t))
+                type = t;
 
-            var shortName = hasHint ? generator.GenerateNextNameForType(typeHint) 
-                                    : generator.GenerateNextDefaultName();
-
+            var shortName = generator.GetName(type);
             while (mappedVariables.Contains(shortName))
-                shortName = hasHint ? generator.GenerateNextNameForType(typeHint) 
-                                    : generator.GenerateNextDefaultName();
+                shortName = generator.GetName(type);
 
             return shortName;
         }
