@@ -5,7 +5,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    class RedefinitionExpression : ProtoTestBase
+    public class RedefinitionExpression : ProtoTestBase
     {
         [Test]
         public void RedefineWithFunctions01()
@@ -18,19 +18,18 @@ namespace ProtoTest.Associative
         }
 
         [Test]
-        [Category("ToFixYuKe")]
-        [Category("DSDefinedClass")]
-        public void RedefineWithFunctions02()
+        [Category("DSDefinedClass_Ported")]
+        public void RedefineWithConstructor()
         {
             String code =
-@"class C{    mx : var;    constructor C(i : int)    {        mx = i + 1;    }}p = 10;p = C.C(p);x = p.mx;";
-            ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
-            Assert.IsTrue((Int64)mirror.GetValue("x").Payload == 11);
+@"
+import(""FFITarget.dll"");p = 10;p = DummyPoint.ByCoordinates(11.0, 20.0, 30.0);x = p.X;";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 11);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored")]
         public void RedefineWithFunctions03()
         {
             String code =
@@ -101,9 +100,10 @@ namespace ProtoTest.Associative
         public void RedefineWithExpressionLists04()
         {
             String code =
-@"class C{    x : var[];    constructor C()    {        x = {1, 2, 3, 4, 5, 6};    }    def f(a : int)    {        x = x[a] * x[a + 1];        return = x;    }}x = 2;p = C.C();x = p.f(x);";
+@"
+import(""FFITarget.dll"");p = 2;p = DummyPoint.ByCoordinates(1..3, 20, 30);a = p.X;";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("x", new object[] { 12 });
+            thisTest.Verify("a", new object[] {1.0, 2.0, 3.0});
         }
     }
 }
