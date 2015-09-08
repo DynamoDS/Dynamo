@@ -195,12 +195,14 @@ namespace ProtoCore
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeArray);
 
             cnode = new ClassNode { name = DSDefinitions.Keyword.Double, rank = 4, typeSystem = this };
+            cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "num");
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceDoubleToIntScore);
             cnode.classId = (int)PrimitiveType.kTypeDouble;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeDouble);
 
             cnode = new ClassNode { name = DSDefinitions.Keyword.Int, rank = 3, typeSystem = this };
+            cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "num");
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceIntToDoubleScore);
             cnode.classId = (int)PrimitiveType.kTypeInt;
@@ -208,6 +210,7 @@ namespace ProtoCore
 
             cnode = new ClassNode { name = DSDefinitions.Keyword.Bool, rank = 2, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeBool;
+            cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "bool");
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeBool);
 
             cnode = new ClassNode { name = DSDefinitions.Keyword.Char, rank = 1, typeSystem = this };
@@ -248,7 +251,7 @@ namespace ProtoCore
             cnode = new ClassNode { name = DSDefinitions.Keyword.FunctionPointer, rank = 0,typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypeFunctionPointer;
-            cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "fptr");
+            cnode.ClassAttributes = new AST.AssociativeAST.ClassAttributes("", "func");
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeFunctionPointer);
 
             cnode = new ClassNode { name = "return_reserved", rank = 0, typeSystem = this };
