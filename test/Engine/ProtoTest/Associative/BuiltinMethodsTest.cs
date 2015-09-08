@@ -409,7 +409,6 @@ namespace ProtoTest.Associative
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("p").Payload == 15);
             Assert.IsTrue((Int64)mirror.GetValue("q").Payload == 9);
-            Assert.IsTrue((Int64)mirror.GetValue("z").Payload == 1);
             thisTest.Verify("m2", 5);
             thisTest.Verify("m3", ' ');
             thisTest.Verify("res1", 7);
@@ -638,7 +637,7 @@ x = foo({ Evaluate, Evaluate }, { f1, f2 }, { { 41 }, { 42 } });
         public void Test_EvaluateFunctionPointer09()
         {
             // Nested call
-            string code =
+            string code = 
 @"
 class Foo
 {

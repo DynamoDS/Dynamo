@@ -250,21 +250,18 @@ r5 = __Apply(comp3, 9);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
-        public void TestApplyOnStaticFunction()
+        [Category("DSDefinedClass_Ported")]
+        public void TestApplyOnFunction01()
         {
             string code =
     @"
 import (""FunctionObject.ds"");
-class Foo
+def foo(x, y)
 {
-    static def foo(x, y)
-    {
-        return = x + y;
-    }
+    return = x + y;
 }
 
-fo = _SingleFunctionObject(Foo.foo, 2, { 1 }, { null, 100 }, true);
+fo = _SingleFunctionObject(foo, 2, { 1 }, { null, 100 }, true);
 r = __Apply(fo, 3);
 ";
             thisTest.RunScriptSource(code);
@@ -272,58 +269,45 @@ r = __Apply(fo, 3);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
-        public void TestApplyOnConstructor()
+        [Category("DSDefinedClass_Ported")]
+        public void TestApplyOnFunction02()
         {
             string code =
     @"
 import (""FunctionObject.ds"");
-class Foo
+
+def Foo(x, y)
 {
-    i;
-    constructor Foo(x, y)
-    {
-        i = x + y;
-    }
+    return = x + y;
 }
 
-c = _SingleFunctionObject(Foo.Foo, 2, { 1 }, { null, 100 }, true);
+
+c = _SingleFunctionObject(Foo, 2, { 1 }, { null, 100 }, true);
 f = __Apply(c, 3);
-r = f.i;
+r = f;
 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", 103);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestSortByKey()
         {
             // Tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4037
             string err = "MAGN-4037 Defects with FunctionObject tests";
             string code =
-    @"
+    @"import(""FFITarget.dll"");
 import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
-class Point
-{
-    constructor Point(_x, _y, _z)
-    {
-        x = _x;
-        y = _y;
-        z = _z;
-    }
-    
-    x; y; z;
-}
 
-p1 = Point(1, 2, 3);
-p2 = Point(2, 3, 4);
-p3 = Point(2, 1, 3);
+p1 = DummyPoint.ByCoordinates(1, 2, 3);
+p2 = DummyPoint.ByCoordinates(2, 3, 4);
+p3 = DummyPoint.ByCoordinates(2, 1, 3);
 
-def getCoordinateValue(p : Point)
+def getCoordinateValue(p : DummyPoint)
 {
-    return = p.x + p.y + p.z;
+    return = p.X + p.Y + p.Z;
 }
 
 getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
@@ -350,33 +334,23 @@ t4 = __Map(getPointKey, r6);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ported")]
         public void TestGroupByKey()
         {
             string code =
-    @"
-import (""DsCoreNodes.dll"");
+    @"import(""FFITarget.dll"");
+import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
-class Point
+
+p1 = DummyPoint.ByCoordinates(1, 2, 3);
+p2 = DummyPoint.ByCoordinates(2, 3, 4);
+p3 = DummyPoint.ByCoordinates(2, 1, 3);
+
+def getCoordinateValue(p : DummyPoint)
 {
-    constructor Point(_x, _y, _z)
-    {
-        x = _x;
-        y = _y;
-        z = _z;
-    }
-    
-    x; y; z;
+    return = p.X + p.Y + p.Z;
 }
 
-p1 = Point(1, 2, 3);
-p2 = Point(2, 3, 4);
-p3 = Point(2, 1, 3);
-
-def getCoordinateValue(p : Point)
-{
-    return = p.x + p.y + p.z;
-}
 
 getPointKey = _SingleFunctionObject(getCoordinateValue, 1, { }, { }, true);
 r = GroupByKey({ p1, p2, p3 }, getPointKey);
@@ -456,10 +430,10 @@ v2 = __Reduce(acc2, 0, 1..10);
         }
 
         [Test]
-        [Category("DSDefinedClass")]
+        [Category("DSDefinedClass_Ignored")]
         public void TestGroupByKeyByString()
         {
-            string code =
+            string code = 
     @"
 import (""DSCoreNodes.dll"");
 import (""FunctionObject.ds"");
