@@ -41,8 +41,20 @@ If(-not(Test-Path -path $docsDir))
 		Write-Host "Markdown file copied"
 	}
 	
-Write-Host "Checking MkDocs"
-Get-ChildItem -Path "C:\Python34" -Directory
-Get-ChildItem -Path "C:\Python34\Scripts" -File
+Write-Host "Copying MkDocs"
+$mkDocs = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\BuildScript\mkdocs.exe"
+$mkDocsDest = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release"
+
+Copy-Item $mkDocs  $mkDocsDest
+
+
+Write-Host "Running MkDocs"
+$mkDocsLoc = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release"
+
+Set-Location $mkDocsLoc
+$mkDocsFile = "mkDocs.exe"
+$mkarg1 = " gh-deploy --clean"
+
+& $mkDocsFile $mkarg1
 
   
