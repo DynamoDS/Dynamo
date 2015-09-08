@@ -5,7 +5,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class RedefinitionExpression : ProtoTestBase
+    class RedefinitionExpression : ProtoTestBase
     {
         [Test]
         public void RedefineWithFunctions01()
