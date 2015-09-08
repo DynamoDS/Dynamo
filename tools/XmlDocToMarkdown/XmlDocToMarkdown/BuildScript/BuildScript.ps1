@@ -44,6 +44,10 @@ If(-not(Test-Path -path $docsDir))
 Write-Host "Install MkDocs"
 $pythonLoc = "C:\Python34\Scripts"
 
+Get-ChildItem -Path "C:\Python34" -Directory
+Get-ChildItem -Path "C:\Python34" -File
+Get-ChildItem -Path "C:\Python34\Scripts" -File
+
 Set-Location $pythonLoc
 $pip = "pip.exe"
 $pipArg1 = "install"

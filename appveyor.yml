@@ -4,8 +4,7 @@ platform: Any CPU
 
 configuration: Release
 
-environment: 
-  dynamo_solution	: src/Dynamo.All.2013.sln
+environment:   
   xmlDocs_solution	: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
 
 build_script:
