@@ -340,6 +340,7 @@ namespace Dynamo.Engine
                 // Rewrite the AST using the shortest name
                 var newIdentList = CoreUtils.CreateNodeFromString(shortName);
                 return newIdentList;
+
             }
         }
 
@@ -506,7 +507,7 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        /// Generate short variable name.
+        /// Generate type-dependent short variable name in format: type+ID.
         /// </summary>
         private class ShortNameGenerator
         {
@@ -545,6 +546,17 @@ namespace Dynamo.Engine
                     var preferredShortName = String.Empty;
                     if (classNode.ClassAttributes != null)
                         preferredShortName = classNode.ClassAttributes.PreferredShortName;
+
+                    // Otherwise check if its base class provides a short name.
+                    var baseClass = classNode;
+                    while (String.IsNullOrEmpty(preferredShortName) && baseClass.baseList.Any())
+                    {
+                        var baseIndex = baseClass.baseList[0];
+                        baseClass = core.ClassTable.ClassNodes[baseIndex];
+
+                        if (baseClass.ClassAttributes != null)
+                            preferredShortName = baseClass.ClassAttributes.PreferredShortName;
+                    }
 
                     // Otherwise change class name to its lower case
                     if (String.IsNullOrEmpty(preferredShortName) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
