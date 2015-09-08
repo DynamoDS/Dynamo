@@ -45,7 +45,7 @@ Write-Host "Install MkDocs"
 $pythonLoc = "C:\Python34\Scripts"
 
 Set-Location $pythonLoc
-$pip = "pip"
+$pip = "C:\Python34\Scripts\pip.exe"
 $pipArg1 = "install"
 $pipArg2 ="mkdocs"
 
