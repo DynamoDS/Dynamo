@@ -44,12 +44,8 @@ If(-not(Test-Path -path $docsDir))
 Write-Host "Install MkDocs"
 $pythonLoc = "C:\Python34\Scripts"
 
-Get-ChildItem -Path "C:\Python34" -Directory
-Get-ChildItem -Path "C:\Python34" -File
-Get-ChildItem -Path "C:\Python34\Scripts" -File
-
 Set-Location $pythonLoc
-$pip = "pip.exe"
+$pip = "pip"
 $pipArg1 = "install"
 $pipArg2 ="mkdocs"
 
@@ -65,7 +61,7 @@ Write-Host "Running MkDocs"
 $mkDocsLoc = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Release"
 
 Set-Location $mkDocsLoc
-$mkDocsFile = "mkDocs.exe"
+$mkDocsFile = "mkDocs"
 $mkarg1 = "gh-deploy"
 $mkarg2 = "-c"
 
