@@ -40,7 +40,8 @@ namespace Dynamo.Wpf.ViewModels
         }
 
         public List<HeaderStripItem> PrimaryHeaderItems { get; private set; }
-        public List<HeaderStripItem> SecondaryHeaderItems { get; private set; }
+        public List<HeaderStripItem> ActionHeaderItems { get; private set; }
+        public List<HeaderStripItem> QueryHeaderItems { get; private set; }
 
         public enum DisplayMode { None, Query, Action };
 
@@ -67,7 +68,15 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                return SecondaryHeaderItems.Any();
+                return ActionHeaderItems.Any();
+            }
+        }
+
+        public bool AreQueryHeadersVisible
+        {
+            get
+            {
+                return QueryHeaderItems.Any();
             }
         }
 
@@ -117,7 +126,8 @@ namespace Dynamo.Wpf.ViewModels
             actionMembers = new List<NodeSearchElementViewModel>();
             queryMembers = new List<NodeSearchElementViewModel>();
             PrimaryHeaderItems = new List<HeaderStripItem>();
-            SecondaryHeaderItems = new List<HeaderStripItem>();
+            ActionHeaderItems = new List<HeaderStripItem>();
+            QueryHeaderItems = new List<HeaderStripItem>();
         }
 
         public void PopulateMemberCollections(NodeCategoryViewModel element)
@@ -126,7 +136,8 @@ namespace Dynamo.Wpf.ViewModels
             actionMembers.Clear();
             queryMembers.Clear();
             PrimaryHeaderItems.Clear();
-            SecondaryHeaderItems.Clear();
+            ActionHeaderItems.Clear();
+            QueryHeaderItems.Clear();
 
             foreach (var subElement in element.Entries)
             {
@@ -160,7 +171,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (string.IsNullOrEmpty(headerStripText))
                     headerStripText = Configurations.HeaderAction;
                 else
-                    SecondaryHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderAction });
+                    ActionHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderAction });
             }
 
             if (queryMembers.Any())
@@ -170,7 +181,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (string.IsNullOrEmpty(headerStripText))
                     headerStripText = Configurations.HeaderQuery;
                 else
-                    SecondaryHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderQuery });
+                    QueryHeaderItems.Add(new HeaderStripItem() { Text = Configurations.HeaderQuery });
             }
 
             PrimaryHeaderItems.Add(new HeaderStripItem() { Text = headerStripText });

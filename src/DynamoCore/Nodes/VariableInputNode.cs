@@ -102,7 +102,7 @@ namespace Dynamo.Nodes
             VariableInputController.DeserializeCore(nodeElement, context);
         }
 
-        protected override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal override bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             return VariableInputController.HandleModelEventCore(eventName, recorder)
                 || base.HandleModelEventCore(eventName, recorder);
@@ -242,7 +242,7 @@ namespace Dynamo.Nodes
                 WorkspaceModel.RecordModelForModification(model, recorder);
         }
 
-        public bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
+        internal bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             if (eventName == "AddInPort")
             {

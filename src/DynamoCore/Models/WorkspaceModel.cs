@@ -11,12 +11,14 @@ using System.Threading;
 using System.Xml;
 
 using Dynamo.Core;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Logging;
+
 using ProtoCore.AST;
 using ProtoCore.Namespace;
 
@@ -91,7 +93,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
+        internal virtual void OnRequestNodeCentered(object sender, ModelEventArgs e)
         {
             if (RequestNodeCentered != null)
                 RequestNodeCentered(this, e);
@@ -115,7 +117,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnZoomChanged(object sender, ZoomEventArgs e)
+        internal virtual void OnZoomChanged(object sender, ZoomEventArgs e)
         {
             if (ZoomChanged != null)
             {
@@ -141,7 +143,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
+        internal virtual void OnCurrentOffsetChanged(object sender, PointEventArgs e)
         {
             if (CurrentOffsetChanged != null)
             {
@@ -381,6 +383,7 @@ namespace Dynamo.Models
             } 
         }
 
+        public GraphLayout.Graph LayoutGraph;
 
         private void AddNode(NodeModel node)
         {
@@ -582,7 +585,7 @@ namespace Dynamo.Models
         /// WorkspaceModel.RecordModelsForUndo method which allows for multiple 
         /// modifications in a single action group.
         /// </summary>
-        public UndoRedoRecorder UndoRecorder
+        internal UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
         }
@@ -1468,7 +1471,7 @@ namespace Dynamo.Models
         }
 
         // See RecordModelsForModification below for more details.
-        public static void RecordModelForModification(ModelBase model, UndoRedoRecorder recorder)
+        internal static void RecordModelForModification(ModelBase model, UndoRedoRecorder recorder)
         {
             if (null != model)
             {
@@ -1502,7 +1505,7 @@ namespace Dynamo.Models
             }
         }
 
-        public static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
+        internal static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
         {
             if (null == recorder)
                 return;

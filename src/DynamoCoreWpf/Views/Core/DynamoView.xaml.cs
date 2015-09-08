@@ -32,6 +32,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Logging;
 
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using Dynamo.Wpf.ViewModels.Core;
@@ -784,7 +785,7 @@ namespace Dynamo.Controls
         /// <param name="name"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        public void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
+        internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
             var categorized =
                 SearchCategoryUtil.CategorizeSearchEntries(
@@ -848,7 +849,7 @@ namespace Dynamo.Controls
         /// Presents the preset name dialogue. sets eventargs.Success to true if the user enters
         /// a preset name/timestamp and description.
         /// </summary>
-        public void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
+        internal void ShowNewPresetDialog(PresetsNamePromptEventArgs e)
         {
             string error = "";
 

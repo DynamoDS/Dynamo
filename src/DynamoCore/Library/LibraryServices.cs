@@ -7,6 +7,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
@@ -19,7 +20,7 @@ using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 using ProtoCore.Namespace;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     LibraryServices is a singleton class which manages builtin libraries

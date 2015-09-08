@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FailFunc.cs" />
     <Compile Include="Interfaces\CustomNodePathRemapper.cs" />
     <Compile Include="Interfaces\IDirectoryInfo.cs" />
     <Compile Include="Interfaces\IFileCompressor.cs" />

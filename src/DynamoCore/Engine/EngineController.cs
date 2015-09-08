@@ -1,9 +1,10 @@
 ﻿using Autodesk.DesignScript.Interfaces;
-using Dynamo.DSEngine.CodeCompletion;
+using Dynamo.Engine.CodeCompletion;
 using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Logging;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -19,7 +20,7 @@ using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     public delegate void AstBuiltEventHandler(object sender, AstBuilder.ASTBuiltEventArgs e);
 
@@ -84,7 +85,7 @@ namespace Dynamo.DSEngine
             get { return libraryServices; }
         }
 
-        public CodeCompletionServices CodeCompletionServices
+        internal CodeCompletionServices CodeCompletionServices
         {
             get { return codeCompletionServices; }
         }
@@ -602,7 +603,7 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        public NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes)
+        internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes)
         {
             return NodeToCodeUtils.NodeToCode(libraryServices.LibraryManagementCore, astBuilder, graph, nodes);
         }

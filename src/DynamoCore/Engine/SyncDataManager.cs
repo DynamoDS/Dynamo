@@ -6,7 +6,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoScript.Runners;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     SyncDataManager is to manage the state of a Dynamo node and the

@@ -436,16 +436,6 @@ namespace Dynamo.Utilities
             return c;
         }
 
-        public static ThreadSafeList<TSource> ToThreadSafeList<TSource>(this IEnumerable<TSource> source)
-        {
-            var tsl = new ThreadSafeList<TSource>();
-            foreach (var item in source)
-            {
-                tsl.Add(item);
-            }
-            return tsl;
-        }
-
         public static string GetFullName(this Delegate del)
         {
             if (del.Method.DeclaringType == null)

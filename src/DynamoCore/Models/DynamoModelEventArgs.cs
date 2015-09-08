@@ -6,7 +6,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
-    public class ZoomEventArgs : EventArgs
+    internal class ZoomEventArgs : EventArgs
     {
         internal enum ZoomModes
         {
@@ -160,7 +160,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class DynamoModelUpdateArgs : EventArgs
+    internal class DynamoModelUpdateArgs : EventArgs
     {
         public object Item { get; set; }
 
@@ -170,7 +170,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class FunctionNamePromptEventArgs : EventArgs
+    internal class FunctionNamePromptEventArgs : EventArgs
     {
         public string Name { get; set; }
         public string Category { get; set; }
@@ -187,7 +187,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class PresetsNamePromptEventArgs : EventArgs
+    internal class PresetsNamePromptEventArgs : EventArgs
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -200,7 +200,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class ViewOperationEventArgs : EventArgs
+    internal class ViewOperationEventArgs : EventArgs
     {
         public enum Operation
         {
@@ -215,7 +215,7 @@ namespace Dynamo.Models
         public Operation ViewOperation { get; private set; }
     }
 
-    public class PointEventArgs : EventArgs
+    internal class PointEventArgs : EventArgs
     {
         public Point2D Point { get; set; }
 
@@ -225,7 +225,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class WorkspaceEventArgs
+    internal class WorkspaceEventArgs
     {
         public WorkspaceModel Workspace { get; set; }
 
@@ -235,7 +235,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class ModelEventArgs : EventArgs
+    internal class ModelEventArgs : EventArgs
     {
         public ModelBase Model { get; private set; }
         public double X { get; private set; }
@@ -265,7 +265,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class DeltaComputeStateEventArgs : EventArgs
+    internal class DeltaComputeStateEventArgs : EventArgs
     {
         public List<Guid> NodeGuidList;
         public bool GraphExecuted;
@@ -277,7 +277,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class SettingsMigrationEventArgs : EventArgs
+    internal class SettingsMigrationEventArgs : EventArgs
     {
         public enum EventStatusType
         { 

@@ -5,6 +5,7 @@ using System.Reflection;
 
 using Autodesk.DesignScript.Runtime;
 
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models

@@ -409,11 +409,18 @@ namespace Dynamo.Controls
         {
             RefreshPreviewIconDisplay();
 
+            var preview = sender as PreviewControl;
+            // If the preview is in a transition, return directly to avoid another
+            // transition
+            if (preview == null || preview.IsInTransition)
+            {
+                return;
+            }
+
             if (previewIcon.IsMouseOver)
             {
                 // The mouse is currently over the preview icon, so if the 
                 // preview control is hidden, bring it into condensed state.
-                var preview = sender as PreviewControl;
                 if (preview.IsHidden != false)
                     preview.TransitionToState(PreviewControl.State.Condensed);
             }
@@ -421,7 +428,6 @@ namespace Dynamo.Controls
             {
                 // The mouse is no longer over the preview icon, if the preview 
                 // control is currently in condensed state, hide it from view.
-                var preview = sender as PreviewControl;
                 if (preview.IsCondensed != false)
                     preview.TransitionToState(PreviewControl.State.Hidden);
             }

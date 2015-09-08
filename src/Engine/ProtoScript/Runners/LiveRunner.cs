@@ -81,12 +81,24 @@ namespace ProtoScript.Runners
             private set;
         }
 
+        public IEnumerable<Guid> NodeIDs
+        {
+            get;
+            private set;
+        }
+
         public GraphSyncData(List<Subtree> deleted, List<Subtree> added, List<Subtree> modified)
         {
             DeletedSubtrees = deleted;
             AddedSubtrees = added;
             ModifiedSubtrees = modified;
+
+            NodeIDs = Enumerable.Empty<Guid>()
+                                .Concat(deleted == null ? Enumerable.Empty<Guid>() : deleted.Select(t => t.GUID))
+                                .Concat(added == null ? Enumerable.Empty<Guid>() : added.Select(t => t.GUID))
+                                .Concat(modified == null ? Enumerable.Empty<Guid>() : modified.Select(t => t.GUID));
         }
+
 
         public override string ToString()
         {

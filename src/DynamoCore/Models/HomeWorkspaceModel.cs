@@ -9,9 +9,10 @@ using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Core.Threading;
-using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
+using Dynamo.Engine;
+
 using ProtoCore;
 using ProtoCore.Namespace;
 
@@ -131,8 +132,8 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
-        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
+        internal event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
+        internal virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
         {
             var handler = SetNodeDeltaState;
             if (handler != null) handler(this, e);
@@ -428,11 +429,6 @@ namespace Dynamo.Models
                     continue;
 
                 node.Warning(message.Value); // Update node warning message.
-            }
-
-            foreach (var node in Nodes)
-            {
-                node.ClearDirtyFlag();
             }
 
             // Notify listeners (optional) of completion.

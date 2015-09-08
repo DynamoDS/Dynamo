@@ -1,5 +1,5 @@
 ﻿using Dynamo.Models;
-using Migrations;
+using Dynamo.Migration;
 using System.Linq;
 using System.Xml;
 
