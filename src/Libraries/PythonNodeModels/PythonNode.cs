@@ -17,8 +17,6 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
-<<<<<<< HEAD:src/Libraries/PythonNodeModels/PythonNode.cs
-=======
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
     {
         private DynamoViewModel dynamoViewModel;
@@ -61,7 +59,6 @@ namespace PythonNodeModels
         }
     }
 
->>>>>>> cd24eae3a215961de97a1965b64cc58463f5abb1:src/Libraries/IronPython/PythonNode.cs
     public abstract class PythonNodeBase : VariableInputNode
     {
         protected PythonNodeBase()

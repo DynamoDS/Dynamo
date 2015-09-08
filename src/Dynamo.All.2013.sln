@@ -200,6 +200,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModels", "Libraries\PythonNodeModels\PythonNodeModels.csproj", "{4A964723-C7A9-45A9-B448-E1D042EC8820}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineTests", "..\test\Libraries\CommandLineTests\CommandLineTests.csproj", "{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCLI", "DynamoCLI\DynamoCLI.csproj", "{5F9AE581-6781-4A4C-A262-1B06CD27208B}"
