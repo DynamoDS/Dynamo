@@ -10,6 +10,8 @@ using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.DSASM;
 using Dynamo.Models;
+using Dynamo.Nodes;
+
 namespace DSOffice
 {
     internal class ExcelCloseEventArgs : EventArgs

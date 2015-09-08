@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace net.riversofdata.dhlogger
 {
-    public class Log : IDisposable
+    internal class Log : IDisposable
     {
         private const string URL = "https://dynamoinstr.appspot.com/rpc";
         //private const string URL = "http://192.168.1.68:8080/rpc";

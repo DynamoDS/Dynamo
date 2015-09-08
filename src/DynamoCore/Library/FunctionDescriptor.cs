@@ -10,7 +10,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoCore;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     ///     Describes a function, whether imported or defined in a custom node.

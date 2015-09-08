@@ -440,7 +440,7 @@ namespace Dynamo.Tests
         {
             OpenModel(Path.Combine(TestDirectory, @"core\customast\begin-test.dyn"));
 
-            var dummy = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<DSCoreNodesUI.DummyNode>();
+            var dummy = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.DummyNode>();
             Assert.IsNotNull(dummy);
 
             const string textAndFileName = @"test.txt";

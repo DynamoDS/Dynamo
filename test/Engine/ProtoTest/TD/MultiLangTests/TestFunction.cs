@@ -2040,11 +2040,7 @@ a;b;
         [Category("SmokeTest")]
         public void T69_Function_Name_Checking()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
-[Imperative]
-{
+            string code = @"
 	def foo : int ( a : int )
 	{
 		foo = 3;
@@ -2054,24 +2050,18 @@ a;b;
 	a = 1;
 	foo = 2;
 	b = foo(a);           
-}
-	 
-	 
 ";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-                //thisTest.Verify("a", 1, 0);
-                //thisTest.Verify("a", 4, 0);
-                //thisTest.Verify("foo", 2, 0);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("a", 1, 0);
+            thisTest.Verify("foo", 2, 0);
+            thisTest.Verify("b", null, 0);
         }
 
         [Test] //Fuqiang: this is changed due to the implementation of function pointer
         [Category("SmokeTest")]
         public void T70_Function_Name_Checking()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Associative]
 {
 	def foo : int ( a : int )
@@ -2100,15 +2090,12 @@ a;b;
                 //thisTest.Verify("a", 1, 0);
                 //thisTest.Verify("b", 4, 0);
                 //thisTest.Verify("foo", 2, 0);
-            });
         }
 
         [Test] //Fuqiang: this is changed due to the implementation of function pointer
         [Category("SmokeTest")]
         public void T71_Function_Name_Checking()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
                 string code = @"
 [Associative]
 {
@@ -2135,7 +2122,6 @@ a;b;
                 //thisTest.Verify("foo", 2, 0);
                 //thisTest.Verify("c", 3, 0);
                 //thisTest.Verify("b", 4, 0);
-            });
         }
 
         [Test]
@@ -4746,13 +4732,11 @@ f1;f2;f3;f4;
 
         }
 
-        [Test] //Fuqiang: this is changed due to the implementation of function pointer
+        [Test] 
         [Category("SmokeTest")]
         public void TV57_Defect_1454932()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Associative]
 {
 	def Foo : int ()
@@ -4763,10 +4747,7 @@ f1;f2;f3;f4;
 	b = Foo();
 	c = Foo;
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-                //thisTest.Verify("b", 4, 0);
-                //thisTest.Verify("c", 5, 0);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]

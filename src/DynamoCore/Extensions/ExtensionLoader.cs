@@ -1,4 +1,6 @@
 ﻿using Dynamo.Interfaces;
+using Dynamo.Logging;
+
 using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;

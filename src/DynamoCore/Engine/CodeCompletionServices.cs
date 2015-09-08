@@ -1,18 +1,20 @@
 ﻿using System.Diagnostics;
 using Dynamo.Utilities;
+using Dynamo.Nodes;
 using ProtoCore.DSDefinitions;
 using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.Namespace;
+using Symbol = ProtoCore.Namespace.Symbol;
 
-namespace Dynamo.DSEngine.CodeCompletion
+namespace Dynamo.Engine.CodeCompletion
 {
     /// <summary>
     /// Interacts with the VM core to provide code completion data to the UI
     /// </summary>
-    public class CodeCompletionServices
+    internal class CodeCompletionServices
     {
         private readonly ProtoCore.Core core = null;
 
@@ -234,7 +236,7 @@ namespace Dynamo.DSEngine.CodeCompletion
     /// the auto-completion feature. This class represents a common currency that
     /// is view-independent. 
     /// </summary>
-    public class CompletionData
+    internal class CompletionData
     {
         private readonly string text;
         private readonly CompletionType type;

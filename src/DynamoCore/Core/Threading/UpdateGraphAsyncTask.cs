@@ -2,13 +2,14 @@ using System.Linq;
 ﻿using System;
 using System.Collections.Generic;
 
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Models;
 
 using ProtoScript.Runners;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
+using System.Diagnostics;
 
 namespace Dynamo.Core.Threading
 {
@@ -60,7 +61,23 @@ namespace Dynamo.Core.Threading
 
                 ModifiedNodes = ComputeModifiedNodes(workspace);
                 graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
-                return graphSyncData != null;
+
+                Debug.Assert(graphSyncData != null);
+                // We clear dirty flags before executing the task. If we clear
+                // flags after the execution of task, for example in
+                // AsyncTask.Completed or in HandleTaskCompletionCore(), as both
+                // are executed in the other thread, although some nodes are
+                // modified and we request graph execution, but just before
+                // computing sync data, the task completion handler jumps in
+                // and clear dirty flags. Now graph sync data will be null and
+                // graph is in wrong state.
+                foreach (var nodeGuid in graphSyncData.NodeIDs)
+                {
+                    var node = workspace.Nodes.FirstOrDefault(n => n.GUID.Equals(nodeGuid));
+                    node.ClearDirtyFlag();
+                }
+
+                return true;
             }
             catch (Exception e)
             {
@@ -103,37 +120,37 @@ namespace Dynamo.Core.Threading
             }
         }
 
+        /// <summary>
+        /// Return if this task's graph sync data is a super set of the other
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        private bool Contains(UpdateGraphAsyncTask other)
+        {
+            // Be more conservative here. Not only check ModifiedNodes, but
+            // also check *all* nodes in graph sync data. For example, consider
+            // a CBN outputs to a node, the node is a downstream node of cbn.
+            //
+            // Now if node is modified and request a run, task's ModifiedNodes
+            // will cotain this node; then CBN is modified and request a run,
+            // ModifiedNodes would contain both CBN and the node, and previous
+            // task will be thrown away.
+            return other.graphSyncData.NodeIDs.All(graphSyncData.NodeIDs.Contains) && 
+                   other.ModifiedNodes.All(ModifiedNodes.Contains); 
+        }
+
         protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
             var theOtherTask = otherTask as UpdateGraphAsyncTask;
             if (theOtherTask == null)
                 return base.CanMergeWithCore(otherTask);
 
-            // Comparing to another UpdateGraphAsyncTask, verify 
-            // that they are updating a similar set of nodes.
-
-            if ((graphSyncData != null && 
-                graphSyncData.DeletedSubtrees != null && 
-                graphSyncData.DeletedSubtrees.Any()) ||
-                (theOtherTask.graphSyncData != null &&
-                 theOtherTask.graphSyncData.DeletedSubtrees != null && 
-                 theOtherTask.graphSyncData.DeletedSubtrees.Any()))
-                return TaskMergeInstruction.KeepBoth;
-
-            // Other node is either equal or a superset of this task
-            if (ModifiedNodes.All(x => theOtherTask.ModifiedNodes.Contains(x)))
-            {
+            if (theOtherTask.Contains(this))
                 return TaskMergeInstruction.KeepOther;
-            }
-
-            // This node is a superset of the other
-            if (theOtherTask.ModifiedNodes.All(x => ModifiedNodes.Contains(x)))
-            {
+            else if (this.Contains(theOtherTask)) 
                 return TaskMergeInstruction.KeepThis;
-            }
-
-            // They're different, keep both
-            return TaskMergeInstruction.KeepBoth;
+            else
+                return TaskMergeInstruction.KeepBoth;
         }
 
         #endregion

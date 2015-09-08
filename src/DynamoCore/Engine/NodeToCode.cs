@@ -13,14 +13,14 @@ using ProtoCore.Utils;
 using Dynamo.Core;
 using ProtoCore.Namespace;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     /// The result of converting nodes to code. As when a node is converted to 
     /// code, its inputs and outputs may be renamed to avoid confliction, the
     /// result contains maps for inputs/new-inputs and outputs/new-outputs.
     /// </summary>
-    public class NodeToCodeResult
+    internal class NodeToCodeResult
     {
         /// <summary>
         /// AST nodes that compiled from NodeModel.
@@ -56,7 +56,7 @@ namespace Dynamo.DSEngine
     /// some connectors will be created and later on deleted all within the same 
     /// conversion process.
     /// </summary>
-    public class NodeToCodeUndoHelper
+    internal class NodeToCodeUndoHelper
     {
         private List<Tuple<ModelBase, UndoRedoRecorder.UserAction>> recordedActions;
 
@@ -99,7 +99,7 @@ namespace Dynamo.DSEngine
         /// Record all actions in recorder.
         /// </summary>
         /// <param name="recorder"></param>
-        public void ApplyActions(UndoRedoRecorder recorder)
+        internal void ApplyActions(UndoRedoRecorder recorder)
         {
             using (recorder.BeginActionGroup())
             {
@@ -126,7 +126,7 @@ namespace Dynamo.DSEngine
         }
     }
 
-    public class NodeToCodeUtils
+    internal class NodeToCodeUtils
     {
         /// <summary>
         /// Traverse all identifiers in depth-first order and for each 
@@ -924,7 +924,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static NodeToCodeResult ConstantPropagationForTemp(NodeToCodeResult result, IEnumerable<string> outputVariables)
+        internal static NodeToCodeResult ConstantPropagationForTemp(NodeToCodeResult result, IEnumerable<string> outputVariables)
         {
             var tempVars = new HashSet<string>(
                 result.OutputMap.Where(p => p.Key.StartsWith(Constants.kTempVarForNonAssignment))
@@ -1042,7 +1042,7 @@ namespace Dynamo.DSEngine
         /// <param name="workspaceNodes">The whole workspace nodes</param>
         /// <param name="nodes">Selected node that can be converted to a single code block node</param>
         /// <returns></returns>
-        public static NodeToCodeResult NodeToCode(
+        internal static NodeToCodeResult NodeToCode(
             ProtoCore.Core core,
             AstBuilder astBuilder, 
             IEnumerable<NodeModel> workspaceNodes,

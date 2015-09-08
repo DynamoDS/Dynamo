@@ -6,7 +6,7 @@ using Dynamo.ViewModels;
 using System.Reflection;
 using System.IO;
 using System.Threading;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 
 namespace Dynamo.TestInfrastructure
 {

@@ -76,7 +76,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double nearPlaneDistanceFactor = 0.01;
         private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
-        private bool showWatchSettingsControl = false;
 
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
@@ -272,16 +271,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         public bool IsResizable { get; protected set; }
-
-        public bool ShowWatchSettingsControl
-        {
-            get { return showWatchSettingsControl; }
-            set
-            {
-                showWatchSettingsControl = value;
-                RaisePropertyChanged("ShowWatchSettingsControl");
-            }
-        }
 
         public IEnumerable<Model3D> SceneItems
         {

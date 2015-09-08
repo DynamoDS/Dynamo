@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Nodes
 {
     public static class CodeBlockUtils
     {
