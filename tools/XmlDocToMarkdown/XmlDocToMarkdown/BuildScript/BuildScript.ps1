@@ -63,7 +63,6 @@ $mkDocsFile = "C:\projects\dynamo\tools\XmlDocToMarkdown\XmlDocToMarkdown\bin\Re
 $mkarg1 = "gh-deploy"
 $mkarg2 = "-c"
 
-
 & $mkDocsFile $mkarg1 $mkarg2
 
 
