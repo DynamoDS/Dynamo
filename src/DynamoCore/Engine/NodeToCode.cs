@@ -564,19 +564,16 @@ namespace Dynamo.Engine
 
             private LibraryCustomization GetLibraryCustomization(ClassNode classNode)
             {
-                if (pathManager == null)
+                if (pathManager == null || classNode.ExternLib == null)
                     return null;
 
                 LibraryCustomization libCustomization = null;
-                if (classNode.ExternLib != null)
-                {
-                    if (!libCustomizationMap.TryGetValue(classNode.ExternLib, out libCustomization))
-                    {
-                        libCustomization = LibraryCustomizationServices.GetForAssembly(classNode.ExternLib, pathManager);
-                        if (libCustomization != null)
-                            libCustomizationMap[classNode.ExternLib] = libCustomization;
-                    }
-                }
+                if (libCustomizationMap.TryGetValue(classNode.ExternLib, out libCustomization))
+                    return libCustomization;
+
+                libCustomization = LibraryCustomizationServices.GetForAssembly(classNode.ExternLib, pathManager);
+                if (libCustomization != null)
+                    libCustomizationMap[classNode.ExternLib] = libCustomization;
 
                 return libCustomization;
             }
@@ -601,22 +598,21 @@ namespace Dynamo.Engine
                 }
 
                 // Otherwise check if its base class provides a short name.
-                var baseClass = classNode;
-                while (baseClass.baseList.Any())
+                while (classNode.baseList.Any())
                 {
-                    var baseIndex = baseClass.baseList[0];
-                    baseClass = core.ClassTable.ClassNodes[baseIndex];
+                    var baseIndex = classNode.baseList[0];
+                    classNode = core.ClassTable.ClassNodes[baseIndex];
 
                     if (customization != null)
                     {
-                        shortName = customization.GetShortName(baseClass.name);
+                        shortName = customization.GetShortName(classNode.name);
                         if (!String.IsNullOrEmpty(shortName))
                             return shortName;
                     }
 
-                    if (baseClass.ClassAttributes != null)
+                    if (classNode.ClassAttributes != null)
                     {
-                        shortName = baseClass.ClassAttributes.PreferredShortName;
+                        shortName = classNode.ClassAttributes.PreferredShortName;
                         if (!String.IsNullOrEmpty(shortName))
                             return shortName;
                     }
