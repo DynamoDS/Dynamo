@@ -1251,8 +1251,9 @@ namespace ProtoCore.Lang
             var endLetter = endValue.ToCharArray().First();
             int step = Convert.ToInt32(svStep.RawIntValue);
 
-            // Alphabet sequence can be made just from letters.
-            if (!Char.IsLetter(startLetter) || !Char.IsLetter(endLetter) || step <= 0)
+            // Alphabet sequence can be made just from letters (that are not unicode).
+            if (!Char.IsLetter(startLetter) || !Char.IsLetter(endLetter) || step <= 0 ||
+                startLetter > 255 || endLetter > 255)
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments,

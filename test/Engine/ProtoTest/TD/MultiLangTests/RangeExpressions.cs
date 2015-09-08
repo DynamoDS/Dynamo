@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
@@ -1942,12 +1942,15 @@ b = 0..10..a;
         [Test, Category("SmokeTest")]
         public void AlphabetSequenceNegativeTestCases()
         {
-            string src = @"a1;a2;a3;
+            string src = @"a1;a2;a3;a4;a5;a6;
 [Imperative]
 {
 	a1 = ""ab""..""cd""..1;
     a2 = ""c""..""a""..-1;
     a3 = ""a""..""&""..1;
+    a4 = ""abc""..""def""..1;
+    a5 = ""a""..""z""..-10;
+    a6 = ""л""..""н""..1;
 }
 ";
             thisTest.RunScriptSource(src);
@@ -1955,8 +1958,11 @@ b = 0..10..a;
             thisTest.Verify("a1", null);
             thisTest.Verify("a2", null);
             thisTest.Verify("a3", null);
+            thisTest.Verify("a4", null);
+            thisTest.Verify("a5", null);
+            thisTest.Verify("a6", null);
 
-            thisTest.VerifyRuntimeWarningCount(3);
+            thisTest.VerifyRuntimeWarningCount(6);
         }
     }
 }
