@@ -784,6 +784,14 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestNumberRange()
+        {
+            OpenModel(GetDynPath("TestNumberRange.dyn"));
+
+            AssertPreviewValue("b2b256b2-ab76-428c-93be-3ad03fd8e527", new int[] {1, 2, 3, 4, 5});
+        }
+
+        [Test]
         public void TestPi()
         {
             OpenModel(GetDynPath("TestPi.dyn"));

@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitsUI</RootNamespace>
     <AssemblyName>UnitsUI</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
@@ -112,20 +114,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
-
-	<!-- Get System.Drawing.dll -->
-	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    	</GetReferenceAssemblyPaths>
-	
-	<!-- Get assembly -->
-	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
-	</GetAssemblyIdentity>
-	
-	<!-- Generate customization dll -->
-	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)UnitsUIImages.resx" OutputResources="$(ProjectDir)UnitsUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    	<AL TargetType="library" EmbedResources="$(ProjectDir)UnitsUIImages.resources" OutputAssembly="$(OutDir)UnitsUI.customization.dll" Version="%(AssemblyInfo.Version)" />
-
+    <!-- Get System.Drawing.dll -->
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <!-- Get assembly -->
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <!-- Generate customization dll -->
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)UnitsUIImages.resx" OutputResources="$(ProjectDir)UnitsUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)UnitsUIImages.resources" OutputAssembly="$(OutDir)UnitsUI.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>
