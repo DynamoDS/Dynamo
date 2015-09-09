@@ -56,7 +56,8 @@ Search/Browse
 -	Tooltips and search algorithm improvements for in canvas search (via right click)
 
 Localization 
--	fit and finish
+- Now localized to 12 languages (Dynamo for Revit and Dynamo standalone)
+- Define the localization for Dynamo standalone [Instructions here](http://dynamobim.com/multilingual-dynamo/)
 
 Documentation
 - 4 New Chapters for the [Dynamo Primer](http://dynamobim.com/learn/)

@@ -4446,8 +4446,8 @@ namespace ProtoAssociative
             ProtoCore.Type type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
             bool isAccessible = false;
-
-            if (null == t.ArrayDimensions)
+            bool isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
+            if (!isAllocated && null == t.ArrayDimensions)
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
@@ -4473,11 +4473,9 @@ namespace ProtoAssociative
                         }
                         return;
                     }
-                }
-            }
          
-            bool isAllocated = VerifyAllocation(t.Name, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
-            
+                }
+            }            
 
             // If its executing in interpreter mode - attempt to find and anubond identifer in a child block
             // Remove this, because if we are watching cases like:
@@ -5748,8 +5746,10 @@ namespace ProtoAssociative
                 localProcedure.name = funcDef.Name;
                 localProcedure.pc = ProtoCore.DSASM.Constants.kInvalidIndex;
                 localProcedure.localCount = 0;// Defer till all locals are allocated
+                if (globalClassIndex != -1)
+                    localProcedure.returntype.Name = core.ClassTable.ClassNodes[globalClassIndex].name;
                 localProcedure.returntype.UID = globalClassIndex;
-                localProcedure.returntype.rank = Constants.kArbitraryRank;
+                localProcedure.returntype.rank = 0;
                 localProcedure.isConstructor = true;
                 localProcedure.runtimeIndex = 0;
                 localProcedure.isExternal = funcDef.IsExternLib;
@@ -8512,20 +8512,12 @@ namespace ProtoAssociative
                     leftNodeGlobalRef = GetUpdatedNodeRef(bnode.LeftNode);
 
                     // check whether the variable name is a function name
-                    bool isAccessibleFp;
-                    int realType;
-                    ProtoCore.DSASM.ProcedureNode procNode = null;
                     if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
                     {
-                        procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                    }
-                    if (procNode == null)
-                    {
-                        procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
-                    }
-                    if (procNode != null)
-                    {
-                        if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
+                        bool isAccessibleFp;
+                        int realType;
+                        var procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
+                        if (procNode != null && procNode.procId != Constants.kInvalidIndex && emitDebugInfo)
                         {
                             buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVariableError, t.Name), core.CurrentDSFileName, t.line, t.col);
                         }

@@ -603,6 +603,15 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///      The possible type of output at specified port. This 
+        ///      type information is not necessary to be accurate.
+        /// </summary>
+        /// <returns></returns>
+        public virtual ProtoCore.Type GetTypeHintForOutput(int index)
+        {
+             return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+        }
         #endregion
 
         protected NodeModel()

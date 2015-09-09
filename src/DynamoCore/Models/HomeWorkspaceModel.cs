@@ -414,11 +414,6 @@ namespace Dynamo.Models
                 node.Warning(message.Value); // Update node warning message.
             }
 
-            foreach (var node in Nodes)
-            {
-                node.ClearDirtyFlag();
-            }
-
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
 

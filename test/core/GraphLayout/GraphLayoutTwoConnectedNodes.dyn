@@ -1,0 +1,22 @@
+<Workspace Version="0.8.3.2432" X="1257.20618211371" Y="577.429177923834" zoom="2.09271977949371" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="dbafa916-aeed-4626-9593-81e26ab96fea" type="Dynamo.Nodes.DSFunction" nickname="CoordinateSystem.ByOrigin" x="-274.914681754977" y="-224.66390015601" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleInput guid="5a45efcf-cfb8-47d5-b89b-3c388399805b" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="-494.256625069679" y="0.714059360119848" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5a45efcf-cfb8-47d5-b89b-3c388399805b" start_index="0" end="dbafa916-aeed-4626-9593-81e26ab96fea" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

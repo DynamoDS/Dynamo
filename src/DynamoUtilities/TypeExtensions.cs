@@ -3,25 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace Dynamo.Utilities
 {
     public static class TypeExtensions
     {
-        /// <summary>
-        ///     Fetches custom attributes from a MemberInfo.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetCustomAttributes<T>(this MemberInfo type, bool inherit) 
-            where T : Attribute
-        {
-            return type.GetCustomAttributes(inherit).OfType<T>();
-        }
-
         /// <summary>
         ///     Creates a function that constructs an instance of an object of the given
         ///     type.
