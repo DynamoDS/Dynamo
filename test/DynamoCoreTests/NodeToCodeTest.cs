@@ -23,6 +23,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -332,15 +333,15 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, result.AstNodes.Count());
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
 
-            var exprs = String.Concat(result.AstNodes
-                                            .Cast<BinaryExpressionNode>()
-                                            .Select(e => e.ToString().Replace(" ", String.Empty)));
+            var lhs = result.AstNodes.Cast<BinaryExpressionNode>()
+                                     .Select(expr => expr.LeftNode as IdentifierNode);
 
             // It totally depends on which code block node is compiled firstly.
             // Variables in the first one won't be renamed.
-            Assert.IsTrue(
-               (exprs.Contains("t3=1") && exprs.Contains("t1=2") && exprs.Contains("t4=3") && exprs.Contains("t2=4"))
-             || (exprs.Contains("t3=3") && exprs.Contains("t2=4") && exprs.Contains("t4=1") && exprs.Contains("t1=2")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t1")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t2")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num1")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num2")));
         }
 
         [Test]
@@ -363,13 +364,16 @@ namespace Dynamo.Tests
             Assert.IsNotNull(result.AstNodes);
             Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
 
-            var exprs = String.Concat(result.AstNodes
-                                            .Cast<BinaryExpressionNode>()
-                                            .Select(e => e.ToString().Replace(" ", String.Empty)));
+            var lhs = result.AstNodes.Cast<BinaryExpressionNode>()
+                                     .Select(expr => expr.LeftNode as IdentifierNode);
 
             // It totally depends on which code block node is compiled firstly.
             // Variables in the first one won't be renamed.
-            Assert.IsTrue(exprs.Contains("b=t2") && exprs.Contains("t2=2"));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("b")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("a")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num1")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num3")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num4")));
         }
 
         [Test]
@@ -571,7 +575,7 @@ namespace Dynamo.Tests
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
-            Assert.AreEqual("t1.DistanceTo(t2)", expr.RightNode.ToString());
+            Assert.AreEqual("point1.DistanceTo(point2)", expr.RightNode.ToString());
         }
 
         [Test]
@@ -1145,6 +1149,38 @@ namespace Dynamo.Tests
 
             Thread.CurrentThread.CurrentCulture = currentCulture;
             Thread.CurrentThread.CurrentUICulture = currentUICulture;
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestUsingTypeDependentVariableName01()
+        {
+            OpenModel(@"core\node2code\string.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+            Assert.IsTrue(cbn.GetAstIdentifierForOutputIndex(0).Value.StartsWith("str"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestUsingTypeDependentVariableName02()
+        {
+            OpenModel(@"core\node2code\num.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+            Assert.IsTrue(cbn.GetAstIdentifierForOutputIndex(0).Value.StartsWith("num"));
         }
     }
 

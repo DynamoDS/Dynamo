@@ -243,24 +243,19 @@ b = a();";
         [Test]
         public void T10_NegativeTest_UsingFunctionNameAsVarName_Global()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 def foo:int(x:int)
 {
 	return = x;
 }
 foo = 3;";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
         public void T11_NegativeTest_UsingFunctionNameAsVarName_Global_ImperBlk()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 [Imperative]
 {
 	def foo:int(x:int)
@@ -269,17 +264,14 @@ foo = 3;";
 	}
 	foo = 3;
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
         [Category("DSDefinedClass")]
         public void T12_NegativeTest_UsingGlobalFunctionNameAsMemVarName_Class()
         {
-            Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
-            {
-                string code = @"
+            string code = @"
 def foo:int(x:int)
 {
 	return = x;
@@ -288,8 +280,7 @@ class A
 {
 	foo : var;
 }";
-                ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            });
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
         }
 
         [Test]
