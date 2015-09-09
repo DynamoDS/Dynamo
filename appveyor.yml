@@ -5,7 +5,7 @@ platform: Any CPU
 configuration: Release
 
 build:
-  project: src/Dynamo.All.2013.sln
+  project: src/Dynamo.All.sln
   verbosity: normal
   
 test: off
