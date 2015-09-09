@@ -1365,7 +1365,7 @@ namespace Dynamo.Models
                     //Also collect the average X and Y co-ordinates of the different nodes
                     int nodeCount = nodeList.Count;
 
-                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList, pathManager);
+                    var nodeToCodeResult = engineController.ConvertNodesToCode(this.nodes, nodeList, null);
 
                     #region Step I. Delete all nodes and their connections
 

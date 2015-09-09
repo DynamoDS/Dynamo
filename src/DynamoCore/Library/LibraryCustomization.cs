@@ -10,10 +10,26 @@ using DynamoUtilities;
 
 namespace Dynamo.Engine
 {
-    internal class LibraryCustomizationServices
+    internal interface ILibraryCustomizationServices
+    {
+        LibraryCustomization GetLibraryCustomization(string assemblyPath);
+    }
+
+    internal class LibraryCustomizationServices : ILibraryCustomizationServices
     {
         private static Dictionary<string, bool> triedPaths = new Dictionary<string, bool>();
         private static Dictionary<string, LibraryCustomization> cache = new Dictionary<string, LibraryCustomization>();
+        private IPathManager pathManager;
+
+        public LibraryCustomizationServices(IPathManager assemblyPathManager)
+        {
+            this.pathManager = assemblyPathManager;
+        }
+
+        public LibraryCustomization GetLibraryCustomization(string assemblyPath)
+        {
+            return GetForAssembly(assemblyPath, pathManager, false); 
+        }
 
         public static LibraryCustomization GetForAssembly(string assemblyPath, IPathManager pathManager, bool useAdditionalPaths = true)
         {

@@ -17,6 +17,91 @@ using Dynamo.Interfaces;
 namespace Dynamo.Engine
 {
     /// <summary>
+    /// Node to code will create some variables, and if it is able to know the
+    /// type of expression, it could give a more meaningful variable prefix. 
+    /// </summary>
+    public interface INodeToCodeNamingProvider
+    {
+        /// <summary>
+        /// Get a name for specified type. This name will be used as the prefix
+        /// for variable that created in node to code. It should return a empty
+        /// string if fails to generate one.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        string GetVariablePrefix(ProtoCore.Type type);
+    }
+
+    internal class NodeToCodeNamingProvider : INodeToCodeNamingProvider 
+    {
+        private ProtoCore.Core core;
+        private ILibraryCustomizationServices libCustomizationServices;
+
+        public NodeToCodeNamingProvider(ProtoCore.Core core, ILibraryCustomizationServices libServices)
+        {
+            this.core = core;
+            this.libCustomizationServices = libServices;
+        }
+
+        public string GetVariablePrefix(ProtoCore.Type type)
+        {
+            string prefix = String.Empty;
+            if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
+            {
+                // If class provides short name, then use it.
+                var classNode = core.ClassTable.ClassNodes[type.UID];
+                prefix = GetShortName(classNode);
+
+                // Otherwise change class name to its lower case
+                if (String.IsNullOrEmpty(prefix) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
+                {
+                    prefix = type.ToShortString();
+                    if (!String.IsNullOrEmpty(prefix))
+                        prefix = prefix.ToLower();
+                }
+            }
+
+            return prefix;
+        }
+
+        private string GetShortName(ClassNode classNode)
+        {
+            var shortName = string.Empty;
+            var assembly = classNode.ExternLib;
+            var customization = assembly == null ?  null : libCustomizationServices.GetLibraryCustomization(assembly);
+
+            while (classNode != null)
+            {
+                if (customization != null)
+                {
+                    shortName = customization.GetShortName(classNode.name);
+                    if (!String.IsNullOrEmpty(shortName))
+                        break;
+                }
+
+                if (classNode.ClassAttributes != null)
+                {
+                    shortName = classNode.ClassAttributes.PreferredShortName;
+                    if (!String.IsNullOrEmpty(shortName))
+                        break;
+                }
+
+                if (classNode.baseList.Any())
+                {
+                    var baseIndex = classNode.baseList[0];
+                    classNode = core.ClassTable.ClassNodes[baseIndex];
+                }
+                else
+                {
+                    classNode = null;
+                }
+            }
+
+            return shortName;
+        }
+    }
+
+    /// <summary>
     /// The result of converting nodes to code. As when a node is converted to 
     /// code, its inputs and outputs may be renamed to avoid confliction, the
     /// result contains maps for inputs/new-inputs and outputs/new-outputs.
@@ -513,15 +598,14 @@ namespace Dynamo.Engine
         private class ShortNameGenerator
         {
             private ProtoCore.Core core;
-            private IPathManager pathManager;
+            private INodeToCodeNamingProvider namingProvider;
             private Dictionary<ProtoCore.Type, NumberingState> prefixNumberingMap = new Dictionary<ProtoCore.Type, NumberingState>();
-            private Dictionary<string, LibraryCustomization> libCustomizationMap = new Dictionary<string, LibraryCustomization>();
             private NumberingState defaultNS = new NumberingState(AstBuilder.StringConstants.ShortVarPrefix);
 
-            public ShortNameGenerator(ProtoCore.Core core, IPathManager pathManager)
+            public ShortNameGenerator(ProtoCore.Core core, INodeToCodeNamingProvider namingProvider)
             {
                 this.core = core;
-                this.pathManager = pathManager;
+                this.namingProvider = namingProvider;
             }
 
             public string GetName(ProtoCore.Type? typeHint)
@@ -537,80 +621,19 @@ namespace Dynamo.Engine
                 if (prefixNumberingMap.TryGetValue(type, out ns))
                     return ns;
 
-                if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
+                var shortName = string.Empty;
+
+                if (namingProvider != null)
+                    namingProvider.GetVariablePrefix(type);
+
+                if (!string.IsNullOrEmpty(shortName)) 
                 {
-                    // If class provides short name, then use it.
-                    var classNode = core.ClassTable.ClassNodes[type.UID];
-                    var shortName = GetShortName(classNode);
-
-                    // Otherwise change class name to its lower case
-                    if (String.IsNullOrEmpty(shortName) && (type.UID > (int)ProtoCore.PrimitiveType.kMaxPrimitives))
-                    {
-                        shortName = type.ToShortString();
-                        if (!String.IsNullOrEmpty(shortName))
-                            shortName = shortName.ToLower();
-                    }
-
-                    if (!string.IsNullOrEmpty(shortName)) 
-                    {
-                        var newNS = new NumberingState(shortName);
-                        prefixNumberingMap[type] = newNS;
-                        return newNS;
-                    }
+                    ns = new NumberingState(shortName);
+                    prefixNumberingMap[type] = ns;
+                    return ns;
                 }
 
                 return defaultNS;
-            }
-
-            private LibraryCustomization GetLibraryCustomization(ClassNode classNode)
-            {
-                if (pathManager == null || classNode.ExternLib == null)
-                    return null;
-
-                LibraryCustomization libCustomization = null;
-                if (libCustomizationMap.TryGetValue(classNode.ExternLib, out libCustomization))
-                    return libCustomization;
-
-                libCustomization = LibraryCustomizationServices.GetForAssembly(classNode.ExternLib, pathManager);
-                if (libCustomization != null)
-                    libCustomizationMap[classNode.ExternLib] = libCustomization;
-
-                return libCustomization;
-            }
-        
-            private string GetShortName(ClassNode classNode)
-            {
-                string shortName = string.Empty;
-                var customization = GetLibraryCustomization(classNode);
-
-                while (classNode != null)
-                {
-                    if (customization != null)
-                    {
-                        shortName = customization.GetShortName(classNode.name);
-                        if (!String.IsNullOrEmpty(shortName))
-                            break;
-                    }
-                    
-                    if (classNode.ClassAttributes != null)
-                    {
-                        shortName = classNode.ClassAttributes.PreferredShortName;
-                        if (!String.IsNullOrEmpty(shortName))
-                            break;
-                    }
-
-                    if (classNode.baseList.Any())
-                    {
-                        var baseIndex = classNode.baseList[0];
-                        classNode = core.ClassTable.ClassNodes[baseIndex];
-                    }
-                    else
-                    {
-                        classNode = null;
-                    }
-                }
-
-                return shortName;
             }
         }
 
@@ -1168,17 +1191,17 @@ namespace Dynamo.Engine
         ///    order in the final code block node.
         /// </summary>
         /// <param name="core">Library core</param>
-        /// <param name="pathManager">Path manager</param>
         /// <param name="astBuilder">Ast builder</param>
         /// <param name="workspaceNodes">The whole workspace nodes</param>
         /// <param name="nodes">Selected node that can be converted to a single code block node</param>
+        /// <param name="namingProvider"></param>
         /// <returns></returns>
         internal static NodeToCodeResult NodeToCode(
             ProtoCore.Core core,
-            IPathManager pathManager,
             AstBuilder astBuilder, 
             IEnumerable<NodeModel> workspaceNodes,
-            IEnumerable<NodeModel> nodes)
+            IEnumerable<NodeModel> nodes,
+            INodeToCodeNamingProvider namingProvider)
         {
             // The basic worflow is:
             //   1. Compile each node to get its cde in AST format
@@ -1269,7 +1292,7 @@ namespace Dynamo.Engine
             #endregion
 
             #region Step 4 Generate short name
-            var nameGenerator = new ShortNameGenerator(core, pathManager);
+            var nameGenerator = new ShortNameGenerator(core, namingProvider);
 
             // temporary variables are double mapped.
             foreach (var key in outputMap.Keys.ToList())
