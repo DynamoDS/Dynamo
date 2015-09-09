@@ -19,6 +19,7 @@ using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
 using ProtoCore.Utils;
+using Dynamo.Engine.NodeToCode;
 
 namespace Dynamo.Engine
 {
@@ -603,7 +604,7 @@ namespace Dynamo.Engine
 
         #region Node2Code
 
-        internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes, INodeToCodeNamingProvider namingProvider = null)
+        internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes, INamingProvider namingProvider = null)
         {
             return NodeToCodeUtils.NodeToCode(libraryServices.LibraryManagementCore, astBuilder, graph, nodes, namingProvider);
         }

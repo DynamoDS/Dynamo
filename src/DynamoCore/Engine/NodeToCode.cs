@@ -14,13 +14,13 @@ using Dynamo.Core;
 using ProtoCore.Namespace;
 using Dynamo.Interfaces;
 
-namespace Dynamo.Engine
+namespace Dynamo.Engine.NodeToCode
 {
     /// <summary>
     /// Node to code will create some variables, and if it is able to know the
     /// type of expression, it could give a more meaningful variable prefix. 
     /// </summary>
-    public interface INodeToCodeNamingProvider
+    public interface INamingProvider
     {
         /// <summary>
         /// Get a name for specified type. This name will be used as the prefix
@@ -29,21 +29,21 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        string GetVariablePrefix(ProtoCore.Type type);
+        string GetTypeDependentName(ProtoCore.Type type);
     }
 
-    internal class NodeToCodeNamingProvider : INodeToCodeNamingProvider 
+    internal class NamingProvider : INamingProvider 
     {
         private ProtoCore.Core core;
         private ILibraryCustomizationServices libCustomizationServices;
 
-        public NodeToCodeNamingProvider(ProtoCore.Core core, ILibraryCustomizationServices libServices)
+        public NamingProvider(ProtoCore.Core core, ILibraryCustomizationServices libServices)
         {
             this.core = core;
             this.libCustomizationServices = libServices;
         }
 
-        public string GetVariablePrefix(ProtoCore.Type type)
+        public string GetTypeDependentName(ProtoCore.Type type)
         {
             string prefix = String.Empty;
             if (type.UID >= 0 && type.UID < core.ClassTable.ClassNodes.Count())
@@ -598,11 +598,11 @@ namespace Dynamo.Engine
         private class ShortNameGenerator
         {
             private ProtoCore.Core core;
-            private INodeToCodeNamingProvider namingProvider;
+            private INamingProvider namingProvider;
             private Dictionary<ProtoCore.Type, NumberingState> prefixNumberingMap = new Dictionary<ProtoCore.Type, NumberingState>();
             private NumberingState defaultNS = new NumberingState(AstBuilder.StringConstants.ShortVarPrefix);
 
-            public ShortNameGenerator(ProtoCore.Core core, INodeToCodeNamingProvider namingProvider)
+            public ShortNameGenerator(ProtoCore.Core core, INamingProvider namingProvider)
             {
                 this.core = core;
                 this.namingProvider = namingProvider;
@@ -624,7 +624,7 @@ namespace Dynamo.Engine
                 var shortName = string.Empty;
 
                 if (namingProvider != null)
-                    namingProvider.GetVariablePrefix(type);
+                    namingProvider.GetTypeDependentName(type);
 
                 if (!string.IsNullOrEmpty(shortName)) 
                 {
@@ -1201,7 +1201,7 @@ namespace Dynamo.Engine
             AstBuilder astBuilder, 
             IEnumerable<NodeModel> workspaceNodes,
             IEnumerable<NodeModel> nodes,
-            INodeToCodeNamingProvider namingProvider)
+            INamingProvider namingProvider)
         {
             // The basic worflow is:
             //   1. Compile each node to get its cde in AST format

@@ -13,6 +13,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.Reflection;
 using System.Threading;
 using System.Globalization;
+using Dynamo.Engine.NodeToCode;
 
 
 namespace Dynamo.Tests
