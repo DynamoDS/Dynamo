@@ -684,26 +684,6 @@ namespace ProtoTestFx.TD
             }
         }
 
-        public void VerifyReferenceCount(string dsVariable, int referencCount)
-        {
-            try
-            {
-                StackValue sv = testMirror.GetRawFirstValue(dsVariable);
-
-                if (!sv.IsArray && !sv.IsPointer)
-                {
-                    if (referencCount != 0)
-                    {
-                        Assert.Fail(String.Format("\t{0} is not a heap element, it doesn't sense to verify its reference count. Should always be 0", dsVariable));
-                    }
-                }
-            }
-            catch (NotImplementedException)
-            {
-                Assert.Fail("\tFailed to get the value of variable " + dsVariable);
-            }
-        }
-
         public static void Verify(ExecutionMirror mirror, string dsVariable, object expectedValue, int startBlock = 0)
         {
             try
