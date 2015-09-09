@@ -7,19 +7,19 @@ using System.Collections.Generic;
 
 namespace DSCoreNodesUI
 {
-    [NodeName("Number Range")]
+    [NodeName("Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("NumberRangeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
-    [NodeSearchTags("NumberRangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("RangeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("RangeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
-    public class NumberRange : NodeModel
+    public class Range : NodeModel
     {
-        public NumberRange()
+        public Range()
         {
-            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
-            InPortData.Add(new PortData("end", Resources.NumberRangePortDataEndToolTip));
-            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
-            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
+            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
+            InPortData.Add(new PortData("end", Resources.RangePortDataEndToolTip));
+            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
 
             RegisterAllPorts();
 
@@ -58,10 +58,10 @@ namespace DSCoreNodesUI
     {
         public NumberSeq()
         {
-            InPortData.Add(new PortData("start", Resources.NumberRangePortDataStartToolTip));
-            InPortData.Add(new PortData("amount", Resources.NumberRangePortDataAmountToolTip));
-            InPortData.Add(new PortData("step", Resources.NumberRangePortDataStepToolTip));
-            OutPortData.Add(new PortData("seq", Resources.NumberRangePortDataSeqToolTip));
+            InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
+            InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip));
+            InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip));
+            OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
 
             RegisterAllPorts();
 

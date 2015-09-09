@@ -1047,10 +1047,12 @@ namespace ProtoCore.Lang
                                                    StackValue svOp,
                                                    StackValue svHasStep,
                                                    StackValue svHasAmountOp,
-                                                   ProtoCore.RuntimeCore runtimeCore)
+                                                   RuntimeCore runtimeCore)
         {
-
-            if (!svStart.IsNumeric || !svEnd.IsNumeric)
+            // If start parameter is not the same as end parameter, show warning.
+            if (!((svStart.IsNumeric && svEnd.IsNumeric)
+                  ||
+                  (svStart.IsString && svEnd.IsString)))
             {
                 runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
@@ -1094,53 +1096,71 @@ namespace ProtoCore.Lang
                 return StackValue.Null;
             }
 
-            double startValue = svStart.ToDouble().RawDoubleValue;
-            if (double.IsInfinity(startValue) || double.IsNaN(startValue))
-            {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments, 
-                    Resources.kInvalidArgumentsInRangeExpression);
-                return StackValue.Null;
-            }
-            decimal start = new decimal(startValue);
+            StackValue[] range = null;
 
-            double endValue = svEnd.ToDouble().RawDoubleValue;
-            if (double.IsInfinity(endValue) || double.IsNaN(endValue))
+            if (svStart.IsNumeric)
             {
-                runtimeCore.RuntimeStatus.LogWarning(
-                    WarningID.kInvalidArguments, 
-                    Resources.kInvalidArgumentsInRangeExpression);
-                return StackValue.Null;
+                range = GenerateNumericRange(
+                    svStart,
+                    svEnd,
+                    svStep,
+                    svOp,
+                    hasStep,
+                    hasAmountOp,
+                    runtimeCore);
             }
-            decimal end = new decimal(endValue);
-
-            if (svStep.IsDouble)
+            else
             {
-                double stepValue = svStep.RawDoubleValue;
-                if (double.IsInfinity(stepValue) || double.IsNaN(stepValue))
+                if (svStart.IsString)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(
-                        WarningID.kInvalidArguments, 
-                        Resources.kInvalidArgumentsInRangeExpression);
-                    return StackValue.Null;
+                    range = GenerateAlphabetRange(
+                    svStart,
+                    svEnd,
+                    svStep,                   
+                    runtimeCore);
                 }
             }
- 
+
+            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
+        }
+
+        private static StackValue[] GenerateNumericRange(StackValue svStart,
+                                                         StackValue svEnd,
+                                                         StackValue svStep,
+                                                         StackValue svOp,
+                                                         bool hasStep,
+                                                         bool hasAmountOp,
+                                                         RuntimeCore runtimeCore)
+        {
+            double startValue = svStart.ToDouble().RawDoubleValue;
+            double endValue = svEnd.ToDouble().RawDoubleValue;
+
+            if (double.IsInfinity(startValue) || double.IsNaN(startValue) ||
+                double.IsInfinity(endValue) || double.IsNaN(endValue) ||
+                svStep.IsDouble && (double.IsInfinity(svStep.RawDoubleValue) || double.IsNaN(svStep.RawDoubleValue)))
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            decimal start = new decimal(startValue);
+            decimal end = new decimal(endValue);
             bool isIntRange = svStart.IsInteger && svEnd.IsInteger;
 
-            StackValue[] range = null;
             if (hasAmountOp)
             {
                 long amount = svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
                     runtimeCore.RuntimeStatus.LogWarning(
-                       WarningID.kInvalidArguments, 
+                       WarningID.kInvalidArguments,
                        Resources.kInvalidAmountInRangeExpression);
-                   return StackValue.Null;
+                    return null;
                 }
                 decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
-                range = GenerateRangeByAmount(start, amount, stepsize, isIntRange);
+                return GenerateRangeByAmount(start, amount, stepsize, isIntRange);
             }
             else
             {
@@ -1155,7 +1175,7 @@ namespace ProtoCore.Lang
                                 isIntRange = isIntRange && (svStep.IsInteger);
                             }
 
-                            range = GenerateRangeByStepSize(start, end, stepsize, isIntRange);
+                            return GenerateRangeByStepSize(start, end, stepsize, isIntRange);
                             break;
                         }
                     case (int)ProtoCore.DSASM.RangeStepOperator.num:
@@ -1163,7 +1183,7 @@ namespace ProtoCore.Lang
                             decimal stepnum = new decimal(Math.Round(svStep.IsDouble ? svStep.RawDoubleValue : svStep.RawIntValue));
                             if (stepnum > 0)
                             {
-                                range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                                return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
                             }
                             break;
                         }
@@ -1190,7 +1210,7 @@ namespace ProtoCore.Lang
                                         stepnum = capprox < fapprox ? cstepnum + 1 : fstepnum + 1;
                                     }
                                 }
-                                range = GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
+                                return GenerateRangeByStepNumber(start, end, stepnum, isIntRange);
                             }
                             break;
                         }
@@ -1200,7 +1220,61 @@ namespace ProtoCore.Lang
                         }
                 }
             }
-            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range);
+
+            return null;
+        }
+
+
+        private static StackValue[] GenerateAlphabetRange(StackValue svStart, StackValue svEnd, StackValue svStep, RuntimeCore runtimeCore)
+        {
+            if (!svStart.IsString || !svEnd.IsString || !svStep.IsInteger)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            var startValue = runtimeCore.Heap.ToHeapObject<DSString>(svStart).Value;
+            var endValue = runtimeCore.Heap.ToHeapObject<DSString>(svEnd).Value;
+
+            // Start and end values can be just alphabet letters. So their length can't be more than 1.
+            if (startValue.Length != 1 || endValue.Length != 1)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            var startLetter = startValue.ToCharArray().First();
+            var endLetter = endValue.ToCharArray().First();
+            int step = Convert.ToInt32(svStep.RawIntValue);
+
+            // Alphabet sequence can be made just from letters (that are not unicode).
+            if (!Char.IsLetter(startLetter) || !Char.IsLetter(endLetter) || step <= 0 ||
+                startLetter > 255 || endLetter > 255)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(
+                    WarningID.kInvalidArguments,
+                    Resources.kInvalidArgumentsInRangeExpression);
+                return null;
+            }
+
+            StackValue[] letters;
+            int stepOffset = (startLetter < endLetter) ? 1 : -1;
+            int stepnum = (int)Math.Abs(Math.Truncate((endLetter - startLetter) / (double)step)) + 1;
+
+            letters = Enumerable.Range(1, stepnum)
+                // Generate arithmetic progression.
+                 .Select(x => startLetter + (x - 1) * step * stepOffset)
+                // Take just letters.
+                 .Where(x => Char.IsLetter((char)x))
+                // Create stack values.
+                 .Select(x => StackValue.BuildString(Char.ToString((char)x), runtimeCore.Heap))
+                 .ToArray();
+
+            return letters;
         }
     }
     internal class ArrayUtilsForBuiltIns
