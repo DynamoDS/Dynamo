@@ -104,14 +104,6 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        internal bool IsEvaluationPending
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
         public virtual void OnEvaluationStarted(EvaluationStartedEventArgs e)
         {
