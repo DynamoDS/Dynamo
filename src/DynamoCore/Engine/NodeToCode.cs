@@ -581,40 +581,32 @@ namespace Dynamo.Engine
             private string GetShortName(ClassNode classNode)
             {
                 string shortName = string.Empty;
-
                 var customization = GetLibraryCustomization(classNode);
-                if (customization != null)
-                {
-                    shortName = customization.GetShortName(classNode.name);
-                    if (!String.IsNullOrEmpty(shortName))
-                        return shortName;
-                }
 
-                if (classNode.ClassAttributes != null)
+                while (classNode != null)
                 {
-                    shortName = classNode.ClassAttributes.PreferredShortName;
-                    if (!String.IsNullOrEmpty(shortName))
-                        return shortName;
-                }
-
-                // Otherwise check if its base class provides a short name.
-                while (classNode.baseList.Any())
-                {
-                    var baseIndex = classNode.baseList[0];
-                    classNode = core.ClassTable.ClassNodes[baseIndex];
-
                     if (customization != null)
                     {
                         shortName = customization.GetShortName(classNode.name);
                         if (!String.IsNullOrEmpty(shortName))
-                            return shortName;
+                            break;
                     }
-
+                    
                     if (classNode.ClassAttributes != null)
                     {
                         shortName = classNode.ClassAttributes.PreferredShortName;
                         if (!String.IsNullOrEmpty(shortName))
-                            return shortName;
+                            break;
+                    }
+
+                    if (classNode.baseList.Any())
+                    {
+                        var baseIndex = classNode.baseList[0];
+                        classNode = core.ClassTable.ClassNodes[baseIndex];
+                    }
+                    else
+                    {
+                        classNode = null;
                     }
                 }
 
