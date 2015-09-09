@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dynamo.Core.Threading;
 using Dynamo.Utilities;
 
 using ProtoCore.AST.AssociativeAST;
@@ -123,11 +124,23 @@ namespace Dynamo.Models
         #endregion
     }
 
+    public class EvaluationStartedEventArgs : EventArgs
+    {
+        public IHomeWorkspaceModel HomeWorkspaceModel { get; private set; }
+
+        public EvaluationStartedEventArgs(IHomeWorkspaceModel model)
+        {
+            this.HomeWorkspaceModel = model;
+        }
+    }
+
     public class EvaluationCompletedEventArgs : EventArgs
     {
         private readonly IOption<Exception> error;
 
         public bool EvaluationTookPlace { get; private set; }
+        
+        public long EvaluationTimeElapsed { get; }
 
         public IHomeWorkspaceModel HomeWorkspaceModel { get; private set; }
 
@@ -150,9 +163,10 @@ namespace Dynamo.Models
             }
         }
 
-        public EvaluationCompletedEventArgs(IHomeWorkspaceModel model, bool evaluationTookPlace, Exception errorMsg = null)
+        public EvaluationCompletedEventArgs(IHomeWorkspaceModel model, bool evaluationTookPlace, long evaluationTimeElapsed, Exception errorMsg = null)
         {
             this.HomeWorkspaceModel = model;
+            this.EvaluationTimeElapsed = evaluationTimeElapsed;
 
             EvaluationTookPlace = evaluationTookPlace;
 

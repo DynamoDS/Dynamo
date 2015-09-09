@@ -112,7 +112,7 @@ namespace Dynamo.Models
 {
     /// <summary>
     /// The core application model for Dynamo. Amongst various responsibilities, DynamoModel 
-    /// manages creation and removal of Workspaces.
+    /// primarily manages creation and removal of Workspaces.
     /// </summary>
     public partial class DynamoModel : IDynamoModel, IDisposable, ITraceReconciliationProcessor
     {
@@ -292,12 +292,6 @@ namespace Dynamo.Models
         public readonly DynamoLogger Logger;
 
         /// <summary>
-        ///     The Dynamo Scheduler, handles scheduling of asynchronous tasks on different
-        ///     threads.
-        /// </summary>
-        //public DynamoScheduler Scheduler { get; private set; }
-
-        /// <summary>
         ///     The Dynamo Node Library, complete with Search.
         /// </summary>
         public readonly NodeSearchModel SearchModel;
@@ -447,14 +441,6 @@ namespace Dynamo.Models
 
             DynamoSelection.DestroyInstance();
             InstrumentationLogger.End();
-
-            // todo: magn-8237
-            //if (Scheduler != null)
-            //{
-            //    Scheduler.Shutdown();
-            //    Scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
-            //    Scheduler = null;
-            //}
         }
 
         protected virtual void PostShutdownCore(bool shutdownHost)
@@ -773,45 +759,7 @@ namespace Dynamo.Models
             // Load all functions defined in that library.
             AddZeroTouchNodesToSearch(LibraryServices.GetFunctionGroups(newLibrary));
         }
-
-        /// <summary>
-        /// This event handler is invoked when DynamoScheduler changes the state 
-        /// of an AsyncTask object. See TaskStateChangedEventArgs.State for more 
-        /// details of these state changes.
-        /// </summary>
-        /// <param name="sender">The scheduler which raised the event.</param>
-        /// <param name="e">Task state changed event argument.</param>
-        /// 
-        private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
-        {
-            switch (e.CurrentState)
-            {
-                case TaskStateChangedEventArgs.State.ExecutionStarting:
-                    if (e.Task is UpdateGraphAsyncTask)
-                        ExecutionEvents.OnGraphPreExecution();
-                    break;
-
-                case TaskStateChangedEventArgs.State.ExecutionCompleted:
-                    if (e.Task is UpdateGraphAsyncTask)
-                    {
-                        // Record execution time for update graph task.
-                        long start = e.Task.ExecutionStartTime.TickCount;
-                        long end = e.Task.ExecutionEndTime.TickCount;
-                        var executionTimeSpan = new TimeSpan(end - start);
-
-                        InstrumentationLogger.LogAnonymousTimedEvent(
-                            "Perf",
-                            e.Task.GetType().Name,
-                            executionTimeSpan);
-
-                        Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
-
-                        ExecutionEvents.OnGraphPostExecution();
-                    }
-                    break;
-            }
-        }
-
+        
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -1250,11 +1198,8 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-            
-            var scheduler = SchedulerFactory.Build();
 
-            //magn-8237
-            //scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+            var scheduler = SchedulerFactory.Build();
 
             var newWorkspace = new HomeWorkspaceModel(
                 new EngineController(LibraryServices, geometryFactoryPath, false),
@@ -1272,7 +1217,9 @@ namespace Dynamo.Models
                );
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
+            {
                 RegisterCustomNodeDefinitionWithEngine(def);
+            }
 
             RegisterHomeWorkspace(newWorkspace);
 
@@ -1283,11 +1230,13 @@ namespace Dynamo.Models
         private void RegisterHomeWorkspace(HomeWorkspaceModel newWorkspace)
         {
             newWorkspace.EvaluationCompleted += OnEvaluationCompleted;
+            newWorkspace.EvaluationStarted += OnEvaluationStarted;
             newWorkspace.RefreshCompleted += OnRefreshCompleted;
 
             newWorkspace.Disposed += () =>
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
+                newWorkspace.EvaluationStarted -= OnEvaluationStarted;
                 newWorkspace.RefreshCompleted -= OnRefreshCompleted;
             };
         }
@@ -1488,20 +1437,17 @@ namespace Dynamo.Models
         /// <api_stability>1</api_stability>
         public void AddHomeWorkspace()
         {
-            var scheduler = SchedulerFactory.Build();
-
-            //magn-8237
-            //scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
-
             var ws = new HomeWorkspaceModel(
-                new EngineController(this.LibraryServices, geometryFactoryPath, DebugSettings.VerboseLogging), 
-                scheduler,
+                new EngineController(this.LibraryServices, geometryFactoryPath, DebugSettings.VerboseLogging),
+                SchedulerFactory.Build(),
                 NodeFactory,
                 DebugSettings.VerboseLogging,
                 IsTestMode,string.Empty);
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
+            {
                 RegisterCustomNodeDefinitionWithEngine(def);
+            }
 
             RegisterHomeWorkspace(ws);
             AddWorkspace(ws);

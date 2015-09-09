@@ -26,7 +26,7 @@ namespace Dynamo.Models
     public interface IHomeWorkspaceModel : IWorkspaceModel, IEngineControllerManager
     {
         IScheduler Scheduler { get; }
-        event EventHandler<EventArgs> EvaluationStarted;
+        event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
         event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         event EventHandler<EvaluationCompletedEventArgs> RefreshCompleted;
     }
@@ -48,8 +48,8 @@ namespace Dynamo.Models
         /// <summary>
         /// The Scheduler for this particular 
         /// </summary>
-        private readonly DynamoScheduler scheduler;
-        public IScheduler Scheduler { get { return scheduler; } }
+        private DynamoScheduler scheduler;
+        public IScheduler Scheduler { get { return scheduler;  } }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
@@ -112,8 +112,8 @@ namespace Dynamo.Models
             }
         }
 
-        public event EventHandler<EventArgs> EvaluationStarted;
-        public virtual void OnEvaluationStarted(EventArgs e)
+        public event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(EvaluationStartedEventArgs e)
         {
             this.HasRunWithoutCrash = false;
 
@@ -197,7 +197,7 @@ namespace Dynamo.Models
             this.scheduler = scheduler;
             this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
-            EngineController = engine;
+            this.EngineController = engine;
             this.EngineController.MessageLogged += Log;
 
             if (this.RunSettings.RunType == RunType.Periodic)
@@ -230,6 +230,13 @@ namespace Dynamo.Models
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
                 EngineController.Dispose();
+                EngineController = null;
+            }
+
+            if (scheduler != null)
+            {
+                scheduler.Shutdown();
+                scheduler = null;
             }
 
             if (pulseMaker == null) return;
@@ -448,8 +455,8 @@ namespace Dynamo.Models
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(this, true)
-                : new EvaluationCompletedEventArgs(this, true, task.Exception);
+                ? new EvaluationCompletedEventArgs(this, true, task.ExecutionEndTime.TickCount - task.ExecutionStartTime.TickCount)
+                : new EvaluationCompletedEventArgs(this, true, task.ExecutionEndTime.TickCount - task.ExecutionStartTime.TickCount, task.Exception);
 
             EvaluationCount ++;
 
@@ -520,13 +527,13 @@ namespace Dynamo.Models
                 // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
-                OnEvaluationStarted(EventArgs.Empty);
+                OnEvaluationStarted(new EvaluationStartedEventArgs(this));
                 scheduler.ScheduleForExecution(task);
             }
             else
             {
                 // Notify handlers that evaluation did not take place.
-                var e = new EvaluationCompletedEventArgs(this, false);
+                var e = new EvaluationCompletedEventArgs(this, false, 0);
                 OnEvaluationCompleted(e);
             }
         }
