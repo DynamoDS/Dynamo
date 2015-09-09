@@ -1223,11 +1223,6 @@ namespace ProtoFFI
             get { return attributes; }
         }
 
-        public string PreferredShortName
-        {
-            get; private set;
-        }
-
         public FFIClassAttributes(Type type)
         {
             if (type == null)
