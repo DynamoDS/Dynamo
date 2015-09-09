@@ -543,6 +543,37 @@ namespace DSCore
             return finalList;
         }
 
+        public static IList ChopByLengths(IList list, IList lengths)
+        {
+            var finalList = new ArrayList();
+            var currList = new ArrayList();
+            int index = 0;
+            int lenghtIndex = 0;
+
+            foreach (object obj in list)
+            {
+                if (index == ((int)lengths[lenghtIndex]))
+                {
+                    finalList.Add(currList);
+                    currList = new ArrayList();
+                    lenghtIndex++;
+                    if (lenghtIndex >= lengths.Count)
+                    {
+                        break;
+                    }
+                    index = 0;
+                }
+
+                currList.Add(obj);
+                index++;
+            }
+
+            if (currList.Count > 0)
+                finalList.Add(currList);
+
+            return finalList;
+        }
+
         /// <summary>
         ///     List elements along each diagonal in the matrix from the top left to the lower right.
         /// </summary>
