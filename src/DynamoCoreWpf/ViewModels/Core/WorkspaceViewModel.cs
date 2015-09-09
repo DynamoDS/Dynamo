@@ -854,7 +854,15 @@ namespace Dynamo.ViewModels
         private void Close(object parameters)
         {
             if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+            {
                 DynamoViewModel.Model.RemoveWorkspace(Model);
+
+                // if there are no remaining home workspaces, add a new one
+                if (!DynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().Any())
+                {
+                    DynamoViewModel.Model.AddHomeWorkspace();
+                }
+            }
         }
 
         private static bool CanClose(object parameters)

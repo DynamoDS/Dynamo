@@ -1407,7 +1407,7 @@ namespace Dynamo.Models
         /// <api_stability>1</api_stability>
         public void AddHomeWorkspace()
         {
-            var defaultWorkspace = new HomeWorkspaceModel(
+            var ws = new HomeWorkspaceModel(
                 new EngineController(this.LibraryServices, geometryFactoryPath, DebugSettings.VerboseLogging), 
                 Scheduler,
                 NodeFactory,
@@ -1417,9 +1417,9 @@ namespace Dynamo.Models
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
 
-            RegisterHomeWorkspace(defaultWorkspace);
-            AddWorkspace(defaultWorkspace);
-            CurrentWorkspace = defaultWorkspace;
+            RegisterHomeWorkspace(ws);
+            AddWorkspace(ws);
+            CurrentWorkspace = ws;
         }
 
         /// <summary>
