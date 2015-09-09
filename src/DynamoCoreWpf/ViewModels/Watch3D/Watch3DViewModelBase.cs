@@ -117,7 +117,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 // todo: magn-8237 the home workspace should be private readonly
                 var ws = this.CurrentSpaceViewModel.Model as IHomeWorkspaceModel;
-                return ws?.EngineController;
+                return ws != null ? ws.EngineController : null;
             }
         }
 
