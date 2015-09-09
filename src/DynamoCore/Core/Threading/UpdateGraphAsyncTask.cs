@@ -62,7 +62,6 @@ namespace Dynamo.Core.Threading
                 ModifiedNodes = ComputeModifiedNodes(workspace);
                 graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
 
-                Debug.Assert(graphSyncData != null);
                 // We clear dirty flags before executing the task. If we clear
                 // flags after the execution of task, for example in
                 // AsyncTask.Completed or in HandleTaskCompletionCore(), as both
@@ -77,7 +76,7 @@ namespace Dynamo.Core.Threading
                     node.ClearDirtyFlag();
                 }
 
-                return true;
+                return graphSyncData != null;
             }
             catch (Exception e)
             {
@@ -135,8 +134,13 @@ namespace Dynamo.Core.Threading
             // will cotain this node; then CBN is modified and request a run,
             // ModifiedNodes would contain both CBN and the node, and previous
             // task will be thrown away.
-            return other.graphSyncData.NodeIDs.All(graphSyncData.NodeIDs.Contains) && 
-                   other.ModifiedNodes.All(ModifiedNodes.Contains); 
+            if (!other.ModifiedNodes.All(ModifiedNodes.Contains))
+                return false;
+
+            if (graphSyncData == null)
+                return other.graphSyncData == null;
+            else
+                return other.graphSyncData == null ? true : other.graphSyncData.NodeIDs.All(graphSyncData.NodeIDs.Contains);
         }
 
         protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
