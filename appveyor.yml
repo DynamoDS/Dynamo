@@ -5,14 +5,14 @@ platform: Any CPU
 configuration: Release
 
 environment:	
-	- dynamo_solution	: src/Dynamo.All.2013.sln
-	- xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
+ dynamo_solution: src/Dynamo.All.2013.sln
+ xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
 
 build_script:
-	- msbuild %dynamo_solution%
-	- msbuild %xmlDocs_solution%
+ -msbuild %dynamo_solution%
+ -msbuild %xmlDocs_solution%
 
 after_build:
-	ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1 
+ ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1 
   
 test: off
