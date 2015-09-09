@@ -258,10 +258,13 @@
                 <TextBlock Grid.Column="1"
                            Name="memberName"
                            HorizontalAlignment="Left"
-                           Text="{Binding UserFriendlyName}"
                            VerticalAlignment="Top"
-                           Foreground="{StaticResource CommonSidebarTextColor}"
-                           FontSize="13" />
+                           FontSize="13">
+                    <Run Text="{Binding Name, Mode=OneWay}"
+                         Foreground="{StaticResource CommonSidebarTextColor}" />
+                    <Run Text="{Binding Parameters, Mode=OneWay}"
+                         Foreground="#808285" />
+                </TextBlock>
             </Grid>
         </StackPanel>
     </DataTemplate>

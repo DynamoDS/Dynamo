@@ -4,6 +4,7 @@ using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using System.Text;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -23,12 +24,18 @@ namespace Dynamo.Search.SearchElements
         {
             this.functionDescriptor = functionDescriptor;
 
-            var displayName = functionDescriptor.UserFriendlyName;
+            Name = functionDescriptor.UserFriendlyName;
+            
             if (functionDescriptor.IsOverloaded)
-                displayName += "(" + string.Join(", ", functionDescriptor.Parameters) + ")";
+            {
+                var parameters = new StringBuilder();
+                parameters.Append("(");
+                parameters.Append(String.Join(", ", functionDescriptor.Parameters.Select(x => x.Name)));
+                parameters.Append(")");
 
-            Name = displayName;
-            UserFriendlyName = functionDescriptor.UserFriendlyName;
+                Parameters = parameters.ToString();
+            }
+            
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
