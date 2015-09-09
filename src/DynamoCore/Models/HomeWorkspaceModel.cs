@@ -25,6 +25,7 @@ namespace Dynamo.Models
 
     public interface IHomeWorkspaceModel : IWorkspaceModel, IEngineControllerManager
     {
+        IScheduler Scheduler { get; }
         event EventHandler<EventArgs> EvaluationStarted;
         event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         event EventHandler<EvaluationCompletedEventArgs> RefreshCompleted;
@@ -34,7 +35,6 @@ namespace Dynamo.Models
     {
         #region Class Data Members and Properties
 
-        private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
@@ -44,6 +44,12 @@ namespace Dynamo.Models
         /// The EngineController for this particular home workspace.
         /// </summary>
         public EngineController EngineController { get; private set; }
+
+        /// <summary>
+        /// The Scheduler for this particular 
+        /// </summary>
+        private readonly DynamoScheduler scheduler;
+        public IScheduler Scheduler { get { return scheduler; } }
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".

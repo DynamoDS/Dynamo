@@ -37,10 +37,82 @@ using Utils = Dynamo.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 
+namespace Dynamo.Core.Threading
+{
+    /// <summary>
+    /// An entity that creates new schedulers. Typically invoked on the
+    /// creation of a new home workspace.
+    /// </summary>
+    public interface ISchedulerFactory
+    {
+        DynamoScheduler Build();
+    }
+    /// <summary>
+    /// A SchedulerFactory that creates a new scheduler on each invocation of 
+    /// NewScheduler also passing it a new thread.
+    /// </summary>
+    public class MultiThreadedSchedulerFactory : ISchedulerFactory
+    {
+        private readonly bool isTestMode;
+
+        /// <summary>
+        /// Create a new MultiSchedulerFactory.
+        /// </summary>
+        /// <param name="isTestMode"></param>
+        public MultiThreadedSchedulerFactory(bool isTestMode = false)
+        {
+            this.isTestMode = isTestMode;
+        }
+
+        /// <summary>
+        /// Create a completely new Scheduler for use with a Workspace along with a new
+        /// DynamoSchedulerThread
+        /// </summary>
+        /// <returns></returns>
+        public DynamoScheduler Build()
+        {
+            return new DynamoScheduler(new DynamoSchedulerThread(), this.isTestMode);
+        }
+    }
+
+    /// <summary>
+    /// A SchedulerFactory that produces Schedulers that all use
+    /// the same thread
+    /// </summary>
+    public class SingleThreadedSchedulerFactory : ISchedulerFactory
+    {
+        private readonly bool isTestMode;
+        private readonly ISchedulerThread thread;
+
+        /// <summary>
+        /// Create a new SingleThreadedSchedulerFactory that reuses the thread passed
+        /// as argument.
+        /// </summary>
+        /// <param name="thread">The scheduler thread to be used</param>
+        /// <param name="isTestMode"></param>
+        public SingleThreadedSchedulerFactory(ISchedulerThread thread, bool isTestMode = false)
+        {
+            this.isTestMode = isTestMode;
+            this.thread = thread;
+        }
+
+        /// <summary>
+        /// Create a new Scheduler using the same thread
+        /// </summary>
+        /// <returns></returns>
+        public DynamoScheduler Build()
+        {
+            return new DynamoScheduler(thread, this.isTestMode);
+        }
+    }
+
+}
+
 namespace Dynamo.Models
 {
     /// <summary>
-    /// The core model of Dynamo.
+    /// The core application model for Dynamo. Amongst various responsibilities, DynamoModel 
+    /// manages creation and removal of Workspaces.
     /// </summary>
     public partial class DynamoModel : IDynamoModel, IDisposable, ITraceReconciliationProcessor
     {
@@ -223,7 +295,7 @@ namespace Dynamo.Models
         ///     The Dynamo Scheduler, handles scheduling of asynchronous tasks on different
         ///     threads.
         /// </summary>
-        public DynamoScheduler Scheduler { get; private set; }
+        //public DynamoScheduler Scheduler { get; private set; }
 
         /// <summary>
         ///     The Dynamo Node Library, complete with Search.
@@ -256,6 +328,11 @@ namespace Dynamo.Models
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
         /// </summary>
         public readonly NodeFactory NodeFactory;
+
+        /// <summary>
+        ///     A Scheduler Factory, used for creating new Schedulers for use in workspaces
+        /// </summary>
+        public readonly ISchedulerFactory SchedulerFactory;
 
         /// <summary>
         ///     Migration Manager, upgrades old Dynamo file formats to the current version.
@@ -371,12 +448,13 @@ namespace Dynamo.Models
             DynamoSelection.DestroyInstance();
             InstrumentationLogger.End();
 
-            if (Scheduler != null)
-            {
-                Scheduler.Shutdown();
-                Scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
-                Scheduler = null;
-            }
+            // todo: magn-8237
+            //if (Scheduler != null)
+            //{
+            //    Scheduler.Shutdown();
+            //    Scheduler.TaskStateChanged -= OnAsyncTaskStateChanged;
+            //    Scheduler = null;
+            //}
         }
 
         protected virtual void PostShutdownCore(bool shutdownHost)
@@ -391,7 +469,7 @@ namespace Dynamo.Models
             IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
             IUpdateManager UpdateManager { get; set; }
-            ISchedulerThread SchedulerThread { get; set; }
+            ISchedulerFactory SchedulerFactory { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
             IEnumerable<IExtension> Extensions { get; set; }
@@ -408,7 +486,7 @@ namespace Dynamo.Models
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
-            public ISchedulerThread SchedulerThread { get; set; }
+            public ISchedulerFactory SchedulerFactory { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public IEnumerable<IExtension> Extensions { get; set; }
@@ -465,9 +543,7 @@ namespace Dynamo.Models
             MigrationManager.MessageLogged += LogMessage;
             MigrationManager.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
-            Scheduler = new DynamoScheduler(thread, IsTestMode);
-            Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+            this.SchedulerFactory = config.SchedulerFactory ?? new MultiThreadedSchedulerFactory(IsTestMode);
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
@@ -1175,9 +1251,14 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
             
+            var scheduler = SchedulerFactory.Build();
+
+            //magn-8237
+            //scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+
             var newWorkspace = new HomeWorkspaceModel(
-                new EngineController(LibraryServices, geometryFactoryPath, false), 
-                Scheduler,
+                new EngineController(LibraryServices, geometryFactoryPath, false),
+                scheduler,
                 NodeFactory,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
@@ -1407,9 +1488,14 @@ namespace Dynamo.Models
         /// <api_stability>1</api_stability>
         public void AddHomeWorkspace()
         {
+            var scheduler = SchedulerFactory.Build();
+
+            //magn-8237
+            //scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+
             var ws = new HomeWorkspaceModel(
                 new EngineController(this.LibraryServices, geometryFactoryPath, DebugSettings.VerboseLogging), 
-                Scheduler,
+                scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
                 IsTestMode,string.Empty);

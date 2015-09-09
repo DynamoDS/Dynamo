@@ -22,9 +22,8 @@ namespace Dynamo.Wpf.Nodes
         #region Private fields
 
         private IdentifierNode astBeingWatched;
-
+        private IScheduler scheduler;
         private DynamoViewModel dynamoViewModel;
-
         private Watch watch;
         private SynchronizationContext syncContext;
         private WatchViewModel rootWatchViewModel;
@@ -34,6 +33,13 @@ namespace Dynamo.Wpf.Nodes
         public void CustomizeView(Watch nodeModel, NodeView nodeView)
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+
+            var ws = dynamoViewModel.Model.CurrentWorkspace as IHomeWorkspaceModel;
+            if (ws != null)
+            {
+                this.scheduler = ws.Scheduler;
+            }
+
             this.watch = nodeModel;
             this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
@@ -156,7 +162,8 @@ namespace Dynamo.Wpf.Nodes
                 return;
             }
 
-            var s = dynamoViewModel.Model.Scheduler;
+            var s = this.scheduler;
+            if (s == null) return;
 
             WatchViewModel wvm = null;
 

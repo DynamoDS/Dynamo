@@ -36,7 +36,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public Watch3DViewModelStartupParams(DynamoModel model, DynamoViewModel viewModel, string name)
         {
             Model = model;
-            Scheduler = model.Scheduler;
+            // TODO: magn-8237 send scheduler along with home workspace in the constructor
+            var ws = model.CurrentWorkspace as IHomeWorkspaceModel;
+            Scheduler = ws.Scheduler;
             Logger = model.Logger;
             Preferences = model.PreferenceSettings;
             RenderPackageFactory = viewModel.RenderPackageFactoryViewModel.Factory;

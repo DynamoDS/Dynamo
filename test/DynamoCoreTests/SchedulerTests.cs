@@ -268,7 +268,7 @@ namespace Dynamo.Tests
         private static int currentSerialNumber = 0;
         private readonly int serialNumber;
 
-        internal DynamoScheduler Scheduler { get; set; }
+        internal IScheduler Scheduler { get; set; }
         internal List<string> Results { get; set; }
 
         internal static void ResetSerialNumber()
@@ -904,7 +904,7 @@ namespace Dynamo.Tests
     /// Most AsyncTask derived classes require NodeModel, WorkspaceModel or 
     /// DynamoModel to work. For these cases, a DynamoModel is created to 
     /// facilitate the creation of such model classes. Note that however, in 
-    /// order to allow actual task scheduling in "DynamoModel.scheduler", 
+    /// order to allow actual task scheduling in "GetScheduler()", 
     /// "DynamoModel.IsTestMode" is set to "false".
     /// </summary>
     /// 
@@ -953,6 +953,12 @@ namespace Dynamo.Tests
             Assert.IsTrue(schedulerThread.Destroyed);
         }
 
+        public IScheduler GetScheduler()
+        {
+            // arbitrarily choose one of the workspaces from which to obtain a scheduler
+            return dynamoModel.Workspaces.OfType<IHomeWorkspaceModel>().First().Scheduler;
+        }
+
         [Test]
         public void TestTaskQueuePreProcessing00()
         {
@@ -989,7 +995,9 @@ namespace Dynamo.Tests
             // 
             schedulerThread.GetSchedulerToProcessTasks();
 
-            var scheduler = dynamoModel.Scheduler;
+            // arbitrarily choose one of the workspaces from which to obtain a scheduler
+            var scheduler = GetScheduler();
+
             foreach (var stubAsyncTask in tasksToSchedule)
             {
                 scheduler.ScheduleForExecution(stubAsyncTask);
@@ -1030,7 +1038,7 @@ namespace Dynamo.Tests
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal
             };
 
-            var scheduler = dynamoModel.Scheduler;
+            var scheduler = GetScheduler();
             foreach (var stubAsyncTask in tasksToSchedule)
             {
                 scheduler.ScheduleForExecution(stubAsyncTask);
@@ -1071,7 +1079,7 @@ namespace Dynamo.Tests
                 MakeSetTraceDataAsyncTask(),                        // Highest
             };
 
-            var scheduler = dynamoModel.Scheduler;
+            var scheduler = GetScheduler();
             foreach (var stubAsyncTask in tasksToSchedule)
             {
                 scheduler.ScheduleForExecution(stubAsyncTask);
@@ -1115,7 +1123,7 @@ namespace Dynamo.Tests
                 MakeSetTraceDataAsyncTask(),                        // Highest 6
             };
 
-            var scheduler = dynamoModel.Scheduler;
+            var scheduler = GetScheduler();
             foreach (var stubAsyncTask in tasksToSchedule)
             {
                 scheduler.ScheduleForExecution(stubAsyncTask);
@@ -1184,7 +1192,7 @@ namespace Dynamo.Tests
                 {
                     // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
-                    SchedulerThread = schedulerThread,
+                    SchedulerFactory = new SingleThreadedSchedulerFactory(schedulerThread),
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
@@ -1228,7 +1236,7 @@ namespace Dynamo.Tests
             var task = new FakeQueryMirrorDataAsyncTask(
                 new QueryMirrorDataParams()
                 {
-                    Scheduler = dynamoModel.Scheduler,
+                    Scheduler = GetScheduler(),
                     EngineController = dynamoModel.EngineController,
                     VariableName = variableName
                 });
@@ -1261,7 +1269,7 @@ namespace Dynamo.Tests
         {
             return new FakeAsyncTaskData()
             {
-                Scheduler = dynamoModel.Scheduler,
+                Scheduler = GetScheduler(),
                 Results = results
             };
         }

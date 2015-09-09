@@ -14,6 +14,7 @@ using Dynamo.UI;
 
 using DSCoreNodesUI;
 using Dynamo.Core.Threading;
+using Dynamo.Engine;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using ProtoCore.Mirror;
@@ -23,17 +24,25 @@ namespace Dynamo.Wpf.Nodes
 {
     public class ColorRangeNodeViewCustomization : INodeViewCustomization<ColorRange>
     {
-        private DynamoViewModel dynamoViewModel;
+        private IScheduler scheduler;
+        private EngineController engineController;
         private DispatcherSynchronizationContext syncContext;
         private ColorRange colorRangeNode;
-        private DynamoModel dynamoModel;
         private System.Windows.Controls.Image gradientImage;
         private ColorRange1D colorRange;
 
         public void CustomizeView(ColorRange model, NodeView nodeView)
         {
-            dynamoModel = nodeView.ViewModel.DynamoViewModel.Model;
-            dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            var dynamoModel = nodeView.ViewModel.DynamoViewModel.Model;
+            var currentWorkspace = dynamoModel.CurrentWorkspace as IHomeWorkspaceModel;
+
+            // if not a home workspace, we will not use the scheduler or enginecontroller
+            if (currentWorkspace != null)
+            {
+                this.scheduler = currentWorkspace.Scheduler;
+                this.engineController = currentWorkspace.EngineController;
+            }
+
             syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
             colorRangeNode = model;
 
@@ -53,12 +62,12 @@ namespace Dynamo.Wpf.Nodes
 
         private void UpdateColorRange()
         {
-            var s = dynamoViewModel.Model.Scheduler;
+            if (this.scheduler == null) return;
 
             // prevent data race by running on scheduler
-            var t = new DelegateBasedAsyncTask(s, () =>
+            var t = new DelegateBasedAsyncTask(this.scheduler, () =>
             {
-                colorRange = colorRangeNode.ComputeColorRange(dynamoModel.EngineController);
+                colorRange = colorRangeNode.ComputeColorRange(this.engineController);
             });
 
             // then update on the ui thread
@@ -68,7 +77,7 @@ namespace Dynamo.Wpf.Nodes
                 gradientImage.Source = bmp;
             }, syncContext);
 
-            s.ScheduleForExecution(t);
+            this.scheduler.ScheduleForExecution(t);
         }
 
         public void Dispose() {}

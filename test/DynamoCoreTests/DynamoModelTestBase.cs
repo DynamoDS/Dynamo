@@ -107,9 +107,18 @@ namespace Dynamo
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
         }
 
-        protected void EmptyScheduler()
+        protected void EmptyScheduler(IHomeWorkspaceModel homeWorkspace = null)
         {
-            while (CurrentDynamoModel.Scheduler.ProcessNextTask(false))
+            var ws = homeWorkspace ?? CurrentDynamoModel.CurrentWorkspace as IHomeWorkspaceModel;
+            if (ws == null)
+            {
+                throw new InvalidOperationException("Must call EmptyScheduler when a HomeWorkpsaceModel is active " 
+                    + "or by passing one explicitly");
+            }
+
+            var s = ws.Scheduler;
+
+            while (s.ProcessNextTask(false))
             {
 
             }
