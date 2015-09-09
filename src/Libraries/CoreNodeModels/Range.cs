@@ -59,7 +59,7 @@ namespace DSCoreNodesUI
         public NumberSeq()
         {
             InPortData.Add(new PortData("start", Resources.RangePortDataStartToolTip));
-            InPortData.Add(new PortData("amount", Resources.NumberRangePortDataAmountToolTip));
+            InPortData.Add(new PortData("amount", Resources.RangePortDataAmountToolTip));
             InPortData.Add(new PortData("step", Resources.RangePortDataStepToolTip));
             OutPortData.Add(new PortData("seq", Resources.RangePortDataSeqToolTip));
 
