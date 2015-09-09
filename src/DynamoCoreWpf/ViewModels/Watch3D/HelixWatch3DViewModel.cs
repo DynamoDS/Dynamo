@@ -40,8 +40,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     public class CameraData
     {
-        private readonly Vector3D defaultCameraLookDirection = new Vector3D(-10, -10, -10);
-        private readonly Point3D defaultCameraPosition = new Point3D(10, 15, 10);
+        
+        // Default camera position data. These values have been rounded
+        // to the nearest whole value.
+        // eyeX="-16.9655136013663" eyeY="24.341577725171" eyeZ="50.6494323150915" 
+        // lookX="12.4441040333119" lookY="-13.0110656299395" lookZ="-58.5449065206009" 
+        // upX="-0.0812375695793365" upY="0.920504853452448" upZ="0.3821927158638" />
+
+        private readonly Vector3D defaultCameraLookDirection = new Vector3D(12, -13, -58);
+        private readonly Point3D defaultCameraPosition = new Point3D(-17, 24, 50);
         private readonly Vector3D defaultCameraUpDirection = new Vector3D(0, 1, 0);
         private const double defaultNearPlaneDistance = 0.1;
         private const double defaultFarPlaneDistance = 10000000;
@@ -77,7 +84,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double nearPlaneDistanceFactor = 0.01;
         private Vector3 directionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
         private DirectionalLight3D directionalLight;
-        private bool showWatchSettingsControl = false;
 
         private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
@@ -273,16 +279,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         public bool IsResizable { get; protected set; }
-
-        public bool ShowWatchSettingsControl
-        {
-            get { return showWatchSettingsControl; }
-            set
-            {
-                showWatchSettingsControl = value;
-                RaisePropertyChanged("ShowWatchSettingsControl");
-            }
-        }
 
         public IEnumerable<Model3D> SceneItems
         {

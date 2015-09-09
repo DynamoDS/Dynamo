@@ -854,6 +854,10 @@ It does not contain your graph or any personal data</value>
     <value>Are you sure you want to install {0} {1} ?</value>
     <comment>Message box content</comment>
   </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>Are you sure you want to install {0} {1} to {2} ?</value>
+    <comment>Message box content</comment>
+  </data>
   <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
     <value>You have unsaved changes to custom node workspace: "{0}".
 

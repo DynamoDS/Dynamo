@@ -243,7 +243,8 @@ namespace Dynamo.ViewModels
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
 
-            ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY_CATEGORY, true);
+            //TASK : MAGN 8159 - Do not Expand Geometry by Default.
+            //ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY_CATEGORY, true);
         }
 
         private void OnDynamoViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -737,7 +738,17 @@ namespace Dynamo.ViewModels
                 return;
 
             // Clone top node.
-            var topNode = new NodeSearchElementViewModel(MakeNodeSearchElementVM(nodes.First()));
+            NodeSearchElementViewModel topNode;
+            var firstNode = MakeNodeSearchElementVM(nodes.First());
+            if (firstNode is CustomNodeSearchElementViewModel)
+            {
+                topNode = new CustomNodeSearchElementViewModel(firstNode as CustomNodeSearchElementViewModel);
+            }
+            else
+            {
+                topNode = new NodeSearchElementViewModel(firstNode);
+            }
+
             topNode.IsTopResult = true;
 
             SortSearchCategoriesChildren();

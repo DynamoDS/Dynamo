@@ -1,0 +1,18 @@
+<Workspace Version="0.8.3.2501" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="String" resolvedName="DSCore.String" assemblyName="DSCoreNodes.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="0fa964a1-304d-4924-a409-8169febcd946" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="427" y="310" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" CodeText="&quot;foo&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="270b90dc-9636-48b5-8996-0c036de67647" type="Dynamo.Nodes.DSFunction" nickname="String.ToLower" x="613.5" y="318" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="DSCoreNodes.dll" function="DSCore.String.ToLower@string" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0fa964a1-304d-4924-a409-8169febcd946" start_index="0" end="270b90dc-9636-48b5-8996-0c036de67647" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="10" eyeY="15" eyeZ="10" lookX="-10" lookY="-10" lookZ="-10" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

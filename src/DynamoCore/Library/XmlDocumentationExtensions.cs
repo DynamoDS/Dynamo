@@ -8,7 +8,7 @@ using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
     /// <summary>
     /// Provides extension methods for reading XML documentation from reflected members.

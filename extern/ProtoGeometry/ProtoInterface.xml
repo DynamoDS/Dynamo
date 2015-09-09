@@ -131,14 +131,15 @@
         </member>
         <member name="T:Autodesk.DesignScript.Runtime.PreferredShortNameAttribute">
             <summary>
-            This attribute can be applied to parameter to specify preferred 
-            short name when convert the node to code.  
+            This attribute can be applied to class to give a hint for generating
+            variable name in node to code. For example, generating variable "vec"
+            for Vector.
             </summary>
         </member>
         <member name="T:Autodesk.DesignScript.Runtime.IsObsoleteAttribute">
-            <summary>
-            This attribute indicates the method is obsolete.
-            </summary>
+            <summary> 
+            This attribute indicates the node is obsolete
+            </summary> 
         </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IDesignScriptEntity">
             <summary>
@@ -1338,7 +1339,7 @@
         </member>
         <member name="P:Autodesk.DesignScript.Interfaces.ITopologyEntity.Faces">
             <summary>
-            The Edges of the Topology
+            The Faces of the Topology
             </summary>
             <returns></returns>
         </member>

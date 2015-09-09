@@ -5,7 +5,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Models
 {
     public enum ConnectorType { BEZIER, POLYLINE };
-    
+
     public class ConnectorModel : ModelBase
     {
         #region properties
@@ -180,7 +180,7 @@ namespace Dynamo.Models
         }
     }
 
-    public class InvalidPortException : ApplicationException
+    internal class InvalidPortException : ApplicationException
     {
         private readonly string message;
         public override string Message

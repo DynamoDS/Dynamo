@@ -381,6 +381,15 @@ namespace Dynamo.Tests
         {
             // Avoid base method which access EngineController.
         }
+
+        protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as UpdateGraphAsyncTask;
+            if (theOtherTask == null)
+                return TaskMergeInstruction.KeepBoth;
+
+            return TaskMergeInstruction.KeepOther;
+        }
     }
 
     internal class FakeUpdateRenderPackageAsyncTask : UpdateRenderPackageAsyncTask
@@ -1258,5 +1267,47 @@ namespace Dynamo.Tests
         }
 
         #endregion
+    }
+
+    [TestFixture]
+    public class UpdateGraphAsyncTaskTest: DynamoModelTestBase
+    {
+        [Test]
+        public void TestUpdateGraphyAsyncTaskMerge()
+        {
+            // Verify a UpdateGraphAysncTask can't be merged with the other one
+            // if they modifiy different nodes.
+            OpenModel(TestDirectory + @"\core\scheduler\simple.dyn");
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            var funcNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DSFunction>().FirstOrDefault();
+
+            // Keep code block node be silent so that the graph won't be
+            // executed automatically
+            cbn.RaisesModificationEvents = false;
+
+            var elementResolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
+            cbn.SetCodeContent("-22", elementResolver); // Invalid numeric value.
+            cbn.MarkNodeAsModified();
+
+            // Get a UpdateGrapyAsyncTask for the modification of cbn
+            var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
+            UpdateGraphAsyncTask task1 = new UpdateGraphAsyncTask(scheduler, false);
+            task1.Initialize(CurrentDynamoModel.EngineController, CurrentDynamoModel.CurrentWorkspace);
+
+            // Get a UpdateGraphAsyncTask for the modification of Math.Sin()
+            funcNode.MarkNodeAsModified();
+            UpdateGraphAsyncTask task2 = new UpdateGraphAsyncTask(scheduler, false);
+            task2.Initialize(CurrentDynamoModel.EngineController, CurrentDynamoModel.CurrentWorkspace);
+
+            // And both async tasks should be kept.
+            var mergeResult = task1.CanMergeWith(task2);
+            Assert.AreEqual(AsyncTask.TaskMergeInstruction.KeepBoth, mergeResult);
+
+            mergeResult = task2.CanMergeWith(task1);
+            Assert.AreEqual(AsyncTask.TaskMergeInstruction.KeepBoth, mergeResult);
+
+            scheduler.Shutdown();
+        }
     }
 }

@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Linq;
 using Reach;
+using Reach.Data;
 
 namespace Dynamo.Publish.ViewModels
 {
@@ -154,8 +155,6 @@ namespace Dynamo.Publish.ViewModels
 
             if (!model.IsLoggedIn)
                 return;
-
-            var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().First();
 
             var workspaceProperties = new WorkspaceProperties();
             workspaceProperties.Name = Name;

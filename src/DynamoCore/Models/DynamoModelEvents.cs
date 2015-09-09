@@ -44,7 +44,7 @@ namespace Dynamo.Models
                 action();
         }
 
-        public static event SettingsMigrationHandler RequestMigrationStatusDialog;
+        internal static event SettingsMigrationHandler RequestMigrationStatusDialog;
         internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
         {
             if (RequestMigrationStatusDialog != null)
@@ -151,7 +151,7 @@ namespace Dynamo.Models
         /// An event which requests that a node be selected
         /// </summary>
         public event NodeEventHandler RequestNodeSelect;
-        public virtual void OnRequestSelect(object sender, ModelEventArgs e)
+        internal virtual void OnRequestSelect(object sender, ModelEventArgs e)
         {
             if (RequestNodeSelect != null)
                 RequestNodeSelect(sender, e);

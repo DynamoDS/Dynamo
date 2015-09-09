@@ -18,10 +18,8 @@ using NDesk.Options;
 
 namespace Dynamo.Applications
 {
-
     public class StartupUtils
     {
-
         internal class SandboxLookUp : DynamoLookUp
         {
             public override IEnumerable<string> GetDynamoInstallLocations()

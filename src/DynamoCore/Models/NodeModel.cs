@@ -11,8 +11,9 @@ using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.Core;
 using Dynamo.Core.Threading;
+using Dynamo.Migration;
 using Dynamo.Nodes;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Interfaces;
@@ -93,7 +94,7 @@ namespace Dynamo.Models
                 DispatchedToUI(sender, e);
         }
 
-        public event DispatchedToUIThreadHandler DispatchedToUI;
+        internal event DispatchedToUIThreadHandler DispatchedToUI;
 
         #endregion
 
@@ -611,6 +612,15 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        ///      The possible type of output at specified port. This 
+        ///      type information is not necessary to be accurate.
+        /// </summary>
+        /// <returns></returns>
+        public virtual ProtoCore.Type GetTypeHintForOutput(int index)
+        {
+             return ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeVar);
+        }
         #endregion
 
         protected NodeModel()
@@ -1700,7 +1710,7 @@ namespace Dynamo.Models
         private string GetDrawableId(int outPortIndex)
         {
             var output = GetAstIdentifierForOutputIndex(outPortIndex);
-            return output == null ? null : output.ToString();
+            return output == null ? null : output.Value;
         }
 
         #endregion
@@ -1774,7 +1784,6 @@ namespace Dynamo.Models
         AstBuildBroken
     };
 
-
     public enum LacingStrategy
     {
         Disabled,
@@ -1798,6 +1807,7 @@ namespace Dynamo.Models
         Middle,
         Last
     }
+    
     [Flags]
     public enum SnapExtensionEdges
     {
@@ -1806,222 +1816,9 @@ namespace Dynamo.Models
         Bottom = 0x2
     }
 
-
     public delegate void PortsChangedHandler(object sender, EventArgs e);
 
-    public delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
-
-    #region class attributes
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeNameAttribute : Attribute
-    {
-        public NodeNameAttribute(string elementName)
-        {
-            Name = elementName;
-        }
-
-        public string Name { get; set; }
-    }
-
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeCategoryAttribute : Attribute
-    {
-        public NodeCategoryAttribute(string category)
-        {
-            ElementCategory = category;
-        }
-
-        public string ElementCategory { get; set; }
-    }
-
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeSearchTagsAttribute : Attribute
-    {
-        public NodeSearchTagsAttribute(string tagsID, Type resourceType)
-        {
-            if (resourceType == null)
-                throw new ArgumentNullException("resourceType");
-
-            //Sometimes resources are made internal so that they don't appear in 
-            //node library, hence we also need to query non public properties.
-            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
-            if (prop != null && prop.PropertyType == typeof(String))
-            {
-                var tagString = (string)prop.GetValue(null, null);
-                Tags = tagString.Split(';').ToList();
-            }
-            else
-            {
-                Tags = new List<String> { tagsID };
-            }
-        }
-        public NodeSearchTagsAttribute(params string[] tags)
-        {
-            Tags = tags.ToList();
-        }
-
-        public List<string> Tags { get; set; }
-    }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class NotSearchableInHomeWorkspace : Attribute
-    { }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class NotSearchableInCustomNodeWorkspace : Attribute
-    { }
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class IsInteractiveAttribute : Attribute
-    {
-        public IsInteractiveAttribute(bool isInteractive)
-        {
-            IsInteractive = isInteractive;
-        }
-
-        public bool IsInteractive { get; set; }
-    }
-
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeDescriptionAttribute : Attribute
-    {
-        public NodeDescriptionAttribute(string description)
-        {
-            ElementDescription = description;
-        }
-
-        public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
-        {
-            if (resourceType == null)
-                throw new ArgumentNullException("resourceType");
-
-            //Sometimes resources are made internal so that they don't appear in 
-            //node library, hence we also need to query non public properties.
-            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
-            if (prop != null && prop.PropertyType == typeof(String))
-            {
-                ElementDescription = (string)prop.GetValue(null, null);
-            }
-            else
-            {
-                ElementDescription = descriptionResourceID;
-            }
-        }
-
-        public string ElementDescription { get; set; }
-    }
-
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeSearchableAttribute : Attribute
-    {
-        public NodeSearchableAttribute(bool isSearchable)
-        {
-            IsSearchable = isSearchable;
-        }
-
-        public bool IsSearchable { get; set; }
-    }
-
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeTypeIdAttribute : Attribute
-    {
-        public NodeTypeIdAttribute(string description)
-        {
-            Id = description;
-        }
-
-        public string Id { get; set; }
-    }
-
-
-    /// <summary>
-    ///     The DoNotLoadOnPlatforms attribute allows the node implementor
-    ///     to define an array of contexts in which the node will not
-    ///     be loaded.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.All)]
-    public class DoNotLoadOnPlatformsAttribute : Attribute
-    {
-        public DoNotLoadOnPlatformsAttribute(params string[] values)
-        {
-            Values = values;
-        }
-
-        public string[] Values { get; set; }
-    }
-
-
-    /// <summary>
-    ///     Flag to hide deprecated nodes in search, but allow in workflows
-    /// </summary>
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeDeprecatedAttribute : Attribute { }
-
-    /// <summary>
-    ///     The AlsoKnownAs attribute allows the node implementor to
-    ///     define an array of names that this node might have had
-    ///     in the past.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.All)]
-    public class AlsoKnownAsAttribute : Attribute
-    {
-        public AlsoKnownAsAttribute(params string[] values)
-        {
-            Values = values;
-        }
-
-        public string[] Values { get; set; }
-    }
-
-
-    /// <summary>
-    ///     The MetaNode attribute means this node shouldn't be added to the category,
-    ///     only its instances are allowed
-    /// </summary>
-    [AttributeUsage(AttributeTargets.All, Inherited = false)]
-    public class IsMetaNodeAttribute : Attribute { }
-
-
-    /// <summary>
-    ///     The IsDesignScriptCompatibleAttribute indicates if the node is able
-    ///     to work with DesignScript evaluation engine.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.All, Inherited = false)]
-    public class IsDesignScriptCompatibleAttribute : Attribute { }
-
-    /// <summary>
-    ///    The NodeDescriptionAttribute indicates this node is obsolete
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method |AttributeTargets.Property)]
-    public sealed class NodeObsoleteAttribute : IsObsoleteAttribute 
-    {
-        public NodeObsoleteAttribute(string message) : base(message)
-        {
-        }
-
-        public NodeObsoleteAttribute(string descriptionResourceID, Type resourceType)
-        {
-            if (resourceType == null)
-                throw new ArgumentNullException("resourceType");
-
-            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
-            if (prop != null && prop.PropertyType == typeof(String))
-            {
-                Message = (string)prop.GetValue(null, null);
-            }
-            else
-            {
-                Message = descriptionResourceID;
-            }
-        }
-    }
-    #endregion
+    internal delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
     
     public class UIDispatcherEventArgs : EventArgs
     {

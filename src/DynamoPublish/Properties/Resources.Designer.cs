@@ -133,6 +133,114 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to a graph.
+        /// </summary>
+        public static string Invite_AGraph {
+            get {
+                return ResourceManager.GetString("Invite_AGraph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We are working on a new way to share your work in Dynamo!.
+        /// </summary>
+        public static string Invite_ANewWay {
+            get {
+                return ResourceManager.GetString("Invite_ANewWay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Create.
+        /// </summary>
+        public static string Invite_Create {
+            get {
+                return ResourceManager.GetString("Invite_Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customizers.
+        /// </summary>
+        public static string Invite_Customizers {
+            get {
+                return ResourceManager.GetString("Invite_Customizers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introducing.
+        /// </summary>
+        public static string Invite_Introducing {
+            get {
+                return ResourceManager.GetString("Invite_Introducing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2. Publish.
+        /// </summary>
+        public static string Invite_Publish {
+            get {
+                return ResourceManager.GetString("Invite_Publish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3. Share.
+        /// </summary>
+        public static string Invite_Share {
+            get {
+                return ResourceManager.GetString("Invite_Share", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - simple webpages that allow anyone to interact with your graph. This is new territory for us and we need your help..
+        /// </summary>
+        public static string Invite_SimpleWebpages {
+            get {
+                return ResourceManager.GetString("Invite_SimpleWebpages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to web.
+        /// </summary>
+        public static string Invite_ToWeb {
+            get {
+                return ResourceManager.GetString("Invite_ToWeb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Want to try it out?.
+        /// </summary>
+        public static string Invite_WantToTry {
+            get {
+                return ResourceManager.GetString("Invite_WantToTry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to your work.
+        /// </summary>
+        public static string Invite_YourWork {
+            get {
+                return ResourceManager.GetString("Invite_YourWork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not all nodes are allowed in customizers, including Revit nodes. Your data could be lost or corrupted at any time during the beta period. Your data could be exposed to other users during the beta period..
+        /// </summary>
+        public static string InviteIntegrity {
+            get {
+                return ResourceManager.GetString("InviteIntegrity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request Invite.
         /// </summary>
         public static string InviteMenuButtonText {
@@ -327,6 +435,24 @@ namespace Dynamo.Publish.Properties {
         public static string ReadyForPublishMessage {
             get {
                 return ResourceManager.GetString("ReadyForPublishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your request is already approved..
+        /// </summary>
+        public static string RequestApproved {
+            get {
+                return ResourceManager.GetString("RequestApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request pending....
+        /// </summary>
+        public static string RequestOnPendingState {
+            get {
+                return ResourceManager.GetString("RequestOnPendingState", resourceCulture);
             }
         }
         

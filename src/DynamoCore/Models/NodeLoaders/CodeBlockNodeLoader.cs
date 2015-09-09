@@ -1,5 +1,5 @@
 using System.Xml;
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Nodes;
 using ProtoCore.Namespace;
 
@@ -8,7 +8,7 @@ namespace Dynamo.Models.NodeLoaders
     /// <summary>
     ///     Xml Loader for CodeBlock nodes.
     /// </summary>
-    public class CodeBlockNodeLoader : INodeLoader<CodeBlockNodeModel>, INodeFactory<CodeBlockNodeModel>
+    internal class CodeBlockNodeLoader : INodeLoader<CodeBlockNodeModel>, INodeFactory<CodeBlockNodeModel>
     {
         private readonly LibraryServices libraryServices;
 

@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Interfaces;
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
@@ -712,7 +714,7 @@ namespace Dynamo.Core
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
-        public CustomNodeWorkspaceModel Collapse(
+        internal CustomNodeWorkspaceModel Collapse(
             IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
             bool isTestMode, FunctionNamePromptEventArgs args)
         {
@@ -977,8 +979,8 @@ namespace Dynamo.Core
                             var funcDesc = dsFunc.Controller.Definition;
                             parameters = funcDesc.Parameters.ToList();
 
-                            if (funcDesc.Type == DSEngine.FunctionType.InstanceMethod ||
-                                funcDesc.Type == DSEngine.FunctionType.InstanceProperty)
+                            if (funcDesc.Type == Engine.FunctionType.InstanceMethod ||
+                                funcDesc.Type == Engine.FunctionType.InstanceProperty)
                             {
                                 var dummyType = new ProtoCore.Type() { Name = funcDesc.ClassName };
                                 var instanceParam = new TypedParameter(funcDesc.ClassName, dummyType);

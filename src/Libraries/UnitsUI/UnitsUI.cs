@@ -15,6 +15,7 @@ using DSCoreNodesUI;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Migration;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.UI;

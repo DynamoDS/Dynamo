@@ -9,7 +9,7 @@ namespace Dynamo.Services
     /// Stability state tracking utils library
     /// The primary use is for reporting MTBF to instrumentation
     /// </summary>
-    public class StabilityTracking
+    internal class StabilityTracking
     {
         private Stopwatch globalTime;
         private Stopwatch timeSinceLastCrash;
@@ -49,7 +49,7 @@ namespace Dynamo.Services
         }
     }
 
-    public class StabilityUtils
+    internal class StabilityUtils
     {
         private static bool isLastShutdownClean;
 
@@ -68,7 +68,6 @@ namespace Dynamo.Services
             }
         }
     }
-
 
     /// <summary>
     /// The stability cookie class groups together the usage around the registry key that is written

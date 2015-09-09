@@ -4,6 +4,8 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
+using Dynamo.Nodes;
+
 namespace Analysis
 {
     /// <summary>
