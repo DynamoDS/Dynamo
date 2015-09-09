@@ -497,5 +497,102 @@ bars = ls[1].x;
             thisTest.Verify("foos", new object[] {1, 2});
             thisTest.Verify("bars", new object[] {3, 4});
         }
+
+        [Test]
+        public void Test__GroupByKey1()
+        {
+            string code =
+    @"
+import (""DSCoreNodes.dll"");
+import (""FunctionObject.ds"");
+
+list = {""a"", ""b"", ""c""};
+keys = {""key1"", ""key2"", ""key1""};
+
+result = __GroupByKey(list, keys);
+r1 = result[0];
+r2 = result[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { "a", "c" }, new object[] { "b" } });
+            thisTest.Verify("r2", new object[] { "key1", "key2" });
+        }
+
+        [Test]
+        public void Test__GroupByKey2()
+        {
+            string code =
+    @"
+import (""DSCoreNodes.dll"");
+import (""FunctionObject.ds"");
+
+list = {""San Francisco"",
+        ""Springfield"",
+        ""Fresno"",
+        ""Berkeley"",
+        ""Fall River"",
+        ""Waltham"",
+        ""Sacramento""};
+
+keys = {""California"",
+        ""Massachusetts"",
+        ""California"",
+        ""California"",
+        ""Massachusetts"",
+        ""Massachusetts"",
+        ""California""};
+
+result = __GroupByKey(list, keys);
+r1 = result[0];
+r2 = result[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[]
+            {
+                new object[] { "San Francisco", "Fresno",  "Berkeley", "Sacramento"}, 
+                new object[] { "Springfield", "Fall River", "Waltham" }
+            });
+            thisTest.Verify("r2", new object[] { "California", "Massachusetts" });
+        }
+
+        [Test]
+        public void Test__GroupByKey3()
+        {
+            string code =
+    @"
+import (""DSCoreNodes.dll"");
+import (""FunctionObject.ds"");
+
+list = {""item1"", ""item2"", ""item1"", ""item3""};
+keys = {""key1"", ""key2"", ""key1""};
+
+result = __GroupByKey(list, keys);
+r1 = result[0];
+r2 = result[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { "item1", "item1" }, new object[] { "item2" } });
+            thisTest.Verify("r2", new object[] { "key1", "key2" });
+        }
+
+        [Test]
+        public void Test__GroupByKey4()
+        {
+            string code =
+    @"
+import (""DSCoreNodes.dll"");
+import (""FunctionObject.ds"");
+
+list = {""item1""};
+keys = {""key1"", ""key2""};
+
+result = __GroupByKey(list, keys);
+r1 = result[0];
+r2 = result[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r1", new object[] { new object[] { "item1" } });
+            thisTest.Verify("r2", new object[] { "key1", "key2" });
+        }
     }
 }
