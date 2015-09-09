@@ -111,8 +111,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="0,0,60.2,0" Grid.ColumnSpan="2">
+        <StackPanel Orientation="Horizontal" Margin="0,0,60.2,0" Grid.ColumnSpan="3">
             <ComboBox Name="RunTypesComboBox"
                       ItemsSource="{Binding RunTypeItems}"
                       SelectedItem="{Binding SelectedRunTypeItem}"
@@ -183,23 +184,16 @@
                       VerticalContentAlignment="Center"
                       Visibility="{Binding DebugCheckBoxVisibility}">
             </CheckBox>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="142.2,0,-0.4,0" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
-            <StackPanel.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="-1"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </StackPanel.RenderTransform>
-            <heid:BusyDecorator x:Name="busy"
-                                Margin="10,10,0,10" 
-                                BusyVerticalAlignment="Center"                                
+
+            <heid:BusyDecorator x:Name="busy"                                 
+                                BusyVerticalAlignment="Center"   
+                                BusyHorizontalAlignment="Left"
                                 BusyStyle="{StaticResource busyStyle}" 
                                 IsBusyIndicatorShowing="{Binding ShowBusyIndicator}" 
                                 ShowRunText="{Binding ShowRunMessage}"
                                 Width="25"/>
+
         </StackPanel>
+        
     </Grid>
 </UserControl>
