@@ -13,7 +13,7 @@ namespace Dynamo.ViewModels
 
     public delegate void RequestShowHideGalleryHandler(bool showGallery);
 
-    public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
+    internal delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
 
     public delegate void RequestBitmapSourceHandler(IconRequestEventArgs e);
 }

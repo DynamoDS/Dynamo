@@ -7,13 +7,13 @@ using Dynamo.Publish.Properties;
 using Greg;
 using Moq;
 using NUnit.Framework;
-using Reach.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Reach.Upload;
 
 namespace DynamoPublishTests
 {

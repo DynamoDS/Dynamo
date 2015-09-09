@@ -5,6 +5,7 @@ using System.Xml;
 
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Logging;
 using DSCoreNodesUI.Properties;
 
 namespace Dynamo.Nodes

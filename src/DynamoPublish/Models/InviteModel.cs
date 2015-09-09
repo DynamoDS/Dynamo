@@ -2,11 +2,11 @@
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Logging;
 using Dynamo.Wpf.Authentication;
 using Greg;
 using Greg.AuthProviders;
 using Reach;
-using Reach.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,6 +16,7 @@ using System.Net;
 using System.Reflection;
 using Dynamo.Publish.Properties;
 using RestSharp;
+using Newtonsoft.Json;
 
 namespace Dynamo.Publish.Models
 {
@@ -68,7 +69,24 @@ namespace Dynamo.Publish.Models
             if (String.IsNullOrWhiteSpace(invite))
                 throw new Exception(Resources.PageErrorMessage);
 
-            authenticationProvider = dynamoAuthenticationProvider;            
+            authenticationProvider = dynamoAuthenticationProvider;
+        }
+
+        internal string GetInvitationStatus() 
+        {
+            var req = new RestRequest(invite, Method.GET);
+
+            restClient = new RestClient(serverUrl);
+
+            if (authenticationProvider.LoginState != LoginState.LoggedIn) 
+            {
+                return String.Empty;
+            }
+            authenticationProvider.SignRequest(ref req, restClient);
+
+            var res = restClient.Execute(req).Content;
+
+            return JsonConvert.DeserializeObject<dynamic>(res)["status"];
         }
 
         internal InviteModel(IAuthProvider provider,  RestClient client) :

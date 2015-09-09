@@ -23,6 +23,7 @@ namespace Dynamo.Publish.Views
         {
             InitializeComponent();
             DataContext = inviteViewModel;
+            Loaded += inviteViewModel.InviteLoad;
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         Title="{x:Static resx:Resources.PublishViewTitle}"
-        Height="480"
+        SizeToContent="Height"  
         Width="605">
     <Window.Resources>
         <ResourceDictionary>
@@ -121,6 +121,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -147,7 +148,7 @@
                            IsHitTestVisible="False"
                            Padding="5"
                            FontSize="14">
-
+                    
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility"
@@ -185,6 +186,9 @@
                            VerticalAlignment="Center"
                            MouseDown="OnMouseDown" />
 
+                <TextBlock Grid.Row="3" Grid.ColumnSpan="2" FontStyle="Italic" Name ="Privacy" Foreground="{StaticResource PublishViewTextColor}" TextWrapping="Wrap" Padding="0,10" FontSize="12" FontFamily="{StaticResource OpenSansRegular}"
+                       Text ="{x:Static resx:Resources.InviteIntegrity}"/>
+
             </Grid>
 
         </Grid>
@@ -192,7 +196,7 @@
         <Grid Grid.Column="1"
               Grid.Row="1"
               Name="gridShareLink"
-              Margin="0,20,0,0">
+              Margin="0,20,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="20" />
@@ -225,7 +229,6 @@
 
         </Grid>
 
-
         <StackPanel Name="PublishUploadStatePanel"
                     Grid.Row="2"
                     Grid.Column="0"
@@ -235,6 +238,7 @@
             <TextBlock Name="UploadStateTextBlock"
                        Text="{Binding UploadStateMessage}"
                        Foreground="White"
+                       TextWrapping="Wrap"
                        VerticalAlignment="Center"
                        Margin="10,7,0,0" />
         </StackPanel>

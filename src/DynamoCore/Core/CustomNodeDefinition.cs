@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Dynamo.DSEngine;
+using Dynamo.Engine;
 using Dynamo.Library;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -129,6 +129,7 @@ namespace Dynamo
                 .Select(node => node.Definition)
                 .Where(def => def.FunctionId != functionId)
                 .Distinct();
+            ReturnType = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
         }
 
         public static CustomNodeDefinition MakeProxy(Guid functionId, string displayName)
@@ -187,6 +188,11 @@ namespace Dynamo
         ///     User friendly name on UI.
         /// </summary>
         public string DisplayName { get; private set; }
+
+        /// <summary>
+        ///     Return type.
+        /// </summary>
+        public ProtoCore.Type ReturnType { get; private set; }
         
         #region Dependencies
 

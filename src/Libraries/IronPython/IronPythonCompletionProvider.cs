@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Dynamo;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
+using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Hosting;
 using IronPython.Runtime;

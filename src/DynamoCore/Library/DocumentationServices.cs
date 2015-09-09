@@ -5,9 +5,9 @@ using System.Xml;
 using Dynamo.Interfaces;
 using DynamoUtilities;
 
-namespace Dynamo.DSEngine
+namespace Dynamo.Engine
 {
-    public static class DocumentationServices
+    internal static class DocumentationServices
     {
         private static Dictionary<string, bool> _triedPaths = new Dictionary<string, bool>();
 

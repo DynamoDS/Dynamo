@@ -12,34 +12,6 @@ namespace ProtoTest.Associative
     {
         [Test]
         [Category("DSDefinedClass")]
-        public void TestReferenceCount_BaseCase01()
-        {
-            string code = @"class A{}[Associative]{    a = A.A();    as = {a};}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a", 0);
-        }
-
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount01_NoFunctionCall()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
-
-        [Test]
-        [Category("DSDefinedClass")]
         public void TestReferenceCount01_NoFunctionCall_Dispose()
         {
             string code =
@@ -49,24 +21,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount02_FunctionNonArray()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = foo(b);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -79,24 +33,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount03_FunctionReplication()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -109,24 +45,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount04_FunctionArray()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = bar(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -139,24 +57,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount05_StaticFunctionNonArray()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = A.ding(b);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -169,25 +69,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount06_StaticFunctionReplication()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = A.ding(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
-
+     
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount06_StaticFunctionReplication_Dispose()
@@ -199,24 +81,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount07_StaticFunctionArray()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = A.dong(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -229,24 +93,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount08_MemFunctionNonArray()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = a.foo(b);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -259,24 +106,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount09_MemFunctionReplication()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = a.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -289,24 +119,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount10_MemFunctionArray()
-        {
-            string code =
-                @"            class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = a.bar(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -319,25 +132,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount11_ReplicationNonArray()
-        {
-            string code =
-                @"     class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = as.foo(b);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
-
+     
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount11_ReplicationNonArray_Dispose()
@@ -349,24 +144,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount12_ReplicationReplication()
-        {
-            string code =
-                @"     class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -379,24 +156,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount13_ReplicationArray()
-        {
-            string code =
-                @"     class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }    def foo(b:B)     {        return = null;    }    def bar(b:B[])    {        return = null;    }    static def ding(b:B)    {        return = null;    }    static def dong(b:B[])    {        return = null;    }    }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(b:B){    return = null;}def bar(b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();b1 = B.B();b2 = B.B();b3 = B.B();as = {a1, a2, a3};bs = {b1, b2, b3};a = A.A();b = B.B();r = as.bar(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -409,22 +168,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount14_GlobalFunctionTwoArguments()
-        {
-            string code =
-                @"     class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(a: A, b:B){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};r = foo(as, bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-        }
+    
 
         [Test]
         [Category("DSDefinedClass")]
@@ -437,19 +181,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount15_GlobalFunctionTwoArguments()
-        {
-            string code =
-                @"     class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(a: A, b:B){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b = B.B();r = foo(as, b);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -462,22 +194,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount16_GlobalFunctionTwoArguments()
-        {
-            string code =
-                @"   class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo(a: A, b:B[]){    return = null;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};r = foo(as, bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-        }
+    
 
         [Test]
         [Category("DSDefinedClass")]
@@ -490,23 +207,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount17_StaticFunctionTwoArguments()
-        {
-            string code =
-                @"   class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def ding(a:A, b:B)    {         return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};r = A.ding(as, bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount17_StaticFunctionTwoArguments_Dispose()
@@ -518,19 +219,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount18_StaticFunctionTwoArguments()
-        {
-            string code =
-                @"   class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def ding(a:A, b:B)    {         return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b = B.B();r = A.ding(as, b);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("b", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -543,23 +232,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount19_StaticFunctionTwoArguments()
-        {
-            string code =
-                @"   class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def ding(a:A, b:B[])    {         return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};r = A.ding(as, bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-        }
-
+      
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount19_StaticFunctionTwoArguments_Dispose()
@@ -571,24 +244,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("bDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount20_MemberFunctionTwoArguments()
-        {
-            string code =
-                @"   class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo(b:B,c:C)     {        return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};a = A.A();r = a.foo(bs, cs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-        }
-
+      
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount20_MemberFunctionTwoArguments_Dispose()
@@ -601,23 +257,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount21_MemberFunctionTwoArguments()
-        {
-            string code =
-                @"   class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo(b:B,c:C)     {        return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};a = A.A();r = a.foo(bs, c1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -631,23 +271,6 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount22_MemberFunctionTwoArguments()
-        {
-            string code =
-                @"   class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo(b:B,c:C[])     {        return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};a = A.A();r = a.foo(bs, cs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("a", 0);
-        }
 
         [Test]
         [Category("DSDefinedClass")]
@@ -661,26 +284,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount23_MemberFunctionTwoArguments()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo(b:B,c:C)     {        return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};r = as.foo(bs, cs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -694,26 +298,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount24_MemberFunctionTwoArguments()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }      def foo(b:B,c:C)     {        return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};r = as.foo(bs, c1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -727,27 +312,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount25_MemberFunctionTwoArguments()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo(b:B,c:C[])     {        return = null;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};r = as.foo(bs, cs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount25_MemberFunctionTwoArguments_Dispose()
@@ -760,27 +325,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount26_GlobalFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : B[] (b : B[]){    return = b;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -794,27 +339,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount27_GlobalFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : B[] (b : B){    return = b;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -828,27 +353,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount28_GlobalFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : B (b : B){    return = b;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -862,27 +367,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount29_MemberFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B[] (b : B[])    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -896,27 +381,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount30_MemberFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B[] (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -930,27 +395,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount31_MemberFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -964,27 +409,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount32_StaticFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : B[] (b : B[])    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -998,27 +423,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount33_StaticFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : B[] (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+     
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1032,27 +437,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount34_StaticFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : B (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1066,27 +451,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount35_StaticFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : B (b : B[])    {        return = b[0];    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1100,27 +465,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount36_StaticFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }      static def foo : B (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1134,27 +479,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount37_MemberFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }       def foo : B (b : B[])    {        return = b[0];    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1168,28 +493,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount38_MemberFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+      
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount38_MemberFunctionReturnObject_Dispose()
@@ -1202,27 +506,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount39_GlobalFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : B (b : B[]){    return = b[0];}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1236,27 +520,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount40_GlobalFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : B (b : B){    return = b;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1270,27 +534,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount41_MemberFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B[] (b : B[])    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1304,27 +548,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount42_MemberFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B[] (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1338,28 +562,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount43_MemberFunctionReturnArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount43_MemberFunctionReturnArray_Dispose()
@@ -1372,27 +575,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount44_MemberFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }       def foo : B (b : B[])    {        return = b[0];    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+        
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1406,27 +589,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount45_MemberFunctionReturnObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : B (b : B)    {        return = b;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1440,27 +603,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount46_GlobalFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : A[] (b : B[]){    a = {A.A(),A.A(),A.A()};    return = a;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1474,28 +617,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount47_GlobalFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : A[] (b : B){    a = A.A();    return = a;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount47_GlobalFunctionReturnNewArray_Dispose()
@@ -1508,27 +630,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount48_GlobalFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : A (b : B){    a = A.A();    return = a;}def foo : B (b : B){    return = b;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1542,28 +644,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount49_MemberFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A[] (b : B[])    {        a = {A.A(),A.A(),A.A()};        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount49_MemberFunctionReturnNewArray_Dispose()
@@ -1576,27 +657,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount50_MemberFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A[] (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1610,28 +671,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount51_MemberFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount51_MemberFunctionReturnNewArray_Dispose()
@@ -1644,27 +684,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount52_StaticFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : A[] (b : B[])    {        a = {A.A(),A.A(),A.A()};        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1678,27 +698,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount53_StaticFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : A[] (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+     
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1712,27 +712,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount54_StaticFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : A (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1746,27 +726,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount55_StaticFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : A (b : B[])    {        a = {A.A(),A.A(),A.A()};        return = a[0];    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1780,27 +740,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount56_StaticFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     static def foo : A (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = A.foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+     
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1814,27 +754,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount57_MemberFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A (b : B[])    {        a = {A.A(),A.A(),A.A()};        return = a[0];    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1848,27 +768,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount58_MemberFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = a1.foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1882,28 +782,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount59_GlobalFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : A (b : B[]){    a = {A.A(),A.A(),A.A()};    return = a[0];}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount59_GlobalFunctionReturnNewObject_Dispose()
@@ -1916,27 +795,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount60_GlobalFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    } }class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}def foo : A (b : B){    a = A.A();    return = a;}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1950,27 +809,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount61_MemberFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A[] (b : B[])    {        a = {A.A(),A.A(),A.A()};        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -1984,27 +823,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount62_MemberFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A[] (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+      
 
         [Test]
         [Category("DSDefinedClass")]
@@ -2018,27 +837,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount63_MemberFunctionReturnNewArray()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
+       
 
         [Test]
         [Category("DSDefinedClass")]
@@ -2052,28 +851,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount64_MemberFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A (b : B[])    {        a = {A.A(),A.A(),A.A()};        return = a[0];    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(bs);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount64_MemberFunctionReturnNewObject_Dispose()
@@ -2086,28 +864,7 @@ namespace ProtoTest.Associative
             thisTest.Verify("cDispose", 0);
         }
 
-        [Test]
-        [Category("DSDefinedClass")]
-        public void TestReferenceCount65_MemberFunctionReturnNewObject()
-        {
-            string code =
-                @"  class A{    static count : var = 0;    constructor A()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }     def foo : A (b : B)    {        a = A.A();        return = a;    }}class B{    static count : var = 0;    constructor B()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}class C{  static count : var = 0;    constructor C()    {        count = count + 1;    }    def _Dispose : int()    {        count = count - 1;        return = null;    }}[Associative]{a1 = A.A();a2 = A.A();a3 = A.A();as = {a1, a2, a3};b1 = B.B();b2 = B.B();b3 = B.B();bs = {b1, b2, b3};c1 = C.C();c2 = C.C();c3 = C.C();cs = {c1, c2, c3};x = as.foo(b1);}";
-            ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.VerifyReferenceCount("a1", 0);
-            thisTest.VerifyReferenceCount("a2", 0);
-            thisTest.VerifyReferenceCount("a3", 0);
-            thisTest.VerifyReferenceCount("b1", 0);
-            thisTest.VerifyReferenceCount("b2", 0);
-            thisTest.VerifyReferenceCount("b3", 0);
-            thisTest.VerifyReferenceCount("c1", 0);
-            thisTest.VerifyReferenceCount("c2", 0);
-            thisTest.VerifyReferenceCount("c3", 0);
-            thisTest.VerifyReferenceCount("as", 0);
-            thisTest.VerifyReferenceCount("bs", 0);
-            thisTest.VerifyReferenceCount("cs", 0);
-            thisTest.VerifyReferenceCount("x", 0);
-        }
-
+       
         [Test]
         [Category("DSDefinedClass")]
         public void TestReferenceCount65_MemberFunctionReturnNewObject_Dispose()

@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace Dynamo.Models.NodeLoaders
 {
-    public class InputNodeLoader : INodeLoader<Symbol>, INodeFactory<Symbol>
+    internal class InputNodeLoader : INodeLoader<Symbol>, INodeFactory<Symbol>
     {
         public InputNodeLoader()
         {

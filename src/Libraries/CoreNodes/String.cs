@@ -5,6 +5,8 @@ using System.Globalization;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
+using Dynamo.Nodes;
+
 namespace DSCore
 {
     /// <summary>

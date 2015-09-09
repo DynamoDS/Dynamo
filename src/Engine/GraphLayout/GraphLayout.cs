@@ -31,10 +31,9 @@ namespace GraphLayout
         /// <param name="height">The height of the node view.</param>
         /// <param name="y">The y coordinate of the node view.</param>
         /// <param name="inPortCount">The number of input ports of the node.</param>
-        public void AddNode(Guid guid, double width, double height, double y, int inPortCount = 0)
+        public void AddNode(Guid guid, double width, double height, double y)
         {
             var node = new Node(guid, width, height, y, this);
-            node.InPortCount = inPortCount;
             Nodes.Add(node);
         }
 
@@ -45,9 +44,9 @@ namespace GraphLayout
         /// <param name="endId">The guid of the ending node.</param>
         /// <param name="startY">The y coordinate of the connector's left end point.</param>
         /// <param name="endY">The y coordinate of the connector's right end point.</param>
-        public void AddEdge(Guid startId, Guid endId, double startY, double endY)
+        public void AddEdge(Guid startId, Guid endId, double startX, double startY, double endX, double endY)
         {
-            var edge = new Edge(startId, endId, startY, endY, this);
+            var edge = new Edge(startId, endId, startX, startY, endX, endY, this);
             Edges.Add(edge);
         }
 
@@ -69,16 +68,16 @@ namespace GraphLayout
         }
 
         /// <summary>
-        /// Finds an edge between two nodes.
+        /// Finds an active edge between two nodes.
         /// </summary>
         /// <param name="start">Start node.</param>
         /// <param name="end">End node.</param>
         /// <returns>The edge object.</returns>
         public Edge FindEdge(Node start, Node end)
         {
-            foreach (Edge edge in Edges.Where(x => x.Active))
+            foreach (Edge edge in Edges)
             {
-                if (start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
+                if (edge.Active && start.Equals(edge.StartNode) && end.Equals(edge.EndNode))
                 {
                     return edge;
                 }
@@ -337,13 +336,12 @@ namespace GraphLayout
                 }
             }
 
-            // Put all input nodes and isolated nodes on the leftmost layer
-            AddToLayer(Nodes.Where(x =>
-                (x.LeftEdges.Count == 0 && !x.HasUnconnectedInPort) ||
-                (x.LeftEdges.Count == 0 && x.RightEdges.Count == 0)).ToList(), Layers.Count);
+            // Put all isolated nodes on the leftmost layer
+            AddToLayer(Nodes.Where(x => (x.Layer < 0 &&
+                x.LeftEdges.Count == 0 && x.RightEdges.Count == 0)).ToList(), Layers.Count);
 
             // Assign nodes with unconnected input ports right behind its next layer
-            foreach (Node n in Nodes.Where(x => x.LeftEdges.Count == 0 && x.RightEdges.Count > 0 && x.HasUnconnectedInPort))
+            foreach (Node n in Nodes.Where(x => x.LeftEdges.Count == 0 && x.RightEdges.Count > 0))
                 AddToLayer(n, n.RightEdges.Max(x => x.EndNode.Layer) + 1);
 
         }
@@ -488,13 +486,10 @@ namespace GraphLayout
         /// </summary>
         public void NormalizeGraphPosition()
         {
-            List<List<Node>> ReversedLayers = Layers;
-            ReversedLayers.Reverse();
-
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
 
-            foreach (List<Node> layer in Layers)
+            foreach (List<Node> layer in Layers.AsEnumerable().Reverse())
             {
                 double layerWidth = layer.Max(x => x.Width);
 
@@ -566,11 +561,6 @@ namespace GraphLayout
         public int Layer = -1;
 
         /// <summary>
-        /// The number of input ports of the node.
-        /// </summary>
-        public int InPortCount;
-
-        /// <summary>
         /// The set of edges connected to the input ports the node.
         /// </summary>
         public HashSet<Edge> LeftEdges = new HashSet<Edge>();
@@ -579,15 +569,6 @@ namespace GraphLayout
         /// The set of edges connected to the output ports of the node.
         /// </summary>
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
-
-        /// <summary>
-        /// Gets a Boolean value of whether the node has any unconnected input ports.
-        /// </summary>
-        /// <value>True if the node has at least one unconnected input port, otherwise false.</value>
-        public bool HasUnconnectedInPort
-        {
-            get { return LeftEdges.Count < InPortCount; }
-        }
 
         public Node(Guid guid, double width, double height, double y, Graph ownerGraph)
         {
@@ -619,6 +600,10 @@ namespace GraphLayout
         /// </summary>
         public Node EndNode;
 
+        public double StartX;
+        public double StartY;
+        public double EndX;
+
         /// <summary>
         /// The y coordinate of the edge's right end.
         /// </summary>
@@ -639,8 +624,11 @@ namespace GraphLayout
         /// </summary>
         public bool Active = true;
 
-        public Edge(Guid startId, Guid endId, double startY, double endY, Graph ownerGraph)
+        public Edge(Guid startId, Guid endId, double startX, double startY, double endX, double endY, Graph ownerGraph)
         {
+            StartX = startX;
+            StartY = startY;
+            EndX = endX;
             EndY = endY;
             OwnerGraph = ownerGraph;
 

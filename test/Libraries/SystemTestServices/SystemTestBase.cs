@@ -240,7 +240,7 @@ namespace SystemTestServices
         {
             var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
 
-            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
+            double dummyNodesCount = nodes.OfType<Dynamo.Nodes.DummyNode>().Count();
             if (dummyNodesCount >= 1)
             {
                 Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
