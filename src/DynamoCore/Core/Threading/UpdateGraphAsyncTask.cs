@@ -61,6 +61,8 @@ namespace Dynamo.Core.Threading
 
                 ModifiedNodes = ComputeModifiedNodes(workspace);
                 graphSyncData = engineController.ComputeSyncData(workspace.Nodes, ModifiedNodes, verboseLogging);
+                if (graphSyncData == null)
+                    return false;
 
                 // We clear dirty flags before executing the task. If we clear
                 // flags after the execution of task, for example in
@@ -73,10 +75,11 @@ namespace Dynamo.Core.Threading
                 foreach (var nodeGuid in graphSyncData.NodeIDs)
                 {
                     var node = workspace.Nodes.FirstOrDefault(n => n.GUID.Equals(nodeGuid));
-                    node.ClearDirtyFlag();
+                    if (node != null)
+                        node.ClearDirtyFlag();
                 }
 
-                return graphSyncData != null;
+                return true;
             }
             catch (Exception e)
             {
