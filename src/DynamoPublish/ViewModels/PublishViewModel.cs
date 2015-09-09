@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Linq;
 using Reach;
+using Reach.Data;
 
 namespace Dynamo.Publish.ViewModels
 {
