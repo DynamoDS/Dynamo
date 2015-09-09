@@ -519,16 +519,18 @@ namespace DSCore
 
     [NodeName("List.GroupByKey")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
+    [NodeDescription("ListGroupByKeyDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("ListGroupByKeySearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class GroupByKey : NodeModel
     {
         public GroupByKey()
         {
-            InPortData.Add(new PortData("list", ""));
-            InPortData.Add(new PortData("keys", ""));
+            InPortData.Add(new PortData("list", Resources.ListGroupByKeyListTooltip));
+            InPortData.Add(new PortData("keys", Resources.ListGroupByKeyKeysTooltip));
 
-            OutPortData.Add(new PortData("groups", ""));
-            OutPortData.Add(new PortData("unique keys", ""));
+            OutPortData.Add(new PortData("groups", Resources.ListGroupByKeyGroupsTooltip));
+            OutPortData.Add(new PortData("unique keys", Resources.ListGroupByKeyUniqueKeysTooltip));
 
             RegisterAllPorts();
         }

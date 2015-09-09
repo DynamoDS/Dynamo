@@ -584,4 +584,22 @@
   <data name="SelectionPointsOutputPortName" xml:space="preserve">
     <value>Points</value>
   </data>
+  <data name="ListGroupByKeyDescription" xml:space="preserve">
+    <value>Groups items by given keys</value>
+  </data>
+  <data name="ListGroupByKeyGroupsTooltip" xml:space="preserve">
+    <value>Groups</value>
+  </data>
+  <data name="ListGroupByKeyKeysTooltip" xml:space="preserve">
+    <value>Keys used for grouping</value>
+  </data>
+  <data name="ListGroupByKeyListTooltip" xml:space="preserve">
+    <value>List to group</value>
+  </data>
+  <data name="ListGroupByKeySearchTags" xml:space="preserve">
+    <value>list;group;groupbykey;</value>
+  </data>
+  <data name="ListGroupByKeyUniqueKeysTooltip" xml:space="preserve">
+    <value>Unique keys</value>
+  </data>
 </root>
