@@ -9,8 +9,8 @@ environment:
  xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
 
 build_script:
- -msbuild %dynamo_solution%
- -msbuild %xmlDocs_solution%
+ msbuild %dynamo_solution%
+ msbuild %xmlDocs_solution%
 
 after_build:
  ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1 
