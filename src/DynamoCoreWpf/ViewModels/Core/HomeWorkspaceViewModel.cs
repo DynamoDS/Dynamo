@@ -156,7 +156,8 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
         {
-            StartSpin(Properties.Resources.EvalStartedMessage);            
+            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.EvalStartedMessage);
+            //StartSpin(Properties.Resources.EvalStartedMessage);            
         }
 
         private void SetCurrentWarning(NotificationLevel level, string message)
