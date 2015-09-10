@@ -1190,14 +1190,12 @@ namespace Dynamo.Engine.NodeToCode
         ///    order in the final code block node.
         /// </summary>
         /// <param name="core">Library core</param>
-        /// <param name="astBuilder">Ast builder</param>
         /// <param name="workspaceNodes">The whole workspace nodes</param>
         /// <param name="nodes">Selected node that can be converted to a single code block node</param>
         /// <param name="namingProvider"></param>
         /// <returns></returns>
         internal static NodeToCodeResult NodeToCode(
             ProtoCore.Core core,
-            AstBuilder astBuilder, 
             IEnumerable<NodeModel> workspaceNodes,
             IEnumerable<NodeModel> nodes,
             INamingProvider namingProvider)
@@ -1223,10 +1221,10 @@ namespace Dynamo.Engine.NodeToCode
             //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
 
+            AstBuilder builder = new AstBuilder(null);
             var sortedGraph = AstBuilder.TopologicalSortForGraph(workspaceNodes);
             var sortedNodes = sortedGraph.Where(nodes.Contains);
-
-            var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
+            var allAstNodes = builder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
 
             #endregion
 

@@ -606,7 +606,7 @@ namespace Dynamo.Engine
 
         internal NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes, INamingProvider namingProvider = null)
         {
-            return NodeToCodeCompiler.NodeToCode(libraryServices.LibraryManagementCore, astBuilder, graph, nodes, namingProvider);
+            return NodeToCodeCompiler.NodeToCode(libraryServices.LibraryManagementCore, graph, nodes, namingProvider);
         }
 
         private bool HasVariableDefined(string var)
