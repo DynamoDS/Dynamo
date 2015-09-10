@@ -622,9 +622,8 @@ namespace Dynamo.Engine.NodeToCode
                     return ns;
 
                 var shortName = string.Empty;
-
                 if (namingProvider != null)
-                    namingProvider.GetTypeDependentName(type);
+                    shortName = namingProvider.GetTypeDependentName(type);
 
                 if (!string.IsNullOrEmpty(shortName)) 
                 {

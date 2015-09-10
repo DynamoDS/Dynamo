@@ -341,8 +341,8 @@ namespace Dynamo.Tests
             // Variables in the first one won't be renamed.
             Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t1")));
             Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t2")));
-            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num1")));
-            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num2")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t3")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t4")));
         }
 
         [Test]
@@ -372,9 +372,9 @@ namespace Dynamo.Tests
             // Variables in the first one won't be renamed.
             Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("b")));
             Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("a")));
-            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num1")));
-            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num3")));
-            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("num4")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t1")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t2")));
+            Assert.IsNotNull(lhs.FirstOrDefault(x => x.Value.Equals("t3")));
         }
 
         [Test]
@@ -576,7 +576,7 @@ namespace Dynamo.Tests
 
             var expr = result.AstNodes.Last() as BinaryExpressionNode;
             Assert.IsNotNull(expr);
-            Assert.AreEqual("point1.DistanceTo(point2)", expr.RightNode.ToString());
+            Assert.AreEqual("t1.DistanceTo(t2)", expr.RightNode.ToString());
         }
 
         [Test]
