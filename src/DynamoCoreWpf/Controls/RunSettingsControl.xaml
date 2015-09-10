@@ -185,9 +185,10 @@
                       Visibility="{Binding DebugCheckBoxVisibility}">
             </CheckBox>
 
-            <heid:BusyDecorator x:Name="busy"                                 
+            <heid:BusyDecorator x:Name="busy" 
+                                Margin="0,10,0,0"
                                 BusyVerticalAlignment="Center"   
-                                BusyHorizontalAlignment="Left"
+                                BusyHorizontalAlignment="Center"
                                 BusyStyle="{StaticResource busyStyle}" 
                                 IsBusyIndicatorShowing="{Binding ShowBusyIndicator}" 
                                 ShowRunText="{Binding ShowRunMessage}"
