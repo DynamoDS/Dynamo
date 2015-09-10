@@ -543,6 +543,13 @@ namespace DSCore
             return finalList;
         }
 
+        /// <summary>
+        ///     Chop a list into a set of lists each containing the given amount of items.
+        /// </summary>
+        /// <param name="list">List to chop up.</param>
+        /// <param name="lengths">Lengths of each new sub-list.</param>
+        /// <returns name="lists">List of lists.</returns>
+        /// <search>chop</search>
         public static IList ChopByLengths(IList list, IList lengths)
         {
             var finalList = new ArrayList();
