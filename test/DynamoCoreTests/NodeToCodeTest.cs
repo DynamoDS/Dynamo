@@ -1118,6 +1118,53 @@ namespace Dynamo.Tests
             Assert.IsFalse(cbn.Code.Contains(guid));
         }
         
+        [Test]
+        [Category("UnitTests")]
+        public void TestNameProvider()
+        {
+            var core = CurrentDynamoModel.EngineController.LibraryServices.LibraryManagementCore;
+            var libraryServices = new LibraryCustomizationServices(CurrentDynamoModel.PathManager);
+            var nameProvider = new NamingProvider(core, libraryServices);
+
+            ProtoCore.Type t;
+            string name = string.Empty;
+            int typeID = -1;
+
+            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeInt);
+            name = nameProvider.GetTypeDependentName(t);
+            Assert.AreEqual("num", name); 
+
+            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeDouble);
+            name = nameProvider.GetTypeDependentName(t);
+            Assert.AreEqual("num", name); 
+
+            t = ProtoCore.TypeSystem.BuildPrimitiveTypeObject(ProtoCore.PrimitiveType.kTypeString);
+            name = nameProvider.GetTypeDependentName(t);
+            Assert.AreEqual("str", name);
+
+            typeID = core.TypeSystem.GetType("Autodesk.DesignScript.Geometry.Point");
+            t = core.TypeSystem.BuildTypeObject(typeID);
+            name = nameProvider.GetTypeDependentName(t);
+            Assert.AreEqual("point", name);
+
+            typeID = core.TypeSystem.GetType("Autodesk.DesignScript.Geometry.BoundingBox");
+            t = core.TypeSystem.BuildTypeObject(typeID);
+            name = nameProvider.GetTypeDependentName(t);
+            Assert.AreEqual("boundingBox", name);
+
+            t = new ProtoCore.Type();
+            t.Name = "DummyClassForTest";
+            t.UID = -1;
+            name = nameProvider.GetTypeDependentName(t);
+            Assert.IsTrue(string.IsNullOrEmpty(name));
+
+            t = new ProtoCore.Type();
+            t.Name = null;
+            t.UID = -1;
+            name = nameProvider.GetTypeDependentName(t);
+            Assert.IsTrue(string.IsNullOrEmpty(name));
+        } 
+
         private void SelectAll(IEnumerable<NodeModel> nodes)
         {
             DynamoSelection.Instance.ClearSelection();
