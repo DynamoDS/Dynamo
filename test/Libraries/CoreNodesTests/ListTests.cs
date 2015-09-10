@@ -880,5 +880,75 @@ namespace DSCoreNodesTests
             expected = new ArrayList { new ArrayList() };
             Assert.AreEqual(expected, output);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ChopByLengths1()
+        {
+            var list = new ArrayList { 1, 2, 3, 4, 5 };
+            var lengths = new ArrayList { 3, 2 };
+
+            var output = List.ChopByLengths(list, lengths);
+            var expected = new ArrayList { new ArrayList { 1, 2, 3 }, new ArrayList { 4, 5 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ChopByLengths2()
+        {
+            var list = new ArrayList { 1, 2, 3, 4, 5 };
+            var lengths = new ArrayList { 0, 2 };
+
+            var output = List.ChopByLengths(list, lengths);
+            var expected = new ArrayList { new ArrayList { }, new ArrayList { 1, 2 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ChopByLengths3()
+        {
+            var list = new ArrayList { 1, 2, 3, 4, 5 };
+            var lengths = new ArrayList { -1, -1 };
+
+            var output = List.ChopByLengths(list, lengths);
+            var expected = new ArrayList { };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ChopByLengths4()
+        {
+            var list = new ArrayList { 1, 2, 3 };
+            var lengths = new ArrayList { 2, 5 };
+
+            var output = List.ChopByLengths(list, lengths);
+            var expected = new ArrayList { new ArrayList { 1, 2 }, new ArrayList { 3 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ChopByLengths5()
+        {
+            var list = new ArrayList { 1, "a", 3 };
+            var lengths = new ArrayList { 2, 5 };
+
+            var output = List.ChopByLengths(list, lengths);
+            var expected = new ArrayList { new ArrayList { 1, "a" }, new ArrayList { 3 } };
+            Assert.AreEqual(expected, output);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ChopByLengths6()
+        {
+            var list = new ArrayList { 1, 2, 3 };
+            var lengths = new ArrayList { 1, "a" };
+
+            Assert.Throws<InvalidCastException>(() => { List.ChopByLengths(list, lengths); });
+        }
     }
 }

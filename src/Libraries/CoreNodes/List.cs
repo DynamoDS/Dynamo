@@ -550,9 +550,16 @@ namespace DSCore
             int index = 0;
             int lenghtIndex = 0;
 
+            // If there is no any lengths more than 0,
+            // we return empty list.
+            if (lengths.Cast<int>().All(x => x <= 0))
+            {
+                return finalList;
+            }
+
             foreach (object obj in list)
             {
-                if (index == ((int)lengths[lenghtIndex]))
+                if (index == ((int)lengths[lenghtIndex]) || ((int)lengths[lenghtIndex] <= 0))
                 {
                     finalList.Add(currList);
                     currList = new ArrayList();
