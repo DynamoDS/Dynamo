@@ -542,7 +542,7 @@ namespace Dynamo.Engine.NodeToCode
         }
     }
 
-    internal class NodeToCodeUtils
+    internal class NodeToCodeCompiler
     {
         /// <summary>
         /// The numbering state of a variable.

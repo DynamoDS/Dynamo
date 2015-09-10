@@ -1348,7 +1348,7 @@ namespace Dynamo.Models
             if (!selectedNodes.Any())
                 return;
 
-            var cliques = NodeToCodeUtils.GetCliques(selectedNodes).Where(c => !(c.Count == 1 && c.First() is CodeBlockNodeModel));
+            var cliques = NodeToCodeCompiler.GetCliques(selectedNodes).Where(c => !(c.Count == 1 && c.First() is CodeBlockNodeModel));
             var codeBlockNodes = new List<CodeBlockNodeModel>();
 
             //UndoRedo Action Group----------------------------------------------
@@ -1420,10 +1420,10 @@ namespace Dynamo.Models
 
                     #region Step II. Create the new code block node
                     var outputVariables = externalOutputConnections.Values;
-                    var newResult = NodeToCodeUtils.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
+                    var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
 
                     // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                    NodeToCodeUtils.ReplaceWithShortestQualifiedName(
+                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
                         engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, ElementResolver);
                     var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                     var code = codegen.GenerateCode();
