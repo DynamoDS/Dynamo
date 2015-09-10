@@ -286,7 +286,7 @@
     <value>Argument is invalid</value>
   </data>
   <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
-    <value>The value used in a range expression must be a number</value>
+    <value>The value used in a range expression must be a number or a letter</value>
   </data>
   <data name="kInvalidBreakForFunction" xml:space="preserve">
     <value>Internal error, please report: Statement break causes function to abnormally return null. (6ced82a9)</value>

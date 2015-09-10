@@ -1250,7 +1250,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value used in a range expression must be a number.
+        ///   Looks up a localized string similar to The value used in a range expression must be a number or a letter.
         /// </summary>
         public static string kInvalidArgumentsInRangeExpression {
             get {
