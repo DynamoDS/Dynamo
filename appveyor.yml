@@ -5,11 +5,23 @@ platform: Any CPU
 configuration: Release
 
 environment:	
+ dynamo_solution: src/Dynamo.All.2013.sln
  xmlDocs_solution: tools/XmlDocToMarkdown/XmlDocToMarkdown.sln
-
-build_script: 
+ access_token:
+    secure: x40nmLGNUppqgk5aeRD2qsLgr8GtURVQXlCEHiy08hlFOT+Ptyj1BmLB8apcdyEe
+	
+build_script:
+  - msbuild %dynamo_solution%
   - msbuild %xmlDocs_solution%
 
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
   
+on_success:
+  - git config --global credential.helper store
+  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+  - ps: Get-Location
+  - git clone "https://github.com/ramramps/DocumentTesting"
+  - ps: Get-Location
+test: off
+
