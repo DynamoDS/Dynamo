@@ -20,7 +20,7 @@ on_success:
   - git config --global credential.helper store
   - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
   - ps: Get-Location
-  - git clone "https://github.com/ramramps/DocumentTesting"   
+  - git clone "ssh://git@github.com/ramramps/DocumentTesting.git"   
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1
   - ps: Get-ChildItem "C:\projects\dynamo\DocumentTesting" -recurse
 test: off
