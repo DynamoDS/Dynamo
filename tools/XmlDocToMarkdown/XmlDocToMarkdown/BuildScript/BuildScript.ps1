@@ -1,6 +1,6 @@
 ﻿
 Write-Host "Checking Directories"
-Get-ChildItem "C:\" - Directory
+Get-ChildItem "C:\"
 
 
   
