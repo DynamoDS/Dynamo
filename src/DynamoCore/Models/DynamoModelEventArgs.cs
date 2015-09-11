@@ -139,8 +139,8 @@ namespace Dynamo.Models
         private readonly IOption<Exception> error;
 
         public bool EvaluationTookPlace { get; private set; }
-        
-        public long EvaluationTimeElapsed { get; }
+
+        public long EvaluationTimeElapsed { get; private set; }
 
         public IHomeWorkspaceModel HomeWorkspaceModel { get; private set; }
 

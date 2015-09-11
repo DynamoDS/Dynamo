@@ -203,7 +203,10 @@ namespace Dynamo.Models
         public virtual void OnEvaluationStarted(object sender, EvaluationStartedEventArgs e)
         {
             ExecutionEvents.OnGraphPreExecution();
-            EvaluationStarted?.Invoke(sender, e);
+            if (EvaluationStarted != null)
+            {
+                EvaluationStarted(sender, e);
+            }
         }
 
         /// <summary>
@@ -227,7 +230,7 @@ namespace Dynamo.Models
 
             InstrumentationLogger.LogAnonymousTimedEvent(
                                 "Perf",
-                                nameof(UpdateGraphAsyncTask),
+                                typeof (UpdateGraphAsyncTask).Name,
                                 evalTimespan);
 
             Debug.WriteLine(String.Format(Resources.EvaluationCompleted, evalTimespan));
