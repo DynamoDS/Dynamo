@@ -82,11 +82,6 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.Name; }
         }
 
-        public string UserFriendlyName
-        {
-            get { return Model.UserFriendlyName; }
-        }
-
         public string FullName
         {
             get { return Model.FullName; }
@@ -95,6 +90,11 @@ namespace Dynamo.Wpf.ViewModels
         public string Assembly
         {
             get { return Model.Assembly; }
+        }
+
+        public string Parameters
+        {
+            get { return Model.Parameters; }
         }
 
         public bool Visibility

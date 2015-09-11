@@ -7,7 +7,6 @@ using Dynamo.Wpf.Authentication;
 using Greg;
 using Greg.AuthProviders;
 using Reach;
-using Reach.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,6 +15,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Reach.Data;
+using Reach.Exceptions;
+using Reach.Upload;
 
 namespace Dynamo.Publish.Models
 {

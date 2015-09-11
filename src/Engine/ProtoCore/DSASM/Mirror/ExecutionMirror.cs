@@ -1509,6 +1509,10 @@ namespace ProtoCore.DSASM.Mirror
                         object payload = dsArray.members[i].Payload;
                         return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(Convert.ToInt64(payload)) == Convert.ToChar(expected[i]);
                     }
+                    else if (type == typeof(String))
+                    {
+                        return Convert.ToString(dsArray.members[i].Payload) == Convert.ToString(expected[i]);
+                    }
                     else
                     {
                         throw new NotImplementedException("Test comparison not implemented: {EBAFAE6C-BCBF-42B8-B99C-49CFF989F0F0}");
