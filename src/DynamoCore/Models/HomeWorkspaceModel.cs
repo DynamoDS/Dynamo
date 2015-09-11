@@ -41,6 +41,11 @@ namespace Dynamo.Models
         private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
 
         /// <summary>
+        /// For handling the results of a trace reconciliation. Can be set for testing purposes.
+        /// </summary>
+        internal ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
+
+        /// <summary>
         /// The EngineController for this particular home workspace.
         /// </summary>
         public EngineController EngineController { get; private set; }
@@ -191,12 +196,14 @@ namespace Dynamo.Models
             IsTestMode = isTestMode;
             this.EngineController = engine;
             this.EngineController.MessageLogged += Log;
-            EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
+            this.EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
 
             if (this.RunSettings.RunType == RunType.Periodic)
             {
                 this.StartPeriodicEvaluation();
             }
+
+            TraceReconciliationProcessor = this;
 
             // The first time the preloaded trace data is set, we cache
             // the data as historical. This will be used after the initial
@@ -665,7 +672,7 @@ namespace Dynamo.Models
                 }
             }
 
-            this.OnTraceReconciliationComplete(workspaceOrphanMap);
+            this.TraceReconciliationProcessor.OnTraceReconciliationComplete(workspaceOrphanMap);
         }
 
         public virtual void OnTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables)

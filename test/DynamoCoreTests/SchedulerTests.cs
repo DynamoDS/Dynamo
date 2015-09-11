@@ -1237,7 +1237,7 @@ namespace Dynamo.Tests
                 new QueryMirrorDataParams()
                 {
                     Scheduler = GetScheduler(),
-                    EngineController = dynamoModel.EngineController,
+                    EngineController = dynamoModel.GetFirstEngineController(),
                     VariableName = variableName
                 });
 
@@ -1301,12 +1301,12 @@ namespace Dynamo.Tests
             // Get a UpdateGrapyAsyncTask for the modification of cbn
             var scheduler = new DynamoScheduler(new SampleSchedulerThread(), true);
             UpdateGraphAsyncTask task1 = new UpdateGraphAsyncTask(scheduler, false);
-            task1.Initialize(CurrentDynamoModel.EngineController, CurrentDynamoModel.CurrentWorkspace);
+            task1.Initialize(CurrentDynamoModel.GetCurrentEngineController(), CurrentDynamoModel.CurrentWorkspace);
 
             // Get a UpdateGraphAsyncTask for the modification of Math.Sin()
             funcNode.MarkNodeAsModified();
             UpdateGraphAsyncTask task2 = new UpdateGraphAsyncTask(scheduler, false);
-            task2.Initialize(CurrentDynamoModel.EngineController, CurrentDynamoModel.CurrentWorkspace);
+            task2.Initialize(CurrentDynamoModel.GetCurrentEngineController(), CurrentDynamoModel.CurrentWorkspace);
 
             // And both async tasks should be kept.
             var mergeResult = task1.CanMergeWith(task2);

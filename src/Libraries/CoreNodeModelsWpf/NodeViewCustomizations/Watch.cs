@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using DSCoreNodesUI.Logic;
 using Dynamo.Controls;
 using Dynamo.Core.Threading;
+using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.UI;
@@ -23,6 +24,7 @@ namespace Dynamo.Wpf.Nodes
 
         private IdentifierNode astBeingWatched;
         private IScheduler scheduler;
+        private EngineController engineController;
         private DynamoViewModel dynamoViewModel;
         private Watch watch;
         private SynchronizationContext syncContext;
@@ -38,6 +40,7 @@ namespace Dynamo.Wpf.Nodes
             if (ws != null)
             {
                 this.scheduler = ws.Scheduler;
+                this.engineController = ws.EngineController;
             }
 
             this.watch = nodeModel;
@@ -136,7 +139,9 @@ namespace Dynamo.Wpf.Nodes
                     ? watch.AstIdentifierForPreview.Name
                     : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            var core = this.dynamoViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+            if (engineController == null) return null;
+
+            var core = engineController.LiveRunnerRuntimeCore;
             var watchHandler = this.dynamoViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(

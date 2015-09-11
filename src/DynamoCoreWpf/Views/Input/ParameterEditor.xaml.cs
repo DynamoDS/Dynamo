@@ -49,7 +49,7 @@ namespace Dynamo.UI.Controls
         /// <returns></returns>
         private IEnumerable<ICompletionData> GetMatchedTypes(string partialName)
         {
-            var engineController = this.dynamoViewModel.Model.EngineController;
+            var engineController = this.dynamoViewModel.Model.GetFirstEngineController();
 
             return engineController.CodeCompletionServices
                                    .SearchTypes(partialName, dynamoViewModel.CurrentSpace.ElementResolver)
@@ -110,7 +110,8 @@ namespace Dynamo.UI.Controls
                 Foreground = new Dynamo.Wpf.Views.CodeBlockEditorUtils.CustomizedBrush(color)
             };
 
-            var engineController = dynamoViewModel.Model.EngineController;
+            var engineController = this.dynamoViewModel.Model.GetFirstEngineController();
+
             var wordList = engineController.CodeCompletionServices.GetClasses();
             String regex = String.Format(@"\b({0})({0})?\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);

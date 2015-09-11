@@ -115,7 +115,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
 
             var add = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSFunction>("ccb2eda9-0966-4ab8-a186-0d5f844559c1");
-            Assert.AreEqual(20, add.GetCachedValueFromEngine(CurrentDynamoModel.EngineController).Data);
+            Assert.AreEqual(20, add.GetCachedValueFromEngine(CurrentDynamoModel.GetCurrentEngineController()).Data);
         }
 
         [Test, Category("RegressionTests")]
@@ -209,7 +209,7 @@ namespace Dynamo.Tests
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("ff354c76-cbcc-4903-a88a-89184905dba0");
             string var = cbn.GetAstIdentifierForOutputIndex(0).Name;
-            RuntimeMirror mirror = CurrentDynamoModel.EngineController.GetMirror(var);
+            RuntimeMirror mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var);
             Assert.IsNotNull(mirror);
         }
 
@@ -242,7 +242,7 @@ namespace Dynamo.Tests
             var listContainsItemNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("3011fcbe-00d5-42e6-84c8-55bdf38b6a3b");
             string var = listContainsItemNode.GetAstIdentifierForOutputIndex(0).Name;
-            RuntimeMirror mirror = CurrentDynamoModel.EngineController.GetMirror(var);
+            RuntimeMirror mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var);
             Assert.IsNotNull(mirror);
         }
 
@@ -300,7 +300,7 @@ namespace Dynamo.Tests
             var point = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("a3da7834-f56f-4e73-b8f1-56796b6c37b3");
             string var = point.GetAstIdentifierForOutputIndex(0).Name;
-            RuntimeMirror mirror = CurrentDynamoModel.EngineController.GetMirror(var);
+            RuntimeMirror mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var);
             Assert.IsNotNull(mirror);
         }
 
@@ -322,7 +322,7 @@ namespace Dynamo.Tests
             var geometryTranslateNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("f49e3857-2a08-4a1f-83ac-89f64b24a592");
             string var = geometryTranslateNode.GetAstIdentifierForOutputIndex(0).Name;
-            RuntimeMirror mirror = CurrentDynamoModel.EngineController.GetMirror(var);
+            RuntimeMirror mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var);
             Assert.IsNotNull(mirror);
         }
 
@@ -335,7 +335,7 @@ namespace Dynamo.Tests
             var pythonNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
                 ("768780b5-0902-4756-93dc-2d6a8690df53");
             string var = pythonNode.GetAstIdentifierForOutputIndex(0).Name;
-            RuntimeMirror mirror = CurrentDynamoModel.EngineController.GetMirror(var);
+            RuntimeMirror mirror = CurrentDynamoModel.GetCurrentEngineController().GetMirror(var);
             Assert.IsNotNull(mirror);
         }
 

@@ -95,7 +95,7 @@ namespace Dynamo.Tests
         {
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, testFileName);
 
-            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(expectedOrphanCount);
+            ws.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(expectedOrphanCount);
 
             var numNode = ws.FirstNodeFromWorkspace<DoubleInput>();
 
@@ -110,7 +110,7 @@ namespace Dynamo.Tests
         {
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
 
-            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
+            ws.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
 
             var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.NickName == "TraceExampleWrapper.ByString");
             Assert.NotNull(traceNode);

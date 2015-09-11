@@ -106,12 +106,15 @@ namespace DynamoCLI
                 {
                     doc = new XmlDocument();
                     var resultsdict = new Dictionary<Guid, List<object>>();
+
+                    var ws = model.GetFirstWorkspaceOfType<IHomeWorkspaceModel>();
+
                     foreach (var node in model.CurrentWorkspace.Nodes)
                     {
                         var portvalues = new List<object>();
                         foreach (var port in node.OutPorts)
                         {
-                            var value = node.GetValue(port.Index, model.EngineController);
+                            var value = node.GetValue(port.Index, ws.EngineController);
                             if (value.IsCollection)
                             {
                                 portvalues.Add(GetStringRepOfCollection(value));

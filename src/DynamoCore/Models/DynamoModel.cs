@@ -895,7 +895,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region engine management
+        #region Engine Management
 
         /// <summary>
         ///     Register custom node defintion and execute all custom node 
@@ -1143,7 +1143,7 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region internal methods
+        #region Internal Methods
 
         internal void PostUIActivation(object parameter)
         {
@@ -1331,6 +1331,69 @@ namespace Dynamo.Models
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Obtain the first workspace of a specific type.
+        /// </summary>
+        /// <typeparam name="T">The type of workspace to obtain</typeparam>
+        /// <exception cref="InvalidOperationException">If there is no Workspace of the specified type</exception>
+        public T GetFirstWorkspaceOfType<T>() where T : IWorkspaceModel
+        {
+            var ws = Workspaces.OfType<T>().FirstOrDefault();
+            if (ws == null)
+            {
+                throw new InvalidOperationException(
+                    String.Format("There is no open workspace of type {0} ", typeof(T).Name));
+            }
+            return ws;
+        }
+
+        /// <summary>
+        /// Obtain an active EngineController from the current DynamoModel session
+        /// </summary>
+        /// <exception cref="InvalidOperationException">If there are no active EngineControllers</exception>
+        public EngineController GetFirstEngineController()
+        {
+            try
+            {
+                return GetFirstWorkspaceOfType<IHomeWorkspaceModel>().EngineController;
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new InvalidOperationException(
+                   String.Format("There is no active ", typeof(EngineController).Name));
+            }
+        }
+
+        /// <summary>
+        /// Get an EngineController from the current workspace assuming it has one
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The current workspace does not have an EngineController</exception>
+        public EngineController GetCurrentEngineController()
+        {
+            var ws = this.CurrentWorkspace as IHomeWorkspaceModel;
+            if (ws == null)
+            {
+                throw new InvalidOperationException(String.Format("The current workspace is not a {0} so it is not possible to get a {1} from it",
+                    typeof(HomeWorkspaceModel).Name, typeof(EngineController).Name));
+            }
+            return ws.EngineController;
+        }
+
+        /// <summary>
+        /// Get a Scheduler from the current workspace assuming it has one
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The current workspace does not have a Scheduler</exception>
+        public IScheduler GetCurrentScheduler()
+        {
+            var ws = this.CurrentWorkspace as IHomeWorkspaceModel;
+            if (ws == null)
+            {
+                throw new InvalidOperationException(String.Format("The current workspace is not a {0} so it is not possible to get a {1} from it",
+                    typeof(HomeWorkspaceModel).Name, typeof(IScheduler).Name));
+            }
+            return ws.Scheduler;
         }
 
         /// <summary>
