@@ -199,6 +199,9 @@ namespace Dynamo.Models
                 RequestBugReport();
         }
 
+        /// <summary>
+        /// An event trigger when a graph evaluation begins.
+        /// </summary>
         public event EventHandler<EvaluationStartedEventArgs> EvaluationStarted;
         public virtual void OnEvaluationStarted(object sender, EvaluationStartedEventArgs e)
         {
