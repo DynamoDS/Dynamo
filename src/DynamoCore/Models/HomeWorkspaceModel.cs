@@ -31,7 +31,7 @@ namespace Dynamo.Models
         event EventHandler<EvaluationCompletedEventArgs> RefreshCompleted;
     }
 
-    public class HomeWorkspaceModel : WorkspaceModel, IHomeWorkspaceModel
+    public class HomeWorkspaceModel : WorkspaceModel, IHomeWorkspaceModel, ITraceReconciliationProcessor
     {
         #region Class Data Members and Properties
 
@@ -191,6 +191,7 @@ namespace Dynamo.Models
             IsTestMode = isTestMode;
             this.EngineController = engine;
             this.EngineController.MessageLogged += Log;
+            EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
 
             if (this.RunSettings.RunType == RunType.Periodic)
             {
@@ -219,6 +220,7 @@ namespace Dynamo.Models
             base.Dispose();
             if (EngineController != null)
             {
+                EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
                 EngineController.Dispose();
@@ -272,6 +274,12 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
+        }
+
+        private void PulseMakerRunStarted()
+        {
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
+            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
         #region Public Operational Methods
@@ -340,15 +348,12 @@ namespace Dynamo.Models
             return true;
         }
 
-        private void PulseMakerRunStarted()
-        {
-            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
-            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
-        }
+        #region Evaluation
 
-
-        #region evaluation
-
+        /// <summary>
+        /// Completely reset the runtime state of the EngineController and reload all loaded libraries
+        /// excluding custom nodes.
+        /// </summary>
         internal void ResetEngine(LibraryServices libraryServices, string geometryFactoryPath, bool markNodesAsDirty = false )
         {
             if (EngineController != null)
@@ -370,10 +375,11 @@ namespace Dynamo.Models
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
                 MarkNodesAsModifiedAndRequestRun(Nodes);
-            }
-
-            if (RunSettings.RunType == RunType.Automatic)
+            } 
+            else if (RunSettings.RunType == RunType.Automatic)
+            {
                 Run();
+            }
         }
 
         /// <summary>
@@ -570,40 +576,7 @@ namespace Dynamo.Models
        
         #endregion
 
-        /// <summary>
-        /// Returns a list of ISerializable items which exist in the preloaded 
-        /// trace data but do not exist in the current CallSite data.
-        /// </summary>
-        /// <returns></returns>
-        public IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
-        {
-            var orphans = new List<ISerializable>();
-
-            if (historicalTraceData == null)
-                return orphans;
-
-            // If a Guid exists in the historical trace data
-            // and there is no corresponding node in the workspace
-            // then add the serializables for that guid to the list of
-            // orphans.
-
-            foreach (var nodeData in historicalTraceData)
-            {
-                var nodeGuid = nodeData.Key;
-
-                if (Nodes.All(n => n.GUID != nodeGuid))
-                {
-                    orphans.AddRange(nodeData.Value.SelectMany(CallSite.GetAllSerializablesFromSingleRunTraceData).ToList());
-                }
-            }
-
-            // When reconciliation is complete, wipe the historical data.
-            // This avoids this data being re-used after a future update.
-
-            historicalTraceData = null;
-
-            return orphans;
-        }
+        #region Trace 
 
         /// <summary>
         /// Add trace data to the document before being saved
@@ -644,6 +617,98 @@ namespace Dynamo.Models
                 Log(exception.StackTrace);
             }
         }
+
+        private void EngineControllerTraceReconciliationComplete(TraceReconciliationEventArgs obj)
+        {
+            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp => kvp.Value).Count());
+
+            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
+            // This dictionary gets redistributed into a dictionary keyed by the workspace id.
+
+            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+
+            // Get the orphaned serializables to this workspace
+            var wsOrphans = this.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+
+            if (wsOrphans.Any())
+            {
+                if (!workspaceOrphanMap.ContainsKey(this.Guid))
+                {
+                    workspaceOrphanMap.Add(this.Guid, wsOrphans);
+                }
+                else
+                {
+                    workspaceOrphanMap[this.Guid].AddRange(wsOrphans);
+                }
+            }
+
+            foreach (var kvp in obj.CallsiteToOrphanMap)
+            {
+                if (!kvp.Value.Any()) continue;
+
+                var nodeGuid = this.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallSiteToNodeMap[kvp.Key];
+
+                // TODO: MAGN-7314
+                // Find the owning workspace for a node.
+                var ownedNode = this.Nodes.Any(n => n.GUID == nodeGuid);
+                if (!ownedNode) continue;
+
+                // Add the node's orphaned serializables to the workspace
+                // orphan map.
+                if (workspaceOrphanMap.ContainsKey(this.Guid))
+                {
+                    workspaceOrphanMap[this.Guid].AddRange(kvp.Value);
+                }
+                else
+                {
+                    workspaceOrphanMap.Add(this.Guid, kvp.Value);
+                }
+            }
+
+            this.OnTraceReconciliationComplete(workspaceOrphanMap);
+        }
+
+        public virtual void OnTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            // Override in derived classes to deal with orphaned serializables.
+        }
+
+        /// <summary>
+        /// Returns a list of ISerializable items which exist in the preloaded 
+        /// trace data but do not exist in the current CallSite data.
+        /// </summary>
+        /// <returns></returns>
+        public IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        {
+            var orphans = new List<ISerializable>();
+
+            if (historicalTraceData == null)
+                return orphans;
+
+            // If a Guid exists in the historical trace data
+            // and there is no corresponding node in the workspace
+            // then add the serializables for that guid to the list of
+            // orphans.
+
+            foreach (var nodeData in historicalTraceData)
+            {
+                var nodeGuid = nodeData.Key;
+
+                if (Nodes.All(n => n.GUID != nodeGuid))
+                {
+                    orphans.AddRange(nodeData.Value.SelectMany(CallSite.GetAllSerializablesFromSingleRunTraceData).ToList());
+                }
+            }
+
+            // When reconciliation is complete, wipe the historical data.
+            // This avoids this data being re-used after a future update.
+
+            historicalTraceData = null;
+
+            return orphans;
+        }
+
+        #endregion
 
     }
 }

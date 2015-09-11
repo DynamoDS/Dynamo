@@ -352,7 +352,15 @@ namespace Dynamo.Models
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController);
+            var hws = Workspaces.OfType<IHomeWorkspaceModel>().FirstOrDefault();
+
+            if (hws == null)
+            {
+                throw new InvalidOperationException(
+                    String.Format("There must be an active {0} in order to call node to code", typeof(IHomeWorkspaceModel).Name));
+            }
+
+            CurrentWorkspace.ConvertNodesToCodeInternal(hws.EngineController);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }

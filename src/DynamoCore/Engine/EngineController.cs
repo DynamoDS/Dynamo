@@ -654,6 +654,6 @@ namespace Dynamo.Engine
 
     public interface ITraceReconciliationProcessor
     {
-        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
+        void OnTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
     }
 }

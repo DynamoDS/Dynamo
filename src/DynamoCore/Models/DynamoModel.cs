@@ -43,7 +43,7 @@ namespace Dynamo.Models
     /// The core application model for Dynamo. Amongst various responsibilities, DynamoModel 
     /// primarily manages creation and removal of Workspaces.
     /// </summary>
-    public partial class DynamoModel : IDynamoModel, IDisposable, ITraceReconciliationProcessor
+    public partial class DynamoModel : IDynamoModel, IDisposable
     {
         #region Private Fields
 
@@ -157,11 +157,6 @@ namespace Dynamo.Models
         #endregion
 
         #region Public Properties
-
-        /// <summary>
-        ///     EngineController used for various operations like Node to Code, Autocomplete, and more
-        /// </summary>
-        public EngineController EngineController { get; private set; }
 
         /// <summary>
         ///     Manages all loaded ZeroTouch libraries.
@@ -316,12 +311,6 @@ namespace Dynamo.Models
         {
             get { return _workspaces; } 
         }
-
-        /// <summary>
-        /// An object which implements the ITraceReconciliationProcessor interface,
-        /// and is used for handlling the results of a trace reconciliation.
-        /// </summary>
-        public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
 
         public AuthenticationManager AuthenticationManager { get; set; }
 
@@ -583,8 +572,6 @@ namespace Dynamo.Models
 
             StartBackupFilesTimer();
 
-            TraceReconciliationProcessor = this; 
-            
             foreach (var ext in ExtensionManager.Extensions)
             {
                 try
@@ -606,69 +593,6 @@ namespace Dynamo.Models
             var logSource = ext as ILogSource;
             if (logSource != null)
                 logSource.MessageLogged -= LogMessage;
-        }
-
-        private void EngineControllerTraceReconciliationComplete(TraceReconciliationEventArgs obj)
-        {
-            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
-            
-            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
-            // This dictionary gets redistributed into a dictionary keyed by the workspace id.
-
-            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
-
-            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
-            {
-                // Get the orphaned serializables to this workspace
-                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
-
-                if (!wsOrphans.Any())
-                    continue;
-
-                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
-                {
-                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
-                }
-                else
-                {
-                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
-                }
-            }
-
-            foreach (var kvp in obj.CallsiteToOrphanMap)
-            {
-                if (!kvp.Value.Any()) continue;
-
-                var nodeGuid = EngineController.LiveRunnerRuntimeCore.RuntimeData.CallSiteToNodeMap[kvp.Key];
-
-                // TODO: MAGN-7314
-                // Find the owning workspace for a node.
-                var nodeSpace =
-                    Workspaces.FirstOrDefault(
-                        ws =>
-                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
-                                != null);
-
-                if (nodeSpace == null) continue;
-
-                // Add the node's orphaned serializables to the workspace
-                // orphan map.
-                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
-                {
-                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
-                }
-                else
-                {
-                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);  
-                }
-            }
-
-            TraceReconciliationProcessor.PostTraceReconciliation(workspaceOrphanMap);
-        }
-
-        public virtual void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
-        {
-            // Override in derived classes to deal with orphaned serializables.
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -695,8 +619,6 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
-
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
 
@@ -705,9 +627,6 @@ namespace Dynamo.Models
             
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
-
-            EngineController.Dispose();
-            EngineController = null;
 
             if (backupFilesTimer != null)
             {
@@ -967,9 +886,11 @@ namespace Dynamo.Models
         /// <param name="args"></param>
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
-            //TODO: MAGN-8237 What is the use of this?
-            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
+            foreach (var ws in Workspaces.OfType<IHomeWorkspaceModel>())
+            {
+                Validity.Assert(ws.EngineController.LiveRunnerRuntimeCore != null);
+                ws.EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.kDefault, args.message);
+            }
         }
 
         #endregion
@@ -1038,26 +959,10 @@ namespace Dynamo.Models
                 ws.ResetEngine(this.LibraryServices, this.geometryFactoryPath, DebugSettings.VerboseLogging);
             }
 
-            // TODO MAGN-8237 - Do we need an EngineController on DynamoModel?
-            // Reset the DynamoModel EngineController
-            if (EngineController != null)
-            {
-                EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
-                EngineController.MessageLogged -= LogMessage;
-                EngineController.Dispose();
-                EngineController = null;
-            }
-
-            EngineController = new EngineController(
-                LibraryServices,
-                geometryFactoryPath,
-                DebugSettings.VerboseLogging);
-
-            EngineController.MessageLogged += LogMessage;
-            EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
-
             foreach (var def in CustomNodeManager.LoadedDefinitions)
+            {
                 RegisterCustomNodeDefinitionWithEngine(def);
+            }
         }
 
         /// <summary>
