@@ -16,12 +16,8 @@ build_script:
 after_build:
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
   
-on_success:
-  - git config --global credential.helper store
-  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-  - ps: Get-Location
-  - git clone "https://github.com/ramramps/DocumentTesting"  
-  - cd C:\projects\dynamo\DocumentTesting
+on_success:   
+  - git clone "https://github.com/ramramps/DocumentTesting"   
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/PublishDocs.ps1
   - ps: Get-ChildItem "C:\projects\dynamo\DocumentTesting" -recurse
 test: off
