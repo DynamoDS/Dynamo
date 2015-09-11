@@ -22,5 +22,6 @@ on_success:
   - ps: Get-Location
   - git clone "https://github.com/ramramps/DocumentTesting"
   - ps: Get-Location
+  - ps: Get-ChildItem "C:\projects\dynamo"
 test: off
 
