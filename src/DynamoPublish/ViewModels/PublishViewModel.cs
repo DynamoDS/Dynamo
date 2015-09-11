@@ -224,7 +224,7 @@ namespace Dynamo.Publish.ViewModels
                 }
             }
 
-            UploadStateMessage = Resources.ReadyForPublishMessage;
+            UploadStateMessage = (model.State == PublishModel.UploadState.Succeeded) ? Resources.UploadedMessage : Resources.ReadyForPublishMessage;
             IsReadyToUpload = true;
             return true;
         }
