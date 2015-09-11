@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Search;
@@ -128,11 +129,24 @@ namespace Dynamo.UI.Views
             var senderButton = e.OriginalSource as FrameworkElement;
             if (senderButton != null)
             {
-                var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+                HelperHandleMouseDown(e.GetPosition(null), senderButton.DataContext);
+            }
+            else
+            {
+                var senderRunButton = e.OriginalSource as Run;
+                if (senderRunButton != null)
+                {
+                    HelperHandleMouseDown(e.GetPosition(null), senderRunButton.DataContext);
+                }
+            }
+        }
 
-                if (searchElementVM != null)
-                    dragDropHelper.HandleMouseDown(e.GetPosition(null), searchElementVM);
-            }          
+        private void HelperHandleMouseDown(Point position, object dataContext)
+        {
+            var searchElementVM = dataContext as NodeSearchElementViewModel;
+
+            if (searchElementVM != null)
+                dragDropHelper.HandleMouseDown(position, searchElementVM);
         }
 
         private void OnButtonPreviewMouseMove(object sender, MouseEventArgs e)
