@@ -198,11 +198,6 @@ namespace Dynamo.Models
             this.EngineController.MessageLogged += Log;
             this.EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
 
-            if (this.RunSettings.RunType == RunType.Periodic)
-            {
-                this.StartPeriodicEvaluation();
-            }
-
             TraceReconciliationProcessor = this;
 
             // The first time the preloaded trace data is set, we cache
@@ -218,6 +213,15 @@ namespace Dynamo.Models
                 copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
             }
             historicalTraceData = copiedData;
+
+            if (this.RunSettings.RunType == RunType.Periodic)
+            {
+                this.StartPeriodicEvaluation();
+            }
+            else if (RunSettings.RunType == RunType.Automatic)
+            {
+                Run();
+            }
         }
 
         #endregion

@@ -1362,7 +1362,7 @@ namespace Dynamo.Models
             catch (InvalidOperationException e)
             {
                 throw new InvalidOperationException(
-                   String.Format("There is no active ", typeof(EngineController).Name));
+                   String.Format("There is no active ", typeof(EngineController).Name), e);
             }
         }
 
