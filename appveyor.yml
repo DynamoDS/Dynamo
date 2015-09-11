@@ -11,6 +11,7 @@ build_script:
   - msbuild %xmlDocs_solution%
 
 after_build:
+
   - ps: tools/XmlDocToMarkdown/XmlDocToMarkdown/BuildScript/BuildScript.ps1
   
 test: off
