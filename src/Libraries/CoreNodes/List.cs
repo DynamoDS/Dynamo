@@ -544,11 +544,11 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Chop a list into a set of lists each containing the given amount of items.
+        ///     Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.
         /// </summary>
-        /// <param name="list">List to chop up.</param>
-        /// <param name="lengths">Lengths of each new sub-list.</param>
-        /// <returns name="lists">List of lists.</returns>
+        /// <param name="list">List to chop into sublists</param>
+        /// <param name="lengths">Lengths of consecutive sublists to be created from the input list</param>
+        /// <returns name="lists">Sublists created from the list</returns>
         /// <search>chop</search>
         public static IList ChopByLengths(IList list, IList lengths)
         {
