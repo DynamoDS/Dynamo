@@ -261,4 +261,7 @@
   <data name="RequestOnPendingState" xml:space="preserve">
     <value>Request pending...</value>
   </data>
+  <data name="UploadedMessage" xml:space="preserve">
+    <value>Your workspace has been successfully published!</value>
+  </data>
 </root>

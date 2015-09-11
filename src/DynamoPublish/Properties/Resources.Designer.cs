@@ -475,6 +475,15 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your workspace has been successfully published!.
+        /// </summary>
+        public static string UploadedMessage {
+            get {
+                return ResourceManager.GetString("UploadedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uploading....
         /// </summary>
         public static string UploadingMessage {
