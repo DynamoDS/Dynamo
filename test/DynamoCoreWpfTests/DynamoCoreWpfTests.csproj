@@ -187,9 +187,9 @@
       <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
-      <Name>IronPythonUI</Name>
+      <Name>PythonNodeModelsWpf</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
