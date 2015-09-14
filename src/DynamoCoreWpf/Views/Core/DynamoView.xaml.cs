@@ -700,7 +700,8 @@ namespace Dynamo.Controls
             if (e.NewItems == null)
                 return;
 
-            var manipulatorContext = new NodeManipulatorContext(dynamoViewModel);
+            var manipulatorContext = new NodeManipulatorContext(this);
+            
             foreach (var nm in e.NewItems.OfType<NodeModel>())
                 manipulatorDaemon.CreateManipulator(nm, manipulatorContext);
          }
@@ -1580,6 +1581,7 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
+
 
         private void Log(ILogMessage obj)
         {

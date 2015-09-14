@@ -22,9 +22,15 @@ namespace DynamoManipulation
 
     public abstract class Manipulator : IManipulator
     {
+        
         public abstract void Dispose();
 
         public abstract void Tessellate(IRenderPackage package, TessellationParameters parameters);
+
+        protected void DrawManipulator(IEnumerable<IRenderPackage> packages)
+        {
+            
+        }
     }
 
     public class CompositeManipulator : Manipulator

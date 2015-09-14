@@ -10,9 +10,9 @@ namespace DynamoManipulation
 {
     public class NodeManipulatorContext
     {
-        public INotifyPropertyChanged Context { get; private set; }
+        public IDisposable Context { get; private set; }
 
-        public NodeManipulatorContext(INotifyPropertyChanged context)
+        public NodeManipulatorContext(IDisposable context)
         {
             Context = context;
         }

@@ -824,7 +824,8 @@
                 </Canvas.Background>
             </Canvas>
 
-            <controls:Watch3DView x:Name="BackgroundPreview" 
+            <controls:Watch3DView x:Name="BackgroundPreview"
+                                  x:FieldModifier="public"
                                   DataContext="{Binding BackgroundPreviewViewModel}"
                                   Margin="0,20,0,0"
                                   Visibility="{Binding Active, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
