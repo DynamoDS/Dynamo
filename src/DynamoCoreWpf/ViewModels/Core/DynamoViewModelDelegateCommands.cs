@@ -36,7 +36,6 @@ namespace Dynamo.ViewModels
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
             HomeCommand = new DelegateCommand(GoHome, CanGoHome);
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
-            CloseHomeWorkspaceCommand = new DelegateCommand(CloseHomeWorkspace, CanCloseHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(Delete, CanDelete);
             ExitCommand = new DelegateCommand(Exit, CanExit);
@@ -112,7 +111,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand SaveAsCommand { get; set; }
         public DelegateCommand NewHomeWorkspaceCommand { get; set; }
-        public DelegateCommand CloseHomeWorkspaceCommand { get; set; }
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }

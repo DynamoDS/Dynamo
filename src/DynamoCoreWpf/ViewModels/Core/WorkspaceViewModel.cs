@@ -861,6 +861,7 @@ namespace Dynamo.ViewModels
                 if (!DynamoViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().Any())
                 {
                     DynamoViewModel.Model.AddHomeWorkspace();
+                    this.DynamoViewModel.ShowStartPage = true;
                 }
             }
         }

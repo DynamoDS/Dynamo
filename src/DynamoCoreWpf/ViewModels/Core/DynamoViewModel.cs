@@ -1552,46 +1552,6 @@ namespace Dynamo.ViewModels
             return HomeSpace.RunSettings.RunEnabled;
         }
 
-        private void CloseHomeWorkspace(object parameter)
-        {
-            if (ClearHomeWorkspaceInternal())
-            {
-                // If after closing the HOME workspace, and there are no other custom 
-                // workspaces opened at the time, then we should show the start page.
-                this.ShowStartPage = Model.Workspaces.OfType<IHomeWorkspaceModel>().Any();
-            }
-        }
-
-        private bool CanCloseHomeWorkspace(object parameter)
-        {
-            return HomeSpace.RunSettings.RunEnabled;
-        }
-
-        /// <summary>
-        /// TODO(Ben): Both "CloseHomeWorkspace" and "MakeNewHomeWorkspace" are 
-        /// quite close in terms of functionality, but because their callers 
-        /// have different expectations in different scenarios, they remain 
-        /// separate now. A new task has been scheduled for them to be unified 
-        /// into one consistent way of handling.
-        /// 
-        ///     http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3813
-        /// 
-        /// </summary>
-        /// <returns>Returns true if the home workspace has been saved and 
-        /// cleared, or false otherwise.</returns>
-        /// 
-        private bool ClearHomeWorkspaceInternal()
-        {
-            // if the workspace is unsaved, prompt to save
-            // otherwise overwrite the home workspace with new workspace
-            if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public void Exit(object allowCancel)
         {
             var allowCancellation = true;
