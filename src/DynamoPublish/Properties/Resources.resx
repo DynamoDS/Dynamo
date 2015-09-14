@@ -208,7 +208,7 @@
     <value>Sending Request...</value>
   </data>
   <data name="InviteRequestSuccess" xml:space="preserve">
-    <value>Request sent successfully.</value>
+    <value>Request sent successfuly - invite will be addressed to :</value>
   </data>
   <data name="InviteRequestFailed" xml:space="preserve">
     <value>Failed to send the request. Try again later</value>

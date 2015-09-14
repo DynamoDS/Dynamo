@@ -277,7 +277,7 @@ namespace Dynamo.Publish.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request sent successfully..
+        ///   Looks up a localized string similar to Request sent successfuly - invite will be addressed to :.
         /// </summary>
         public static string InviteRequestSuccess {
             get {
