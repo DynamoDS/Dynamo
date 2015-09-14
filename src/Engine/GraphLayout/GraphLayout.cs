@@ -31,9 +31,9 @@ namespace GraphLayout
         /// <param name="height">The height of the node view.</param>
         /// <param name="y">The y coordinate of the node view.</param>
         /// <param name="inPortCount">The number of input ports of the node.</param>
-        public void AddNode(Guid guid, double width, double height, double y)
+        public void AddNode(Guid guid, double width, double height, double x, double y)
         {
-            var node = new Node(guid, width, height, y, this);
+            var node = new Node(guid, width, height, x, y, this);
             Nodes.Add(node);
         }
 
@@ -481,10 +481,21 @@ namespace GraphLayout
 
         #endregion
 
+        #region Graph positioning methods
+
+        private double CenterX;
+        private double CenterY;
+
+        public void RecordInitialPosition()
+        {
+            CenterX = (Nodes.Min(n => n.X) + Nodes.Max(n => n.X + n.Width)) / 2;
+            CenterY = (Nodes.Min(n => n.Y) + Nodes.Max(n => n.Y + n.Height)) / 2;
+        }
+
         /// <summary>
-        /// To align the top and left bound of the graph at x = 0 and y = 0.
+        /// To set spaces between the nodes based on the default node distance.
         /// </summary>
-        public void NormalizeGraphPosition()
+        public void DistributeNodePosition()
         {
             double previousLayerX = 0;
             double offsetY = -Nodes.OrderBy(x => x.Y).First().Y;
@@ -517,6 +528,23 @@ namespace GraphLayout
                 }
             }
         }
+
+        /// <summary>
+        /// To shift the whole graph back to its original position.
+        /// </summary>
+        public void SetGraphPosition()
+        {
+            double moveX = CenterX - (Nodes.Max(n => n.X + n.Width) - Nodes.Min(n => n.X)) / 2;
+            double moveY = CenterY - (Nodes.Max(n => n.Y + n.Height) - Nodes.Min(n => n.Y)) / 2;
+
+            foreach (Node n in Nodes)
+            {
+                n.X += moveX;
+                n.Y += moveY;
+            }
+        }
+
+        #endregion
 
     }
 
@@ -570,11 +598,12 @@ namespace GraphLayout
         /// </summary>
         public HashSet<Edge> RightEdges = new HashSet<Edge>();
 
-        public Node(Guid guid, double width, double height, double y, Graph ownerGraph)
+        public Node(Guid guid, double width, double height, double x, double y, Graph ownerGraph)
         {
             Id = guid;
             Width = width;
             Height = height;
+            X = x;
             Y = y;
             OwnerGraph = ownerGraph;
         }

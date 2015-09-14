@@ -1062,7 +1062,7 @@ namespace Dynamo.ViewModels
             foreach (AnnotationModel group in Model.Annotations)
             {
                 // Treat a group as a graph layout node/vertex
-                graph.AddNode(group.GUID, group.Width, group.Height, group.Y);
+                graph.AddNode(group.GUID, group.Width, group.Height, group.X, group.Y);
                 models.Add(group, UndoRedoRecorder.UserAction.Modification);
             }
 
@@ -1074,7 +1074,7 @@ namespace Dynamo.ViewModels
                 // Do not process nodes within groups
                 if (group == null)
                 {
-                    graph.AddNode(node.GUID, node.Width, node.Height, node.Y);
+                    graph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y);
                     models.Add(node, UndoRedoRecorder.UserAction.Modification);
                 }
             }
@@ -1101,13 +1101,16 @@ namespace Dynamo.ViewModels
 
             // Support undo for graph layout command
             WorkspaceModel.RecordModelsForModification(new List<ModelBase>(Model.Nodes), Model.UndoRecorder);
+            graph.RecordInitialPosition();
 
             // Sugiyama algorithm steps
             graph.RemoveCycles();
             graph.AssignLayers();
             graph.OrderNodes();
 
-            graph.NormalizeGraphPosition();
+            // Node and graph positioning
+            graph.DistributeNodePosition();
+            graph.SetGraphPosition();
 
             // Assign coordinates to nodes inside groups
             foreach (var group in Model.Annotations)
