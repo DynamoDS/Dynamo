@@ -59,6 +59,15 @@ namespace PythonNodeModels.Properties {
                 resourceCulture = value;
             }
         }
+		
+        /// <summary>
+        ///   Looks up a localized string similar to Edit....
+        /// </summary>
+        public static string EditHeader {
+            get {
+                return ResourceManager.GetString("EditHeader", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
