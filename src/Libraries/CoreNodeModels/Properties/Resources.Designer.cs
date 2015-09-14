@@ -808,24 +808,6 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a sequence of numbers in the specified range..
-        /// </summary>
-        internal static string NumberRangeDescription {
-            get {
-                return ResourceManager.GetString("NumberRangeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to numberrange;numbersequence;.
-        /// </summary>
-        internal static string NumberRangeSearchTags {
-            get {
-                return ResourceManager.GetString("NumberRangeSearchTags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Creates a sequence of numbers..
         /// </summary>
         internal static string NumberSequenceDescription {
@@ -930,6 +912,24 @@ namespace DSCoreNodesUI.Properties {
         internal static string PortDataVariableToolTip {
             get {
                 return ResourceManager.GetString("PortDataVariableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a sequence of numbers or letters in the specified range..
+        /// </summary>
+        internal static string RangeDescription {
+            get {
+                return ResourceManager.GetString("RangeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to numberrange;numbersequence;.
+        /// </summary>
+        internal static string RangeSearchTags {
+            get {
+                return ResourceManager.GetString("RangeSearchTags", resourceCulture);
             }
         }
         
