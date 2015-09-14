@@ -8,7 +8,7 @@ using ProtoTest.TD;
 using ProtoTestFx.TD;
 namespace ProtoTest.Associative
 {
-    public class ReferenceCount : ProtoTestBase
+    class ReferenceCount : ProtoTestBase
     {
         [Test]
         [Category("DSDefinedClass_Ported")]
