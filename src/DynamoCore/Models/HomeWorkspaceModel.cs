@@ -370,6 +370,8 @@ namespace Dynamo.Models
             if (EngineController != null)
             {
                 EngineController.MessageLogged -= Log;
+                EngineController.TraceReconciliationComplete -= EngineControllerTraceReconciliationComplete;
+                EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
                 EngineController.Dispose();
                 EngineController = null;
             }
@@ -380,6 +382,8 @@ namespace Dynamo.Models
                 this.verboseLogging);
 
             EngineController.MessageLogged += Log;
+            EngineController.TraceReconciliationComplete += EngineControllerTraceReconciliationComplete;
+            EngineController.LibraryServices.LibraryLoaded += LibraryLoaded;
 
             if (markNodesAsDirty)
             {
@@ -676,12 +680,17 @@ namespace Dynamo.Models
                 }
             }
 
-            this.TraceReconciliationProcessor.OnTraceReconciliationComplete(workspaceOrphanMap);
+            this.TraceReconciliationProcessor.OnPostTraceReconciliationComplete(workspaceOrphanMap);
         }
 
-        public virtual void OnTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        public event PostTraceReconciliationCompleteHandler PostTraceReconciliationComplete;
+
+        public void OnPostTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
         {
-            // Override in derived classes to deal with orphaned serializables.
+            if (this.PostTraceReconciliationComplete != null)
+            {
+                this.PostTraceReconciliationComplete(new PostTraceReconciliationCompleteEventArgs(orphanedSerializables));
+            }
         }
 
         /// <summary>

@@ -1,5 +1,7 @@
-﻿using Dynamo.Nodes;
+﻿using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 using Microsoft.Practices.Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
@@ -47,6 +49,8 @@ namespace Dynamo.ViewModels
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, RunSettingsViewModel.CanRunExpression);
             MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, RunSettingsViewModel.CanRunExpression);
+            RunCommand = new DelegateCommand((o) => this.RunSettingsViewModel.RunExpressionCommand.Execute(this.RunSettingsViewModel.RunInDebug), (_) => this.Model.CurrentWorkspace is HomeWorkspaceModel);
+            CancelRunCommand = new DelegateCommand((o) => this.RunSettingsViewModel.CancelRunCommand.Execute(o), (_) => this.CurrentSpaceViewModel is HomeWorkspaceViewModel);
             DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
@@ -135,6 +139,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
         public DelegateCommand<Function> PublishCustomNodeCommand { get; set; }
+        public DelegateCommand RunCommand { get; set; }
+        public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand PanCommand { get; set; }
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }

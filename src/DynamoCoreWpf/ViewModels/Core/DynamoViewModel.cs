@@ -90,15 +90,39 @@ namespace Dynamo.ViewModels
             get { return !(model.CurrentWorkspace is HomeWorkspaceModel); }
         }
 
-        //TODO : MAGN-8237
         public HomeWorkspaceModel HomeSpace
         {
             get { return HomeSpaceViewModel.Model as HomeWorkspaceModel; }
         }
 
-        public WorkspaceViewModel HomeSpaceViewModel { get; private set; }
+        /// <summary>
+        /// The RunSettingsViewModel for the current workspace. If the current
+        /// workspace does not have this property, returns null.
+        /// </summary>
+        public RunSettingsViewModel RunSettingsViewModel
+        {
+            get
+            {
+                var ws = currentWorkspaceViewModel as HomeWorkspaceViewModel;
+                if (ws == null) return null;
+                return ws.RunSettingsViewModel;
+            }
+        }
 
-        //public EngineController EngineController { get { return Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController; } }
+        /// <summary>
+        /// Property indicating whether the run button is enabled for the current
+        /// workspace. Returns false if the current workspace cannot be run.
+        /// </summary>
+        public bool RunButtonEnabled
+        {
+            get
+            {
+                if (RunSettingsViewModel == null) return false;
+                return RunSettingsViewModel.RunButtonEnabled;
+            }
+        }
+
+        public WorkspaceViewModel HomeSpaceViewModel { get; private set; }
 
         public WorkspaceModel CurrentSpace
         {
@@ -143,7 +167,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                // MAGN-8237
                 // It happens when current workspace is home workspace, and we 
                 // open a new home workspace. At this moment, the old homework 
                 // space is removed, before new home workspace is added, Dynamo
@@ -774,11 +797,12 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("BackgroundColor");
                     RaisePropertyChanged("CurrentWorkspaceIndex");
                     RaisePropertyChanged("ViewingHomespace");
+                    RaisePropertyChanged("RunSettingsViewModel");
                     if (this.PublishCurrentWorkspaceCommand != null)
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
-                    //RaisePropertyChanged("RunEnabled");
+                    RaisePropertyChanged("RunButtonEnabled");
                     break;
 
                 case "EnablePresetOptions":
@@ -786,20 +810,6 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
-
-        // TODO(Sriram): This method is currently not used, but it should really 
-        // be. It watches property change notifications coming from the current 
-        // WorkspaceModel, and then enables/disables 'set timer' button on the UI.
-        // 
-        //void CurrentWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //    switch (e.PropertyName)
-        //    {
-        //        case "RunEnabled":
-        //            RaisePropertyChanged(e.PropertyName);
-        //            break;
-        //    }
-        //}
 
         private void CleanUp()
         {

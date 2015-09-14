@@ -23,9 +23,11 @@ namespace Dynamo.Tests
             ExpectedOrphanCount = expectedOrphanCount;
         }
 
-        public void OnTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        public event PostTraceReconciliationCompleteHandler PostTraceReconciliationComplete;
+
+        public void OnPostTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
         {
-            Assert.AreEqual(orphanedSerializables.SelectMany(kvp=>kvp.Value).Count(), ExpectedOrphanCount);
+            Assert.AreEqual(orphanedSerializables.SelectMany(kvp => kvp.Value).Count(), ExpectedOrphanCount);
         }
     }
 

@@ -107,8 +107,8 @@ namespace Dynamo.Tests
         protected RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
-            var model = GetModel();
-            var ec = model.GetCurrentEngineController();
+            var m = GetModel();
+            var ec = m.GetCurrentEngineController();
             Assert.DoesNotThrow(() => mirror = ec.GetMirror(varName));
             return mirror;
         }

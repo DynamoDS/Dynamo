@@ -639,6 +639,16 @@ namespace Dynamo.Engine
         }
     }
 
+    public class PostTraceReconciliationCompleteEventArgs : EventArgs
+    {
+        public Dictionary<Guid, List<ISerializable>> OrphanedSerializables { get; private set; }
+
+        public PostTraceReconciliationCompleteEventArgs(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            OrphanedSerializables = orphanedSerializables;
+        }
+    }
+
     public class TraceReconciliationEventArgs : EventArgs
     {
         /// <summary>
@@ -652,8 +662,10 @@ namespace Dynamo.Engine
         }
     }
 
+    public delegate void PostTraceReconciliationCompleteHandler(PostTraceReconciliationCompleteEventArgs model);
     public interface ITraceReconciliationProcessor
     {
-        void OnTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
+        event PostTraceReconciliationCompleteHandler PostTraceReconciliationComplete;
+        void OnPostTraceReconciliationComplete(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
     }
 }

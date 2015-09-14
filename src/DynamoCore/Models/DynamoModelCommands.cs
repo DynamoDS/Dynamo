@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -352,15 +353,17 @@ namespace Dynamo.Models
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            var hws = Workspaces.OfType<IHomeWorkspaceModel>().FirstOrDefault();
-
-            if (hws == null)
+            EngineController engineController;
+            if (this.CurrentWorkspace is HomeWorkspaceModel)
             {
-                throw new InvalidOperationException(
-                    String.Format("There must be an active {0} in order to call node to code", typeof(IHomeWorkspaceModel).Name));
+                engineController = this.GetCurrentEngineController();
+            }
+            else
+            {
+                engineController = this.GetFirstEngineController();
             }
 
-            CurrentWorkspace.ConvertNodesToCodeInternal(hws.EngineController);
+            CurrentWorkspace.ConvertNodesToCodeInternal(engineController);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }
