@@ -1132,6 +1132,7 @@ namespace Dynamo.ViewModels
                     node.X = n.X;
                     node.Y = n.Y;
                     node.ReportPosition();
+                    node.OnNodeModified();
                 }
             }
 
